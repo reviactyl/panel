@@ -12,6 +12,6 @@ return [
     |
     */
 
-    'version' => '2.1',
-    'build' => 'Y25R2C1RP',
+    'version' => '2.0',
+    'build' => 'Y25R2C06B',
 ];
