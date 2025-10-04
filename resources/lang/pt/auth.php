@@ -30,6 +30,7 @@ return [
         'button' => 'Continuar',
         'lost-device' => 'Perdi Meu Dispositivo',
         'not-lost-device' => 'Ainda Tenho Meu Dispositivo',
+
     ],
 
     'reset-password' => [
