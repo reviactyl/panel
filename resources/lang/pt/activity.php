@@ -1,10 +1,10 @@
 <?php
 
 /**
- * Contém todas as strings de tradução para diferentes eventos
- * do registro de atividades. Elas devem ser indexadas pelo valor
- * antes dos dois pontos (:) no nome do evento. Se não houver dois pontos,
- * devem ficar no nível superior.
+ * Contains all of the translation strings for different activity log
+ * events. These should be keyed by the value in front of the colon (:)
+ * in the event name. If there is no colon present, they should live at
+ * the top level.
  */
 return [
     'entries' => [
