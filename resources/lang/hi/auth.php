@@ -30,6 +30,7 @@ return [
         'button' => 'जारी रखें',
         'lost-device' => 'मैंने अपना डिवाइस खो दिया है',
         'not-lost-device' => 'मेरा डिवाइस मेरे पास है',
+
     ],
 
     'reset-password' => [
