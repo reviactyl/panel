@@ -3,6 +3,24 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v2.0.2
+
+### Added
+* New strings for search & server layout.
+* Swedish (`se`) translation
+
+### Changed
+
+* Change Reviactyl UI Components import from `@/components/` to `@/reviactyl/`
+* Store user locale in database
+* Update Telemetry Collection *(Reviactyl now collects anonymous telemetry data)*
+* Make locale list utilise existing methods
+
+### Fixed
+
+* Some elements appear broken in smaller screens
+* Fixed UI for widescreen devices
+
 ## v2.0.1
 
 ### Added

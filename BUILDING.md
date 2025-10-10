@@ -1,6 +1,6 @@
 # Local Development
-Pterodactyl is now powered by React, Typescript, and Tailwindcss using webpack at its core to generate compiled assets.
-Release versions of Pterodactyl will include pre-compiled, minified, and hashed assets ready-to-go.
+Reviactyl is now powered by React, Typescript, and Tailwindcss using webpack at its core to generate compiled assets.
+Release versions of Reviactyl will include pre-compiled, minified, and hashed assets ready-to-go.
 
 However, if you are interested in running custom themes or making modifications to the React files you'll need a build
 system in place to generate these compiled assets. To get your environment setup you'll need at minimum:
