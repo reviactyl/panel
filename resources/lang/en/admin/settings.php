@@ -3,7 +3,7 @@
 return [
     'overview' => [
         'title' => 'Settings',
-        'general-title' => 'General Settings',
+        'general-title' => 'General',
         'app-name' => 'App Name',
         'app-logo' => 'App Logo',
         'app-icon' => 'App Favicon',
@@ -17,8 +17,12 @@ return [
         'disabled' => 'Disabled',
         'save-btn' => 'Save',
     ],
+    'security' => [
+        'title' => 'Security',
+        'provider' => 'Captcha Provider',
+    ],
     'mail' => [
-        'title' => 'Mail Settings',
+        'title' => 'Mail',
         'email-title' => 'Email Settings',
         'smtp-alert' => 'This interface is limited to instances using SMTP as the mail driver. Please either use <code>php artisan p:environment:mail</code> command to update your email settings, or set <code>MAIL_DRIVER=smtp</code> in your environment file.',
         'host-label' => 'SMTP Host',
@@ -32,7 +36,7 @@ return [
         'save-btn' => 'Save',
     ],
     'advanced' => [
-        'title' => 'Advanced Settings',
+        'title' => 'Advanced',
         'status-label' => 'Status',
         'enabled' => 'Enabled',
         'disabled' => 'Disabled',
