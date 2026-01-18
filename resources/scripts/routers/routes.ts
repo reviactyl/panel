@@ -13,7 +13,7 @@ import AccountApiContainer from '@/components/dashboard/AccountApiContainer';
 import AccountSSHContainer from '@/components/dashboard/ssh/AccountSSHContainer';
 import ActivityLogContainer from '@/components/dashboard/activity/ActivityLogContainer';
 import ServerActivityLogContainer from '@/components/server/ServerActivityLogContainer';
-import { FaBoltLightning, FaBoxArchive, FaCalendar, FaDatabase, FaEye, FaFolder, FaGear, FaKey, FaLock, FaPlay, FaTerminal, FaUser, FaUsers } from 'react-icons/fa6';
+import { FaBoltLightning, FaBoxArchive, FaCalendar, FaChartLine, FaDatabase, FaEye, FaFolder, FaGear, FaKey, FaLock, FaPlay, FaTerminal, FaUser, FaUsers } from 'react-icons/fa6';
 
 // Each of the router files is already code split out appropriately — so
 // all of the items above will only be loaded in when that router is loaded.
@@ -22,6 +22,7 @@ import { FaBoltLightning, FaBoxArchive, FaCalendar, FaDatabase, FaEye, FaFolder,
 // for the server dashboard when they're only needed for specific instances.
 const FileEditContainer = lazy(() => import('@/components/server/files/FileEditContainer'));
 const ScheduleEditContainer = lazy(() => import('@/components/server/schedules/ScheduleEditContainer'));
+const HistoricalGraphsContainer = lazy(() => import('@/components/server/metrics/HistoricalGraphsContainer'));
 
 interface RouteDefinition {
     path: string;
@@ -116,6 +117,13 @@ export default {
                 name: 'server.network',
                 component: NetworkContainer,
                 icon: FaBoltLightning,
+            },
+            {
+                path: '/metrics',
+                permission: null,
+                name: 'server.metrics',
+                component: HistoricalGraphsContainer,
+                icon: FaChartLine,
             },
         ],
         management: [

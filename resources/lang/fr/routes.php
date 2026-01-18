@@ -16,6 +16,7 @@ return [
         'files' => 'Fichiers',
         'startup' => 'Démarrage',
         'network' => 'Réseau',
+        'metrics' => 'Metrics',
         'databases' => 'Base de données',
         'schedules' => 'Tâches automatiques',
         'backups' => 'Sauvegardes',

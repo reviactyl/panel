@@ -16,6 +16,7 @@ return [
         'files' => 'Files',
         'startup' => 'Startup',
         'network' => 'Network',
+        'metrics' => 'Metrics',
         'databases' => 'Databases',
         'schedules' => 'Schedules',
         'backups' => 'Backups',

@@ -16,6 +16,7 @@ return [
         'files' => 'फ़ाइलें',
         'startup' => 'स्टार्टअप',
         'network' => 'नेटवर्क',
+        'metrics' => 'Metrics',
         'databases' => 'डेटाबेस',
         'schedules' => 'अनुसूचियाँ',
         'backups' => 'बैकअप्स',
