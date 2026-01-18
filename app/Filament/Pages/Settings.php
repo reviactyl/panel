@@ -17,9 +17,12 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Actions\Action;
+use Filament\Schemas\Components\Actions;
 use Filament\Notifications\Notification;
 use Illuminate\Contracts\Console\Kernel;
 use App\Contracts\Repository\SettingsRepositoryInterface;
+use Illuminate\Contracts\Encryption\Encrypter;
+use Illuminate\Contracts\Encryption\DecryptException;
 
 class Settings extends Page implements HasSchemas
 {
@@ -51,6 +54,15 @@ class Settings extends Page implements HasSchemas
     public function mount(): void
     {
         $settings = app(SettingsRepositoryInterface::class);
+        $encrypter = app(Encrypter::class);
+
+        $password = $settings->get('settings::mail:mailers:smtp:password');
+        try {
+            if (!empty($password)) {
+                $password = $encrypter->decrypt($password);
+            }
+        } catch (DecryptException) {
+        }
 
         $this->form->fill([
             'app:name' => $settings->get('settings::app:name'),
@@ -65,6 +77,7 @@ class Settings extends Page implements HasSchemas
             'mail:mailers:smtp:port' => $settings->get('settings::mail:mailers:smtp:port'),
             'mail:mailers:smtp:encryption' => $settings->get('settings::mail:mailers:smtp:encryption'),
             'mail:mailers:smtp:username' => $settings->get('settings::mail:mailers:smtp:username'),
+            'mail:mailers:smtp:password' => $password,
             'mail:from:address' => $settings->get('settings::mail:from:address'),
             'mail:from:name' => $settings->get('settings::mail:from:name'),
 
@@ -177,42 +190,43 @@ class Settings extends Page implements HasSchemas
     {
         return [
             Section::make('CAPTCHA')
-                ->columns(4)
+                ->columns(2)
                 ->schema([
                     ToggleButtons::make('captcha:provider')
                         ->label(trans('admin/settings.security.provider'))
                         ->options([
-                            'none' => 'None',
+                            'disable' => 'Disabled',
                             'recaptcha' => 'reCAPTCHA',
                             'turnstile' => 'Turnstile',
                         ])
                         ->icons([
-                            'none' => 'tabler-lock-access-off',
+                            'disable' => 'tabler-lock-access-off',
                             'recaptcha' => 'tabler-brand-google',
                             'turnstile' => 'tabler-brand-cloudflare',
                         ])
                         ->required()
+                        ->live()
                         ->inline()
                         ->columnSpan(2),
 
                     TextInput::make('captcha:recaptcha:website_key')
                         ->label('reCAPTCHA Site Key')
-                        ->columnSpan(2)
+                        ->columnSpan(1)
                         ->visible(fn ($get) => $get('captcha:provider') === 'recaptcha'),
 
                     TextInput::make('captcha:recaptcha:secret_key')
                         ->label('reCAPTCHA Secret Key')
-                        ->columnSpan(2)
+                        ->columnSpan(1)
                         ->visible(fn ($get) => $get('captcha:provider') === 'recaptcha'),
 
                     TextInput::make('captcha:turnstile:site_key')
                         ->label('Turnstile Site Key')
-                        ->columnSpan(2)
+                        ->columnSpan(1)
                         ->visible(fn ($get) => $get('captcha:provider') === 'turnstile'),
 
                     TextInput::make('captcha:turnstile:secret_key')
                         ->label('Turnstile Secret Key')
-                        ->columnSpan(2)
+                        ->columnSpan(1)
                         ->visible(fn ($get) => $get('captcha:provider') === 'turnstile'),
                 ]),
         ];
@@ -271,6 +285,14 @@ class Settings extends Page implements HasSchemas
                         ->label(trans('admin/settings.mail.from-name-label'))
                         ->columnSpan(2),
                 ]),
+
+            Actions::make([
+                Action::make('test_mail')
+                    ->label(trans('admin/settings.mail.test-btn'))
+                    ->icon('tabler-mail')
+                    ->action('testMail')
+                    ->color('success'),
+            ])->fullWidth(),
         ];
     }
 
@@ -303,6 +325,7 @@ class Settings extends Page implements HasSchemas
                     Toggle::make('pterodactyl:client_features:allocations:enabled')
                         ->label(trans('admin/settings.advanced.creation-title'))
                         ->inline(false)
+                        ->live()
                         ->columnSpan(2),
 
                     TextInput::make('pterodactyl:client_features:allocations:range_start')
@@ -337,9 +360,15 @@ class Settings extends Page implements HasSchemas
         $settings = app(SettingsRepositoryInterface::class);
         $kernel = app(Kernel::class);
 
+        $encrypter = app(Encrypter::class);
+
         $data = $this->form->getState();
 
         foreach ($data as $key => $value) {
+            if ($key === 'mail:mailers:smtp:password' && !empty($value)) {
+                $value = $encrypter->encrypt($value);
+            }
+
             $settings->set(
                 'settings::' . $key,
                 is_bool($value) ? ($value ? 'true' : 'false') : $value
@@ -355,6 +384,48 @@ class Settings extends Page implements HasSchemas
             ->title('Settings saved')
             ->success()
             ->send();
+    }
+
+    public function testMail(): void
+    {
+        $data = $this->form->getState();
+
+        config()->set('mail.mailers.smtp.host', $data['mail:mailers:smtp:host']);
+        config()->set('mail.mailers.smtp.port', $data['mail:mailers:smtp:port']);
+        config()->set('mail.mailers.smtp.encryption', $data['mail:mailers:smtp:encryption']);
+        config()->set('mail.mailers.smtp.username', $data['mail:mailers:smtp:username']);
+        config()->set('mail.mailers.smtp.password', $data['mail:mailers:smtp:password']);
+        
+        config()->set('mail.from.address', $data['mail:from:address']);
+        config()->set('mail.from.name', $data['mail:from:name']);
+
+        try {
+            if (method_exists(app('mailer'), 'forgetMailers')) {
+                app('mailer')->forgetMailers();
+            } else {
+                $transport = app('mailer')->getSymfonyTransport();
+                if ($transport instanceof \Symfony\Component\Mailer\Transport\TransportInterface) {
+                    app('mailer')->forgetMailers();
+                }
+            }
+        } catch (\Throwable $e) {
+        }
+
+        try {
+            \Illuminate\Support\Facades\Notification::route('mail', auth()->user()->email)
+                ->notify(new \App\Notifications\MailTested(auth()->user()));
+
+            Notification::make()
+                ->title('Test email sent')
+                ->success()
+                ->send();
+        } catch (\Exception $exception) {
+            Notification::make()
+                ->title('Failed to send test email')
+                ->body($exception->getMessage())
+                ->danger()
+                ->send();
+        }
     }
 
     protected function getHeaderActions(): array

@@ -24,10 +24,10 @@ class VerifyCaptcha
      */
     public function handle(Request $request, \Closure $next): mixed
     {
-        $provider = $this->config->get('captcha.provider', 'none');
+        $provider = $this->config->get('captcha.provider', 'disable');
 
         // If captcha is disabled, skip verification
-        if ($provider === 'none') {
+        if ($provider === 'disable') {
             return $next($request);
         }
 
