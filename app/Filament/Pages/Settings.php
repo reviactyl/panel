@@ -48,11 +48,6 @@ class Settings extends Page implements HasSchemas
         return trans('admin/settings.overview.title');
     }
 
-    public static function getNavigationGroup(): ?string
-    {
-        return trans('admin/navigation.administration.title');
-    }
-
     public function mount(): void
     {
         $settings = app(SettingsRepositoryInterface::class);

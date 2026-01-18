@@ -27,6 +27,7 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Blue,
             ])
+            ->breadcrumbs(false)
             ->navigationGroups([
                 NavigationGroup::make(fn () => trans('admin/navigation.administration.title'))
                     ->collapsible(false),
