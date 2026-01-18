@@ -28,7 +28,7 @@
                                 <label class="control-label">Provider</label>
                                 <div>
                                     <select class="form-control" name="captcha:provider" id="captcha_provider">
-                                        <option value="none" @if (old('captcha:provider', config('captcha.provider')) == 'none') selected @endif>Disabled</option>
+                                        <option value="disable" @if (old('captcha:provider', config('captcha.provider')) == 'disable') selected @endif>Disabled</option>
                                         <option value="recaptcha" @if (old('captcha:provider', config('captcha.provider')) == 'recaptcha') selected @endif>Google reCAPTCHA</option>
                                         <option value="turnstile" @if (old('captcha:provider', config('captcha.provider')) == 'turnstile') selected @endif>Cloudflare Turnstile</option>
                                     </select>

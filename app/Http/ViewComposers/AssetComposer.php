@@ -29,7 +29,7 @@ class AssetComposer
             'debug' => config('app.debug', false),
             'avatar' => config('app.avatar') ?? 'gravatar',
             'captcha' => [
-                'provider' => config('captcha.provider', 'none'),
+                'provider' => config('captcha.provider', 'disable'),
                 'recaptcha' => [
                     'siteKey' => config('captcha.recaptcha.website_key') ?? '',
                 ],
