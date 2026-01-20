@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { Subuser } from '@/state/server/subusers';
-import { Form, Formik } from 'formik';
+import { Form, Formik, useFormikContext } from 'formik';
 import { array, object, string } from 'yup';
 import Field from '@/components/elements/Field';
 import { Actions, useStoreActions, useStoreState } from 'easy-peasy';
@@ -13,6 +13,7 @@ import { usePermissions } from '@/plugins/usePermissions';
 import { useDeepCompareMemo } from '@/plugins/useDeepCompareMemo';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
+import Select from '@/components/elements/Select';
 import PermissionTitleBox from '@/components/server/users/PermissionTitleBox';
 import asModal from '@/hoc/asModal';
 import PermissionRow from '@/components/server/users/PermissionRow';
@@ -26,6 +27,71 @@ interface Values {
     email: string;
     permissions: string[];
 }
+
+const PRESET_PERMISSIONS = {
+    power: [
+        'control.console',
+        'control.start',
+        'control.stop',
+        'control.restart',
+        'file.create',
+        'file.read',
+        'file.update',
+        'file.delete',
+        'file.archive',
+        'file.sftp',
+        'backup.create',
+        'backup.read',
+        'backup.delete',
+        'backup.download',
+        'allocation.read',
+        'startup.read',
+        'settings.rename',
+    ],
+    moderator: [
+        'control.console',
+        'control.start',
+        'control.stop',
+        'control.restart',
+        'user.create',
+        'user.read',
+        'user.update',
+        'user.delete',
+        'file.read',
+    ],
+    viewer: ['control.console', 'file.read', 'user.read'],
+};
+
+const PresetSelector = ({ editablePermissions }: { editablePermissions: string[] }) => {
+    const { setFieldValue } = useFormikContext<Values>();
+
+    const onPresetChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const val = e.target.value;
+        if (val === 'all') {
+            setFieldValue('permissions', editablePermissions);
+        } else if (val === 'none') {
+            setFieldValue('permissions', []);
+        } else {
+            // @ts-expect-error keys are valid
+            const preset: string[] = PRESET_PERMISSIONS[val] || [];
+            const perms = preset.filter((p) => editablePermissions.includes(p));
+            setFieldValue('permissions', perms);
+        }
+    };
+
+    return (
+        <Select onChange={onPresetChange} defaultValue={'custom'}>
+            <option value='custom' disabled>
+                Select a preset...
+            </option>
+            <option value='all'>Full Access (Select All)</option>
+            <option value='power'>Power User (Control + Files + Backups)</option>
+            <option value='moderator'>Moderator (Control + Users)</option>
+            <option value='viewer'>Viewer (Read Only)</option>
+            <option value='none'>No Access (Select None)</option>
+        </Select>
+    );
+};
 
 const EditSubuserModal = ({ subuser }: Props) => {
     const ref = useRef<HTMLHeadingElement>(null);
@@ -116,6 +182,16 @@ const EditSubuserModal = ({ subuser }: Props) => {
                     </div>
                 </div>
                 <FlashMessageRender byKey={'user:edit'} css={tw`mt-4`} />
+                <div css={tw`mt-6`}>
+                    <label css={tw`mb-2 text-neutral-300 font-bold block text-sm`}>Select Info</label>
+                    <div css={tw`p-4 bg-gray-600 rounded-lg border border-gray-500`}>
+                        <h3 css={tw`text-white font-semibold mb-2`}>Role Presets</h3>
+                        <p css={tw`text-gray-300 text-sm mb-4`}>
+                            Select a preset to automatically configure permissions for this user. You can still fine-tune individual permissions below.
+                        </p>
+                        <PresetSelector editablePermissions={editablePermissions} />
+                    </div>
+                </div>
                 {!isRootAdmin && loggedInPermissions[0] !== '*' && (
                     <div css={tw`mt-4 pl-4 py-2 border-l-4 border-cyan-400`}>
                         <p css={tw`text-sm text-neutral-300`}>

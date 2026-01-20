@@ -65,7 +65,7 @@ const AllocationRow = ({ allocation }: Props) => {
                 <div className={'pl-4 pr-6 text-neutral-400'}>
                     <FontAwesomeIcon icon={faNetworkWired} />
                 </div>
-                <div className={'mr-4 flex-1 md:w-40'}>
+                <div className={'mr-4 flex-1'}>
                     {allocation.alias ? (
                         <CopyOnClick text={allocation.alias}>
                             <Code>{allocation.alias}</Code>
