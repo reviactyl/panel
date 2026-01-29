@@ -3,6 +3,16 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v2.2.1
+### Added
+* Allocation Preset Manager by @wylayy
+* Better Compatibility with Pterodactyl Addons (See Fixes)
+
+### Fixed
+* Fixed issue with network allocation alias by @wylayy
+* Fixed missing props with `Field` & `Code` components.
+* Fixed activity log user gravatar calculated wrongly by @chetanupare
+
 ## v2.2.0
 ### Added
 * Turnstile integration by @wylayy
