@@ -1,6 +1,6 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import I18NextHttpBackend, { BackendOptions } from 'i18next-http-backend';
+import I18NextHttpBackend, { HttpBackendOptions } from 'i18next-http-backend';
 import I18NextMultiloadBackendAdapter from 'i18next-multiload-backend-adapter';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
@@ -27,7 +27,7 @@ i18n.use(I18NextMultiloadBackendAdapter)
                 queryStringParams: { hash },
                 allowMultiLoading: true,
                 multiSeparator: ',',
-            } as BackendOptions,
+            } as HttpBackendOptions,
         } as Record<string, any>,
         interpolation: {
             // Per i18n-react documentation: this is not needed since React is already
