@@ -20,6 +20,7 @@ use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Contracts\Console\Kernel;
 use App\Contracts\Repository\SettingsRepositoryInterface;
+use App\Traits\Helpers\AvailableLanguages;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Encryption\DecryptException;
@@ -29,6 +30,7 @@ class Settings extends Page implements HasSchemas
 {
     use InteractsWithForms;
     use InteractsWithHeaderActions;
+    use AvailableLanguages;
 
     protected static string|\BackedEnum|null $navigationIcon = 'tabler-settings';
     protected static string|\BackedEnum|null $activeNavigationIcon = 'tabler-settings-filled';
@@ -187,6 +189,21 @@ class Settings extends Page implements HasSchemas
                         ->required()
                         ->maxLength(191)
                         ->columnSpan(1),
+                ]),
+
+            Group::make()
+                ->columns(4)
+                ->schema([
+                    Select::make('app:locale')
+                        ->label(trans('admin/settings.overview.default-language'))
+                        ->options(function () {
+                            // Helper to get languages since we can't easily access trait method statically or outside instance context in some cases, 
+                            // but here we are in instance context.
+                            return $this->getAvailableLanguages(true);
+                        })
+                        ->searchable()
+                        ->columnSpan(2)
+                        ->native(false),
                 ]),
 
             Group::make()

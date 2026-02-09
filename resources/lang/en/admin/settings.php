@@ -12,6 +12,7 @@ return [
         'not-required' => 'Not Required',
         'admin-only' => 'Admin Only',
         'all-users' => 'All Users',
+        'default-language' => 'Default Language',
         'provider' => 'Avatar Provider',
         'enabled' => 'Enabled',
         'disabled' => 'Disabled',
