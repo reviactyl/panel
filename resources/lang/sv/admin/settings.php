@@ -12,6 +12,7 @@ return [
         'not-required' => 'Inte Krävs',
         'admin-only' => 'Endast Administratörer',
         'all-users' => 'Alla Användare',
+        'default-language' => 'Default Language',
         'provider' => 'Avatarleverantör',
         'enabled' => 'Aktiverad',
         'disabled' => 'Inaktiverad',
