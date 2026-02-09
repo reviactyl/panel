@@ -193,13 +193,32 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                             />
                         </div>
                     )}
-                    <div css={tw`mt-3 text-center`}>
+                    <div css={tw`mt-3 flex flex-col items-center gap-2`}>
                         <Link
                             to={'/auth/password'}
                             css={tw`text-sm text-reviactyl/80 tracking-wide no-underline hover:text-reviactyl/50`}
                         >
                             {t('forgot-password.label')}
                         </Link>
+                        <Link
+                            to={'/auth/register'}
+                            css={tw`text-xs text-gray-400 tracking-wide no-underline hover:text-gray-300`}
+                        >
+                            Don&apos;t have an account? Create one
+                        </Link>
+                        {window.ReviactylConfiguration?.billingCardLink && (
+                            <a
+                                href={window.ReviactylConfiguration.billingCardLink}
+                                target={'_blank'}
+                                rel={'noreferrer'}
+                                css={tw`mt-2 flex items-center gap-1 text-xs text-indigo-400 hover:text-indigo-300 no-underline transition-colors duration-200`}
+                            >
+                                <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 fill-current">
+                                    <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152c-.0766.1369-.1707.33-.2346.4883-1.8439-.2753-3.6702-.2753-5.4646 0-.0639-.1583-.158-.3514-.2346-.4883a19.7358 19.7358 0 00-4.8851 1.5152c-3.1312 4.6735-3.9827 9.223-3.5658 13.7048.0135.1451.1098.2735.2346.368a20.0152 20.0152 0 002.9431 1.488c.1197.0427.2519.0063.3298-.0887.2796-.3815.525-.7832.7352-1.2057.0396-.0809.0018-.1767-.0809-.208a12.7239 12.7239 0 01-1.8653-.889c-.0868-.0461-.0916-.1689-.0093-.2216a9.9826 9.9826 0 00.4132-.3193c.0463-.037.1037-.0388.1517-.0157 3.8247 1.7456 7.9547 1.7456 11.7225 0 .048-.0231.1054-.0213.1517.0157.1352.1077.2739.2144.4132.3193.0823.0527.0775.1755-.0093.2216a12.724 12.724 0 01-1.8653.889c-.0827.0313-.1205.1271-.0809.208.2102.4225.4556.8242.7352 1.2057.0779.095.2101.1314.3298.0887a20.0075 20.0075 0 002.9431-1.488c.1248-.0945.2211-.2229.2346-.368.4907-5.2662-.8651-9.7538-3.5658-13.7048zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.095 2.1568 2.419 0 1.3332-.9655 2.4189-2.1569 2.4189zm7.9744 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.095 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z" />
+                                </svg>
+                                Discord Billing Support
+                            </a>
+                        )}
                     </div>
                 </LoginFormContainer>
             )}

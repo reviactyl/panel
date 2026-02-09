@@ -2,7 +2,8 @@ import * as React from 'react';
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCogs, faLayerGroup, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faCogs, faLayerGroup } from '@fortawesome/free-solid-svg-icons';
+import { LogoutIcon } from '@heroicons/react/outline';
 import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import SearchContainer from '@/components/dashboard/search/SearchContainer';
@@ -82,7 +83,7 @@ export default () => {
                     </Tooltip>
                     <Tooltip placement={'bottom'} content={'Sign Out'}>
                         <button onClick={onTriggerLogout}>
-                            <FontAwesomeIcon icon={faSignOutAlt} />
+                            <LogoutIcon className={'w-5 h-5'} />
                         </button>
                     </Tooltip>
                 </RightNavigation>

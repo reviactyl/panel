@@ -75,8 +75,8 @@ export default ({ server, className, onCategoryChanged }: { server: Server; clas
                             'background-image: linear-gradient(0deg, rgb(var(--color-700)) 10%, color-mix(in srgb, rgb(var(--color-700)) 35%, transparent) 55%);'
                         }
                     />
-                    <div className='flex items-center justify-between pb-5'>
-                        <Title className='text-2xl'>{server.name}</Title>
+                    <div className='flex items-center justify-between pb-5 gap-x-2'>
+                        <Title className='text-2xl truncate min-w-0' title={server.name}>{server.name}</Title>
                         <span
                             className={`py-1 px-3 text-xs font-medium rounded-ui
                         ${stats?.status === 'offline'
@@ -104,8 +104,8 @@ export default ({ server, className, onCategoryChanged }: { server: Server; clas
                     </div>
                     <div
                         className={`${isSpecialState
-                                ? 'flex justify-center items-center min-h-[100px]'
-                                : 'grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'
+                            ? 'flex justify-center items-center min-h-[100px]'
+                            : 'grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'
                             } mt-4`}
                     >
                         {!stats || isSuspended ? (

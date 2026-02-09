@@ -53,6 +53,16 @@
                                 value="{{ old('designify:colorSecondary', config('designify.colorSecondary')) }}" />
                         </div>
                     </div>
+                    <div class="space-y-2">
+                        <label for="designify:colorDiscord"
+                            class="block text-sm font-medium text-zinc-300">Discord</label>
+                        <div class="flex items-center space-x-2">
+                            <input type="color"
+                                class="h-10 w-16 rounded border border-zinc-600 bg-zinc-700 cursor-pointer"
+                                name="designify:colorDiscord" id="designify:colorDiscord"
+                                value="{{ old('designify:colorDiscord', config('designify.colorDiscord') ?? '#5865F2') }}" />
+                        </div>
+                    </div>
                 </div>
                 <div class="border-t border-zinc-700"></div>
                 <div>

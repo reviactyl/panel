@@ -3,9 +3,7 @@ import classNames from 'classnames';
 import tw from 'twin.macro';
 import styled from 'styled-components/macro';
 
-interface TitleProps {
-    className?: string;
-    children: React.ReactNode;
+interface TitleProps extends React.HTMLAttributes<HTMLDivElement> {
     scheme?: 'gray' | 'primary';
 }
 
@@ -18,10 +16,14 @@ const gradientClasses: Record<NonNullable<TitleProps['scheme']>, string> = {
     gray: 'from-gray-50 via-gray-100 to-gray-200',
 };
 
-export const Title = ({ className, children, scheme = 'gray' }: TitleProps) => {
+export const Title = ({ className, children, scheme = 'gray', ...props }: TitleProps) => {
     const colorClass = gradientClasses[scheme];
 
-    return <Gradient className={classNames(colorClass, className)}>{children}</Gradient>;
+    return (
+        <Gradient className={classNames(colorClass, className)} {...props}>
+            {children}
+        </Gradient>
+    );
 };
 
 export default Title;

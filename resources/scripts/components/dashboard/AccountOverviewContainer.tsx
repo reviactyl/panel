@@ -15,7 +15,8 @@ import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import TitledGreyBox from '../elements/TitledGreyBox';
 import Title from '@/reviactyl/ui/Title';
-import { ExternalLinkIcon, LogoutIcon } from '@heroicons/react/solid';
+import { ExternalLinkIcon } from '@heroicons/react/solid';
+import { LogoutIcon } from '@heroicons/react/outline';
 import http from '@/api/http';
 import ThemeSelector from '@/reviactyl/ui/ThemeEngine';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
@@ -54,7 +55,7 @@ export default () => {
     const [isLoggingOut, setIsLoggingOut] = useState(false);
     const themeSelector = useStoreState((state) => state.reviactyl.data!.themeSelector);
     const { addFlash, clearFlashes } = useFlash();
-    
+
     useEffect(() => {
         clearFlashes();
 
@@ -118,7 +119,7 @@ export default () => {
                             <div className='mt-1'>
                                 <button className='flex items-center space-x-1' onClick={onTriggerLogout}>
                                     <span className='text-danger/80'>{t('overview.logout')}</span>{' '}
-                                    <LogoutIcon className='w-5 h-5 text-danger/80' />
+                                    <LogoutIcon className='w-5 h-5 text-danger/80' strokeWidth={2} />
                                 </button>
                             </div>
                         </div>

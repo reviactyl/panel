@@ -133,6 +133,7 @@ class DesignifyComposer
             'colorSuccess' => config('designify.colorSuccess') ?? '#3D8F1F',
             'colorDanger' => config('designify.colorDanger') ?? '#8F1F20',
             'colorSecondary' => config('designify.colorSecondary') ?? '#2B2B40',
+            'colorDiscord' => config('designify.colorDiscord') ?? '#5865F2',
             'color50' => config('designify.color50') ?? '#F4F4F5',
             'color100' => config('designify.color100') ?? '#DEDEE2',
             'color200' => config('designify.color200') ?? '#D2D2DB',

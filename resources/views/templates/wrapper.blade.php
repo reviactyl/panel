@@ -109,6 +109,7 @@ SOFTWARE.
             --color-success: {{ reviactyl($reviactylConfiguration['colorSuccess']) }};
             --color-danger: {{ reviactyl($reviactylConfiguration['colorDanger']) }};
             --color-secondary: {{ reviactyl($reviactylConfiguration['colorSecondary']) }};
+            --color-discord: {{ reviactyl($reviactylConfiguration['colorDiscord']) }};
             --color-50: {{ reviactyl($reviactylConfiguration['color50']) }};
             --color-100: {{ reviactyl($reviactylConfiguration['color100']) }};
             --color-200: {{ reviactyl($reviactylConfiguration['color200']) }};
@@ -127,7 +128,7 @@ SOFTWARE.
     @include('layouts.scripts')
 </head>
 
-<body class="{{ $css['body'] ?? 'bg-neutral-50' }}">
+<body class="{{ $css['body'] ?? 'bg-neutral-50' }}" style="{{ $css['style'] ?? '' }}">
     @section('content')
         @yield('above-container')
         @yield('container')
