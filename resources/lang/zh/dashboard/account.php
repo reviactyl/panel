@@ -14,7 +14,7 @@ return [
         '2fa-verification' => '两步验证',
         'customization' => '自定义设置',
         'language' => '面板语言',
-        'editor' => 'Preferred File Editor',
+        'editor' => '首选文件编辑器',
         'smart-invert' => '智能反色',
         'on' => '开启',
         'off' => '关闭',
