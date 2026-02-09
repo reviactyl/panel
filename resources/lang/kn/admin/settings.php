@@ -12,6 +12,7 @@ return [
         'not-required' => 'ಅಗತ್ಯವಿಲ್ಲ',
         'admin-only' => 'ನಿರ್ವಾಹಕರಿಗೆ ಮಾತ್ರ',
         'all-users' => 'ಎಲ್ಲಾ ಬಳಕೆದಾರರು',
+        'default-language' => 'Default Language',
         'provider' => 'ಅವತಾರ್ ಪ್ರೊವೈಡರ್',
         'enabled' => 'ಸಕ್ರಿಯ',
         'disabled' => 'ನಿಷ್ಕ್ರಿಯ',
