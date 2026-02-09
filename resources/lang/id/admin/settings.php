@@ -12,6 +12,7 @@ return [
         'not-required' => 'Tidak Wajib',
         'admin-only' => 'Hanya Admin',
         'all-users' => 'Semua Pengguna',
+        'default-language' => 'Default Language',
         'provider' => 'Penyedia Avatar',
         'enabled' => 'Aktif',
         'disabled' => 'Nonaktif',
