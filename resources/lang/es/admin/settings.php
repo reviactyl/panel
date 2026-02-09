@@ -12,6 +12,7 @@ return [
         'not-required' => 'No Requerido',
         'admin-only' => 'Solo Administradores',
         'all-users' => 'Todos los Usuarios',
+        'default-language' => 'Default Language',
         'provider' => 'Proveedor de Avatar',
         'enabled' => 'Habilitado',
         'disabled' => 'Deshabilitado',
