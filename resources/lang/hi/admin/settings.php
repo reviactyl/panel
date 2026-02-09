@@ -12,6 +12,7 @@ return [
         'not-required' => 'आवश्यक नहीं',
         'admin-only' => 'केवल व्यवस्थापक',
         'all-users' => 'सभी उपयोगकर्ता',
+        'default-language' => 'Default Language',
         'provider' => 'अवतार प्रदाता',
         'enabled' => 'सक्रिय',
         'disabled' => 'अक्षम',
