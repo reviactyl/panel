@@ -12,6 +12,7 @@ return [
         'not-required' => 'Gerekli Değil',
         'admin-only' => 'Sadece Yöneticiler',
         'all-users' => 'Tüm Kullanıcılar',
+        'default-language' => 'Default Language',
         'provider' => 'Avatar Sağlayıcı',
         'enabled' => 'Etkin',
         'disabled' => 'Devre Dışı',
