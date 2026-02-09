@@ -86,7 +86,7 @@ return [
         ],
         'skip_scripts' => [
             'label' => '跳过预设脚本',
-            'helper' => '跳过预设安装脚本',
+            'helper' => '跳过预设安装脚本。',
         ],
         'start_on_completion' => [
             'label' => '创建完成后启动',
@@ -118,7 +118,7 @@ return [
         ],
         'threads' => [
             'label' => 'CPU 线程',
-            'helper' => '可选的线程绑定。例如：0-1,3',
+            'helper' => '可选的线程绑定。例如：0-1,3。',
         ],
         'oom_disabled' => [
             'label' => '禁用 OOM Killer',
@@ -139,11 +139,11 @@ return [
         'environment' => [
             'key' => '变量',
             'value' => '值',
-            'helper' => 'Environment variables for this egg.',
+            'helper' => '该预设的环境变量。',
         ],
         'use_custom_image' => [
-            'label' => 'Use Custom Image',
-            'helper' => 'Toggle to use a custom Docker image instead of one provided by the egg.',
+            'label' => '使用自定义镜像',
+            'helper' => '启用后，将使用自定义 Docker 镜像，而非预设自带镜像。',
         ],
     ],
 
@@ -160,35 +160,35 @@ return [
         'cpu' => 'CPU',
         'created' => '创建时间',
         'updated' => '更新时间',
-        'installed' => 'Installed',
-        'no_status' => 'No Status',
+        'installed' => '已安装',
+        'no_status' => '无状态',
     ],
 
     'messages' => [
-        'created' => 'Server has been successfully created.',
-        'updated' => 'Server has been successfully updated.',
-        'deleted' => 'Server has been successfully deleted.',
+        'created' => '服务器已成功创建。',
+        'updated' => '服务器已成功更新。',
+        'deleted' => '服务器已成功删除。',
     ],
 
     'actions' => [
         'edit' => '编辑',
-        'toggle_install_status' => 'Toggle Install Status',
-        'suspend' => 'Suspend',
-        'unsuspend' => 'Unsuspend',
-        'suspended' => 'Suspended',
-        'unsuspended' => 'Unsuspended',
-        'reinstall' => 'Reinstall',
-        'delete' => 'Delete',
-        'delete_forcibly' => 'Forcibly Delete',
-        'view' => 'View',
+        'toggle_install_status' => '切换安装状态',
+        'suspend' => '暂停',
+        'unsuspend' => '解除暂停',
+        'suspended' => '已暂停',
+        'unsuspended' => '已解除暂停',
+        'reinstall' => '重新安装',
+        'delete' => '删除',
+        'delete_forcibly' => '强制删除',
+        'view' => '查看',
     ],
 
     'alerts' => [
-        'install_toggled' => 'Server install status has been toggled.',
-        'server_suspended' => 'Server has been :action.',
-        'server_reinstalled' => 'Server reinstall has been initiated.',
-        'server_deleted' => 'Server has been deleted.',
-        'server_delete_failed' => 'Failed to delete server.',
+        'install_toggled' => '服务器安装状态已切换。',
+        'server_suspended' => '服务器已成功执行 :action 。',
+        'server_reinstalled' => '服务器重装任务已开始。',
+        'server_deleted' => '服务器已删除。',
+        'server_delete_failed' => '服务器删除失败。',
     ],
     
     'exceptions' => [
