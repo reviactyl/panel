@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, RouteComponentProps } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
 import { Formik, FormikHelpers } from 'formik';
 import { object, string, ref as yupRef } from 'yup';
@@ -9,7 +9,6 @@ import { Button } from '@/components/elements/button/index';
 import useFlash from '@/plugins/useFlash';
 import Label from '@/components/elements/Label';
 import { KeyIcon, UserIcon, MailIcon, EyeIcon, EyeOffIcon } from '@heroicons/react/solid';
-import { useTranslation } from 'react-i18next';
 
 interface Values {
     email: string;
@@ -20,10 +19,9 @@ interface Values {
     passwordConfirmation: string;
 }
 
-const RegisterContainer = ({ history }: RouteComponentProps) => {
-    const { t } = useTranslation('auth');
+const RegisterContainer = () => {
     const [show, setShow] = useState(false);
-    const { clearFlashes, clearAndAddHttpError, addFlash } = useFlash();
+    const { clearFlashes, addFlash } = useFlash();
 
     useEffect(() => {
         clearFlashes();
