@@ -51,6 +51,18 @@ return [
         'confirm-label' => '确认新密码',
         'label' => '重置密码',
     ],
+
+    'register' => [
+        'no-match' => 'Your password does not match.',
+        'namefirst-label' => 'First Name',
+        'namelast-label' => 'Last Name',
+        'email-label' => 'Email',
+        'username-label' => 'UserName',
+        'password-label' => 'Password',
+        'min-length' => 'Passwords must be at least 8 characters in length.',
+        'confirm-label' => 'Confirm Password',
+        'label' => 'Register',
+    ],
     
     'failed' => '未找到与这些凭证匹配的账户。',
 
