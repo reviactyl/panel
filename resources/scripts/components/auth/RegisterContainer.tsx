@@ -10,6 +10,8 @@ import useFlash from '@/plugins/useFlash';
 import Label from '@/components/elements/Label';
 import { KeyIcon, UserIcon, MailIcon, EyeIcon, EyeOffIcon } from '@heroicons/react/solid';
 
+import register from '@/api/auth/register';
+
 interface Values {
     email: string;
     username: string;
@@ -20,22 +22,42 @@ interface Values {
 }
 
 const RegisterContainer = () => {
+    const { clearFlashes, addFlash, clearAndAddHttpError } = useFlash();
     const [show, setShow] = useState(false);
-    const { clearFlashes, addFlash } = useFlash();
 
     useEffect(() => {
         clearFlashes();
+
+        // Keep session alive for registration
+        const interval = setInterval(() => {
+            fetch('/').catch(() => { });
+        }, 1000 * 60 * 5); // 5 minutes
+
+        return () => clearInterval(interval);
     }, []);
 
     const onSubmit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes();
-        // Registration logic would go here
-        addFlash({
-            type: 'warning',
-            title: 'Registration',
-            message: 'Registration is currently under development. Please contact an administrator.',
-        });
-        setSubmitting(false);
+        register({
+            email: values.email,
+            username: values.username,
+            first_name: values.firstName,
+            last_name: values.lastName,
+            password: values.password,
+            password_confirmation: values.passwordConfirmation,
+        })
+            .then(() => {
+                addFlash({
+                    type: 'success',
+                    title: 'Registration',
+                    message: 'Account created successfully! You can now login.',
+                });
+                window.location.href = '/auth/login';
+            })
+            .catch((error) => {
+                clearAndAddHttpError({ error });
+                setSubmitting(false);
+            });
     };
 
     return (

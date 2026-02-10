@@ -76,7 +76,9 @@ export default ({ server, className, onCategoryChanged }: { server: Server; clas
                         }
                     />
                     <div className='flex items-center justify-between pb-5 gap-x-2'>
-                        <Title className='text-2xl truncate min-w-0' title={server.name}>{server.name}</Title>
+                        <div className='flex-1 min-w-0'>
+                            <Title className='text-2xl truncate' title={server.name}>{server.name}</Title>
+                        </div>
                         <span
                             className={`py-1 px-3 text-xs font-medium rounded-ui
                         ${stats?.status === 'offline'
