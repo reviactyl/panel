@@ -51,7 +51,12 @@ class UserCreationService
         }
 
         $this->connection->commit();
-        $user->notify(new AccountCreated($user, $token ?? null));
+
+        try {
+            $user->notify(new AccountCreated($user, $token ?? null));
+        } catch (\Exception $exception) {
+            \Log::error($exception);
+        }
 
         return $user;
     }
