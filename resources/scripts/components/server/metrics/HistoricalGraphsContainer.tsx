@@ -20,6 +20,7 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import { ServerError } from '@/components/elements/ScreenBlock';
 import tw from 'twin.macro';
 import { useTranslation } from 'react-i18next';
+import Select from '@/components/elements/Select';
 
 ChartJS.register(
     CategoryScale,
@@ -44,16 +45,18 @@ interface StatsResponse {
     data: StatPoint[];
 }
 
+type TimeRange = '1' | '3' | '7';
+
 export default () => {
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const [days, setDays] = useState(1);
+    const [days, setDays] = useState<TimeRange>('1');
     const { t } = useTranslation('server/metrics');
 
     const { data, error, isValidating } = useSWR<StatsResponse>(
         [uuid, '/resources/history', days],
         async (uuid, url, days) => {
             const { data } = await http.get(`/api/client/servers/${uuid}${url}`, {
-                params: { days },
+                params: { days: Number(days) },
             });
             return data;
         }
@@ -70,7 +73,7 @@ export default () => {
     const stats = data?.data || [];
 
     // Dynamic time format based on selected range
-    const timeFormat = days === 1 ? 'HH:00' : 'MM/dd HH:00';
+    const timeFormat = days === '1' ? 'HH:00' : 'MM/dd HH:00';
 
     const chartOptions = {
         responsive: true,
@@ -169,15 +172,15 @@ export default () => {
         <ServerContentBlock title={t('title')}>
             <FlashMessageRender byKey={'server:metrics'} />
             <div css={tw`mb-4 flex justify-end space-x-2`}>
-                <select
+                <Select
                     value={days}
-                    onChange={(e) => setDays(Number(e.target.value))}
-                    css={tw`bg-gray-700 text-gray-200 border border-gray-600 rounded p-2 text-sm`}
+                    onChange={(e) => setDays(e.target.value as TimeRange)}
+                    className={'!w-auto'}
                 >
                     <option value={1}>{t('time_range.last_24_hours')}</option>
                     <option value={3}>{t('time_range.last_3_days')}</option>
                     <option value={7}>{t('time_range.last_7_days')}</option>
-                </select>
+                </Select>
             </div>
 
             <div css={tw`grid grid-cols-1 md:grid-cols-2 gap-4`}>
