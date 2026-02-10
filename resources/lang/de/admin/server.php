@@ -184,10 +184,10 @@ return [
     ],
 
     'alerts' => [
-        'install_toggled' => 'Server-Installationsstatus wurde umgeschaltet.',
+        'install_toggled' => 'Server install status has been toggled.',
         'server_suspended' => 'Server wurde :action.',
-        'server_reinstalled' => 'Server-Neuinstallation wurde gestartet.',
-        'server_deleted' => 'Server wurde gelöscht.',
+        'server_reinstalled' => 'Server reinstall has been initiated.',
+        'server_deleted' => 'Server has been deleted.',
         'server_delete_failed' => 'Server konnte nicht gelöscht werden.',
     ],
     
