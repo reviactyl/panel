@@ -51,6 +51,18 @@ return [
         'confirm-label' => 'नए पासवर्ड की पुष्टि करें',
         'label' => 'पासवर्ड रीसेट करें',
     ],
+
+    'register' => [
+        'no-match' => 'Your password does not match.',
+        'namefirst-label' => 'First Name',
+        'namelast-label' => 'Last Name',
+        'email-label' => 'Email',
+        'username-label' => 'UserName',
+        'password-label' => 'Password',
+        'min-length' => 'Passwords must be at least 8 characters in length.',
+        'confirm-label' => 'Confirm Password',
+        'label' => 'Register',
+    ],
     
     'failed' => 'इन क्रेडेंशियल्स से मेल खाने वाला कोई खाता नहीं मिला।',
 
