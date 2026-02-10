@@ -51,6 +51,18 @@ return [
         'confirm-label' => 'Yeni Parolayı Onayla',
         'label' => 'Parolayı Sıfırla',
     ],
+
+    'register' => [
+        'no-match' => 'Your password does not match.',
+        'namefirst-label' => 'First Name',
+        'namelast-label' => 'Last Name',
+        'email-label' => 'Email',
+        'username-label' => 'UserName',
+        'password-label' => 'Password',
+        'min-length' => 'Passwords must be at least 8 characters in length.',
+        'confirm-label' => 'Confirm Password',
+        'label' => 'Register',
+    ],
     
     'failed' => 'Bu kimlik bilgileriyle eşleşen bir hesap bulunamadı.',
 
