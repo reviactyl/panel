@@ -9,6 +9,9 @@ import { Button } from '@/components/elements/button/index';
 import useFlash from '@/plugins/useFlash';
 import Label from '@/components/elements/Label';
 import { KeyIcon, UserIcon, MailIcon, EyeIcon, EyeOffIcon } from '@heroicons/react/solid';
+import Reaptcha from 'reaptcha';
+import Turnstile from '@/components/elements/Turnstile';
+import { useStoreState } from 'easy-peasy';
 
 import register from '@/api/auth/register';
 
@@ -22,8 +25,12 @@ interface Values {
 }
 
 const RegisterContainer = () => {
+    const ref = React.useRef<Reaptcha>(null);
     const { clearFlashes, addFlash, clearAndAddHttpError } = useFlash();
     const [show, setShow] = useState(false);
+    const [token, setToken] = useState('');
+
+    const { provider, recaptcha, turnstile } = useStoreState((state) => state.settings.data!.captcha);
 
     useEffect(() => {
         clearFlashes();
@@ -38,6 +45,13 @@ const RegisterContainer = () => {
 
     const onSubmit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes();
+
+        // If using reCAPTCHA and no token yet, execute captcha
+        if (provider === 'recaptcha' && !token) {
+            ref.current?.execute();
+            return;
+        }
+
         register({
             email: values.email,
             username: values.username,
@@ -45,6 +59,8 @@ const RegisterContainer = () => {
             last_name: values.lastName,
             password: values.password,
             password_confirmation: values.passwordConfirmation,
+            'g-recaptcha-response': provider === 'recaptcha' ? token : undefined,
+            'cf-turnstile-response': provider === 'turnstile' ? token : undefined,
         })
             .then(() => {
                 addFlash({
@@ -73,7 +89,7 @@ const RegisterContainer = () => {
                 passwordConfirmation: string().required().oneOf([yupRef('password')], 'Passwords must match'),
             })}
         >
-            {({ isSubmitting }) => (
+            {({ isSubmitting, setSubmitting, submitForm }) => (
                 <LoginFormContainer title={'Create Account'} css={tw`w-full flex`}>
                     <div css={tw`grid grid-cols-2 gap-4`}>
                         <Field
@@ -134,6 +150,30 @@ const RegisterContainer = () => {
                             Register
                         </Button>
                     </div>
+                    {provider === 'recaptcha' && (
+                        <Reaptcha
+                            ref={ref}
+                            size={'invisible'}
+                            sitekey={recaptcha.siteKey || '_invalid_key'}
+                            onVerify={(response) => {
+                                setToken(response);
+                                submitForm();
+                            }}
+                            onExpire={() => {
+                                setSubmitting(false);
+                                setToken('');
+                            }}
+                        />
+                    )}
+                    {provider === 'turnstile' && (
+                        <div css={tw`mt-4 flex justify-center`}>
+                            <Turnstile
+                                siteKey={turnstile.siteKey}
+                                onVerify={(response) => setToken(response)}
+                                onExpire={() => setToken('')}
+                            />
+                        </div>
+                    )}
                     <div css={tw`mt-4 text-center`}>
                         <Link
                             to={'/auth/login'}
