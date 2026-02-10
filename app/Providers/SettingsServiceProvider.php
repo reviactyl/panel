@@ -5,6 +5,8 @@ namespace App\Providers;
 use Psr\Log\LoggerInterface as Log;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Encryption\Encrypter;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use App\Contracts\Repository\SettingsRepositoryInterface;
 
@@ -29,14 +31,52 @@ class SettingsServiceProvider extends ServiceProvider
         'pterodactyl:client_features:allocations:enabled',
         'pterodactyl:client_features:allocations:range_start',
         'pterodactyl:client_features:allocations:range_end',
+        'pterodactyl:auth:google_enabled',
+        'pterodactyl:auth:google_client_id',
+        'pterodactyl:auth:google_client_secret',
+        'pterodactyl:auth:discord_enabled',
+        'pterodactyl:auth:discord_client_id',
+        'pterodactyl:auth:discord_client_secret',
+        'pterodactyl:auth:github_enabled',
+        'pterodactyl:auth:github_client_id',
+        'pterodactyl:auth:github_client_secret',
     ];
 
+    /**
+     * Keys specific to the mail driver that are only grabbed from the database
+     * when using the SMTP driver.
+     */
+    protected array $emailKeys = [
+        'mail:mailers:smtp:host',
+        'mail:mailers:smtp:port',
+        'mail:mailers:smtp:encryption',
+        'mail:mailers:smtp:username',
+        'mail:mailers:smtp:password',
+        'mail:from:address',
+        'mail:from:name',
+    ];
+
+    /**
+     * Keys that are encrypted and should be decrypted when set in the
+     * configuration array.
+     */
+    protected static array $encrypted = [
+        'mail:mailers:smtp:password',
+        'pterodactyl:auth:google_client_secret',
+        'pterodactyl:auth:discord_client_secret',
+        'pterodactyl:auth:github_client_secret',
+    ];
 
     /**
      * Boot the service provider.
      */
-    public function boot(ConfigRepository $config, Log $log, SettingsRepositoryInterface $settings): void
+    public function boot(ConfigRepository $config, Encrypter $encrypter, Log $log, SettingsRepositoryInterface $settings): void
     {
+        // Only set the email driver settings from the database if we
+        // are configured using SMTP as the driver.
+        if ($config->get('mail.default') === 'smtp') {
+            $this->keys = array_merge($this->keys, $this->emailKeys);
+        }
 
         try {
             $values = $settings->all()->mapWithKeys(function ($setting) {
@@ -50,6 +90,12 @@ class SettingsServiceProvider extends ServiceProvider
 
         foreach ($this->keys as $key) {
             $value = array_get($values, 'settings::' . $key, $config->get(str_replace(':', '.', $key)));
+            if (in_array($key, self::$encrypted)) {
+                try {
+                    $value = $encrypter->decrypt($value);
+                } catch (DecryptException $exception) {
+                }
+            }
 
             switch (strtolower($value)) {
                 case 'true':
@@ -71,5 +117,10 @@ class SettingsServiceProvider extends ServiceProvider
 
             $config->set(str_replace(':', '.', $key), $value);
         }
+    }
+
+    public static function getEncryptedKeys(): array
+    {
+        return self::$encrypted;
     }
 }
