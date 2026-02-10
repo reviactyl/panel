@@ -76,8 +76,16 @@ const RegisterContainer = () => {
                 if (response?.status === 422 && response?.data?.errors) {
                     const errors: Record<string, string> = {};
                     Object.keys(response.data.errors).forEach((key) => {
-                        errors[key === 'name_first' ? 'firstName' : key === 'name_last' ? 'lastName' : key] =
-                            response.data.errors[key][0];
+                        const message = response.data.errors[key][0];
+                        if (key === 'name_first' || key === 'first_name') {
+                            errors.firstName = message;
+                        } else if (key === 'name_last' || key === 'last_name') {
+                            errors.lastName = message;
+                        } else if (key === 'password_confirmation') {
+                            errors.passwordConfirmation = message;
+                        } else {
+                            errors[key] = message;
+                        }
                     });
                     setErrors(errors);
                 } else {
