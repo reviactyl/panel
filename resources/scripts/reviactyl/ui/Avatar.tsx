@@ -18,7 +18,7 @@ export default ({ email, className }: Props) => {
     
     return (
         <img
-            src={`https://www.gravatar.com/avatar/${gravatarHash}?s=40`}
+            src={`https://www.gravatar.com/avatar/${gravatarHash}?s=200`}
             className={`${className} rounded-full`}
             alt='Gravatar'
         />
