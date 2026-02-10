@@ -138,6 +138,7 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                         </Button>
                     </div>
 
+                    {Object.values(socialSettings).some(Boolean) && (
                     <div css={tw`mt-4 grid grid-cols-1 gap-2`}>
                         <div css={tw`relative flex py-2 items-center`}>
                             <div css={tw`flex-grow border-t border-gray-600`}></div>
@@ -169,6 +170,7 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                             </Button>
                         )}
                     </div>
+                    )}
                     {provider === 'recaptcha' && (
                         <Reaptcha
                             ref={ref}
