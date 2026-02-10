@@ -14,6 +14,7 @@ import Turnstile from '@/components/elements/Turnstile';
 import { useStoreState } from 'easy-peasy';
 
 import register from '@/api/auth/register';
+import { useTranslation } from 'react-i18next';
 
 interface Values {
     email: string;
@@ -25,6 +26,7 @@ interface Values {
 }
 
 const RegisterContainer = () => {
+    const { t } = useTranslation('auth');
     const ref = React.useRef<Reaptcha>(null);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const [show, setShow] = useState(false);
@@ -106,19 +108,21 @@ const RegisterContainer = () => {
                 firstName: string().required(),
                 lastName: string().required(),
                 password: string().required().min(8),
-                passwordConfirmation: string().required().oneOf([yupRef('password')], 'Passwords must match'),
+                passwordConfirmation: string().required().oneOf([yupRef('password')], t('register.no-match')),
             })}
         >
             {({ isSubmitting, setSubmitting, submitForm }) => (
                 <LoginFormContainer title={'Create Account'} css={tw`w-full flex`}>
                     <div css={tw`grid grid-cols-2 gap-4`}>
                         <Field
-                            label={'First Name'}
+                            label={t('register.namefirst-label')}
+                            placeholder={'John'}
                             name={'firstName'}
                             disabled={isSubmitting}
                         />
                         <Field
-                            label={'Last Name'}
+                            label={t('register.namelast-label')}
+                            placeholder={'Doe'}
                             name={'lastName'}
                             disabled={isSubmitting}
                         />
@@ -127,7 +131,8 @@ const RegisterContainer = () => {
                         <Field
                             icon={MailIcon}
                             type={'email'}
-                            label={'Email Address'}
+                            label={t('register.email-label')}
+                            placeholder={'john.doe@example.com'}
                             name={'email'}
                             disabled={isSubmitting}
                         />
@@ -135,17 +140,20 @@ const RegisterContainer = () => {
                     <div css={tw`mt-3`}>
                         <Field
                             icon={UserIcon}
-                            label={'Username'}
+                            label={t('register.username-label')}
+                            placeholder={'john.doe'}
                             name={'username'}
                             disabled={isSubmitting}
                         />
                     </div>
                     <div css={tw`mt-3 relative`}>
-                        <Label>Password</Label>
+                        <Label>{t('register.password-label')}</Label>
                         <Field
                             icon={KeyIcon}
                             type={show ? 'text' : 'password'}
                             name={'password'}
+                            placeholder={'••••••••'}
+                            description={t('reset-password.min-length')}
                             disabled={isSubmitting}
                         />
                         <button
@@ -157,17 +165,18 @@ const RegisterContainer = () => {
                         </button>
                     </div>
                     <div css={tw`mt-3 relative`}>
-                        <Label>Confirm Password</Label>
+                        <Label>{t('register.confirm-label')}</Label>
                         <Field
                             icon={KeyIcon}
                             type={show ? 'text' : 'password'}
+                            placeholder={'••••••••'}
                             name={'passwordConfirmation'}
                             disabled={isSubmitting}
                         />
                     </div>
                     <div css={tw`mt-6`}>
                         <Button css={tw`w-full !py-3`} type={'submit'} disabled={isSubmitting}>
-                            Register
+                            {t('register.label')}
                         </Button>
                     </div>
                     {provider === 'recaptcha' && (
