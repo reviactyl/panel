@@ -20,7 +20,7 @@ class EditorMiddleware
     public function handle(Request $request, \Closure $next): mixed
     {
         if ($user = $request->user()) {
-            $user->fileEditor = $user->fileEditor ?? config('app.fileEditor', 'cm');
+            $user->editor = $user->editor ?? config('app.fileEditor', 'cm');
         }
 
         return $next($request);
