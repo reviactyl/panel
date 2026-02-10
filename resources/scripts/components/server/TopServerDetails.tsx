@@ -99,7 +99,7 @@ const TopServerDetails = () => {
             <Card className={`!p-4 !px-8 max-w-6xl mx-auto w-full`}>
                 <UtilContainer>
                     <div className={'flex items-center gap-x-3'}>
-                        <Title className='text-3xl'>{name}</Title>
+                        <Title className='text-3xl truncate flex-1 max-w-[400px]' title={name}>{name}</Title>
                         {rootAdmin && (
                             // eslint-disable-next-line react/jsx-no-target-blank
                             <a href={`/admin/servers/${serverId}/edit`} target={'_blank'} className='h-5 w-5'>
