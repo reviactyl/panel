@@ -120,6 +120,15 @@ const RegisterContainer = () => {
                             {show ? <EyeOffIcon className='h-5 w-5' /> : <EyeIcon className='h-5 w-5' />}
                         </button>
                     </div>
+                    <div css={tw`mt-3 relative`}>
+                        <Label>Confirm Password</Label>
+                        <Field
+                            icon={KeyIcon}
+                            type={show ? 'text' : 'password'}
+                            name={'passwordConfirmation'}
+                            disabled={isSubmitting}
+                        />
+                    </div>
                     <div css={tw`mt-6`}>
                         <Button css={tw`w-full !py-3`} type={'submit'} disabled={isSubmitting}>
                             Register
