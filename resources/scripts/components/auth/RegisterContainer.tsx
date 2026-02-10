@@ -43,7 +43,7 @@ const RegisterContainer = () => {
         return () => clearInterval(interval);
     }, []);
 
-    const onSubmit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
+    const onSubmit = (values: Values, { setSubmitting, setErrors }: FormikHelpers<Values>) => {
         clearFlashes();
 
         // If using reCAPTCHA and no token yet, execute captcha
@@ -62,16 +62,28 @@ const RegisterContainer = () => {
             'g-recaptcha-response': provider === 'recaptcha' ? token : undefined,
             'cf-turnstile-response': provider === 'turnstile' ? token : undefined,
         })
-            .then(() => {
-                addFlash({
-                    type: 'success',
-                    title: 'Registration',
-                    message: 'Account created successfully! You can now login.',
-                });
-                window.location.href = '/auth/login';
+            .then((response) => {
+                if (response.complete) {
+                    (window as any).location = response.intended || '/';
+                    return;
+                }
             })
             .catch((error) => {
-                clearAndAddHttpError({ error });
+                setToken('');
+                if (ref.current) ref.current.reset();
+
+                const { response } = error;
+                if (response?.status === 422 && response?.data?.errors) {
+                    const errors: Record<string, string> = {};
+                    Object.keys(response.data.errors).forEach((key) => {
+                        errors[key === 'name_first' ? 'firstName' : key === 'name_last' ? 'lastName' : key] =
+                            response.data.errors[key][0];
+                    });
+                    setErrors(errors);
+                } else {
+                    clearAndAddHttpError({ error });
+                }
+
                 setSubmitting(false);
             });
     };
