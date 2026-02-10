@@ -13,6 +13,8 @@ import { WithClassname } from '@/components/types';
 import Portal from '@/components/elements/Portal';
 import { CloudUploadIcon } from '@heroicons/react/outline';
 import { useSignal } from '@preact/signals-react';
+import Card from '@/reviactyl/ui/Card';
+import { UploadIcon } from '@heroicons/react/solid';
 
 function isFileOrDirectory(event: DragEvent): boolean {
     if (!event.dataTransfer?.types) {
@@ -116,18 +118,19 @@ export default ({ className }: WithClassname) => {
 
                             onFileSubmission(e.dataTransfer.files);
                         }}
+                        className='bg-gray-800/40 backdrop-blur-sm transition-all duration-300 ease-in-out'
                     >
                         <div className={'w-full flex items-center justify-center pointer-events-none'}>
-                            <div
+                            <Card
                                 className={
-                                    'flex items-center space-x-4 bg-black w-full ring-4 ring-blue-200 ring-opacity-60 rounded p-6 mx-10 max-w-sm'
+                                    'flex items-center space-x-4 w-full ring-4 ring-gray-600 ring-opacity-60 p-6 mx-10 max-w-sm'
                                 }
                             >
-                                <CloudUploadIcon className={'w-10 h-10 flex-shrink-0'} />
+                                <UploadIcon className={'w-10 h-10 flex-shrink-0'} />
                                 <p className={'font-header flex-1 text-lg text-neutral-100 text-center'}>
                                     Drag and drop files to upload.
                                 </p>
-                            </div>
+                            </Card>
                         </div>
                     </ModalMask>
                 </Fade>
