@@ -26,7 +26,7 @@ interface Values {
 
 const RegisterContainer = () => {
     const ref = React.useRef<Reaptcha>(null);
-    const { clearFlashes, addFlash, clearAndAddHttpError } = useFlash();
+    const { clearFlashes, clearAndAddHttpError } = useFlash();
     const [show, setShow] = useState(false);
     const [token, setToken] = useState('');
 
@@ -37,7 +37,7 @@ const RegisterContainer = () => {
 
         // Keep session alive for registration
         const interval = setInterval(() => {
-            fetch('/').catch(() => { });
+            fetch('/').catch(() => { /* ignore */ });
         }, 1000 * 60 * 5); // 5 minutes
 
         return () => clearInterval(interval);
