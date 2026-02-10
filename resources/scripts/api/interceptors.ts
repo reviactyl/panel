@@ -6,6 +6,14 @@ export const setupInterceptors = (history: History) => {
     http.interceptors.response.use(
         (resp) => resp,
         (error: AxiosError) => {
+            if (error.response?.status === 401 || error.response?.status === 403) {
+                if (!window.location.pathname.startsWith('/auth')) {
+                    // @ts-expect-error this is valid
+                    window.location = '/auth/login';
+                    return;
+                }
+            }
+
             if (error.response?.status === 400) {
                 if (
                     (error.response?.data as Record<string, any>).errors?.[0].code === 'TwoFactorAuthRequiredException'
