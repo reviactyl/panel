@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import Modal, { RequiredModalProps } from '@/components/elements/Modal';
 import Viewer from 'viewerjs';
 import 'viewerjs/dist/viewer.css';
