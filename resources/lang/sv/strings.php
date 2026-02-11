@@ -15,7 +15,7 @@ return [
     'node' => 'Nod',
     'connection' => 'Anslutning',
     'memory' => 'Minne',
-    'cpu' => 'CPU',
+    'cpu' => 'Processor',
     'disk' => 'Disk',
     'status' => 'Status',
     'search' => 'Sök',
@@ -91,5 +91,5 @@ return [
     'enable' => 'Aktivera',
     'disable' => 'Inaktivera',
     'save' => 'Spara',
-    'copyright' => '&copy; :year Reviactyl™ Software',
+    'copyright' => '&copy; :year Revacity™ Programvara',
 ];
