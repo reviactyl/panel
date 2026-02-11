@@ -57,6 +57,7 @@
         "tailwindcss": "^3.0.24",
         "use-fit-text": "^2.4.0",
         "uuid": "^13.0.0",
+        "viewerjs": "^1.11.7",
         "xterm": "^4.19.0",
         "xterm-addon-fit": "^0.5.0",
         "xterm-addon-search": "^0.9.0",
