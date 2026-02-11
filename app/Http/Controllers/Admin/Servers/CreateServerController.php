@@ -24,6 +24,7 @@ class CreateServerController extends Controller
         private NestRepository $nestRepository,
         private NodeRepository $nodeRepository,
         private ServerCreationService $creationService,
+        private \App\Services\Activity\ActivityLogService $logService,
     ) {
     }
 
@@ -75,7 +76,9 @@ class CreateServerController extends Controller
             unset($data['custom_image']);
         }
 
+
         $server = $this->creationService->handle($data);
+        $this->logService->subject($server)->event('server:create')->log();
 
         $this->alert->success(trans('admin/server.alerts.server_created'))->flash();
 

@@ -12,6 +12,8 @@ use App\Services\Servers\DetailsModificationService;
 use App\Services\Servers\ReinstallServerService;
 use App\Services\Servers\ServerDeletionService;
 use App\Services\Servers\StartupModificationService;
+use App\Services\Servers\SuspensionService;
+use App\Services\Activity\ActivityLogService;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
@@ -72,47 +74,118 @@ class EditServer extends EditRecord
                         throw new DisplayException(trans('admin/server.exceptions.marked_as_failed'));
                     }
 
-                    app(ServerRepository::class)->update($server->id, [
-                        'status' => $server->isInstalled() ? Server::STATUS_INSTALLING : null,
-                    ], true, true);
+                    try {
+                        app(ServerRepository::class)->update($server->id, [
+                            'status' => $server->isInstalled() ? Server::STATUS_INSTALLING : null,
+                        ], true, true);
+
+                        app(ActivityLogService::class)->subject($server)->event('server:toggle-install')->log();
+
+                        \Filament\Notifications\Notification::make()
+                            ->title(trans('admin/server.alerts.install_toggled'))
+                            ->success()
+                            ->send();
+                    } catch (\Exception $e) {
+                        \Filament\Notifications\Notification::make()
+                            ->title($e->getMessage())
+                            ->danger()
+                            ->send();
+                    }
                 })
-                ->successNotificationTitle(trans('admin/server.alerts.install_toggled')),
+                ->successNotification(null),
 
             Action::make('suspend')
                 ->label(fn () => $this->record->isSuspended() ? trans('admin/server.actions.unsuspend') : trans('admin/server.actions.suspend'))
                 ->color(fn () => $this->record->isSuspended() ? 'success' : 'warning')
                 ->requiresConfirmation()
-                ->action(fn () => app(ServerRepository::class)->suspend($this->record->id))
-                ->successNotificationTitle(trans('admin/server.alerts.server_suspended', ['action' => $this->record->isSuspended() ? trans('admin/server.actions.unsuspended') : trans('admin/server.actions.suspended')])),
+                ->action(function () {
+                     /** @var Server $server */
+                    $server = $this->record;
+                    $action = $server->isSuspended() ? SuspensionService::ACTION_UNSUSPEND : SuspensionService::ACTION_SUSPEND;
+                    
+                    try {
+                        app(SuspensionService::class)->toggle($server, $action);
+                        app(ActivityLogService::class)->subject($server)->event('server:' . $action)->log();
+                        
+                        \Filament\Notifications\Notification::make()
+                            ->title(trans('admin/server.alerts.server_suspended', ['action' => $server->isSuspended() ? trans('admin/server.actions.suspended') : trans('admin/server.actions.unsuspended')]))
+                            ->success()
+                            ->send();
+                    } catch (\Exception $e) {
+                        \Filament\Notifications\Notification::make()
+                            ->title($e->getMessage())
+                            ->danger()
+                            ->send();
+                    }
+                })
+                ->successNotification(null),
 
             Action::make('reinstall')
                 ->label(trans('admin/server.actions.reinstall'))
                 ->color('danger')
                 ->requiresConfirmation()
-                ->action(fn () => app(ReinstallServerService::class)->handle($this->record))
-                ->successNotificationTitle(trans('admin/server.alerts.server_reinstalled')),
+                ->action(function () {
+                    try {
+                        app(ReinstallServerService::class)->handle($this->record);
+                        app(ActivityLogService::class)->subject($this->record)->event('server:reinstall')->log();
+                        
+                        \Filament\Notifications\Notification::make()
+                            ->title(trans('admin/server.alerts.server_reinstalled'))
+                            ->success()
+                            ->send();
+                    } catch (\Exception $e) {
+                        \Filament\Notifications\Notification::make()
+                            ->title($e->getMessage())
+                            ->danger()
+                            ->send();
+                    }
+                })
+                ->successNotification(null),
 
             Action::make('delete')
                 ->label(trans('admin/server.actions.delete'))
                 ->color('danger')
                 ->requiresConfirmation()
-                ->action(function (Action $action) {
+                ->action(function () {
                     try {
                         app(ServerDeletionService::class)->handle($this->record);
-                    } catch (\Throwable $e) {
-                        $action->failure();
+                        app(ActivityLogService::class)->subject($this->record)->event('server:delete')->log();
+                        
+                        \Filament\Notifications\Notification::make()
+                            ->title(trans('admin/server.alerts.server_deleted'))
+                            ->success()
+                            ->send();
+                    } catch (\Exception $e) {
+                        \Filament\Notifications\Notification::make()
+                            ->title($e->getMessage())
+                            ->danger()
+                            ->send();
                     }
                 })
-                ->successNotificationTitle(trans('admin/server.alerts.server_deleted'))
-                ->failureNotificationTitle(trans('admin/server.alerts.server_delete_failed'))
+                ->successNotification(null)
                 ->successRedirectUrl($this->getResource()::getUrl('index')),
 
             Action::make('delete_forcibly')
                 ->label(trans('admin/server.actions.delete_forcibly'))
                 ->color('danger')
                 ->requiresConfirmation()
-                ->action(fn () => app(ServerDeletionService::class)->withForce()->handle($this->record))
-                ->successNotificationTitle(trans('admin/server.alerts.server_deleted'))
+                ->action(function () {
+                    try {
+                        app(ServerDeletionService::class)->withForce()->handle($this->record);
+                        app(ActivityLogService::class)->subject($this->record)->event('server:delete')->log();
+                        
+                        \Filament\Notifications\Notification::make()
+                            ->title(trans('admin/server.alerts.server_deleted'))
+                            ->success()
+                            ->send();
+                    } catch (\Exception $e) {
+                        \Filament\Notifications\Notification::make()
+                            ->title($e->getMessage())
+                            ->danger()
+                            ->send();
+                    }
+                })
+                ->successNotification(null)
                 ->successRedirectUrl($this->getResource()::getUrl('index')),
 
             Action::make('view')

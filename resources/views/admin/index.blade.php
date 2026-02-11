@@ -62,6 +62,46 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Activity Logs</h3>
+                </div>
+                <div class="box-body table-responsive no-padding">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Action</th>
+                                <th>Data</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($logs as $log)
+                                <tr>
+                                    <td>
+                                        <a href="{{ route('admin.users.view', $log->actor->id) }}">{{ $log->actor->email }}</a>
+                                    </td>
+                                    <td>
+                                        {{ $log->event }}
+                                    </td>
+                                    <td>
+                                        {{ $log->subjects->count() > 0 ? $log->subjects->first()->subject->name : 'N/A' }}
+                                    </td>
+                                    <td>
+                                        {{ $log->timestamp->format('d/m/Y H:i:s') }}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row" style="margin-top: 40px;">
         <div class="col-sm-6">
             <div class="box box-primary">

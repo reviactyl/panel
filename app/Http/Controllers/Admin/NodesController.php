@@ -45,6 +45,7 @@ class NodesController extends Controller
         protected NodeUpdateService $updateService,
         protected SoftwareVersionService $versionService,
         protected ViewFactory $view,
+        protected \App\Services\Activity\ActivityLogService $logService,
     ) {
     }
 
@@ -71,6 +72,7 @@ class NodesController extends Controller
     public function store(NodeFormRequest $request): RedirectResponse
     {
         $node = $this->creationService->handle($request->normalize());
+        $this->logService->subject($node)->event('node:create')->log();
         $this->alert->info(trans('admin/node.notices.node_created'))->flash();
 
         return redirect()->route('admin.nodes.view.allocation', $node->id);
@@ -86,6 +88,7 @@ class NodesController extends Controller
     public function updateSettings(NodeFormRequest $request, Node $node): RedirectResponse
     {
         $this->updateService->handle($node, $request->normalize(), $request->input('reset_secret') === 'on');
+        $this->logService->subject($node)->event('node:update')->log();
         $this->alert->success(trans('admin/node.notices.node_updated'))->flash();
 
         return redirect()->route('admin.nodes.view.settings', $node->id)->withInput();
@@ -176,6 +179,7 @@ class NodesController extends Controller
     public function delete(int|Node $node): RedirectResponse
     {
         $this->deletionService->handle($node);
+        $this->logService->subject($node)->event('node:delete')->log();
         $this->alert->success(trans('admin/node.notices.node_deleted'))->flash();
 
         return redirect()->route('admin.nodes');

@@ -58,6 +58,7 @@ class ServersController extends Controller
         protected ServerConfigurationStructureService $serverConfigurationStructureService,
         protected StartupModificationService $startupModificationService,
         protected SuspensionService $suspensionService,
+        protected \App\Services\Activity\ActivityLogService $logService,
     ) {
     }
 
@@ -95,6 +96,8 @@ class ServersController extends Controller
             'status' => $server->isInstalled() ? Server::STATUS_INSTALLING : null,
         ], true, true);
 
+        $this->logService->subject($server)->event('server:toggle-install')->log();
+
         $this->alert->success(trans('admin/server.alerts.install_toggled'))->flash();
 
         return redirect()->route('admin.servers.view.manage', $server->id);
@@ -110,6 +113,7 @@ class ServersController extends Controller
     public function reinstallServer(Server $server): RedirectResponse
     {
         $this->reinstallService->handle($server);
+        $this->logService->subject($server)->event('server:reinstall')->log();
         $this->alert->success(trans('admin/server.alerts.server_reinstalled'))->flash();
 
         return redirect()->route('admin.servers.view.manage', $server->id);
@@ -125,6 +129,7 @@ class ServersController extends Controller
     public function manageSuspension(Request $request, Server $server): RedirectResponse
     {
         $this->suspensionService->toggle($server, $request->input('action'));
+        $this->logService->subject($server)->event('server:' . $request->input('action'))->log();
         $this->alert->success(trans('admin/server.alerts.suspension_toggled', [
             'status' => $request->input('action') . 'ed',
         ]))->flash();
@@ -165,6 +170,7 @@ class ServersController extends Controller
     public function delete(Request $request, Server $server): RedirectResponse
     {
         $this->deletionService->withForce($request->filled('force_delete'))->handle($server);
+        $this->logService->subject($server)->event('server:delete')->log();
         $this->alert->success(trans('admin/server.alerts.server_deleted'))->flash();
 
         return redirect()->route('admin.servers');

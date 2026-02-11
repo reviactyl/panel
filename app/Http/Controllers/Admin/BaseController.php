@@ -20,6 +20,14 @@ class BaseController extends Controller
      */
     public function index(): View
     {
-        return view('admin.index', ['version' => $this->version]);
+        $logs = \App\Models\ActivityLog::with('actor')
+            ->orderBy('timestamp', 'desc')
+            ->take(10)
+            ->get();
+
+        return view('admin.index', [
+            'version' => $this->version,
+            'logs' => $logs
+        ]);
     }
 }

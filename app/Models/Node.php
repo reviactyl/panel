@@ -187,9 +187,13 @@ class Node extends Model
      */
     public function getDecryptedKey(): string
     {
-        return (string) Container::getInstance()->make(Encrypter::class)->decrypt(
-            $this->daemon_token
-        );
+        try {
+            return (string) Container::getInstance()->make(Encrypter::class)->decrypt(
+                $this->daemon_token
+            );
+        } catch (\Exception $e) {
+            throw new \App\Exceptions\DisplayException('The daemon token for this node is invalid (decryption failed). This usually happens after an APP_KEY change.');
+        }
     }
 
     public function isUnderMaintenance(): bool

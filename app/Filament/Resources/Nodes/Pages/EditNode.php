@@ -10,6 +10,11 @@ class EditNode extends EditRecord
 {
     protected static string $resource = NodeResource::class;
 
+    protected function afterSave(): void
+    {
+        app(\App\Services\Activity\ActivityLogService::class)->subject($this->record)->event('node:update')->log();
+    }
+
     protected function getHeaderActions(): array
     {
         return [
@@ -22,6 +27,9 @@ class EditNode extends EditRecord
                     if ($this->record->servers()->count() > 0) {
                         throw new \Exception(trans('admin/node.messages.cannot_delete_with_servers'));
                     }
+                })
+                ->after(function () {
+                    app(\App\Services\Activity\ActivityLogService::class)->subject($this->record)->event('node:delete')->log();
                 }),
         ];
     }

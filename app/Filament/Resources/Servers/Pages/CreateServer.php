@@ -21,7 +21,11 @@ class CreateServer extends CreateRecord
 
     protected function handleRecordCreation(array $data): Model
     {
-        return app(ServerCreationService::class)->handle($data);
+        $server = app(ServerCreationService::class)->handle($data);
+
+        app(\App\Services\Activity\ActivityLogService::class)->subject($server)->event('server:create')->log();
+
+        return $server;
     }
 
     protected function getRedirectUrl(): string

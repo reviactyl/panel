@@ -72,6 +72,11 @@ class AllocationRelationManager extends RelationManager
                         try {
                             app(AssignmentService::class)->handle($this->getOwnerRecord(), $data);
 
+                            app(\App\Services\Activity\ActivityLogService::class)
+                                ->subject($this->getOwnerRecord())
+                                ->event('node:allocation.create')
+                                ->log();
+
                             Notification::make()
                                 ->title(trans('admin/node.allocations.messages.created'))
                                 ->success()
@@ -95,6 +100,11 @@ class AllocationRelationManager extends RelationManager
                     ->action(function (Allocation $record) {
                         try {
                             app(AllocationDeletionService::class)->handle($record);
+
+                            app(\App\Services\Activity\ActivityLogService::class)
+                                ->subject($this->getOwnerRecord())
+                                ->event('node:allocation.delete')
+                                ->log();
 
                             Notification::make()
                                 ->title(trans('admin/node.allocations.messages.deleted'))

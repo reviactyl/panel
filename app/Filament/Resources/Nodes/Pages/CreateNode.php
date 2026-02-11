@@ -17,7 +17,9 @@ class CreateNode extends CreateRecord
      */
     protected function handleRecordCreation(array $data): Model
     {
-        return app(NodeCreationService::class)->handle($data);
+        $node = app(NodeCreationService::class)->handle($data);
+        app(\App\Services\Activity\ActivityLogService::class)->subject($node)->event('node:create')->log();
+        return $node;
     }
 
     protected function getRedirectUrl(): string
