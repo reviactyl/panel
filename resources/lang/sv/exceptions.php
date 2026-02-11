@@ -57,6 +57,6 @@ return [
         'resource_not_found' => 'Den begärda resursen existerar inte på denna server.',
     ],
     'social' => [
-        'unlink_only_login' => 'You cannot unlink your only login method without setting a password first.',
+        'unlink_only_login' => 'Du kan inte koppla bort din enda inloggningsmetod utan att först ange ett lösenord.',
     ],
 ];
