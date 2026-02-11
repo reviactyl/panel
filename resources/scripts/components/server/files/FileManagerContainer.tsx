@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { httpErrorToHuman } from '@/api/http';
 import { CSSTransition } from 'react-transition-group';
 import Spinner from '@/components/elements/Spinner';
@@ -24,6 +24,9 @@ import { hashToPath } from '@/helpers';
 import style from './style.module.css';
 import Card from '@/reviactyl/ui/Card';
 import { useTranslation } from 'react-i18next';
+import ImageViewerModal from '@/components/server/files/ImageViewerModal';
+import getFileDownloadUrl from '@/api/server/files/getFileDownloadUrl';
+import { join } from 'pathe';
 
 const sortFiles = (files: FileObject[]): FileObject[] => {
     const sortedFiles: FileObject[] = files
@@ -35,6 +38,7 @@ const sortFiles = (files: FileObject[]): FileObject[] => {
 export default () => {
     const { t } = useTranslation('server/files');
     const id = ServerContext.useStoreState((state) => state.server.data!.id);
+    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const { hash } = useLocation();
     const { data: files, error, mutate } = useFileManagerSwr();
     const directory = ServerContext.useStoreState((state) => state.files.directory);
@@ -43,6 +47,10 @@ export default () => {
 
     const setSelectedFiles = ServerContext.useStoreActions((actions) => actions.files.setSelectedFiles);
     const selectedFilesLength = ServerContext.useStoreState((state) => state.files.selectedFiles.length);
+
+    // Image viewer state
+    const [imageViewerVisible, setImageViewerVisible] = useState(false);
+    const [selectedImage, setSelectedImage] = useState<{ url: string; name: string } | null>(null);
 
     useEffect(() => {
         clearFlashes('files');
@@ -56,6 +64,23 @@ export default () => {
 
     const onSelectAllClick = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedFiles(e.currentTarget.checked ? files?.map((file) => file.name) || [] : []);
+    };
+
+    const handleImageClick = (file: FileObject) => {
+        const filePath = join(directory, file.name);
+        getFileDownloadUrl(uuid, filePath)
+            .then((url) => {
+                setSelectedImage({ url, name: file.name });
+                setImageViewerVisible(true);
+            })
+            .catch((error) => {
+                console.error('Failed to get image URL:', error);
+            });
+    };
+
+    const handleImageViewerClose = () => {
+        setImageViewerVisible(false);
+        setSelectedImage(null);
     };
 
     if (error) {
@@ -103,13 +128,22 @@ export default () => {
                                     </div>
                                 )}
                                 {sortFiles(files.slice(0, 250)).map((file) => (
-                                    <FileObjectRow key={file.key} file={file} />
+                                    <FileObjectRow key={file.key} file={file} onImageClick={handleImageClick} />
                                 ))}
                                 <MassActionsBar />
                             </div>
                         </CSSTransition>
                     )}
                 </Card>
+            )}
+            {selectedImage && (
+                <ImageViewerModal
+                    visible={imageViewerVisible}
+                    onDismissed={handleImageViewerClose}
+                    imageUrl={selectedImage.url}
+                    imageName={selectedImage.name}
+                    appear
+                />
             )}
         </ServerContentBlock>
     );
