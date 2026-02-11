@@ -2,59 +2,59 @@
 
 return [
 
-    'label' => 'Database',
-    'plural-label' => 'Databases',
+    'label' => 'Databas',
+    'plural-label' => 'Databaser',
 
-    'none' => 'None',
+    'none' => 'Ingen',
 
     'sections' => [
         'host_details' => [
-            'title' => 'Host Details',
-            'description' => 'Configure the database host connection settings.',
+            'title' => 'Värddetaljer',
+            'description' => 'Konfigurera anslutningsinställningar för databasservrar.',
         ],
 
         'authentication' => [
-            'title' => 'Authentication',
+            'title' => 'Autentisering',
         ],
 
         'linked_node' => [
-            'title' => 'Linked Node',
+            'title' => 'Länkad nod',
         ],
     ],
 
     'placeholders' => [
-        'name' => 'Production MySQL',
+        'name' => 'Produktions-MySQL',
         'host' => '127.0.0.1',
         'username' => 'reviactyl',
     ],
 
     'helpers' => [
-        'host' => 'The hostname or IP address of the database server.',
-        'linked_node' => 'Optional. Link this host to a specific node.',
+        'host' => 'Värdnamn eller IP-adress till databasservern.',
+        'linked_node' => 'Valfritt. Länka denna värd till en specifik nod.',
     ],
 
     'fields' => [
-        'linked_node' => 'Linked Node',
+        'linked_node' => 'Länka denna nod',
     ],
 
     'columns' => [
         'id' => 'ID',
-        'name' => 'Name',
+        'name' => 'Namn',
         'host' => 'Host',
         'port' => 'Port',
-        'username' => 'Username',
-        'linked_node' => 'Linked Node',
-        'databases' => 'Databases',
-        'created' => 'Created',
+        'username' => 'Användarnamn',
+        'linked_node' => 'Länka noder',
+        'databases' => 'Databaser',
+        'created' => 'Skapad',
     ],
 
     'actions' => [
-        'edit' => 'Edit',
-        'delete' => 'Delete',
+        'edit' => 'Redigera',
+        'delete' => 'Ta bort',
     ],
 
     'errors' => [
-        'cannot_delete' => 'Cannot delete a database host with associated databases.',
+        'cannot_delete' => 'Kan inte ta bort en databasservärd som har kopplade databaser.',
     ],
 
 ];
