@@ -3,30 +3,30 @@
 return [
     
     'label' => 'Nest',
-    'plural_label' => 'Nests',
+    'plural_label' => 'Nesten',
 
     'sections' => [
-        'configuration' => 'Nest Configuration',
+        'configuration' => 'Nestkonfiguration',
     ],
 
     'fields' => [
-        'name' => 'Name',
-        'author' => 'Author',
-        'description' => 'Description',
+        'name' => 'Namn',
+        'author' => 'Författare',
+        'description' => 'Beskrivning',
     ],
 
     'helpers' => [
-        'name' => 'A unique name used to identify this nest.',
-        'author' => 'The author of this nest. Must be a valid email.',
-        'description' => 'A description of this nest.',
+        'name' => 'Ett unikt namn som används för att identifiera detta nest.',
+        'author' => 'Författaren till detta nest. Måste vara en giltig e-postadress.',
+        'description' => 'En beskrivning av detta nest.',
     ],
 
     'columns' => [
         'id' => 'ID',
-        'name' => 'Name',
-        'author' => 'Author',
-        'eggs' => 'Eggs',
-        'servers' => 'Servers',
+        'name' => 'Namn',
+        'author' => 'Författare',
+        'eggs' => 'Ägg',
+        'servers' => 'Servrar',
     ],
     
     'notices' => [
