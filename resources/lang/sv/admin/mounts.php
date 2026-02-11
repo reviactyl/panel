@@ -2,38 +2,38 @@
 
 return [
 
-    'label' => 'Mount',
-    'plural_label' => 'Mounts',
+    'label' => 'Montering',
+    'plural_label' => 'Monteringar',
 
     'sections' => [
-        'configuration' => 'Mount Configuration',
+        'configuration' => 'Monteringskonfiguration',
     ],
 
     'fields' => [
-        'name' => 'Name',
-        'description' => 'Description',
-        'source' => 'Source Path',
-        'target' => 'Target Path',
-        'read_only' => 'Read Only',
-        'user_mountable' => 'User Mountable',
+        'name' => 'Namn',
+        'description' => 'Beskrivning',
+        'source' => 'Källsökväg',
+        'target' => 'Målsökväg',
+        'read_only' => 'Endast läsning',
+        'user_mountable' => 'Användarmontering tillåten',
     ],
 
     'helpers' => [
-        'name' => 'A unique name used to separate this mount from another.',
-        'description' => 'A longer, human-readable description of this mount.',
-        'source' => 'The file path on the host machine to mount to containers.',
-        'target' => 'The path inside the container to mount this as.',
-        'read_only' => 'If set, the mount will be read-only inside the container.',
-        'user_mountable' => 'If set, users will be able to mount this to their servers.',
+        'name' => 'Ett unikt namn som används för att skilja denna montering från en annan.',
+        'description' => 'En längre, läsbar beskrivning av denna montering.',
+        'source' => 'Filsökvägen på värdmaskinen som ska monteras till containrar.',
+        'target' => 'Sökvägen inuti containern där detta ska monteras.',
+        'read_only' => 'Om aktiverad kommer monteringen vara skrivskyddad inuti containern.',
+        'user_mountable' => 'Om aktiverad kan användare montera detta till sina servrar.',
     ],
 
     'columns' => [
         'id' => 'ID',
-        'name' => 'Name',
-        'source' => 'Source',
-        'target' => 'Target',
-        'read_only' => 'Read Only',
-        'user_mountable' => 'User Mountable',
+        'name' => 'Namn',
+        'source' => 'Källa',
+        'target' => 'Mål',
+        'read_only' => 'Endast läsning',
+        'user_mountable' => 'Användarmontering tillåten',
     ],
 
 ];
