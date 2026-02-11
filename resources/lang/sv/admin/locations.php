@@ -2,44 +2,44 @@
 
 return [
 
-    'label' => 'Location',
-    'plural-label' => 'Locations',
+    'label' => 'Plats',
+    'plural-label' => 'Platser',
 
     'section' => [
-        'title' => 'Location Details',
-        'description' => 'Define a location that nodes can be assigned to.',
+        'title' => 'Platsdetaljer',
+        'description' => 'Definiera en plats som noder kan tilldelas till.',
     ],
 
     'fields' => [
         'short' => [
-            'label' => 'Short Code',
+            'label' => 'Kortkod',
             'placeholder' => 'us.nyc.1',
-            'helper' => 'A short identifier for this location.',
+            'helper' => 'En kort identifierare för denna plats.',
         ],
 
         'long' => [
-            'label' => 'Description',
+            'label' => 'Beskrivning',
             'placeholder' => 'New York City, NY, USA',
-            'helper' => 'A longer description of this location.',
+            'helper' => 'En längre beskrivning av denna plats.',
         ],
     ],
 
     'table' => [
         'id' => 'ID',
-        'short' => 'Short Code',
-        'long' => 'Description',
-        'nodes' => 'Nodes',
-        'servers' => 'Servers',
-        'created' => 'Created',
+        'short' => 'Kortkod',
+        'long' => 'Beskrivning',
+        'nodes' => 'Noder',
+        'servers' => 'Servrar',
+        'created' => 'Skapad',
     ],
 
     'actions' => [
-        'edit' => 'Edit',
-        'delete' => 'Delete',
+        'edit' => 'Redigera',
+        'delete' => 'Ta bort',
     ],
 
     'messages' => [
-        'cannot_delete_with_nodes' => 'Cannot delete a location with associated nodes.',
+        'cannot_delete_with_nodes' => 'Kan inte ta bort en plats som har kopplade noder.',
     ],
 
 ];
