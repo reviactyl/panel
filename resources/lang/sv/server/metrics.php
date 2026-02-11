@@ -1,30 +1,30 @@
 <?php
 
 return [
-    'title' => 'Historical Metrics',
-    'error' => 'Unable to load historical stats.',
+    'title' => 'Historiska mätvärden',
+    'error' => 'Kunde inte ladda historisk statistik.',
     'time_range' => [
-        'last_24_hours' => 'Last 24 Hours',
-        'last_3_days' => 'Last 3 Days',
-        'last_7_days' => 'Last 7 Days',
+        'last_24_hours' => 'Senaste 24 timmarna',
+        'last_3_days' => 'Senaste 3 dagarna',
+        'last_7_days' => 'Senaste 7 dagarna',
     ],
     'charts' => [
         'cpu' => [
-            'title' => 'CPU History',
-            'label' => 'CPU Usage (%)',
+            'title' => 'CPU-historik',
+            'label' => 'CPU-användning (%)',
         ],
         'memory' => [
-            'title' => 'Memory History',
-            'label' => 'Memory Usage (MB)',
+            'title' => 'Minneshistorik',
+            'label' => 'Minnesanvändning (MB)',
         ],
         'disk' => [
-            'title' => 'Disk History',
-            'label' => 'Disk Usage (MB)',
+            'title' => 'Diskhistorik',
+            'label' => 'Diskanvändning (MB)',
         ],
         'network' => [
-            'title' => 'Network History',
-            'rx_label' => 'Network RX (MB)',
-            'tx_label' => 'Network TX (MB)',
+            'title' => 'Nätverkshistorik',
+            'rx_label' => 'Nätverk RX (MB)',
+            'tx_label' => 'Nätverk TX (MB)',
         ],
     ],
 ];
