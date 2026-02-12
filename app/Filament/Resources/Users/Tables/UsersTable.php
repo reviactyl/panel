@@ -38,6 +38,10 @@ class UsersTable
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable(),
+                TextColumn::make('last_seen')
+                    ->sortable()
+                    ->formatStateUsing(fn ($record) => $record->last_seen?->diffForHumans())
+                    ->placeholder(trans('generic.never')),
             ])
             ->filters([
                 \Filament\Tables\Filters\TernaryFilter::make('root_admin')
