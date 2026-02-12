@@ -7,6 +7,7 @@ return [
         'dashboard' => 'Instrumentpanel',
         'settings' => 'Inställningar',
         'api' => 'Applikations-API',
+        'activity_log' => 'Activity Log',
     ],
     'management' => [
         'title' => 'Hantering',
