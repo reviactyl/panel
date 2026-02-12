@@ -18,4 +18,12 @@ class CreateMount extends CreateRecord
         $data['uuid'] = \Illuminate\Support\Str::uuid()->toString();
         return $data;
     }
+
+    protected function afterCreate(): void
+    {
+        app(\App\Services\Activity\ActivityLogService::class)
+            ->subject($this->record)
+            ->event('mount:create')
+            ->log();
+    }
 }

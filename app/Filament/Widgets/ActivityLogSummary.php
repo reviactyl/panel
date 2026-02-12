@@ -11,6 +11,11 @@ class ActivityLogSummary extends Widget
 
     protected static ?int $sort = -5;
 
+    protected function getHeader(): ?string
+    {
+        return trans('admin/navigation.administration.activity_log');
+    }
+
     /**
      * @var int
      */

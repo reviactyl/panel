@@ -36,6 +36,7 @@ class DatabaseManagementService
         protected DynamicDatabaseConnection $dynamic,
         protected Encrypter $encrypter,
         protected DatabaseRepository $repository,
+        protected \App\Services\Activity\ActivityLogService $logService,
     ) {
     }
 
@@ -113,6 +114,8 @@ class DatabaseManagementService
                 $this->repository->assignUserToDatabase($database->database, $database->username, $database->remote);
                 $this->repository->flush();
 
+                $this->logService->subject($database)->event('server:database-create')->log();
+
                 return $database;
             });
         } catch (\Exception $exception) {
@@ -147,6 +150,8 @@ class DatabaseManagementService
         $this->repository->dropDatabase($database->database);
         $this->repository->dropUser($database->username, $database->remote);
         $this->repository->flush();
+
+        $this->logService->subject($database)->event('server:database-delete')->log();
 
         return $database->delete();
     }

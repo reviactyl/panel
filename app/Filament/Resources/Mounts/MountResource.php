@@ -119,7 +119,13 @@ class MountResource extends Resource
             ])
             ->recordActions([
                 EditAction::make(),
-                DeleteAction::make(),
+                DeleteAction::make()
+                    ->after(function (Mount $record) {
+                        app(\App\Services\Activity\ActivityLogService::class)
+                            ->subject($record)
+                            ->event('mount:delete')
+                            ->log();
+                    }),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

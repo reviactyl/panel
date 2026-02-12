@@ -14,13 +14,11 @@ use App\Exceptions\Http\Connection\DaemonConnectionException;
 
 class BuildModificationService
 {
-    /**
-     * BuildModificationService constructor.
-     */
     public function __construct(
         private ConnectionInterface $connection,
         private DaemonServerRepository $daemonServerRepository,
         private ServerConfigurationStructureService $structureService,
+        private \App\Services\Activity\ActivityLogService $logService,
     ) {
     }
 
@@ -56,6 +54,8 @@ class BuildModificationService
 
             return $server->refresh();
         });
+
+        $this->logService->subject($server)->event('server:build')->log();
 
         $updateData = $this->structureService->handle($server);
 

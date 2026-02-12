@@ -29,6 +29,7 @@ class MountController extends Controller
         protected LocationRepositoryInterface $locationRepository,
         protected MountRepository $repository,
         protected ViewFactory $view,
+        protected \App\Services\Activity\ActivityLogService $logService,
     ) {
     }
 
@@ -72,6 +73,8 @@ class MountController extends Controller
         $model->saveOrFail();
         $mount = $model->fresh();
 
+        $this->logService->subject($mount)->event('mount:create')->log();
+
         $this->alert->success('Mount was created successfully.')->flash();
 
         return redirect()->route('admin.mounts.view', $mount->id);
@@ -90,6 +93,8 @@ class MountController extends Controller
 
         $mount->forceFill($request->validated())->save();
 
+        $this->logService->subject($mount)->event('mount:update')->log();
+
         $this->alert->success('Mount was updated successfully.')->flash();
 
         return redirect()->route('admin.mounts.view', $mount->id);
@@ -102,6 +107,7 @@ class MountController extends Controller
      */
     public function delete(Mount $mount): RedirectResponse
     {
+        $this->logService->subject($mount)->event('mount:delete')->log();
         $mount->delete();
 
         return redirect()->route('admin.mounts');
