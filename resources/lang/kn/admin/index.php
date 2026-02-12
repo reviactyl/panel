@@ -15,4 +15,5 @@ return [
 
     'help-btn' => 'ಸಹಾಯ ಪಡೆಯಿರಿ',
     'docs-btn' => 'ಡಾಕ್ಯುಮೆಂಟೇಶನ್',
+    'no_activity' => 'There is no recent activity to display.',
 ];
