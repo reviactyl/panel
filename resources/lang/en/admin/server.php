@@ -195,7 +195,7 @@ return [
         'install_toggled' => 'Server install status has been toggled.',
         'server_suspended' => 'Server has been :action.',
         'server_reinstalled' => 'Server reinstall has been initiated.',
-        'server_deleted' => 'Server has been deleted from the system.',
+        'server_deleted' => 'Server has been deleted.',
         'server_delete_failed' => 'Failed to delete server.',
         'startup_changed' => 'The startup configuration for this server has been updated. If this server\'s nest or egg was changed a reinstall will be occurring now.',
         'server_created' => 'Server was successfully created on the panel. Please allow the daemon a few minutes to completely install this server.',
