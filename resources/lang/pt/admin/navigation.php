@@ -7,6 +7,7 @@ return [
         'dashboard' => 'Painel',
         'settings' => 'Configurações',
         'api' => 'API de aplicação',
+        'activity_log' => 'Activity Log',
     ],
     'management' => [
         'title' => 'Gerenciamento',
