@@ -195,7 +195,7 @@ return [
         'install_toggled' => 'O status de instalação do servidor foi alterado.',
         'server_suspended' => 'O servidor foi :action.',
         'server_reinstalled' => 'A reinstalação do servidor foi iniciada.',
-        'server_deleted' => 'O servidor foi excluído.',
+        'server_deleted' => 'Server has been deleted.',
         'server_delete_failed' => 'Falha ao excluir o servidor.',
         'startup_changed' => 'A configuração de inicialização para este servidor foi atualizada. Se o ninho ou egg deste servidor foi alterado, uma reinstalação ocorrerá agora.',
         'server_created' => 'O servidor foi criado com sucesso no painel. Por favor, aguarde alguns minutos para que o daemon instale completamente este servidor.',
