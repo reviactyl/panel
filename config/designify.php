@@ -43,6 +43,8 @@ return [
     'supportCardLink' => '',
     'billingCardLink' => '',
 
+    'alwaysShowKillButton' => false,
+
     'theme1' => [
         'name' => 'Petrascia',
         'colorPrimary' => '#3b82f6',

@@ -19,6 +19,7 @@ class GeneralSettingsFormRequest extends AdminFormRequest
             'designify:statusCardLink' => 'nullable|string|max:255',
             'designify:supportCardLink' => 'nullable|string|max:255',
             'designify:billingCardLink' => 'nullable|string|max:255',
+            'designify:alwaysShowKillButton' => 'required|in:true,false',
         ];
     }
 

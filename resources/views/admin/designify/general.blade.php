@@ -56,6 +56,24 @@
             </div>
             <div class="space-y-3">
                 <label class="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                    for="designify:alwaysShowKillButton">
+                    Always Show Kill Button
+                </label>
+                <select name="designify:alwaysShowKillButton" id="designify:alwaysShowKillButton"
+                    class="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-xl text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
+                    <option value="true"
+                        {{ old('designify:alwaysShowKillButton', config('designify.alwaysShowKillButton')) === true ? 'selected' : '' }}>
+                        Enabled
+                    </option>
+                    <option value="false"
+                        {{ old('designify:alwaysShowKillButton', config('designify.alwaysShowKillButton')) === false ? 'selected' : '' }}>
+                        Disabled
+                    </option>
+                </select>
+                <p class="text-xs text-zinc-500">If enabled, the kill button will always be shown on the server control page, even if the server is offline.</p>
+            </div>
+            <div class="space-y-3">
+                <label class="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
                     for="designify:statusCardLink">
                     Status Card Link
                 </label>

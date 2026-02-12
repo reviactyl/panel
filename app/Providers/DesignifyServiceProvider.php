@@ -51,6 +51,7 @@ class DesignifyServiceProvider extends ServiceProvider
         "designify:statusCardLink",
         "designify:supportCardLink",
         "designify:billingCardLink",
+        "designify:alwaysShowKillButton",
         "designify:theme1:name",
         "designify:theme1:colorPrimary",
         "designify:theme1:color50",

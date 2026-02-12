@@ -13,6 +13,7 @@ export interface ReviactylSettings {
     statusCardLink: string;
     supportCardLink: string;
     billingCardLink: string;
+    alwaysShowKillButton: boolean;
 }
 
 export interface ReviactylSettingsStore {
