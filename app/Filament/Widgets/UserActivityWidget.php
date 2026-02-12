@@ -11,7 +11,12 @@ class UserActivityWidget extends Widget
 {
     protected string $view = 'filament.widgets.user-activity-metrics';
 
-    protected int|string|array $columnSpan = 1;
+    protected int|string|array $columnSpan = [
+        'default' => 1,
+        'sm' => 1,
+        'md' => 1,
+        'lg' => 1,
+    ];
 
     protected static ?int $sort = 4;
 
@@ -30,11 +35,14 @@ class UserActivityWidget extends Widget
         if (!empty($topCountriesRaw)) {
             $maxCount = $topCountriesRaw[0]['count'];
             foreach ($topCountriesRaw as $data) {
+                $code = strtolower($data['code']);
                 $topCountries[] = [
                     'country' => $data['country'],
                     'code' => $data['code'],
                     'count' => $data['count'],
-                    'flag' => $this->getFlagEmoji($data['code']),
+                    'flag_url' => $code === 'un' || $code === 'localhost' 
+                        ? null 
+                        : "https://flagcdn.com/" . $code . ".svg",
                     'percentage' => $maxCount > 0 ? ($data['count'] / $maxCount) * 100 : 0,
                 ];
             }
@@ -52,7 +60,7 @@ class UserActivityWidget extends Widget
      */
     private function getTopCountries(int $limit = 3): array
     {
-        return Cache::remember('metric:top_active_countries_v2', 3600, function () use ($limit) {
+        return Cache::remember('metric:top_active_countries_v3', 3600, function () use ($limit) {
             $recentLogs = ActivityLog::query()
                 ->where('event', 'auth:success')
                 ->orderBy('id', 'desc')
@@ -87,25 +95,5 @@ class UserActivityWidget extends Widget
 
             return array_slice($countryData, 0, $limit);
         });
-    }
-
-    /**
-     * Convert ISO country code to emoji flag.
-     */
-    private function getFlagEmoji(string $countryCode): string
-    {
-        if ($countryCode === 'UN' || strlen($countryCode) !== 2) {
-            return '🌐';
-        }
-
-        if ($countryCode === 'Localhost') {
-            return '🏠';
-        }
-
-        $codePoints = array_map(function ($char) {
-            return 127397 + ord(strtoupper($char));
-        }, str_split($countryCode));
-
-        return mb_convert_encoding('&#' . implode(';&#', $codePoints) . ';', 'UTF-8', 'HTML-ENTITIES');
     }
 }
