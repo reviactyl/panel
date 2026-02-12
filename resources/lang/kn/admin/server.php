@@ -192,10 +192,10 @@ return [
     ],
 
     'alerts' => [
-        'install_toggled' => 'Server install status has been toggled.',
+        'install_toggled' => 'ಈ ಸರ್ವರ್‌ನ ಸ್ಥಾಪನಾ ಸ್ಥಿತಿಯನ್ನು ಬದಲಾಯಿಸಲಾಗಿದೆ.',
         'server_suspended' => 'Server has been :action.',
-        'server_reinstalled' => 'Server reinstall has been initiated.',
-        'server_deleted' => 'Server has been deleted from the system.',
+        'server_reinstalled' => 'ಈ ಸರ್ವರ್ ಅನ್ನು ಮರುಸ್ಥಾಪನೆಗಾಗಿ ಸಾಲಿನಲ್ಲಿ ಸೇರಿಸಲಾಗಿದೆ ಮತ್ತು ಪ್ರಕ್ರಿಯೆ ಈಗ ಆರಂಭವಾಗುತ್ತದೆ.',
+        'server_deleted' => 'ಸರ್ವರ್ ಅನ್ನು ವ್ಯವಸ್ಥೆಯಿಂದ ಯಶಸ್ವಿಯಾಗಿ ಅಳಿಸಲಾಗಿದೆ.',
         'server_delete_failed' => 'Failed to delete server.',
         'startup_changed' => 'ಈ ಸರ್ವರ್‌ನ ಸ್ಟಾರ್ಟ್‌ಅಪ್ ಸಂರಚನೆಯನ್ನು ನವೀಕರಿಸಲಾಗಿದೆ. ಈ ಸರ್ವರ್‌ನ ನೆಸ್ಟ್ ಅಥವಾ ಎಗ್ ಬದಲಾಗಿದ್ದರೆ, ಈಗ ಮರುಸ್ಥಾಪನೆ ನಡೆಯಲಿದೆ.',
         'server_created' => 'ಸರ್ವರ್ ಅನ್ನು ಪ್ಯಾನೆಲ್‌ನಲ್ಲಿ ಯಶಸ್ವಿಯಾಗಿ ರಚಿಸಲಾಗಿದೆ. ಈ ಸರ್ವರ್ ಅನ್ನು ಸಂಪೂರ್ಣವಾಗಿ ಸ್ಥಾಪಿಸಲು ಡೀಮನ್‌ಗೆ ಕೆಲವು ನಿಮಿಷಗಳ ಸಮಯ ನೀಡಿ.',
