@@ -4,14 +4,13 @@ namespace App\Filament\Widgets;
 
 use App\Models\ActivityLog;
 use App\Services\Helpers\GeoIPService;
-use Filament\Infolists\Components\TextEntry;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Schema;
+use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\Cache;
-use App\Filament\Widgets\BaseWidget;
 
-class UserActivityWidget extends BaseWidget
+class UserActivityWidget extends Widget
 {
+    protected string $view = 'filament.widgets.user-activity-metrics';
+
     protected int|string|array $columnSpan = 1;
 
     protected static ?int $sort = 4;
@@ -23,32 +22,27 @@ class UserActivityWidget extends BaseWidget
         $this->geoIPService = $geoIPService;
     }
 
-    public function form(Schema $schema): Schema
+    protected function getViewData(): array
     {
-        $topCountries = $this->getTopCountries(3);
+        $topCountriesRaw = $this->getTopCountries(3);
+        $topCountries = [];
 
-        $components = [];
-        if (empty($topCountries)) {
-            $components[] = TextEntry::make('no_data')
-                ->hiddenLabel()
-                ->state('No activity data available');
-        } else {
-            foreach ($topCountries as $index => $data) {
-                $flag = $this->getFlagEmoji($data['code']);
-                $rank = $index + 1;
-                $components[] = TextEntry::make("country_{$rank}")
-                    ->label($rank === 1 ? "Most Active Country" : "#{$rank} Country")
-                    ->state("{$flag} {$data['country']}")
-                    ->hint("{$data['count']} logins");
+        if (!empty($topCountriesRaw)) {
+            $maxCount = $topCountriesRaw[0]['count'];
+            foreach ($topCountriesRaw as $data) {
+                $topCountries[] = [
+                    'country' => $data['country'],
+                    'code' => $data['code'],
+                    'count' => $data['count'],
+                    'flag' => $this->getFlagEmoji($data['code']),
+                    'percentage' => $maxCount > 0 ? ($data['count'] / $maxCount) * 100 : 0,
+                ];
             }
         }
 
-        return $schema->components([
-            Section::make(trans('admin/index.metrics-header'))
-                ->icon('heroicon-o-globe-americas')
-                ->iconColor('primary')
-                ->schema($components),
-        ]);
+        return [
+            'topCountries' => $topCountries,
+        ];
     }
 
     /**
@@ -58,7 +52,7 @@ class UserActivityWidget extends BaseWidget
      */
     private function getTopCountries(int $limit = 3): array
     {
-        return Cache::remember('metric:top_active_countries', 3600, function () use ($limit) {
+        return Cache::remember('metric:top_active_countries_v2', 3600, function () use ($limit) {
             $recentLogs = ActivityLog::query()
                 ->where('event', 'auth:success')
                 ->orderBy('id', 'desc')
