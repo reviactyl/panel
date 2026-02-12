@@ -195,7 +195,7 @@ return [
         'install_toggled' => 'Serverns installationsstatus har ändrats.',
         'server_suspended' => 'Åtgärd har utförts på servern.',
         'server_reinstalled' => 'Ominstallation av servern har påbörjats.',
-        'server_deleted' => 'Server has been deleted from the system.',
+        'server_deleted' => 'Servern har tagits bort.',
         'server_delete_failed' => 'Misslyckades med att ta bort servern.',
         'startup_changed' => 'Startkonfigurationen för denna server har uppdaterats. Om denna servers näste eller ägg ändrades kommer en ominstallation att ske nu.',
         'server_created' => 'Servern skapades framgångsrikt i panelen. Vänligen ge daemonen några minuter att helt installera denna server.',
