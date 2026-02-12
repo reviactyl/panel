@@ -15,4 +15,5 @@ return [
 
     'help-btn' => '获取帮助',
     'docs-btn' => '使用文档',
+    'no_activity' => 'There is no recent activity to display.',
 ];
