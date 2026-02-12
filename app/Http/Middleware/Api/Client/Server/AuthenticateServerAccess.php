@@ -14,6 +14,7 @@ class AuthenticateServerAccess
      */
     protected array $except = [
         'api:client:server.ws',
+        'api:client:server.settings.category',
     ];
 
     /**

@@ -17,7 +17,7 @@ const isAlarmState = (current: number, limit: number): boolean => limit > 0 && c
 
 type Timer = ReturnType<typeof setInterval>;
 
-export default ({ server }: { server: Server }) => {
+export default ({ server, className, onCategoryChanged }: { server: Server; className?: string; onCategoryChanged?: () => void }) => {
     const { t } = useTranslation('dashboard/index');
     const interval = useRef<Timer>(null) as React.MutableRefObject<Timer>;
     const [isSuspended, setIsSuspended] = useState(server.status === 'suspended');
@@ -79,36 +79,34 @@ export default ({ server }: { server: Server }) => {
                         <Title className='text-2xl'>{server.name}</Title>
                         <span
                             className={`py-1 px-3 text-xs font-medium rounded-ui
-                        ${
-                            stats?.status === 'offline'
-                                ? 'bg-danger/20 text-danger border border-danger/30'
-                                : stats?.status === 'running'
-                                ? 'bg-success/20 text-success border border-success/30'
-                                : stats?.status === 'starting'
-                                ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                                : stats?.status === 'stopping'
-                                ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30'
-                                : ''
-                        }
+                        ${stats?.status === 'offline'
+                                    ? 'bg-danger/20 text-danger border border-danger/30'
+                                    : stats?.status === 'running'
+                                        ? 'bg-success/20 text-success border border-success/30'
+                                        : stats?.status === 'starting'
+                                            ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                                            : stats?.status === 'stopping'
+                                                ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30'
+                                                : ''
+                                }
                     `}
                         >
                             {stats?.status === 'offline'
                                 ? t('server.offline')
                                 : stats?.status === 'running'
-                                ? t('server.online')
-                                : stats?.status === 'starting'
-                                ? t('server.starting')
-                                : stats?.status === 'stopping'
-                                ? t('server.stopping')
-                                : ''}
+                                    ? t('server.online')
+                                    : stats?.status === 'starting'
+                                        ? t('server.starting')
+                                        : stats?.status === 'stopping'
+                                            ? t('server.stopping')
+                                            : ''}
                         </span>
                     </div>
                     <div
-                        className={`${
-                            isSpecialState
+                        className={`${isSpecialState
                                 ? 'flex justify-center items-center min-h-[100px]'
                                 : 'grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'
-                        } mt-4`}
+                            } mt-4`}
                     >
                         {!stats || isSuspended ? (
                             isSuspended ? (
@@ -132,10 +130,10 @@ export default ({ server }: { server: Server }) => {
                                             {server.isTransferring
                                                 ? t('server.transferring')
                                                 : server.status === 'installing'
-                                                ? t('server.installing')
-                                                : server.status === 'restoring_backup'
-                                                ? t('server.restoring-backup')
-                                                : t('server.unavailable')}
+                                                    ? t('server.installing')
+                                                    : server.status === 'restoring_backup'
+                                                        ? t('server.restoring-backup')
+                                                        : t('server.unavailable')}
                                         </p>
                                     </StatBlock>
                                 </React.Fragment>

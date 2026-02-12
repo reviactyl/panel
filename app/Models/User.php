@@ -317,4 +317,12 @@ class User extends Model implements
     {
         return $this->gravatar_url;
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\ServerCategory, $this>
+     */
+    public function categories(): HasMany
+    {
+        return $this->hasMany(ServerCategory::class);
+    }
 }

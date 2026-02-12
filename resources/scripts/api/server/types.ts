@@ -27,3 +27,12 @@ export interface ServerEggVariable {
     isEditable: boolean;
     rules: string[];
 }
+
+export interface ServerCategory {
+    uuid: string;
+    name: string;
+    description: string | null;
+    color: string | null;
+    createdAt: Date;
+    updatedAt: Date;
+}

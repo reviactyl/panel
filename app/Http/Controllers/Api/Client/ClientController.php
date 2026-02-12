@@ -37,6 +37,15 @@ class ClientController extends ClientApiController
             'name',
             'description',
             'external_id',
+            AllowedFilter::callback('category_uuid', function ($query, $value) {
+                if (is_null($value) || $value === 'null') {
+                    $query->whereNull('category_id');
+                } else {
+                    $query->whereHas('category', function ($q) use ($value) {
+                        $q->where('uuid', $value);
+                    });
+                }
+            }),
             AllowedFilter::custom('*', new MultiFieldServerFilter()),
         ]);
 

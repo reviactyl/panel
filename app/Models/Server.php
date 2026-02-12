@@ -228,6 +228,14 @@ class Server extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\App\Models\ServerCategory, $this>
+     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(ServerCategory::class, 'category_id');
+    }
+
+    /**
      * Gets the subusers associated with a server.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\Subuser, $this>

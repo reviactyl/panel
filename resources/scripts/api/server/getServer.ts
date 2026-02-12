@@ -1,6 +1,6 @@
 import http, { FractalResponseData, FractalResponseList } from '@/api/http';
 import { rawDataToServerAllocation, rawDataToServerEggVariable } from '@/api/transformers';
-import { ServerEggVariable, ServerStatus } from '@/api/server/types';
+import { ServerCategory, ServerEggVariable, ServerStatus } from '@/api/server/types';
 
 export interface Allocation {
     id: number;
@@ -43,6 +43,7 @@ export interface Server {
     isTransferring: boolean;
     variables: ServerEggVariable[];
     allocations: Allocation[];
+    category: ServerCategory | null;
     nestId: number;
     eggId: number;
     eggBanner: string;
@@ -75,6 +76,18 @@ export const rawDataToServerObject = ({ attributes: data }: FractalResponseData)
     allocations: ((data.relationships?.allocations as FractalResponseList | undefined)?.data || []).map(
         rawDataToServerAllocation
     ),
+    category:
+        (data.relationships?.category as FractalResponseData | undefined)?.attributes &&
+            !Array.isArray(data.relationships?.category)
+            ? {
+                uuid: (data.relationships!.category as FractalResponseData).attributes.uuid,
+                name: (data.relationships!.category as FractalResponseData).attributes.name,
+                description: (data.relationships!.category as FractalResponseData).attributes.description,
+                color: (data.relationships!.category as FractalResponseData).attributes.color,
+                createdAt: new Date((data.relationships!.category as FractalResponseData).attributes.created_at),
+                updatedAt: new Date((data.relationships!.category as FractalResponseData).attributes.updated_at),
+            }
+            : null,
     nestId: data.nest_id,
     eggId: data.egg_id,
     eggBanner: data.egg_banner,
@@ -84,7 +97,7 @@ export const rawDataToServerObject = ({ attributes: data }: FractalResponseData)
 
 export default (uuid: string): Promise<[Server, string[]]> => {
     return new Promise((resolve, reject) => {
-        http.get(`/api/client/servers/${uuid}`)
+        http.get(`/api/client/servers/${uuid}?include=allocations,variables,category`)
             .then(({ data }) =>
                 resolve([
                     rawDataToServerObject(data),

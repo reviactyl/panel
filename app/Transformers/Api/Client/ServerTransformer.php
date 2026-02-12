@@ -12,13 +12,14 @@ use Illuminate\Container\Container;
 use App\Models\EggVariable;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
+use App\Models\ServerCategory;
 use App\Services\Servers\StartupCommandService;
 
 class ServerTransformer extends BaseClientTransformer
 {
     protected array $defaultIncludes = ['allocations', 'variables'];
 
-    protected array $availableIncludes = ['egg', 'subusers'];
+    protected array $availableIncludes = ['egg', 'subusers', 'category'];
 
     public function getResourceName(): string
     {
@@ -145,5 +146,19 @@ class ServerTransformer extends BaseClientTransformer
         }
 
         return $this->collection($server->subusers, $this->makeTransformer(SubuserTransformer::class), Subuser::RESOURCE_NAME);
+    }
+
+    /**
+     * Returns the category associated with this server.
+     *
+     * @throws \App\Exceptions\Transformer\InvalidTransformerLevelException
+     */
+    public function includeCategory(Server $server): Item|NullResource
+    {
+        if (!$server->category) {
+            return $this->null();
+        }
+
+        return $this->item($server->category, $this->makeTransformer(ServerCategoryTransformer::class), \App\Models\ServerCategory::RESOURCE_NAME);
     }
 }

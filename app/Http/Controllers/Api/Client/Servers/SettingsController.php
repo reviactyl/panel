@@ -13,6 +13,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use App\Http\Requests\Api\Client\Servers\Settings\RenameServerRequest;
 use App\Http\Requests\Api\Client\Servers\Settings\SetDockerImageRequest;
 use App\Http\Requests\Api\Client\Servers\Settings\ReinstallServerRequest;
+use App\Http\Requests\Api\Client\Servers\Settings\SetCategoryRequest;
 
 class SettingsController extends ClientApiController
 {
@@ -87,6 +88,35 @@ class SettingsController extends ClientApiController
         if ($original !== $server->image) {
             Activity::event('server:startup.image')
                 ->property(['old' => $original, 'new' => $request->input('docker_image')])
+                ->log();
+        }
+
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Updates the category for the server.
+     *
+     * @throws \Throwable
+     */
+    public function setCategory(SetCategoryRequest $request, Server $server): JsonResponse
+    {
+        $categoryUuid = $request->input('category');
+        $categoryId = null;
+
+        if (!empty($categoryUuid)) {
+            $category = $request->user()->categories()->where('uuid', $categoryUuid)->first();
+            if ($category) {
+                $categoryId = $category->id;
+            }
+        }
+
+        $original = $server->category_id;
+        $server->forceFill(['category_id' => $categoryId])->saveOrFail();
+
+        if ($original !== $server->category_id) {
+             Activity::event('server:settings.category')
+                ->property(['old' => $original, 'new' => $categoryId])
                 ->log();
         }
 
