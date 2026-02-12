@@ -15,6 +15,7 @@ use App\Http\Middleware\VerifyCaptcha;
 use Illuminate\Routing\Middleware\ThrottleRequests;
 use App\Http\Middleware\LanguageMiddleware;
 use App\Http\Middleware\EditorMiddleware;
+use App\Http\Middleware\UpdateLastSeen;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use App\Http\Middleware\Activity\TrackAPIKey;
@@ -66,6 +67,7 @@ class Kernel extends HttpKernel
             SubstituteBindings::class,
             LanguageMiddleware::class,
             EditorMiddleware::class,
+            UpdateLastSeen::class,
         ],
         'api' => [
             EnsureStatefulRequests::class,
