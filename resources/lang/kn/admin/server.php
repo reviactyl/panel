@@ -183,14 +183,6 @@ return [
         'view' => 'View',
     ],
 
-    'alerts' => [
-        'install_toggled' => 'Server install status has been toggled.',
-        'server_suspended' => 'Server has been :action.',
-        'server_reinstalled' => 'Server reinstall has been initiated.',
-        'server_deleted' => 'Server has been deleted.',
-        'server_delete_failed' => 'Failed to delete server.',
-    ],
-    
     'exceptions' => [
         'no_new_default_allocation' => 'ನೀವು ಈ ಸರ್ವರ್‌ನ ಡೀಫಾಲ್ಟ್ ಅಲೊಕೆಷನ್ ಅನ್ನು ಅಳಿಸಲು ಪ್ರಯತ್ನಿಸುತ್ತಿದ್ದೀರಿ, ಆದರೆ ಬಳಸಲು ಯಾವುದೇ ಪರ್ಯಾಯ ಅಲೊಕೆಷನ್ ಲಭ್ಯವಿಲ್ಲ.',
         'marked_as_failed' => 'ಈ ಸರ್ವರ್ ಹಿಂದಿನ ಸ್ಥಾಪನೆಯಲ್ಲಿ ವಿಫಲವಾಗಿದೆ ಎಂದು ಗುರುತಿಸಲಾಗಿದೆ. ಈ ಸ್ಥಿತಿಯಲ್ಲಿ ಪ್ರಸ್ತುತ ಸ್ಥಿತಿಯನ್ನು ಬದಲಾಯಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.',
@@ -198,15 +190,18 @@ return [
         'daemon_exception' => 'ಡೀಮನ್ ಜೊತೆಗೆ ಸಂವಹನ ಮಾಡಲು ಪ್ರಯತ್ನಿಸುವಾಗ ಒಂದು ಎಕ್ಸೆಪ್ಷನ್ ಸಂಭವಿಸಿದೆ, ಇದರಿಂದ HTTP/:code ಪ್ರತಿಕ್ರಿಯಾ ಕೋಡ್ ಬಂದಿದೆ. ಈ ಎಕ್ಸೆಪ್ಷನ್ ಲಾಗ್ ಮಾಡಲಾಗಿದೆ. (ವಿನಂತಿ ಐಡಿ: :request_id)',
         'default_allocation_not_found' => 'ಕೋರಿದ ಡೀಫಾಲ್ಟ್ ಅಲೊಕೆಷನ್ ಈ ಸರ್ವರ್‌ನ ಅಲೊಕೆಷನ್‌ಗಳಲ್ಲಿ ಕಂಡುಬಂದಿಲ್ಲ.',
     ],
+
     'alerts' => [
+        'install_toggled' => 'Server install status has been toggled.',
+        'server_suspended' => 'Server has been :action.',
+        'server_reinstalled' => 'Server reinstall has been initiated.',
+        'server_deleted' => 'Server has been deleted from the system.',
+        'server_delete_failed' => 'Failed to delete server.',
         'startup_changed' => 'ಈ ಸರ್ವರ್‌ನ ಸ್ಟಾರ್ಟ್‌ಅಪ್ ಸಂರಚನೆಯನ್ನು ನವೀಕರಿಸಲಾಗಿದೆ. ಈ ಸರ್ವರ್‌ನ ನೆಸ್ಟ್ ಅಥವಾ ಎಗ್ ಬದಲಾಗಿದ್ದರೆ, ಈಗ ಮರುಸ್ಥಾಪನೆ ನಡೆಯಲಿದೆ.',
-        'server_deleted' => 'ಸರ್ವರ್ ಅನ್ನು ವ್ಯವಸ್ಥೆಯಿಂದ ಯಶಸ್ವಿಯಾಗಿ ಅಳಿಸಲಾಗಿದೆ.',
         'server_created' => 'ಸರ್ವರ್ ಅನ್ನು ಪ್ಯಾನೆಲ್‌ನಲ್ಲಿ ಯಶಸ್ವಿಯಾಗಿ ರಚಿಸಲಾಗಿದೆ. ಈ ಸರ್ವರ್ ಅನ್ನು ಸಂಪೂರ್ಣವಾಗಿ ಸ್ಥಾಪಿಸಲು ಡೀಮನ್‌ಗೆ ಕೆಲವು ನಿಮಿಷಗಳ ಸಮಯ ನೀಡಿ.',
         'build_updated' => 'ಈ ಸರ್ವರ್‌ನ ಬಿಲ್ಡ್ ವಿವರಗಳನ್ನು ನವೀಕರಿಸಲಾಗಿದೆ. ಕೆಲವು ಬದಲಾವಣೆಗಳು ಪರಿಣಾಮಕಾರಿಯಾಗಲು ಮರುಪ್ರಾರಂಭ ಅಗತ್ಯವಿರಬಹುದು.',
         'suspension_toggled' => 'ಸರ್ವರ್ ಸ್ಥಗಿತ ಸ್ಥಿತಿಯನ್ನು :status ಗೆ ಬದಲಾಯಿಸಲಾಗಿದೆ.',
         'rebuild_on_boot' => 'ಈ ಸರ್ವರ್‌ಗೆ ಡಾಕರ್ ಕಂಟೈನರ್ ಮರುನಿರ್ಮಾಣ ಅಗತ್ಯವಿದೆ ಎಂದು ಗುರುತಿಸಲಾಗಿದೆ. ಮುಂದಿನ ಬಾರಿ ಸರ್ವರ್ ಪ್ರಾರಂಭಿಸಿದಾಗ ಇದು ನಡೆಯಲಿದೆ.',
-        'install_toggled' => 'ಈ ಸರ್ವರ್‌ನ ಸ್ಥಾಪನಾ ಸ್ಥಿತಿಯನ್ನು ಬದಲಾಯಿಸಲಾಗಿದೆ.',
-        'server_reinstalled' => 'ಈ ಸರ್ವರ್ ಅನ್ನು ಮರುಸ್ಥಾಪನೆಗಾಗಿ ಸಾಲಿನಲ್ಲಿ ಸೇರಿಸಲಾಗಿದೆ ಮತ್ತು ಪ್ರಕ್ರಿಯೆ ಈಗ ಆರಂಭವಾಗುತ್ತದೆ.',
         'details_updated' => 'ಸರ್ವರ್ ವಿವರಗಳನ್ನು ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ.',
         'docker_image_updated' => 'ಈ ಸರ್ವರ್‌ಗಾಗಿ ಬಳಸುವ ಡೀಫಾಲ್ಟ್ ಡಾಕರ್ ಇಮೇಜ್ ಅನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಬದಲಾಯಿಸಲಾಗಿದೆ. ಈ ಬದಲಾವಣೆಯನ್ನು ಅನ್ವಯಿಸಲು ಮರುಪ್ರಾರಂಭ ಅಗತ್ಯವಿದೆ.',
         'node_required' => 'ಈ ಪ್ಯಾನೆಲ್‌ಗೆ ಸರ್ವರ್ ಸೇರಿಸಲು ಕನಿಷ್ಠ ಒಂದು ನೋಡ್ ಸಂರಚಿಸಿರಬೇಕು.',
