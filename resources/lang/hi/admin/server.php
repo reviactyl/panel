@@ -192,10 +192,10 @@ return [
     ],
 
     'alerts' => [
-        'install_toggled' => 'Server install status has been toggled.',
+        'install_toggled' => 'इस सर्वर के लिए इंस्टॉलेशन स्थिति टॉगल कर दी गई है।',
         'server_suspended' => 'Server has been :action.',
-        'server_reinstalled' => 'Server reinstall has been initiated.',
-        'server_deleted' => 'Server has been deleted from the system.',
+        'server_reinstalled' => 'इस सर्वर को अभी से शुरू होने वाली पुनर्स्थापना के लिए कतारबद्ध कर दिया गया है।',
+        'server_deleted' => 'सर्वर को सिस्टम से सफलतापूर्वक हटा दिया गया है।',
         'server_delete_failed' => 'Failed to delete server.',
         'startup_changed' => 'इस सर्वर के लिए स्टार्टअप कॉन्फ़िगरेशन अपडेट कर दिया गया है। यदि इस सर्वर का नेस्ट या egg बदला गया था तो अब एक पुनर्स्थापना होगी।',
         'server_created' => 'सर्वर पैनल पर सफलतापूर्वक बनाया गया। कृपया डेमन को इस सर्वर को पूरी तरह से इंस्टॉल करने के लिए कुछ मिनट दें।',
