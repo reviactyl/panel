@@ -7,6 +7,7 @@ return [
         'dashboard' => 'ಡ್ಯಾಶ್‌ಬೋರ್ಡ್',
         'settings' => 'ಸೆಟ್ಟಿಂಗ್‌ಗಳು',
         'api' => 'ಅಪ್ಲಿಕೇಶನ್ API',
+        'activity_log' => 'Activity Log',
     ],
     'management' => [
         'title' => 'ನಿರ್ವಹಣೆ',
