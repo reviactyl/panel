@@ -71,7 +71,6 @@ class DatabaseManagementService
      */
     public function create(Server $server, array $data): Database
     {
-        \Illuminate\Support\Facades\Log::debug('DatabaseManagementService::create() - Entry', ['server_id' => $server->id, 'database' => $data['database'] ?? 'unknown']);
         if (!config('pterodactyl.client_features.databases.enabled')) {
             throw new DatabaseClientFeatureNotEnabledException();
         }

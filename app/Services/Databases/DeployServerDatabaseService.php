@@ -24,7 +24,6 @@ class DeployServerDatabaseService
      */
     public function handle(Server $server, array $data): Database
     {
-        \Illuminate\Support\Facades\Log::debug('DeployServerDatabaseService::handle() - Entry', ['server_id' => $server->id, 'database' => $data['database'] ?? 'unknown']);
         Assert::notEmpty($data['database'] ?? null);
         Assert::notEmpty($data['remote'] ?? null);
 
