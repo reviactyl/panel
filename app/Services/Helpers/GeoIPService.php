@@ -15,24 +15,29 @@ class GeoIPService
     }
 
     /**
-     * Resolve an IP address to a country name.
+     * Resolve an IP address to country information.
+     * 
+     * @return array{country: string, code: string}|null
      */
-    public function getCountry(string $ip): ?string
+    public function getCountryInfo(string $ip): ?array
     {
         if ($ip === '127.0.0.1' || $ip === '::1') {
-            return 'Localhost';
+            return ['country' => 'Localhost', 'code' => 'UN'];
         }
 
-        return Cache::remember('geoip:' . $ip, 86400, function () use ($ip) {
+        return Cache::remember('geoip:v2:' . $ip, 86400, function () use ($ip) {
             try {
                 $response = Http::get(self::API_URL . $ip, [
-                    'fields' => 'status,message,country',
+                    'fields' => 'status,message,country,countryCode',
                 ]);
 
                 if ($response->successful()) {
                     $data = $response->json();
                     if (($data['status'] ?? '') === 'success') {
-                        return $data['country'] ?? 'Unknown';
+                        return [
+                            'country' => $data['country'] ?? 'Unknown',
+                            'code' => $data['countryCode'] ?? 'UN',
+                        ];
                     }
                 }
 

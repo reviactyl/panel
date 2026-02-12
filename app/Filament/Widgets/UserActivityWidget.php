@@ -21,48 +21,95 @@ class UserActivityWidget extends BaseWidget
 
     protected function getStats(): array
     {
-        $mostActiveCountry = $this->getMostActiveCountry();
+        $topCountries = $this->getTopCountries(3);
 
-        return [
-            Stat::make(trans('admin/index.most-active-country'), $mostActiveCountry)
-                ->description(trans('admin/index.activity-description'))
-                ->descriptionIcon('heroicon-m-globe-americas')
-                ->color('primary'),
-        ];
+        if (empty($topCountries)) {
+            return [
+                Stat::make(trans('admin/index.most-active-country'), 'No data available')
+                    ->description(trans('admin/index.activity-description'))
+                    ->descriptionIcon('heroicon-m-globe-americas')
+                    ->color('gray'),
+            ];
+        }
+
+        $stats = [];
+        $rank = 1;
+        foreach ($topCountries as $data) {
+            $flag = $this->getFlagEmoji($data['code']);
+            $label = $rank === 1 ? trans('admin/index.most-active-country') : "#{$rank} " . trans('admin/index.most-active-country');
+            
+            $stats[] = Stat::make($label, "{$flag} {$data['country']}")
+                ->description("{$data['count']} logins recently")
+                ->descriptionIcon('heroicon-m-arrow-trending-up')
+                ->color($rank === 1 ? 'success' : 'primary');
+            
+            $rank++;
+        }
+
+        return $stats;
     }
 
     /**
-     * Determine the most active country based on recent authentication logs.
+     * Determine the top N active countries based on recent authentication logs.
+     * 
+     * @return array<int, array{country: string, code: string, count: int}>
      */
-    private function getMostActiveCountry(): string
+    private function getTopCountries(int $limit = 3): array
     {
-        return Cache::remember('metric:most_active_country', 3600, function () {
+        return Cache::remember('metric:top_active_countries', 3600, function () use ($limit) {
             $recentLogs = ActivityLog::query()
                 ->where('event', 'auth:success')
                 ->orderBy('id', 'desc')
-                ->limit(100)
+                ->limit(200) // Increase sample size for better ranking
                 ->pluck('ip');
 
             if ($recentLogs->isEmpty()) {
-                return 'No data available';
+                return [];
             }
 
-            $countries = [];
+            $countryData = [];
             foreach ($recentLogs as $ip) {
-                $country = $this->geoIPService->getCountry($ip);
-                if ($country && $country !== 'Unknown') {
-                    $countries[] = $country;
+                $info = $this->geoIPService->getCountryInfo($ip);
+                if ($info && $info['country'] !== 'Unknown') {
+                    $key = $info['code'];
+                    if (!isset($countryData[$key])) {
+                        $countryData[$key] = [
+                            'country' => $info['country'],
+                            'code' => $info['code'],
+                            'count' => 0,
+                        ];
+                    }
+                    $countryData[$key]['count']++;
                 }
             }
 
-            if (empty($countries)) {
-                return 'Unknown';
+            if (empty($countryData)) {
+                return [];
             }
 
-            $counts = array_count_values($countries);
-            arsort($counts);
+            usort($countryData, fn($a, $b) => $b['count'] <=> $a['count']);
 
-            return array_key_first($counts) ?: 'Unknown';
+            return array_slice($countryData, 0, $limit);
         });
+    }
+
+    /**
+     * Convert ISO country code to emoji flag.
+     */
+    private function getFlagEmoji(string $countryCode): string
+    {
+        if ($countryCode === 'UN' || strlen($countryCode) !== 2) {
+            return '🌐';
+        }
+
+        if ($countryCode === 'Localhost') {
+            return '🏠';
+        }
+
+        $codePoints = array_map(function ($char) {
+            return 127397 + ord(strtoupper($char));
+        }, str_split($countryCode));
+
+        return mb_convert_encoding('&#' . implode(';&#', $codePoints) . ';', 'UTF-8', 'HTML-ENTITIES');
     }
 }
