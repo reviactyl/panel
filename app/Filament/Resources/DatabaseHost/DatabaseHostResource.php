@@ -156,10 +156,21 @@ class DatabaseHostResource extends Resource
                     ->icon('heroicon-o-trash')
                     ->color('danger')
                     ->requiresConfirmation()
-                    ->action(function (DatabaseHost $record) {
+                    ->action(function (DatabaseHost $record, Actions\Action $action) {
                         if ($record->databases()->count() > 0) {
-                            throw new \Exception(trans('admin/databases.errors.cannot_delete'));
+                            \Filament\Notifications\Notification::make()
+                                ->title(trans('admin/databases.errors.cannot_delete'))
+                                ->danger()
+                                ->send();
+
+                            $action->halt();
+                            $action->halt();
                         }
+
+                        /** @var \App\Services\Activity\ActivityLogService $logService */
+                        $logService = app(\App\Services\Activity\ActivityLogService::class);
+                        $logService->subject($record)->event('server:database-host.delete')->log();
+
                         $record->delete();
                     }),
             ]);

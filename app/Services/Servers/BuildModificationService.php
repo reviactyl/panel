@@ -55,7 +55,7 @@ class BuildModificationService
             return $server->refresh();
         });
 
-        $this->logService->subject($server)->event('server:build')->log();
+        $this->logService->clone()->subject($server)->event('server:build')->log();
 
         $updateData = $this->structureService->handle($server);
 
