@@ -192,10 +192,10 @@ return [
     ],
 
     'alerts' => [
-        'install_toggled' => 'Le statut d\'installation de ce serveur a été modifié.',
+        'install_toggled' => 'Server install status has been toggled.',
         'server_suspended' => 'Server has been :action.',
-        'server_reinstalled' => 'Ce serveur a été mis en file d\'attente pour une réinstallation qui commence dès maintenant.',
-        'server_deleted' => 'Le serveur a été supprimé avec succès.',
+        'server_reinstalled' => 'Server reinstall has been initiated.',
+        'server_deleted' => 'Server has been deleted.',
         'server_delete_failed' => 'Failed to delete server.',
         'startup_changed' => 'La configuration de démarrage de ce serveur a été mise à jour. Si le nid ou l\'oeuf de ce serveur a été modifié, une réinstallation va maintenant avoir lieu.',
         'server_created' => 'Le serveur a été créé avec succès sur le panneau. Veuillez patienter quelques minutes afin que le daemon puisse terminer l\'installation complète de ce serveur.',
