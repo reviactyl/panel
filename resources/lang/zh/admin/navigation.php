@@ -7,6 +7,7 @@ return [
         'dashboard' => '仪表板',
         'settings' => '设置',
         'api' => '应用 API',
+        'activity_log' => 'Activity Log',
     ],
     'management' => [
         'title' => '管理',
