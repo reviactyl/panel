@@ -7,6 +7,7 @@ return [
         'dashboard' => 'Panel',
         'settings' => 'Ayarlar',
         'api' => 'Uygulama API',
+        'activity_log' => 'Activity Log',
     ],
     'management' => [
         'title' => 'Kaynak Yönetimi',
