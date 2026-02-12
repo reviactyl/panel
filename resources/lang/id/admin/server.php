@@ -192,10 +192,10 @@ return [
     ],
 
     'alerts' => [
-        'install_toggled' => 'Status instalasi untuk server ini telah diubah.',
+        'install_toggled' => 'Server install status has been toggled.',
         'server_suspended' => 'Server has been :action.',
-        'server_reinstalled' => 'Server ini telah dimasukkan dalam antrian untuk instalasi ulang mulai sekarang.',
-        'server_deleted' => 'Server berhasil dihapus dari sistem.',
+        'server_reinstalled' => 'Server reinstall has been initiated.',
+        'server_deleted' => 'Server has been deleted.',
         'server_delete_failed' => 'Failed to delete server.',
         'startup_changed' => 'Konfigurasi startup untuk server ini telah diperbarui. Jika nest atau egg server ini diubah, instal ulang akan terjadi sekarang.',
         'server_created' => 'Server berhasil dibuat di panel. Harap tunggu beberapa menit agar daemon sepenuhnya menginstal server ini.',
