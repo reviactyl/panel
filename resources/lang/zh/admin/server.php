@@ -195,7 +195,7 @@ return [
         'install_toggled' => '服务器安装状态已切换。',
         'server_suspended' => '服务器已成功执行 :action 。',
         'server_reinstalled' => '服务器重装任务已开始。',
-        'server_deleted' => 'Server has been deleted from the system.',
+        'server_deleted' => '服务器已删除。',
         'server_delete_failed' => '服务器删除失败。',
         'startup_changed' => '此服务器的启动配置已更新。如果此服务器的巢穴或 egg 已更改，将立即进行重新安装。',
         'server_created' => '服务器已成功在面板上创建。请给守护进程几分钟时间来完全安装此服务器。',
