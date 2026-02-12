@@ -145,6 +145,7 @@ class User extends Model implements
         'gravatar',
         'root_admin',
         'editor',
+        'last_seen',
     ];
 
     /**
@@ -156,6 +157,7 @@ class User extends Model implements
         'gravatar' => 'boolean',
         'totp_authenticated_at' => 'datetime',
         'editor' => 'string',
+        'last_seen' => 'datetime',
     ];
 
     /**
