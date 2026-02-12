@@ -4,16 +4,12 @@ namespace App\Filament\Widgets;
 
 use App\Models\ActivityLog;
 use App\Services\Helpers\GeoIPService;
-use Filament\Infolists\Components\TextEntry;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Schema;
+use Filament\Widgets\StatsOverviewWidget\Stat;
+use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Illuminate\Support\Facades\Cache;
-use App\Filament\Widgets\BaseWidget;
 
 class UserActivityWidget extends BaseWidget
 {
-    protected int|string|array $columnSpan = 1;
-
     protected static ?int $sort = 4;
 
     private GeoIPService $geoIPService;
@@ -23,20 +19,16 @@ class UserActivityWidget extends BaseWidget
         $this->geoIPService = $geoIPService;
     }
 
-    public function form(Schema $schema): Schema
+    protected function getStats(): array
     {
         $mostActiveCountry = $this->getMostActiveCountry();
 
-        return $schema->components([
-            Section::make(trans('admin/index.metrics-header'))
-                ->icon('heroicon-o-globe-americas')
-                ->iconColor('primary')
-                ->schema([
-                    TextEntry::make('most_active_country')
-                        ->label(trans('admin/index.most-active-country'))
-                        ->state($mostActiveCountry),
-                ]),
-        ]);
+        return [
+            Stat::make(trans('admin/index.most-active-country'), $mostActiveCountry)
+                ->description(trans('admin/index.activity-description'))
+                ->descriptionIcon('heroicon-m-globe-americas')
+                ->color('primary'),
+        ];
     }
 
     /**
