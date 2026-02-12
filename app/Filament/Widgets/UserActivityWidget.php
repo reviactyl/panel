@@ -4,12 +4,16 @@ namespace App\Filament\Widgets;
 
 use App\Models\ActivityLog;
 use App\Services\Helpers\GeoIPService;
-use Filament\Widgets\StatsOverviewWidget\Stat;
-use Filament\Widgets\StatsOverviewWidget as BaseWidget;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Cache;
+use App\Filament\Widgets\BaseWidget;
 
 class UserActivityWidget extends BaseWidget
 {
+    protected int|string|array $columnSpan = 1;
+
     protected static ?int $sort = 4;
 
     private GeoIPService $geoIPService;
@@ -19,34 +23,32 @@ class UserActivityWidget extends BaseWidget
         $this->geoIPService = $geoIPService;
     }
 
-    protected function getStats(): array
+    public function form(Schema $schema): Schema
     {
         $topCountries = $this->getTopCountries(3);
 
+        $components = [];
         if (empty($topCountries)) {
-            return [
-                Stat::make(trans('admin/index.most-active-country'), 'No data available')
-                    ->description(trans('admin/index.activity-description'))
-                    ->descriptionIcon('heroicon-m-globe-americas')
-                    ->color('gray'),
-            ];
+            $components[] = TextEntry::make('no_data')
+                ->hiddenLabel()
+                ->state('No activity data available');
+        } else {
+            foreach ($topCountries as $index => $data) {
+                $flag = $this->getFlagEmoji($data['code']);
+                $rank = $index + 1;
+                $components[] = TextEntry::make("country_{$rank}")
+                    ->label($rank === 1 ? "Most Active Country" : "#{$rank} Country")
+                    ->state("{$flag} {$data['country']}")
+                    ->hint("{$data['count']} logins");
+            }
         }
 
-        $stats = [];
-        $rank = 1;
-        foreach ($topCountries as $data) {
-            $flag = $this->getFlagEmoji($data['code']);
-            $label = $rank === 1 ? trans('admin/index.most-active-country') : "#{$rank} " . trans('admin/index.most-active-country');
-            
-            $stats[] = Stat::make($label, "{$flag} {$data['country']}")
-                ->description("{$data['count']} logins recently")
-                ->descriptionIcon('heroicon-m-arrow-trending-up')
-                ->color($rank === 1 ? 'success' : 'primary');
-            
-            $rank++;
-        }
-
-        return $stats;
+        return $schema->components([
+            Section::make(trans('admin/index.metrics-header'))
+                ->icon('heroicon-o-globe-americas')
+                ->iconColor('primary')
+                ->schema($components),
+        ]);
     }
 
     /**
@@ -60,7 +62,7 @@ class UserActivityWidget extends BaseWidget
             $recentLogs = ActivityLog::query()
                 ->where('event', 'auth:success')
                 ->orderBy('id', 'desc')
-                ->limit(200) // Increase sample size for better ranking
+                ->limit(200)
                 ->pluck('ip');
 
             if ($recentLogs->isEmpty()) {
