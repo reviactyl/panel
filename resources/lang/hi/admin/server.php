@@ -183,14 +183,6 @@ return [
         'view' => 'View',
     ],
 
-    'alerts' => [
-        'install_toggled' => 'Server install status has been toggled.',
-        'server_suspended' => 'Server has been :action.',
-        'server_reinstalled' => 'Server reinstall has been initiated.',
-        'server_deleted' => 'Server has been deleted.',
-        'server_delete_failed' => 'Failed to delete server.',
-    ],
-    
     'exceptions' => [
         'no_new_default_allocation' => 'आप इस सर्वर के लिए डिफ़ॉल्ट आवंटन हटाने का प्रयास कर रहे हैं लेकिन उपयोग करने के लिए कोई फ़ॉलबैक आवंटन नहीं है।',
         'marked_as_failed' => 'इस सर्वर को पिछली इंस्टॉलेशन में विफल के रूप में चिह्नित किया गया था। इस स्थिति में वर्तमान स्थिति को टॉगल नहीं किया जा सकता।',
@@ -198,15 +190,18 @@ return [
         'daemon_exception' => 'डेमन के साथ संवाद करने का प्रयास करते समय एक अपवाद था जिसके परिणामस्वरूप HTTP/:code प्रतिक्रिया कोड मिला। यह अपवाद लॉग किया गया है। (अनुरोध आईडी: :request_id)',
         'default_allocation_not_found' => 'अनुरोधित डिफ़ॉल्ट आवंटन इस सर्वर के आवंटनों में नहीं मिला।',
     ],
+
     'alerts' => [
+        'install_toggled' => 'Server install status has been toggled.',
+        'server_suspended' => 'Server has been :action.',
+        'server_reinstalled' => 'Server reinstall has been initiated.',
+        'server_deleted' => 'Server has been deleted from the system.',
+        'server_delete_failed' => 'Failed to delete server.',
         'startup_changed' => 'इस सर्वर के लिए स्टार्टअप कॉन्फ़िगरेशन अपडेट कर दिया गया है। यदि इस सर्वर का नेस्ट या egg बदला गया था तो अब एक पुनर्स्थापना होगी।',
-        'server_deleted' => 'सर्वर को सिस्टम से सफलतापूर्वक हटा दिया गया है।',
         'server_created' => 'सर्वर पैनल पर सफलतापूर्वक बनाया गया। कृपया डेमन को इस सर्वर को पूरी तरह से इंस्टॉल करने के लिए कुछ मिनट दें।',
         'build_updated' => 'इस सर्वर के बिल्ड विवरण अपडेट कर दिए गए हैं। कुछ परिवर्तनों को प्रभावी होने के लिए पुनः आरंभ की आवश्यकता हो सकती है।',
         'suspension_toggled' => 'सर्वर निलंबन स्थिति :status में बदल दी गई है।',
         'rebuild_on_boot' => 'इस सर्वर को Docker कंटेनर पुनर्निर्माण की आवश्यकता के रूप में चिह्नित किया गया है। यह अगली बार सर्वर शुरू होने पर होगा।',
-        'install_toggled' => 'इस सर्वर के लिए इंस्टॉलेशन स्थिति टॉगल कर दी गई है।',
-        'server_reinstalled' => 'इस सर्वर को अभी से शुरू होने वाली पुनर्स्थापना के लिए कतारबद्ध कर दिया गया है।',
         'details_updated' => 'सर्वर विवरण सफलतापूर्वक अपडेट कर दिए गए हैं।',
         'docker_image_updated' => 'इस सर्वर के लिए उपयोग करने के लिए डिफ़ॉल्ट Docker इमेज सफलतापूर्वक बदल दी गई। इस परिवर्तन को लागू करने के लिए रीबूट आवश्यक है।',
         'node_required' => 'इस पैनल में सर्वर जोड़ने से पहले आपके पास कम से कम एक नोड कॉन्फ़िगर होना चाहिए।',
