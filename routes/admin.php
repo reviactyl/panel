@@ -259,4 +259,6 @@ Route::group(['prefix' => 'designify'], function () {
 
     Route::get('/site', [Admin\Designify\SiteController::class, 'index'])->name('admin.designify.site');
     Route::patch('/site', [Admin\Designify\SiteController::class, 'update']);
+    Route::get('/errors', [Admin\Designify\ErrorPagesController::class, 'index'])->name('admin.designify.errors');
+    Route::patch('/errors', [Admin\Designify\ErrorPagesController::class, 'update']);
 });

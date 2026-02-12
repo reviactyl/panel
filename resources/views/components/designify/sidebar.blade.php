@@ -25,6 +25,11 @@
          icon="fa-solid fa-gear"
          label="Site Meta Settings"
          :active="str_starts_with(Route::currentRouteName(),'admin.designify.site')" />
+      <x-designify.tab-button
+         :route="route('admin.designify.errors')"
+         icon="fa-solid fa-triangle-exclamation"
+         label="Error Pages"
+         :active="str_starts_with(Route::currentRouteName(),'admin.designify.errors')" />
       @include('partials.admin.designify.save')
    </div>
    <div class="flex-1 overflow-y-auto mt-2 pr-1 text-white p-1">

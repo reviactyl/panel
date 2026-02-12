@@ -136,6 +136,21 @@ class DesignifyServiceProvider extends ServiceProvider
         "designify:theme7:color700",
         "designify:theme7:color800",
         "designify:theme7:color900",
+        "designify:errors:403:title",
+        "designify:errors:403:message",
+        "designify:errors:403:button",
+        "designify:errors:403:image",
+        "designify:errors:403:color",
+        "designify:errors:404:title",
+        "designify:errors:404:message",
+        "designify:errors:404:button",
+        "designify:errors:404:image",
+        "designify:errors:404:color",
+        "designify:errors:500:title",
+        "designify:errors:500:message",
+        "designify:errors:500:button",
+        "designify:errors:500:image",
+        "designify:errors:500:color",
     ];
 
     /**
