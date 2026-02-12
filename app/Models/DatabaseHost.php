@@ -69,6 +69,11 @@ class DatabaseHost extends Model
         'node_id' => 'sometimes|nullable|integer|exists:nodes,id',
     ];
 
+    public function getRouteKeyName(): string
+    {
+        return $this->getKeyName();
+    }
+
     /**
      * Gets the node associated with a database host.
      *
