@@ -192,10 +192,10 @@ return [
     ],
 
     'alerts' => [
-        'install_toggled' => 'Server install status has been toggled.',
+        'install_toggled' => 'Bu sunucu için kurulum durumu değiştirildi.',
         'server_suspended' => 'Server has been :action.',
-        'server_reinstalled' => 'Server reinstall has been initiated.',
-        'server_deleted' => 'Server has been deleted.',
+        'server_reinstalled' => 'Bu sunucu şuan başlayan bir yeniden kurulum için sıraya alındı.',
+        'server_deleted' => 'Sunucu başarıyla sistemden silindi.',
         'server_delete_failed' => 'Failed to delete server.',
         'startup_changed' => 'Bu sunucu için başlangıç yapılandırması güncellendi. Bu sunucunun nest veya egg\'i değiştirildiyse, şu anda bir yeniden kurulum gerçekleşecektir.',
         'server_created' => 'Sunucu panelde başarıyla oluşturuldu. Lütfen daemon\'ın bu sunucuyu tamamen kurması için birkaç dakika bekleyin.',
