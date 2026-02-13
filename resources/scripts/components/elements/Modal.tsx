@@ -19,6 +19,7 @@ export interface ModalProps extends RequiredModalProps {
     closeOnBackground?: boolean;
     showSpinnerOverlay?: boolean;
     size?: 'sm' | 'md' | 'lg';
+    noScroll?: boolean;
 }
 
 export const ModalMask = styled.div`
@@ -80,6 +81,7 @@ const Modal: React.FC<ModalProps> = ({
     closeOnEscape = true,
     onDismissed,
     size = 'md',
+    noScroll = false,
     children,
 }) => {
     const [render, setRender] = useState(visible);
@@ -147,7 +149,10 @@ const Modal: React.FC<ModalProps> = ({
                         </Fade>
                     )}
                     <div
-                        css={tw`bg-gray-700 border border-gray-600 p-3 sm:p-4 md:p-6 rounded-ui shadow-md overflow-y-scroll transition-all duration-150`}
+                        css={[
+                            tw`bg-gray-700 border border-gray-600 p-3 sm:p-4 md:p-6 rounded-ui shadow-md transition-all duration-150`,
+                            noScroll ? tw`overflow-visible` : tw`overflow-y-auto`,
+                        ]}
                     >
                         {children}
                     </div>

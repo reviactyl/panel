@@ -122,7 +122,7 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
     };
 
     return (
-        <Modal visible={visible} onDismissed={onDismissed} dismissable={true} size={'lg'}>
+        <Modal visible={visible} onDismissed={onDismissed} dismissable={true} size={'lg'} noScroll={true}>
             <div style={{ marginBottom: '1.5rem', borderBottom: '1px solid #1f2937', paddingBottom: '1rem' }}>
                 <h2 style={{ fontSize: '1.5rem', fontWeight: 600, color: '#f3f4f6' }}>Manage Server Categories</h2>
             </div>
@@ -211,7 +211,7 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
                         </span>
                     </div>
 
-                    <div style={{ maxHeight: '420px', overflowY: 'auto', paddingRight: '0.5rem' }}>
+                    <div style={{ paddingRight: '0.5rem' }}>
                         {categories.length === 0 ? (
                             <div style={{ backgroundColor: '#111827', border: '2px dashed #1f2937', borderRadius: '1rem', padding: '3rem 1rem', textAlign: 'center' }}>
                                 <FontAwesomeIcon icon={faLayerGroup} style={{ fontSize: '2rem', color: '#374151', marginBottom: '1rem' }} />
