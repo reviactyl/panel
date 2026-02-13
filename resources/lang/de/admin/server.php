@@ -195,7 +195,7 @@ return [
         'install_toggled' => 'Server-Installationsstatus wurde umgeschaltet.',
         'server_suspended' => 'Server wurde :action.',
         'server_reinstalled' => 'Server-Neuinstallation wurde gestartet.',
-        'server_deleted' => 'Server has been deleted.',
+        'server_deleted' => 'Server wurde gelöscht.',
         'server_delete_failed' => 'Server konnte nicht gelöscht werden.',
         'startup_changed' => 'Die Startkonfiguration für diesen Server wurde aktualisiert. Wenn das Nest oder Ei dieses Servers geändert wurde, findet jetzt eine Neuinstallation statt.',
         'server_created' => 'Der Server wurde erfolgreich auf dem Panel erstellt. Bitte geben Sie dem Daemon einige Minuten Zeit, um diesen Server vollständig zu installieren.',
