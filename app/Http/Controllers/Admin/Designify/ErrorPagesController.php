@@ -48,4 +48,24 @@ class ErrorPagesController extends Controller
 
         return redirect()->route('admin.designify.errors');
     }
+
+    /**
+     * Preview a specific error page.
+     */
+    public function preview(\Illuminate\Http\Request $request, int $code): View
+    {
+        if (!in_array($code, [403, 404, 500])) {
+            abort(404);
+        }
+
+        // Override config values if data is provided in the request (Live Preview)
+        foreach ($request->all() as $key => $value) {
+            if (str_starts_with($key, 'designify:errors:' . $code . ':')) {
+                $configKey = str_replace(':', '.', str_replace('designify:', 'designify.', $key));
+                $this->config->set($configKey, $value);
+            }
+        }
+
+        return $this->view->make('errors.' . $code);
+    }
 }

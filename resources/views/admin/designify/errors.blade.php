@@ -19,6 +19,7 @@
                 <div class="flex items-center space-x-3 border-b border-zinc-800 pb-3">
                     <span class="px-2 py-1 bg-amber-500/10 text-amber-500 rounded text-xs font-bold">403</span>
                     <h2 class="text-lg font-semibold text-white">Forbidden</h2>
+                    <button type="button" onclick="changePreview('{{ route('admin.designify.errors.preview', 403) }}')" class="ml-auto text-xs font-medium text-zinc-500 hover:text-white transition-colors bg-zinc-800/50 px-2 py-1 rounded-md border border-zinc-700">Preview 403</button>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-2">
@@ -49,6 +50,7 @@
                 <div class="flex items-center space-x-3 border-b border-zinc-800 pb-3">
                     <span class="px-2 py-1 bg-blue-500/10 text-blue-500 rounded text-xs font-bold">404</span>
                     <h2 class="text-lg font-semibold text-white">Not Found</h2>
+                    <button type="button" onclick="changePreview('{{ route('admin.designify.errors.preview', 404) }}')" class="ml-auto text-xs font-medium text-zinc-500 hover:text-white transition-colors bg-zinc-800/50 px-2 py-1 rounded-md border border-zinc-700">Preview 404</button>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-2">
@@ -79,6 +81,7 @@
                 <div class="flex items-center space-x-3 border-b border-zinc-800 pb-3">
                     <span class="px-2 py-1 bg-red-500/10 text-red-500 rounded text-xs font-bold">500</span>
                     <h2 class="text-lg font-semibold text-white">Server Error</h2>
+                    <button type="button" onclick="changePreview('{{ route('admin.designify.errors.preview', 500) }}')" class="ml-auto text-xs font-medium text-zinc-500 hover:text-white transition-colors bg-zinc-800/50 px-2 py-1 rounded-md border border-zinc-700">Preview 500</button>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-2">
@@ -105,4 +108,30 @@
             </div>
         </div>
     </form>
+
+    <script>
+        // Debounce function to limit preview requests
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Auto-refresh preview when inputs change
+        const autoRefresh = debounce(() => {
+            if (typeof refreshPreview === 'function') {
+                refreshPreview();
+            }
+        }, 500);
+
+        document.getElementById('designifyEditor').querySelectorAll('input, textarea').forEach(input => {
+            input.addEventListener('input', autoRefresh);
+        });
+    </script>
 @endsection
