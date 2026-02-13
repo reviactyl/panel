@@ -73,7 +73,7 @@ export default ({ server, className, onCategoryChanged }: { server: Server; clas
                     onCategoryChanged?.();
                 }}
             />
-            <Link to={`/server/${server.id}`}>
+            <Link to={`/server/${server.id}`} className={className}>
                 <Card className='!p-0'>
                     <div
                         className='rounded-ui bg-center bg-cover bg-no-repeat bg-center relative px-6 pt-6 pb-6 z-10'

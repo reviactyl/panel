@@ -160,7 +160,7 @@ export default () => {
                                         key={slug}
                                         category={categories?.find(c => c.uuid === slug) || null}
                                         servers={groupedServers[slug] || []}
-                                        showOnlyAdmin={showOnlyAdmin!!}
+                                        showOnlyAdmin={showOnlyAdmin || false}
                                         onCategoryChanged={() => mutateServers()}
                                     />
                                 ))

@@ -11,7 +11,6 @@ import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import { ServerContext } from '@/state/server';
 import { WithClassname } from '@/components/types';
 import Portal from '@/components/elements/Portal';
-import { CloudUploadIcon } from '@heroicons/react/outline';
 import { useSignal } from '@preact/signals-react';
 import Card from '@/reviactyl/ui/Card';
 import { UploadIcon } from '@heroicons/react/solid';
