@@ -21,8 +21,11 @@ class GeoIPService
      */
     public function getCountryInfo(string $ip): ?array
     {
-        if ($ip === '127.0.0.1' || $ip === '::1') {
-            return ['country' => 'Localhost', 'code' => 'UN'];
+        if (!$this->isPublicIP($ip)) {
+            return [
+                'country' => __('strings.local_network'),
+                'code' => 'LOCAL',
+            ];
         }
 
         return Cache::remember('geoip:v2:' . $ip, 86400, function () use ($ip) {
@@ -49,7 +52,19 @@ class GeoIPService
                 $this->logger->error('GeoIP resolution exception for IP: ' . $ip . ' - ' . $e->getMessage());
             }
 
-            return 'Unknown';
+            return null;
         });
+    }
+
+    /**
+     * Determine if an IP address is a public WAN address.
+     */
+    private function isPublicIP(string $ip): bool
+    {
+        return filter_var(
+            $ip,
+            FILTER_VALIDATE_IP,
+            FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE
+        ) !== false;
     }
 }

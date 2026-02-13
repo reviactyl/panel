@@ -7,16 +7,11 @@ use App\Services\Helpers\GeoIPService;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\Cache;
 
-class UserActivityWidget extends Widget
+class UserActivityWidget extends BaseWidget
 {
     protected string $view = 'filament.widgets.user-activity-metrics';
 
-    protected int|string|array $columnSpan = [
-        'default' => 1,
-        'sm' => 1,
-        'md' => 1,
-        'lg' => 1,
-    ];
+    protected int|string|array $columnSpan = 2;
 
     protected static ?int $sort = 4;
 
@@ -40,7 +35,7 @@ class UserActivityWidget extends Widget
                     'country' => $data['country'],
                     'code' => $data['code'],
                     'count' => $data['count'],
-                    'flag_url' => $code === 'un' || $code === 'localhost' 
+                    'flag_url' => in_array($code, ['un', 'local'])
                         ? null 
                         : "https://flagcdn.com/" . $code . ".svg",
                     'percentage' => $maxCount > 0 ? ($data['count'] / $maxCount) * 100 : 0,
