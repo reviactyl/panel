@@ -8,6 +8,8 @@ return [
         'settings' => '设置',
         'api' => '应用 API',
         'activity_log' => 'Activity Log',
+        'user_activity_metrics' => 'User Activity Metrics',
+        'no_data' => 'No data available.',
     ],
     'management' => [
         'title' => '管理',
