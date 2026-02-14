@@ -15,8 +15,8 @@ return [
 
     'help-btn' => '获取帮助',
     'docs-btn' => '使用文档',
-    'metrics-header' => 'User Activity Metrics',
-    'most-active-country' => 'Most Active Country',
-    'activity-description' => 'Based on recent login activity.',
-    'no_activity' => 'There is no recent activity to display.',
+    'metrics-header' => '用户活动指标',
+    'most-active-country' => '最活跃的国家',
+    'activity-description' => '基于最近的登录活动。',
+    'no_activity' => '暂无最近活动记录。',
 ];

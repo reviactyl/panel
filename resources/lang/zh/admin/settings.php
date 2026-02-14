@@ -12,7 +12,7 @@ return [
         'not-required' => '不要求',
         'admin-only' => '仅管理员',
         'all-users' => '所有用户',
-        'default-language' => 'Default Language',
+        'default-language' => '默认语言',
         'provider' => '头像提供者',
         'enabled' => '已启用',
         'disabled' => '已禁用',

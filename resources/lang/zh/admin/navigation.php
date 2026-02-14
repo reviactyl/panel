@@ -7,9 +7,9 @@ return [
         'dashboard' => '仪表板',
         'settings' => '设置',
         'api' => '应用 API',
-        'activity_log' => 'Activity Log',
-        'user_activity_metrics' => 'User Activity Metrics',
-        'no_data' => 'No data available.',
+        'activity_log' => '活动日志',
+        'user_activity_metrics' => '用户活动指标',
+        'no_data' => '暂无数据。',
     ],
     'management' => [
         'title' => '管理',

@@ -183,15 +183,15 @@ return [
     ],
     
     'validation' => [
-        'fqdn_not_resolvable' => 'ನೀಡಲಾದ FQDN ಅಥವಾ IP ವಿಳಾಸವು ಮಾನ್ಯವಾದ IP ವಿಳಾಸಕ್ಕೆ ಪರಿಭಾಷೆಯಾಗುವುದಿಲ್ಲ.',
-        'fqdn_required_for_ssl' => 'ಈ ನೋಡ್‌ಗೆ SSL ಬಳಸಲು ಸಾರ್ವಜನಿಕ IP ವಿಳಾಸಕ್ಕೆ ಪರಿಭಾಷೆಯಾಗುವ ಪೂರ್ಣ ಅರ್ಹ ಡೊಮೇನ್ ಹೆಸರು (FQDN) ಅಗತ್ಯವಿದೆ.',
+        'fqdn_not_resolvable' => 'The FQDN or IP address provided does not resolve to a valid IP address.',
+        'fqdn_required_for_ssl' => 'A fully qualified domain name that resolves to a public IP address is required in order to use SSL for this node.',
     ],
     'notices' => [
-        'allocations_added' => 'ಈ ನೋಡ್‌ಗೆ ಅಲೊಕೆಷನ್‌ಗಳನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಸೇರಿಸಲಾಗಿದೆ.',
-        'node_deleted' => 'ನೋಡ್ ಅನ್ನು ಪ್ಯಾನೆಲ್‌ನಿಂದ ಯಶಸ್ವಿಯಾಗಿ ತೆಗೆದುಹಾಕಲಾಗಿದೆ.',
-        'location_required' => 'ಈ ಪ್ಯಾನೆಲ್‌ಗೆ ನೋಡ್ ಸೇರಿಸುವ ಮೊದಲು ಕನಿಷ್ಠ ಒಂದು ಸ್ಥಳವನ್ನು ಸಂರಚಿಸಿರಬೇಕು.',
-        'node_created' => 'ಹೊಸ ನೋಡ್ ಅನ್ನು ಯಶಸ್ವಿಯಾಗಿ ರಚಿಸಲಾಗಿದೆ. \'Configuration\' ಟ್ಯಾಬ್‌ಗೆ ಭೇಟಿ ನೀಡುವ ಮೂಲಕ ಈ ಯಂತ್ರದಲ್ಲಿನ ಡೀಮನ್ ಅನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಸಂರಚಿಸಬಹುದು. <strong>ಯಾವುದೇ ಸರ್ವರ್‌ಗಳನ್ನು ಸೇರಿಸುವ ಮೊದಲು ಕನಿಷ್ಠ ಒಂದು IP ವಿಳಾಸ ಮತ್ತು ಪೋರ್ಟ್ ಅನ್ನು ಅಲೊಕೆಟ್ ಮಾಡಬೇಕು.</strong>',
-        'node_updated' => 'ನೋಡ್ ಮಾಹಿತಿಯನ್ನು ನವೀಕರಿಸಲಾಗಿದೆ. ಯಾವುದೇ ಡೀಮನ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಬದಲಾಯಿಸಿದ್ದರೆ, ಅವು ಪರಿಣಾಮಕಾರಿಯಾಗಲು ಡೀಮನ್ ಅನ್ನು ಮರುಪ್ರಾರಂಭಿಸಬೇಕು.',
-        'unallocated_deleted' => '<code>:ip</code> ಗಾಗಿ ಅಲೊಕೆಟ್ ಮಾಡದ ಎಲ್ಲಾ ಪೋರ್ಟ್‌ಗಳನ್ನು ಅಳಿಸಲಾಗಿದೆ.',
+        'allocations_added' => 'Allocations have successfully been added to this node.',
+        'node_deleted' => 'Node has been successfully removed from the panel.',
+        'location_required' => 'You must have at least one location configured before you can add a node to this panel.',
+        'node_created' => 'Successfully created new node. You can automatically configure the daemon on this machine by visiting the \'Configuration\' tab. <strong>Before you can add any servers you must first allocate at least one IP address and port.</strong>',
+        'node_updated' => 'Node information has been updated. If any daemon settings were changed you will need to reboot it for those changes to take effect.',
+        'unallocated_deleted' => 'Deleted all un-allocated ports for <code>:ip</code>.',
     ],
 ];

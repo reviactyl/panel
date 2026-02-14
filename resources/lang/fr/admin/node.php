@@ -133,6 +133,7 @@ return [
     ],
 
     'actions' => [
+        'create' => 'Create',
         'edit' => 'Edit',
         'delete' => 'Delete',
         'view' => 'View',
@@ -146,6 +147,7 @@ return [
     ],
 
     'allocations' => [
+        'label' => 'Allocations',
         'table' => [
             'ip' => 'IP',
             'port' => 'Port',

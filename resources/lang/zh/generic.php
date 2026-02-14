@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'never' => 'Never',
+    'never' => '从不',
 ];
