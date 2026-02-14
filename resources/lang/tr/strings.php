@@ -92,4 +92,5 @@ return [
     'disable' => 'Devre Dışı Bırak',
     'save' => 'Kaydet',
     'copyright' => '&copy; :year Reviactyl™ Yazılım',
+    'local_network' => 'Local Network',
 ];
