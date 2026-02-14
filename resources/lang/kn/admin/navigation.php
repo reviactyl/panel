@@ -8,6 +8,8 @@ return [
         'settings' => 'ಸೆಟ್ಟಿಂಗ್‌ಗಳು',
         'api' => 'ಅಪ್ಲಿಕೇಶನ್ API',
         'activity_log' => 'Activity Log',
+        'user_activity_metrics' => 'User Activity Metrics',
+        'no_data' => 'No data available.',
     ],
     'management' => [
         'title' => 'ನಿರ್ವಹಣೆ',
