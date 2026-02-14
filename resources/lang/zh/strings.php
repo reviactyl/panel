@@ -92,4 +92,5 @@ return [
     'disable' => '禁用',
     'save' => '保存',
     'copyright' => '&copy; :year Reviactyl™ 软件',
+    'local_network' => 'Local Network',
 ];
