@@ -91,12 +91,21 @@ class ClientController extends ClientApiController
     }
 
     /**
-     * Returns eggs that the user has at least one server for (for dashboard egg filter).
+     * Returns eggs for the dashboard egg filter. With default scope, returns eggs from
+     * the user's accessible servers. With ?type=admin (root_admin only), returns eggs
+     * from "other" servers (servers the admin can see but is not owner/subuser of).
      */
     public function eggs(GetServersRequest $request): array
     {
         $user = $request->user();
-        $serverIds = $user->accessibleServers()->pluck('id')->all();
+        $type = $request->input('type');
+
+        if ($type === 'admin' && $user->root_admin) {
+            $serverIds = Server::whereNotIn('id', $user->accessibleServers()->pluck('id')->all())->pluck('id')->all();
+        } else {
+            $serverIds = $user->accessibleServers()->pluck('id')->all();
+        }
+
         $eggIds = Server::whereIn('id', $serverIds)->distinct()->pluck('egg_id');
         $eggs = Egg::whereIn('id', $eggIds)->orderBy('name')->get(['id', 'name']);
 

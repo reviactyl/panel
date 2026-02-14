@@ -51,7 +51,10 @@ export default () => {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [eggFilterOpen]);
 
-    const { data: eggs } = useSWR('/api/client/eggs', getClientEggs);
+    const eggsKey = showOnlyAdmin && rootAdmin ? ['/api/client/eggs', 'admin'] : '/api/client/eggs';
+    const { data: eggs } = useSWR(eggsKey, () =>
+        getClientEggs(showOnlyAdmin && rootAdmin ? 'admin' : undefined)
+    );
 
     const { data: servers, error, mutate: mutateServers } = useSWR<PaginatedResult<Server>>(
         ['/api/client/servers', showOnlyAdmin && rootAdmin, page, selectedCategory, selectedEggId],
@@ -149,17 +152,26 @@ export default () => {
                 <div className='flex items-center gap-4 flex-wrap'>
                     {!showOnlyAdmin && (
                         <>
-                            <select
-                                className='bg-[#1e293b] border border-[#334155] text-gray-200 px-3 py-1.5 rounded-lg outline-none focus:border-blue-500 transition'
-                                value={selectedCategory}
-                                onChange={(e) => setSelectedCategory(e.target.value)}
-                            >
-                                <option value="all">{t('categories.all-categories')}</option>
-                                {categories?.map(cat => (
-                                    <option key={cat.uuid} value={cat.uuid}>{cat.name}</option>
-                                ))}
-                                <option value="primary">{t('categories.primary')}</option>
-                            </select>
+                            <div className='min-w-0 max-w-[min(12rem,40vw)]' title={selectedCategory === 'all' ? t('categories.all-categories') : selectedCategory === 'primary' ? t('categories.primary') : categories?.find(c => c.uuid === selectedCategory)?.name}>
+                                <select
+                                    className='w-full bg-[#1e293b] border border-[#334155] text-gray-200 px-3 py-1.5 rounded-lg outline-none focus:border-blue-500 transition truncate max-w-full'
+                                    value={selectedCategory}
+                                    onChange={(e) => setSelectedCategory(e.target.value)}
+                                    aria-label={t('categories.all-categories')}
+                                >
+                                    <option value="all">{t('categories.all-categories')}</option>
+                                    {categories?.map(cat => {
+                                        const maxLen = 40;
+                                        const label = cat.name.length <= maxLen ? cat.name : cat.name.slice(0, maxLen - 3) + '...';
+                                        return (
+                                            <option key={cat.uuid} value={cat.uuid} title={cat.name}>
+                                                {label}
+                                            </option>
+                                        );
+                                    })}
+                                    <option value="primary">{t('categories.primary')}</option>
+                                </select>
+                            </div>
 
                             <button
                                 onClick={() => setModalVisible(true)}
@@ -170,7 +182,9 @@ export default () => {
                         </>
                     )}
                     {rootAdmin && (
-                        <div className='flex flex-shrink-0 items-center gap-2'>
+                        <div
+                            className={`flex flex-shrink-0 items-center gap-2 ${!showOnlyAdmin ? 'border-l border-[#334155] pl-4' : ''}`}
+                        >
                             <p className='uppercase text-xs text-gray-400 whitespace-nowrap'>
                                 {showOnlyAdmin ? t('other-servers') : t('your-servers')}
                             </p>
@@ -181,6 +195,7 @@ export default () => {
                             />
                         </div>
                     )}
+                    {/* Egg filter is global (not user-specific): show for both "your servers" and "others' servers" */}
                     {(eggs && eggs.length > 0) || (rootAdmin && showOnlyAdmin && Array.isArray(eggs)) ? (
                         <div className='relative flex items-center border-l border-[#334155] pl-4' ref={eggFilterRef}>
                             <button
