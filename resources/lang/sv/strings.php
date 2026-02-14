@@ -92,4 +92,5 @@ return [
     'disable' => 'Inaktivera',
     'save' => 'Spara',
     'copyright' => '&copy; :year Revacity™ Programvara',
+    'local_network' => 'Local Network',
 ];
