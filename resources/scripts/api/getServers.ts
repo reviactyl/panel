@@ -5,15 +5,17 @@ interface QueryParams {
     query?: string;
     page?: number;
     type?: string;
+    eggId?: number;
     [key: string]: string | number | boolean | null | undefined;
 }
 
-export default ({ query, ...params }: QueryParams): Promise<PaginatedResult<Server>> => {
+export default ({ query, eggId, ...params }: QueryParams): Promise<PaginatedResult<Server>> => {
     return new Promise((resolve, reject) => {
         http.get('/api/client', {
             params: {
                 'include': 'category',
                 'filter[*]': query,
+                ...(eggId != null ? { 'filter[egg_id]': eggId } : {}),
                 ...params,
             },
         })

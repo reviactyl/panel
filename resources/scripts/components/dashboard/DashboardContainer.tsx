@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { Server } from '@/api/server/getServer';
 import getServers from '@/api/getServers';
 import Spinner from '@/components/elements/Spinner';
@@ -14,9 +14,10 @@ import Pagination from '@/components/elements/Pagination';
 import { useLocation } from 'react-router-dom';
 import Card from '@/reviactyl/ui/Card';
 import Title from '@/reviactyl/ui/Title';
-import { EmojiSadIcon } from '@heroicons/react/solid';
+import { EmojiSadIcon, FilterIcon } from '@heroicons/react/solid';
 import { useTranslation } from 'react-i18next';
 import getServerCategories from '@/api/account/getServerCategories';
+import getClientEggs from '@/api/getClientEggs';
 import CategorySection from '@/components/dashboard/CategorySection';
 import CategoryManagerModal from '@/components/dashboard/CategoryManagerModal';
 import ServerRow from '@/components/dashboard/ServerRow';
@@ -34,13 +35,31 @@ export default () => {
 
     const [isModalVisible, setModalVisible] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<string>('all');
+    const [selectedEggId, setSelectedEggId] = useState<number | null>(null);
+    const [eggFilterOpen, setEggFilterOpen] = useState(false);
+    const eggFilterRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (eggFilterRef.current && !eggFilterRef.current.contains(event.target as Node)) {
+                setEggFilterOpen(false);
+            }
+        };
+        if (eggFilterOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [eggFilterOpen]);
+
+    const { data: eggs } = useSWR('/api/client/eggs', getClientEggs);
 
     const { data: servers, error, mutate: mutateServers } = useSWR<PaginatedResult<Server>>(
-        ['/api/client/servers', showOnlyAdmin && rootAdmin, page, selectedCategory],
+        ['/api/client/servers', showOnlyAdmin && rootAdmin, page, selectedCategory, selectedEggId],
         () => getServers({
             page,
             type: showOnlyAdmin && rootAdmin ? 'admin' : undefined,
             'filter[category_uuid]': selectedCategory === 'all' ? undefined : (selectedCategory === 'primary' ? 'null' : selectedCategory),
+            eggId: selectedEggId ?? undefined,
         })
     );
 
@@ -55,6 +74,10 @@ export default () => {
             setPage(1);
         }
     }, [servers?.pagination.currentPage]);
+
+    useEffect(() => {
+        setPage(1);
+    }, [selectedEggId]);
 
     useEffect(() => {
         // Don't use react-router to handle changing this part of the URL, otherwise it
@@ -158,6 +181,47 @@ export default () => {
                             />
                         </div>
                     )}
+                    {!showOnlyAdmin && eggs && eggs.length > 0 && (
+                        <div className='relative flex items-center border-l border-[#334155] pl-4' ref={eggFilterRef}>
+                            <button
+                                type='button'
+                                onClick={() => setEggFilterOpen((o) => !o)}
+                                className={`p-1.5 rounded-lg transition border ${
+                                    selectedEggId != null
+                                        ? 'bg-blue-500/20 border-blue-500 text-blue-400'
+                                        : 'bg-[#1e293b] border-[#334155] text-gray-400 hover:border-gray-500 hover:text-gray-200'
+                                }`}
+                                title={t('eggs.filter-label')}
+                                aria-label={t('eggs.filter-label')}
+                                aria-expanded={eggFilterOpen}
+                            >
+                                <FilterIcon className='w-5 h-5' />
+                            </button>
+                            {eggFilterOpen && (
+                                <div className='absolute right-0 top-full mt-1.5 z-10 min-w-[180px] py-2 px-2 bg-[#1e293b] border border-[#334155] rounded-lg shadow-lg'>
+                                    <p className='text-xs text-gray-400 uppercase px-2 pb-1.5'>
+                                        {t('eggs.filter-label')}
+                                    </p>
+                                    <select
+                                        className='w-full bg-[#0f172a] border border-[#334155] text-gray-200 text-sm px-3 py-2 rounded-lg outline-none focus:border-blue-500 transition'
+                                        value={selectedEggId ?? ''}
+                                        onChange={(e) => {
+                                            setSelectedEggId(e.target.value === '' ? null : Number(e.target.value));
+                                            setEggFilterOpen(false);
+                                        }}
+                                        aria-label={t('eggs.filter-label')}
+                                    >
+                                        <option value=''>{t('eggs.all')}</option>
+                                        {eggs.map((egg) => (
+                                            <option key={egg.id} value={egg.id}>
+                                                {egg.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -173,7 +237,11 @@ export default () => {
                                     <Card css={tw`col-span-1 lg:col-span-2`}>
                                         <p className='flex justify-center text-center text-sm text-gray-400 py-10'>
                                             <EmojiSadIcon className='w-5 h-5 mr-1' />{' '}
-                                            {showOnlyAdmin ? t('no-other-servers') : t('no-servers')}
+                                            {selectedEggId != null
+                                                ? t('eggs.no-servers-for-egg')
+                                                : showOnlyAdmin
+                                                  ? t('no-other-servers')
+                                                  : t('no-servers')}
                                         </p>
                                     </Card>
                                 );

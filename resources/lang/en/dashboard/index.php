@@ -11,6 +11,11 @@ return [
     'your-servers' => 'Showing your servers',
     'no-servers' => 'There are no servers associated with your account.',
     'no-other-servers' => 'There are no other servers to display.',
+    'eggs' => [
+        'all' => 'All',
+        'filter-label' => 'Filter by egg',
+        'no-servers-for-egg' => 'No servers for this egg.',
+    ],
     'search' => [
         'label' => 'Find Servers...',
         'string-min' => 'Please enter at least three characters to begin searching.',

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Client;
 
+use App\Models\Egg;
 use App\Models\Server;
 use App\Models\Permission;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -46,6 +47,7 @@ class ClientController extends ClientApiController
                     });
                 }
             }),
+            'egg_id',
             AllowedFilter::custom('*', new MultiFieldServerFilter()),
         ]);
 
@@ -85,6 +87,22 @@ class ClientController extends ClientApiController
             'attributes' => [
                 'permissions' => Permission::permissions(),
             ],
+        ];
+    }
+
+    /**
+     * Returns eggs that the user has at least one server for (for dashboard egg filter).
+     */
+    public function eggs(GetServersRequest $request): array
+    {
+        $user = $request->user();
+        $serverIds = $user->accessibleServers()->pluck('id')->all();
+        $eggIds = Server::whereIn('id', $serverIds)->distinct()->pluck('egg_id');
+        $eggs = Egg::whereIn('id', $eggIds)->orderBy('name')->get(['id', 'name']);
+
+        return [
+            'object' => 'list',
+            'data' => $eggs->map(fn (Egg $egg) => ['id' => $egg->id, 'name' => $egg->name])->values()->all(),
         ];
     }
 }
