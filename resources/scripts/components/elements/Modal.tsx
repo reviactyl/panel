@@ -151,7 +151,7 @@ const Modal: React.FC<ModalProps> = ({
                     <div
                         css={[
                             tw`bg-gray-700 border border-gray-600 p-3 sm:p-4 md:p-6 rounded-ui shadow-md transition-all duration-150`,
-                            noScroll ? tw`overflow-visible` : tw`overflow-y-auto`,
+                            noScroll ? tw`overflow-visible` : tw`overflow-y-scroll`,
                         ]}
                     >
                         {children}
