@@ -15,7 +15,7 @@ export default ({ query, eggId, ...params }: QueryParams): Promise<PaginatedResu
             params: {
                 'include': 'category',
                 'filter[*]': query,
-                ...(eggId != null ? { 'filter[egg_id]': eggId } : {}),
+                ...(eggId !== undefined && eggId !== null ? { 'filter[egg_id]': eggId } : {}),
                 ...params,
             },
         })
