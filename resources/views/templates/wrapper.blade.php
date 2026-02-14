@@ -38,7 +38,7 @@ SOFTWARE.
         @if ($siteConfiguration['pwa'])
         <link rel="manifest" href="{{ url('manifest.json') }}">
         <link rel="apple-touch-icon" href="{{ asset('favicons/android-icon-192x192.png') }}">
-        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="mobile-web-app-capable" content="yes">
         @endif
         <meta name="theme-color" content="{{ $reviactylConfiguration['site_color'] }}" />
         <meta property="og:type" content="website" />

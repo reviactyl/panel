@@ -135,8 +135,8 @@ export default () => {
                 }}
             />
 
-            <div className='flex items-center justify-between py-4 flex-wrap gap-4'>
-                <div>
+            <div className='flex flex-col gap-4 py-4 sm:flex-row sm:items-center sm:justify-between'>
+                <div className='min-w-0'>
                     {/* TODO: Needs to be updated.
                     1] Show different subtitle based on $showOnlyAdmin
                     2] It somehow looks odd and doesn't match reviactyl v2 design.
@@ -170,8 +170,8 @@ export default () => {
                         </>
                     )}
                     {rootAdmin && (
-                        <div className='flex items-center space-x-2 border-l border-[#334155] pl-4'>
-                            <p className='uppercase text-xs text-gray-400'>
+                        <div className='flex flex-shrink-0 items-center gap-2'>
+                            <p className='uppercase text-xs text-gray-400 whitespace-nowrap'>
                                 {showOnlyAdmin ? t('other-servers') : t('your-servers')}
                             </p>
                             <Switch
@@ -181,7 +181,7 @@ export default () => {
                             />
                         </div>
                     )}
-                    {!showOnlyAdmin && eggs && eggs.length > 0 && (
+                    {(eggs && eggs.length > 0) || (rootAdmin && showOnlyAdmin && Array.isArray(eggs)) ? (
                         <div className='relative flex items-center border-l border-[#334155] pl-4' ref={eggFilterRef}>
                             <button
                                 type='button'
@@ -221,7 +221,7 @@ export default () => {
                                 </div>
                             )}
                         </div>
-                    )}
+                    ) : null}
                 </div>
             </div>
 

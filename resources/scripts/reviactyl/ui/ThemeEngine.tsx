@@ -132,8 +132,8 @@ const ThemeSelector = () => {
     if (!themes) return null;
 
     return (
-        <div className='px-4 py-2'>
-            <div className='flex gap-3'>
+        <div className='min-w-0 px-4 py-2'>
+            <div className='flex flex-wrap gap-3'>
                 <button
                     onClick={() => handleThemeChange('default')}
                     className={`w-10 h-10 flex items-center justify-center rounded-full border text-sm hover:bg-gray-300 dark:hover:bg-gray-700 ${selected === 'default' ? 'ring-2 ring-reviactyl' : ''

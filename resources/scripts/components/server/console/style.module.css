@@ -19,7 +19,7 @@
 }
 
 .terminal {
-    @apply flex flex-col w-full;
+    @apply flex flex-col w-full min-w-0;
 
     & .overflows_container {
         @apply -ml-4 sm:ml-0;
@@ -31,10 +31,10 @@
     }
 
     & > .container {
-        @apply rounded-ui p-1 sm:p-2 !bg-transparent min-h-[16rem] flex-1 font-mono text-sm;
+        @apply rounded-ui p-1 sm:p-2 !bg-transparent min-h-[16rem] flex-1 font-mono text-sm min-w-0 overflow-hidden;
 
-        & #terminal {
-            @apply h-full;
+        & [id] {
+            @apply h-full min-w-0;
 
             &::-webkit-scrollbar-track {
                 @apply w-2;
