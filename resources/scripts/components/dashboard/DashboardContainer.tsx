@@ -187,7 +187,7 @@ export default () => {
                                 type='button'
                                 onClick={() => setEggFilterOpen((o) => !o)}
                                 className={`p-1.5 rounded-lg transition border ${
-                                    selectedEggId != null
+                                    selectedEggId !== null
                                         ? 'bg-blue-500/20 border-blue-500 text-blue-400'
                                         : 'bg-[#1e293b] border-[#334155] text-gray-400 hover:border-gray-500 hover:text-gray-200'
                                 }`}
@@ -237,7 +237,7 @@ export default () => {
                                     <Card css={tw`col-span-1 lg:col-span-2`}>
                                         <p className='flex justify-center text-center text-sm text-gray-400 py-10'>
                                             <EmojiSadIcon className='w-5 h-5 mr-1' />{' '}
-                                            {selectedEggId != null
+                                            {selectedEggId !== null
                                                 ? t('eggs.no-servers-for-egg')
                                                 : showOnlyAdmin
                                                   ? t('no-other-servers')
