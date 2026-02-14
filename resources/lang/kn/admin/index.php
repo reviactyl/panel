@@ -15,5 +15,8 @@ return [
 
     'help-btn' => 'ಸಹಾಯ ಪಡೆಯಿರಿ',
     'docs-btn' => 'ಡಾಕ್ಯುಮೆಂಟೇಶನ್',
+    'metrics-header' => 'User Activity Metrics',
+    'most-active-country' => 'Most Active Country',
+    'activity-description' => 'Based on recent login activity.',
     'no_activity' => 'There is no recent activity to display.',
 ];
