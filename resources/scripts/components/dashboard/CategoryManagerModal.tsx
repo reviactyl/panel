@@ -15,6 +15,7 @@ import styled from 'styled-components/macro';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faPen, faPlus, faLayerGroup, faSortAmountDown, faBars } from '@fortawesome/free-solid-svg-icons';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     visible: boolean;
@@ -62,6 +63,7 @@ const DragItem = styled.div<{ isDragging?: boolean }>`
 `;
 
 export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
+    const { t } = useTranslation('dashboard/index');
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const [categories, setCategories] = useState<ServerCategory[]>([]);
     const [editingCategory, setEditingCategory] = useState<ServerCategory | null>(null);
@@ -98,7 +100,7 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
     };
 
     const handleDelete = (uuid: string) => {
-        if (!confirm('Are you sure you want to delete this category? Servers in this category will be moved to Primary.')) return;
+        if (!confirm(t('categories.delete-confirm'))) return;
 
         deleteServerCategory(uuid)
             .then(() => {
@@ -124,7 +126,7 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
     return (
         <Modal visible={visible} onDismissed={onDismissed} dismissable={true} size={'lg'} noScroll={true}>
             <div style={{ marginBottom: '1.5rem', borderBottom: '1px solid #1f2937', paddingBottom: '1rem' }}>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 600, color: '#f3f4f6' }}>Manage Server Categories</h2>
+                <h2 style={{ fontSize: '1.5rem', fontWeight: 600, color: '#f3f4f6' }}>{t('categories.manage-title')}</h2>
             </div>
 
             <div style={{ marginBottom: '1.5rem' }}>
@@ -139,7 +141,7 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
                             <FontAwesomeIcon icon={editingCategory ? faPen : faPlus} style={{ color: '#60a5fa' }} />
                         </div>
                         <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: '#e5e7eb' }}>
-                            {editingCategory ? 'Modify Category' : 'Create Category'}
+                            {editingCategory ? t('categories.modify-category') : t('categories.create-category')}
                         </h3>
                     </div>
 
@@ -154,39 +156,39 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
                             validationSchema={object().shape({
                                 name: string().required().max(191),
                                 description: string().max(255).nullable(),
-                                color: string().matches(/^#([a-f0-9]{6}|[a-f0-9]{3})$/i, 'Must be a valid hex color').max(7),
+                                color: string().matches(/^#([a-f0-9]{6}|[a-f0-9]{3})$/i, t('categories.color-invalid')).max(7),
                             })}
                             enableReinitialize
                         >
                             {({ isSubmitting, values }) => (
                                 <Form>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                                        <Field name={'name'} label={'Category Name'} placeholder={'e.g. Production'} />
+                                        <Field name={'name'} label={t('categories.category-name')} placeholder={t('categories.name-placeholder')} />
 
                                         <div style={{ display: 'flex', alignItems: 'flex-end', gap: '0.75rem' }}>
                                             <div style={{ flex: '1 1 0%' }}>
                                                 <Field
                                                     name={'color'}
-                                                    label={'Theme Color'}
+                                                    label={t('categories.theme-color')}
                                                     type={'color'}
                                                     style={{ height: '42px', padding: '0.2rem' }}
                                                 />
                                             </div>
                                             <div style={{ flex: 'none', paddingBottom: '0.5rem', fontSize: '0.75rem', color: '#6b7280', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                                                 <div style={{ backgroundColor: values.color || '#3b82f6', width: '0.75rem', height: '0.75rem', borderRadius: '9999px', transition: 'background-color 0.2s ease' }}></div>
-                                                Preview
+                                                {t('categories.preview')}
                                             </div>
                                         </div>
 
-                                        <Field name={'description'} label={'Description'} placeholder={'Short purpose statement...'} />
+                                        <Field name={'description'} label={t('categories.description')} placeholder={t('categories.description-placeholder')} />
 
                                         <div style={{ marginTop: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                                             <Button type={'submit'} disabled={isSubmitting} isLoading={isSubmitting} style={{ width: '100%' }}>
-                                                {editingCategory ? 'Update Category' : 'Create Category'}
+                                                {editingCategory ? t('categories.update-category') : t('categories.create-category-button')}
                                             </Button>
                                             {editingCategory && (
                                                 <Button type={'button'} isSecondary onClick={() => setEditingCategory(null)} style={{ width: '100%' }}>
-                                                    Discard Changes
+                                                    {t('categories.discard-changes')}
                                                 </Button>
                                             )}
                                         </div>
@@ -204,10 +206,10 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
                             <div style={{ backgroundColor: 'rgba(139, 92, 246, 0.1)', padding: '0.5rem', borderRadius: '0.6rem' }}>
                                 <FontAwesomeIcon icon={faSortAmountDown} style={{ color: '#a78bfa' }} />
                             </div>
-                            <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: '#e5e7eb' }}>Arrange Order</h3>
+                            <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: '#e5e7eb' }}>{t('categories.arrange-order')}</h3>
                         </div>
                         <span style={{ fontSize: '0.75rem', color: '#6b7280', backgroundColor: '#111827', padding: '0.25rem 0.6rem', borderRadius: '0.5rem', border: '1px solid #1f2937' }}>
-                            {categories.length} Categories
+                            {t('categories.categories-count', { count: categories.length })}
                         </span>
                     </div>
 
@@ -215,7 +217,7 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
                         {categories.length === 0 ? (
                             <div style={{ backgroundColor: '#111827', border: '2px dashed #1f2937', borderRadius: '1rem', padding: '3rem 1rem', textAlign: 'center' }}>
                                 <FontAwesomeIcon icon={faLayerGroup} style={{ fontSize: '2rem', color: '#374151', marginBottom: '1rem' }} />
-                                <p style={{ fontSize: '0.875rem', color: '#6b7280' }}>No custom categories yet.</p>
+                                <p style={{ fontSize: '0.875rem', color: '#6b7280' }}>{t('categories.no-custom-categories')}</p>
                             </div>
                         ) : (
                             <DragDropContext onDragEnd={onDragEnd}>
@@ -236,7 +238,7 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
                                                                 <div style={{ backgroundColor: cat.color || '#3b82f6', width: '1.25rem', height: '1.25rem', borderRadius: '0.4rem', marginRight: '0.75rem', flexShrink: 0, border: '1px solid rgba(255,255,255,0.1)' }} />
                                                                 <div style={{ minWidth: 0 }}>
                                                                     <p style={{ fontWeight: 600, color: '#f3f4f6', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '0.95rem' }}>{cat.name}</p>
-                                                                    <p style={{ fontSize: '0.7rem', color: '#9ca3af', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{cat.description || 'No description'}</p>
+                                                                    <p style={{ fontSize: '0.7rem', color: '#9ca3af', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{cat.description || t('categories.no-description')}</p>
                                                                 </div>
                                                             </div>
 
@@ -245,7 +247,7 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
                                                                     type={'button'}
                                                                     onClick={(e) => { e.stopPropagation(); setEditingCategory(cat); }}
                                                                     style={{ padding: '0.5rem', borderRadius: '0.5rem', backgroundColor: snapshot.isDragging ? '#475569' : '#1e293b', border: '1px solid #334155', color: '#60a5fa', cursor: 'pointer' }}
-                                                                    title={"Edit"}
+                                                                    title={t('categories.edit')}
                                                                 >
                                                                     <FontAwesomeIcon icon={faPen} size={'sm'} />
                                                                 </button>
@@ -253,7 +255,7 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
                                                                     type={'button'}
                                                                     onClick={(e) => { e.stopPropagation(); handleDelete(cat.uuid); }}
                                                                     style={{ padding: '0.5rem', borderRadius: '0.5rem', backgroundColor: snapshot.isDragging ? '#475569' : '#1e293b', border: '1px solid #334155', color: '#f87171', cursor: 'pointer' }}
-                                                                    title={"Delete"}
+                                                                    title={t('categories.delete')}
                                                                 >
                                                                     <FontAwesomeIcon icon={faTrash} size={'sm'} />
                                                                 </button>

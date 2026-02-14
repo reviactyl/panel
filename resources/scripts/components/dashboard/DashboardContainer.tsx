@@ -19,6 +19,7 @@ import { useTranslation } from 'react-i18next';
 import getServerCategories from '@/api/account/getServerCategories';
 import CategorySection from '@/components/dashboard/CategorySection';
 import CategoryManagerModal from '@/components/dashboard/CategoryManagerModal';
+import ServerRow from '@/components/dashboard/ServerRow';
 
 export default () => {
     const { t } = useTranslation('dashboard/index');
@@ -56,6 +57,9 @@ export default () => {
     }, [servers?.pagination.currentPage]);
 
     useEffect(() => {
+        // Don't use react-router to handle changing this part of the URL, otherwise it
+        // triggers a needless re-render. We just want to track this in the URL incase the
+        // user refreshes the page.
         window.history.replaceState(null, document.title, `/${page <= 1 ? '' : `?page=${page}`}`);
     }, [page]);
 
@@ -110,29 +114,38 @@ export default () => {
 
             <div className='flex items-center justify-between py-4 flex-wrap gap-4'>
                 <div>
+                    {/* TODO: Needs to be updated.
+                    1] Show different subtitle based on $showOnlyAdmin
+                    2] It somehow looks odd and doesn't match reviactyl v2 design.
+                    <h1 className='text-xl font-semibold text-gray-100'>{t('welcome.title')}</h1>
+                    <p className='text-sm text-gray-400'>{t('welcome.subtitle')}</p>
+                    */}
                     <Title className='text-4xl'>{t('title')}</Title>
                 </div>
 
                 <div className='flex items-center gap-4 flex-wrap'>
-                    <select
-                        className='bg-[#1e293b] border border-[#334155] text-gray-200 px-3 py-1.5 rounded-lg outline-none focus:border-blue-500 transition'
-                        value={selectedCategory}
-                        onChange={(e) => setSelectedCategory(e.target.value)}
-                    >
-                        <option value="all">All Categories</option>
-                        {categories?.map(cat => (
-                            <option key={cat.uuid} value={cat.uuid}>{cat.name}</option>
-                        ))}
-                        <option value="primary">Primary</option>
-                    </select>
+                    {!showOnlyAdmin && (
+                        <>
+                            <select
+                                className='bg-[#1e293b] border border-[#334155] text-gray-200 px-3 py-1.5 rounded-lg outline-none focus:border-blue-500 transition'
+                                value={selectedCategory}
+                                onChange={(e) => setSelectedCategory(e.target.value)}
+                            >
+                                <option value="all">{t('categories.all-categories')}</option>
+                                {categories?.map(cat => (
+                                    <option key={cat.uuid} value={cat.uuid}>{cat.name}</option>
+                                ))}
+                                <option value="primary">{t('categories.primary')}</option>
+                            </select>
 
-                    <button
-                        onClick={() => setModalVisible(true)}
-                        className='bg-[#1e293b] border border-[#334155] hover:border-blue-500 text-gray-200 px-4 py-1.5 rounded-lg transition'
-                    >
-                        Manage
-                    </button>
-
+                            <button
+                                onClick={() => setModalVisible(true)}
+                                className='bg-[#1e293b] border border-[#334155] hover:border-blue-500 text-gray-200 px-4 py-1.5 rounded-lg transition'
+                            >
+                                {t('categories.manage')}
+                            </button>
+                        </>
+                    )}
                     {rootAdmin && (
                         <div className='flex items-center space-x-2 border-l border-[#334155] pl-4'>
                             <p className='uppercase text-xs text-gray-400'>
@@ -153,8 +166,33 @@ export default () => {
             ) : (
                 <div>
                     <Pagination data={servers} onPageSelect={setPage}>
-                        {() => (
-                            sortedCategorySlugs.length > 0 ? (
+                        {() => {
+                            const items = servers.items || [];
+                            if (items.length === 0) {
+                                return (
+                                    <Card css={tw`col-span-1 lg:col-span-2`}>
+                                        <p className='flex justify-center text-center text-sm text-gray-400 py-10'>
+                                            <EmojiSadIcon className='w-5 h-5 mr-1' />{' '}
+                                            {showOnlyAdmin ? t('no-other-servers') : t('no-servers')}
+                                        </p>
+                                    </Card>
+                                );
+                            }
+                            if (showOnlyAdmin) {
+                                return (
+                                    <div className='grid lg:grid-cols-2 gap-4'>
+                                        {items.map((server, index) => (
+                                            <ServerRow
+                                                key={server.uuid}
+                                                server={server}
+                                                css={index > 0 ? tw`mt-2` : undefined}
+                                                showCategory={false}
+                                            />
+                                        ))}
+                                    </div>
+                                );
+                            }
+                            return sortedCategorySlugs.length > 0 ? (
                                 sortedCategorySlugs.map(slug => (
                                     <CategorySection
                                         key={slug}
@@ -168,11 +206,11 @@ export default () => {
                                 <Card css={tw`col-span-1 lg:col-span-2`}>
                                     <p className='flex justify-center text-center text-sm text-gray-400 py-10'>
                                         <EmojiSadIcon className='w-5 h-5 mr-1' />{' '}
-                                        {showOnlyAdmin ? t('no-other-servers') : t('no-servers')}
+                                        {t('no-servers')}
                                     </p>
                                 </Card>
-                            )
-                        )}
+                            );
+                        }}
                     </Pagination>
                 </div>
             )}

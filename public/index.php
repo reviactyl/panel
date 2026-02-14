@@ -18,6 +18,9 @@
 */
 
 require __DIR__ . '/../vendor/autoload.php';
+
+define('LARAVEL_START', microtime(true));
+
 /*
 |--------------------------------------------------------------------------
 | Check If Application Is Under Maintenance
@@ -32,20 +35,6 @@ require __DIR__ . '/../vendor/autoload.php';
 if (file_exists(__DIR__ . '/../storage/framework/maintenance.php')) {
     require __DIR__ . '/../storage/framework/maintenance.php';
 }
-
-/*
-|--------------------------------------------------------------------------
-| Register The Auto Loader
-|--------------------------------------------------------------------------
-|
-| Composer provides a convenient, automatically generated class loader for
-| our application. We just need to utilize it! We'll simply require it
-| into the script here so that we don't have to worry about manual
-| loading any of our classes later on. It feels great to relax.
-|
-*/
-
-require __DIR__ . '/../vendor/autoload.php';
 
 /*
 |--------------------------------------------------------------------------

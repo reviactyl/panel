@@ -19,7 +19,7 @@ type Timer = ReturnType<typeof setInterval>;
 
 import ChangeCategoryModal from '@/components/dashboard/ChangeCategoryModal';
 
-export default ({ server, className, onCategoryChanged }: { server: Server; className?: string; onCategoryChanged?: () => void }) => {
+export default ({ server, className, onCategoryChanged, showCategory = true }: { server: Server; className?: string; onCategoryChanged?: () => void; showCategory?: boolean }) => {
     const { t } = useTranslation('dashboard/index');
     const interval = useRef<Timer>(null) as React.MutableRefObject<Timer>;
     const [isSuspended, setIsSuspended] = useState(server.status === 'suspended');
@@ -56,23 +56,25 @@ export default ({ server, className, onCategoryChanged }: { server: Server; clas
         alarms.disk = server.limits.disk === 0 ? false : isAlarmState(stats.diskUsageInBytes, server.limits.disk);
     }
 
-    const diskLimit = server.limits.disk !== 0 ? bytesToString(mbToBytes(server.limits.disk)) : 'Unlimited';
-    const memoryLimit = server.limits.memory !== 0 ? bytesToString(mbToBytes(server.limits.memory)) : 'Unlimited';
-    const cpuLimit = server.limits.cpu !== 0 ? server.limits.cpu + ' %' : 'Unlimited';
+    const diskLimit = server.limits.disk !== 0 ? bytesToString(mbToBytes(server.limits.disk)) : t('server.unlimited');
+    const memoryLimit = server.limits.memory !== 0 ? bytesToString(mbToBytes(server.limits.memory)) : t('server.unlimited');
+    const cpuLimit = server.limits.cpu !== 0 ? server.limits.cpu + ' %' : t('server.unlimited');
 
     // Check if server is in a other state (suspended, transferring, etc.)
     const isSpecialState = isSuspended || server.isTransferring || (server.status && !stats);
 
     return (
         <React.Fragment>
-            <ChangeCategoryModal
-                server={server}
-                visible={isCategoryModalVisible}
-                onDismissed={() => {
-                    setCategoryModalVisible(false);
-                    onCategoryChanged?.();
-                }}
-            />
+            {showCategory && (
+                <ChangeCategoryModal
+                    server={server}
+                    visible={isCategoryModalVisible}
+                    onDismissed={() => {
+                        setCategoryModalVisible(false);
+                        onCategoryChanged?.();
+                    }}
+                />
+            )}
             <Link to={`/server/${server.id}`} className={className}>
                 <Card className='!p-0'>
                     <div
@@ -90,7 +92,7 @@ export default ({ server, className, onCategoryChanged }: { server: Server; clas
                         <div className='flex items-center justify-between pb-5 gap-x-2'>
                             <div className='flex-1 min-w-0'>
                                 <Title className='text-2xl truncate' title={server.name}>{server.name}</Title>
-                                {server.category && (
+                                {showCategory && (
                                     <div
                                         onClick={(e) => {
                                             e.preventDefault();
@@ -98,13 +100,17 @@ export default ({ server, className, onCategoryChanged }: { server: Server; clas
                                             setCategoryModalVisible(true);
                                         }}
                                         className={'inline-block text-[10px] px-2 py-0.5 rounded-full mt-1 border transition hover:brightness-110 cursor-pointer'}
-                                        style={{
+                                        style={server.category ? {
                                             backgroundColor: `${server.category.color || '#3b82f6'}20`,
                                             borderColor: server.category.color || '#3b82f6',
                                             color: server.category.color || '#3b82f6',
+                                        } : {
+                                            backgroundColor: '#334155',
+                                            borderColor: '#475569',
+                                            color: '#94a3b8',
                                         }}
                                     >
-                                        {server.category.name}
+                                        {server.category ? server.category.name : t('categories.set-category')}
                                     </div>
                                 )}
                             </div>

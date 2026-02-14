@@ -11,6 +11,7 @@ import Spinner from '@/components/elements/Spinner';
 import tw from 'twin.macro';
 import Select from '@/components/elements/Select';
 import updateServerCategory from '@/api/server/updateServerCategory';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     server: Server;
@@ -19,6 +20,7 @@ interface Props {
 }
 
 export default ({ server, visible, onDismissed }: Props) => {
+    const { t } = useTranslation('dashboard/index');
     const { addError, clearFlashes } = useFlash();
     const { data: categories } = useSWR(
         '/api/client/account/categories',
@@ -40,7 +42,7 @@ export default ({ server, visible, onDismissed }: Props) => {
 
     return (
         <Modal visible={visible} onDismissed={onDismissed} showSpinnerOverlay={false}>
-            <h2 css={tw`text-2xl mb-4 font-bold`}>Assign Category</h2>
+            <h2 css={tw`text-2xl mb-4 font-bold`}>{t('categories.assign-category')}</h2>
             <Formik
                 onSubmit={submit}
                 initialValues={{ category: server.category?.uuid || '' }}
@@ -54,9 +56,9 @@ export default ({ server, visible, onDismissed }: Props) => {
                             <Spinner centered />
                         ) : (
                             <div css={tw`mt-6`}>
-                                <label css={tw`block text-sm mb-2 text-gray-300`}>Select Category</label>
+                                <label css={tw`block text-sm mb-2 text-gray-300`}>{t('categories.select-category')}</label>
                                 <Field name={'category'} as={Select}>
-                                    <option value="">Uncategorized</option>
+                                    <option value="">{t('categories.uncategorized')}</option>
                                     {categories.map(cat => (
                                         <option key={cat.uuid} value={cat.uuid}>
                                             {cat.name}
@@ -67,7 +69,7 @@ export default ({ server, visible, onDismissed }: Props) => {
                         )}
                         <div css={tw`flex flex-wrap justify-end mt-6`}>
                             <Button type={'submit'} disabled={isSubmitting} isLoading={isSubmitting}>
-                                Save Changes
+                                {t('categories.save-changes')}
                             </Button>
                         </div>
                     </Form>

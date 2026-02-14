@@ -51,8 +51,8 @@ const ModalContainer = styled.div<{ alignTop?: boolean; size?: 'sm' | 'md' | 'lg
     ${(props) =>
         props.alignTop &&
         css`
-            margin-top: 6%;
-            ${breakpoint('md')`margin-top: 6%`};
+            margin-top: 20%;
+            ${breakpoint('md')`margin-top: 10%`};
         `};
 
     margin-bottom: auto;

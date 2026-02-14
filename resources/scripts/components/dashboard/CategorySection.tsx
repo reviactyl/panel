@@ -5,6 +5,7 @@ import ServerRow from '@/components/dashboard/ServerRow';
 import tw from 'twin.macro';
 import styled from 'styled-components/macro';
 import { ChevronDownIcon } from '@heroicons/react/solid';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     category: ServerCategory | null;
@@ -28,7 +29,8 @@ const HeaderButton = styled.button`
     align-items: center;
 `;
 
-export default ({ category, servers, onCategoryChanged }: Props) => {
+export default ({ category, servers, showOnlyAdmin, onCategoryChanged }: Props) => {
+    const { t } = useTranslation('dashboard/index');
     const [open, setOpen] = useState(true);
 
     if (servers.length === 0) return null;
@@ -51,16 +53,22 @@ export default ({ category, servers, onCategoryChanged }: Props) => {
 
             {/* HEADER */}
             <HeaderButton onClick={() => setOpen(!open)}>
-                <div css={tw`flex items-center gap-3`}>
-                    <span
-                        css={tw`font-medium`}
-                        style={{ color: displayColor }}
-                    >
-                        {category ? category.name : 'Primary'}
-                    </span>
-
-                    <span css={tw`text-xs text-[#94a3b8] px-2 py-1 rounded-md bg-[#1e293b]`}>
-                        {servers.length} Servers
+                <div css={tw`flex items-center gap-3 flex-1 min-w-0`}>
+                    <div css={tw`min-w-0`}>
+                        <span
+                            css={tw`font-medium`}
+                            style={{ color: displayColor }}
+                        >
+                            {category ? category.name : t('categories.primary')}
+                        </span>
+                        {category?.description && (
+                            <p css={tw`text-xs text-[#94a3b8] mt-0.5 truncate`} title={category.description}>
+                                {category.description}
+                            </p>
+                        )}
+                    </div>
+                    <span css={tw`text-xs text-[#94a3b8] px-2 py-1 rounded-md bg-[#1e293b] flex-shrink-0`}>
+                        {t('categories.servers-count', { count: servers.length })}
                     </span>
                 </div>
 
@@ -82,6 +90,7 @@ export default ({ category, servers, onCategoryChanged }: Props) => {
                                 server={server}
                                 css={index > 0 ? tw`mt-2` : undefined}
                                 onCategoryChanged={onCategoryChanged}
+                                showCategory={!showOnlyAdmin}
                             />
                         ))}
                     </div>
