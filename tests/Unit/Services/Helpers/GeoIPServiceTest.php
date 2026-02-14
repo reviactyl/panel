@@ -40,7 +40,18 @@ class GeoIPServiceTest extends TestCase
 
     public function test_it_returns_local_network_for_private_ipv4_ranges()
     {
-        $privateIps = ['10.0.0.1', '172.16.0.1', '192.168.1.1'];
+        $privateIps = ['10.0.0.1', '172.16.0.1', '192.168.1.1']; // Private IP Ranges for Class A, B, and C (RFC1918)
+
+        foreach ($privateIps as $ip) {
+            $info = $this->service->getCountryInfo($ip);
+            $this->assertEquals(__('strings.local_network'), $info['country'], "Failed for $ip");
+            $this->assertEquals('LOCAL', $info['code']);
+        }
+    }
+
+    public function test_it_returns_local_network_for_private_ipv6_ranges()
+    {
+        $privateIps = ['fc00::1', 'fd00::1']; // Unique Local Address (ULA) range for IPv6 (RFC4193 [Proposed Standard, but sometimes treated as private])
 
         foreach ($privateIps as $ip) {
             $info = $this->service->getCountryInfo($ip);
