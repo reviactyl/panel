@@ -92,4 +92,5 @@ return [
     'disable' => 'अक्षम करें',
     'save' => 'सहेजें',
     'copyright' => '&copy; :year Reviactyl™ Software',
+    'local_network' => 'Local Network',
 ];
