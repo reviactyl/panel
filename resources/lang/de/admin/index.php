@@ -15,5 +15,8 @@ return [
 
     'help-btn' => 'Hilfe bekommen',
     'docs-btn' => 'Dokumentation',
+    'metrics-header' => 'User Activity Metrics',
+    'most-active-country' => 'Most Active Country',
+    'activity-description' => 'Based on recent login activity.',
     'no_activity' => 'Es gibt keine Aktivitäten zum anzeigen.',
 ];
