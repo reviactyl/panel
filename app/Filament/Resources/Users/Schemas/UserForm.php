@@ -77,7 +77,7 @@ class UserForm
                                 Toggle::make('root_admin')
                                     ->label(trans('admin/user.details.root_admin'))
                                     ->helperText(trans('admin/user.details.root_admin_desc'))
-                                    ->onColor('danger'),
+                                    ->onColor('success'),
                             ]),
                     ])
                     ->columnSpan(6),

@@ -23,6 +23,27 @@ class EditServer extends EditRecord
 {
     protected static string $resource = ServerResource::class;
 
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        /** @var Server $record */
+        $record = $this->record;
+        
+        // Ensure io has value (use existing or default)
+        $data['io'] = $data['io'] ?? $record->io ?? 500;
+        
+        // Ensure startup has value (use existing or from egg)
+        if (empty($data['startup'])) {
+            $data['startup'] = $record->startup;
+            
+            if (empty($data['startup']) && !empty($data['egg_id'])) {
+                $egg = \App\Models\Egg::find($data['egg_id']);
+                $data['startup'] = $egg?->startup ?? '';
+            }
+        }
+
+        return $data;
+    }
+
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
         $detailsData = Arr::only($data, ['external_id', 'owner_id', 'name', 'description']);

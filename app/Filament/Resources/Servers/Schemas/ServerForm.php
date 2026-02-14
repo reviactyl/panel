@@ -12,6 +12,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
@@ -29,9 +31,15 @@ class ServerForm
                     ->live()
                     ->helperText(trans('admin/server.fields.advanced_mode.helper'))
                     ->columnSpanFull(),
-                Section::make(trans('admin/server.sections.identity.title'))
-                    ->description(trans('admin/server.sections.identity.description'))
-                    ->schema([
+                    
+                Tabs::make('Server Configuration')
+                    ->tabs([
+                        Tab::make(trans('admin/server.sections.identity.title'))
+                            ->icon('heroicon-o-identification')
+                            ->schema([
+                                Section::make()
+                                    ->description(trans('admin/server.sections.identity.description'))
+                                    ->schema([
                         TextInput::make('name')
                             ->label(trans('admin/server.fields.name.label'))
                             ->required()
@@ -61,94 +69,98 @@ class ServerForm
                             ->maxLength(191)
                             ->columnSpanFull()
                             ->visible(fn (Get $get) => $get('advanced_mode') === true),
-                    ]),
+                                    ]),
+                            ]),
 
-                Section::make(trans('admin/server.sections.allocation.title'))
-                    ->description(trans('admin/server.sections.allocation.description'))
-                    ->schema([
-                        Select::make('node_id')
-                            ->label(trans('admin/server.fields.node.label'))
-                            ->relationship('node', 'name')
-                            ->required()
-                            ->searchable()
-                            ->preload()
-                            ->reactive()
-                            ->helperText(trans('admin/server.fields.node.helper'))
-                            ->disabled(fn (?Server $record) => $record !== null),
+                        Tab::make(trans('admin/server.sections.startup.title'))
+                            ->icon('heroicon-o-command-line')
+                            ->schema([
+                                Section::make(trans('admin/server.sections.allocation.title'))
+                                    ->description(trans('admin/server.sections.allocation.description'))
+                                    ->schema([
+                                        Select::make('node_id')
+                                            ->label(trans('admin/server.fields.node.label'))
+                                            ->relationship('node', 'name')
+                                            ->required()
+                                            ->searchable()
+                                            ->preload()
+                                            ->reactive()
+                                            ->helperText(trans('admin/server.fields.node.helper'))
+                                            ->disabled(fn (?Server $record) => $record !== null),
 
-                        Select::make('allocation_id')
-                            ->label(trans('admin/server.fields.allocation.label'))
-                            ->required()
-                            ->searchable()
-                            ->options(function (Get $get, ?Server $record) {
-                                $nodeId = $get('node_id') ?? $record?->node_id;
+                                        Select::make('allocation_id')
+                                            ->label(trans('admin/server.fields.allocation.label'))
+                                            ->required()
+                                            ->searchable()
+                                            ->options(function (Get $get, ?Server $record) {
+                                                $nodeId = $get('node_id') ?? $record?->node_id;
 
-                                if (!$nodeId) {
-                                    return [];
-                                }
+                                                if (!$nodeId) {
+                                                    return [];
+                                                }
 
-                                $query = Allocation::query()->where('node_id', $nodeId);
+                                                $query = Allocation::query()->where('node_id', $nodeId);
 
-                                if ($record) {
-                                    $query->where(function ($builder) use ($record) {
-                                        $builder->whereNull('server_id')
-                                            ->orWhere('server_id', $record->id);
-                                    });
-                                } else {
-                                    $query->whereNull('server_id');
-                                }
+                                                if ($record) {
+                                                    $query->where(function ($builder) use ($record) {
+                                                        $builder->whereNull('server_id')
+                                                            ->orWhere('server_id', $record->id);
+                                                    });
+                                                } else {
+                                                    $query->whereNull('server_id');
+                                                }
 
-                                return $query
-                                    ->get()
-                                    ->mapWithKeys(fn (Allocation $allocation) => [$allocation->id => $allocation->toString()])
-                                    ->all();
-                            })
-                            ->disabled(fn (Get $get, ?Server $record) => blank($get('node_id')) && $record === null)
-                            ->helperText(trans('admin/server.fields.allocation.helper')),
+                                                return $query
+                                                    ->get()
+                                                    ->mapWithKeys(fn (Allocation $allocation) => [$allocation->id => $allocation->toString()])
+                                                    ->all();
+                                            })
+                                            ->disabled(fn (Get $get, ?Server $record) => blank($get('node_id')) && $record === null)
+                                            ->helperText(trans('admin/server.fields.allocation.helper')),
 
-                        Select::make('allocation_additional')
-                            ->label(trans('admin/server.fields.additional_allocations.label'))
-                            ->helperText(trans('admin/server.fields.additional_allocations.helper'))
-                            ->multiple()
-                            ->searchable()
-                            ->options(function (Get $get, ?Server $record) {
-                                $nodeId = $get('node_id') ?? $record?->node_id;
+                                        Select::make('allocation_additional')
+                                            ->label(trans('admin/server.fields.additional_allocations.label'))
+                                            ->helperText(trans('admin/server.fields.additional_allocations.helper'))
+                                            ->multiple()
+                                            ->searchable()
+                                            ->options(function (Get $get, ?Server $record) {
+                                                $nodeId = $get('node_id') ?? $record?->node_id;
 
-                                if (!$nodeId) {
-                                    return [];
-                                }
+                                                if (!$nodeId) {
+                                                    return [];
+                                                }
 
-                                $query = Allocation::query()->where('node_id', $nodeId);
+                                                $query = Allocation::query()->where('node_id', $nodeId);
 
-                                if ($record) {
-                                    $query->where(function ($builder) use ($record) {
-                                        $builder->whereNull('server_id')
-                                            ->orWhere('server_id', $record->id);
-                                    });
-                                } else {
-                                    $query->whereNull('server_id');
-                                }
+                                                if ($record) {
+                                                    $query->where(function ($builder) use ($record) {
+                                                        $builder->whereNull('server_id')
+                                                            ->orWhere('server_id', $record->id);
+                                                    });
+                                                } else {
+                                                    $query->whereNull('server_id');
+                                                }
 
-                                $options = $query
-                                    ->get()
-                                    ->mapWithKeys(fn (Allocation $allocation) => [$allocation->id => $allocation->toString()])
-                                    ->all();
+                                                $options = $query
+                                                    ->get()
+                                                    ->mapWithKeys(fn (Allocation $allocation) => [$allocation->id => $allocation->toString()])
+                                                    ->all();
 
-                                $defaultAllocation = $get('allocation_id') ?? $record?->allocation_id;
+                                                $defaultAllocation = $get('allocation_id') ?? $record?->allocation_id;
 
-                                return array_diff_key($options, array_filter([$defaultAllocation => true]));
-                            })
-                            ->default(fn (?Server $record) => $record?->allocations
-                                ->where('id', '!=', $record->allocation_id)
-                                ->pluck('id')
-                                ->values()
-                                ->all() ?? [])
-                            ->disabled(fn (Get $get, ?Server $record) => blank($get('node_id')) && $record === null),
-                    ]),
+                                                return array_diff_key($options, array_filter([$defaultAllocation => true]));
+                                            })
+                                            ->default(fn (?Server $record) => $record?->allocations
+                                                ->where('id', '!=', $record->allocation_id)
+                                                ->pluck('id')
+                                                ->values()
+                                                ->all() ?? [])
+                                            ->disabled(fn (Get $get, ?Server $record) => blank($get('node_id')) && $record === null),
+                                    ]),
 
-                Section::make(trans('admin/server.sections.startup.title'))
-                    ->description(trans('admin/server.sections.startup.description'))
-                    ->schema([
+                                Section::make()
+                                    ->description(trans('admin/server.sections.startup.description'))
+                                    ->schema([
                         Select::make('nest_id')
                             ->label(trans('admin/server.fields.nest.label'))
                             ->relationship('nest', 'name')
@@ -172,6 +184,7 @@ class ServerForm
                             ->afterStateUpdated(function (Set $set, Get $get, ?string $state) {
                                 if (!$state) {
                                     $set('environment', []);
+                                    $set('startup', '');
                                     return;
                                 }
 
@@ -181,9 +194,8 @@ class ServerForm
                                     return;
                                 }
 
-                                if (blank($get('startup'))) {
-                                    $set('startup', $egg->startup);
-                                }
+                                // Always set startup value from egg, even if field is not visible
+                                $set('startup', $egg->startup);
 
                                 if (blank($get('image'))) {
                                     $images = $egg->docker_images ?? [];
@@ -207,10 +219,12 @@ class ServerForm
 
                         Textarea::make('startup')
                             ->label(trans('admin/server.fields.startup.label'))
-                            ->required()
+                            ->required(fn (Get $get) => $get('advanced_mode') === true)
                             ->columnSpanFull()
                             ->helperText(trans('admin/server.fields.startup.helper'))
-                            ->visible(fn (Get $get) => $get('advanced_mode') === true),
+                            ->visible(fn (Get $get) => $get('advanced_mode') === true)
+                            ->dehydrated()
+                            ->live(),
 
                         Toggle::make('use_custom_image')
                             ->label(trans('admin/server.fields.use_custom_image.label'))
@@ -319,12 +333,16 @@ class ServerForm
                             ->default(true)
                             ->helperText(trans('admin/server.fields.start_on_completion.helper'))
                             ->columnSpan(fn (Get $get) => $get('advanced_mode') === false ? 2 : 1),
-                    ])
-                    ->columns(2),
+                                    ])
+                                    ->columns(2),
+                            ]),
 
-                Section::make(trans('admin/server.sections.resources.title'))
-                    ->description(trans('admin/server.sections.resources.description'))
-                    ->schema([
+                        Tab::make(trans('admin/server.sections.resources.title'))
+                            ->icon('heroicon-o-cpu-chip')
+                            ->schema([
+                                Section::make()
+                                    ->description(trans('admin/server.sections.resources.description'))
+                                    ->schema([
                         TextInput::make('memory')
                             ->label(trans('admin/server.fields.memory.label'))
                             ->required()
@@ -358,13 +376,14 @@ class ServerForm
 
                         TextInput::make('io')
                             ->label(trans('admin/server.fields.io.label'))
-                            ->required()
+                            ->required(fn (Get $get) => $get('advanced_mode') === true)
                             ->numeric()
                             ->minValue(10)
                             ->maxValue(1000)
                             ->default(500)
                             ->helperText(trans('admin/server.fields.io.helper'))
-                            ->visible(fn (Get $get) => $get('advanced_mode') === true),
+                            ->visible(fn (Get $get) => $get('advanced_mode') === true)
+                            ->dehydrated(),
 
                         TextInput::make('cpu')
                             ->label(trans('admin/server.fields.cpu.label'))
@@ -407,12 +426,12 @@ class ServerForm
                                 }
                             })
                             ->columnSpanFull(),
-                    ])
-                    ->columns(2)
-                    ->columnSpan(2),
+                                    ])
+                                    ->columns(2)
+                                    ->columnSpan(2),
 
-                Section::make(trans('admin/server.sections.feature_limits.title'))
-                    ->description(trans('admin/server.sections.feature_limits.description'))
+                                Section::make(trans('admin/server.sections.feature_limits.title'))
+                                    ->description(trans('admin/server.sections.feature_limits.description'))
                     ->schema([
                         TextInput::make('database_limit')
                             ->label(trans('admin/server.fields.database_limit.label'))
@@ -434,19 +453,27 @@ class ServerForm
                             ->minValue(0)
                             ->default(0)
                             ->helperText(trans('admin/server.fields.backup_limit.helper')),
-                    ])
-                    ->columns(2),
+                                    ])
+                                    ->columns(2),
+                            ]),
 
-                Section::make(trans('admin/server.sections.environment.title'))
-                    ->description(trans('admin/server.sections.environment.description'))
-                    ->schema([
+                        Tab::make(trans('admin/server.sections.environment.title'))
+                            ->icon('heroicon-o-variable')
+                            ->schema([
+                                Section::make()
+                                    ->description(trans('admin/server.sections.environment.description'))
+                                    ->schema([
                         KeyValue::make('environment')
                             ->keyLabel(trans('admin/server.fields.environment.key'))
                             ->valueLabel(trans('admin/server.fields.environment.value'))
                             ->default([])
                             ->helperText(trans('admin/server.fields.environment.helper'))
                             ->columnSpanFull(),
+                                    ])
+                                    ->columnSpanFull(),
+                            ]),
                     ])
+                    ->persistTabInQueryString()
                     ->columnSpanFull(),
             ])
             ->columns(3);
