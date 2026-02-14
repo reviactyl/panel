@@ -4,13 +4,14 @@ namespace App\Filament\Widgets;
 
 use App\Models\ActivityLog;
 use App\Services\Helpers\GeoIPService;
-use Filament\Widgets\Widget;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\HtmlString;
 
 class UserActivityWidget extends BaseWidget
 {
-    protected string $view = 'filament.widgets.user-activity-metrics';
-
     protected int|string|array $columnSpan = 2;
 
     protected static ?int $sort = 4;
@@ -22,30 +23,68 @@ class UserActivityWidget extends BaseWidget
         $this->geoIPService = $geoIPService;
     }
 
-    protected function getViewData(): array
+    public function form(Schema $schema): Schema
     {
         $topCountriesRaw = $this->getTopCountries(3);
-        $topCountries = [];
-
-        if (!empty($topCountriesRaw)) {
-            $maxCount = $topCountriesRaw[0]['count'];
-            foreach ($topCountriesRaw as $data) {
-                $code = strtolower($data['code']);
-                $topCountries[] = [
-                    'country' => $data['country'],
-                    'code' => $data['code'],
-                    'count' => $data['count'],
-                    'flag_url' => in_array($code, ['un', 'local'])
-                        ? null 
-                        : "https://flagcdn.com/" . $code . ".svg",
-                    'percentage' => $maxCount > 0 ? ($data['count'] / $maxCount) * 100 : 0,
-                ];
-            }
+        
+        if (empty($topCountriesRaw)) {
+            return $schema->components([
+                Section::make(trans('admin/navigation.administration.user_activity_metrics'))
+                    ->icon('heroicon-o-globe-alt')
+                    ->iconColor('primary')
+                    ->schema([
+                        TextEntry::make('no_data')
+                            ->hiddenLabel()
+                            ->state(trans('admin/navigation.administration.no_data')),
+                    ]),
+            ]);
         }
 
-        return [
-            'topCountries' => $topCountries,
-        ];
+        $maxCount = $topCountriesRaw[0]['count'];
+        $entries = [];
+
+        foreach ($topCountriesRaw as $index => $data) {
+            $code = strtolower($data['code']);
+            $percentage = $maxCount > 0 ? round(($data['count'] / $maxCount) * 100, 1) : 0;
+            $isTop = $index === 0;
+            
+            $flagHtml = in_array($code, ['un', 'local'])
+                ? '<span class="text-base">🌐</span>'
+                : '<img src="https://flagcdn.com/' . $code . '.svg" alt="' . $data['country'] . '" class="w-5 h-auto rounded shadow-sm" />';
+            
+            $gradient = $isTop 
+                ? 'linear-gradient(to right, rgb(34, 197, 94), rgb(22, 163, 74))' 
+                : 'linear-gradient(to right, rgb(59, 130, 246), rgb(99, 102, 241))'; // This still makes the top country prominent enough
+
+            $html = '
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="flex items-center gap-2.5 min-w-[140px]">
+                        ' . $flagHtml . '
+                        <span class="text-sm font-medium">
+                            ' . e($data['country']) . ' (' . $percentage . '%)
+                        </span>
+                    </div>
+                    <div class="flex-1">
+                        <div class="relative rounded-lg overflow-hidden" style="height: 12px;">
+                            <div class="absolute top-0 left-0 rounded-lg transition-all duration-500 ease-out" 
+                                 style="width: ' . $percentage . '%; height: 12px; background: ' . $gradient . '; border-radius: 0.5rem;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            ';
+
+            $entries[] = TextEntry::make('country_' . $index)
+                ->hiddenLabel()
+                ->state(new HtmlString($html));
+        }
+
+        return $schema->components([
+            Section::make(trans('admin/navigation.administration.user_activity_metrics'))
+                ->icon('heroicon-o-globe-alt')
+                ->iconColor('primary')
+                ->schema($entries),
+        ]);
     }
 
     /**
