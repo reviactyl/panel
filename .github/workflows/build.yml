@@ -3,7 +3,6 @@ name: Build
 on:
   pull_request:
     branches:
-      - "develop"
       - "2.0-develop"
 
 jobs:
