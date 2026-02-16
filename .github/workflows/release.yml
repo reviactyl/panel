@@ -4,7 +4,7 @@ on:
     branches:
       - 2.0-develop
     tags:
-      - "v*"
+      - "v2.*"
 jobs:
   release:
     name: Release
