@@ -1,8 +1,6 @@
 name: Release
 on:
   push:
-    branches:
-      - 2.0-develop
     tags:
       - "v2.*"
 jobs:
