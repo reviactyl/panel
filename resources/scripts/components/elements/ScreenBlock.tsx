@@ -1,4 +1,5 @@
 import React from 'react';
+import type { ComponentType } from 'react';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
