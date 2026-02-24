@@ -3,6 +3,24 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v2.2.2
+### Added
+* HTTP responses now include default security headers if not otherwise set.
+* Adds modal popup when running a Hytale server that requires additional auth.
+* Adds support for administrators to view any application API key that has been created, regardless of the owning account.
+
+### Changed
+* SFTP sessions are now revoked on nodes when a user changes their password or their account is deleted.
+* Remote node access tokens are now scoped to only allow access to servers that belong to the same node. Previously a node could access information and control the installation status for any server in the system.
+* The default rate limit for the client API was bumped from `128` to `256` requests per minute.
+
+### Fixed
+* Fixed issue with image rendering in `ScreenBlock`.
+* [CVE-2026-26016](https://github.com/pterodactyl/panel/security/advisories/GHSA-g7vw-f8p5-c728)
+* [GHSA-hr7j-63v7-vj7g](https://github.com/pterodactyl/panel/security/advisories/GHSA-hr7j-63v7-vj7g)
+* Fixes improper display of unicode characters in console output.
+* Upscaled gravatar image.
+
 ## v2.2.1
 ### Added
 * Allocation Preset Manager by @wylayy
