@@ -3,6 +3,10 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v2.2.3
+### Fixed
+* Fixed issue with Designify Preview not rendering.
+
 ## v2.2.2
 ### Added
 * HTTP responses now include default security headers if not otherwise set.
