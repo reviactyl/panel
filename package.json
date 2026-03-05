@@ -1,6 +1,6 @@
 {
     "name": "@reviactyl/panel",
-    "version": "26.0.0-dev",
+    "version": "26.2.0-beta.3",
     "private": true,
     "description": "Open-source game panel built upon pterodactyl.",
     "engines": {
