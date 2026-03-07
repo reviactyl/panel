@@ -22,7 +22,7 @@ import CategorySection from '@/components/dashboard/CategorySection';
 import CategoryManagerModal from '@/components/dashboard/CategoryManagerModal';
 import ServerRow from '@/components/dashboard/ServerRow';
 import Select from '../elements/Select';
-import { Button } from '../elements/button';
+import { Button } from '@/components/elements/button/index';
 import { FaUserGear } from 'react-icons/fa6';
 
 export default () => {
