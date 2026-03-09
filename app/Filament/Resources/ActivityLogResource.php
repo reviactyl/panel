@@ -41,8 +41,14 @@ class ActivityLogResource extends Resource
                 TextColumn::make('actor.name')
                     ->label('User')
                     ->description(fn (ActivityLog $record) => $record->actor?->email)
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHas('actor', function ($q) use ($search) {
+                            $q->where('username', 'like', "%{$search}%")
+                              ->orWhere('name_first', 'like', "%{$search}%")
+                              ->orWhere('name_last', 'like', "%{$search}%");
+                        });
+                    }),
+                    // name is an accessor (name_first+name_last), not a DB column — sortable would fail
 
                 TextColumn::make('event')
                     ->label('Action')
