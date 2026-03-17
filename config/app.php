@@ -10,7 +10,7 @@ return [
     | change this value if you are not maintaining your own internal versions.
     */
 
-    'version' => 'canary',
+    'version' => '26.2.0-beta.4',
 
     /*
     |--------------------------------------------------------------------------
