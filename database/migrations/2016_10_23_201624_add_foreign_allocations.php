@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -35,10 +34,5 @@ class AddForeignAllocations extends Migration
             $table->mediumInteger('assigned_to', false, true)->nullable()->change();
             $table->mediumInteger('node', false, true)->nullable(false)->change();
         });
-
-        DB::statement('ALTER TABLE allocations
-             MODIFY COLUMN assigned_to MEDIUMINT(8) UNSIGNED NULL,
-             MODIFY COLUMN node MEDIUMINT(8) UNSIGNED NOT NULL
-         ');
     }
 }

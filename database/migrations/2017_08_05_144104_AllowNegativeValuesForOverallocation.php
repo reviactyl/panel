@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -23,8 +24,15 @@ class AllowNegativeValuesForOverallocation extends Migration
     public function down(): void
     {
         Schema::table('nodes', function (Blueprint $table) {
-            DB::statement('ALTER TABLE nodes MODIFY disk_overallocate MEDIUMINT UNSIGNED NULL,
-                                             MODIFY memory_overallocate MEDIUMINT UNSIGNED NULL');
+            if (DB::getDriverName() === 'sqlite') {
+                $table->integer('disk_overallocate')->default(0)->nullable(false)->change();
+                $table->integer('memory_overallocate')->default(0)->nullable(false)->change();
+
+                return;
+            }
+
+            $table->mediumInteger('disk_overallocate', false, true)->nullable()->change();
+            $table->mediumInteger('memory_overallocate', false, true)->nullable()->change();
         });
     }
 }

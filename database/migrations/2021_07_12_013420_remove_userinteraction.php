@@ -22,6 +22,20 @@ class RemoveUserInteraction extends Migration
                     'config_startup' => DB::raw('config_startup::jsonb - \'userInteraction\''),
                 ]);
                 break;
+            case 'sqlite':
+                DB::table('eggs')->select(['id', 'config_startup'])->orderBy('id')->cursor()->each(function ($egg) {
+                    $startup = json_decode($egg->config_startup ?? '{}', true);
+                    if (!is_array($startup)) {
+                        $startup = [];
+                    }
+
+                    unset($startup['userInteraction']);
+
+                    DB::table('eggs')->where('id', $egg->id)->update([
+                        'config_startup' => json_encode($startup),
+                    ]);
+                });
+                break;
         }
     }
 
@@ -41,6 +55,22 @@ class RemoveUserInteraction extends Migration
                 DB::table('eggs')->update([
                     'config_startup' => DB::raw('jsonb_set(config_startup::jsonb, \'$.userInteraction\', jsonb_build_array())'),
                 ]);
+                break;
+            case 'sqlite':
+                DB::table('eggs')->select(['id', 'config_startup'])->orderBy('id')->cursor()->each(function ($egg) {
+                    $startup = json_decode($egg->config_startup ?? '{}', true);
+                    if (!is_array($startup)) {
+                        $startup = [];
+                    }
+
+                    if (!array_key_exists('userInteraction', $startup)) {
+                        $startup['userInteraction'] = [];
+                    }
+
+                    DB::table('eggs')->where('id', $egg->id)->update([
+                        'config_startup' => json_encode($startup),
+                    ]);
+                });
                 break;
         }
     }
