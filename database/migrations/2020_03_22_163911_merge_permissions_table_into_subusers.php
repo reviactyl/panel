@@ -76,6 +76,9 @@ class MergePermissionsTableIntoSubusers extends Migration
             ->when(DB::getPdo()->getAttribute(PDO::ATTR_DRIVER_NAME) === 'pgsql', function ($query) {
                 $query->selectRaw("string_agg(permission, ',') as permissions");
             })
+            ->when(DB::getPdo()->getAttribute(PDO::ATTR_DRIVER_NAME) === 'sqlite', function ($query) {
+                $query->selectRaw('group_concat(permission, ",") as permissions');
+            })
             ->from('permissions')
             ->groupBy(['subuser_id'])
             ->cursor();

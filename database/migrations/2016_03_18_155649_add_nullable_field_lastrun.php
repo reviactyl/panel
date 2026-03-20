@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
 
 class AddNullableFieldLastrun extends Migration
 {
@@ -9,8 +11,9 @@ class AddNullableFieldLastrun extends Migration
      */
     public function up()
     {
-        $table = DB::getQueryGrammar()->wrapTable('tasks');
-        DB::statement('ALTER TABLE ' . $table . ' CHANGE `last_run` `last_run` TIMESTAMP NULL;');
+        Schema::table('tasks', function (Blueprint $table) {
+            $table->timestamp('last_run')->nullable()->change();
+        });
     }
 
     /**
@@ -18,7 +21,8 @@ class AddNullableFieldLastrun extends Migration
      */
     public function down()
     {
-        $table = DB::getQueryGrammar()->wrapTable('tasks');
-        DB::statement('ALTER TABLE ' . $table . ' CHANGE `last_run` `last_run` TIMESTAMP;');
+        Schema::table('tasks', function (Blueprint $table) {
+            $table->timestamp('last_run')->nullable(false)->change();
+        });
     }
 }

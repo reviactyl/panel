@@ -24,6 +24,13 @@ class SupportMultipleDockerImagesAndUpdates extends Migration
             case 'pgsql':
                 DB::table('eggs')->update(['docker_images' => DB::raw('jsonb_build_array(docker_image)')]);
                 break;
+            case 'sqlite':
+                DB::table('eggs')->select(['id', 'docker_image'])->orderBy('id')->cursor()->each(function ($egg) {
+                    DB::table('eggs')->where('id', $egg->id)->update([
+                        'docker_images' => json_encode([$egg->docker_image]),
+                    ]);
+                });
+                break;
         }
 
         Schema::table('eggs', function (Blueprint $table) {
@@ -42,11 +49,18 @@ class SupportMultipleDockerImagesAndUpdates extends Migration
 
         switch (DB::getPdo()->getAttribute(PDO::ATTR_DRIVER_NAME)) {
             case 'mysql':
-                DB::table('eggs')->update(['docker_images' => DB::raw('JSON_UNQUOTE(JSON_EXTRACT(docker_images, "$[0]")')]);
+                DB::table('eggs')->update(['docker_image' => DB::raw('JSON_UNQUOTE(JSON_EXTRACT(docker_images, "$[0]"))')]);
                 break;
             case 'pgsql':
-                DB::table('eggs')->update(['docker_images' => DB::raw('JSON_UNQUOTE(JSON_EXTRACT(docker_images, "$[0]")')]);
-                DB::table('eggs')->update(['docker_images' => DB::raw('docker_images->>0')]);
+                DB::table('eggs')->update(['docker_image' => DB::raw('docker_images->>0')]);
+                break;
+            case 'sqlite':
+                DB::table('eggs')->select(['id', 'docker_images'])->orderBy('id')->cursor()->each(function ($egg) {
+                    $images = json_decode($egg->docker_images ?? '[]', true);
+                    DB::table('eggs')->where('id', $egg->id)->update([
+                        'docker_image' => is_array($images) && isset($images[0]) ? $images[0] : null,
+                    ]);
+                });
                 break;
         }
 
