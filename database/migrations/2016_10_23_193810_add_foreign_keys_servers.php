@@ -35,19 +35,14 @@ class AddForeignKeysServers extends Migration
     {
         Schema::table('servers', function (Blueprint $table) {
             $table->dropForeign(['node']);
-            $table->dropIndex(['node']);
 
             $table->dropForeign(['owner']);
-            $table->dropIndex(['owner']);
 
             $table->dropForeign(['allocation']);
-            $table->dropIndex(['allocation']);
 
             $table->dropForeign(['service']);
-            $table->dropIndex(['service']);
 
             $table->dropForeign(['option']);
-            $table->dropIndex(['option']);
 
             $table->dropColumn('deleted_at');
 

@@ -24,7 +24,6 @@ class AddForeignServiceVariables extends Migration
     {
         Schema::table('service_variables', function (Blueprint $table) {
             $table->dropForeign(['option_id']);
-            $table->dropIndex(['option_id']);
 
             $table->mediumInteger('option_id', false, true)->change();
         });
