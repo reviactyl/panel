@@ -22,6 +22,7 @@ class AddExternalIdColumnToServersTable extends Migration
     public function down(): void
     {
         Schema::table('servers', function (Blueprint $table) {
+            $table->dropUnique('servers_external_id_unique');
             $table->dropColumn('external_id');
         });
     }

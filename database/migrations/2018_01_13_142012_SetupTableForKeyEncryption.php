@@ -33,6 +33,7 @@ class SetupTableForKeyEncryption extends Migration
     public function down(): void
     {
         Schema::table('api_keys', function (Blueprint $table) {
+            $table->dropUnique('api_keys_identifier_unique');
             $table->dropColumn('identifier');
             $table->string('token', 32)->unique()->change();
         });
