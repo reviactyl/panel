@@ -1,5 +1,4 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFileAlt, faFileArchive, faFileImport, faFolder, faFileImage } from '@fortawesome/free-solid-svg-icons';
+import { FaFileLines, FaFileZipper, FaFileImport, FaFolder, FaFileImage } from 'react-icons/fa6';
 import { encodePathSegments } from '@/helpers';
 import { differenceInHours, format, formatDistanceToNow } from 'date-fns';
 import { memo, ReactNode } from 'react';
@@ -79,19 +78,18 @@ const FileObjectRow = ({ file, onImageClick }: FileObjectRowProps) => {
             <Clickable file={file} onImageClick={handleImageClick}>
                 <div css={tw`flex-none text-gray-400 ml-6 mr-4 text-lg pl-3`}>
                     {file.isFile ? (
-                        <FontAwesomeIcon
-                            icon={
-                                file.isSymlink
-                                    ? faFileImport
-                                    : file.isArchiveType()
-                                    ? faFileArchive
-                                    : isImageFile(file)
-                                    ? faFileImage
-                                    : faFileAlt
-                            }
-                        />
+                        (() => {
+                            const FileIcon = file.isSymlink
+                                ? FaFileImport
+                                : file.isArchiveType()
+                                ? FaFileZipper
+                                : isImageFile(file)
+                                ? FaFileImage
+                                : FaFileLines;
+                            return <FileIcon />;
+                        })()
                     ) : (
-                        <FontAwesomeIcon icon={faFolder} />
+                        <FaFolder />
                     )}
                 </div>
                 <div css={tw`flex-1 truncate`}>{file.name}</div>

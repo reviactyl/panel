@@ -3,8 +3,7 @@ import { PaginatedResult } from '@/api/http';
 import tw from 'twin.macro';
 import styled from 'styled-components';
 import Button from '@/components/elements/Button';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleDoubleLeft, faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
+import { FaAnglesLeft, FaAnglesRight } from 'react-icons/fa6';
 
 interface RenderFuncProps<T> {
     items: T[];
@@ -50,7 +49,7 @@ function Pagination<T>({ data: { items, pagination }, onPageSelect, children }: 
                 <div css={tw`mt-4 flex justify-center`}>
                     {(pages?.[0] ?? 0) > 1 && !isFirstPage && (
                         <Block isSecondary color={'primary'} onClick={() => onPageSelect(1)}>
-                            <FontAwesomeIcon icon={faAngleDoubleLeft} />
+                            <FaAnglesLeft />
                         </Block>
                     )}
                     {pages.map((i) => (
@@ -65,7 +64,7 @@ function Pagination<T>({ data: { items, pagination }, onPageSelect, children }: 
                     ))}
                     {(pages?.[4] ?? 0) < pagination.totalPages && !isLastPage && (
                         <Block isSecondary color={'primary'} onClick={() => onPageSelect(pagination.totalPages)}>
-                            <FontAwesomeIcon icon={faAngleDoubleRight} />
+                            <FaAnglesRight />
                         </Block>
                     )}
                 </div>

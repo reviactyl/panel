@@ -1,6 +1,5 @@
 import tw from 'twin.macro';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { FaTrash } from 'react-icons/fa6';
 import { useState } from 'react';
 import { useFlashKey } from '@/plugins/useFlash';
 import { deleteSSHKey, useSSHKeys } from '@/api/account/ssh-keys';
@@ -38,10 +37,7 @@ export default ({ name, fingerprint }: { name: string; fingerprint: string }) =>
                 {t('ssh.delete.info')} <Code>{name}</Code>
             </Dialog.Confirm>
             <button css={tw`ml-4 p-2 text-sm`} onClick={() => setVisible(true)}>
-                <FontAwesomeIcon
-                    icon={faTrashAlt}
-                    css={tw`text-neutral-400 hover:text-red-400 transition-colors duration-150`}
-                />
+                <FaTrash className={'text-neutral-400 hover:text-red-400 transition-colors duration-150'} />
             </button>
         </>
     );

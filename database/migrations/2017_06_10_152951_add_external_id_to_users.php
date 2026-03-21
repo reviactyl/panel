@@ -22,6 +22,7 @@ class AddExternalIdToUsers extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
+            $table->dropUnique('users_external_id_unique');
             $table->dropColumn('external_id');
         });
     }

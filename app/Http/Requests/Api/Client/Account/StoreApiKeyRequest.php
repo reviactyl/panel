@@ -15,7 +15,7 @@ class StoreApiKeyRequest extends ClientApiRequest
 
         return [
             'description' => $rules['memo'],
-            'allowed_ips' => [...$rules['allowed_ips'], 'max:50'],
+            'allowed_ips' => [...explode('|', $rules['allowed_ips']), 'max:50'],
             'allowed_ips.*' => 'string',
         ];
     }

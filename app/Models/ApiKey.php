@@ -8,6 +8,8 @@ use App\Services\Acl\Api\AdminAcl;
 use Laravel\Sanctum\Contracts\HasAbilities;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Laravel\Sanctum\PersonalAccessToken;
+use App\Models\Traits\HasValidationRules;
 
 /**
  * App\Models\ApiKey.
@@ -61,10 +63,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *
  * @mixin \Eloquent
  */
-class ApiKey extends Model implements HasAbilities
+class ApiKey extends PersonalAccessToken
 {
     /** @use HasFactory<\Database\Factories\ApiKeyFactory> */
     use HasFactory;
+
+    /** @use HasValidationRules */
+    use HasValidationRules;
 
     /**
      * The resource name for this model when it is transformed into an
@@ -199,7 +204,7 @@ class ApiKey extends Model implements HasAbilities
     /**
      * Finds the model matching the provided token.
      */
-    public static function findToken(string $token): ?self
+    public static function findToken($token)
     {
         $identifier = substr($token, 0, self::IDENTIFIER_LENGTH);
 

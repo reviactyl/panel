@@ -1,6 +1,5 @@
 import { useRef, type MouseEvent } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArchive, faEllipsisH, faLock } from '@fortawesome/free-solid-svg-icons';
+import { FaBoxArchive, FaEllipsis, FaLock } from 'react-icons/fa6';
 import { format, formatDistanceToNow } from 'date-fns';
 import Spinner from '@/components/elements/Spinner';
 import { bytesToString } from '@/lib/formatters';
@@ -67,9 +66,9 @@ export default ({ backup, className }: Props) => {
                 <div css={tw`mr-4`}>
                     {backup.completedAt !== null ? (
                         backup.isLocked ? (
-                            <FontAwesomeIcon icon={faLock} css={tw`text-yellow-500`} />
+                            <FaLock className={'text-yellow-500'} />
                         ) : (
-                            <FontAwesomeIcon icon={faArchive} css={tw`text-neutral-300`} />
+                            <FaBoxArchive className={'text-neutral-300'} />
                         )
                     ) : (
                         <Spinner size={'small'} />
@@ -104,7 +103,7 @@ export default ({ backup, className }: Props) => {
                 <div css={tw`mt-4 md:mt-0 ml-6`} style={{ marginRight: '-0.5rem' }}>
                     {!backup.completedAt ? (
                         <div css={tw`p-2 invisible`}>
-                            <FontAwesomeIcon icon={faEllipsisH} />
+                            <FaEllipsis />
                         </div>
                     ) : (
                         <BackupContextMenu ref={contextMenuRef} backup={backup} />

@@ -24,7 +24,6 @@ class AddForeignApiPermissions extends Migration
     {
         Schema::table('api_permissions', function (Blueprint $table) {
             $table->dropForeign(['key_id']);
-            $table->dropIndex(['key_id']);
 
             $table->mediumInteger('key_id', false, true)->nullable(false)->change();
         });

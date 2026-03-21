@@ -43,9 +43,15 @@ class SupportMultipleDockerImagesAndUpdates extends Migration
      */
     public function down(): void
     {
-        Schema::table('eggs', function (Blueprint $table) {
-            $table->text('docker_image')->after('docker_images');
-        });
+        if (DB::getDriverName() === 'sqlite') {
+            Schema::table('eggs', function (Blueprint $table) {
+                $table->text('docker_image')->nullable()->after('docker_images');
+            });
+        } else {
+            Schema::table('eggs', function (Blueprint $table) {
+                $table->text('docker_image')->after('docker_images');
+            });
+        }
 
         switch (DB::getPdo()->getAttribute(PDO::ATTR_DRIVER_NAME)) {
             case 'mysql':

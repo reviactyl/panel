@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDatabase, faEye, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { FaDatabase, FaEye, FaTrash } from 'react-icons/fa6';
 import Modal from '@/components/elements/Modal';
 import { Form, Formik, FormikHelpers } from 'formik';
 import Field from '@/components/elements/Field';
@@ -144,7 +143,7 @@ export default ({ database, className }: Props) => {
             </Modal>
             <GreyRowBox $hoverable={false} className={className} css={tw`mb-2`}>
                 <div css={tw`hidden md:block`}>
-                    <FontAwesomeIcon icon={faDatabase} fixedWidth />
+                    <FaDatabase className={'inline-block w-[1.25em]'} />
                 </div>
                 <div css={tw`flex-1 ml-4`}>
                     <CopyOnClick text={database.name}>
@@ -169,11 +168,11 @@ export default ({ database, className }: Props) => {
                 </div>
                 <div css={tw`ml-8`}>
                     <Button isSecondary css={tw`mr-2`} onClick={() => setConnectionVisible(true)}>
-                        <FontAwesomeIcon icon={faEye} fixedWidth />
+                        <FaEye className={'inline-block w-[1.25em]'} />
                     </Button>
                     <Can action={'database.delete'}>
                         <Button color={'red'} isSecondary onClick={() => setVisible(true)}>
-                            <FontAwesomeIcon icon={faTrashAlt} fixedWidth />
+                            <FaTrash className={'inline-block w-[1.25em]'} />
                         </Button>
                     </Can>
                 </div>

@@ -24,12 +24,19 @@ class AddForeignAllocations extends Migration
      */
     public function down(): void
     {
+        if (DB::getDriverName() === 'sqlite') {
+            Schema::table('allocations', function (Blueprint $table) {
+                $table->integer('assigned_to')->nullable()->change();
+                $table->integer('node')->nullable(false)->change();
+            });
+
+            return;
+        }
+
         Schema::table('allocations', function (Blueprint $table) {
             $table->dropForeign(['assigned_to']);
-            $table->dropIndex(['assigned_to']);
 
             $table->dropForeign(['node']);
-            $table->dropIndex(['node']);
 
             $table->mediumInteger('assigned_to', false, true)->nullable()->change();
             $table->mediumInteger('node', false, true)->nullable(false)->change();

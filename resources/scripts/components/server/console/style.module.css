@@ -56,6 +56,14 @@
         @apply border border-gray-600 transition-colors duration-100;
         @apply active:border-gray-500 focus:border-gray-500;
     }
+
+    /* Override @xterm/xterm's default background color */
+    & :global(.xterm),
+    & :global(.xterm-viewport),
+    & :global(.xterm-screen),
+    & :global(.xterm-scrollable-element) {
+        background-color: transparent !important;
+    }
 }
 
 .chart_container {

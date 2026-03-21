@@ -12,8 +12,7 @@ import reorderServerCategories from '@/api/account/reorderServerCategories';
 import useFlash from '@/plugins/useFlash';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import styled from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faPen, faPlus, faLayerGroup, faSortAmountDown, faBars } from '@fortawesome/free-solid-svg-icons';
+import { FaTrash, FaPen, FaPlus, FaLayerGroup, FaArrowDownWideShort, FaBars } from 'react-icons/fa6';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { useTranslation } from 'react-i18next';
 import Title from '@/reviactyl/ui/Title';
@@ -145,7 +144,11 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
                 <Column>
                     <div className='flex items-center gap-2 mb-5'>
                         <div className='bg-blue-500/10 p-2 rounded-ui'>
-                            <FontAwesomeIcon icon={editingCategory ? faPen : faPlus} className='text-blue-400' />
+                            {editingCategory ? (
+                                <FaPen className='text-blue-400' />
+                            ) : (
+                                <FaPlus className='text-blue-400' />
+                            )}
                         </div>
                         <h3 className='text-lg font-semibold text-gray-200'>
                             {editingCategory ? t('categories.modify-category') : t('categories.create-category')}
@@ -238,7 +241,7 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
                     <div className='flex items-center justify-between mb-5'>
                         <div className='flex items-center gap-2'>
                             <div className='bg-purple-500/10 p-2 rounded-ui'>
-                                <FontAwesomeIcon icon={faSortAmountDown} className='text-purple-400' />
+                                <FaArrowDownWideShort className='text-purple-400' />
                             </div>
                             <h3 className='text-lg font-semibold text-gray-200'>{t('categories.arrange-order')}</h3>
                         </div>
@@ -250,7 +253,7 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
                     <div style={{ paddingRight: '0.5rem' }}>
                         {categories.length === 0 ? (
                             <Card className='!border-2 !border-dashed !p-12 text-center'>
-                                <FontAwesomeIcon icon={faLayerGroup} className='text-3xl text-gray-500 mb-4' />
+                                <FaLayerGroup className='text-3xl text-gray-500 mb-4' />
                                 <p className='text-sm text-gray-400'>{t('categories.no-custom-categories')}</p>
                             </Card>
                         ) : (
@@ -275,8 +278,7 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
                                                                     minWidth: 0,
                                                                 }}
                                                             >
-                                                                <FontAwesomeIcon
-                                                                    icon={faBars}
+                                                                <FaBars
                                                                     className='text-gray-500'
                                                                     style={{
                                                                         marginRight: '0.75rem',
@@ -349,7 +351,7 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
                                                                     }}
                                                                     title={t('categories.edit')}
                                                                 >
-                                                                    <FontAwesomeIcon icon={faPen} size={'sm'} />
+                                                                    <FaPen className='text-sm' />
                                                                 </button>
                                                                 <button
                                                                     type={'button'}
@@ -369,7 +371,7 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
                                                                     }}
                                                                     title={t('categories.delete')}
                                                                 >
-                                                                    <FontAwesomeIcon icon={faTrash} size={'sm'} />
+                                                                    <FaTrash className='text-sm' />
                                                                 </button>
                                                             </div>
                                                         </DragItem>

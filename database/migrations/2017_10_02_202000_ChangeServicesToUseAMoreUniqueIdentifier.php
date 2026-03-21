@@ -41,11 +41,35 @@ class ChangeServicesToUseAMoreUniqueIdentifier extends Migration
      */
     public function down(): void
     {
+        try {
+            Schema::table('services', function (Blueprint $table) {
+                $table->dropUnique('services_uuid_unique');
+            });
+        } catch (\Throwable) {
+            // Ignore when missing due to partial rollback state.
+        }
+
         Schema::table('services', function (Blueprint $table) {
-            $table->dropColumn('uuid');
-            $table->string('folder')->nullable();
-            $table->text('startup')->nullable();
-            $table->text('index_file');
+            if (Schema::hasColumn('services', 'uuid')) {
+                $table->dropColumn('uuid');
+            }
+
+            if (!Schema::hasColumn('services', 'folder')) {
+                $table->string('folder')->nullable();
+            }
+
+            if (!Schema::hasColumn('services', 'startup')) {
+                $table->text('startup')->nullable();
+            }
+
+            if (!Schema::hasColumn('services', 'index_file')) {
+                if (DB::getDriverName() === 'sqlite') {
+                    $table->text('index_file')->nullable();
+                } else {
+                    $table->text('index_file');
+                }
+            }
+
             $table->string('author', 36)->change();
 
             $table->unique('name');

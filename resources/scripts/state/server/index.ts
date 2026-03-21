@@ -3,10 +3,11 @@ import { action, Action, computed, Computed, createContextStore, thunk, Thunk } 
 import socket, { SocketStore } from './socket';
 import files, { ServerFileStore } from '@/state/server/files';
 import subusers, { ServerSubuserStore } from '@/state/server/subusers';
-import { composeWithDevTools } from 'redux-devtools-extension';
+import { composeWithDevTools } from '@redux-devtools/extension';
 import schedules, { ServerScheduleStore } from '@/state/server/schedules';
 import databases, { ServerDatabaseStore } from '@/state/server/databases';
 import isEqual from 'react-fast-compare';
+import type { compose as reduxCompose } from 'redux';
 
 export type ServerStatus = 'offline' | 'starting' | 'stopping' | 'running' | null;
 
@@ -87,7 +88,7 @@ export interface ServerStore {
     clearServerState: Action<ServerStore>;
 }
 
-export const ServerContext: ReturnType<typeof createContextStore<ServerStore>> = createContextStore<ServerStore>(
+export const ServerContext = createContextStore<ServerStore>(
     {
         server,
         socket,
@@ -118,6 +119,6 @@ export const ServerContext: ReturnType<typeof createContextStore<ServerStore>> =
         compose: composeWithDevTools({
             name: 'ServerStore',
             trace: true,
-        }),
+        }) as typeof reduxCompose,
     }
 );

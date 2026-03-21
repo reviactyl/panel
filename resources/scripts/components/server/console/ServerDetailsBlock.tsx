@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { faClock, faCloudDownloadAlt, faCloudUploadAlt } from '@fortawesome/free-solid-svg-icons';
+import { FaClock, FaCloudArrowDown, FaCloudArrowUp } from 'react-icons/fa6';
 import { bytesToString } from '@/lib/formatters';
 import { ServerContext } from '@/state/server';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
@@ -62,7 +62,7 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
     return (
         <div className={classNames('grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4', className)}>
             <StatBlock
-                icon={faClock}
+                icon={FaClock}
                 title={t('uptime')}
                 color={getBackgroundColor(status === 'running' ? 0 : status !== 'offline' ? 9 : 10, 10)}
             >
@@ -74,14 +74,14 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
                     capitalize(status)
                 )}
             </StatBlock>
-            <StatBlock icon={faCloudDownloadAlt} title={t('network-inbound')}>
+            <StatBlock icon={FaCloudArrowDown} title={t('network-inbound')}>
                 {status === 'offline' ? (
                     <span className={'text-gray-400'}>{t('offline')}</span>
                 ) : (
                     bytesToString(stats.rx)
                 )}
             </StatBlock>
-            <StatBlock icon={faCloudUploadAlt} title={t('network-outbound')}>
+            <StatBlock icon={FaCloudArrowUp} title={t('network-outbound')}>
                 {status === 'offline' ? (
                     <span className={'text-gray-400'}>{t('offline')}</span>
                 ) : (

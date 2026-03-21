@@ -26,7 +26,6 @@ class AdjustColumnNames extends Migration
     {
         Schema::table('service_options', function (Blueprint $table) {
             $table->dropForeign(['service_id']);
-            $table->dropIndex(['service_id']);
 
             $table->renameColumn('service_id', 'parent_service');
             $table->foreign('parent_service')->references('id')->on('services');

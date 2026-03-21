@@ -1,15 +1,7 @@
 import { useState } from 'react';
 import { Schedule, Task } from '@/api/server/schedules/getServerSchedules';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-    faArrowCircleDown,
-    faClock,
-    faCode,
-    faFileArchive,
-    faPencilAlt,
-    faToggleOn,
-    faTrashAlt,
-} from '@fortawesome/free-solid-svg-icons';
+import { FaCircleArrowDown, FaClock, FaCode, FaFileZipper, FaPen, FaToggleOn, FaTrash } from 'react-icons/fa6';
+import { IconType } from 'react-icons';
 import deleteScheduleTask from '@/api/server/schedules/deleteScheduleTask';
 import { httpErrorToHuman } from '@/api/http';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
@@ -26,16 +18,16 @@ interface Props {
     task: Task;
 }
 
-const getActionDetails = (action: string): [string, any] => {
+const getActionDetails = (action: string): [string, IconType] => {
     switch (action) {
         case 'command':
-            return ['Send Command', faCode];
+            return ['Send Command', FaCode];
         case 'power':
-            return ['Send Power Action', faToggleOn];
+            return ['Send Power Action', FaToggleOn];
         case 'backup':
-            return ['Create Backup', faFileArchive];
+            return ['Create Backup', FaFileZipper];
         default:
-            return ['Unknown Action', faCode];
+            return ['Unknown Action', FaCode];
     }
 };
 
@@ -65,6 +57,7 @@ export default ({ schedule, task }: Props) => {
     };
 
     const [title, icon] = getActionDetails(task.action);
+    const ActionIcon = icon;
 
     return (
         <div css={tw`sm:flex items-center p-3 sm:p-6 border-b border-neutral-800`}>
@@ -84,7 +77,7 @@ export default ({ schedule, task }: Props) => {
             >
                 Are you sure you want to delete this task? This action cannot be undone.
             </ConfirmationModal>
-            <FontAwesomeIcon icon={icon} css={tw`text-lg text-white hidden md:block`} />
+            <ActionIcon className={'text-lg text-white hidden md:block'} />
             <div css={tw`flex-none sm:flex-1 w-full sm:w-auto overflow-x-auto`}>
                 <p css={tw`md:ml-6 text-neutral-200 uppercase text-sm`}>{title}</p>
                 {task.payload && (
@@ -104,7 +97,7 @@ export default ({ schedule, task }: Props) => {
                 {task.continueOnFailure && (
                     <div css={tw`mr-6`}>
                         <div css={tw`flex items-center px-2 py-1 bg-yellow-500 text-yellow-800 text-sm rounded-full`}>
-                            <Icon icon={faArrowCircleDown} css={tw`w-3 h-3 mr-2`} />
+                            <Icon icon={FaCircleArrowDown} css={tw`w-3 h-3 mr-2`} />
                             Continues on Failure
                         </div>
                     </div>
@@ -112,7 +105,7 @@ export default ({ schedule, task }: Props) => {
                 {task.sequenceId > 1 && task.timeOffset > 0 && (
                     <div css={tw`mr-6`}>
                         <div css={tw`flex items-center px-2 py-1 bg-neutral-500 text-sm rounded-full`}>
-                            <Icon icon={faClock} css={tw`w-3 h-3 mr-2`} />
+                            <Icon icon={FaClock} css={tw`w-3 h-3 mr-2`} />
                             {task.timeOffset}s later
                         </div>
                     </div>
@@ -124,7 +117,7 @@ export default ({ schedule, task }: Props) => {
                         css={tw`block text-sm p-2 text-neutral-500 hover:text-neutral-100 transition-colors duration-150 mr-4 ml-auto sm:ml-0`}
                         onClick={() => setIsEditing(true)}
                     >
-                        <FontAwesomeIcon icon={faPencilAlt} />
+                        <FaPen />
                     </button>
                 </Can>
                 <Can action={'schedule.update'}>
@@ -134,7 +127,7 @@ export default ({ schedule, task }: Props) => {
                         css={tw`block text-sm p-2 text-neutral-500 hover:text-red-600 transition-colors duration-150`}
                         onClick={() => setVisible(true)}
                     >
-                        <FontAwesomeIcon icon={faTrashAlt} />
+                        <FaTrash />
                     </button>
                 </Can>
             </div>

@@ -1,17 +1,16 @@
 import React, { memo, useRef, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faBoxOpen,
-    faCopy,
-    faEllipsisH,
-    faFileArchive,
-    faFileCode,
-    faFileDownload,
-    faLevelUpAlt,
-    faPencilAlt,
-    faTrashAlt,
-    IconDefinition,
-} from '@fortawesome/free-solid-svg-icons';
+    FaBoxOpen,
+    FaCopy,
+    FaEllipsis,
+    FaFileZipper,
+    FaFileCode,
+    FaFileArrowDown,
+    FaTurnUp,
+    FaPen,
+    FaTrash,
+} from 'react-icons/fa6';
+import { IconType } from 'react-icons';
 import RenameFileModal from '@/components/server/files/RenameFileModal';
 import { ServerContext } from '@/state/server';
 import { join } from 'pathe';
@@ -45,17 +44,21 @@ const StyledRow = styled.div<{ $danger?: boolean }>`
 `;
 
 interface RowProps extends React.HTMLAttributes<HTMLDivElement> {
-    icon: IconDefinition;
+    icon: IconType;
     title: string;
     $danger?: boolean;
 }
 
-const Row = ({ icon, title, ...props }: RowProps) => (
-    <StyledRow {...props}>
-        <FontAwesomeIcon icon={icon} css={tw`text-xs`} fixedWidth />
-        <span css={tw`ml-2`}>{title}</span>
-    </StyledRow>
-);
+const Row = ({ icon, title, ...props }: RowProps) => {
+    const ItemIcon = icon;
+
+    return (
+        <StyledRow {...props}>
+            <ItemIcon className={'text-xs inline-block w-[1.25em]'} />
+            <span css={tw`ml-2`}>{title}</span>
+        </StyledRow>
+    );
+};
 
 const FileDropdownMenu = ({ file }: { file: FileObject }) => {
     const onClickRef = useRef<DropdownMenu>(null);
@@ -163,32 +166,32 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                 ref={onClickRef}
                 renderToggle={(onClick) => (
                     <div css={tw`px-4 py-2 hover:text-white`} onClick={onClick}>
-                        <FontAwesomeIcon icon={faEllipsisH} />
+                        <FaEllipsis />
                     </div>
                 )}
             >
                 <Can action={'file.update'}>
-                    <Row onClick={() => setModal('rename')} icon={faPencilAlt} title={'Rename'} />
-                    <Row onClick={() => setModal('move')} icon={faLevelUpAlt} title={'Move'} />
-                    <Row onClick={() => setModal('chmod')} icon={faFileCode} title={'Permissions'} />
+                    <Row onClick={() => setModal('rename')} icon={FaPen} title={'Rename'} />
+                    <Row onClick={() => setModal('move')} icon={FaTurnUp} title={'Move'} />
+                    <Row onClick={() => setModal('chmod')} icon={FaFileCode} title={'Permissions'} />
                 </Can>
                 {file.isFile && (
                     <Can action={'file.create'}>
-                        <Row onClick={doCopy} icon={faCopy} title={'Copy'} />
+                        <Row onClick={doCopy} icon={FaCopy} title={'Copy'} />
                     </Can>
                 )}
                 {file.isArchiveType() ? (
                     <Can action={'file.create'}>
-                        <Row onClick={doUnarchive} icon={faBoxOpen} title={'Unarchive'} />
+                        <Row onClick={doUnarchive} icon={FaBoxOpen} title={'Unarchive'} />
                     </Can>
                 ) : (
                     <Can action={'file.archive'}>
-                        <Row onClick={doArchive} icon={faFileArchive} title={'Archive'} />
+                        <Row onClick={doArchive} icon={FaFileZipper} title={'Archive'} />
                     </Can>
                 )}
-                {file.isFile && <Row onClick={doDownload} icon={faFileDownload} title={'Download'} />}
+                {file.isFile && <Row onClick={doDownload} icon={FaFileArrowDown} title={'Download'} />}
                 <Can action={'file.delete'}>
-                    <Row onClick={() => setShowConfirmation(true)} icon={faTrashAlt} title={'Delete'} $danger />
+                    <Row onClick={() => setShowConfirmation(true)} icon={FaTrash} title={'Delete'} $danger />
                 </Can>
             </DropdownMenu>
         </>

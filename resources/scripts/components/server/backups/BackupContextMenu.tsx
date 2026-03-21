@@ -1,13 +1,5 @@
 import { useState, useRef, forwardRef, useImperativeHandle } from 'react';
-import {
-    faBoxOpen,
-    faCloudDownloadAlt,
-    faEllipsisH,
-    faLock,
-    faTrashAlt,
-    faUnlock,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FaBoxOpen, FaCloudArrowDown, FaEllipsis, FaLock, FaTrash, FaUnlock } from 'react-icons/fa6';
 import DropdownMenu, { DropdownButtonRow } from '@/components/elements/DropdownMenu';
 import getBackupDownloadUrl from '@/api/server/backups/getBackupDownloadUrl';
 import useFlash from '@/plugins/useFlash';
@@ -179,36 +171,36 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
                             onClick={onClick}
                             css={tw`text-gray-200 transition-colors duration-150 hover:text-gray-100 p-2`}
                         >
-                            <FontAwesomeIcon icon={faEllipsisH} />
+                            <FaEllipsis />
                         </button>
                     )}
                 >
                     <div css={tw`text-sm`}>
                         <Can action={'backup.download'}>
                             <DropdownButtonRow onClick={doDownload}>
-                                <FontAwesomeIcon fixedWidth icon={faCloudDownloadAlt} css={tw`text-xs`} />
+                                <FaCloudArrowDown className={'text-xs inline-block w-[1.25em]'} />
                                 <span css={tw`ml-2`}>{t('download')}</span>
                             </DropdownButtonRow>
                         </Can>
                         <Can action={'backup.restore'}>
                             <DropdownButtonRow onClick={() => setModal('restore')}>
-                                <FontAwesomeIcon fixedWidth icon={faBoxOpen} css={tw`text-xs`} />
+                                <FaBoxOpen className={'text-xs inline-block w-[1.25em]'} />
                                 <span css={tw`ml-2`}>{t('restore')}</span>
                             </DropdownButtonRow>
                         </Can>
                         <Can action={'backup.delete'}>
                             <>
                                 <DropdownButtonRow onClick={onLockToggle}>
-                                    <FontAwesomeIcon
-                                        fixedWidth
-                                        icon={backup.isLocked ? faUnlock : faLock}
-                                        css={tw`text-xs mr-2`}
-                                    />
+                                    {backup.isLocked ? (
+                                        <FaUnlock className={'text-xs mr-2 inline-block w-[1.25em]'} />
+                                    ) : (
+                                        <FaLock className={'text-xs mr-2 inline-block w-[1.25em]'} />
+                                    )}
                                     {backup.isLocked ? t('unlock') : t('lock')}
                                 </DropdownButtonRow>
                                 {!backup.isLocked && (
                                     <DropdownButtonRow danger onClick={() => setModal('delete')}>
-                                        <FontAwesomeIcon fixedWidth icon={faTrashAlt} css={tw`text-xs`} />
+                                        <FaTrash className={'text-xs inline-block w-[1.25em]'} />
                                         <span css={tw`ml-2`}>{t('delete')}</span>
                                     </DropdownButtonRow>
                                 )}
@@ -221,7 +213,7 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
                     onClick={() => setModal('delete')}
                     css={tw`text-gray-200 transition-colors duration-150 hover:text-gray-100 p-2`}
                 >
-                    <FontAwesomeIcon icon={faTrashAlt} />
+                    <FaTrash />
                 </button>
             )}
         </>

@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ITerminalOptions, Terminal } from 'xterm';
-import { FitAddon } from 'xterm-addon-fit';
-import { SearchAddon } from 'xterm-addon-search';
 import { SearchBarAddon } from 'xterm-addon-search-bar';
-import { WebLinksAddon } from 'xterm-addon-web-links';
+import { ITerminalAddon, ITerminalOptions, ITheme, Terminal } from '@xterm/xterm';
+import { FitAddon } from '@xterm/addon-fit';
+import { SearchAddon } from '@xterm/addon-search';
+import { WebLinksAddon } from '@xterm/addon-web-links';
 import { Unicode11Addon } from '@xterm/addon-unicode11';
 import { ScrollDownHelperAddon } from '@/plugins/XtermScrollDownHelperAddon';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
@@ -17,30 +17,12 @@ import { SocketEvent, SocketRequest } from '@/components/server/events';
 import classNames from 'classnames';
 import { ChevronDoubleRightIcon } from '@heroicons/react/solid';
 
-import 'xterm/css/xterm.css';
+import '@xterm/xterm/css/xterm.css';
 import styles from './style.module.css';
 import { useTranslation } from 'react-i18next';
 
-const theme = {
+const theme: ITheme = {
     background: 'transparent',
-    cursor: 'transparent',
-    black: th`colors.black`.toString(),
-    red: '#E54B4B',
-    green: '#9ECE58',
-    yellow: '#FAED70',
-    blue: '#396FE2',
-    magenta: '#BB80B3',
-    cyan: '#2DDAFD',
-    white: '#d0d0d0',
-    brightBlack: 'rgba(255, 255, 255, 0.2)',
-    brightRed: '#FF5370',
-    brightGreen: '#C3E88D',
-    brightYellow: '#FFCB6B',
-    brightBlue: '#82AAFF',
-    brightMagenta: '#C792EA',
-    brightCyan: '#89DDFF',
-    brightWhite: '#ffffff',
-    selection: '#FAF089',
 };
 
 const terminalProps: ITerminalOptions = {
@@ -49,7 +31,7 @@ const terminalProps: ITerminalOptions = {
     allowTransparency: true,
     fontSize: 12,
     fontFamily: th('fontFamily.mono'),
-    rows: 30,
+    allowProposedApi: true,
     theme: theme,
 };
 
@@ -63,7 +45,8 @@ export default () => {
     const terminal = useMemo(() => new Terminal({ ...terminalProps }), []);
     const fitAddon = new FitAddon();
     const searchAddon = new SearchAddon();
-    const searchBar = new SearchBarAddon({ searchAddon });
+    // xterm-addon-search-bar still ships legacy xterm typings; cast at this boundary for compatibility.
+    const searchBar = new SearchBarAddon({ searchAddon } as unknown as ConstructorParameters<typeof SearchBarAddon>[0]);
     const webLinksAddon = new WebLinksAddon();
     const unicode11Addon = new Unicode11Addon();
     const scrollDownHelperAddon = new ScrollDownHelperAddon();
@@ -125,7 +108,7 @@ export default () => {
 
         const command = e.currentTarget.value;
         if (e.key === 'Enter' && command.length > 0) {
-            setHistory((prevHistory) => [command, ...prevHistory!].slice(0, 32));
+            setHistory((prev) => [command, ...prev!].slice(0, 32));
             setHistoryIndex(-1);
 
             void (instance && instance.send('send command', command));
@@ -137,7 +120,7 @@ export default () => {
         if (connected && ref.current && !terminal.element) {
             terminal.loadAddon(fitAddon);
             terminal.loadAddon(searchAddon);
-            terminal.loadAddon(searchBar);
+            terminal.loadAddon(searchBar as unknown as ITerminalAddon);
             terminal.loadAddon(webLinksAddon);
             terminal.loadAddon(unicode11Addon);
             terminal.loadAddon(scrollDownHelperAddon);
@@ -190,26 +173,16 @@ export default () => {
                 terminal.clear();
             }
 
-            Object.keys(listeners).forEach((key: string) => {
-                const listener = listeners[key];
-                if (listener === undefined) {
-                    return;
-                }
-
-                instance.addListener(key, listener);
+            Object.entries(listeners).forEach(([key, listener]) => {
+                if (listener) instance.addListener(key, listener);
             });
             instance.send(SocketRequest.SEND_LOGS);
         }
 
         return () => {
             if (instance) {
-                Object.keys(listeners).forEach((key: string) => {
-                    const listener = listeners[key];
-                    if (listener === undefined) {
-                        return;
-                    }
-
-                    instance.removeListener(key, listener);
+                Object.entries(listeners).forEach(([key, listener]) => {
+                    if (listener) instance.removeListener(key, listener);
                 });
             }
         };

@@ -30,8 +30,6 @@ class RenameColumns extends Migration
         Schema::table('allocations', function (Blueprint $table) {
             $table->dropForeign(['node_id']);
             $table->dropForeign(['server_id']);
-            $table->dropIndex(['node_id']);
-            $table->dropIndex(['server_id']);
 
             $table->renameColumn('node_id', 'node');
             $table->renameColumn('server_id', 'assigned_to');

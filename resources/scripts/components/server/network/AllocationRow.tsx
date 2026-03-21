@@ -1,8 +1,7 @@
 import { memo, useCallback, useState } from 'react';
 import isEqual from 'react-fast-compare';
 import tw from 'twin.macro';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faNetworkWired } from '@fortawesome/free-solid-svg-icons';
+import { FaNetworkWired } from 'react-icons/fa6';
 import InputSpinner from '@/components/elements/InputSpinner';
 import { Textarea } from '@/components/elements/Input';
 import Can from '@/components/elements/Can';
@@ -63,7 +62,7 @@ const AllocationRow = ({ allocation }: Props) => {
         <GreyRowBox $hoverable={false} className={'flex-wrap md:flex-nowrap mt-2'}>
             <div className={'flex items-center w-full md:w-auto'}>
                 <div className={'pl-4 pr-6 text-neutral-400'}>
-                    <FontAwesomeIcon icon={faNetworkWired} />
+                    <FaNetworkWired />
                 </div>
                 <div className={'mr-4 flex-1'}>
                     {allocation.alias ? (

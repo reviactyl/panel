@@ -3,7 +3,7 @@ import { createGlobalStyle } from 'styled-components';
 
 export default createGlobalStyle`
     body {
-        ${tw`font-sans bg-neutral-800 text-neutral-200`};
+        ${tw`font-sans bg-gray-800 text-gray-200`};
         letter-spacing: 0.015em;
     }
 
@@ -12,7 +12,7 @@ export default createGlobalStyle`
     }
 
     p {
-        ${tw`text-neutral-200 leading-snug font-sans`};
+        ${tw`text-gray-200 leading-snug font-sans`};
     }
 
     form {

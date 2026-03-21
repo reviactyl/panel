@@ -43,12 +43,14 @@ class ApiKeyResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return ApiKey::count() > 0 ? (string) ApiKey::count() : null;
+        $count = ApiKey::where('key_type', ApiKey::TYPE_APPLICATION)->count();
+        return $count > 0 ? (string) $count : null;
     }
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery();
+        return parent::getEloquentQuery()
+            ->where('key_type', ApiKey::TYPE_APPLICATION);
     }
 
     public static function form(Schema $schema): Schema

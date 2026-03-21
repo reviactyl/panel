@@ -1,4 +1,4 @@
-import { Terminal, ITerminalAddon } from 'xterm';
+import { Terminal, ITerminalAddon } from '@xterm/xterm';
 
 export class ScrollDownHelperAddon implements ITerminalAddon {
     private terminal: Terminal = new Terminal();
@@ -10,7 +10,10 @@ export class ScrollDownHelperAddon implements ITerminalAddon {
         this.terminal.onScroll(() => {
             if (this.isScrolledDown()) {
                 this.hide();
+                return;
             }
+
+            this.show();
         });
 
         this.terminal.onLineFeed(() => {
@@ -19,7 +22,15 @@ export class ScrollDownHelperAddon implements ITerminalAddon {
             }
         });
 
-        this.show();
+        // Addon activation can happen before terminal.open(), so defer initial mount.
+        requestAnimationFrame(() => {
+            if (this.isScrolledDown()) {
+                this.hide();
+                return;
+            }
+
+            this.show();
+        });
     }
 
     dispose(): void {
@@ -39,14 +50,17 @@ export class ScrollDownHelperAddon implements ITerminalAddon {
 
         this.element = document.createElement('div');
         this.element.innerHTML =
-            '<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="arrow-down" class="svg-inline--fa fa-bell fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="currentColor" d="M374.6 310.6l-160 160C208.4 476.9 200.2 480 192 480s-16.38-3.125-22.62-9.375l-160-160c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L160 370.8V64c0-17.69 14.33-31.1 31.1-31.1S224 46.31 224 64v306.8l105.4-105.4c12.5-12.5 32.75-12.5 45.25 0S387.1 298.1 374.6 310.6z"/></svg>';
+            '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3" /></svg>';
         this.element.style.position = 'absolute';
         this.element.style.right = '1.5rem';
         this.element.style.bottom = '.5rem';
         this.element.style.padding = '.5rem';
         this.element.style.fontSize = '1.25em';
-        this.element.style.boxShadow = '0 2px 8px #000';
-        this.element.style.backgroundColor = '#252526';
+        this.element.style.border = '1.5px solid rgb(var(--color-600))';
+        this.element.style.boxShadow = '0 2px 8px rgb(var(--color-primary))';
+        this.element.style.backgroundColor = 'rgb(var(--color-700))';
+        this.element.style.color = 'rgb(var(--color-200))';
+        this.element.style.borderRadius = '15px';
         this.element.style.zIndex = '999';
         this.element.style.cursor = 'pointer';
 

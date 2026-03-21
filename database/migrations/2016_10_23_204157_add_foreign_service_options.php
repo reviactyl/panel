@@ -24,7 +24,6 @@ class AddForeignServiceOptions extends Migration
     {
         Schema::table('service_options', function (Blueprint $table) {
             $table->dropForeign(['parent_service']);
-            $table->dropIndex(['parent_service']);
 
             $table->mediumInteger('parent_service', false, true)->change();
         });
