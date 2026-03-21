@@ -25,9 +25,21 @@ class CleanupDatabasesDatabase extends Migration
      */
     public function down(): void
     {
-        Schema::table('databases', function (Blueprint $table) {
-            $table->dropForeign(['database_host_id']);
+        try {
+            Schema::table('databases', function (Blueprint $table) {
+                $table->dropForeign('databases_database_host_id_foreign');
+            });
+        } catch (\Throwable) {
+            try {
+                Schema::table('databases', function (Blueprint $table) {
+                    $table->dropForeign('databases_db_server_foreign');
+                });
+            } catch (\Throwable) {
+                // Foreign key already removed or named differently.
+            }
+        }
 
+        Schema::table('databases', function (Blueprint $table) {
             $table->renameColumn('database_host_id', 'db_server');
 
             $table->foreign('db_server')->references('id')->on('database_hosts');

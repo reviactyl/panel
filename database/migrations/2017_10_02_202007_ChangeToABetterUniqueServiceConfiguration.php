@@ -42,9 +42,29 @@ class ChangeToABetterUniqueServiceConfiguration extends Migration
      */
     public function down(): void
     {
+        try {
+            Schema::table('service_options', function (Blueprint $table) {
+                $table->dropUnique('service_options_uuid_unique');
+            });
+        } catch (\Throwable) {
+            // Ignore if the unique index does not exist.
+        }
+
         Schema::table('service_options', function (Blueprint $table) {
-            $table->dropColumn('uuid');
-            $table->dropColumn('author');
+            if (Schema::hasColumn('service_options', 'uuid')) {
+                $table->dropColumn('uuid');
+            }
+
+            if (Schema::hasColumn('service_options', 'author')) {
+                $table->dropColumn('author');
+            }
+
+            if (DB::getDriverName() === 'sqlite') {
+                $table->string('tag')->nullable();
+
+                return;
+            }
+
             $table->string('tag');
         });
 
