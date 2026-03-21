@@ -26,7 +26,6 @@ class AdjustColumnNamesForServicePacks extends Migration
     {
         Schema::table('service_packs', function (Blueprint $table) {
             $table->dropForeign(['option_id']);
-            $table->dropIndex(['option_id']);
 
             $table->renameColumn('option_id', 'option');
             $table->foreign('option')->references('id')->on('service_options');

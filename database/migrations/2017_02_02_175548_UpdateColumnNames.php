@@ -43,7 +43,11 @@ class UpdateColumnNames extends Migration
     public function down(): void
     {
         Schema::table('servers', function (Blueprint $table) {
-            $table->dropForeign(['node_id', 'owner_id', 'allocation_id', 'service_id', 'option_id']);
+            $table->dropForeign(['node_id']);
+            $table->dropForeign(['owner_id']);
+            $table->dropForeign(['allocation_id']);
+            $table->dropForeign(['service_id']);
+            $table->dropForeign(['option_id']);
 
             $table->renameColumn('node_id', 'node');
             $table->renameColumn('owner_id', 'owner');

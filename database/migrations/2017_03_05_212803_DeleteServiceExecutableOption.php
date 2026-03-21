@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -25,10 +26,18 @@ class DeleteServiceExecutableOption extends Migration
     public function down(): void
     {
         Schema::table('services', function (Blueprint $table) {
-            $table->string('executable')->after('folder');
+            if (DB::getDriverName() === 'sqlite') {
+                $table->string('executable')->nullable()->after('folder');
+            } else {
+                $table->string('executable')->after('folder');
+            }
+
             $table->renameColumn('folder', 'file');
-            $table->text('description')->nullable(false)->change();
-            $table->text('startup')->nullable(false)->change();
+
+            if (DB::getDriverName() !== 'sqlite') {
+                $table->text('description')->nullable(false)->change();
+                $table->text('startup')->nullable(false)->change();
+            }
         });
     }
 }

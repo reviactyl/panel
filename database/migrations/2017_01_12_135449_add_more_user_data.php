@@ -37,6 +37,7 @@ class AddMoreUserData extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
+            $table->dropUnique('users_username_unique');
             $table->dropColumn('name_first');
             $table->dropColumn('name_last');
             $table->dropColumn('username');
