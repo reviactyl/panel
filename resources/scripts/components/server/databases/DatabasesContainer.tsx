@@ -15,7 +15,6 @@ import { useDeepMemoize } from '@/plugins/useDeepMemoize';
 import Card from '@/reviactyl/ui/Card';
 import { DatabaseIcon } from '@heroicons/react/solid';
 import { useTranslation } from 'react-i18next';
-import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 
 export default () => {
     const { t } = useTranslation('server/databases');
@@ -44,7 +43,6 @@ export default () => {
     return (
         <ServerContentBlock title={t('title')}>
             <FlashMessageRender byKey={'databases'} css={tw`mb-4`} />
-            <ExtensionSlot name='server:databases:above' />
             {!databases.length && loading ? (
                 <Spinner size={'large'} centered />
             ) : (
@@ -81,7 +79,6 @@ export default () => {
                     </>
                 </Fade>
             )}
-            <ExtensionSlot name='server:databases:below' />
         </ServerContentBlock>
     );
 };

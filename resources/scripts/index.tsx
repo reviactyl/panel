@@ -1,4 +1,3 @@
-import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from '@/components/App';
 
@@ -16,23 +15,6 @@ if (import.meta.env.PROD && typeof window !== 'undefined') {
             'Unless you understand exactly what you are doing, close this window.',
         'font-size:16px;color:#e5e7eb;'
     );
-}
-
-// Extension runtime modules loaded from extensions/<id>/* can reference window.React
-// to share the same React instance used by the panel app.
-if (typeof window !== 'undefined') {
-    (window as any).React = React;
-
-    const reviactylModules = import.meta.glob('./reviactyl/**/*.{ts,tsx}', { eager: true });
-    const moduleRegistry = Object.fromEntries(
-        Object.entries(reviactylModules).map(([key, mod]) => {
-            const normalized = key.replace(/^\.\/reviactyl\//, 'reviactyl/').replace(/\.(ts|tsx)$/, '');
-
-            return [normalized, mod];
-        })
-    );
-
-    (window as any).__REVIACTYL_MODULES = moduleRegistry;
 }
 
 createRoot(document.getElementById('app')!).render(<App />);

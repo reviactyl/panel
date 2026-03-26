@@ -31,7 +31,6 @@ import decompressFiles from '@/api/server/files/decompressFiles';
 import isEqual from 'react-fast-compare';
 import ChmodFileModal from '@/components/server/files/ChmodFileModal';
 import { Dialog } from '@/components/elements/dialog';
-import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 
 type ModalType = 'rename' | 'move' | 'chmod';
 
@@ -171,7 +170,6 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                     </div>
                 )}
             >
-                <ExtensionSlot name='server:files:dropdown:start' />
                 <Can action={'file.update'}>
                     <Row onClick={() => setModal('rename')} icon={FaPen} title={'Rename'} />
                     <Row onClick={() => setModal('move')} icon={FaTurnUp} title={'Move'} />
@@ -195,7 +193,6 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                 <Can action={'file.delete'}>
                     <Row onClick={() => setShowConfirmation(true)} icon={FaTrash} title={'Delete'} $danger />
                 </Can>
-                <ExtensionSlot name='server:files:dropdown:end' />
             </DropdownMenu>
         </>
     );

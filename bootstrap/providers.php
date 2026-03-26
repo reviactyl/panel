@@ -9,7 +9,6 @@ use App\Providers\HashidsServiceProvider;
 use Prologue\Alerts\AlertsServiceProvider;
 use App\Providers\RepositoryServiceProvider;
 use App\Providers\ActivityLogServiceProvider;
-use App\Providers\ExtensionsServiceProvider;
 use App\Providers\RouteConfigServiceProvider;
 use App\Providers\Filament\AdminPanelProvider;
 use App\Providers\ViewComposerServiceProvider;
@@ -23,7 +22,6 @@ return [
     EventServiceProvider::class,
     HashidsServiceProvider::class,
     AdminPanelProvider::class,
-    ExtensionsServiceProvider::class,
     RouteConfigServiceProvider::class,
     RepositoryServiceProvider::class,
     ViewComposerServiceProvider::class,
