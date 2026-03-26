@@ -8,8 +8,8 @@ use App\Services\Servers\StartupCommandService;
 use App\Repositories\Eloquent\ServerVariableRepository;
 use App\Transformers\Api\Client\EggVariableTransformer;
 use App\Http\Controllers\Api\Client\ClientApiController;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use App\Http\Requests\Api\Client\Servers\Startup\GetStartupRequest;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use App\Http\Requests\Api\Client\Servers\Startup\UpdateStartupVariableRequest;
 
 class StartupController extends ClientApiController

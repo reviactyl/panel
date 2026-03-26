@@ -2,22 +2,20 @@
 
 namespace App\Filament\Resources\Api;
 
-use App\Filament\Resources\Api\Pages\CreateApiKey;
-use App\Filament\Resources\Api\Pages\ListApiKeys;
 use Filament\Panel;
 use App\Models\ApiKey;
-use App\Services\Acl\Api\AdminAcl;
-use Filament\Actions\DeleteAction;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\ToggleButtons;
-use Filament\Resources\Resource;
-use Filament\Schemas\Components\Fieldset;
-use Filament\Schemas\Schema;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Actions\Action;
-use Illuminate\Support\Facades\Auth;
+use Filament\Schemas\Schema;
+use Filament\Resources\Resource;
+use App\Services\Acl\Api\AdminAcl;
+use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Schemas\Components\Fieldset;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\ToggleButtons;
+use App\Filament\Resources\Api\Pages\ListApiKeys;
+use App\Filament\Resources\Api\Pages\CreateApiKey;
 
 class ApiKeyResource extends Resource
 {
@@ -31,7 +29,7 @@ class ApiKeyResource extends Resource
         return trans('admin/navigation.administration.api');
     }
 
-    public static function getPluralModelLabel(): string 
+    public static function getPluralModelLabel(): string
     {
         return trans('admin/api.title');
     }
@@ -44,6 +42,7 @@ class ApiKeyResource extends Resource
     public static function getNavigationBadge(): ?string
     {
         $count = ApiKey::where('key_type', ApiKey::TYPE_APPLICATION)->count();
+
         return $count > 0 ? (string) $count : null;
     }
 
@@ -61,8 +60,7 @@ class ApiKeyResource extends Resource
                 ->columnSpanFull()
                 ->schema(
                     collect(AdminAcl::getResourceList())->map(
-                        fn (string $resource) =>
-                            ToggleButtons::make(AdminAcl::COLUMN_IDENTIFIER . $resource)
+                        fn (string $resource) => ToggleButtons::make(AdminAcl::COLUMN_IDENTIFIER . $resource)
                                 ->label(str($resource)->replace('_', ' ')->title())
                                 ->inline()
                                 ->options([

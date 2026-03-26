@@ -2,9 +2,9 @@
 
 namespace App\Services\Helpers;
 
+use Psr\Log\LoggerInterface;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
-use Psr\Log\LoggerInterface;
 
 class GeoIPService
 {
@@ -16,7 +16,7 @@ class GeoIPService
 
     /**
      * Resolve an IP address to country information.
-     * 
+     *
      * @return array{country: string, code: string}|null
      */
     public function getCountryInfo(string $ip): ?array

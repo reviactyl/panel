@@ -4,13 +4,12 @@ namespace App\Filament\Widgets;
 
 use App\Models\Node;
 use App\Models\Server;
-use App\Repositories\Wings\DaemonServerStatusRepository;
-use Filament\Forms\Components\Placeholder;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Schema;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\HtmlString;
 use Livewire\Attributes\On;
+use Filament\Schemas\Schema;
+use Illuminate\Support\HtmlString;
+use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\Placeholder;
+use App\Repositories\Wings\DaemonServerStatusRepository;
 
 class ServersWidget extends BaseWidget
 {
@@ -193,9 +192,9 @@ class ServersWidget extends BaseWidget
             'running'  => ['rgba(34,197,94,0.12)',  '#4ade80', '#22c55e', 'rgba(34,197,94,0.5)'],
             'starting' => ['rgba(234,179,8,0.12)',  '#facc15', '#eab308', 'rgba(234,179,8,0.5)'],
             'stopping' => ['rgba(249,115,22,0.12)', '#fb923c', '#f97316', 'rgba(249,115,22,0.5)'],
-            'offline'  => ['rgba(148,163,184,0.08)','#94a3b8', '#64748b', 'rgba(148,163,184,0.3)'],
+            'offline'  => ['rgba(148,163,184,0.08)', '#94a3b8', '#64748b', 'rgba(148,163,184,0.3)'],
             'crashed'  => ['rgba(239,68,68,0.12)',  '#f87171', '#ef4444', 'rgba(239,68,68,0.5)'],
-            default    => ['rgba(148,163,184,0.08)','#94a3b8', '#64748b', 'rgba(148,163,184,0.3)'],
+            default    => ['rgba(148,163,184,0.08)', '#94a3b8', '#64748b', 'rgba(148,163,184,0.3)'],
         };
 
         $label = e(trans('admin/monitoring.servers.states.' . $state));
@@ -213,6 +212,7 @@ class ServersWidget extends BaseWidget
     private function emptyState(string $message, string $color): HtmlString
     {
         $msg = e($message);
+
         return new HtmlString(<<<HTML
         <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 0;gap:12px">
             <svg style="width:40px;height:40px" fill="none" viewBox="0 0 24 24" stroke="#4b5563" stroke-width="1.5">
@@ -232,6 +232,7 @@ class ServersWidget extends BaseWidget
             }
             $repository = app(DaemonServerStatusRepository::class);
             $repository->setNode($node);
+
             return $repository->getAllServerStatus();
         } catch (\Throwable $e) {
             return null;
@@ -246,6 +247,7 @@ class ServersWidget extends BaseWidget
         }
         $units = ['B', 'KB', 'MB', 'GB', 'TB'];
         $pow   = (int) min(floor(log($bytes) / log(1024)), count($units) - 1);
+
         return round($bytes / (1024 ** $pow), 2) . ' ' . $units[$pow];
     }
 
@@ -255,8 +257,13 @@ class ServersWidget extends BaseWidget
         $hours   = intdiv($seconds % 86400, 3600);
         $minutes = intdiv($seconds % 3600, 60);
 
-        if ($days > 0)  return "{$days}d {$hours}h {$minutes}m";
-        if ($hours > 0) return "{$hours}h {$minutes}m";
+        if ($days > 0) {
+            return "{$days}d {$hours}h {$minutes}m";
+        }
+        if ($hours > 0) {
+            return "{$hours}h {$minutes}m";
+        }
+
         return "{$minutes}m";
     }
 }

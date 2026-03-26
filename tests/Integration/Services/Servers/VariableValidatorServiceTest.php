@@ -5,8 +5,8 @@ namespace App\Tests\Integration\Services\Servers;
 use App\Models\Egg;
 use App\Models\User;
 use Illuminate\Support\Collection;
-use Illuminate\Validation\ValidationException;
 use App\Tests\Integration\IntegrationTestCase;
+use Illuminate\Validation\ValidationException;
 use App\Services\Servers\VariableValidatorService;
 
 class VariableValidatorServiceTest extends IntegrationTestCase

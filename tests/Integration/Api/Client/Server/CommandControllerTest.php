@@ -2,10 +2,10 @@
 
 namespace App\Tests\Integration\Api\Client\Server;
 
-use GuzzleHttp\Psr7\Request;
-use Illuminate\Http\Response;
 use App\Models\Server;
 use App\Models\Permission;
+use GuzzleHttp\Psr7\Request;
+use Illuminate\Http\Response;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use App\Repositories\Wings\DaemonCommandRepository;

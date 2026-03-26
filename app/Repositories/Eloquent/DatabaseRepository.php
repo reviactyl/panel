@@ -6,8 +6,8 @@ use App\Models\Database;
 use Illuminate\Support\Collection;
 use Illuminate\Foundation\Application;
 use Illuminate\Database\DatabaseManager;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use App\Contracts\Repository\DatabaseRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class DatabaseRepository extends EloquentRepository implements DatabaseRepositoryInterface
 {

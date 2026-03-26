@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api\Client;
 
+use App\Facades\Activity;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\JsonResponse;
-use App\Facades\Activity;
 use App\Services\Users\UserUpdateService;
 use App\Transformers\Api\Client\AccountTransformer;
 use App\Http\Requests\Api\Client\Account\UpdateEmailRequest;
@@ -85,9 +85,9 @@ class AccountController extends ClientApiController
         $user->save();
 
         if ($original !== $user->language) {
-        Activity::event('user:account.language-changed')
-            ->property(['old' => $original, 'new' => $user->language])
-            ->log();
+            Activity::event('user:account.language-changed')
+                ->property(['old' => $original, 'new' => $user->language])
+                ->log();
         }
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
@@ -112,5 +112,4 @@ class AccountController extends ClientApiController
 
         return new JsonResponse([$user], Response::HTTP_OK);
     }
-
 }

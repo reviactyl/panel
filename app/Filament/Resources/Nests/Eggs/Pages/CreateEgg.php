@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\Nests\Eggs\Pages;
 
-use App\Filament\Resources\Nests\EggResource;
 use Filament\Resources\Pages\CreateRecord;
+use App\Filament\Resources\Nests\EggResource;
 
 class CreateEgg extends CreateRecord
 {

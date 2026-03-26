@@ -7,22 +7,22 @@ use App\Facades\Activity;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\Rules\In;
 use Illuminate\Auth\Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Builder;
 use App\Contracts\Models\Identifiable;
 use App\Models\Traits\HasAccessTokens;
-use Illuminate\Auth\Passwords\CanResetPassword;
+use Filament\Models\Contracts\HasAvatar;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Builder;
 use App\Traits\Helpers\AvailableLanguages;
+use App\Models\Traits\HasRealtimeIdentifier;
+use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\Access\Authorizable;
-use App\Models\Traits\HasRealtimeIdentifier;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use App\Notifications\SendPasswordReset as ResetPasswordNotification;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use App\Notifications\SendPasswordReset as ResetPasswordNotification;
-use Filament\Models\Contracts\HasAvatar;
 
 /**
  * App\Models\User.
@@ -315,7 +315,7 @@ class User extends Model implements
             })
             ->groupBy('servers.id');
     }
-    
+
     public function getGravatarUrlAttribute(): string
     {
         $email = strtolower(trim($this->email));
@@ -323,7 +323,7 @@ class User extends Model implements
 
         return "https://www.gravatar.com/avatar/{$hash}?s=200";
     }
-    
+
     public function getFilamentAvatarUrl(): ?string
     {
         return $this->gravatar_url;

@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands\Schedule;
 
-use Illuminate\Console\Command;
 use App\Models\Schedule;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Builder;
 use App\Services\Schedules\ProcessScheduleService;

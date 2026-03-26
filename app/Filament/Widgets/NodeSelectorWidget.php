@@ -3,8 +3,8 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Node;
-use Filament\Forms\Components\Select;
 use Filament\Schemas\Schema;
+use Filament\Forms\Components\Select;
 
 class NodeSelectorWidget extends BaseWidget
 {

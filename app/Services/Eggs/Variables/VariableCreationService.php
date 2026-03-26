@@ -4,8 +4,8 @@ namespace App\Services\Eggs\Variables;
 
 use App\Models\EggVariable;
 use App\Traits\Services\ValidatesValidationRules;
-use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use App\Contracts\Repository\EggVariableRepositoryInterface;
+use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use App\Exceptions\Service\Egg\Variable\ReservedVariableNameException;
 
 class VariableCreationService

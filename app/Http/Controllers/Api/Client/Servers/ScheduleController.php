@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Api\Client\Servers;
 
 use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use App\Models\Server;
 use App\Models\Schedule;
-use Illuminate\Http\JsonResponse;
 use App\Facades\Activity;
 use App\Helpers\Utilities;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use App\Exceptions\DisplayException;
 use App\Repositories\Eloquent\ScheduleRepository;
 use App\Services\Schedules\ProcessScheduleService;

@@ -2,7 +2,6 @@
 
 namespace App\Repositories\Wings;
 
-use Exception;
 use GuzzleHttp\Exception\GuzzleException;
 
 class DaemonServerStatusRepository extends DaemonRepository
@@ -18,6 +17,7 @@ class DaemonServerStatusRepository extends DaemonRepository
      *   - configuration.uuid (string)
      *
      * @return array<int, array>
+     *
      * @throws GuzzleException
      */
     public function getAllServerStatus(): array
@@ -26,7 +26,7 @@ class DaemonServerStatusRepository extends DaemonRepository
             $response = $this->getHttpClient()->get('/api/servers');
 
             return json_decode($response->getBody()->__toString(), true) ?? [];
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             throw $exception;
         }
     }

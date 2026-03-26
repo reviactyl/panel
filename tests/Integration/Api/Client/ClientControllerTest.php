@@ -2,8 +2,8 @@
 
 namespace App\Tests\Integration\Api\Client;
 
-use Ramsey\Uuid\Uuid;
 use App\Models\User;
+use Ramsey\Uuid\Uuid;
 use App\Models\Server;
 use App\Models\Subuser;
 use App\Models\Allocation;

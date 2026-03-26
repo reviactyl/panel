@@ -30,18 +30,18 @@ class ListNests extends ListRecords
                 ])
                 ->action(function (array $data, $livewire) {
                     $tempFile = $data['file'];
-                    
+
                     if (is_array($tempFile)) {
                         $tempFile = reset($tempFile);
                     }
-                    
+
                     if (is_string($tempFile)) {
                         $possiblePaths = [
                             storage_path('app/livewire-tmp/' . $tempFile),
                             storage_path('app/private/' . $tempFile),
                             storage_path('app/' . $tempFile),
                         ];
-                        
+
                         $foundPath = null;
                         foreach ($possiblePaths as $path) {
                             if (file_exists($path)) {
@@ -49,16 +49,17 @@ class ListNests extends ListRecords
                                 break;
                             }
                         }
-                        
+
                         if (!$foundPath) {
                             \Filament\Notifications\Notification::make()
                                 ->title(trans('admin/nests.import.file_not_found'))
                                 ->body(trans('admin/nests.import.file_not_found_body'))
                                 ->danger()
                                 ->send();
+
                             return;
                         }
-                        
+
                         $file = new \Illuminate\Http\UploadedFile(
                             $foundPath,
                             basename($foundPath),
@@ -81,12 +82,13 @@ class ListNests extends ListRecords
                             ->body(trans('admin/nests.import.invalid_format_body'))
                             ->danger()
                             ->send();
+
                         return;
                     }
 
                     try {
                         app(\App\Services\Eggs\Sharing\EggImporterService::class)->handle($file, (int) $data['nest_id']);
-                        
+
                         \Filament\Notifications\Notification::make()
                             ->title(trans('admin/nests.import.success'))
                             ->success()

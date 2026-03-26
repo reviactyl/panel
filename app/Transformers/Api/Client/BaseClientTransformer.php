@@ -3,8 +3,8 @@
 namespace App\Transformers\Api\Client;
 
 use App\Models\User;
-use Webmozart\Assert\Assert;
 use App\Models\Server;
+use Webmozart\Assert\Assert;
 use App\Transformers\Api\Application\BaseTransformer as BaseApplicationTransformer;
 
 abstract class BaseClientTransformer extends BaseApplicationTransformer

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Api\Client\Servers;
 
-use Illuminate\Http\Response;
 use App\Models\Server;
 use App\Models\Database;
 use App\Facades\Activity;
+use Illuminate\Http\Response;
 use App\Services\Databases\DatabasePasswordService;
 use App\Transformers\Api\Client\DatabaseTransformer;
 use App\Services\Databases\DatabaseManagementService;

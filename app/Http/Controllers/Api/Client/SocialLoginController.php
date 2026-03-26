@@ -1,9 +1,10 @@
 <?php
 
 namespace App\Http\Controllers\Api\Client;
+
 use Illuminate\Http\JsonResponse;
-use App\Transformers\Api\Client\SocialLoginTransformer;
 use App\Http\Requests\Api\Client\ClientApiRequest;
+use App\Transformers\Api\Client\SocialLoginTransformer;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
 class SocialLoginController extends ClientApiController
@@ -24,7 +25,7 @@ class SocialLoginController extends ClientApiController
     public function delete(ClientApiRequest $request, string $provider): JsonResponse
     {
         $user = $request->user();
-        
+
         // Find the social login
         $socialLogin = $user->socialLogins()->where('provider', $provider)->firstOrFail();
 
@@ -33,7 +34,7 @@ class SocialLoginController extends ClientApiController
         $hasPassword = !empty($user->password);
 
         if ($count <= 1 && !$hasPassword) {
-             throw new ConflictHttpException(__('exceptions.social.unlink_only_login'));
+            throw new ConflictHttpException(__('exceptions.social.unlink_only_login'));
         }
 
         $socialLogin->delete();

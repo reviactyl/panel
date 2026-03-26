@@ -2,10 +2,10 @@
 
 namespace App\Services\Nodes;
 
-use Carbon\CarbonImmutable;
-use Illuminate\Support\Str;
 use App\Models\Node;
 use App\Models\User;
+use Carbon\CarbonImmutable;
+use Illuminate\Support\Str;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\UnencryptedToken;
 use Lcobucci\JWT\Signer\Hmac\Sha256;

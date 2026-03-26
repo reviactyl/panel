@@ -14,8 +14,9 @@ class CreateMount extends CreateRecord
         if (isset($data[0]) && is_array($data[0])) {
             $data = $data[0];
         }
-        
+
         $data['uuid'] = \Illuminate\Support\Str::uuid()->toString();
+
         return $data;
     }
 

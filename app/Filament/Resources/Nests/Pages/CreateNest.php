@@ -13,6 +13,7 @@ class CreateNest extends CreateRecord
     {
         $data['uuid'] = \Illuminate\Support\Str::uuid()->toString();
         $data['author'] = $data['author'] ?? config('panel.service.author');
+
         return $data;
     }
 }

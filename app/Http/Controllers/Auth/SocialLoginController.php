@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Exception;
 use App\Models\User;
-use Illuminate\Support\Str;
 use App\Models\SocialLogin;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Laravel\Socialite\Facades\Socialite;
 
 class SocialLoginController extends Controller
 {
@@ -41,7 +38,7 @@ class SocialLoginController extends Controller
 
         try {
             $socialUser = Socialite::driver($provider)->user();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return redirect()->route('auth.login')->with('error', 'Failed to authenticate with ' . $provider . '.');
         }
 
@@ -58,6 +55,7 @@ class SocialLoginController extends Controller
                 if ($existingLink->user_id === $currentUser->id) {
                     return redirect()->route('account')->with('success', 'Account already linked.');
                 }
+
                 return redirect()->route('account')->with('error', 'This social account is already linked to another user.');
             }
 
@@ -73,7 +71,7 @@ class SocialLoginController extends Controller
         }
 
         // Guest User (Logging In)
-        
+
         // Check if social login exists
         $socialLogin = SocialLogin::where('provider', $provider)
             ->where('provider_user_id', $socialUser->getId())
@@ -81,6 +79,7 @@ class SocialLoginController extends Controller
 
         if ($socialLogin) {
             Auth::login($socialLogin->user);
+
             return redirect('/');
         }
 
@@ -97,6 +96,7 @@ class SocialLoginController extends Controller
             ]);
 
             Auth::login($user);
+
             return redirect('/');
         }
 
@@ -115,7 +115,7 @@ class SocialLoginController extends Controller
 
         while (User::where('username', $username)->exists()) {
             $username = $base . $counter;
-            $counter++;
+            ++$counter;
         }
 
         return $username;

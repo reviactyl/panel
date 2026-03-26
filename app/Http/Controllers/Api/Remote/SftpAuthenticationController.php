@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers\Api\Remote;
 
-use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Server;
-use Illuminate\Http\JsonResponse;
 use App\Facades\Activity;
 use App\Models\Permission;
-use phpseclib3\Crypt\PublicKeyLoader;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
+use phpseclib3\Crypt\PublicKeyLoader;
 use phpseclib3\Exception\NoKeyLoadedException;
-use Illuminate\Foundation\Auth\ThrottlesLogins;
 use App\Exceptions\Http\HttpForbiddenException;
+use Illuminate\Foundation\Auth\ThrottlesLogins;
 use App\Services\Servers\GetUserPermissionsService;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use App\Http\Requests\Api\Remote\SftpAuthenticationFormRequest;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 class SftpAuthenticationController extends Controller

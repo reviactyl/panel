@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Admin\Nodes;
 
+use App\Models\Node;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use App\Models\Node;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Repositories\Wings\DaemonConfigurationRepository;

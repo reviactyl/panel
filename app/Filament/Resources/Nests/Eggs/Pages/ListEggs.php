@@ -2,10 +2,10 @@
 
 namespace App\Filament\Resources\Nests\Eggs\Pages;
 
-use App\Filament\Resources\Nests\EggResource;
-use App\Filament\Resources\Nests\NestResource;
 use App\Models\Nest;
 use Filament\Resources\Pages\ListRecords;
+use App\Filament\Resources\Nests\EggResource;
+use App\Filament\Resources\Nests\NestResource;
 
 class ListEggs extends ListRecords
 {

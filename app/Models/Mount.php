@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Validation\Rules\NotIn;
 use App\Contracts\Models\Identifiable;
+use Illuminate\Validation\Rules\NotIn;
 use App\Models\Traits\HasRealtimeIdentifier;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 

@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware\Activity;
 
-use Illuminate\Http\Request;
 use App\Facades\LogTarget;
+use Illuminate\Http\Request;
 
 class AccountSubject
 {

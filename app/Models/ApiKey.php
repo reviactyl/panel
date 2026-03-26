@@ -5,11 +5,10 @@ namespace App\Models;
 use Illuminate\Support\Str;
 use Webmozart\Assert\Assert;
 use App\Services\Acl\Api\AdminAcl;
-use Laravel\Sanctum\Contracts\HasAbilities;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Laravel\Sanctum\PersonalAccessToken;
 use App\Models\Traits\HasValidationRules;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * App\Models\ApiKey.

@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Designify;
 
 use Illuminate\View\View;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\View\Factory as ViewFactory;
-use App\Http\Controllers\Controller;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use App\Contracts\Repository\SettingsRepositoryInterface;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use App\Http\Requests\Designify\SidebarButtonsSettingsFormRequest;
 
 class SidebarButtonsController extends Controller

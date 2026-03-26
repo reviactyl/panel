@@ -3,11 +3,11 @@
 namespace App\Services\Eggs\Sharing;
 
 use App\Models\Egg;
+use App\Models\EggVariable;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
-use App\Models\EggVariable;
-use Illuminate\Database\ConnectionInterface;
 use App\Services\Eggs\EggParserService;
+use Illuminate\Database\ConnectionInterface;
 
 class EggUpdateImporterService
 {

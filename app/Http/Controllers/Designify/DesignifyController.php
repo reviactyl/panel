@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Designify;
 
+use Psr\Log\LoggerInterface;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use App\Http\Controllers\Controller;
 use App\Providers\DesignifyServiceProvider;
 use App\Contracts\Repository\SettingsRepositoryInterface;
-use Psr\Log\LoggerInterface;
 
 class DesignifyController extends Controller
 {

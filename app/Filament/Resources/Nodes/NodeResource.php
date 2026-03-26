@@ -2,19 +2,17 @@
 
 namespace App\Filament\Resources\Nodes;
 
-use App\Filament\Resources\Nodes\Pages\CreateNode;
+use App\Models\Node;
+use Filament\Tables\Table;
+use Filament\Schemas\Schema;
+use Filament\Resources\Resource;
 use App\Filament\Resources\Nodes\Pages\EditNode;
 use App\Filament\Resources\Nodes\Pages\ListNodes;
+use App\Filament\Resources\Nodes\Pages\CreateNode;
 use App\Filament\Resources\Nodes\Schemas\NodeForm;
 use App\Filament\Resources\Nodes\Tables\NodesTable;
 use App\Filament\Resources\Nodes\RelationManagers\ServersRelationManager;
 use App\Filament\Resources\Nodes\RelationManagers\AllocationRelationManager;
-use App\Models\Node;
-use BackedEnum;
-use Filament\Resources\Resource;
-use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Table;
 
 class NodeResource extends Resource
 {
@@ -22,8 +20,8 @@ class NodeResource extends Resource
 
     protected static ?int $navigationSort = 3;
 
-    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-server';
-    protected static string|BackedEnum|null $activeNavigationIcon = 'heroicon-s-server';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-server';
+    protected static string|\BackedEnum|null $activeNavigationIcon = 'heroicon-s-server';
 
     protected static ?string $recordTitleAttribute = 'name';
 
@@ -56,7 +54,7 @@ class NodeResource extends Resource
     {
         return Node::count() > 0 ? (string) Node::count() : null;
     }
-    
+
     public static function form(Schema $schema): Schema
     {
         return NodeForm::configure($schema);

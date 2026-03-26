@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api\Client\Servers;
 
-use Illuminate\Http\Request;
 use App\Models\Server;
-use Illuminate\Http\JsonResponse;
 use App\Facades\Activity;
 use App\Models\Permission;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use App\Repositories\Eloquent\SubuserRepository;
 use App\Services\Subusers\SubuserCreationService;

@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Api\Client\Servers\Subusers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Subuser;
+use Illuminate\Http\Request;
 use App\Exceptions\Http\HttpForbiddenException;
 use App\Http\Requests\Api\Client\ClientApiRequest;
 use App\Services\Servers\GetUserPermissionsService;

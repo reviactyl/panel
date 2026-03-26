@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\Client\Servers;
 
 use Carbon\Carbon;
 use App\Models\Server;
-use Illuminate\Http\Request;
 use App\Models\ServerStatsHistory;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Api\Client\ClientApiController;
@@ -17,12 +16,12 @@ class ResourceHistoryController extends ClientApiController
      * Data is aggregated based on time range:
      * - 1 day: hourly data (no aggregation)
      * - 3 days: 3-hour intervals
-     * - 7 days: 6-hour intervals
+     * - 7 days: 6-hour intervals.
      */
     public function __invoke(GetServerRequest $request, Server $server): array
     {
         $days = (int) $request->query('days', 1);
-        
+
         // Determine aggregation interval based on days
         $intervalHours = match ($days) {
             1 => 1,      // 24 hours: hourly (~24 points)
@@ -66,7 +65,7 @@ class ResourceHistoryController extends ClientApiController
             ])
             ->where('server_id', $server->id)
             ->where('created_at', '>=', $startDate)
-            ->groupBy(DB::raw("FLOOR(UNIX_TIMESTAMP(created_at) / (" . ($intervalHours * 3600) . "))"))
+            ->groupBy(DB::raw('FLOOR(UNIX_TIMESTAMP(created_at) / (' . ($intervalHours * 3600) . '))'))
             ->orderBy('bucket_time', 'asc')
             ->get();
 

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api\Client\Servers;
 
+use App\Models\Server;
+use App\Facades\Activity;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
-use App\Models\Server;
 use Illuminate\Http\JsonResponse;
-use App\Facades\Activity;
 use App\Services\Nodes\NodeJWTService;
 use App\Repositories\Wings\DaemonFileRepository;
 use App\Transformers\Api\Client\FileObjectTransformer;

@@ -4,8 +4,8 @@ namespace App\Jobs\Schedule;
 
 use Exception;
 use App\Jobs\Job;
-use Carbon\CarbonImmutable;
 use App\Models\Task;
+use Carbon\CarbonImmutable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;

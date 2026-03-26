@@ -4,10 +4,10 @@ namespace App\Services\Schedules;
 
 use Exception;
 use App\Models\Schedule;
-use Illuminate\Contracts\Bus\Dispatcher;
 use App\Jobs\Schedule\RunTaskJob;
-use Illuminate\Database\ConnectionInterface;
 use App\Exceptions\DisplayException;
+use Illuminate\Contracts\Bus\Dispatcher;
+use Illuminate\Database\ConnectionInterface;
 use App\Repositories\Wings\DaemonServerRepository;
 use App\Exceptions\Http\Connection\DaemonConnectionException;
 

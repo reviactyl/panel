@@ -3,10 +3,10 @@
 namespace App\Services\Servers;
 
 use App\Models\User;
-use Illuminate\Support\Collection;
 use App\Models\EggVariable;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Collection;
 use App\Traits\Services\HasUserLevels;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 
 class VariableValidatorService

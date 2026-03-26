@@ -2,13 +2,13 @@
 
 namespace App\Tests\Integration\Services\Servers;
 
+use App\Models\Database;
 use Mockery\MockInterface;
+use App\Models\DatabaseHost;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use App\Models\Database;
-use App\Models\DatabaseHost;
-use GuzzleHttp\Exception\BadResponseException;
 use App\Tests\Integration\IntegrationTestCase;
+use GuzzleHttp\Exception\BadResponseException;
 use App\Services\Servers\ServerDeletionService;
 use App\Repositories\Wings\DaemonServerRepository;
 use App\Services\Databases\DatabaseManagementService;

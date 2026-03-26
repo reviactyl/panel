@@ -5,11 +5,11 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Container\Container;
 use Illuminate\Database\Connection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Foundation\Application;
 use Illuminate\Auth\AuthenticationException;
@@ -17,10 +17,10 @@ use Illuminate\Session\TokenMismatchException;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Auth\Access\AuthorizationException;
+use App\Exceptions\Repository\RecordNotFoundException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Mailer\Exception\TransportException;
-use App\Exceptions\Repository\RecordNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
@@ -227,7 +227,8 @@ class Handler extends ExceptionHandler
                         ->map(fn ($trace) => Arr::except($trace, ['args']))
                         ->all(),
                     'previous' => Collection::make($this->extractPrevious($e))
-                        ->map(fn ($exception) => Collection::make($exception->getTrace())
+                        ->map(
+                            fn ($exception) => Collection::make($exception->getTrace())
                             ->map(fn ($trace) => Arr::except($trace, ['args']))
                             ->all()
                         )

@@ -2,14 +2,14 @@
 
 namespace App\Services\Eggs\Sharing;
 
-use Ramsey\Uuid\Uuid;
-use Illuminate\Support\Arr;
 use App\Models\Egg;
 use App\Models\Nest;
-use Illuminate\Http\UploadedFile;
+use Ramsey\Uuid\Uuid;
 use App\Models\EggVariable;
-use Illuminate\Database\ConnectionInterface;
+use Illuminate\Support\Arr;
+use Illuminate\Http\UploadedFile;
 use App\Services\Eggs\EggParserService;
+use Illuminate\Database\ConnectionInterface;
 
 class EggImporterService
 {

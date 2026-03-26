@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api\Client\Servers;
 
-use Carbon\CarbonImmutable;
 use App\Models\User;
 use App\Models\Server;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
 use App\Services\Nodes\NodeJWTService;
 use App\Http\Controllers\Api\Client\ClientApiController;

@@ -7,10 +7,10 @@ use App\Models\Nest;
 use App\Models\User;
 use App\Models\Server;
 use App\Models\ServerVariable;
-use Illuminate\Validation\ValidationException;
 use App\Tests\Integration\IntegrationTestCase;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Validation\ValidationException;
 use App\Services\Servers\StartupModificationService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class StartupModificationServiceTest extends IntegrationTestCase
 {

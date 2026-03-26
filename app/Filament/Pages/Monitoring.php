@@ -3,13 +3,13 @@
 namespace App\Filament\Pages;
 
 use App\Models\Node;
-use App\Repositories\Wings\DaemonMonitoringRepository;
-use Filament\Actions\Action;
-use Filament\Forms\Components\Placeholder;
 use Filament\Pages\Page;
-use Filament\Schemas\Components\Section;
-use Illuminate\Support\HtmlString;
 use Livewire\Attributes\On;
+use Filament\Actions\Action;
+use Illuminate\Support\HtmlString;
+use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\Placeholder;
+use App\Repositories\Wings\DaemonMonitoringRepository;
 
 class Monitoring extends Page
 {
@@ -73,6 +73,7 @@ class Monitoring extends Page
                     }
                     $node = Node::find($this->selectedNodeId);
                     $data = $node ? $this->getMonitoringData($node) : null;
+
                     return $this->buildDetailsForm($data);
                 }),
 
@@ -97,6 +98,7 @@ class Monitoring extends Page
         try {
             $repository = app(DaemonMonitoringRepository::class);
             $repository->setNode($node);
+
             return $repository->getSystemMonitoring();
         } catch (\Exception) {
             return null;
@@ -136,8 +138,10 @@ class Monitoring extends Page
                             }
                             $items = array_map(function (int $i, float $pct): string {
                                 $color = $pct >= 80 ? 'text-danger-500' : ($pct >= 50 ? 'text-warning-500' : 'text-success-500');
-                                return "<div class=\"text-xs\"><span class=\"text-gray-400\">Core {$i}</span> <span class=\"{$color} font-mono\">" . number_format($pct, 1) . "%</span></div>";
+
+                                return "<div class=\"text-xs\"><span class=\"text-gray-400\">Core {$i}</span> <span class=\"{$color} font-mono\">" . number_format($pct, 1) . '%</span></div>';
                             }, array_keys($cores), $cores);
+
                             return new HtmlString('<div class="grid grid-cols-4 gap-x-4 gap-y-1">' . implode('', $items) . '</div>');
                         }),
                 ]),
@@ -175,6 +179,7 @@ class Monitoring extends Page
                                 ->content(trans('admin/monitoring.details.swap_none')),
                         ];
                     }
+
                     return [
                         Placeholder::make('swap_total')
                             ->label(trans('admin/monitoring.details.swap_total'))
@@ -245,6 +250,7 @@ class Monitoring extends Page
         $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
         $pow = min($pow, count($units) - 1);
         $bytes /= (1 << (10 * $pow));
+
         return round($bytes, 2) . ' ' . $units[$pow];
     }
 
@@ -253,8 +259,13 @@ class Monitoring extends Page
         $days = floor($seconds / 86400);
         $hours = floor(($seconds % 86400) / 3600);
         $minutes = floor(($seconds % 3600) / 60);
-        if ($days > 0) return "{$days}d {$hours}h {$minutes}m";
-        if ($hours > 0) return "{$hours}h {$minutes}m";
+        if ($days > 0) {
+            return "{$days}d {$hours}h {$minutes}m";
+        }
+        if ($hours > 0) {
+            return "{$hours}h {$minutes}m";
+        }
+
         return "{$minutes}m";
     }
 }

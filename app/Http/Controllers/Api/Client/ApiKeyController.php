@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\Client;
 
 use App\Models\ApiKey;
-use Illuminate\Http\JsonResponse;
 use App\Facades\Activity;
+use Illuminate\Http\JsonResponse;
 use App\Exceptions\DisplayException;
 use App\Http\Requests\Api\Client\ClientApiRequest;
 use App\Transformers\Api\Client\ApiKeyTransformer;

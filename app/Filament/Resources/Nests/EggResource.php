@@ -4,10 +4,10 @@ namespace App\Filament\Resources\Nests;
 
 use App\Models\Egg;
 use Filament\Forms;
-use Filament\Resources\Resource;
-use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Schemas\Schema;
+use Filament\Resources\Resource;
 use App\Filament\Resources\Nests\Eggs\Pages;
 
 class EggResource extends Resource
@@ -167,18 +167,21 @@ class EggResource extends Resource
                                         if (isset($data['rules']) && is_array($data['rules'])) {
                                             $data['rules'] = implode('|', $data['rules']);
                                         }
+
                                         return $data;
                                     })
                                     ->mutateRelationshipDataBeforeSaveUsing(function (array $data): array {
                                         if (isset($data['rules']) && is_array($data['rules'])) {
                                             $data['rules'] = implode('|', $data['rules']);
                                         }
+
                                         return $data;
                                     })
                                     ->mutateRelationshipDataBeforeFillUsing(function (array $data): array {
                                         if (isset($data['rules']) && is_string($data['rules'])) {
                                             $data['rules'] = explode('|', $data['rules']);
                                         }
+
                                         return $data;
                                     }),
                             ]),
@@ -233,7 +236,7 @@ class EggResource extends Resource
                     ->action(function ($record) {
                         $json = app(\App\Services\Eggs\Sharing\EggExporterService::class)->handle($record->id);
                         $filename = trim(preg_replace('/\W/', '-', kebab_case($record->name)), '-');
-                        
+
                         return response()->streamDownload(function () use ($json) {
                             echo $json;
                         }, 'egg-' . $filename . '.json');
@@ -246,7 +249,7 @@ class EggResource extends Resource
                                 ->body(trans('admin/eggs.notices.cannot_delete_body', ['count' => $record->servers()->count()]))
                                 ->danger()
                                 ->send();
-                            
+
                             $action->cancel();
                         }
                     }),

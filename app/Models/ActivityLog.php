@@ -3,15 +3,15 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Event;
 use App\Events\ActivityLogged;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\MassPrunable;
+use Illuminate\Support\Facades\Event;
 use App\Contracts\Models\Identifiable;
+use Illuminate\Database\Eloquent\Builder;
+use App\Models\Traits\HasRealtimeIdentifier;
+use Illuminate\Database\Eloquent\MassPrunable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use App\Models\Traits\HasRealtimeIdentifier;
 use Illuminate\Database\Eloquent\Model as IlluminateModel;
 
 /**

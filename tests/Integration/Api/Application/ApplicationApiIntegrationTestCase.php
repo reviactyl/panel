@@ -2,16 +2,16 @@
 
 namespace App\Tests\Integration\Api\Application;
 
-use Illuminate\Http\Request;
 use App\Models\User;
-use PHPUnit\Framework\Assert;
 use App\Models\ApiKey;
+use Illuminate\Http\Request;
+use PHPUnit\Framework\Assert;
 use App\Services\Acl\Api\AdminAcl;
 use App\Tests\Integration\IntegrationTestCase;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\Tests\Traits\Integration\CreatesTestModels;
 use App\Transformers\Api\Application\BaseTransformer;
 use App\Transformers\Api\Client\BaseClientTransformer;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\Tests\Traits\Http\IntegrationJsonRequestAssertions;
 
 abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase

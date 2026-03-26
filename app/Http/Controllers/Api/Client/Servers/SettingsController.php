@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Api\Client\Servers;
 
-use Illuminate\Http\Response;
 use App\Models\Server;
-use Illuminate\Http\JsonResponse;
 use App\Facades\Activity;
+use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use App\Repositories\Eloquent\ServerRepository;
 use App\Services\Servers\ReinstallServerService;
 use App\Http\Controllers\Api\Client\ClientApiController;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use App\Http\Requests\Api\Client\Servers\Settings\SetCategoryRequest;
 use App\Http\Requests\Api\Client\Servers\Settings\RenameServerRequest;
 use App\Http\Requests\Api\Client\Servers\Settings\SetDockerImageRequest;
 use App\Http\Requests\Api\Client\Servers\Settings\ReinstallServerRequest;
-use App\Http\Requests\Api\Client\Servers\Settings\SetCategoryRequest;
 
 class SettingsController extends ClientApiController
 {
@@ -115,9 +115,9 @@ class SettingsController extends ClientApiController
         $server->forceFill(['category_id' => $categoryId])->saveOrFail();
 
         if ($original !== $server->category_id) {
-             Activity::event('server:settings.category')
-                ->property(['old' => $original, 'new' => $categoryId])
-                ->log();
+            Activity::event('server:settings.category')
+               ->property(['old' => $original, 'new' => $categoryId])
+               ->log();
         }
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);

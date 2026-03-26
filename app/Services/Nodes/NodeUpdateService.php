@@ -2,12 +2,12 @@
 
 namespace App\Services\Nodes;
 
-use Illuminate\Support\Str;
 use App\Models\Node;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\ConnectionInterface;
-use Illuminate\Contracts\Encryption\Encrypter;
 use App\Repositories\Eloquent\NodeRepository;
+use Illuminate\Contracts\Encryption\Encrypter;
 use App\Repositories\Wings\DaemonConfigurationRepository;
 use App\Exceptions\Http\Connection\DaemonConnectionException;
 use App\Exceptions\Service\Node\ConfigurationNotPersistedException;

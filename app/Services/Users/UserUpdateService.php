@@ -3,8 +3,8 @@
 namespace App\Services\Users;
 
 use App\Models\User;
-use Illuminate\Contracts\Hashing\Hasher;
 use App\Traits\Services\HasUserLevels;
+use Illuminate\Contracts\Hashing\Hasher;
 
 class UserUpdateService
 {

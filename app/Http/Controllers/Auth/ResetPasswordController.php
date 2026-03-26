@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Auth;
 
 use Illuminate\Support\Str;
 use Illuminate\Http\JsonResponse;
+use App\Exceptions\DisplayException;
+use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Contracts\Events\Dispatcher;
-use App\Exceptions\DisplayException;
-use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Contracts\Repository\UserRepositoryInterface;

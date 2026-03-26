@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api\Client;
 
-use Illuminate\Http\JsonResponse;
 use App\Facades\Activity;
+use Illuminate\Http\JsonResponse;
 use App\Http\Requests\Api\Client\ClientApiRequest;
 use App\Transformers\Api\Client\UserSSHKeyTransformer;
 use App\Http\Requests\Api\Client\Account\StoreSSHKeyRequest;

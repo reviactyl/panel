@@ -2,13 +2,13 @@
 
 namespace App\Filament\Resources\Api\Pages;
 
-use App\Filament\Resources\Api\ApiKeyResource;
 use App\Models\ApiKey;
 use App\Services\Acl\Api\AdminAcl;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Model;
 use App\Services\Api\KeyCreationService;
 use Filament\Resources\Pages\CreateRecord;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Auth;
+use App\Filament\Resources\Api\ApiKeyResource;
 
 class CreateApiKey extends CreateRecord
 {

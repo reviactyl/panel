@@ -3,8 +3,8 @@
 namespace App\Services\Users;
 
 use Carbon\Carbon;
-use Illuminate\Support\Str;
 use App\Models\User;
+use Illuminate\Support\Str;
 use PragmaRX\Google2FA\Google2FA;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Encryption\Encrypter;

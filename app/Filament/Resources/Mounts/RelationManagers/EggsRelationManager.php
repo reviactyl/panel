@@ -2,13 +2,13 @@
 
 namespace App\Filament\Resources\Mounts\RelationManagers;
 
-use Filament\Actions\AttachAction;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DetachAction;
-use Filament\Actions\DetachBulkAction;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Actions\AttachAction;
+use Filament\Actions\DetachAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DetachBulkAction;
+use Filament\Resources\RelationManagers\RelationManager;
 
 class EggsRelationManager extends RelationManager
 {
@@ -34,7 +34,7 @@ class EggsRelationManager extends RelationManager
                     ->searchable(),
             ])
             ->filters([
-                //
+
             ])
             ->headerActions([
                 AttachAction::make()

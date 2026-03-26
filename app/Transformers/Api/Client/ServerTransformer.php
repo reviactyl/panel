@@ -5,14 +5,14 @@ namespace App\Transformers\Api\Client;
 use App\Models\Egg;
 use App\Models\Server;
 use App\Models\Subuser;
-use League\Fractal\Resource\Item;
 use App\Models\Allocation;
 use App\Models\Permission;
-use Illuminate\Container\Container;
 use App\Models\EggVariable;
+use App\Models\ServerCategory;
+use League\Fractal\Resource\Item;
+use Illuminate\Container\Container;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
-use App\Models\ServerCategory;
 use App\Services\Servers\StartupCommandService;
 
 class ServerTransformer extends BaseClientTransformer
@@ -165,6 +165,6 @@ class ServerTransformer extends BaseClientTransformer
             return $this->null();
         }
 
-        return $this->item($server->category, $this->makeTransformer(ServerCategoryTransformer::class), \App\Models\ServerCategory::RESOURCE_NAME);
+        return $this->item($server->category, $this->makeTransformer(ServerCategoryTransformer::class), ServerCategory::RESOURCE_NAME);
     }
 }

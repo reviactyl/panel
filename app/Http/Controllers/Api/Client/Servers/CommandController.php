@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Api\Client\Servers;
 
-use Illuminate\Http\Response;
 use App\Models\Server;
 use App\Facades\Activity;
+use Illuminate\Http\Response;
 use GuzzleHttp\Exception\BadResponseException;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use App\Repositories\Wings\DaemonCommandRepository;
 use App\Http\Controllers\Api\Client\ClientApiController;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use App\Http\Requests\Api\Client\Servers\SendCommandRequest;
 use App\Exceptions\Http\Connection\DaemonConnectionException;
 

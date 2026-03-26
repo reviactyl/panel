@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Base;
 
 use Illuminate\Http\JsonResponse;
-use Illuminate\Translation\Translator;
-use Illuminate\Contracts\Translation\Loader;
 use App\Http\Controllers\Controller;
+use Illuminate\Translation\Translator;
 use App\Http\Requests\Base\LocaleRequest;
 use App\Traits\Helpers\AvailableLanguages;
+use Illuminate\Contracts\Translation\Loader;
 
 class LocaleController extends Controller
 {
@@ -84,13 +84,13 @@ class LocaleController extends Controller
     public function list(): JsonResponse
     {
         $languages = $this->getAvailableLanguages(true);
-        
+
         // Include flag codes from translation files
         $result = [];
         foreach ($languages as $code => $name) {
-            $flag = trans("dashboard/index.flag", [], $code);
+            $flag = trans('dashboard/index.flag', [], $code);
             // If no flag translation exists, fallback to empty
-            if ($flag === "dashboard/index.flag") {
+            if ($flag === 'dashboard/index.flag') {
                 $flag = '';
             }
             $result[$code] = [
@@ -98,7 +98,7 @@ class LocaleController extends Controller
                 'flag' => $flag,
             ];
         }
-        
+
         return response()->json($result);
     }
 }

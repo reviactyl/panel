@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\Api\Remote\Servers;
 
+use App\Models\Server;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Models\Server;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
+use App\Exceptions\Http\HttpForbiddenException;
 use App\Repositories\Eloquent\ServerRepository;
 use App\Events\Server\Installed as ServerInstalled;
-use App\Exceptions\Http\HttpForbiddenException;
-use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
 use App\Http\Requests\Api\Remote\InstallationDataRequest;
+use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
 
 class ServerInstallController extends Controller
 {

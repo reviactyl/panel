@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\Nodes\Pages;
 
-use App\Filament\Resources\Nodes\NodeResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use App\Filament\Resources\Nodes\NodeResource;
 
 class EditNode extends EditRecord
 {
@@ -23,7 +23,7 @@ class EditNode extends EditRecord
                     if (!$this->record) {
                         return;
                     }
-                    
+
                     if ($this->record->servers()->count() > 0) {
                         throw new \Exception(trans('admin/node.messages.cannot_delete_with_servers'));
                     }

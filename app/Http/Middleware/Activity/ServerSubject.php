@@ -2,9 +2,9 @@
 
 namespace App\Http\Middleware\Activity;
 
-use Illuminate\Http\Request;
 use App\Models\Server;
 use App\Facades\LogTarget;
+use Illuminate\Http\Request;
 
 class ServerSubject
 {

@@ -3,14 +3,13 @@
 namespace App\Tests\Unit\Http\Middleware;
 
 use Mockery as m;
-use Mockery\MockInterface;
 use App\Models\User;
+use Mockery\MockInterface;
+use App\Services\Helpers\GeoIPService;
 use Illuminate\Foundation\Application;
+use App\Services\Helpers\GeoLocaleService;
 use App\Http\Middleware\LanguageMiddleware;
 use App\Contracts\Repository\SettingsRepositoryInterface;
-use App\Services\Helpers\GeoIPService;
-use App\Services\Helpers\GeoLocaleService;
-use Illuminate\Support\Facades\Config;
 
 class LanguageMiddlewareTest extends MiddlewareTestCase
 {
@@ -196,4 +195,3 @@ class LanguageMiddlewareTest extends MiddlewareTestCase
         parent::tearDown();
     }
 }
-

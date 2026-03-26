@@ -2,24 +2,24 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\View\View;
-use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Model;
+use Illuminate\View\View;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use App\Exceptions\DisplayException;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Spatie\QueryBuilder\QueryBuilder;
-use Illuminate\View\Factory as ViewFactory;
-use App\Exceptions\DisplayException;
-use App\Http\Controllers\Controller;
-use Illuminate\Contracts\Translation\Translator;
 use App\Services\Users\UserUpdateService;
 use App\Traits\Helpers\AvailableLanguages;
 use App\Services\Users\UserCreationService;
 use App\Services\Users\UserDeletionService;
+use Illuminate\View\Factory as ViewFactory;
 use App\Http\Requests\Admin\UserFormRequest;
 use App\Http\Requests\Admin\NewUserFormRequest;
+use Illuminate\Contracts\Translation\Translator;
 use App\Contracts\Repository\UserRepositoryInterface;
 
 class UserController extends Controller

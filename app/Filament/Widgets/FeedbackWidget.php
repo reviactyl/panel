@@ -3,12 +3,9 @@
 namespace App\Filament\Widgets;
 
 use Filament\Actions\Action;
-use Filament\Infolists\Components\TextEntry;
-use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use App\Filament\Widgets\BaseWidget;
+use Filament\Schemas\Components\Section;
+use Filament\Infolists\Components\TextEntry;
 
 class FeedbackWidget extends BaseWidget
 {
@@ -35,7 +32,7 @@ class FeedbackWidget extends BaseWidget
                         Action::make('donate')
                             ->label(trans('admin/index.feedback-btn'))
                             ->icon('heroicon-s-squares-plus')
-                            ->url('https://github.com/reviactyl/panel/issues', true)
+                            ->url('https://github.com/reviactyl/panel/issues', true),
                     ]),
             ]);
     }

@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api\Client\Servers;
 
 use App\Models\Server;
-use Illuminate\Http\JsonResponse;
 use App\Facades\Activity;
 use App\Models\Allocation;
-use Illuminate\Database\ConnectionInterface;
+use Illuminate\Http\JsonResponse;
 use App\Exceptions\DisplayException;
+use Illuminate\Database\ConnectionInterface;
 use App\Repositories\Eloquent\ServerRepository;
 use App\Transformers\Api\Client\AllocationTransformer;
 use App\Http\Controllers\Api\Client\ClientApiController;

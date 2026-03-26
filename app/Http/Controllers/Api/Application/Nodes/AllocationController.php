@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\Application\Nodes;
 
 use App\Models\Node;
-use Illuminate\Http\JsonResponse;
 use App\Models\Allocation;
+use Illuminate\Http\JsonResponse;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 use Illuminate\Database\Eloquent\Builder;

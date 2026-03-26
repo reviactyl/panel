@@ -3,14 +3,14 @@
 namespace App\Notifications;
 
 use App\Models\User;
-use Illuminate\Bus\Queueable;
 use App\Events\Event;
 use App\Models\Server;
-use Illuminate\Container\Container;
+use Illuminate\Bus\Queueable;
 use App\Events\Server\Installed;
+use Illuminate\Container\Container;
+use App\Contracts\Core\ReceivesEvents;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use App\Contracts\Core\ReceivesEvents;
 use Illuminate\Contracts\Notifications\Dispatcher;
 use Illuminate\Notifications\Messages\MailMessage;
 

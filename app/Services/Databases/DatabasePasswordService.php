@@ -5,8 +5,8 @@ namespace App\Services\Databases;
 use App\Models\Database;
 use App\Helpers\Utilities;
 use Illuminate\Database\ConnectionInterface;
-use Illuminate\Contracts\Encryption\Encrypter;
 use App\Extensions\DynamicDatabaseConnection;
+use Illuminate\Contracts\Encryption\Encrypter;
 use App\Contracts\Repository\DatabaseRepositoryInterface;
 
 class DatabasePasswordService

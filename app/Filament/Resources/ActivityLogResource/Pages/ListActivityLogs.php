@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\ActivityLogResource\Pages;
 
-use App\Filament\Resources\ActivityLogResource;
 use Filament\Resources\Pages\ListRecords;
+use App\Filament\Resources\ActivityLogResource;
 
 class ListActivityLogs extends ListRecords
 {

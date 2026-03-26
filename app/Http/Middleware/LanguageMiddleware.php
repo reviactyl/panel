@@ -13,7 +13,7 @@ class LanguageMiddleware
 {
     /**
      * LanguageMiddleware constructor.
-     */  
+     */
     use AvailableLanguages;
 
     public function __construct(

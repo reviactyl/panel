@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Admin\Servers;
 
+use App\Models\Server;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
-use App\Models\Server;
+use App\Http\Controllers\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
-use App\Http\Controllers\Controller;
 use App\Models\Filters\AdminServerFilter;
 
 class ServerController extends Controller

@@ -2,15 +2,15 @@
 
 namespace App\Transformers\Api\Application;
 
-use Illuminate\Support\Arr;
 use App\Models\Egg;
 use App\Models\Nest;
 use App\Models\Server;
-use League\Fractal\Resource\Item;
 use App\Models\EggVariable;
+use Illuminate\Support\Arr;
+use League\Fractal\Resource\Item;
+use App\Services\Acl\Api\AdminAcl;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
-use App\Services\Acl\Api\AdminAcl;
 
 class EggTransformer extends BaseTransformer
 {

@@ -20,7 +20,7 @@ class ServerStatusController extends Controller
     public function __invoke(Request $request, string $server)
     {
         try {
-            /** @var \App\Models\Server $serverModel */
+            /** @var Server $serverModel */
             $serverModel = Server::query()
                 ->where('uuid', $server)
                 ->orWhere('uuidShort', $server)
@@ -43,18 +43,19 @@ class ServerStatusController extends Controller
         ];
 
         if ($serverModel->isSuspended() || !$serverModel->isInstalled()) {
-             $response['status'] = 'offline';
-             return response()->json($response);
+            $response['status'] = 'offline';
+
+            return response()->json($response);
         }
 
         try {
-             $details = $this->repository->setServer($serverModel)->getDetails();
-             $response['status'] = $details['state'] ?? 'offline';
-             $response['utilization'] = $details['utilization'] ?? $response['utilization'];
+            $details = $this->repository->setServer($serverModel)->getDetails();
+            $response['status'] = $details['state'] ?? 'offline';
+            $response['utilization'] = $details['utilization'] ?? $response['utilization'];
         } catch (\Throwable $e) {
             $response['status'] = 'offline';
         }
-        
+
         return response()->json($response);
     }
 }

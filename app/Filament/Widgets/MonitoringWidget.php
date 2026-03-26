@@ -3,12 +3,12 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Node;
+use Livewire\Attributes\On;
+use Illuminate\Support\Facades\Log;
+use Filament\Widgets\StatsOverviewWidget\Stat;
 use App\Repositories\Wings\DaemonMonitoringRepository;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
-use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\Log;
-use Livewire\Attributes\On;
 
 class MonitoringWidget extends BaseWidget
 {
@@ -60,6 +60,7 @@ class MonitoringWidget extends BaseWidget
             $node = Node::findOrFail($this->selectedNodeId);
         } catch (ModelNotFoundException) {
             $this->selectedNodeId = null;
+
             return $this->getErrorStats(trans('admin/monitoring.stats.error_node_gone'));
         }
 
@@ -125,11 +126,13 @@ class MonitoringWidget extends BaseWidget
         try {
             $repository = app(DaemonMonitoringRepository::class);
             $repository->setNode($node);
+
             return $repository->getSystemMonitoring();
         } catch (\Throwable $e) {
             Log::warning('MonitoringWidget: failed to fetch data for node ' . $node->id, [
                 'error' => $e->getMessage(),
             ]);
+
             return null;
         }
     }
@@ -162,6 +165,7 @@ class MonitoringWidget extends BaseWidget
         }
         $units = ['B', 'KB', 'MB', 'GB', 'TB'];
         $pow   = (int) min(floor(log($bytes) / log(1024)), count($units) - 1);
+
         return round($bytes / (1024 ** $pow), 2) . ' ' . $units[$pow];
     }
 
@@ -171,8 +175,13 @@ class MonitoringWidget extends BaseWidget
         $hours   = intdiv($seconds % 86400, 3600);
         $minutes = intdiv($seconds % 3600, 60);
 
-        if ($days > 0)  return "{$days}d {$hours}h {$minutes}m";
-        if ($hours > 0) return "{$hours}h {$minutes}m";
+        if ($days > 0) {
+            return "{$days}d {$hours}h {$minutes}m";
+        }
+        if ($hours > 0) {
+            return "{$hours}h {$minutes}m";
+        }
+
         return "{$minutes}m";
     }
 

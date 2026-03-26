@@ -2,13 +2,11 @@
 
 namespace App\Filament\Resources;
 
+use Filament\Tables\Table;
 use App\Models\ActivityLog;
 use Filament\Resources\Resource;
-use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\ActivityLogResource\Pages\ListActivityLogs;
 
 class ActivityLogResource extends Resource
@@ -66,7 +64,7 @@ class ActivityLogResource extends Resource
                 // We don't really need edit/delete for logs.
             ])
             ->bulkActions([
-                //
+
             ])
             ->defaultSort('timestamp', 'desc');
     }
@@ -74,7 +72,7 @@ class ActivityLogResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+
         ];
     }
 

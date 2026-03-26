@@ -3,15 +3,14 @@
 namespace App\Filament\Resources\Users\RelationManagers;
 
 use App\Models\Server;
+use Filament\Tables\Table;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Resources\RelationManagers\RelationManager;
 
 class ServersRelationManager extends RelationManager
 {

@@ -1,15 +1,15 @@
 <?php
 
-use App\Console\Kernel as ConsoleKernel;
-use App\Exceptions\Handler as ExceptionHandler;
 use App\Http\Kernel as HttpKernel;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Application;
+use App\Console\Kernel as ConsoleKernel;
+use App\Http\Middleware\AdminAuthenticate;
+use App\Exceptions\Handler as ExceptionHandler;
+use App\Http\Middleware\RequireTwoFactorAuthentication;
+use Illuminate\Contracts\Http\Kernel as HttpKernelContract;
 use Illuminate\Contracts\Console\Kernel as ConsoleKernelContract;
 use Illuminate\Contracts\Debug\ExceptionHandler as ExceptionHandlerContract;
-use Illuminate\Contracts\Http\Kernel as HttpKernelContract;
-use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Route;
-use App\Http\Middleware\RequireTwoFactorAuthentication;
-use App\Http\Middleware\AdminAuthenticate;
 
 $app = Application::configure(basePath: $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__));
 
@@ -24,7 +24,7 @@ return $app
         Route::middleware('web')->group(function () {
             Route::middleware(['auth.session', RequireTwoFactorAuthentication::class])
                 ->group(base_path('routes/base.php'));
-                
+
             Route::middleware(['auth.session', RequireTwoFactorAuthentication::class, AdminAuthenticate::class])
                 ->prefix('/panel')
                 ->group(base_path('routes/admin.php'));

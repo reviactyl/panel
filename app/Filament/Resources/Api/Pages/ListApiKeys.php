@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\Api\Pages;
 
-use App\Filament\Resources\Api\ApiKeyResource;
-use Filament\Resources\Pages\ListRecords;
 use Filament\Actions\CreateAction;
+use Filament\Resources\Pages\ListRecords;
+use App\Filament\Resources\Api\ApiKeyResource;
 
 class ListApiKeys extends ListRecords
 {

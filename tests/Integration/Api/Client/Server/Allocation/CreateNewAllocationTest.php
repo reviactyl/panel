@@ -2,9 +2,9 @@
 
 namespace App\Tests\Integration\Api\Client\Server\Allocation;
 
-use Illuminate\Http\Response;
 use App\Models\Allocation;
 use App\Models\Permission;
+use Illuminate\Http\Response;
 use App\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
 class CreateNewAllocationTest extends ClientApiIntegrationTestCase

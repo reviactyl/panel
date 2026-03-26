@@ -2,11 +2,11 @@
 
 namespace App\Tests\Integration\Api\Client\Server\Subuser;
 
-use Illuminate\Support\Str;
 use App\Models\User;
-use Illuminate\Http\Response;
 use App\Models\Subuser;
 use App\Models\Permission;
+use Illuminate\Support\Str;
+use Illuminate\Http\Response;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 

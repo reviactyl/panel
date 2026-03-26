@@ -2,10 +2,10 @@
 
 namespace App\Tests\Integration\Api\Application\Nodes\NodeController;
 
-use Mockery\MockInterface;
 use App\Models\Node;
-use GuzzleHttp\Psr7\Response;
 use App\Models\Location;
+use Mockery\MockInterface;
+use GuzzleHttp\Psr7\Response;
 use App\Repositories\Wings\DaemonConfigurationRepository;
 use App\Tests\Integration\Api\Application\ApplicationApiIntegrationTestCase;
 

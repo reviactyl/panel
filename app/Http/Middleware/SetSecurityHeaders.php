@@ -13,7 +13,7 @@ class SetSecurityHeaders
      *
      * We'll circle back to that at a later date when it can be more fully controlled
      * by the admin to support those cases without too much trouble.
-     * 
+     *
      * We have set it to SAMEORIGIN for now to allow the designify editor to load iframe.
      * This is not ideal but it is better than breaking the editor for everyone. We will need to revisit this in the future to find a better solution that does not compromise security.
      */

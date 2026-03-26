@@ -2,8 +2,8 @@
 
 namespace App\Tests\Unit\Services\Helpers;
 
-use App\Services\Helpers\GeoLocaleService;
 use App\Tests\TestCase;
+use App\Services\Helpers\GeoLocaleService;
 
 class GeoLocaleServiceTest extends TestCase
 {
@@ -17,109 +17,109 @@ class GeoLocaleServiceTest extends TestCase
         $this->availableLocales = ['ar', 'de', 'en', 'es', 'fr', 'hi', 'id', 'kn', 'pt', 'sv', 'tr', 'zh'];
     }
 
-    public function test_it_resolves_english_for_us()
+    public function testItResolvesEnglishForUs()
     {
         $this->assertEquals('en', $this->service->resolveLocale('US', $this->availableLocales));
     }
 
-    public function test_it_resolves_english_for_gb()
+    public function testItResolvesEnglishForGb()
     {
         $this->assertEquals('en', $this->service->resolveLocale('GB', $this->availableLocales));
     }
 
-    public function test_it_resolves_german_for_de()
+    public function testItResolvesGermanForDe()
     {
         $this->assertEquals('de', $this->service->resolveLocale('DE', $this->availableLocales));
     }
 
-    public function test_it_resolves_german_for_austria()
+    public function testItResolvesGermanForAustria()
     {
         $this->assertEquals('de', $this->service->resolveLocale('AT', $this->availableLocales));
     }
 
-    public function test_it_resolves_french_for_fr()
+    public function testItResolvesFrenchForFr()
     {
         $this->assertEquals('fr', $this->service->resolveLocale('FR', $this->availableLocales));
     }
 
-    public function test_it_resolves_spanish_for_es()
+    public function testItResolvesSpanishForEs()
     {
         $this->assertEquals('es', $this->service->resolveLocale('ES', $this->availableLocales));
     }
 
-    public function test_it_resolves_spanish_for_mexico()
+    public function testItResolvesSpanishForMexico()
     {
         $this->assertEquals('es', $this->service->resolveLocale('MX', $this->availableLocales));
     }
 
-    public function test_it_resolves_portuguese_for_brazil()
+    public function testItResolvesPortugueseForBrazil()
     {
         $this->assertEquals('pt', $this->service->resolveLocale('BR', $this->availableLocales));
     }
 
-    public function test_it_resolves_portuguese_for_portugal()
+    public function testItResolvesPortugueseForPortugal()
     {
         $this->assertEquals('pt', $this->service->resolveLocale('PT', $this->availableLocales));
     }
 
-    public function test_it_resolves_arabic_for_saudi_arabia()
+    public function testItResolvesArabicForSaudiArabia()
     {
         $this->assertEquals('ar', $this->service->resolveLocale('SA', $this->availableLocales));
     }
 
-    public function test_it_resolves_arabic_for_egypt()
+    public function testItResolvesArabicForEgypt()
     {
         $this->assertEquals('ar', $this->service->resolveLocale('EG', $this->availableLocales));
     }
 
-    public function test_it_resolves_hindi_for_india()
+    public function testItResolvesHindiForIndia()
     {
         $this->assertEquals('hi', $this->service->resolveLocale('IN', $this->availableLocales));
     }
 
-    public function test_it_resolves_indonesian_for_indonesia()
+    public function testItResolvesIndonesianForIndonesia()
     {
         $this->assertEquals('id', $this->service->resolveLocale('ID', $this->availableLocales));
     }
 
-    public function test_it_resolves_swedish_for_sweden()
+    public function testItResolvesSwedishForSweden()
     {
         $this->assertEquals('sv', $this->service->resolveLocale('SE', $this->availableLocales));
     }
 
-    public function test_it_resolves_turkish_for_turkey()
+    public function testItResolvesTurkishForTurkey()
     {
         $this->assertEquals('tr', $this->service->resolveLocale('TR', $this->availableLocales));
     }
 
-    public function test_it_resolves_chinese_for_china()
+    public function testItResolvesChineseForChina()
     {
         $this->assertEquals('zh', $this->service->resolveLocale('CN', $this->availableLocales));
     }
 
-    public function test_it_resolves_chinese_for_taiwan()
+    public function testItResolvesChineseForTaiwan()
     {
         $this->assertEquals('zh', $this->service->resolveLocale('TW', $this->availableLocales));
     }
 
-    public function test_it_returns_null_for_unmapped_country()
+    public function testItReturnsNullForUnmappedCountry()
     {
         $this->assertNull($this->service->resolveLocale('XX', $this->availableLocales));
     }
 
-    public function test_it_returns_null_when_mapped_locale_is_not_available()
+    public function testItReturnsNullWhenMappedLocaleIsNotAvailable()
     {
         $limitedLocales = ['en', 'fr'];
         $this->assertNull($this->service->resolveLocale('DE', $limitedLocales));
     }
 
-    public function test_it_is_case_insensitive_for_country_codes()
+    public function testItIsCaseInsensitiveForCountryCodes()
     {
         $this->assertEquals('fr', $this->service->resolveLocale('fr', $this->availableLocales));
         $this->assertEquals('de', $this->service->resolveLocale('de', $this->availableLocales));
     }
 
-    public function test_it_returns_null_for_empty_available_locales()
+    public function testItReturnsNullForEmptyAvailableLocales()
     {
         $this->assertNull($this->service->resolveLocale('US', []));
     }

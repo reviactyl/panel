@@ -2,8 +2,8 @@
 
 namespace App\Contracts\Criteria;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Repositories\Repository;
+use Illuminate\Database\Eloquent\Model;
 
 interface CriteriaInterface
 {

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Admin\Servers;
 
-use Illuminate\View\View;
-use Illuminate\Http\Request;
 use App\Models\Nest;
 use App\Models\Server;
+use Illuminate\View\View;
+use Illuminate\Http\Request;
 use App\Exceptions\DisplayException;
 use App\Http\Controllers\Controller;
 use App\Services\Servers\EnvironmentService;

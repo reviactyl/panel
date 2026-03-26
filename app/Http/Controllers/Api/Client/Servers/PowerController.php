@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api\Client\Servers;
 
-use Illuminate\Http\Response;
 use App\Models\Server;
 use App\Facades\Activity;
+use Illuminate\Http\Response;
 use App\Repositories\Wings\DaemonPowerRepository;
 use App\Http\Controllers\Api\Client\ClientApiController;
 use App\Http\Requests\Api\Client\Servers\SendPowerRequest;

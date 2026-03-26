@@ -4,16 +4,15 @@ namespace App\Tests\Integration\Api\Client\Server;
 
 use App\Models\User;
 use App\Models\Server;
-use Illuminate\Http\Response;
 use App\Models\ServerCategory;
 use App\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
 class ClientServerCategoryTest extends ClientApiIntegrationTestCase
 {
-    /** @var \App\Models\Server */
+    /** @var Server */
     private $server;
 
-    /** @var \App\Models\User */
+    /** @var User */
     private $user;
 
     public function setUp(): void
@@ -107,12 +106,12 @@ class ClientServerCategoryTest extends ClientApiIntegrationTestCase
             ->assertJsonPath('data.0.attributes.uuid', $server1->uuid);
 
         // Filter by null (uncategorized)
-        $response = $this->actingAs($this->user)->getJson("/api/client?filter[category_uuid]=null");
+        $response = $this->actingAs($this->user)->getJson('/api/client?filter[category_uuid]=null');
         // Note: ClientController might need to handle 'null' string?
         // My implementation handles `is_null($value) || $value === 'null'`.
         $response->assertOk()
             ->assertJsonCount(2, 'data'); // Wait, $this->server (from setup) + server2? $this->server has no category by default?
-        
+
         // $this->server created in setUp has null category.
         // So server2 + this->server = 2.
     }

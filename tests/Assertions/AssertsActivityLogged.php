@@ -3,10 +3,10 @@
 namespace App\Tests\Assertions;
 
 use PHPUnit\Framework\Assert;
-use Illuminate\Support\Facades\Event;
 use App\Events\ActivityLogged;
-use Illuminate\Database\Eloquent\Model;
 use App\Models\ActivityLogSubject;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Database\Eloquent\Model;
 
 trait AssertsActivityLogged
 {

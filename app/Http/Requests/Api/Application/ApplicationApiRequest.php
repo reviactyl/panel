@@ -2,14 +2,14 @@
 
 namespace App\Http\Requests\Api\Application;
 
-use Webmozart\Assert\Assert;
 use App\Models\ApiKey;
+use Webmozart\Assert\Assert;
+use App\Exceptions\PanelException;
+use App\Services\Acl\Api\AdminAcl;
 use Laravel\Sanctum\TransientToken;
 use Illuminate\Validation\Validator;
 use Illuminate\Database\Eloquent\Model;
-use App\Services\Acl\Api\AdminAcl;
 use Illuminate\Foundation\Http\FormRequest;
-use App\Exceptions\PanelException;
 
 abstract class ApplicationApiRequest extends FormRequest
 {

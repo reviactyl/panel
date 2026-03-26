@@ -3,10 +3,10 @@
 namespace App\Http\Middleware\Api\Daemon;
 
 use Illuminate\Http\Request;
-use Illuminate\Contracts\Encryption\Encrypter;
 use App\Repositories\Eloquent\NodeRepository;
-use Symfony\Component\HttpKernel\Exception\HttpException;
+use Illuminate\Contracts\Encryption\Encrypter;
 use App\Exceptions\Repository\RecordNotFoundException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 

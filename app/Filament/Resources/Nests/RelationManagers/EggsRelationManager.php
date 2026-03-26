@@ -2,13 +2,9 @@
 
 namespace App\Filament\Resources\Nests\RelationManagers;
 
-use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Resources\RelationManagers\RelationManager;
 
 class EggsRelationManager extends RelationManager
 {
@@ -45,7 +41,7 @@ class EggsRelationManager extends RelationManager
                     ->action(function ($record) {
                         $json = app(\App\Services\Eggs\Sharing\EggExporterService::class)->handle($record->id);
                         $filename = trim(preg_replace('/\W/', '-', kebab_case($record->name)), '-');
-                        
+
                         return response()->streamDownload(function () use ($json) {
                             echo $json;
                         }, 'egg-' . $filename . '.json');
@@ -58,7 +54,7 @@ class EggsRelationManager extends RelationManager
                                 ->body(trans('admin/eggs.notices.cannot_delete_body', ['count' => $record->servers()->count()]))
                                 ->danger()
                                 ->send();
-                            
+
                             $action->cancel();
                         }
                     }),

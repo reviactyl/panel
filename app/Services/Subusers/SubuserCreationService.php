@@ -2,11 +2,11 @@
 
 namespace App\Services\Subusers;
 
-use Illuminate\Support\Str;
 use App\Models\Server;
 use App\Models\Subuser;
-use Illuminate\Database\ConnectionInterface;
+use Illuminate\Support\Str;
 use App\Services\Users\UserCreationService;
+use Illuminate\Database\ConnectionInterface;
 use App\Repositories\Eloquent\SubuserRepository;
 use App\Contracts\Repository\UserRepositoryInterface;
 use App\Exceptions\Repository\RecordNotFoundException;

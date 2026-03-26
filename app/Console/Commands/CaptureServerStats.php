@@ -49,9 +49,9 @@ class CaptureServerStats extends Command
                 foreach ($servers as $server) {
                     try {
                         $details = $this->repository->setServer($server)->getDetails();
-                        
+
                         $stats = $details['utilization'] ?? [];
-                        
+
                         ServerStatsHistory::create([
                             'server_id' => $server->id,
                             'cpu_usage' => $stats['cpu_absolute'] ?? 0,
@@ -67,8 +67,8 @@ class CaptureServerStats extends Command
                         // $this->warn("Failed to contact node for server {$server->uuid}: {$e->getMessage()}");
                         continue;
                     } catch (\Exception $e) {
-                         $this->error("Error processing server {$server->uuid}: {$e->getMessage()}");
-                         continue;
+                        $this->error("Error processing server {$server->uuid}: {$e->getMessage()}");
+                        continue;
                     }
                 }
             });

@@ -3,9 +3,9 @@
 namespace App\Tests\Integration\Api\Client\Server\Startup;
 
 use App\Models\User;
-use Illuminate\Http\Response;
 use App\Models\Permission;
 use App\Models\EggVariable;
+use Illuminate\Http\Response;
 use App\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
 class UpdateStartupVariableTest extends ClientApiIntegrationTestCase

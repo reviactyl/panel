@@ -2,12 +2,12 @@
 
 namespace App\Services\Users;
 
-use Ramsey\Uuid\Uuid;
 use App\Models\User;
+use Ramsey\Uuid\Uuid;
+use App\Notifications\AccountCreated;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Auth\PasswordBroker;
-use App\Notifications\AccountCreated;
 use App\Contracts\Repository\UserRepositoryInterface;
 
 class UserCreationService

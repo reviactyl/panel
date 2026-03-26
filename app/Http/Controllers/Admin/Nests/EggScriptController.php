@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Admin\Nests;
 
-use Illuminate\View\View;
 use App\Models\Egg;
+use Illuminate\View\View;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\View\Factory as ViewFactory;
-use App\Http\Controllers\Controller;
 use App\Services\Eggs\Scripts\InstallScriptService;
 use App\Contracts\Repository\EggRepositoryInterface;
 use App\Http\Requests\Admin\Egg\EggScriptFormRequest;

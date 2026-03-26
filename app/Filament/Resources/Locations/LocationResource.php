@@ -3,15 +3,13 @@
 namespace App\Filament\Resources\Locations;
 
 use Filament\Actions;
+use App\Models\Location;
 use Filament\Tables\Table;
 use Filament\Schemas\Schema;
-use App\Models\Location;
 use Filament\Resources\Resource;
-use Filament\Schemas\Components\Section;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
-use App\Filament\Resources\Locations\Pages;
-use App\Filament\Resources\Locations\RelationManagers;
+use Filament\Schemas\Components\Section;
 
 class LocationResource extends Resource
 {
@@ -107,14 +105,14 @@ class LocationResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+
             ])
             ->actions([
                 Actions\Action::make('edit')
                     ->label(trans('admin/locations.actions.edit'))
                     ->icon('heroicon-o-pencil')
-                    ->url(fn (Location $record): string =>
-                        static::getUrl('edit', ['record' => $record->getKey()])
+                    ->url(
+                        fn (Location $record): string => static::getUrl('edit', ['record' => $record->getKey()])
                     ),
 
                 Actions\Action::make('delete')
@@ -125,16 +123,14 @@ class LocationResource extends Resource
                     ->action(function (Location $record) {
 
                         if ($record->nodes()->count() > 0) {
-                            throw new \Exception(
-                                trans('admin/locations.messages.cannot_delete_with_nodes')
-                            );
+                            throw new \Exception(trans('admin/locations.messages.cannot_delete_with_nodes'));
                         }
 
                         $record->delete();
                     }),
             ])
             ->bulkActions([
-                //
+
             ]);
     }
 

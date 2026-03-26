@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api\Client;
 
 use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Models\ServerCategory;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\Api\Client\ClientApiRequest;
@@ -85,7 +84,7 @@ class CategoryController extends ClientApiController
     public function reorder(ClientApiRequest $request): JsonResponse
     {
         $ids = $request->input('ids', []);
-        
+
         foreach ($ids as $index => $uuid) {
             ServerCategory::query()
                 ->where('user_id', $request->user()->id)
@@ -108,7 +107,7 @@ class CategoryController extends ClientApiController
 
         // Optional: decoupling servers from this category is redundant if foreign key is set null on delete?
         // Yes, migration used nullOnDelete().
-        
+
         $category->delete();
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);

@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Admin\Servers;
 
-use Illuminate\View\View;
 use App\Models\Nest;
 use App\Models\Node;
 use App\Models\Location;
+use Illuminate\View\View;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use App\Http\Controllers\Controller;
 use App\Repositories\Eloquent\NestRepository;
 use App\Repositories\Eloquent\NodeRepository;
 use App\Http\Requests\Admin\ServerFormRequest;

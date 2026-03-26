@@ -2,18 +2,18 @@
 
 namespace App\Services\Telemetry;
 
-use Ramsey\Uuid\Uuid;
-use Illuminate\Support\Arr;
 use App\Models\Egg;
 use App\Models\Nest;
 use App\Models\Node;
 use App\Models\User;
 use App\Models\Mount;
+use Ramsey\Uuid\Uuid;
 use App\Models\Backup;
 use App\Models\Server;
 use App\Models\Location;
-use Illuminate\Support\Facades\DB;
 use App\Models\Allocation;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use App\Repositories\Eloquent\SettingsRepository;
 use App\Repositories\Wings\DaemonConfigurationRepository;

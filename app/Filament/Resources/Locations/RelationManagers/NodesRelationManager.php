@@ -2,16 +2,16 @@
 
 namespace App\Filament\Resources\Locations\RelationManagers;
 
+use App\Models\Node;
+use Filament\Tables;
+use Filament\Tables\Table;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Tables;
-use Filament\Tables\Table;
-use App\Models\Node;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Resources\RelationManagers\RelationManager;
 use App\Filament\Resources\Nodes\NodeResource;
+use Filament\Resources\RelationManagers\RelationManager;
 
 class NodesRelationManager extends RelationManager
 {
@@ -98,7 +98,7 @@ class NodesRelationManager extends RelationManager
                     ->icon('heroicon-o-eye')
                     ->url(fn (Node $record): string => NodeResource::getUrl('edit', ['record' => $record]))
                     ->openUrlInNewTab(false),
-                    
+
                 Action::make('allocations')
                     ->label(trans('admin/node.allocations.label'))
                     ->icon('heroicon-o-server-stack')
@@ -113,9 +113,7 @@ class NodesRelationManager extends RelationManager
                         ->before(function ($records) {
                             foreach ($records as $record) {
                                 if ($record->servers()->count() > 0) {
-                                    throw new \Exception(
-                                        trans('admin/node.messages.cannot_delete_with_servers')
-                                    );
+                                    throw new \Exception(trans('admin/node.messages.cannot_delete_with_servers'));
                                 }
                             }
                         }),

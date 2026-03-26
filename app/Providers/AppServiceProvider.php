@@ -4,15 +4,15 @@ namespace App\Providers;
 
 use App\Models;
 use Illuminate\Support\Str;
+use Laravel\Sanctum\Sanctum;
+use App\Extensions\Themes\Theme;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
-use App\Extensions\Themes\Theme;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Laravel\Sanctum\Sanctum;
 
 class AppServiceProvider extends ServiceProvider
 {

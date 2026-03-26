@@ -2,8 +2,8 @@
 
 namespace App\Tests\Integration\Admin;
 
-use App\Models\User;
 use App\Models\Node;
+use App\Models\User;
 use App\Models\Server;
 use App\Models\Location;
 use App\Tests\Integration\IntegrationTestCase;
@@ -35,20 +35,20 @@ class ActivityLogTest extends IntegrationTestCase
         // Instead, we can try to call the controller method or service directly,
         // but given the integration nature, let's try to hit the endpoint if possible,
         // or rely on the fact that we injected the service.
-        
+
         // Let's create a server using the factory, which might not trigger the controller logic.
         // So we need to simulate the request to the controller.
-        
+
         // However, setting up a full server creation request validation in test can be verbose.
-        // Let's verify the `logService` invocation implicitly by checking if an entry exists after we manually call the service or 
+        // Let's verify the `logService` invocation implicitly by checking if an entry exists after we manually call the service or
         // if we can trigger the controller action.
-        
+
         // Simpler approach for this environment:
         // We know we modified the controller. Let's verify that IF we hit the controller, it logs.
         // Creating a full request might fail due to external service mocks (Wings etc).
-        
+
         // Let's try to trigger the Node creation which allows easier testing.
-        
+
         $response = $this->post('/admin/nodes/new', [
             'name' => 'Test Node',
             'location_id' => $location->id,
@@ -64,11 +64,11 @@ class ActivityLogTest extends IntegrationTestCase
         ]);
 
         $response->assertStatus(302); // Redirects on success
-        
+
         $this->assertDatabaseHas('activity_logs', [
             'event' => 'node:create',
         ]);
-        
+
         // Check if the log is associated with the node
         $log = \App\Models\ActivityLog::where('event', 'node:create')->first();
         $this->assertNotNull($log);

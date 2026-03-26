@@ -2,9 +2,9 @@
 
 namespace App\Tests\Integration\Api\Client\Server\Subuser;
 
-use Mockery\MockInterface;
 use App\Models\User;
 use App\Models\Subuser;
+use Mockery\MockInterface;
 use App\Repositories\Wings\DaemonRevocationRepository;
 use App\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 

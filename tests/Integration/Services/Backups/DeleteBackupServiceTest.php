@@ -2,11 +2,11 @@
 
 namespace App\Tests\Integration\Services\Backups;
 
+use App\Models\Backup;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use App\Models\Backup;
-use GuzzleHttp\Exception\ClientException;
 use App\Extensions\Backups\BackupManager;
+use GuzzleHttp\Exception\ClientException;
 use App\Extensions\Filesystem\S3Filesystem;
 use App\Services\Backups\DeleteBackupService;
 use App\Tests\Integration\IntegrationTestCase;

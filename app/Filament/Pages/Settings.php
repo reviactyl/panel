@@ -114,11 +114,16 @@ class Settings extends Page implements HasSchemas
             if ($key === 'mail:mailers:smtp:password' && !empty($value)) {
                 try {
                     $value = $encrypter->decrypt($value);
-                } catch (\Throwable) {}
+                } catch (\Throwable) {
+                }
             }
 
-            if ($value === 'true') $value = true;
-            if ($value === 'false') $value = false;
+            if ($value === 'true') {
+                $value = true;
+            }
+            if ($value === 'false') {
+                $value = false;
+            }
 
             if ($key === 'panel:auth:2fa_required') {
                 $value = (int) $value;
@@ -196,7 +201,7 @@ class Settings extends Page implements HasSchemas
                         ->label(trans('admin/settings.overview.default-language'))
                         ->helperText(trans('admin/settings.overview.default-language-hint'))
                         ->options(function () {
-                            // Helper to get languages since we can't easily access trait method statically or outside instance context in some cases, 
+                            // Helper to get languages since we can't easily access trait method statically or outside instance context in some cases,
                             // but here we are in instance context.
                             return $this->getAvailableLanguages(true);
                         })

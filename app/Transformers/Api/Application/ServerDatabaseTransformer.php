@@ -3,10 +3,10 @@
 namespace App\Transformers\Api\Application;
 
 use App\Models\Database;
-use League\Fractal\Resource\Item;
 use App\Models\DatabaseHost;
-use League\Fractal\Resource\NullResource;
+use League\Fractal\Resource\Item;
 use App\Services\Acl\Api\AdminAcl;
+use League\Fractal\Resource\NullResource;
 use Illuminate\Contracts\Encryption\Encrypter;
 
 class ServerDatabaseTransformer extends BaseTransformer

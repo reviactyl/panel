@@ -2,10 +2,10 @@
 
 namespace App\Services\Allocations;
 
-use IPTools\Network;
 use App\Models\Node;
-use Illuminate\Database\ConnectionInterface;
+use IPTools\Network;
 use App\Exceptions\DisplayException;
+use Illuminate\Database\ConnectionInterface;
 use App\Contracts\Repository\AllocationRepositoryInterface;
 use App\Exceptions\Service\Allocation\CidrOutOfRangeException;
 use App\Exceptions\Service\Allocation\PortOutOfRangeException;

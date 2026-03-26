@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Http\Response;
 use App\Models\Mount;
 use App\Models\Server;
 use App\Models\Database;
 use App\Models\MountServer;
-use Illuminate\Http\RedirectResponse;
-use Prologue\Alerts\AlertsMessageBag;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Exceptions\DisplayException;
 use App\Http\Controllers\Controller;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Http\RedirectResponse;
+use Prologue\Alerts\AlertsMessageBag;
 use App\Services\Servers\SuspensionService;
 use App\Repositories\Eloquent\MountRepository;
+use Illuminate\Validation\ValidationException;
 use App\Services\Servers\ServerDeletionService;
 use App\Services\Servers\ReinstallServerService;
 use App\Exceptions\Model\DataValidationException;
@@ -27,11 +27,11 @@ use App\Services\Servers\StartupModificationService;
 use App\Contracts\Repository\NestRepositoryInterface;
 use App\Repositories\Eloquent\DatabaseHostRepository;
 use App\Services\Databases\DatabaseManagementService;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use App\Contracts\Repository\ServerRepositoryInterface;
 use App\Contracts\Repository\DatabaseRepositoryInterface;
 use App\Contracts\Repository\AllocationRepositoryInterface;
 use App\Services\Servers\ServerConfigurationStructureService;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use App\Http\Requests\Admin\Servers\Databases\StoreServerDatabaseRequest;
 
 class ServersController extends Controller

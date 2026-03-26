@@ -2,8 +2,8 @@
 
 namespace App\Services\Nests;
 
-use Ramsey\Uuid\Uuid;
 use App\Models\Nest;
+use Ramsey\Uuid\Uuid;
 use App\Contracts\Repository\NestRepositoryInterface;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 

@@ -2,9 +2,9 @@
 
 namespace App\Tests\Integration\Admin;
 
+use App\Services\Activity\ActivityLogService;
 use App\Tests\Integration\IntegrationTestCase;
 use App\Http\Controllers\Admin\ServersController;
-use App\Services\Activity\ActivityLogService;
 
 class ControllerResolutionTest extends IntegrationTestCase
 {

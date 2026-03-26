@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\Node;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Str;
-use App\Models\Node;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

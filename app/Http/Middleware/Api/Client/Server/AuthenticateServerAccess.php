@@ -2,10 +2,10 @@
 
 namespace App\Http\Middleware\Api\Client\Server;
 
-use Illuminate\Http\Request;
 use App\Models\Server;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Http\Request;
 use App\Exceptions\Http\Server\ServerStateConflictException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AuthenticateServerAccess
 {

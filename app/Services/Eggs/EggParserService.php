@@ -2,8 +2,8 @@
 
 namespace App\Services\Eggs;
 
-use Illuminate\Support\Arr;
 use App\Models\Egg;
+use Illuminate\Support\Arr;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use App\Exceptions\Service\InvalidFileUploadException;

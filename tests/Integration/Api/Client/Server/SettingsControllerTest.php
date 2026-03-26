@@ -2,9 +2,9 @@
 
 namespace App\Tests\Integration\Api\Client\Server;
 
-use Illuminate\Http\Response;
 use App\Models\Server;
 use App\Models\Permission;
+use Illuminate\Http\Response;
 use App\Repositories\Wings\DaemonServerRepository;
 use App\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 

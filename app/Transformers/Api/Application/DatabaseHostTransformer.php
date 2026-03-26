@@ -4,9 +4,9 @@ namespace App\Transformers\Api\Application;
 
 use App\Models\Database;
 use App\Models\DatabaseHost;
+use App\Services\Acl\Api\AdminAcl;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
-use App\Services\Acl\Api\AdminAcl;
 
 class DatabaseHostTransformer extends BaseTransformer
 {

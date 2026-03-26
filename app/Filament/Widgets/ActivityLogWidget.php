@@ -3,7 +3,6 @@
 namespace App\Filament\Widgets;
 
 use App\Models\ActivityLog;
-use App\Filament\Widgets\BaseWidget;
 use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Section;
 use Filament\Infolists\Components\TextEntry;
@@ -33,13 +32,13 @@ class ActivityLogWidget extends BaseWidget
                     . ' — '
                     . $log->event
                     . ' — '
-                    . ($log->timestamp?->diffForHumans())
+                    . $log->timestamp?->diffForHumans()
                 );
         }
 
         $entries[] = TextEntry::make('view_more')
             ->hiddenLabel()
-            ->state(trans('admin/index.more-btn') .'  →')
+            ->state(trans('admin/index.more-btn') . '  →')
             ->color('primary')
             ->url(ActivityLogResource::getUrl());
 

@@ -36,9 +36,9 @@ class EditDatabaseHost extends EditRecord
                     }
                 })
                 ->after(function () {
-                     /** @var \App\Services\Activity\ActivityLogService $logService */
+                    /** @var \App\Services\Activity\ActivityLogService $logService */
                     $logService = app(\App\Services\Activity\ActivityLogService::class);
-                    // logging handled via model events or manually here? 
+                    // logging handled via model events or manually here?
                     // DeleteAction deletes the record, so we might need to log BEFORE or grab details.
                     // Actually, DeleteAction runs inside a transaction usually.
                     // Let's log *before* delete in the action hook but we need to log *successful* delete.
@@ -48,7 +48,7 @@ class EditDatabaseHost extends EditRecord
                 })
                 // Let's use clean action implementation
                 ->action(function (DatabaseHost $record, Actions\Action $action) {
-                     if ($record->databases()->count() > 0) {
+                    if ($record->databases()->count() > 0) {
                         \Filament\Notifications\Notification::make()
                             ->title(trans('admin/databases.errors.cannot_delete'))
                             ->danger()

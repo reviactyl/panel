@@ -6,8 +6,8 @@ use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Str;
 use Webmozart\Assert\Assert;
 use ParagonIE\ConstantTime\Base32;
-use Illuminate\Database\Eloquent\Builder;
 use App\Models\Attributes\Identifiable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
 /**

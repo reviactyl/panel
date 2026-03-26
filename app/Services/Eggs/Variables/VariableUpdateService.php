@@ -2,12 +2,12 @@
 
 namespace App\Services\Eggs\Variables;
 
-use Illuminate\Support\Str;
 use App\Models\EggVariable;
+use Illuminate\Support\Str;
 use App\Exceptions\DisplayException;
 use App\Traits\Services\ValidatesValidationRules;
-use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use App\Contracts\Repository\EggVariableRepositoryInterface;
+use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use App\Exceptions\Service\Egg\Variable\ReservedVariableNameException;
 
 class VariableUpdateService

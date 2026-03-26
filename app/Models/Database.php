@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Container\Container;
+use App\Contracts\Extensions\HashidsInterface;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Contracts\Extensions\HashidsInterface;
 
 /**
  * @property int $id

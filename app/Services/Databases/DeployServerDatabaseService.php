@@ -2,10 +2,10 @@
 
 namespace App\Services\Databases;
 
-use Webmozart\Assert\Assert;
 use App\Models\Server;
 use App\Models\Database;
 use App\Models\DatabaseHost;
+use Webmozart\Assert\Assert;
 use App\Exceptions\Service\Database\NoSuitableDatabaseHostException;
 
 class DeployServerDatabaseService

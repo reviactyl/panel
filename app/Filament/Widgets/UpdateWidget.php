@@ -2,14 +2,10 @@
 
 namespace App\Filament\Widgets;
 
-use App\Services\Helpers\SoftwareVersionService;
-use Filament\Actions\Action;
-use Filament\Infolists\Components\TextEntry;
-use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use App\Filament\Widgets\BaseWidget;
+use Filament\Schemas\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use App\Services\Helpers\SoftwareVersionService;
 
 class UpdateWidget extends BaseWidget
 {

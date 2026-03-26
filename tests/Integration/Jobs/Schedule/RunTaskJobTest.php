@@ -3,16 +3,16 @@
 namespace App\Tests\Integration\Jobs\Schedule;
 
 use Carbon\Carbon;
-use Carbon\CarbonImmutable;
-use GuzzleHttp\Psr7\Request;
 use App\Models\Task;
-use GuzzleHttp\Psr7\Response;
 use App\Models\Server;
 use App\Models\Schedule;
-use Illuminate\Support\Facades\Bus;
+use Carbon\CarbonImmutable;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use App\Jobs\Schedule\RunTaskJob;
-use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Support\Facades\Bus;
 use App\Tests\Integration\IntegrationTestCase;
+use GuzzleHttp\Exception\BadResponseException;
 use App\Repositories\Wings\DaemonPowerRepository;
 use App\Exceptions\Http\Connection\DaemonConnectionException;
 

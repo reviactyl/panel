@@ -2,9 +2,9 @@
 
 namespace App\Http\Middleware\Admin\Servers;
 
+use App\Models\Server;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Models\Server;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 

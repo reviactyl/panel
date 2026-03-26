@@ -2,11 +2,11 @@
 
 namespace App\Services\Backups;
 
-use Illuminate\Http\Response;
 use App\Models\Backup;
+use Illuminate\Http\Response;
+use App\Extensions\Backups\BackupManager;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Database\ConnectionInterface;
-use App\Extensions\Backups\BackupManager;
 use App\Repositories\Wings\DaemonBackupRepository;
 use App\Exceptions\Service\Backup\BackupLockedException;
 use App\Exceptions\Http\Connection\DaemonConnectionException;

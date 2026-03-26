@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 namespace App\Models\Traits;
 
 trait HasValidationRules

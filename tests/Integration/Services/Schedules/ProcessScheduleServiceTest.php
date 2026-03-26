@@ -3,13 +3,13 @@
 namespace App\Tests\Integration\Services\Schedules;
 
 use Exception;
-use Carbon\CarbonImmutable;
 use App\Models\Task;
 use App\Models\Schedule;
-use Illuminate\Support\Facades\Bus;
-use Illuminate\Contracts\Bus\Dispatcher;
+use Carbon\CarbonImmutable;
 use App\Jobs\Schedule\RunTaskJob;
+use Illuminate\Support\Facades\Bus;
 use App\Exceptions\DisplayException;
+use Illuminate\Contracts\Bus\Dispatcher;
 use App\Tests\Integration\IntegrationTestCase;
 use App\Services\Schedules\ProcessScheduleService;
 

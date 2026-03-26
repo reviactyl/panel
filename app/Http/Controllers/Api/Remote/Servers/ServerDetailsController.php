@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Api\Remote\Servers;
 
-use Illuminate\Http\Request;
 use App\Models\Node;
 use App\Models\Server;
+use App\Facades\Activity;
+use Illuminate\Http\Request;
 use Webmozart\Assert\Assert;
 use Illuminate\Http\JsonResponse;
-use App\Facades\Activity;
-use Illuminate\Database\ConnectionInterface;
 use App\Http\Controllers\Controller;
+use Illuminate\Database\ConnectionInterface;
 use App\Services\Eggs\EggConfigurationService;
 use App\Exceptions\Http\HttpForbiddenException;
 use App\Repositories\Eloquent\ServerRepository;

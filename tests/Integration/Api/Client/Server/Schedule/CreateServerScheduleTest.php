@@ -2,9 +2,9 @@
 
 namespace App\Tests\Integration\Api\Client\Server\Schedule;
 
-use Illuminate\Http\Response;
 use App\Models\Schedule;
 use App\Models\Permission;
+use Illuminate\Http\Response;
 use App\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
 class CreateServerScheduleTest extends ClientApiIntegrationTestCase

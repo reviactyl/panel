@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\View\View;
 use App\Models\DatabaseHost;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use App\Http\Controllers\Controller;
 use App\Services\Databases\Hosts\HostUpdateService;
 use App\Http\Requests\Admin\DatabaseHostFormRequest;
 use App\Services\Databases\Hosts\HostCreationService;

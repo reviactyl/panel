@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Rules\Username;
 use App\Models\User;
+use App\Rules\Username;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use App\Services\Users\UserCreationService;
-use App\Http\Requests\Auth\RegisterRequest;
-use App\Exceptions\Model\DataValidationException;
 use Illuminate\Contracts\View\View;
+use App\Services\Users\UserCreationService;
 use Illuminate\Validation\ValidationException;
+use App\Exceptions\Model\DataValidationException;
 
 class RegisterController extends AbstractLoginController
 {

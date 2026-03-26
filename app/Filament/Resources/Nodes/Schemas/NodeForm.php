@@ -2,22 +2,22 @@
 
 namespace App\Filament\Resources\Nodes\Schemas;
 
-use App\Models\ApiKey;
 use App\Models\Node;
-use App\Services\Api\KeyCreationService;
-use Filament\Actions\Action;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Toggle;
-use Filament\Infolists\Components\CodeEntry;
+use App\Models\ApiKey;
 use Phiki\Grammar\Grammar;
+use Filament\Actions\Action;
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Tabs;
+use Filament\Forms\Components\Textarea;
+use App\Services\Api\KeyCreationService;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Actions;
 use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
-use Filament\Schemas\Schema;
+use Filament\Infolists\Components\CodeEntry;
 use Illuminate\Contracts\Encryption\Encrypter;
 
 class NodeForm
@@ -119,7 +119,7 @@ class NodeForm
                                     ])
                                     ->columns(2),
                             ]),
-                
+
                         Tab::make(trans('admin/node.sections.daemon.title'))
                             ->icon('heroicon-o-command-line')
                             ->schema([
@@ -182,13 +182,14 @@ class NodeForm
                                             ->dehydrated(true)
                                             ->afterStateHydrated(function ($component, $state, $record) {
                                                 $isSecure = request()->secure();
-                                                
+
                                                 // Force HTTPS if panel is running on HTTPS
                                                 if ($isSecure) {
                                                     $component->state(true);
+
                                                     return;
                                                 }
-                                                
+
                                                 if ($record && isset($record->scheme)) {
                                                     $component->state($record->scheme === 'https');
                                                 } elseif (is_string($state)) {
@@ -197,7 +198,7 @@ class NodeForm
                                                 }
                                             })
                                             ->dehydrateStateUsing(fn ($state) => $state ? 'https' : 'http')
-                                            ->helperText(fn () => request()->secure() 
+                                            ->helperText(fn () => request()->secure()
                                                 ? trans('admin/node.fields.ssl.helper_forced')
                                                 : trans('admin/node.fields.ssl.helper')),
 
@@ -251,7 +252,7 @@ class NodeForm
 
                                                     try {
                                                         $user = auth()->user();
-                                                        
+
                                                         $key = ApiKey::query()
                                                             ->where('user_id', $user->id)
                                                             ->where('key_type', ApiKey::TYPE_APPLICATION)
@@ -262,6 +263,7 @@ class NodeForm
                                                                         return true;
                                                                     }
                                                                 }
+
                                                                 return false;
                                                             })
                                                             ->first();
@@ -278,19 +280,19 @@ class NodeForm
 
                                                         $encrypter = app(Encrypter::class);
                                                         $token = $key->identifier . $encrypter->decrypt($key->token);
-                                                        
+
                                                         $appUrl = config('app.url');
                                                         $debug = config('app.debug');
                                                         $allowInsecure = $debug ? ' --allow-insecure' : '';
-                                                        
+
                                                         $command = "cd /etc/reviactyl && sudo wings configure --panel-url {$appUrl} --token {$token} --node {$record->id}{$allowInsecure}";
-                                                        
+
                                                         Notification::make()
                                                             ->title(trans('admin/node.deployment.token_success'))
                                                             ->body(trans('admin/node.deployment.token_success_body'))
                                                             ->success()
                                                             ->send();
-                                                        
+
                                                         return ['command' => $command];
                                                     } catch (\Exception $e) {
                                                         return ['command' => 'Error generating token. Please try again.'];

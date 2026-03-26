@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use App\Models\Node;
 use App\Models\ApiKey;
+use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
-use Illuminate\Contracts\Encryption\Encrypter;
 use App\Services\Api\KeyCreationService;
+use Illuminate\Contracts\Encryption\Encrypter;
 
 class NodeAutoDeployController extends Controller
 {

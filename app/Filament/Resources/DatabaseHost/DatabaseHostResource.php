@@ -2,17 +2,16 @@
 
 namespace App\Filament\Resources\DatabaseHost;
 
+use Filament\Panel;
 use Filament\Actions;
 use Filament\Tables\Table;
-use Filament\Schemas\Schema;
-use Filament\Panel;
 use App\Models\DatabaseHost;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
-use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Select;
-use App\Filament\Resources\DatabaseHost\Pages;
+use Filament\Schemas\Components\Section;
 
 class DatabaseHostResource extends Resource
 {

@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\View\View;
 use App\Models\Location;
+use Illuminate\View\View;
+use App\Exceptions\DisplayException;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\View\Factory as ViewFactory;
-use App\Exceptions\DisplayException;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\LocationFormRequest;
 use App\Services\Locations\LocationUpdateService;
 use App\Services\Locations\LocationCreationService;

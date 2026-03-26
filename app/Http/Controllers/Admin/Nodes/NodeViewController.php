@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Admin\Nodes;
 
-use Illuminate\View\View;
-use Illuminate\Http\Request;
 use App\Models\Node;
-use Illuminate\Support\Collection;
+use Illuminate\View\View;
 use App\Models\Allocation;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use App\Http\Controllers\Controller;
 use App\Repositories\Eloquent\NodeRepository;
 use App\Repositories\Eloquent\ServerRepository;

@@ -3,9 +3,9 @@
 namespace App\Transformers\Api\Application;
 
 use App\Models\User;
+use App\Services\Acl\Api\AdminAcl;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
-use App\Services\Acl\Api\AdminAcl;
 
 class UserTransformer extends BaseTransformer
 {

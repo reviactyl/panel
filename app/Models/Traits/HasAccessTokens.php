@@ -2,12 +2,12 @@
 
 namespace App\Models\Traits;
 
+use App\Models\ApiKey;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\Sanctum;
-use App\Models\ApiKey;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Extensions\Laravel\Sanctum\NewAccessToken;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @template TToken of \Laravel\Sanctum\Contracts\HasAbilities

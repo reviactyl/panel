@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Api\Remote\Servers;
 
-use Illuminate\Http\Response;
-use Illuminate\Http\JsonResponse;
 use App\Models\Allocation;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Response;
 use App\Models\ServerTransfer;
-use Illuminate\Database\ConnectionInterface;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Database\ConnectionInterface;
+use App\Exceptions\Http\HttpForbiddenException;
 use App\Repositories\Eloquent\ServerRepository;
 use App\Repositories\Wings\DaemonServerRepository;
-use App\Exceptions\Http\HttpForbiddenException;
-use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use App\Exceptions\Http\Connection\DaemonConnectionException;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
 class ServerTransferController extends Controller
 {
@@ -66,8 +66,8 @@ class ServerTransferController extends Controller
         // not allow the old node to hit this endpoint.
         if (! $server->node->is($transfer->newNode)) {
             throw new HttpForbiddenException('Requesting node does not have permission to access this server.');
-            }
-            
+        }
+
         /** @var \App\Models\Server $server */
         $server = $this->connection->transaction(function () use ($server, $transfer) {
             $allocations = array_merge([$transfer->old_allocation], $transfer->old_additional_allocations);

@@ -2,41 +2,41 @@
 
 namespace App\Http;
 
-use Illuminate\Auth\Middleware\Authorize;
-use Illuminate\Http\Middleware\HandleCors;
-use Illuminate\Auth\Middleware\Authenticate;
-use Illuminate\Http\Middleware\TrustProxies;
 use App\Http\Middleware\TrimStrings;
-use Illuminate\Session\Middleware\StartSession;
+use App\Http\Middleware\VerifyCaptcha;
 use App\Http\Middleware\EncryptCookies;
+use App\Http\Middleware\UpdateLastSeen;
 use App\Http\Middleware\Api\IsValidJson;
 use App\Http\Middleware\VerifyCsrfToken;
-use App\Http\Middleware\VerifyCaptcha;
-use Illuminate\Routing\Middleware\ThrottleRequests;
+use App\Http\Middleware\EditorMiddleware;
+use Illuminate\Auth\Middleware\Authorize;
+use Illuminate\Http\Middleware\HandleCors;
 use App\Http\Middleware\LanguageMiddleware;
 use App\Http\Middleware\SetSecurityHeaders;
-use App\Http\Middleware\EditorMiddleware;
-use App\Http\Middleware\UpdateLastSeen;
-use Illuminate\Foundation\Http\Kernel as HttpKernel;
-use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Auth\Middleware\Authenticate;
+use Illuminate\Http\Middleware\TrustProxies;
 use App\Http\Middleware\Activity\TrackAPIKey;
-use Illuminate\Session\Middleware\AuthenticateSession;
-use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Http\Middleware\MaintenanceMiddleware;
 use App\Http\Middleware\EnsureStatefulRequests;
+use Illuminate\Session\Middleware\StartSession;
 use App\Http\Middleware\RedirectIfAuthenticated;
-use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
 use App\Http\Middleware\Api\AuthenticateIPAccess;
-use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
-use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Illuminate\Routing\Middleware\ThrottleRequests;
+use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Illuminate\Routing\Middleware\SubstituteBindings;
 use App\Http\Middleware\Api\Daemon\DaemonAuthenticate;
+use Illuminate\Session\Middleware\AuthenticateSession;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Http\Middleware\Api\Client\RequireClientApiKey;
-use App\Http\Middleware\Api\Client\AuthenticateImpersonation;
 use App\Http\Middleware\RequireTwoFactorAuthentication;
-use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
+use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
+use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
 use App\Http\Middleware\Api\Client\SubstituteClientBindings;
-use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use App\Http\Middleware\Api\Client\AuthenticateImpersonation;
 use App\Http\Middleware\Api\Application\AuthenticateApplicationUser;
+use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
+use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance;
 
 class Kernel extends HttpKernel
 {

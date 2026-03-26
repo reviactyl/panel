@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api\Client;
 
 use Carbon\Carbon;
+use App\Facades\Activity;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
-use App\Facades\Activity;
 use App\Services\Users\TwoFactorSetupService;
 use App\Services\Users\ToggleTwoFactorService;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;

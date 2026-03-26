@@ -2,20 +2,20 @@
 
 namespace App\Tests\Integration\Services\Servers;
 
-use Mockery\MockInterface;
 use App\Models\Egg;
-use GuzzleHttp\Psr7\Request;
 use App\Models\Node;
 use App\Models\User;
-use GuzzleHttp\Psr7\Response;
 use App\Models\Server;
 use App\Models\Location;
 use App\Models\Allocation;
+use Mockery\MockInterface;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
+use App\Models\Objects\DeploymentObject;
 use Illuminate\Foundation\Testing\WithFaker;
+use App\Tests\Integration\IntegrationTestCase;
 use GuzzleHttp\Exception\BadResponseException;
 use Illuminate\Validation\ValidationException;
-use App\Models\Objects\DeploymentObject;
-use App\Tests\Integration\IntegrationTestCase;
 use App\Services\Servers\ServerCreationService;
 use App\Repositories\Wings\DaemonServerRepository;
 use App\Exceptions\Http\Connection\DaemonConnectionException;
