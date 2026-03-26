@@ -29,6 +29,10 @@ import MaintenanceAlert from '@/reviactyl/ui/MaintenanceAlert';
 import Maintenance from '@/reviactyl/ui/Maintenance';
 import { useTranslation } from 'react-i18next';
 import { ReviactylSidebarButton } from '@/state/reviactyl';
+import { ExtensionSlot } from '@/extensions/ExtensionSlot';
+import { useExtensionRoutes } from '@/extensions/useExtensionRoutes';
+import { useExtensions } from '@/extensions/useExtensions';
+import { resolveExtensionIcon } from '@/extensions/iconResolver';
 
 interface NavItemProps {
     route: any;
@@ -66,6 +70,10 @@ const NavItem = ({ route }: NavItemProps) => {
 
 const ServerNavigation = () => {
     const { t } = useTranslation('server/index');
+    const params = useParams<{ id: string }>();
+    const serverNestId = ServerContext.useStoreState((state) => state.server.data?.nestId);
+    const serverEggId = ServerContext.useStoreState((state) => state.server.data?.eggId);
+    const { data: extensionData } = useExtensions();
     const customSidebarButtons = useStoreState((state) => state.reviactyl.data?.sidebarButtons ?? []);
     const normalizedSidebarButtons = (Array.isArray(customSidebarButtons) ? customSidebarButtons : []).filter(
         (button): button is ReviactylSidebarButton =>
@@ -73,6 +81,48 @@ const ServerNavigation = () => {
             button.label.trim().length > 0 &&
             typeof button?.url === 'string' &&
             button.url.trim().length > 0
+    );
+
+    const serverExtensionRoutes = (Array.isArray(extensionData) ? extensionData : []).flatMap((extension) =>
+        (extension.frontend?.routes?.serverRouter ?? [])
+            .filter((route) => {
+                const routeEggId = route.eggId ?? route.egg_id;
+                const routeNestId = route.nestId ?? route.nest_id;
+                const routeEggIds = route.eggIds ?? route.egg_ids;
+                const routeNestIds = route.nestIds ?? route.nest_ids;
+
+                const hasGuards =
+                    routeEggId !== undefined ||
+                    routeNestId !== undefined ||
+                    Array.isArray(routeEggIds) ||
+                    Array.isArray(routeNestIds);
+
+                if (!hasGuards) return true;
+                if (routeEggId !== undefined && routeEggId === serverEggId) return true;
+                if (routeNestId !== undefined && routeNestId === serverNestId) return true;
+                if (Array.isArray(routeEggIds) && serverEggId !== undefined && routeEggIds.includes(serverEggId)) {
+                    return true;
+                }
+
+                if (Array.isArray(routeNestIds) && serverNestId !== undefined && routeNestIds.includes(serverNestId)) {
+                    return true;
+                }
+
+                return false;
+            })
+            .filter((route) => typeof route?.path === 'string' && route.path.trim().length > 0)
+            .map((route, index) => ({
+                id: `${extension.id}-server-${index}`,
+                label:
+                    typeof route?.label === 'string' && route.label.trim().length > 0
+                        ? route.label
+                        : `${extension.name} Route`,
+                permission: route?.permission,
+                path: route.path,
+                icon: resolveExtensionIcon(
+                    typeof route?.icon === 'string' && route.icon.trim().length > 0 ? route.icon : undefined
+                ),
+            }))
     );
 
     return (
@@ -100,6 +150,37 @@ const ServerNavigation = () => {
                         ))}
                 </div>
             ))}
+
+            {serverExtensionRoutes.length > 0 && (
+                <div>
+                    <span className='label'>EXTENSIONS</span>
+                    {serverExtensionRoutes.map((route) => {
+                        const normalizedPath = route.path.replace(/^\/+/, '');
+                        const to = route.path.startsWith('/server/')
+                            ? route.path
+                            : `/server/${params.id ?? ''}/${normalizedPath}`.replace(/\/+/g, '/');
+
+                        const item = (
+                            <Navigate id={`ext:${route.id}`} to={to}>
+                                <span className='flex items-center'>
+                                    {route.icon.component ? <route.icon.component className='w-4 h-4 mr-2' /> : null}
+                                    {route.label}
+                                </span>
+                            </Navigate>
+                        );
+
+                        if (route.permission) {
+                            return (
+                                <Can key={route.id} action={route.permission} matchAny>
+                                    {item}
+                                </Can>
+                            );
+                        }
+
+                        return <Fragment key={route.id}>{item}</Fragment>;
+                    })}
+                </div>
+            )}
 
             {normalizedSidebarButtons.length > 0 && (
                 <div>
@@ -170,6 +251,11 @@ export default function ServerRouter() {
         (route.eggId && route.eggId === serverEggId) ||
         (!route.eggIds && !route.nestIds && !route.nestId && !route.eggId);
 
+    const injectedRoutes = useExtensionRoutes('serverRouter', {
+        eggId: serverEggId,
+        nestId: serverNestId,
+    });
+
     return (
         <Fragment>
             {isUnderMaintenance && !rootAdmin ? (
@@ -231,6 +317,13 @@ export default function ServerRouter() {
                                     ) : (
                                         <ErrorBoundary>
                                             <TopServerDetails />
+                                            <ExtensionSlot
+                                                name='server:router:above'
+                                                context={{
+                                                    eggId: serverEggId,
+                                                    nestId: serverNestId,
+                                                }}
+                                            />
                                             <Announcement />
                                             <MaintenanceAlert />
 
@@ -251,8 +344,28 @@ export default function ServerRouter() {
                                                         />
                                                     ))}
 
+                                                {injectedRoutes.map(({ path, element, permission }) => (
+                                                    <Route
+                                                        key={`extension:${path}`}
+                                                        path={path}
+                                                        element={
+                                                            <PermissionRoute permission={permission}>
+                                                                {element}
+                                                            </PermissionRoute>
+                                                        }
+                                                    />
+                                                ))}
+
                                                 <Route path='*' element={<NotFound />} />
                                             </Routes>
+
+                                            <ExtensionSlot
+                                                name='server:router:below'
+                                                context={{
+                                                    eggId: serverEggId,
+                                                    nestId: serverNestId,
+                                                }}
+                                            />
                                         </ErrorBoundary>
                                     )}
                                 </div>

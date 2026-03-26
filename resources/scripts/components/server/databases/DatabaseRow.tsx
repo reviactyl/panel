@@ -18,6 +18,7 @@ import Label from '@/components/elements/Label';
 import Input from '@/components/elements/Input';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import CopyOnClick from '@/components/elements/CopyOnClick';
+import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 
 interface Props {
     database: ServerDatabase;
@@ -133,12 +134,14 @@ export default ({ database, className }: Props) => {
                     </CopyOnClick>
                 </div>
                 <div css={tw`mt-6 text-right`}>
+                    <ExtensionSlot name={`server:databases:menu:start`} />
                     <Can action={'database.update'}>
                         <RotatePasswordButton databaseId={database.id} onUpdate={appendDatabase} />
                     </Can>
                     <Button isSecondary onClick={() => setConnectionVisible(false)}>
                         Close
                     </Button>
+                    <ExtensionSlot name={`server:databases:menu:end`} />
                 </div>
             </Modal>
             <GreyRowBox $hoverable={false} className={className} css={tw`mb-2`}>

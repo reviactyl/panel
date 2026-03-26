@@ -15,6 +15,7 @@ import { restoreServerBackup } from '@/api/server/backups';
 import http, { httpErrorToHuman } from '@/api/http';
 import { Dialog } from '@/components/elements/dialog';
 import { useTranslation } from 'react-i18next';
+import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 
 interface Props {
     backup: ServerBackup;
@@ -176,6 +177,7 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
                     )}
                 >
                     <div css={tw`text-sm`}>
+                        <ExtensionSlot name={`server:backups:menu:start`} />
                         <Can action={'backup.download'}>
                             <DropdownButtonRow onClick={doDownload}>
                                 <FaCloudArrowDown className={'text-xs inline-block w-[1.25em]'} />
@@ -207,6 +209,7 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
                             </>
                         </Can>
                     </div>
+                    <ExtensionSlot name={`server:backups:menu:end`} />
                 </DropdownMenu>
             ) : (
                 <button

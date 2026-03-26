@@ -23,6 +23,10 @@ import Maintenance from '@/reviactyl/ui/Maintenance';
 import { useTranslation } from 'react-i18next';
 import { FaHouse } from 'react-icons/fa6';
 import { ReviactylSidebarButton } from '@/state/reviactyl';
+import { ExtensionSlot } from '@/extensions/ExtensionSlot';
+import { useExtensionRoutes } from '@/extensions/useExtensionRoutes';
+import { useExtensions } from '@/extensions/useExtensions';
+import { resolveExtensionIcon } from '@/extensions/iconResolver';
 
 interface Props {
     route: any;
@@ -46,6 +50,21 @@ const NavItem = ({ route }: Props) => {
 const DashboardNavigation = () => {
     const { t } = useTranslation('routes');
     const customSidebarButtons = useStoreState((state) => state.reviactyl.data?.sidebarButtons ?? []);
+    const { data: extensionData } = useExtensions();
+
+    const dashboardExtensionRoutes = (Array.isArray(extensionData) ? extensionData : []).flatMap((extension) =>
+        (extension.frontend?.routes?.dashboardRouter ?? [])
+            .filter((route) => typeof route?.path === 'string' && route.path.trim().length > 0)
+            .map((route, index) => ({
+                id: `${extension.id}-dashboard-${index}`,
+                label:
+                    typeof route?.label === 'string' && route.label.trim().length > 0
+                        ? route.label
+                        : `${extension.name} Route`,
+                path: route.path,
+                icon: resolveExtensionIcon(typeof route?.icon === 'string' ? route.icon : undefined),
+            }))
+    );
     const normalizedSidebarButtons = (Array.isArray(customSidebarButtons) ? customSidebarButtons : []).filter(
         (button): button is ReviactylSidebarButton =>
             typeof button?.label === 'string' &&
@@ -90,6 +109,24 @@ const DashboardNavigation = () => {
                     ))}
                 </div>
             )}
+
+            {dashboardExtensionRoutes.length > 0 && (
+                <div className='mt-2'>
+                    <span className='label'>EXTENSIONS</span>
+                    {dashboardExtensionRoutes.map((route) => (
+                        <Navigate
+                            key={route.id}
+                            id={`ext:${route.id}`}
+                            to={route.path.startsWith('/') ? route.path : `/${route.path.replace(/^\/+/, '')}`}
+                        >
+                            <span className='flex items-center'>
+                                {route.icon.component ? <route.icon.component className='w-4 h-4 mr-2' /> : null}
+                                {route.label}
+                            </span>
+                        </Navigate>
+                    ))}
+                </div>
+            )}
         </>
     );
 };
@@ -100,6 +137,8 @@ function DashboardRouter() {
     const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
     const isUnderMaintenance = useStoreState((state) => state.reviactyl.data?.isUnderMaintenance);
     const rootAdmin = useStoreState((state) => state.user.data?.rootAdmin);
+    const injectedRoutes = useExtensionRoutes('dashboardRouter');
+
     return (
         <>
             {isUnderMaintenance && !rootAdmin ? (
@@ -147,10 +186,12 @@ function DashboardRouter() {
                                         path: '',
                                         element: (
                                             <>
+                                                <ExtensionSlot name='dashboard:router:above' />
                                                 <Announcement />
                                                 <MaintenanceAlert />
                                                 <QuickLinks />
                                                 <DashboardContainer />
+                                                <ExtensionSlot name='dashboard:router:below' />
                                             </>
                                         ),
                                     },
@@ -158,6 +199,7 @@ function DashboardRouter() {
                                         path: `/account/${route}`.replace('//', '/'),
                                         element: <Component />,
                                     })),
+                                    ...injectedRoutes,
                                     { path: '*', element: <NotFound /> },
                                 ])}
                             </Suspense>

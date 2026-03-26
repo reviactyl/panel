@@ -52,6 +52,7 @@
     },
     "include": [
       "./resources/scripts/**/*", 
+      "./extensions/**/*",
       "vite.config.ts"
     ],
     "exclude": [

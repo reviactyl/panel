@@ -32,6 +32,7 @@ import { join } from 'pathe';
 import { bytesToString } from '@/lib/formatters';
 import Tooltip from '@/components/elements/tooltip/Tooltip';
 import { PlusSmIcon } from '@heroicons/react/solid';
+import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 
 const sortFiles = (files: FileObject[]): FileObject[] => {
     const sortedFiles: FileObject[] = files
@@ -204,6 +205,7 @@ export default () => {
                             <FileManagerBreadcrumbs renderLeft={<></>} />
                         </div>
                         <div className='order-2 md:order-none md:ml-auto flex items-center gap-1 w-full md:w-auto'>
+                            <ExtensionSlot name={`server:files:global-actions:start`} />
                             <div
                                 role='search'
                                 className={`relative flex items-center min-w-0 transition-all duration-200 ease-in-out ${
@@ -263,9 +265,11 @@ export default () => {
                                 )}
                             </div>
                         </div>
+                        <ExtensionSlot name={`server:files:global-actions:end`} />
                         <Can action={'file.create'}>
                             <>
                                 <div className={style.manager_actions_mobile}>
+                                    <ExtensionSlot name={`server:files:mobile-actions:start`} />
                                     <FileManagerStatus />
                                     <UrlDownloadButton />
                                     <NewDirectoryButton />
@@ -273,8 +277,10 @@ export default () => {
                                     <NavLink to={`/server/${id}/files/new${window.location.hash}`}>
                                         <Button>{t('new-file')}</Button>
                                     </NavLink>
+                                    <ExtensionSlot name={`server:files:mobile-actions:end`} />
                                 </div>
                                 <div className={style.manager_actions_compact}>
+                                    <ExtensionSlot name={`server:files:compact-actions:start`} />
                                     <FileManagerStatus className={style.icon_action} />
                                     <UrlDownloadButton compact className={style.icon_action} />
                                     <NewDirectoryButton compact className={style.icon_action} />
@@ -288,6 +294,7 @@ export default () => {
                                             <PlusSmIcon className='h-5 w-5' />
                                         </NavLink>
                                     </Tooltip>
+                                    <ExtensionSlot name={`server:files:compact-actions:end`} />
                                 </div>
                             </>
                         </Can>

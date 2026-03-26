@@ -13,6 +13,7 @@ import Pagination from '@/components/elements/Pagination';
 import Card from '@/reviactyl/ui/Card';
 import { ArchiveIcon } from '@heroicons/react/solid';
 import { useTranslation } from 'react-i18next';
+import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 
 const BackupContainer = () => {
     const { t } = useTranslation('server/backups');
@@ -39,6 +40,7 @@ const BackupContainer = () => {
     return (
         <ServerContentBlock title={t('title')}>
             <FlashMessageRender byKey={'backups'} css={tw`mb-4`} />
+            <ExtensionSlot name='server:backups:above' />
             <Pagination data={backups} onPageSelect={setPage}>
                 {({ items }) =>
                     !items.length ? (
@@ -76,6 +78,7 @@ const BackupContainer = () => {
                     )}
                 </div>
             </Can>
+            <ExtensionSlot name='server:backups:below' />
         </ServerContentBlock>
     );
 };

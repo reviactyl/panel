@@ -24,6 +24,7 @@ import ServerRow from '@/components/dashboard/ServerRow';
 import Select from '../elements/Select';
 import { Button } from '../elements/button';
 import { FaUserGear } from 'react-icons/fa6';
+import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 
 export default () => {
     const { t } = useTranslation('dashboard/index');
@@ -135,6 +136,7 @@ export default () => {
 
     return (
         <PageContentBlock className='pr-2' title={t('title')} showFlashKey={'dashboard'}>
+            <ExtensionSlot name='dashboard:above' />
             <CategoryManagerModal
                 visible={isModalVisible}
                 onDismissed={() => setModalVisible(false)}
@@ -316,6 +318,7 @@ export default () => {
                     </Pagination>
                 </div>
             )}
+            <ExtensionSlot name='dashboard:below' />
         </PageContentBlock>
     );
 };

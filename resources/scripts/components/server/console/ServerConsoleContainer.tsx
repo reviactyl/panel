@@ -8,6 +8,7 @@ import ConsoleBlock from '@/components/server/console/ConsoleBlock';
 import ServerDetailsBlock from '@/components/server/console/ServerDetailsBlock';
 import { Alert } from '@/components/elements/alert';
 import { useTranslation } from 'react-i18next';
+import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 
 export type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
 
@@ -29,6 +30,7 @@ const ServerConsoleContainer = () => {
                         : t('server-transferring')}
                 </Alert>
             )}
+            <ExtensionSlot name='server:console:above' />
             <div>
                 <Spinner.Suspense>
                     <ConsoleBlock />
@@ -39,6 +41,7 @@ const ServerConsoleContainer = () => {
                     <ServerDetailsBlock />
                 </Spinner.Suspense>
             </div>
+            <ExtensionSlot name='server:console:below' />
             <Features enabled={eggFeatures} />
         </ServerContentBlock>
     );

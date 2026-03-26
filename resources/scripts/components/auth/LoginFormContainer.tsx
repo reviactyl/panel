@@ -9,6 +9,7 @@ import tw from 'twin.macro';
 import { ApplicationStore } from '@/state';
 import { useStoreState } from 'easy-peasy';
 import Footer from '@/reviactyl/ui/Footer';
+import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 
 type Props = React.DetailedHTMLProps<React.FormHTMLAttributes<HTMLFormElement>, HTMLFormElement> & {
     title?: string;
@@ -27,9 +28,11 @@ export default forwardRef<HTMLFormElement, Props>(({ title, ...props }, ref) => 
     const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
     return (
         <Container>
+            <ExtensionSlot name={'auth:form:above'} />
             <Form {...props} ref={ref}>
                 <CardContainer>
                     <FlashMessageRender css={tw`mb-2`} />
+                    <ExtensionSlot name={'auth:card:before'} />
                     <LogoContainer>
                         <img src={logo} alt={name} css={tw`h-[3rem]`} />
                     </LogoContainer>
@@ -37,8 +40,10 @@ export default forwardRef<HTMLFormElement, Props>(({ title, ...props }, ref) => 
                         {title && <Title className='text-3xl text-center pb-3'>{title}</Title>}
                         {props.children}
                     </Card>
+                    <ExtensionSlot name={'auth:form:after'} />
                 </CardContainer>
             </Form>
+            <ExtensionSlot name={'auth:form:below'} />
             <Footer />
         </Container>
     );

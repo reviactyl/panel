@@ -27,6 +27,7 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import FileEditorSwitcher from '@/reviactyl/ui/FileEditorSwitcher';
 
 import SocialLoginsContainer from '@/components/dashboard/forms/SocialLoginsContainer';
+import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 
 const Container = styled.div`
     ${tw`flex flex-wrap`};
@@ -88,6 +89,7 @@ export default () => {
     return (
         <ContentBlock title={t('overview.account-overview')}>
             <FlashMessageRender css={tw`mb-4`} />
+            <ExtensionSlot name='account:overview:above' />
             {state?.twoFactorRedirect && (
                 <MessageBox title={t('overview.2fa-required')} type={'error'}>
                     {t('overview.2fa-alert')}
@@ -96,6 +98,7 @@ export default () => {
 
             <Container css={[tw`grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4`]}>
                 <div className={'flex flex-col gap-4'}>
+                    <ExtensionSlot name='account:overview:column1:start' />
                     <Card className='overflow-hidden'>
                         <SpinnerOverlay visible={isLoggingOut} />
                         <div className='flex flex-col items-center py-8'>
@@ -122,6 +125,7 @@ export default () => {
                             </div>
                         </div>
                     </Card>
+                    <ExtensionSlot name='account:overview:column1:middle' />
                     <TitledGreyBox title={t('overview.update-email')} showFlashes={'account:email'}>
                         <UpdateEmailAddressForm />
                     </TitledGreyBox>
@@ -132,12 +136,15 @@ export default () => {
                     ) : (
                         ''
                     )}
+                    <ExtensionSlot name='account:overview:column1:end' />
                 </div>
                 <div className={'flex flex-col gap-4'}>
+                    <ExtensionSlot name='account:overview:column2:start' />
                     <SocialLoginsContainer />
                     <TitledGreyBox title={t('overview.update-password')} showFlashes={'account:password'}>
                         <UpdatePasswordForm />
                     </TitledGreyBox>
+                    <ExtensionSlot name='account:overview:column2:middle' />
                     <TitledGreyBox title={t('overview.customization')}>
                         <LanguageSwitcher />
                         <InvertToggle />
@@ -146,8 +153,10 @@ export default () => {
                     <TitledGreyBox title={t('overview.2fa-verification')}>
                         <ConfigureTwoFactorForm />
                     </TitledGreyBox>
+                    <ExtensionSlot name='account:overview:column2:end' />
                 </div>
             </Container>
+            <ExtensionSlot name='account:overview:below' />
         </ContentBlock>
     );
 };

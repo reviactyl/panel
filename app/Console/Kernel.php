@@ -4,6 +4,7 @@ namespace App\Console;
 
 use Ramsey\Uuid\Uuid;
 use App\Models\ActivityLog;
+use App\Services\Extensions\ExtensionManager;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Database\Console\PruneCommand;
 use App\Repositories\Eloquent\SettingsRepository;
@@ -49,6 +50,8 @@ class Kernel extends ConsoleKernel
         if (config('panel.telemetry.enabled')) {
             $this->registerTelemetry($schedule);
         }
+
+        app(ExtensionManager::class)->applySchedules($schedule);
     }
 
     /**
