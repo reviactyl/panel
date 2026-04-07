@@ -53,6 +53,14 @@ jobs:
           - 3306
     steps:
       - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: bcmath, cli, curl, gd, mbstring, mysql, openssl, pdo, tokenizer, xml, zip, intl
+          tools: composer:v2
+          coverage: none
+
       - id: composer-cache
         run: |
           echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
@@ -62,22 +70,16 @@ jobs:
           key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-composer-${{ matrix.php }}-
-      - uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php }}
-          extensions: bcmath, cli, curl, gd, mbstring, mysql, openssl, pdo, tokenizer, xml, zip, intl
-          tools: composer:v2
-          coverage: none
 
       - run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
       - run: vendor/bin/pint -v
 
       - name: Unit tests
-        run: vendor/bin/pest tests/Unit
+        run: vendor/bin/pest tests/Unit --parallel
         env:
           DB_HOST: UNIT_NO_DB
 
       - name: Integration tests
-        run: vendor/bin/pest tests/Integration
+        run: vendor/bin/pest tests/Integration --parallel
         env:
           DB_PORT: ${{ job.services.database.ports[3306] }}
