@@ -29,7 +29,6 @@ class AdminServerFilter implements Filter
                     ->orWhereRaw('LOWER(users.username) LIKE ?', ["%$value%"])
                     ->orWhereRaw('LOWER(users.email) LIKE ?', ["$value%"])
                     ->orWhereRaw('LOWER(servers.name) LIKE ?', ["%$value%"]);
-            })
-            ->groupBy('servers.id');
+            });
     }
 }

@@ -4,6 +4,7 @@ namespace App\Services\Deployment;
 
 use App\Exceptions\Service\Deployment\NoViableNodeException;
 use App\Models\Node;
+use App\Models\Server;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Webmozart\Assert\Assert;
@@ -73,19 +74,26 @@ class FindViableNodesService
         Assert::integer($this->disk, 'Disk space must be an int, got %s');
         Assert::integer($this->memory, 'Memory usage must be an int, got %s');
 
-        $query = Node::query()->select('nodes.*')
-            ->selectRaw('IFNULL(SUM(servers.memory), 0) as sum_memory')
-            ->selectRaw('IFNULL(SUM(servers.disk), 0) as sum_disk')
-            ->leftJoin('servers', 'servers.node_id', '=', 'nodes.id')
+        $query = Node::query()
+            ->select('nodes.*')
+            ->selectRaw('IFNULL(server_usage.sum_memory, 0) as sum_memory')
+            ->selectRaw('IFNULL(server_usage.sum_disk, 0) as sum_disk')
+            ->leftJoinSub(
+                Server::query()
+                    ->selectRaw('servers.node_id, IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
+                    ->groupBy('servers.node_id'),
+                'server_usage',
+                fn ($join) => $join->on('server_usage.node_id', '=', 'nodes.id')
+            )
             ->where('nodes.public', 1);
 
         if (! empty($this->locations)) {
             $query = $query->whereIn('nodes.location_id', $this->locations);
         }
 
-        $results = $query->groupBy('nodes.id')
-            ->havingRaw('(IFNULL(SUM(servers.memory), 0) + ?) <= (nodes.memory * (1 + (nodes.memory_overallocate / 100.0)))', [$this->memory])
-            ->havingRaw('(IFNULL(SUM(servers.disk), 0) + ?) <= (nodes.disk * (1 + (nodes.disk_overallocate / 100.0)))', [$this->disk]);
+        $results = $query
+            ->whereRaw('(IFNULL(server_usage.sum_memory, 0) + ?) <= (nodes.memory * (1 + (nodes.memory_overallocate / 100.0)))', [$this->memory])
+            ->whereRaw('(IFNULL(server_usage.sum_disk, 0) + ?) <= (nodes.disk * (1 + (nodes.disk_overallocate / 100.0)))', [$this->disk]);
 
         if (! is_null($page)) {
             $results = $results->paginate($perPage ?? 50, ['*'], 'page', $page);

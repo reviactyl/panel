@@ -29,30 +29,27 @@ class MultiFieldServerFilter implements Filter
 
         if (preg_match(self::IPV4_REGEX, $value) || preg_match('/^:\d{1,5}$/', $value)) {
             $query
-                // Only select the server values, otherwise you'll end up merging the allocation and
-                // server objects together, resulting in incorrect behavior and returned values.
-                ->select('servers.*')
-                ->join('allocations', 'allocations.server_id', '=', 'servers.id')
-                ->where(function (Builder $builder) use ($value) {
+                ->whereHas('allocations', function (Builder $builder) use ($value) {
                     $parts = explode(':', $value);
 
-                    $builder->when(
-                        ! Str::startsWith($value, ':'),
-                        // When the string does not start with a ":" it means we're looking for an IP or IP:Port
-                        // combo, so use a query to handle that.
-                        function (Builder $builder) use ($parts) {
-                            $builder->orWhere('allocations.ip', $parts[0]);
-                            if (! is_null($parts[1] ?? null)) {
-                                $builder->where('allocations.port', 'LIKE', "{$parts[1]}%");
+                    $builder->where(function (Builder $builder) use ($value, $parts) {
+                        $builder->when(
+                            ! Str::startsWith($value, ':'),
+                            // When the string does not start with a ":" it means we're looking for an IP or IP:Port
+                            // combo, so use a query to handle that.
+                            function (Builder $builder) use ($parts) {
+                                $builder->orWhere('ip', $parts[0]);
+                                if (! is_null($parts[1] ?? null)) {
+                                    $builder->where('port', 'LIKE', "{$parts[1]}%");
+                                }
+                            },
+                            // Otherwise, just try to search for that specific port in the allocations.
+                            function (Builder $builder) use ($value) {
+                                $builder->orWhere('port', 'LIKE', substr($value, 1).'%');
                             }
-                        },
-                        // Otherwise, just try to search for that specific port in the allocations.
-                        function (Builder $builder) use ($value) {
-                            $builder->orWhere('allocations.port', 'LIKE', substr($value, 1).'%');
-                        }
-                    );
-                })
-                ->groupBy('servers.id');
+                        );
+                    });
+                });
 
             return;
         }

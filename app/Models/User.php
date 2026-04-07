@@ -311,12 +311,15 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function accessibleServers(): Builder
     {
         return Server::query()
-            ->select('servers.*')
-            ->leftJoin('subusers', 'subusers.server_id', '=', 'servers.id')
             ->where(function (Builder $builder) {
-                $builder->where('servers.owner_id', $this->id)->orWhere('subusers.user_id', $this->id);
-            })
-            ->groupBy('servers.id');
+                $builder->where('servers.owner_id', $this->id)
+                    ->orWhereExists(function ($subquery) {
+                        $subquery->selectRaw('1')
+                            ->from('subusers')
+                            ->whereColumn('subusers.server_id', 'servers.id')
+                            ->where('subusers.user_id', $this->id);
+                    });
+            });
     }
 
     public function getGravatarUrlAttribute(): string

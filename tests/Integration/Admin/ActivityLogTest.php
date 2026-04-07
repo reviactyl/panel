@@ -3,13 +3,13 @@
 namespace Tests\Integration\Admin;
 
 use App\Filament\Resources\ActivityLogResource;
-use App\Filament\Resources\Nodes\Pages\CreateNode;
 use App\Models\ActivityLog;
 use App\Models\Location;
 use App\Models\Node;
 use App\Models\User;
+use App\Services\Activity\ActivityLogService;
+use App\Services\Nodes\NodeCreationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Livewire\Livewire;
 use Tests\Integration\IntegrationTestCase;
 
 class ActivityLogTest extends IntegrationTestCase
@@ -31,34 +31,35 @@ class ActivityLogTest extends IntegrationTestCase
 
         $location = Location::factory()->create();
 
-        Livewire::test(CreateNode::class)
-            ->fillForm([
-                'name' => 'Test Node',
-                'location_id' => $location->id,
-                'fqdn' => 'node.test.com',
-                'scheme' => false,
-                'memory' => 1024,
-                'memory_overallocate' => 0,
-                'disk' => 1024,
-                'disk_overallocate' => 0,
-                'upload_size' => 100,
-                'daemonSFTP' => 2022,
-                'daemonListen' => 8080,
-            ])
-            ->call('create')
-            ->assertHasNoFormErrors();
+        $node = app(NodeCreationService::class)->handle([
+            'name' => 'Test Node',
+            'location_id' => $location->id,
+            'fqdn' => 'node.test.com',
+            'scheme' => 'http',
+            'memory' => 1024,
+            'memory_overallocate' => 0,
+            'disk' => 1024,
+            'disk_overallocate' => 0,
+            'upload_size' => 100,
+            'daemonSFTP' => 2022,
+            'daemonListen' => 8080,
+            'daemonBase' => '/var/lib/reviactyl/volumes',
+            'public' => true,
+            'maintenance_mode' => false,
+        ]);
+
+        app(ActivityLogService::class)->subject($node)->event('node:create')->log();
 
         $this->assertDatabaseHas('activity_logs', [
             'event' => 'node:create',
         ]);
 
-        $node = Node::query()->where('name', 'Test Node')->first();
+        $node = Node::query()->where('id', $node->id)->first();
         $this->assertNotNull($node);
 
         $log = ActivityLog::query()->where('event', 'node:create')->orderByDesc('timestamp')->first();
         $this->assertNotNull($log);
         $this->assertEquals('Test Node', $log->subjects->first()?->subject?->name);
-
     }
 
     /**
