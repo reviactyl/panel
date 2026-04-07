@@ -53,9 +53,15 @@ class ResourceHistoryController extends ClientApiController
         }
 
         // For longer periods, aggregate data
+        $connection = DB::connection();
+        $driver = $connection->getDriverName();
+        $bucketSeconds = $intervalHours * 3600;
+        $bucketExpression = $driver === 'pgsql'
+            ? "FLOOR(EXTRACT(EPOCH FROM created_at) / {$bucketSeconds})"
+            : "FLOOR(UNIX_TIMESTAMP(created_at) / {$bucketSeconds})";
+
         $stats = ServerStatsHistory::query()
             ->select([
-                DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d %H:00:00') as time_bucket"),
                 DB::raw('AVG(cpu_usage) as avg_cpu'),
                 DB::raw('AVG(memory_bytes) as avg_memory'),
                 DB::raw('AVG(disk_bytes) as avg_disk'),
@@ -65,7 +71,7 @@ class ResourceHistoryController extends ClientApiController
             ])
             ->where('server_id', $server->id)
             ->where('created_at', '>=', $startDate)
-            ->groupBy(DB::raw('FLOOR(UNIX_TIMESTAMP(created_at) / ('.($intervalHours * 3600).'))'))
+            ->groupBy(DB::raw($bucketExpression))
             ->orderBy('bucket_time', 'asc')
             ->get();
 

@@ -300,7 +300,7 @@ class Egg extends Model implements Identifiable
      */
     public function variables(): HasMany
     {
-        return $this->hasMany(EggVariable::class, 'egg_id');
+        return $this->hasMany(EggVariable::class, 'egg_id')->orderBy('id');
     }
 
     /**

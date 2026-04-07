@@ -23,6 +23,8 @@ class MultiFieldServerFilter implements Filter
      */
     public function __invoke(Builder $query, $value, string $property)
     {
+        $value = mb_strtolower((string) $value);
+
         if ($query->getQuery()->from !== 'servers') {
             throw new \BadMethodCallException('Cannot use the MultiFieldServerFilter against a non-server model.');
         }

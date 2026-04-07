@@ -249,6 +249,22 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
+     * Normalize the language value to be lowercase with no padded whitespace.
+     */
+    public function setLanguageAttribute(string $value): void
+    {
+        $this->attributes['language'] = trim(mb_strtolower($value));
+    }
+
+    /**
+     * Return the language value with any padded whitespace removed.
+     */
+    public function getLanguageAttribute(?string $value): ?string
+    {
+        return is_null($value) ? null : trim($value);
+    }
+
+    /**
      * Return a concatenated result for the accounts full name.
      */
     public function getNameAttribute(): string

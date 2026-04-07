@@ -317,7 +317,8 @@ class Server extends Model implements Identifiable
                 // @see https://github.com/pterodactyl/panel/issues/2250
                 $join->on('server_variables.variable_id', 'egg_variables.id')
                     ->where('server_variables.server_id', $this->id);
-            });
+            })
+            ->orderBy('egg_variables.id');
     }
 
     /**

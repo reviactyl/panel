@@ -76,11 +76,11 @@ class FindViableNodesService
 
         $query = Node::query()
             ->select('nodes.*')
-            ->selectRaw('IFNULL(server_usage.sum_memory, 0) as sum_memory')
-            ->selectRaw('IFNULL(server_usage.sum_disk, 0) as sum_disk')
+            ->selectRaw('COALESCE(server_usage.sum_memory, 0) as sum_memory')
+            ->selectRaw('COALESCE(server_usage.sum_disk, 0) as sum_disk')
             ->leftJoinSub(
                 Server::query()
-                    ->selectRaw('servers.node_id, IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
+                    ->selectRaw('servers.node_id, COALESCE(SUM(servers.memory), 0) as sum_memory, COALESCE(SUM(servers.disk), 0) as sum_disk')
                     ->groupBy('servers.node_id'),
                 'server_usage',
                 fn ($join) => $join->on('server_usage.node_id', '=', 'nodes.id')
@@ -92,8 +92,8 @@ class FindViableNodesService
         }
 
         $results = $query
-            ->whereRaw('(IFNULL(server_usage.sum_memory, 0) + ?) <= (nodes.memory * (1 + (nodes.memory_overallocate / 100.0)))', [$this->memory])
-            ->whereRaw('(IFNULL(server_usage.sum_disk, 0) + ?) <= (nodes.disk * (1 + (nodes.disk_overallocate / 100.0)))', [$this->disk]);
+            ->whereRaw('(COALESCE(server_usage.sum_memory, 0) + ?) <= (nodes.memory * (1 + (nodes.memory_overallocate / 100.0)))', [$this->memory])
+            ->whereRaw('(COALESCE(server_usage.sum_disk, 0) + ?) <= (nodes.disk * (1 + (nodes.disk_overallocate / 100.0)))', [$this->disk]);
 
         if (! is_null($page)) {
             $results = $results->paginate($perPage ?? 50, ['*'], 'page', $page);
