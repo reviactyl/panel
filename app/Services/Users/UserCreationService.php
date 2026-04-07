@@ -36,22 +36,23 @@ class UserCreationService
             $data['password'] = $this->hasher->make($data['password']);
         }
 
-        $this->connection->beginTransaction();
-        if (! isset($data['password']) || empty($data['password'])) {
-            $generateResetToken = true;
-            $data['password'] = $this->hasher->make(Str::random(30));
-        }
+        ['user' => $user, 'token' => $token] = $this->connection->transaction(function () use ($data) {
+            $generateResetToken = false;
+            if (! isset($data['password']) || empty($data['password'])) {
+                $generateResetToken = true;
+                $data['password'] = $this->hasher->make(Str::random(30));
+            }
 
-        /** @var User $user */
-        $user = $this->repository->create(array_merge($data, [
-            'uuid' => Uuid::uuid4()->toString(),
-        ]), true, true);
+            /** @var User $user */
+            $user = $this->repository->create(array_merge($data, [
+                'uuid' => Uuid::uuid4()->toString(),
+            ]), true, true);
 
-        if (isset($generateResetToken)) {
-            $token = $this->passwordBroker->createToken($user);
-        }
-
-        $this->connection->commit();
+            return [
+                'user' => $user,
+                'token' => $generateResetToken ? $this->passwordBroker->createToken($user) : null,
+            ];
+        });
 
         try {
             $user->notify(new AccountCreated($user, $token ?? null));

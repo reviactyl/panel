@@ -61,52 +61,51 @@ class AssignmentService
             throw new DisplayException("Could not parse provided allocation IP address ({$underlying}): {$exception->getMessage()}", $exception);
         }
 
-        $this->connection->beginTransaction();
-        foreach ($parsed as $ip) {
-            foreach ($data['allocation_ports'] as $port) {
-                if (! is_digit($port) && ! preg_match(self::PORT_RANGE_REGEX, $port)) {
-                    throw new InvalidPortMappingException($port);
-                }
-
-                $insertData = [];
-                if (preg_match(self::PORT_RANGE_REGEX, $port, $matches)) {
-                    $block = range($matches[1], $matches[2]);
-
-                    if (count($block) > self::PORT_RANGE_LIMIT) {
-                        throw new TooManyPortsInRangeException();
+        $this->connection->transaction(function () use ($parsed, $data, $node) {
+            foreach ($parsed as $ip) {
+                foreach ($data['allocation_ports'] as $port) {
+                    if (! is_digit($port) && ! preg_match(self::PORT_RANGE_REGEX, $port)) {
+                        throw new InvalidPortMappingException($port);
                     }
 
-                    if ((int) $matches[1] <= self::PORT_FLOOR || (int) $matches[2] > self::PORT_CEIL) {
-                        throw new PortOutOfRangeException();
-                    }
+                    $insertData = [];
+                    if (preg_match(self::PORT_RANGE_REGEX, $port, $matches)) {
+                        $block = range($matches[1], $matches[2]);
 
-                    foreach ($block as $unit) {
+                        if (count($block) > self::PORT_RANGE_LIMIT) {
+                            throw new TooManyPortsInRangeException();
+                        }
+
+                        if ((int) $matches[1] <= self::PORT_FLOOR || (int) $matches[2] > self::PORT_CEIL) {
+                            throw new PortOutOfRangeException();
+                        }
+
+                        foreach ($block as $unit) {
+                            $insertData[] = [
+                                'node_id' => $node->id,
+                                'ip' => $ip->__toString(),
+                                'port' => (int) $unit,
+                                'ip_alias' => array_get($data, 'allocation_alias'),
+                                'server_id' => null,
+                            ];
+                        }
+                    } else {
+                        if ((int) $port <= self::PORT_FLOOR || (int) $port > self::PORT_CEIL) {
+                            throw new PortOutOfRangeException();
+                        }
+
                         $insertData[] = [
                             'node_id' => $node->id,
                             'ip' => $ip->__toString(),
-                            'port' => (int) $unit,
+                            'port' => (int) $port,
                             'ip_alias' => array_get($data, 'allocation_alias'),
                             'server_id' => null,
                         ];
                     }
-                } else {
-                    if ((int) $port <= self::PORT_FLOOR || (int) $port > self::PORT_CEIL) {
-                        throw new PortOutOfRangeException();
-                    }
 
-                    $insertData[] = [
-                        'node_id' => $node->id,
-                        'ip' => $ip->__toString(),
-                        'port' => (int) $port,
-                        'ip_alias' => array_get($data, 'allocation_alias'),
-                        'server_id' => null,
-                    ];
+                    $this->repository->insertIgnore($insertData);
                 }
-
-                $this->repository->insertIgnore($insertData);
             }
-        }
-
-        $this->connection->commit();
+        });
     }
 }
