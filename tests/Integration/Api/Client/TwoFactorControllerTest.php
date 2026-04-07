@@ -101,7 +101,10 @@ class TwoFactorControllerTest extends ClientApiIntegrationTestCase
 
         $tokens = RecoveryToken::query()->where('user_id', $user->id)->get();
         $this->assertCount(10, $tokens);
-        $this->assertStringStartsWith('$2y$10$', $tokens[0]->token);
+        $this->assertStringStartsWith(
+            sprintf('$2y$%02d$', (int) config('hashing.bcrypt.rounds')),
+            $tokens[0]->token
+        );
         // Ensure the recovery tokens that were created include a "created_at" timestamp
         // value on them.
         //

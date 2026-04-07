@@ -9,6 +9,7 @@ use App\Repositories\Eloquent\RecoveryTokenRepository;
 use Carbon\Carbon;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Database\ConnectionInterface;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException;
 use PragmaRX\Google2FA\Exceptions\InvalidCharactersException;
@@ -63,7 +64,7 @@ class ToggleTwoFactorService
 
                     $inserts[] = [
                         'user_id' => $user->id,
-                        'token' => password_hash($token, PASSWORD_DEFAULT),
+                        'token' => Hash::make($token),
                         // insert() won't actually set the time on the models, so make sure we do this
                         // manually here.
                         'created_at' => Carbon::now(),
