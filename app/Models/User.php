@@ -265,6 +265,18 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
+     * Return the user's preferred locale, or the default locale if the user's preference is not set or is invalid.
+     */
+    public function validate(): void
+    {
+        if (array_key_exists('language', $this->attributes) && is_string($this->attributes['language'])) {
+            $this->attributes['language'] = trim(mb_strtolower($this->attributes['language']));
+        }
+
+        parent::validate();
+    }
+
+    /**
      * Return a concatenated result for the accounts full name.
      */
     public function getNameAttribute(): string
