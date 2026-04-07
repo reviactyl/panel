@@ -50,12 +50,10 @@ class AssignmentService
         }
 
         try {
-            // TODO: how should we approach supporting IPv6 with this?
-            // gethostbyname only supports IPv4, but the alternative (dns_get_record) returns
-            // an array of records, which is not ideal for this use case, we need a SINGLE
-            // IP to use, not multiple.
-            $underlying = gethostbyname($data['allocation_ip']);
+            $underlying = $this->resolveAllocationIp($data['allocation_ip']);
             $parsed = Network::parse($underlying);
+        } catch (DisplayException $exception) {
+            throw $exception;
         } catch (\Exception $exception) {
             // @phpstan-ignore-next-line variable.undefined
             throw new DisplayException("Could not parse provided allocation IP address ({$underlying}): {$exception->getMessage()}", $exception);
@@ -107,5 +105,37 @@ class AssignmentService
                 }
             }
         });
+    }
+
+    protected function resolveAllocationIp(string $allocationIp): string
+    {
+        $cidr = '';
+
+        if (str_contains($allocationIp, '/')) {
+            [$allocationIp, $cidr] = explode('/', $allocationIp, 2);
+            $cidr = '/' . $cidr;
+        }
+
+        if (filter_var($allocationIp, FILTER_VALIDATE_IP)) {
+            return $allocationIp . $cidr;
+        }
+
+        $records = @dns_get_record($allocationIp, DNS_A + DNS_AAAA);
+
+        foreach ($records ?: [] as $record) {
+            $resolved = $record['ip'] ?? $record['ipv6'] ?? null;
+
+            if ($resolved && filter_var($resolved, FILTER_VALIDATE_IP)) {
+                return $resolved . $cidr;
+            }
+        }
+
+        $resolved = gethostbyname($allocationIp);
+
+        if (filter_var($resolved, FILTER_VALIDATE_IP)) {
+            return $resolved . $cidr;
+        }
+
+        throw new DisplayException("Could not resolve provided allocation IP address ({$allocationIp}).");
     }
 }
