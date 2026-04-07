@@ -21,6 +21,53 @@ env:
   HASHIDS_SALT: test123
 
 jobs:
+  sqlite:
+    name: SQLite
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      DB_CONNECTION: sqlite
+      DB_DATABASE: database/testing.sqlite
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php:
+          - 8.2
+          - 8.3
+          - 8.4
+          - 8.5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: bcmath, cli, curl, gd, mbstring, openssl, pdo, tokenizer, xml, zip, intl
+          tools: composer:v2
+          coverage: none
+
+      - id: composer-cache
+        run: |
+          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+      - uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-${{ matrix.php }}-
+
+      - run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
+
+      - name: Unit tests
+        run: vendor/bin/pest tests/Unit --parallel
+        env:
+          DB_HOST: UNIT_NO_DB
+
+      - name: Integration tests
+        run: vendor/bin/pest tests/Integration --parallel
+
   mysql:
     name: MySQL
     runs-on: ubuntu-latest
