@@ -60,6 +60,12 @@ jobs:
 
       - run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
 
+      - name: Migration Test
+        run: php artisan migrate --force --seed
+
+      - name: Migration Rollback Test
+        run: php artisan migrate:rollback --force
+
       - name: Unit tests
         run: vendor/bin/pest tests/Unit --parallel
         env:
@@ -120,6 +126,16 @@ jobs:
 
       - run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
 
+      - name: Migration Test
+        run: php artisan migrate --force --seed
+        env:
+          DB_PORT: ${{ job.services.database.ports[3306] }}
+
+      - name: Migration Rollback Test
+        run: php artisan migrate:rollback --force
+        env:
+          DB_PORT: ${{ job.services.database.ports[3306] }}
+
       - name: Unit tests
         run: vendor/bin/pest tests/Unit --parallel
         env:
@@ -179,6 +195,16 @@ jobs:
             ${{ runner.os }}-composer-${{ matrix.php }}-
 
       - run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
+
+      - name: Migration Test
+        run: php artisan migrate --force --seed
+        env:
+          DB_PORT: ${{ job.services.database.ports[3306] }}
+
+      - name: Migration Rollback Test
+        run: php artisan migrate:rollback --force
+        env:
+          DB_PORT: ${{ job.services.database.ports[3306] }}
 
       - name: Unit tests
         run: vendor/bin/pest tests/Unit --parallel
@@ -241,6 +267,16 @@ jobs:
             ${{ runner.os }}-composer-${{ matrix.php }}-
 
       - run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
+
+      - name: Migration Test
+        run: php artisan migrate --force --seed
+        env:
+          DB_PORT: ${{ job.services.database.ports[5432] }}
+
+      - name: Migration Rollback Test
+        run: php artisan migrate:rollback --force
+        env:
+          DB_PORT: ${{ job.services.database.ports[5432] }}
 
       - name: Unit tests
         run: vendor/bin/pest tests/Unit --parallel
