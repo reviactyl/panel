@@ -74,7 +74,6 @@ jobs:
             ${{ runner.os }}-composer-${{ matrix.php }}-
 
       - run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
-      - run: vendor/bin/pint -v
 
       - name: Unit tests
         run: vendor/bin/pest tests/Unit --parallel
