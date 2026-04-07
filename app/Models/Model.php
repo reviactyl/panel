@@ -8,7 +8,9 @@ use Illuminate\Container\Container;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model as IlluminateModel;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
@@ -67,6 +69,21 @@ abstract class Model extends IlluminateModel
     public function getRouteKeyName(): string
     {
         return 'uuid';
+    }
+
+    /**
+     * Guards against invalid route model binding when the key is an integer and the value provided is not numeric. 
+     * This prevents the model from throwing a ModelNotFoundException when it should just return null because the value provided is not valid for the key type. This is only relevant for models that use an integer as the primary key, and the route binding is using that primary key as the field for binding.
+     */
+    public function resolveRouteBindingQuery($query, $value, $field = null): EloquentBuilder|Relation
+    {
+        $field ??= $this->getRouteKeyName();
+
+        if ($field === $this->getKeyName() && $this->getKeyType() === 'int' && ! is_numeric($value)) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        return parent::resolveRouteBindingQuery($query, $value, $field);
     }
 
     /**
