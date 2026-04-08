@@ -120,7 +120,9 @@ class SubuserController extends ClientApiController
                 ]);
 
                 try {
-                    $this->revocationRepository->setNode($server->node)->deauthorize(
+                    $revocationRepository = $this->revocationRepository->setNode($server->node);
+
+                    $revocationRepository->deauthorize(
                         $subuser->user->uuid,
                         [$server->uuid],
                     );
@@ -158,7 +160,9 @@ class SubuserController extends ClientApiController
             $subuser->delete();
 
             try {
-                $this->revocationRepository->setNode($server->node)->deauthorize(
+                $revocationRepository = $this->revocationRepository->setNode($server->node);
+
+                $revocationRepository->deauthorize(
                     $subuser->user->uuid,
                     [$server->uuid],
                 );
