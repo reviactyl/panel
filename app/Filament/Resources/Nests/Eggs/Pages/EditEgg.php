@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Nests\Eggs\Pages;
 
 use App\Filament\Resources\Nests\EggResource;
 use App\Filament\Resources\Nests\NestResource;
+use App\Models\Egg;
 use App\Models\Nest;
 use App\Services\Eggs\Sharing\EggExporterService;
 use Filament\Actions;
@@ -20,7 +21,9 @@ class EditEgg extends EditRecord
     {
         parent::mount($record);
 
-        $this->redirectNestId = $this->record?->nest_id;
+        /** @var Egg $egg */
+        $egg = $this->record;
+        $this->redirectNestId = $egg->nest_id;
     }
 
     protected function getHeaderActions(): array
@@ -30,6 +33,7 @@ class EditEgg extends EditRecord
                 ->label(trans('admin/eggs.actions.export'))
                 ->icon('heroicon-o-arrow-down-tray')
                 ->action(function () {
+                    /** @var Egg $record */
                     $record = $this->record;
                     $json = app(EggExporterService::class)->handle($record->id);
                     $filename = trim(preg_replace('/\W/', '-', kebab_case($record->name)), '-');
@@ -48,8 +52,8 @@ class EditEgg extends EditRecord
 
                     return NestResource::getUrl('create');
                 })
-                ->before(function ($record, $action) {
-                    $this->redirectNestId = $record?->nest_id ?? $this->redirectNestId;
+                ->before(function (Egg $record, Actions\DeleteAction $action): void {
+                    $this->redirectNestId = $record->nest_id;
 
                     if ($record->servers()->count() > 0) {
                         Notification::make()
