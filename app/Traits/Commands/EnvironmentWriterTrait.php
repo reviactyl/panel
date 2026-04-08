@@ -4,6 +4,7 @@ namespace App\Traits\Commands;
 
 use App\Exceptions\PanelException;
 use Illuminate\Support\Env;
+use Illuminate\Support\Facades\Artisan;
 
 trait EnvironmentWriterTrait
 {
