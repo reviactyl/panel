@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\User as SocialiteUser;
 
 class SocialLoginController extends Controller
 {
@@ -60,11 +61,14 @@ class SocialLoginController extends Controller
             }
 
             // Link the account
+            $providerToken = $socialUser instanceof SocialiteUser ? $socialUser->token : null;
+            $providerRefreshToken = $socialUser instanceof SocialiteUser ? $socialUser->refreshToken : null;
+
             $currentUser->socialLogins()->create([
                 'provider' => $provider,
                 'provider_user_id' => $socialUser->getId(),
-                'provider_token' => $socialUser->token,
-                'provider_refresh_token' => $socialUser->refreshToken,
+                'provider_token' => $providerToken,
+                'provider_refresh_token' => $providerRefreshToken,
             ]);
 
             return redirect()->route('account')->with('success', 'Account linked successfully.');
@@ -77,7 +81,7 @@ class SocialLoginController extends Controller
             ->where('provider_user_id', $socialUser->getId())
             ->first();
 
-        if ($socialLogin) {
+        if ($socialLogin && $socialLogin->user instanceof User) {
             Auth::login($socialLogin->user);
 
             return redirect('/');
