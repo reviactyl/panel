@@ -5,7 +5,6 @@ namespace App\Services\Servers;
 use App\Exceptions\Http\Connection\DaemonConnectionException;
 use App\Models\Server;
 use App\Repositories\Wings\DaemonRevocationRepository;
-use App\Repositories\Wings\DaemonServerRepository;
 use App\Traits\Services\ReturnsUpdatedModels;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Support\Arr;
@@ -19,7 +18,6 @@ class DetailsModificationService
      */
     public function __construct(
         private ConnectionInterface $connection,
-        private DaemonServerRepository $serverRepository,
         private DaemonRevocationRepository $revocationRepository,
     ) {}
 
