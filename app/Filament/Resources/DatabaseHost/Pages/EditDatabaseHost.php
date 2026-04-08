@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\DatabaseHost\Pages;
 
 use App\Filament\Resources\DatabaseHost\DatabaseHostResource;
+use App\Models\DatabaseHost;
 use App\Services\Activity\ActivityLogService;
 use Filament\Actions;
 use Filament\Notifications\Notification;
@@ -29,7 +30,10 @@ class EditDatabaseHost extends EditRecord
         return [
             Actions\DeleteAction::make()
                 ->before(function (Actions\DeleteAction $action) {
-                    if ($this->record->databases()->count() > 0) {
+                    /** @var DatabaseHost $record */
+                    $record = $this->record;
+
+                    if ($record->databases()->count() > 0) {
                         Notification::make()
                             ->title(trans('admin/databases.errors.cannot_delete'))
                             ->danger()
