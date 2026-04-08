@@ -8,7 +8,6 @@ use App\Http\Middleware\RequireTwoFactorAuthentication;
 use App\Models\Extension;
 use App\Services\Extensions\ExtensionFilesystemService;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
@@ -148,9 +147,7 @@ class ExtensionsServiceProvider extends ServiceProvider
             return;
         }
 
-        Artisan::starting(function ($artisan) use ($resolved): void {
-            $artisan->resolveCommands($resolved);
-        });
+        $this->commands($resolved);
 
         Log::info('Registered extension artisan commands.', [
             'extension' => $identifier,
