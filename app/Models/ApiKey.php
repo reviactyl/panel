@@ -216,6 +216,7 @@ class ApiKey extends PersonalAccessToken
     {
         $identifier = substr($token, 0, self::IDENTIFIER_LENGTH);
 
+        /** @var static|null $model */
         $model = static::where('identifier', $identifier)->first();
         if (! is_null($model) && decrypt($model->token) === substr($token, strlen($identifier))) {
             return $model;
