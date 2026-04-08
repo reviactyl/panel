@@ -12,7 +12,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property float $cpu_usage
  * @property int $memory_bytes
  * @property int $disk_bytes
+ * @property int $network_rx_bytes
+ * @property int $network_tx_bytes
  * @property Carbon $created_at
+ * @property string|null $bucket_time
+ * @property float|int|string|null $avg_cpu
+ * @property float|int|string|null $avg_memory
+ * @property float|int|string|null $avg_disk
+ * @property float|int|string|null $avg_network_rx
+ * @property float|int|string|null $avg_network_tx
  */
 class ServerStatsHistory extends Model
 {
