@@ -5,6 +5,11 @@ namespace App\Filament\Resources\Nests;
 use App\Filament\Resources\Nests\Eggs\Pages;
 use App\Models\Egg;
 use App\Services\Eggs\Sharing\EggExporterService;
+use Filament\Actions\Action;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Forms;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
@@ -234,8 +239,8 @@ class EggResource extends Resource
                     ->searchable(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\Action::make('export')
+                EditAction::make(),
+                Action::make('export')
                     ->label(trans('admin/eggs.actions.export'))
                     ->icon('heroicon-o-arrow-down-tray')
                     ->action(function ($record) {
@@ -246,7 +251,7 @@ class EggResource extends Resource
                             echo $json;
                         }, 'egg-'.$filename.'.json');
                     }),
-                Tables\Actions\DeleteAction::make()
+                DeleteAction::make()
                     ->before(function ($record, $action) {
                         if ($record->servers()->count() > 0) {
                             Notification::make()
@@ -260,8 +265,8 @@ class EggResource extends Resource
                     }),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
+                    BulkActionGroup::make([
+                        DeleteBulkAction::make()
                         ->before(function ($records) {
                             $protectedCount = $records->filter(fn ($record) => $record->servers()->count() > 0)->count();
                             if ($protectedCount > 0) {
