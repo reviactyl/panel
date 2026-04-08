@@ -22,7 +22,7 @@ abstract class DaemonRepository
     /**
      * Set the server model this request is stemming from.
      */
-    public function setServer(Server $server): self
+    public function setServer(Server $server): static
     {
         $this->server = $server;
 
@@ -34,7 +34,7 @@ abstract class DaemonRepository
     /**
      * Set the node model this request is stemming from.
      */
-    public function setNode(Node $node): self
+    public function setNode(Node $node): static
     {
         $this->node = $node;
 
