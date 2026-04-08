@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Nodes\RelationManagers;
 
 use App\Models\Allocation;
+use App\Models\Node;
 use App\Services\Activity\ActivityLogService;
 use App\Services\Allocations\AllocationDeletionService;
 use App\Services\Allocations\AssignmentService;
@@ -67,11 +68,14 @@ class AllocationRelationManager extends RelationManager
                             ->required(),
                     ])
                     ->action(function (array $data) {
+                        /** @var Node $node */
+                        $node = $this->getOwnerRecord();
+
                         try {
-                            app(AssignmentService::class)->handle($this->getOwnerRecord(), $data);
+                            app(AssignmentService::class)->handle($node, $data);
 
                             app(ActivityLogService::class)
-                                ->subject($this->getOwnerRecord())
+                                ->subject($node)
                                 ->event('node:allocation.create')
                                 ->log();
 
