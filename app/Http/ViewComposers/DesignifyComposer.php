@@ -2,7 +2,6 @@
 
 namespace App\Http\ViewComposers;
 
-use App\Contracts\Repository\SettingsRepositoryInterface;
 use Illuminate\View\View;
 
 class DesignifyComposer
@@ -23,9 +22,8 @@ class DesignifyComposer
 
     private array $Theme7;
 
-    public function __construct(
-        private SettingsRepositoryInterface $settings,
-    ) {
+    public function __construct()
+    {
         $this->Theme1 = [
             'name' => config('designify.theme1.name') ?? 'Petrascia',
             'colorPrimary' => config('designify.theme1.colorPrimary') ?? '#3b82f6',
