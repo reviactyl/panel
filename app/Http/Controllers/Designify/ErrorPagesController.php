@@ -40,7 +40,7 @@ class ErrorPagesController extends Controller
      */
     public function update(ErrorPagesSettingsFormRequest $request): RedirectResponse
     {
-        foreach ($request->normalize() as $key => $value) {
+        foreach (request()->all() as $key => $value) {
             $this->settings->set('settings::'.$key, $value);
         }
 
