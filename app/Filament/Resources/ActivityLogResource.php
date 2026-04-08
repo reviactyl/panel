@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ActivityLogResource\Pages\ListActivityLogs;
 use App\Models\ActivityLog;
+use App\Models\User;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -38,7 +39,7 @@ class ActivityLogResource extends Resource
             ->columns([
                 TextColumn::make('actor.name')
                     ->label(trans('admin/activity_log.columns.user'))
-                    ->description(fn (ActivityLog $record) => $record->actor?->email)
+                    ->description(fn (ActivityLog $record) => $record->actor instanceof User ? $record->actor->email : null)
                     ->searchable()
                     ->sortable(),
 
