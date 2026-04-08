@@ -65,7 +65,7 @@ class AuditLog extends Model
     public static function instance(string $action, array $metadata, bool $isSystem = false): self
     {
         $request = Container::getInstance()->make('request');
-        if ($isSystem || ! $request instanceof Request) { // @phpstan-ignore instanceof.alwaysTrue
+        if ($isSystem || ! $request instanceof Request) {
             $request = null;
         }
 

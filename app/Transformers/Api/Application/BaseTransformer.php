@@ -97,7 +97,7 @@ abstract class BaseTransformer extends TransformerAbstract
      */
     protected function makeTransformer(string $abstract)
     {
-        Assert::subclassOf($abstract, self::class); // @phpstan-ignore staticMethod.alreadyNarrowedType
+        Assert::subclassOf($abstract, self::class);
 
         return $abstract::fromRequest($this->request);
     }
