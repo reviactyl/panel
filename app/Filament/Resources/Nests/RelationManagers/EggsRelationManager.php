@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Nests\RelationManagers;
 
 use App\Filament\Resources\Nests\EggResource;
+use App\Models\Nest;
 use App\Services\Eggs\Sharing\EggExporterService;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
@@ -34,7 +35,12 @@ class EggsRelationManager extends RelationManager
                 Action::make('create')
                     ->label(trans('admin/eggs.actions.create'))
                     ->icon('heroicon-o-plus')
-                    ->url(fn () => EggResource::getUrl('create', ['nest_id' => $this->getOwnerRecord()->id])),
+                    ->url(function (): string {
+                        /** @var Nest $nest */
+                        $nest = $this->getOwnerRecord();
+
+                        return EggResource::getUrl('create', ['nest_id' => $nest->id]);
+                    }),
             ])
             ->actions([
                 Action::make('view')
