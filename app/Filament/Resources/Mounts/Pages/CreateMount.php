@@ -13,8 +13,10 @@ class CreateMount extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        if (isset($data[0]) && is_array($data[0])) {
-            $data = $data[0];
+        $firstValue = reset($data);
+
+        if (is_array($firstValue)) {
+            $data = $firstValue;
         }
 
         $data['uuid'] = Str::uuid()->toString();
