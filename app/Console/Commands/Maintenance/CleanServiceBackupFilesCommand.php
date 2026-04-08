@@ -34,11 +34,11 @@ class CleanServiceBackupFilesCommand extends Command
     {
         $files = $this->disk->files('services/.bak');
 
-        collect($files)->each(function (\SplFileInfo $file) {
-            $lastModified = Carbon::createFromTimestamp($this->disk->lastModified($file->getPath()));
+        collect($files)->each(function (string $filePath): void {
+            $lastModified = Carbon::createFromTimestamp($this->disk->lastModified($filePath));
             if ((int) $lastModified->diffInMinutes(Carbon::now()) > self::BACKUP_THRESHOLD_MINUTES) {
-                $this->disk->delete($file->getPath());
-                $this->info(trans('command/messages.maintenance.deleting_service_backup', ['file' => $file->getFilename()]));
+                $this->disk->delete($filePath);
+                $this->info(trans('command/messages.maintenance.deleting_service_backup', ['file' => basename($filePath)]));
             }
         });
     }
