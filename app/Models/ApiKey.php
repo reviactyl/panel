@@ -70,7 +70,6 @@ class ApiKey extends PersonalAccessToken
     /** @use HasFactory<ApiKeyFactory> */
     use HasFactory;
 
-    /** @use HasValidationRules */
     use HasValidationRules;
 
     /**
