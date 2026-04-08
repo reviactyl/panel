@@ -38,7 +38,7 @@ class DevWatchCommand extends Command
     public function handle(): int
     {
         $this->line('');
-        $this->line("<fg=red>REVIACTYL v{$this->config->get('app.version')}</> ".($this->versionService->isLatestPanel() ? 'uptodate' : $this->formatText('outdated', 'bg=red')));
+        $this->line("<fg=red>REVIACTYL v{$this->config->get('app.version')}</> ".($this->versionService->isLatestPanel() ? 'uptodate' : '<fg=white;bg=red>outdated</>'));
         $this->line('');
         $source = trim((string) ($this->argument('source') ?: ''));
 
