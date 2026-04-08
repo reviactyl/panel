@@ -25,14 +25,19 @@ class ActivityLogWidget extends BaseWidget
         $entries = [];
 
         foreach ($logs as $log) {
+            $actorName = data_get($log->actor, 'name');
+            $resolvedActorName = is_string($actorName) && $actorName !== ''
+                ? $actorName
+                : trans('admin/activity_log.fallback_actor');
+
             $entries[] = TextEntry::make("log_{$log->id}")
                 ->hiddenLabel()
                 ->state(
-                    ($log->actor?->name ?? trans('admin/activity_log.fallback_actor'))
+                    $resolvedActorName
                     .' — '
                     .$log->event
                     .' — '
-                    .$log->timestamp?->diffForHumans()
+                    .$log->timestamp->diffForHumans()
                 );
         }
 
