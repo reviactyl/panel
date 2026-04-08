@@ -91,7 +91,7 @@ class ListExtensions extends ListRecords
         if ($uploaded instanceof TemporaryUploadedFile) {
             $path = $uploaded->getRealPath();
 
-            return is_string($path) ? $path : null;
+            return $path;
         }
 
         $value = is_array($uploaded) ? reset($uploaded) : $uploaded;
