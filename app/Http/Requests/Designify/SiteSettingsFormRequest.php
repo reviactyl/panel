@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Designify;
 
-use App\Http\Requests\Admin\AdminFormRequest;
+use App\Http\Requests\Designify\DesignifyFormRequest;
 
-class SiteSettingsFormRequest extends AdminFormRequest
+class SiteSettingsFormRequest extends DesignifyFormRequest
 {
     /**
      * Return all the rules to apply to this request's data.

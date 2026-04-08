@@ -39,7 +39,7 @@ class ColorsController extends Controller
      */
     public function update(ColorSettingsFormRequest $request): RedirectResponse
     {
-        foreach (request()->all() as $key => $value) {
+        foreach ($request->normalize() as $key => $value) {
             $this->settings->set('settings::'.$key, $value);
         }
 

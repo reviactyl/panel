@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Designify;
 
-use App\Http\Requests\Admin\AdminFormRequest;
+use App\Http\Requests\Designify\DesignifyFormRequest;
 
-class LookNFeelSettingsFormRequest extends AdminFormRequest
+class LookNFeelSettingsFormRequest extends DesignifyFormRequest
 {
     /**
      * Return all the rules to apply to this request's data.

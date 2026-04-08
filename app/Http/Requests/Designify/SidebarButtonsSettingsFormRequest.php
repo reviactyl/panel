@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests\Designify;
 
-use App\Http\Requests\Admin\AdminFormRequest;
+use App\Http\Requests\Designify\DesignifyFormRequest;
 use Illuminate\Support\Collection;
 
-class SidebarButtonsSettingsFormRequest extends AdminFormRequest
+class SidebarButtonsSettingsFormRequest extends DesignifyFormRequest
 {
     /**
      * Return all the rules to apply to this request's data.

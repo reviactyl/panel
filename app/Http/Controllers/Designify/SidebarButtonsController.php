@@ -36,7 +36,7 @@ class SidebarButtonsController extends Controller
      */
     public function update(SidebarButtonsSettingsFormRequest $request): RedirectResponse
     {
-        foreach (request()->all() as $key => $value) {
+        foreach ($request->normalize() as $key => $value) {
             $this->settings->set('settings::'.$key, $value);
         }
 
