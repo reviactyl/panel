@@ -39,7 +39,7 @@ class EditServer extends EditRecord
 
             if (empty($data['startup']) && ! empty($data['egg_id'])) {
                 $egg = Egg::find($data['egg_id']);
-                $data['startup'] = $egg?->startup ?? '';
+                $data['startup'] = $egg instanceof Egg ? $egg->startup : '';
             }
         }
 
@@ -48,6 +48,10 @@ class EditServer extends EditRecord
 
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
+        if (! $record instanceof Server) {
+            throw new \RuntimeException('Server record that was provided for update is invalid.');
+        }
+
         $detailsData = Arr::only($data, ['external_id', 'owner_id', 'name', 'description']);
 
         if (! empty($detailsData)) {
@@ -85,13 +89,14 @@ class EditServer extends EditRecord
 
     protected function getHeaderActions(): array
     {
+        $server = $this->getCurrentServer();
+
         return [
             Action::make('switch_install_status')
                 ->label(trans('admin/server.actions.toggle_install_status'))
                 ->color('primary')
                 ->action(function () {
-                    /** @var Server $server */
-                    $server = $this->record;
+                    $server = $this->getCurrentServer();
 
                     if ($server->status === Server::STATUS_INSTALL_FAILED) {
                         throw new DisplayException(trans('admin/server.exceptions.marked_as_failed'));
@@ -118,12 +123,11 @@ class EditServer extends EditRecord
                 ->successNotification(null),
 
             Action::make('suspend')
-                ->label(fn () => $this->record->isSuspended() ? trans('admin/server.actions.unsuspend') : trans('admin/server.actions.suspend'))
-                ->color(fn () => $this->record->isSuspended() ? 'success' : 'warning')
+                ->label(fn () => $this->getCurrentServer()->isSuspended() ? trans('admin/server.actions.unsuspend') : trans('admin/server.actions.suspend'))
+                ->color(fn () => $this->getCurrentServer()->isSuspended() ? 'success' : 'warning')
                 ->requiresConfirmation()
                 ->action(function () {
-                    /** @var Server $server */
-                    $server = $this->record;
+                    $server = $this->getCurrentServer();
                     $action = $server->isSuspended() ? SuspensionService::ACTION_UNSUSPEND : SuspensionService::ACTION_SUSPEND;
 
                     try {
@@ -148,9 +152,11 @@ class EditServer extends EditRecord
                 ->color('danger')
                 ->requiresConfirmation()
                 ->action(function () {
+                    $server = $this->getCurrentServer();
+
                     try {
-                        app(ReinstallServerService::class)->handle($this->record);
-                        app(ActivityLogService::class)->subject($this->record)->event('server:reinstall')->log();
+                        app(ReinstallServerService::class)->handle($server);
+                        app(ActivityLogService::class)->subject($server)->event('server:reinstall')->log();
 
                         Notification::make()
                             ->title(trans('admin/server.alerts.server_reinstalled'))
@@ -170,9 +176,11 @@ class EditServer extends EditRecord
                 ->color('danger')
                 ->requiresConfirmation()
                 ->action(function () {
+                    $server = $this->getCurrentServer();
+
                     try {
-                        app(ServerDeletionService::class)->handle($this->record);
-                        app(ActivityLogService::class)->subject($this->record)->event('server:delete')->log();
+                        app(ServerDeletionService::class)->handle($server);
+                        app(ActivityLogService::class)->subject($server)->event('server:delete')->log();
 
                         Notification::make()
                             ->title(trans('admin/server.alerts.server_deleted'))
@@ -193,9 +201,11 @@ class EditServer extends EditRecord
                 ->color('danger')
                 ->requiresConfirmation()
                 ->action(function () {
+                    $server = $this->getCurrentServer();
+
                     try {
-                        app(ServerDeletionService::class)->withForce()->handle($this->record);
-                        app(ActivityLogService::class)->subject($this->record)->event('server:delete')->log();
+                        app(ServerDeletionService::class)->withForce()->handle($server);
+                        app(ActivityLogService::class)->subject($server)->event('server:delete')->log();
 
                         Notification::make()
                             ->title(trans('admin/server.alerts.server_deleted'))
@@ -213,9 +223,18 @@ class EditServer extends EditRecord
 
             Action::make('view')
                 ->label(trans('admin/server.actions.view'))
-                ->url(fn () => config('app.url').'/server/'.$this->record->uuidShort)
+                ->url(fn () => config('app.url').'/server/'.$this->getCurrentServer()->uuidShort)
                 ->openUrlInNewTab(),
         ];
+    }
+
+    private function getCurrentServer(): Server
+    {
+        if (! $this->record instanceof Server) {
+            throw new \RuntimeException('No valid server record is loaded for this page.');
+        }
+
+        return $this->record;
     }
 
     protected function getRedirectUrl(): string
