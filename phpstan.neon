@@ -10,6 +10,7 @@ rules:
 
 parameters:
     level: 5
+    treatPhpDocTypesAsCertain: false
     paths:
         - app
     ignoreErrors:
