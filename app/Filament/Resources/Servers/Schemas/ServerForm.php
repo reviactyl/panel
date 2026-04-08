@@ -146,8 +146,9 @@ class ServerForm
                                                     ->all();
 
                                                 $defaultAllocation = $get('allocation_id') ?? $record?->allocation_id;
+                                                $excludedKeys = $defaultAllocation === null ? [] : [$defaultAllocation => true];
 
-                                                return array_diff_key($options, array_filter([$defaultAllocation => true]));
+                                                return array_diff_key($options, $excludedKeys);
                                             })
                                             ->default(fn (?Server $record) => $record?->allocations
                                                 ->where('id', '!=', $record->allocation_id)
