@@ -265,8 +265,8 @@ class EggResource extends Resource
                     }),
             ])
             ->bulkActions([
-                    BulkActionGroup::make([
-                        DeleteBulkAction::make()
+                BulkActionGroup::make([
+                    DeleteBulkAction::make()
                         ->before(function ($records) {
                             $protectedCount = $records->filter(fn ($record) => $record->servers()->count() > 0)->count();
                             if ($protectedCount > 0) {

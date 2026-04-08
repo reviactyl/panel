@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Designify;
 
-use App\Http\Requests\Designify\DesignifyFormRequest;
 use Illuminate\Support\Collection;
 
 class AlertSettingsFormRequest extends DesignifyFormRequest

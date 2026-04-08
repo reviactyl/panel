@@ -72,7 +72,7 @@ abstract class Model extends IlluminateModel
     }
 
     /**
-     * Guards against invalid route model binding when the key is an integer and the value provided is not numeric. 
+     * Guards against invalid route model binding when the key is an integer and the value provided is not numeric.
      * This prevents the model from throwing a ModelNotFoundException when it should just return null because the value provided is not valid for the key type. This is only relevant for models that use an integer as the primary key, and the route binding is using that primary key as the field for binding.
      *
      * @param  EloquentBuilder|Relation  $query

@@ -113,11 +113,11 @@ class AssignmentService
 
         if (str_contains($allocationIp, '/')) {
             [$allocationIp, $cidr] = explode('/', $allocationIp, 2);
-            $cidr = '/' . $cidr;
+            $cidr = '/'.$cidr;
         }
 
         if (filter_var($allocationIp, FILTER_VALIDATE_IP)) {
-            return $allocationIp . $cidr;
+            return $allocationIp.$cidr;
         }
 
         $records = @dns_get_record($allocationIp, DNS_A + DNS_AAAA);
@@ -126,14 +126,14 @@ class AssignmentService
             $resolved = $record['ip'] ?? $record['ipv6'] ?? null;
 
             if ($resolved && filter_var($resolved, FILTER_VALIDATE_IP)) {
-                return $resolved . $cidr;
+                return $resolved.$cidr;
             }
         }
 
         $resolved = gethostbyname($allocationIp);
 
         if (filter_var($resolved, FILTER_VALIDATE_IP)) {
-            return $resolved . $cidr;
+            return $resolved.$cidr;
         }
 
         throw new DisplayException("Could not resolve provided allocation IP address ({$allocationIp}).");

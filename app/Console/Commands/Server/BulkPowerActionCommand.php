@@ -88,8 +88,8 @@ class BulkPowerActionCommand extends Command
 
     /**
      * Returns the query builder instance that will return the servers that should be affected.
-      *
-      * @return Builder<Server>
+     *
+     * @return Builder<Server>
      */
     protected function getQueryBuilder(array $servers, array $nodes): Builder
     {

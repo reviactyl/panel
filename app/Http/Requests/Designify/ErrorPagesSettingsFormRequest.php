@@ -2,8 +2,6 @@
 
 namespace App\Http\Requests\Designify;
 
-use App\Http\Requests\Designify\DesignifyFormRequest;
-
 class ErrorPagesSettingsFormRequest extends DesignifyFormRequest
 {
     /**

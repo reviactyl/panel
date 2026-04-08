@@ -212,7 +212,7 @@ class ApiKey extends PersonalAccessToken
     /**
      * Finds the model matching the provided token.
      */
-    public static function findToken($token): static|null
+    public static function findToken($token): ?static
     {
         $identifier = substr($token, 0, self::IDENTIFIER_LENGTH);
 
