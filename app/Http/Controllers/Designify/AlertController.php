@@ -7,11 +7,10 @@ use App\Exceptions\Model\DataValidationException;
 use App\Exceptions\Repository\RecordNotFoundException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Designify\AlertSettingsFormRequest;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Console\Kernel;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\Factory as ViewFactory;
-use Illuminate\View\View;
 use Prologue\Alerts\AlertsMessageBag;
 
 class AlertController extends Controller
@@ -21,7 +20,6 @@ class AlertController extends Controller
      */
     public function __construct(
         private AlertsMessageBag $alert,
-        private ConfigRepository $config,
         private Kernel $kernel,
         private SettingsRepositoryInterface $settings,
         private ViewFactory $view,

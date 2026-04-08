@@ -7,11 +7,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Designify\ErrorPagesSettingsFormRequest;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Console\Kernel;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\View\Factory as ViewFactory;
-use Illuminate\View\View;
 use Prologue\Alerts\AlertsMessageBag;
 
 class ErrorPagesController extends Controller

@@ -5,11 +5,10 @@ namespace App\Http\Controllers\Designify;
 use App\Contracts\Repository\SettingsRepositoryInterface;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Designify\SidebarButtonsSettingsFormRequest;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Console\Kernel;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\Factory as ViewFactory;
-use Illuminate\View\View;
 use Prologue\Alerts\AlertsMessageBag;
 
 class SidebarButtonsController extends Controller
@@ -19,7 +18,6 @@ class SidebarButtonsController extends Controller
      */
     public function __construct(
         private AlertsMessageBag $alert,
-        private ConfigRepository $config,
         private Kernel $kernel,
         private SettingsRepositoryInterface $settings,
         private ViewFactory $view,
