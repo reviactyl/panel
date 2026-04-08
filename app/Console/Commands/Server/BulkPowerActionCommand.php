@@ -99,7 +99,7 @@ class BulkPowerActionCommand extends Command
             $instance->whereIn('id', $servers)->orWhereIn('node_id', $nodes);
         } elseif (empty($nodes) && ! empty($servers)) {
             $instance->whereIn('id', $servers);
-        } elseif (! empty($nodes) && empty($servers)) { // @phpstan-ignore empty.variable
+        } elseif (! empty($nodes) && empty($servers)) {
             $instance->whereIn('node_id', $nodes);
         }
 
