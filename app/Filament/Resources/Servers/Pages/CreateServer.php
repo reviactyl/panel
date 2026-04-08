@@ -19,12 +19,12 @@ class CreateServer extends CreateRecord
         $data['allocation_additional'] = $data['allocation_additional'] ?? [];
 
         // Ensure io has default value when not provided (advanced_mode is false)
-        if (! isset($data['io']) || $data['io'] === null) {
+        if (! isset($data['io'])) {
             $data['io'] = 500;
         }
 
         // Ensure startup is filled from egg when not provided (advanced_mode is false)
-        if ((empty($data['startup']) || $data['startup'] === null) && ! empty($data['egg_id'])) {
+        if (empty($data['startup']) && ! empty($data['egg_id'])) {
             $egg = Egg::find($data['egg_id']);
             if ($egg) {
                 $data['startup'] = $egg->startup;
