@@ -65,7 +65,7 @@ class BulkPowerActionCommand extends Command
 
         $bar = $this->output->createProgressBar($count);
         $powerRepository = $this->powerRepository;
-        $this->getQueryBuilder($servers, $nodes)->each(function (Server $server) use ($action, $powerRepository, &$bar) {
+        $this->getQueryBuilder($servers, $nodes)->each(function (Server $server, int $index) use ($action, $powerRepository, &$bar): void {
             $bar->clear();
 
             try {
@@ -88,6 +88,8 @@ class BulkPowerActionCommand extends Command
 
     /**
      * Returns the query builder instance that will return the servers that should be affected.
+      *
+      * @return Builder<Server>
      */
     protected function getQueryBuilder(array $servers, array $nodes): Builder
     {
