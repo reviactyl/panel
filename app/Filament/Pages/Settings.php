@@ -23,8 +23,8 @@ use Filament\Schemas\Contracts\HasSchemas;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Contracts\Encryption\Encrypter;
+use Illuminate\Mail\MailManager;
 use Illuminate\Support\Str;
-use Symfony\Component\Mailer\Transport\TransportInterface;
 
 class Settings extends Page implements HasSchemas
 {
@@ -136,7 +136,11 @@ class Settings extends Page implements HasSchemas
             $formData[$key] = $value;
         }
 
-        $this->form->fill($formData);
+        $form = $this->getForm('form');
+
+        if ($form !== null) {
+            $form->fill($formData);
+        }
     }
 
     protected function getFormSchema(): array
@@ -550,7 +554,8 @@ class Settings extends Page implements HasSchemas
         $settings = app(SettingsRepositoryInterface::class);
         $kernel = app(Kernel::class);
         $encrypter = app(Encrypter::class);
-        $data = $this->form->getState();
+        $form = $this->getForm('form');
+        $data = $form?->getState() ?? [];
 
         foreach ($data as $key => $value) {
             if ($key === 'mail:mailers:smtp:password' && ! empty($value)) {
@@ -577,7 +582,8 @@ class Settings extends Page implements HasSchemas
 
     public function testMail(): void
     {
-        $data = $this->form->getState();
+        $form = $this->getForm('form');
+        $data = $form?->getState() ?? [];
 
         config()->set('mail.mailers.smtp.host', $data['mail:mailers:smtp:host']);
         config()->set('mail.mailers.smtp.port', $data['mail:mailers:smtp:port']);
@@ -589,14 +595,7 @@ class Settings extends Page implements HasSchemas
         config()->set('mail.from.name', $data['mail:from:name']);
 
         try {
-            if (method_exists(app('mailer'), 'forgetMailers')) {
-                app('mailer')->forgetMailers();
-            } else {
-                $transport = app('mailer')->getSymfonyTransport();
-                if ($transport instanceof TransportInterface) {
-                    app('mailer')->forgetMailers();
-                }
-            }
+            app(MailManager::class)->forgetMailers();
         } catch (\Throwable $e) {
         }
 
