@@ -1,8 +1,9 @@
 blank_issues_enabled: true
 contact_links:
-  - name: Installation Help
-    url: https://reviactyl.dev/discord
+  - name: Features, Help, or Questions
+    url: https://github.com/orgs/reviactyl/discussions/categories/feature-requests
+    about: The preferred method for getting help with Reviactyl or seeking new features for the software.
     about: Please visit our Discord for help with your installation.
   - name: General Question
-    url: https://reviactyl.dev/discord
+    url: https://reviactyl.app/discord
     about: Please visit our Discord for general questions about Reviactyl.
