@@ -112,7 +112,6 @@ return [
 
     'table' => [
         'health' => 'Health',
-        'health_version_prefix' => 'v',
         'health_http_status' => 'HTTP :status',
         'health_error' => ':error',
         'health_check_console' => 'check browser console',
@@ -207,7 +206,7 @@ return [
             'failed' => 'Échec de l\'action d\'allocation.',
         ],
     ],
-    
+
     'validation' => [
         'fqdn_not_resolvable' => 'Le FQDN ou l\'adresse IP fourni ne résout pas en une adresse IP valide.',
         'fqdn_required_for_ssl' => 'Un nom de domaine complet qui résout une adresse IP publique est nécessaire pour utiliser SSL pour ce noeud.',
