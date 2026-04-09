@@ -60,7 +60,7 @@
         }
     "
     @mouseleave="hovered = false"
-    style="width:100%;display:flex;justify-content:center;align-items:center;"
+    style="width:50px;display:inline-flex;align-items:center;justify-content:center;min-height:20px"
 >
     <span
         x-ref="tip"
