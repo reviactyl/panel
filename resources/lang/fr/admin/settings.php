@@ -27,6 +27,8 @@ return [
         'title' => 'Security',
         'provider' => 'Captcha Provider',
         'disabled' => 'Disabled',
+        'passkey-require-username' => 'Require Username for Passkey Login',
+        'passkey-require-username-hint' => 'When enabled, users must enter username/email before using passkey login. When disabled, discoverable (username-less) passkeys are allowed.',
         'recaptcha-site-key' => 'reCAPTCHA Site Key',
         'recaptcha-secret-key' => 'reCAPTCHA Secret Key',
         'turnstile-site-key' => 'Turnstile Site Key',
@@ -52,6 +54,8 @@ return [
     'oauth' => [
         'enabled' => 'Enabled',
         'disabled' => 'Disabled',
+        'passkey-require-username' => 'Require Username for Passkey Login',
+        'passkey-require-username-hint' => 'When enabled, users must enter username/email before using passkey login. When disabled, discoverable (username-less) passkeys are allowed.',
         'id-label' => 'Client ID',
         'secret-label' => 'Client Secret',
     ],

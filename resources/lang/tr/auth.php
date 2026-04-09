@@ -11,7 +11,14 @@ return [
     'password-label' => 'Parola',
 
     'login-button' => 'Giriş Yap',
+    'passkey-button' => 'Use Passkey',
     'return' => 'Giriş Ekranına Dön',
+
+    'passkey-unsupported' => 'Passkeys are not supported by this browser.',
+    'passkey-failed' => 'Unable to complete passkey login. Please try again.',
+    'passkey-no-credentials' => 'No passkey is available for this login. Use your password or register a passkey first.',
+    'passkey-security' => 'Passkey verification could not be completed securely on this device.',
+    'passkey-username-required' => 'Enter your username or email before using a passkey.',
 
     'social' => [
         'or' => 'VEYA',
@@ -63,6 +70,7 @@ return [
         'confirm-label' => 'Parolayı Onayla',
         'label' => 'Kayıt Ol',
         'create-account' => 'Create Account',
+        'no-account' => 'Don\'t have an account?',
     ],
 
     'failed' => 'Bu kimlik bilgileriyle eşleşen bir hesap bulunamadı.',

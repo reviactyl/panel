@@ -16,6 +16,7 @@ return [
     'auth' => [
         'fail' => 'Failed log in',
         'success' => 'Logged in',
+        'passkey' => 'Logged in with passkey',
         'password-reset' => 'Password reset',
         'reset-password' => 'Requested password reset',
         'checkpoint' => 'Two-factor authentication requested',
@@ -43,6 +44,10 @@ return [
         'two-factor' => [
             'create' => 'Enabled two-factor auth',
             'delete' => 'Disabled two-factor auth',
+        ],
+        'passkey' => [
+            'create' => 'Registered a new passkey',
+            'delete' => 'Removed passkey :id',
         ],
     ],
     'server' => [

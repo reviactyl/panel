@@ -11,7 +11,14 @@ return [
     'password-label' => 'पासवर्ड',
 
     'login-button' => 'लॉगिन',
+    'passkey-button' => 'Use Passkey',
     'return' => 'लॉगिन पर लौटें',
+
+    'passkey-unsupported' => 'Passkeys are not supported by this browser.',
+    'passkey-failed' => 'Unable to complete passkey login. Please try again.',
+    'passkey-no-credentials' => 'No passkey is available for this login. Use your password or register a passkey first.',
+    'passkey-security' => 'Passkey verification could not be completed securely on this device.',
+    'passkey-username-required' => 'Enter your username or email before using a passkey.',
 
     'social' => [
         'or' => 'OR',
@@ -63,6 +70,7 @@ return [
         'confirm-label' => 'Confirm Password',
         'label' => 'Register',
         'create-account' => 'Create Account',
+        'no-account' => 'Don\'t have an account?',
     ],
 
     'failed' => 'इन क्रेडेंशियल्स से मेल खाने वाला कोई खाता नहीं मिला।',

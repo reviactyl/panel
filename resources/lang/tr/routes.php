@@ -8,6 +8,7 @@ return [
     'account' => [
         'overview' => 'Hesap Özeti',
         'api' => 'API Anahtarları',
+        'passkeys' => 'Passkeys',
         'ssh' => 'SSH Anahtarları',
         'activity' => 'Etkinlik',
     ],

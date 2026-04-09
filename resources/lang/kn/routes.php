@@ -8,6 +8,7 @@ return [
     'account' => [
         'overview' => 'Account Overview',
         'api' => 'API Keys',
+        'passkeys' => 'Passkeys',
         'ssh' => 'SSH Keys',
         'activity' => 'Activity',
     ],

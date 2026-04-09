@@ -7,6 +7,7 @@ return [
     ],
     'account' => [
         'overview' => 'Account Overview',
+        'passkeys' => 'Passkeys',
         'api' => 'API Keys',
         'ssh' => 'SSH Keys',
         'activity' => 'Activity',

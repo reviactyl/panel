@@ -8,6 +8,7 @@ return [
     'account' => [
         'overview' => 'खाता अवलोकन',
         'api' => 'API कुंजियाँ',
+        'passkeys' => 'Passkeys',
         'ssh' => 'SSH कुंजियाँ',
         'activity' => 'गतिविधि',
     ],
