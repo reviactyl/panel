@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Client;
 
 use App\Facades\Activity;
+use App\Models\User;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -46,7 +47,13 @@ class PasskeyController extends ClientApiController
             'password' => ['required', 'string'],
         ]);
 
-        if (! Hash::check($data['password'], $request->user()->password)) {
+        $user = $request->user();
+
+        if (! $user instanceof User) {
+            throw new BadRequestHttpException('Unable to validate the authenticated account.');
+        }
+
+        if (! Hash::check($data['password'], $user->password)) {
             throw new BadRequestHttpException('The password provided was not valid.');
         }
 

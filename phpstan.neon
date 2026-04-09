@@ -11,6 +11,8 @@ rules:
 parameters:
     level: 5
     treatPhpDocTypesAsCertain: false
+    bootstrapFiles:
+        - phpstan-bootstrap.php
     paths:
         - app
     ignoreErrors:
