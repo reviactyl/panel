@@ -112,7 +112,6 @@ return [
 
     'table' => [
         'health' => 'Health',
-        'health_version_prefix' => 'v',
         'health_http_status' => 'HTTP :status',
         'health_error' => ':error',
         'health_check_console' => 'check browser console',
@@ -207,7 +206,7 @@ return [
             'failed' => 'Allocation Aktion fehlgeschlagen.',
         ],
     ],
-    
+
     'validation' => [
         'fqdn_not_resolvable' => 'Der angegebene FQDN oder die IP-Adresse kann nicht in eine gültige IP-Adresse aufgelöst werden.',
         'fqdn_required_for_ssl' => 'Ein vollqualifizierter Domainname, der in eine öffentliche IP-Adresse aufgelöst wird, ist erforderlich, um SSL für diesen Node zu verwenden.',
