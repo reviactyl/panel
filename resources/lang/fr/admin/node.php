@@ -112,7 +112,6 @@ return [
 
     'table' => [
         'health' => 'Health',
-        'health_version_prefix' => 'v',
         'health_http_status' => 'HTTP :status',
         'health_error' => ':error',
         'health_check_console' => 'check browser console',
