@@ -51,11 +51,11 @@ class ClearLegacySessionCookies
         $parts = explode('.', $host);
 
         if (count($parts) >= 2) {
-            $domains[] = '.' . implode('.', array_slice($parts, -2));
+            $domains[] = '.'.implode('.', array_slice($parts, -2));
         }
 
         if (count($parts) >= 3) {
-            $domains[] = '.' . implode('.', array_slice($parts, -3));
+            $domains[] = '.'.implode('.', array_slice($parts, -3));
         }
 
         return array_values(array_unique($domains));

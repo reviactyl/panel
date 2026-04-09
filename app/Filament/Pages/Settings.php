@@ -63,7 +63,7 @@ class Settings extends Page implements HasSchemas
         'captcha:recaptcha:website_key',
         'captcha:turnstile:secret_key',
         'captcha:turnstile:site_key',
-                    'panel:auth:passkey_login_requires_username',
+        'panel:auth:passkey_login_requires_username',
 
         'panel:auth:google_enabled',
         'panel:auth:google_client_id',

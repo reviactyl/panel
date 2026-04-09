@@ -8,9 +8,7 @@ use Illuminate\View\View;
 
 class AssetComposer
 {
-    public function __construct(private SettingsRepositoryInterface $settings)
-    {
-    }
+    public function __construct(private SettingsRepositoryInterface $settings) {}
 
     /**
      * Provide access to the asset service in the views.
@@ -43,9 +41,9 @@ class AssetComposer
                     'siteKey' => config('captcha.turnstile.site_key') ?? '',
                 ],
             ],
-              'passkeys' => [
-                  'loginRequiresUsername' => filter_var($passkeyLoginRequiresUsername, FILTER_VALIDATE_BOOL),
-              ],
+            'passkeys' => [
+                'loginRequiresUsername' => filter_var($passkeyLoginRequiresUsername, FILTER_VALIDATE_BOOL),
+            ],
         ]);
     }
 }
