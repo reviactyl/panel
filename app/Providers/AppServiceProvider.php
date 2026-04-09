@@ -73,7 +73,7 @@ class AppServiceProvider extends ServiceProvider
      */
     protected function versionData(): array
     {
-        return Cache::remember('git-version', 5, function () {
+        return Cache::store('file')->remember('git-version', 5, function () {
             $headPath = base_path('.git/HEAD');
 
             if (is_file($headPath)) {

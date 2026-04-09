@@ -7,9 +7,9 @@ const getXsrfToken = (): string | undefined => {
         .filter((cookie) => cookie.startsWith('XSRF-TOKEN='))
         .map((cookie) => cookie.slice('XSRF-TOKEN='.length));
 
-    if (tokens.length === 0) return undefined;
-
     const token = tokens[tokens.length - 1];
+
+    if (!token) return undefined;
 
     try {
         return decodeURIComponent(token);
