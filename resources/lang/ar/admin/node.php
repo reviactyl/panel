@@ -112,7 +112,6 @@ return [
 
     'table' => [
         'health' => 'Health',
-        'health_version_prefix' => 'v',
         'health_http_status' => 'HTTP :status',
         'health_error' => ':error',
         'health_check_console' => 'check browser console',
@@ -207,7 +206,7 @@ return [
             'failed' => 'فشل إجراء التخصيص.',
         ],
     ],
-    
+
     'validation' => [
         'fqdn_not_resolvable' => 'اسم المضيف المؤهل بالكامل (FQDN) أو عنوان IP المقدم لا يحل إلى عنوان IP صالح.',
         'fqdn_required_for_ssl' => 'اسم مجال مؤهل بالكامل يحل إلى عنوان IP عام مطلوب لاستخدام SSL لهذه العقدة.',
