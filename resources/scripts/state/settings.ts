@@ -13,6 +13,9 @@ export interface SiteSettings {
             siteKey: string;
         };
     };
+      passkeys?: {
+          loginRequiresUsername: boolean;
+      };
 }
 
 export interface SettingsStore {

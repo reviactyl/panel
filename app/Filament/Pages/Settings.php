@@ -63,6 +63,7 @@ class Settings extends Page implements HasSchemas
         'captcha:recaptcha:website_key',
         'captcha:turnstile:secret_key',
         'captcha:turnstile:site_key',
+                    'panel:auth:passkey_login_requires_username',
 
         'panel:auth:google_enabled',
         'panel:auth:google_client_id',
@@ -220,6 +221,16 @@ class Settings extends Page implements HasSchemas
                     Toggle::make('app:locale:geolocate')
                         ->label(trans('admin/settings.overview.geolocate-language'))
                         ->helperText(trans('admin/settings.overview.geolocate-language-hint'))
+                        ->inline(false)
+                        ->onIcon('tabler-check')
+                        ->offIcon('tabler-x')
+                        ->onColor('success')
+                        ->offColor('danger')
+                        ->columnSpan(1),
+
+                    Toggle::make('panel:auth:passkey_login_requires_username')
+                        ->label(trans('admin/settings.security.passkey-require-username'))
+                        ->helperText(trans('admin/settings.security.passkey-require-username-hint'))
                         ->inline(false)
                         ->onIcon('tabler-check')
                         ->offIcon('tabler-x')

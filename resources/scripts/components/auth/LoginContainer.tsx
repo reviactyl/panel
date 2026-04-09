@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import login from '@/api/auth/login';
+import loginWithPasskey from '@/api/auth/loginWithPasskey';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
 import { useStoreState } from 'easy-peasy';
 import type { FormikHelpers } from 'formik';
@@ -13,6 +14,7 @@ import Reaptcha from 'reaptcha';
 import Turnstile from '@/components/elements/Turnstile';
 import useFlash from '@/plugins/useFlash';
 import Label from '@/components/elements/Label';
+import Spinner from '@/components/elements/Spinner';
 import { KeyIcon, UserIcon, EyeIcon, EyeOffIcon } from '@heroicons/react/solid';
 import { useTranslation } from 'react-i18next';
 
@@ -23,16 +25,46 @@ interface Values {
 
 function LoginContainer() {
     const { t } = useTranslation('auth');
+    const primaryButtonClass = tw`w-full !py-3`;
+    const passkeyButtonClass = tw`w-full !h-10 !min-h-[2.5rem] !max-h-[2.5rem] !py-0 active:!translate-y-0 active:!scale-100`;
     const ref = useRef<Reaptcha>(null);
     const [token, setToken] = useState('');
     const [show, setShow] = useState(false);
+    const [isPasskeySubmitting, setIsPasskeySubmitting] = useState(false);
 
     const { clearFlashes, clearAndAddHttpError, addFlash } = useFlash();
     const { provider, recaptcha, turnstile } = useStoreState((state) => state.settings.data!.captcha);
+    const passkeyLoginRequiresUsername = useStoreState(
+        (state) => state.settings.data?.passkeys?.loginRequiresUsername ?? false
+    );
 
     const socialSettings = window.SocialLoginConfiguration || { google: false, discord: false, github: false };
 
     const navigate = useNavigate();
+
+    const mapPasskeyError = (error: unknown): Error => {
+        if (!(error instanceof Error)) {
+            return new Error(t('passkey-failed'));
+        }
+
+        if (/timed out|not allowed/i.test(error.message)) {
+            return new Error(t('passkey-no-credentials'));
+        }
+
+        if (error.message === 'PASSKEY_NO_CREDENTIAL') {
+            return new Error(t('passkey-no-credentials'));
+        }
+
+        if (error.message === 'PASSKEY_SECURITY_ERROR') {
+            return new Error(t('passkey-security'));
+        }
+
+        if (error.message === 'PASSKEY_LOGIN_FAILED') {
+            return new Error(t('passkey-failed'));
+        }
+
+        return error;
+    };
 
     useEffect(() => {
         clearFlashes();
@@ -75,6 +107,35 @@ function LoginContainer() {
 
                 setSubmitting(false);
                 clearAndAddHttpError({ error });
+            });
+    };
+
+    const performPasskeyLogin = (username: string, setSubmitting: (isSubmitting: boolean) => void) => {
+        clearFlashes();
+
+        if (passkeyLoginRequiresUsername && !username.trim()) {
+            clearAndAddHttpError({ error: new Error(t('passkey-username-required')) });
+            return;
+        }
+
+        setIsPasskeySubmitting(true);
+        setSubmitting(true);
+
+        loginWithPasskey(username)
+            .then((response) => {
+                if (response.complete) {
+                    window.location.href = response.intended || '/';
+                    return;
+                }
+
+                setIsPasskeySubmitting(false);
+                setSubmitting(false);
+            })
+            .catch((error) => {
+                console.error(error);
+                setIsPasskeySubmitting(false);
+                setSubmitting(false);
+                clearAndAddHttpError({ error: mapPasskeyError(error) });
             });
     };
 
@@ -139,8 +200,27 @@ function LoginContainer() {
                         </div>
                     </div>
                     <div css={tw`mt-6`}>
-                        <Button css={tw`w-full !py-3`} type={'submit'} disabled={isSubmitting}>
+                        <Button css={primaryButtonClass} type={'submit'} disabled={isSubmitting}>
                             {t('login-button')}
+                        </Button>
+                    </div>
+                    <div css={tw`mt-3`}>
+                        <Button
+                            css={passkeyButtonClass}
+                            type={'button'}
+                            disabled={isSubmitting}
+                            onClick={() => performPasskeyLogin(values.username, setSubmitting)}
+                        >
+                            <span css={tw`relative flex w-full items-center justify-center`}>
+                                <span css={[tw`leading-6`, isPasskeySubmitting && tw`invisible`]}>
+                                    {t('passkey-button')}
+                                </span>
+                                {isPasskeySubmitting && (
+                                    <span css={tw`absolute inset-0 flex items-center justify-center`}>
+                                        <Spinner size={'small'} />
+                                    </span>
+                                )}
+                            </span>
                         </Button>
                     </div>
 
@@ -212,7 +292,7 @@ function LoginContainer() {
                             to={'/auth/register'}
                             css={tw`text-xs text-gray-400 tracking-wide no-underline hover:text-gray-300`}
                         >
-                            Don&apos;t have an account? Create one
+                            {t('register.no-account')} {t('register.create-account')}
                         </Link>
                         {window.ReviactylConfiguration?.billingCardLink && (
                             <a

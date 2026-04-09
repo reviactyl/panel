@@ -9,6 +9,11 @@ Route::get('/account', [Base\IndexController::class, 'index'])
     ->withoutMiddleware(RequireTwoFactorAuthentication::class)
     ->name('account');
 
+Route::get('/passkey/{path?}', [Base\IndexController::class, 'index'])
+    ->withoutMiddleware(RequireTwoFactorAuthentication::class)
+    ->where('path', '.*')
+    ->name('passkey');
+
 Route::get('/locales/locale.json', Base\LocaleController::class)
     ->withoutMiddleware(['auth', RequireTwoFactorAuthentication::class])
     ->where('namespace', '.*');
