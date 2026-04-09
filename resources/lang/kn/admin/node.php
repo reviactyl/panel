@@ -112,7 +112,6 @@ return [
 
     'table' => [
         'health' => 'Health',
-        'health_version_prefix' => 'v',
         'health_http_status' => 'HTTP :status',
         'health_error' => ':error',
         'health_check_console' => 'check browser console',
@@ -207,7 +206,7 @@ return [
             'failed' => 'Allocation action failed.',
         ],
     ],
-    
+
     'validation' => [
         'fqdn_not_resolvable' => 'ನೀಡಲಾದ FQDN ಅಥವಾ IP ವಿಳಾಸವು ಮಾನ್ಯವಾದ IP ವಿಳಾಸಕ್ಕೆ ಪರಿಭಾಷೆಯಾಗುವುದಿಲ್ಲ.',
         'fqdn_required_for_ssl' => 'ಈ ನೋಡ್‌ಗೆ SSL ಬಳಸಲು ಸಾರ್ವಜನಿಕ IP ವಿಳಾಸಕ್ಕೆ ಪರಿಭಾಷೆಯಾಗುವ ಪೂರ್ಣ ಅರ್ಹ ಡೊಮೇನ್ ಹೆಸರು (FQDN) ಅಗತ್ಯವಿದೆ.',
