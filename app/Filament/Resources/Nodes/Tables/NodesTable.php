@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Nodes\Tables;
 
+use App\Models\Node;
 use Filament\Actions;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -74,22 +75,31 @@ class NodesTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('servers_count')
-                    ->label(trans('admin/node.table.servers'))
-                    ->counts('servers')
-                    ->sortable(),
-
                 IconColumn::make('maintenance_mode')
                     ->label(trans('admin/node.table.maintenance_mode'))
                     ->boolean()
                     ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                IconColumn::make('ssl')
+                    ->label('SSL')
+                    ->boolean()
+                    ->trueIcon('tabler-lock')
+                    ->falseIcon('tabler-lock-open')
+                    ->state(fn (Node $node) => ! $node->behind_proxy && $node->scheme === 'https')
                     ->toggleable(),
 
                 IconColumn::make('public')
                     ->label(trans('admin/node.table.public'))
                     ->boolean()
-                    ->sortable()
+                    ->trueIcon('tabler-eye-check')
+                    ->falseIcon('tabler-eye-off')
                     ->toggleable(),
+
+                TextColumn::make('servers_count')
+                    ->label(trans('admin/node.table.servers'))
+                    ->counts('servers')
+                    ->sortable(),
             ])
             ->filters([
 
@@ -97,8 +107,6 @@ class NodesTable
             ->actions([
                 Actions\EditAction::make()
                     ->label(trans('admin/node.actions.edit')),
-                Actions\DeleteAction::make()
-                    ->label(trans('admin/node.actions.delete')),
             ])
             /*->recordActions([
                 EditAction::make()
