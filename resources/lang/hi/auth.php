@@ -11,7 +11,7 @@ return [
     'password-label' => 'पासवर्ड',
 
     'login-button' => 'लॉगिन',
-    'passkey-button' => 'Use Passkey',
+    'passkey-button' => 'Login with Passkey',
     'return' => 'लॉगिन पर लौटें',
 
     'passkey-unsupported' => 'Passkeys are not supported by this browser.',

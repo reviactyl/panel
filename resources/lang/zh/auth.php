@@ -11,7 +11,7 @@ return [
     'password-label' => '密码',
 
     'login-button' => '登录',
-    'passkey-button' => 'Use Passkey',
+    'passkey-button' => 'Login with Passkey',
     'return' => '返回登录',
 
     'passkey-unsupported' => 'Passkeys are not supported by this browser.',

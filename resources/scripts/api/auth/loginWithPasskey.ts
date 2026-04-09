@@ -2,6 +2,40 @@ import http from '@/api/http';
 import type { LoginResponse } from '@/api/auth/login';
 import { createPasskeyAssertion, isPasskeySupported } from '@/lib/webauthn';
 
+const getXsrfToken = (): string | undefined => {
+    const tokens = document.cookie
+        .split(';')
+        .map((cookie) => cookie.trim())
+        .filter((cookie) => cookie.startsWith('XSRF-TOKEN='))
+        .map((cookie) => cookie.slice('XSRF-TOKEN='.length));
+
+    if (tokens.length === 0) return undefined;
+
+    const token = tokens[tokens.length - 1];
+
+    try {
+        return decodeURIComponent(token);
+    } catch {
+        return token;
+    }
+};
+
+const resolveXsrfToken = async (): Promise<string> => {
+    const existingToken = getXsrfToken();
+    if (existingToken) {
+        return existingToken;
+    }
+
+    await http.get('/sanctum/csrf-cookie');
+
+    const refreshedToken = getXsrfToken();
+    if (!refreshedToken) {
+        throw new Error('Unable to locate an XSRF token for passkey login.');
+    }
+
+    return refreshedToken;
+};
+
 const mapPasskeyAssertionError = (error: unknown): Error => {
     const errorName =
         typeof error === 'object' && error !== null && 'name' in error ? String((error as { name: unknown }).name) : '';
@@ -26,11 +60,21 @@ export default async (username?: string): Promise<LoginResponse> => {
         throw new Error('Passkeys are not supported by this browser.');
     }
 
-    await http.get('/sanctum/csrf-cookie');
+    const xsrfToken = await resolveXsrfToken();
 
-    const optionsResponse = await http.post('/auth/login/passkey/options', {
-        user: username && username.length > 0 ? username : undefined,
-    });
+    const optionsResponse = await http.post(
+        '/auth/login/passkey/options',
+        {
+            user: username && username.length > 0 ? username : undefined,
+        },
+        {
+            headers: {
+                'X-XSRF-TOKEN': xsrfToken,
+            },
+            // Avoid ambiguous X-XSRF-TOKEN when duplicate cookies exist in tunneled environments.
+            xsrfCookieName: '__reviactyl_ignore_xsrf_cookie__',
+        }
+    );
 
     let assertion;
 
@@ -40,7 +84,12 @@ export default async (username?: string): Promise<LoginResponse> => {
         throw mapPasskeyAssertionError(error);
     }
 
-    const loginResponse = await http.post('/auth/login/passkey', assertion);
+    const loginResponse = await http.post('/auth/login/passkey', assertion, {
+        headers: {
+            'X-XSRF-TOKEN': xsrfToken,
+        },
+        xsrfCookieName: '__reviactyl_ignore_xsrf_cookie__',
+    });
 
     return {
         complete: loginResponse.data.data.complete,

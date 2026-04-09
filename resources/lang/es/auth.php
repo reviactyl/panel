@@ -11,7 +11,7 @@ return [
     'password-label' => 'Contraseña',
 
     'login-button' => 'Iniciar sesión',
-    'passkey-button' => 'Use Passkey',
+    'passkey-button' => 'Login with Passkey',
     'return' => 'Volver al inicio de sesión',
 
     'passkey-unsupported' => 'Passkeys are not supported by this browser.',

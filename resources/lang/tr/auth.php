@@ -11,7 +11,7 @@ return [
     'password-label' => 'Parola',
 
     'login-button' => 'Giriş Yap',
-    'passkey-button' => 'Use Passkey',
+    'passkey-button' => 'Login with Passkey',
     'return' => 'Giriş Ekranına Dön',
 
     'passkey-unsupported' => 'Passkeys are not supported by this browser.',

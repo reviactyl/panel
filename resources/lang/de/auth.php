@@ -11,7 +11,7 @@ return [
     'password-label' => 'Passwort',
 
     'login-button' => 'Anmelden',
-    'passkey-button' => 'Use Passkey',
+    'passkey-button' => 'Login with Passkey',
     'return' => 'Zurück zur Anmeldung',
 
     'passkey-unsupported' => 'Passkeys are not supported by this browser.',

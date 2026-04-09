@@ -75,21 +75,19 @@ class PasskeyController extends ClientApiController
     /**
      * Delete a passkey from the current account.
      */
-    public function delete(Request $request, string $id): JsonResponse
+    public function delete(Request $request, ?string $id = null): JsonResponse
     {
-        $data = $request->validate([
-            'password' => ['required', 'string'],
-        ]);
+        $credentialId = $id ?? $request->input('id');
 
-        if (! Hash::check($data['password'], $request->user()->password)) {
-            throw new BadRequestHttpException('The password provided was not valid.');
+        if (! is_string($credentialId) || $credentialId === '') {
+            throw new BadRequestHttpException('A passkey id must be provided.');
         }
 
-        $credential = $request->user()->webAuthnCredentials()->whereKey($id)->firstOrFail();
+        $credential = $request->user()->webAuthnCredentials()->whereKey($credentialId)->firstOrFail();
 
         $credential->delete();
 
-        Activity::event('user:passkey.delete')->property('id', $id)->log();
+        Activity::event('user:passkey.delete')->property('id', $credentialId)->log();
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

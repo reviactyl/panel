@@ -11,7 +11,7 @@ return [
     'password-label' => 'Senha',
 
     'login-button' => 'Entrar',
-    'passkey-button' => 'Use Passkey',
+    'passkey-button' => 'Login with Passkey',
     'return' => 'Voltar para o Login',
 
     'passkey-unsupported' => 'Passkeys are not supported by this browser.',

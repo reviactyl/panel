@@ -7,7 +7,7 @@ import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { ExternalLinkIcon, LogoutIcon } from '@heroicons/react/solid';
 import { useTranslation } from 'react-i18next';
-import http from '@/api/http';
+import logout from '@/api/auth/logout';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 
 interface Props {
@@ -90,7 +90,7 @@ const Sidebar = React.forwardRef<HTMLDivElement, Props>(({ children, isOpen = fa
 
     const onLogout = () => {
         setIsLoggingOut(true);
-        http.post('/auth/logout').finally(() => {
+        logout().finally(() => {
             window.location.href = '/';
         });
     };

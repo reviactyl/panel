@@ -11,7 +11,7 @@ return [
     'password-label' => 'Kata Sandi',
 
     'login-button' => 'Masuk',
-    'passkey-button' => 'Use Passkey',
+    'passkey-button' => 'Login with Passkey',
     'return' => 'Kembali ke Login',
 
     'passkey-unsupported' => 'Passkeys are not supported by this browser.',

@@ -11,7 +11,7 @@ return [
     'password-label' => 'Lösenord',
 
     'login-button' => 'Logga in',
-    'passkey-button' => 'Use Passkey',
+    'passkey-button' => 'Login with Passkey',
     'return' => 'Återgå till inloggning',
 
     'passkey-unsupported' => 'Passkeys are not supported by this browser.',

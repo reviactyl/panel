@@ -75,8 +75,8 @@ class PasskeyControllerTest extends ClientApiIntegrationTestCase
         ]);
 
         $this->actingAs($user)
-            ->deleteJson('/api/client/account/passkeys/cred_delete_me', [
-                'password' => 'password',
+            ->postJson('/api/client/account/passkeys/remove', [
+                'id' => 'cred_delete_me',
             ])
             ->assertStatus(Response::HTTP_NO_CONTENT);
 
@@ -85,7 +85,7 @@ class PasskeyControllerTest extends ClientApiIntegrationTestCase
         ]);
     }
 
-    public function test_passkey_delete_requires_valid_password(): void
+    public function test_passkey_can_be_deleted_without_password(): void
     {
         $user = User::factory()->create();
 
@@ -104,14 +104,21 @@ class PasskeyControllerTest extends ClientApiIntegrationTestCase
         ]);
 
         $this->actingAs($user)
-            ->deleteJson('/api/client/account/passkeys/cred_cannot_delete', [
-                'password' => 'invalid',
-            ])
-            ->assertStatus(Response::HTTP_BAD_REQUEST)
-            ->assertJsonPath('errors.0.detail', 'The password provided was not valid.');
+            ->deleteJson('/api/client/account/passkeys/cred_cannot_delete')
+            ->assertStatus(Response::HTTP_NO_CONTENT);
 
-        $this->assertDatabaseHas('webauthn_credentials', [
+        $this->assertDatabaseMissing('webauthn_credentials', [
             'id' => 'cred_cannot_delete',
         ]);
+    }
+
+    public function test_passkey_remove_endpoint_requires_identifier(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->postJson('/api/client/account/passkeys/remove')
+            ->assertStatus(Response::HTTP_BAD_REQUEST)
+            ->assertJsonPath('errors.0.detail', 'A passkey id must be provided.');
     }
 }
