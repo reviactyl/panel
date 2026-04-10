@@ -78,7 +78,7 @@ abstract class AbstractLoginController extends Controller
 
         $this->clearLoginAttempts($request);
 
-        $this->auth->guard()->login($user, true);
+        $this->guard()->login($user, true);
 
         Event::dispatch(new DirectLogin($user, true));
 
