@@ -33,6 +33,7 @@ import { bytesToString } from '@/lib/formatters';
 import Tooltip from '@/components/elements/tooltip/Tooltip';
 import { PlusSmIcon } from '@heroicons/react/solid';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
+import Input from '@/components/elements/Input';
 
 const sortFiles = (files: FileObject[]): FileObject[] => {
     const sortedFiles: FileObject[] = files
@@ -195,27 +196,8 @@ export default () => {
             <ErrorBoundary>
                 <Card className={'flex flex-col mb-1 mt-2 !rounded-b-none !px-2 !py-3'}>
                     <div className='flex flex-wrap md:flex-nowrap items-center gap-2'>
-                        <FileActionCheckbox
-                            type={'checkbox'}
-                            css={tw`mx-2`}
-                            checked={!query && selectedFilesLength > 0 && selectedFilesLength === filteredFiles.length}
-                            onChange={onSelectAllClick}
-                        />
-                        <div className='order-3 w-full min-w-0 md:order-none md:flex-1 md:w-auto'>
-                            <FileManagerBreadcrumbs renderLeft={<></>} />
-                        </div>
-                        <div className='order-2 md:order-none md:ml-auto flex items-center gap-1 w-full md:w-auto'>
-                            <ExtensionSlot name={`server:files:global-actions:start`} />
-                            <div
-                                role='search'
-                                className={`relative flex items-center min-w-0 transition-all duration-200 ease-in-out ${
-                                    isSearchExpanded ? 'flex-1 md:w-72 lg:w-96' : 'w-10'
-                                }`}
-                            >
-                                {isSearchExpanded ? (
-                                    <>
-                                        <SearchIcon className='absolute left-2 h-4 w-4 text-gray-400 pointer-events-none' />
-                                        <input
+                        <div className='order-2 md:order-none md:mr-auto flex items-center gap-1 w-full md:w-auto'>
+                                        <Input
                                             ref={searchInputRef}
                                             type='text'
                                             placeholder={t('search.placeholder')}
@@ -234,36 +216,8 @@ export default () => {
                                                     }
                                                 }
                                             }}
-                                            className='w-full bg-gray-700 rounded-ui pl-8 pr-8 py-1.5 text-sm text-gray-100 placeholder-gray-400 border border-gray-600 focus:outline-none focus:border-primary-400'
+                                            
                                         />
-                                        <button
-                                            type='button'
-                                            aria-label={t('search.clear')}
-                                            onClick={() => {
-                                                if (inputValue) {
-                                                    setInputValue('');
-                                                } else {
-                                                    setSearchExpanded(false);
-                                                }
-                                            }}
-                                            className='absolute right-2 text-gray-400 hover:text-gray-200'
-                                        >
-                                            <XIcon className='h-4 w-4' />
-                                        </button>
-                                    </>
-                                ) : (
-                                    <Tooltip content={t('search.button')}>
-                                        <button
-                                            type='button'
-                                            aria-label={t('search.button')}
-                                            onClick={() => setSearchExpanded(true)}
-                                            className='flex items-center justify-center w-10 h-10 rounded-ui bg-gray-700 border border-gray-600 text-gray-300 hover:text-gray-100 hover:border-gray-500 transition-colors'
-                                        >
-                                            <SearchIcon className='h-4 w-4' />
-                                        </button>
-                                    </Tooltip>
-                                )}
-                            </div>
                         </div>
                         <ExtensionSlot name={`server:files:global-actions:end`} />
                         <Can action={'file.create'}>
@@ -298,6 +252,20 @@ export default () => {
                                 </div>
                             </>
                         </Can>
+                    </div>
+                    <div className='flex flex-wrap md:flex-nowrap items-center gap-2 mt-2'>
+                        <div className='order-3 w-full min-w-0 md:order-none md:flex-1 md:w-auto bg-gray-600 rounded-ui py-2'>
+                    <FileManagerBreadcrumbs
+                        renderLeft={
+                            <FileActionCheckbox
+                                type={'checkbox'}
+                                css={tw`mx-4`}
+                                checked={selectedFilesLength === (files?.length === 0 ? -1 : files?.length)}
+                                onChange={onSelectAllClick}
+                            />
+                        }
+                    />
+                        </div>
                     </div>
                 </Card>
             </ErrorBoundary>
