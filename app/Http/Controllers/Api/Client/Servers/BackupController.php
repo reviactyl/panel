@@ -121,6 +121,34 @@ class BackupController extends ClientApiController
     }
 
     /**
+     * Rename the backup alias shown in the panel.
+     *
+     * This does not change the archived filename on disk.
+     *
+     * @throws AuthorizationException
+     */
+    public function rename(Request $request, Server $server, Backup $backup): array
+    {
+        if (! $request->user()->can(Permission::ACTION_BACKUP_CREATE, $server)) {
+            throw new AuthorizationException();
+        }
+
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:191'],
+        ]);
+
+        $backup->update([
+            'name' => $data['name'],
+        ]);
+
+        Activity::event('server:backup.rename')->subject($backup)->property('name', $backup->name)->log();
+
+        return $this->fractal->item($backup)
+            ->transformWith($this->getTransformer(BackupTransformer::class))
+            ->toArray();
+    }
+
+    /**
      * Returns information about a single backup.
      *
      * @throws AuthorizationException
