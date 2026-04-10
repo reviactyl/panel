@@ -26,7 +26,7 @@
                 });
                 if (r.ok) {
                     const j = await r.json();
-                    tooltip = (j.version ?? '?');
+                    tooltip = 'v' + (j.version ?? '?');
                     status = 'up';
                 } else {
                     const httpTip = ($el.dataset.httpTemplate ?? 'HTTP __STATUS__').replace('__STATUS__', String(r.status));
