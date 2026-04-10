@@ -60,8 +60,7 @@ const ModalContainer = styled.div<{ alignTop?: boolean; size?: 'sm' | 'md' | 'lg
     margin-bottom: auto;
 
     & > .close-icon {
-        ${tw`absolute right-0 p-2 text-white cursor-pointer opacity-50 transition-all duration-150 ease-linear hover:opacity-100`};
-        top: -2.5rem;
+        ${tw`absolute right-0 top-0 p-2 m-2 text-gray-200 cursor-pointer opacity-70 transition-all duration-150 ease-linear hover:opacity-100`};
 
         &:hover {
             ${tw`transform rotate-90`}
