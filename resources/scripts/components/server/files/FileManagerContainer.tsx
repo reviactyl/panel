@@ -33,12 +33,47 @@ import Tooltip from '@/components/elements/tooltip/Tooltip';
 import { PlusSmIcon } from '@heroicons/react/solid';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 import Input from '@/components/elements/Input';
+import {
+    FaArrowDown19,
+    FaArrowDownAZ,
+    FaArrowDownShortWide,
+    FaArrowUp19,
+    FaArrowUpAZ,
+    FaArrowUpShortWide,
+} from 'react-icons/fa6';
 
-const sortFiles = (files: FileObject[]): FileObject[] => {
-    const sortedFiles: FileObject[] = files
-        .sort((a, b) => a.name.localeCompare(b.name))
-        .sort((a, b) => (a.isFile === b.isFile ? 0 : a.isFile ? 1 : -1));
-    return sortedFiles.filter((file, index) => index === 0 || file.name !== sortedFiles[index - 1]?.name);
+type SortType = 'name' | 'size' | 'date';
+type SortDirection = 'asc' | 'desc';
+
+const sortFiles = (
+    files: FileObject[],
+    sortType: SortType = 'name',
+    sortDirection: SortDirection = 'asc'
+): FileObject[] => {
+    const sorted = [...files];
+
+    sorted.sort((a, b) => (a.isFile === b.isFile ? 0 : a.isFile ? 1 : -1));
+
+    const multiplier = sortDirection === 'asc' ? 1 : -1;
+
+    if (sortType === 'name') {
+        sorted.sort((a, b) => a.name.localeCompare(b.name) * multiplier);
+    } else if (sortType === 'size') {
+        sorted.sort((a, b) => {
+            if (a.isFile && b.isFile) {
+                return (a.size - b.size) * multiplier;
+            }
+            return 0;
+        });
+    } else if (sortType === 'date') {
+        sorted.sort((a, b) => {
+            const timeA = a.modifiedAt.getTime();
+            const timeB = b.modifiedAt.getTime();
+            return (timeA - timeB) * multiplier;
+        });
+    }
+
+    return sorted.filter((file, index) => index === 0 || file.name !== sorted[index - 1]?.name);
 };
 
 type SearchResult = FileObject & { fullPath: string };
@@ -75,6 +110,9 @@ export default () => {
     // Image viewer state
     const [imageViewerVisible, setImageViewerVisible] = useState(false);
     const [selectedImage, setSelectedImage] = useState<{ url: string; name: string } | null>(null);
+
+    const [sortType, setSortType] = useState<SortType>('name');
+    const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
 
     const [inputValue, setInputValue] = useState('');
     const [searchExpanded, setSearchExpanded] = useState(false);
@@ -243,12 +281,76 @@ export default () => {
                                 renderLeft={
                                     <FileActionCheckbox
                                         type={'checkbox'}
-                                        css={tw`mx-4`}
+                                        css={tw`mx-4 block md:hidden`}
                                         checked={selectedFilesLength === (files?.length === 0 ? -1 : files?.length)}
                                         onChange={onSelectAllClick}
                                     />
                                 }
                             />
+                        </div>
+                    </div>
+                </Card>
+                <Card className={'flex items-center mb-1 !rounded-none !px-2 !py-2 !bg-gray-600 hidden md:block'}>
+                    <div className='order-4 md:order-none flex items-center gap-1'>
+                        <div className='flex-1 ml-[55px]'>
+                            <button
+                                onClick={() => {
+                                    if (sortType === 'name') {
+                                        setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+                                    } else {
+                                        setSortType('name');
+                                        setSortDirection('asc');
+                                    }
+                                }}
+                                className={'flex items-center gap-x-1 text-sm text-gray-300 !text-gray-200'}
+                            >
+                                <span css={tw`text-xs font-semibold`}>Name</span>
+                                {sortType === 'name' ? (
+                                    <FaArrowDownAZ className={sortDirection === 'asc' ? 'rotate-180' : ''} />
+                                ) : (
+                                    <FaArrowUpAZ />
+                                )}
+                            </button>
+                        </div>
+                        <div className='w-1/6 justify-end flex'>
+                            <button
+                                onClick={() => {
+                                    if (sortType === 'size') {
+                                        setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+                                    } else {
+                                        setSortType('size');
+                                        setSortDirection('asc');
+                                    }
+                                }}
+                                className={'flex items-center gap-x-1 text-sm text-gray-300 !text-gray-200'}
+                            >
+                                <span css={tw`text-xs font-semibold`}>Size</span>
+                                {sortType === 'size' ? (
+                                    <FaArrowDown19 className={sortDirection === 'asc' ? 'rotate-180' : ''} />
+                                ) : (
+                                    <FaArrowUp19 />
+                                )}
+                            </button>
+                        </div>
+                        <div className='w-1/5 mr-[80px] justify-end flex'>
+                            <button
+                                onClick={() => {
+                                    if (sortType === 'date') {
+                                        setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+                                    } else {
+                                        setSortType('date');
+                                        setSortDirection('asc');
+                                    }
+                                }}
+                                className={'flex items-center gap-x-1 text-sm text-gray-300 !text-gray-200'}
+                            >
+                                <span css={tw`text-xs font-semibold`}>Date</span>
+                                {sortType === 'date' ? (
+                                    <FaArrowDownShortWide className={sortDirection === 'asc' ? 'rotate-180' : ''} />
+                                ) : (
+                                    <FaArrowUpShortWide />
+                                )}
+                            </button>
                         </div>
                     </div>
                 </Card>
@@ -293,7 +395,7 @@ export default () => {
                                     <p css={tw`text-yellow-900 text-sm text-center`}>{t('too-large')}</p>
                                 </div>
                             )}
-                            {sortFiles(filteredFiles.slice(0, 250)).map((file) => (
+                            {sortFiles(filteredFiles.slice(0, 250), sortType, sortDirection).map((file) => (
                                 <FileObjectRow key={file.key} file={file} onImageClick={handleImageClick} />
                             ))}
                             <MassActionsBar />
