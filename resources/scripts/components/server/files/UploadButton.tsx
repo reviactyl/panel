@@ -23,7 +23,7 @@ function isFileOrDirectory(event: DragEvent): boolean {
     return event.dataTransfer.types.some((value) => value.toLowerCase() === 'files');
 }
 
-export default ({ className, compact = false }: WithClassname & { compact?: boolean }) => {
+export default ({ className }: WithClassname & { compact?: boolean }) => {
     const fileUploadInput = useRef<HTMLInputElement>(null);
 
     const [visible, setVisible] = useState(false);
@@ -183,24 +183,15 @@ export default ({ className, compact = false }: WithClassname & { compact?: bool
                 }}
                 multiple
             />
-            {compact ? (
-                <Tooltip content={'Upload'}>
-                    <Button
-                        className={className}
-                        aria-label={'Upload'}
-                        onClick={() => fileUploadInput.current && fileUploadInput.current.click()}
-                    >
-                        <UploadIcon className='h-5 w-5' />
-                    </Button>
-                </Tooltip>
-            ) : (
+            <Tooltip content={'Upload'}>
                 <Button
                     className={className}
+                    aria-label={'Upload'}
                     onClick={() => fileUploadInput.current && fileUploadInput.current.click()}
                 >
-                    Upload
+                    <UploadIcon className='h-5 w-5' />
                 </Button>
-            )}
+            </Tooltip>
         </>
     );
 };

@@ -107,7 +107,7 @@ export default ({ children, ...props }: Props) => {
                         {...getFloatingProps({
                             ref: refs.setFloating,
                             className: classNames(
-                                'bg-gray-800 text-sm text-gray-200 px-3 py-2 rounded-ui border border-gray-600 pointer-events-none max-w-[24rem]',
+                                'bg-gray-800 text-sm text-gray-200 px-3 py-2 rounded-ui border border-gray-600 pointer-events-none max-w-[24rem] z-50',
                                 props.className
                             ),
                             style: {

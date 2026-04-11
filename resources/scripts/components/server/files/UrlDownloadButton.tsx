@@ -61,7 +61,7 @@ const extractFilename = (url: string): string | null => {
     }
 };
 
-export default ({ className, compact = false }: WithClassname & { compact?: boolean }) => {
+export default ({ className }: WithClassname & { compact?: boolean }) => {
     const { t } = useTranslation('server/files');
     const [open, setOpen] = useState(false);
     const [downloading, setDownloading] = useState(false);
@@ -161,21 +161,11 @@ export default ({ className, compact = false }: WithClassname & { compact?: bool
                     )}
                 </Formik>
             </Dialog>
-            {compact ? (
-                <Tooltip content={t('url-download.button')}>
-                    <Button.Text
-                        onClick={() => setOpen(true)}
-                        className={className}
-                        aria-label={t('url-download.button')}
-                    >
-                        <CloudDownloadIcon className='h-5 w-5' />
-                    </Button.Text>
-                </Tooltip>
-            ) : (
-                <Button.Text onClick={() => setOpen(true)} className={className}>
-                    {t('url-download.button')}
+            <Tooltip content={t('url-download.button')}>
+                <Button.Text onClick={() => setOpen(true)} className={className} aria-label={t('url-download.button')}>
+                    <CloudDownloadIcon className='h-5 w-5' />
                 </Button.Text>
-            )}
+            </Tooltip>
         </>
     );
 };

@@ -11,7 +11,6 @@ import { NavLink, useLocation } from 'react-router-dom';
 import Can from '@/components/elements/Can';
 import { ServerError } from '@/components/elements/ScreenBlock';
 import tw from 'twin.macro';
-import { Button } from '@/components/elements/button/index';
 import { ServerContext } from '@/state/server';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import FileManagerStatus from '@/components/server/files/FileManagerStatus';
@@ -23,7 +22,7 @@ import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import { FileActionCheckbox } from '@/components/server/files/SelectFileCheckbox';
 import { hashToPath, encodePathSegments } from '@/helpers';
 import style from './style.module.css';
-import { SearchIcon, XIcon, FolderIcon, FolderOpenIcon, DocumentIcon } from '@heroicons/react/solid';
+import { SearchIcon, FolderIcon, FolderOpenIcon, DocumentIcon } from '@heroicons/react/solid';
 import Card from '@/reviactyl/ui/Card';
 import { useTranslation } from 'react-i18next';
 import ImageViewerModal from '@/components/server/files/ImageViewerModal';
@@ -196,75 +195,60 @@ export default () => {
             <ErrorBoundary>
                 <Card className={'flex flex-col mb-1 mt-2 !rounded-b-none !px-2 !py-3'}>
                     <div className='flex flex-wrap md:flex-nowrap items-center gap-2'>
-                        <div className='order-2 md:order-none md:mr-auto flex items-center gap-1 w-full md:w-auto'>
-                                        <Input
-                                            ref={searchInputRef}
-                                            type='text'
-                                            placeholder={t('search.placeholder')}
-                                            aria-label={t('search.placeholder')}
-                                            value={inputValue}
-                                            onChange={(e) => setInputValue(e.target.value)}
-                                            onBlur={() => {
-                                                if (!inputValue) setSearchExpanded(false);
-                                            }}
-                                            onKeyDown={(e) => {
-                                                if (e.key === 'Escape') {
-                                                    if (inputValue) {
-                                                        setInputValue('');
-                                                    } else {
-                                                        setSearchExpanded(false);
-                                                    }
-                                                }
-                                            }}
-                                            
-                                        />
-                        </div>
-                        <ExtensionSlot name={`server:files:global-actions:end`} />
                         <Can action={'file.create'}>
-                            <>
-                                <div className={style.manager_actions_mobile}>
-                                    <ExtensionSlot name={`server:files:mobile-actions:start`} />
-                                    <FileManagerStatus />
-                                    <UrlDownloadButton />
-                                    <NewDirectoryButton />
-                                    <UploadButton />
-                                    <NavLink to={`/server/${id}/files/new${window.location.hash}`}>
-                                        <Button>{t('new-file')}</Button>
+                            <div className={style.manager_actions}>
+                                <ExtensionSlot name={`server:files:compact-actions:start`} />
+                                <FileManagerStatus className={style.icon_action} />
+                                <UrlDownloadButton className={style.icon_action} />
+                                <NewDirectoryButton className={style.icon_action} />
+                                <UploadButton className={style.icon_action} />
+                                <Tooltip content={t('new-file')}>
+                                    <NavLink
+                                        to={`/server/${id}/files/new${window.location.hash}`}
+                                        className={style.icon_action}
+                                        aria-label={t('new-file')}
+                                    >
+                                        <PlusSmIcon className='h-5 w-5' />
                                     </NavLink>
-                                    <ExtensionSlot name={`server:files:mobile-actions:end`} />
-                                </div>
-                                <div className={style.manager_actions_compact}>
-                                    <ExtensionSlot name={`server:files:compact-actions:start`} />
-                                    <FileManagerStatus className={style.icon_action} />
-                                    <UrlDownloadButton compact className={style.icon_action} />
-                                    <NewDirectoryButton compact className={style.icon_action} />
-                                    <UploadButton compact className={style.icon_action} />
-                                    <Tooltip content={t('new-file')}>
-                                        <NavLink
-                                            to={`/server/${id}/files/new${window.location.hash}`}
-                                            className={style.icon_action}
-                                            aria-label={t('new-file')}
-                                        >
-                                            <PlusSmIcon className='h-5 w-5' />
-                                        </NavLink>
-                                    </Tooltip>
-                                    <ExtensionSlot name={`server:files:compact-actions:end`} />
-                                </div>
-                            </>
+                                </Tooltip>
+                                <ExtensionSlot name={`server:files:compact-actions:end`} />
+                            </div>
                         </Can>
+                        <div className='order-2 md:order-none md:ml-auto flex items-center gap-1 w-full md:w-auto'>
+                            <Input
+                                ref={searchInputRef}
+                                type='text'
+                                placeholder={t('search.placeholder')}
+                                aria-label={t('search.placeholder')}
+                                value={inputValue}
+                                onChange={(e) => setInputValue(e.target.value)}
+                                onBlur={() => {
+                                    if (!inputValue) setSearchExpanded(false);
+                                }}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Escape') {
+                                        if (inputValue) {
+                                            setInputValue('');
+                                        } else {
+                                            setSearchExpanded(false);
+                                        }
+                                    }
+                                }}
+                            />
+                        </div>
                     </div>
                     <div className='flex flex-wrap md:flex-nowrap items-center gap-2 mt-2'>
                         <div className='order-3 w-full min-w-0 md:order-none md:flex-1 md:w-auto bg-gray-600 rounded-ui py-2'>
-                    <FileManagerBreadcrumbs
-                        renderLeft={
-                            <FileActionCheckbox
-                                type={'checkbox'}
-                                css={tw`mx-4`}
-                                checked={selectedFilesLength === (files?.length === 0 ? -1 : files?.length)}
-                                onChange={onSelectAllClick}
+                            <FileManagerBreadcrumbs
+                                renderLeft={
+                                    <FileActionCheckbox
+                                        type={'checkbox'}
+                                        css={tw`mx-4`}
+                                        checked={selectedFilesLength === (files?.length === 0 ? -1 : files?.length)}
+                                        onChange={onSelectAllClick}
+                                    />
+                                }
                             />
-                        }
-                    />
                         </div>
                     </div>
                 </Card>

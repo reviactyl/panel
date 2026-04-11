@@ -105,28 +105,22 @@ const NewDirectoryDialog = asDialog({
     );
 });
 
-export default ({ className, compact = false }: WithClassname & { compact?: boolean }) => {
+export default ({ className }: WithClassname & { compact?: boolean }) => {
     const { t } = useTranslation('server/files');
     const [open, setOpen] = useState(false);
 
     return (
         <>
             <NewDirectoryDialog open={open} onClose={setOpen.bind(this, false)} />
-            {compact ? (
-                <Tooltip content={t('create-directory')}>
-                    <Button.Text
-                        onClick={setOpen.bind(this, true)}
-                        className={className}
-                        aria-label={t('create-directory')}
-                    >
-                        <FolderAddIcon className='h-5 w-5' />
-                    </Button.Text>
-                </Tooltip>
-            ) : (
-                <Button.Text onClick={setOpen.bind(this, true)} className={className}>
-                    {t('create-directory')}
+            <Tooltip content={t('create-directory')}>
+                <Button.Text
+                    onClick={setOpen.bind(this, true)}
+                    className={className}
+                    aria-label={t('create-directory')}
+                >
+                    <FolderAddIcon className='h-5 w-5' />
                 </Button.Text>
-            )}
+            </Tooltip>
         </>
     );
 };
