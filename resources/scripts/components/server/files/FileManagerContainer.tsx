@@ -230,12 +230,13 @@ export default () => {
 
     return (
         <ServerContentBlock title={t('title')} showFlashKey={'files'}>
+            <ExtensionSlot name={`server:files:above`} />
             <ErrorBoundary>
                 <Card className={'flex flex-col mb-1 mt-2 !rounded-b-none !px-2 !py-3'}>
                     <div className='flex flex-wrap md:flex-nowrap items-center gap-2'>
                         <Can action={'file.create'}>
                             <div className={style.manager_actions}>
-                                <ExtensionSlot name={`server:files:compact-actions:start`} />
+                                <ExtensionSlot name={`server:files:actions:start`} />
                                 <FileManagerStatus className={style.icon_action} />
                                 <UrlDownloadButton className={style.icon_action} />
                                 <NewDirectoryButton className={style.icon_action} />
@@ -249,7 +250,7 @@ export default () => {
                                         <PlusSmIcon className='h-5 w-5' />
                                     </NavLink>
                                 </Tooltip>
-                                <ExtensionSlot name={`server:files:compact-actions:end`} />
+                                <ExtensionSlot name={`server:files:actions:end`} />
                             </div>
                         </Can>
                         <div className='order-2 md:order-none md:ml-auto flex items-center gap-1 w-full md:w-auto'>
@@ -412,6 +413,7 @@ export default () => {
                     appear
                 />
             )}
+            <ExtensionSlot name={`server:files:below`} />
         </ServerContentBlock>
     );
 };
