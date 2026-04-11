@@ -4,7 +4,7 @@ import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import Input from '@/components/elements/Input';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import { FaFile, FaFolder, FaFolderPlus, FaLevelUpAlt, FaSpinner } from 'react-icons/fa';
+import { FaArrowLeft, FaFile, FaFolder, FaFolderPlus, FaSpinner } from 'react-icons/fa';
 import { join, relative } from 'pathe';
 import loadDirectory, { FileObject } from '@/api/server/files/loadDirectory';
 import renameFiles from '@/api/server/files/renameFiles';
@@ -15,6 +15,7 @@ import { ServerContext } from '@/state/server';
 
 interface Props extends RequiredModalProps {
     files: string[];
+    directoryNames?: string[];
 }
 
 const toAbsolutePath = (value: string): string => {
@@ -45,7 +46,7 @@ interface Breadcrumb {
     path: string;
 }
 
-const MoveFileModal = ({ files, ...props }: Props) => {
+const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const sourceDirectory = toAbsolutePath(ServerContext.useStoreState((state) => state.files.directory || '/'));
     const setSelectedFiles = ServerContext.useStoreActions((actions) => actions.files.setSelectedFiles);
@@ -115,7 +116,16 @@ const MoveFileModal = ({ files, ...props }: Props) => {
         return breadcrumbs;
     }, [destinationDirectory]);
 
-    const canMove = destinationDirectory !== sourceDirectory && files.length > 0 && !isSubmitting;
+    const selfMoveBlocked = useMemo(() => {
+        return directoryNames
+            .map((name) => toAbsolutePath(join(sourceDirectory, name)))
+            .some(
+                (directoryPath) =>
+                    destinationDirectory === directoryPath || destinationDirectory.startsWith(`${directoryPath}/`)
+            );
+    }, [directoryNames, sourceDirectory, destinationDirectory]);
+
+    const canMove = destinationDirectory !== sourceDirectory && files.length > 0 && !isSubmitting && !selfMoveBlocked;
 
     const onMove = () => {
         if (!canMove) {
@@ -187,8 +197,8 @@ const MoveFileModal = ({ files, ...props }: Props) => {
                             disabled={destinationDirectory === '/' || isLoadingEntries}
                         >
                             <span css={tw`inline-flex items-center gap-2`}>
-                                <FaLevelUpAlt />
-                                Up one level
+                                <FaArrowLeft />
+                                Back
                             </span>
                         </button>
                         <div css={tw`min-w-0 text-xs text-gray-300 flex items-center gap-1 overflow-x-auto`}>
@@ -280,6 +290,9 @@ const MoveFileModal = ({ files, ...props }: Props) => {
                 </div>
 
                 <div css={tw`flex flex-wrap justify-end gap-3 pt-2`}>
+                    {selfMoveBlocked && (
+                        <p css={tw`w-full text-sm text-red-300`}>You cannot move a folder into itself.</p>
+                    )}
                     <Button
                         type={'button'}
                         isSecondary
