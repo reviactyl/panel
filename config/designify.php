@@ -41,6 +41,30 @@ return [
     'alertMessage' => '**Welcome to Reviactyl!** You can modify Theme Look & Feel using [Designify](/admin/designify) at the administration area.',
     'alerts' => '[{"type":"info","message":"**Welcome to Reviactyl!** You can modify Theme Look & Feel using [Designify](/admin/designify) at the administration area."}]',
 
+    'errors' => [
+        '403' => [
+            'title' => 'Access Forbidden',
+            'message' => 'You do not have permission to access this resource. Please contact the administrator if you believe this is an error.',
+            'button' => 'Back to Dashboard',
+            'image' => '',
+            'color' => '#f59e0b',
+        ],
+        '404' => [
+            'title' => 'Page Not Found',
+            'message' => 'The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.',
+            'button' => 'Back to Dashboard',
+            'image' => '',
+            'color' => '#3b82f6',
+        ],
+        '500' => [
+            'title' => 'Internal Server Error',
+            'message' => 'We encountered an error while processing your request. Please try again later or contact support if the problem persists.',
+            'button' => 'Try Again',
+            'image' => '',
+            'color' => '#ef4444',
+        ],
+    ],
+
     'statusCardLink' => '',
     'supportCardLink' => '',
     'billingCardLink' => '',
