@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Designify;
 
 use App\Contracts\Repository\SettingsRepositoryInterface;
 use App\Http\Controllers\Controller;
-use App\Providers\DesignifyServiceProvider;
+use App\Providers\SettingsServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Psr\Log\LoggerInterface;
@@ -20,7 +20,7 @@ class DesignifyController extends Controller
      */
     public function resetToDefaults(): RedirectResponse
     {
-        $service = new DesignifyServiceProvider(app());
+        $service = new SettingsServiceProvider(app());
         $settings = app(SettingsRepositoryInterface::class);
         $log = app(LoggerInterface::class);
 

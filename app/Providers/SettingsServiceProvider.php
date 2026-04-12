@@ -2,22 +2,47 @@
 
 namespace App\Providers;
 
-use App\Contracts\Repository\SettingsRepositoryInterface;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Str;
 use Psr\Log\LoggerInterface as Log;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Encryption\Encrypter;
+use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use App\Contracts\Repository\SettingsRepositoryInterface;
 
-class DesignifyServiceProvider extends ServiceProvider
+class SettingsServiceProvider extends ServiceProvider
 {
     /**
      * An array of configuration keys to override with database values
      * if they exist.
      */
     protected array $keys = [
-        'designify:customCopyright',
+        'app:name',
+        'app:logo',
+        'app:icon',
+        'app:locale',
+        'app:debug',
+        'app:pwa',
+        'panel:guzzle:timeout',
+        'panel:guzzle:connect_timeout',
+        'panel:console:count',
+        'panel:console:frequency',
+        'panel:auth:2fa_required',
+        'panel:client_features:allocations:enabled',
+        'panel:client_features:allocations:range_start',
+        'panel:client_features:allocations:range_end',
+        'panel:auth:google_enabled',
+        'panel:auth:google_client_id',
+        'panel:auth:google_client_secret',
+        'panel:auth:discord_enabled',
+        'panel:auth:discord_client_id',
+        'panel:auth:discord_client_secret',
+        'panel:auth:github_enabled',
+        'panel:auth:github_client_id',
+        'panel:auth:github_client_secret',
+    ];
+
+    protected array $designifyKeys = [
         'designify:customCopyright',
         'designify:copyright',
         'designify:isUnderMaintenance',
@@ -157,57 +182,87 @@ class DesignifyServiceProvider extends ServiceProvider
     ];
 
     /**
+     * Keys specific to the mail driver that are only grabbed from the database
+     * when using the SMTP driver.
+     */
+    protected array $emailKeys = [
+        'mail:mailers:smtp:host',
+        'mail:mailers:smtp:port',
+        'mail:mailers:smtp:encryption',
+        'mail:mailers:smtp:username',
+        'mail:mailers:smtp:password',
+        'mail:from:address',
+        'mail:from:name',
+    ];
+
+    /**
+     * Keys that are encrypted and should be decrypted when set in the
+     * configuration array.
+     */
+    protected static array $encrypted = [
+        'mail:mailers:smtp:password',
+        'panel:auth:google_client_secret',
+        'panel:auth:discord_client_secret',
+        'panel:auth:github_client_secret',
+    ];
+
+    /**
      * Boot the service provider.
      */
-    public function boot(ConfigRepository $config, Log $log, SettingsRepositoryInterface $settings): void
+    public function boot(ConfigRepository $config, Encrypter $encrypter, Log $log, SettingsRepositoryInterface $settings): void
     {
+
+        $this->keys = array_merge($this->keys, $this->designifyKeys);
+
+        // Only set the email driver settings from the database if we
+        // are configured using SMTP as the driver.
+        if ($config->get('mail.default') === 'smtp') {
+            $this->keys = array_merge($this->keys, $this->emailKeys);
+        }
+
         try {
             $values = $settings->all()->mapWithKeys(function ($setting) {
                 return [$setting->key => $setting->value];
             })->toArray();
         } catch (QueryException $exception) {
-            $log->notice('A query exception was encountered while trying to load settings from the database: '.$exception->getMessage());
+            $log->notice('A query exception was encountered while trying to load settings from the database: ' . $exception->getMessage());
 
             return;
         }
 
         foreach ($this->keys as $key) {
-            $value = array_get($values, 'settings::'.$key, $config->get(Str::replace(':', '.', $key)));
-
-            if (is_string($value)) {
-                switch (strtolower($value)) {
-                    case 'true':
-                    case '(true)':
-                        $value = true;
-                        break;
-                    case 'false':
-                    case '(false)':
-                        $value = false;
-                        break;
-                    case 'empty':
-                    case '(empty)':
-                        $value = '';
-                        break;
-                    case 'null':
-                    case '(null)':
-                        $value = null;
+            $value = array_get($values, 'settings::' . $key, $config->get(str_replace(':', '.', $key)));
+            if (in_array($key, self::$encrypted)) {
+                try {
+                    $value = $encrypter->decrypt($value);
+                } catch (DecryptException $exception) {
                 }
             }
 
-            $config->set(Str::replace(':', '.', $key), $value);
+            switch (strtolower($value)) {
+                case 'true':
+                case '(true)':
+                    $value = true;
+                    break;
+                case 'false':
+                case '(false)':
+                    $value = false;
+                    break;
+                case 'empty':
+                case '(empty)':
+                    $value = '';
+                    break;
+                case 'null':
+                case '(null)':
+                    $value = null;
+            }
+
+            $config->set(str_replace(':', '.', $key), $value);
         }
     }
 
-    public function resetToDefaults(SettingsRepositoryInterface $settings, Log $log): void
+    public static function getEncryptedKeys(): array
     {
-        try {
-            DB::table('settings')
-                ->where('key', 'like', 'settings::designify:%')
-                ->delete();
-
-            $log->info('All Designify settings have been reset to defaults.');
-        } catch (QueryException $exception) {
-            $log->error('Failed to reset Designify settings: '.$exception->getMessage());
-        }
+        return self::$encrypted;
     }
 }

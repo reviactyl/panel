@@ -609,15 +609,17 @@ class Designify extends Page implements HasSchemas
             Group::make()
                 ->schema([
                     Repeater::make('designify:sidebarButtons')
-                        ->label('Buttons')
+                        ->label('Sidebar Links')
                         ->defaultItems(1)
                         ->schema([
                             TextInput::make('label')
                                 ->label('Label')
+                                ->placeholder('phpMyAdmin')
                                 ->maxLength(60),
 
                             TextInput::make('url')
                                 ->label('URL')
+                                ->placeholder('https://pma.reviactyl.app')
                                 ->maxLength(255),
 
                             Toggle::make('newTab')
@@ -625,7 +627,7 @@ class Designify extends Page implements HasSchemas
                                 ->inline(false),
                         ])
                         ->columns(3)
-                        ->addActionLabel('Add Button')
+                        ->addActionLabel('Add Link')
                         ->columnSpanFull(),
                 ]),
         ];
