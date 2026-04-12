@@ -209,7 +209,7 @@ class SettingsServiceProvider extends ServiceProvider
     /**
      * Boot the service provider.
      */
-    public function boot(ConfigRepository $config, Encrypter $encrypter, Log $log, SettingsRepositoryInterface $settings): void
+    public function boot(ConfigRepository $config, Log $log, SettingsRepositoryInterface $settings): void
     {
 
         $this->keys = array_merge($this->keys, $this->designifyKeys);
@@ -230,31 +230,38 @@ class SettingsServiceProvider extends ServiceProvider
             return;
         }
 
+        $encrypter = null;
+        $canDecrypt = is_string($config->get('app.key')) && $config->get('app.key') !== '';
+
         foreach ($this->keys as $key) {
             $value = array_get($values, 'settings::'.$key, $config->get(str_replace(':', '.', $key)));
-            if (in_array($key, self::$encrypted)) {
+
+            if ($canDecrypt && in_array($key, self::$encrypted, true)) {
                 try {
+                    $encrypter ??= $this->app->make(Encrypter::class);
                     $value = $encrypter->decrypt($value);
                 } catch (DecryptException $exception) {
                 }
             }
 
-            switch (strtolower($value)) {
-                case 'true':
-                case '(true)':
-                    $value = true;
-                    break;
-                case 'false':
-                case '(false)':
-                    $value = false;
-                    break;
-                case 'empty':
-                case '(empty)':
-                    $value = '';
-                    break;
-                case 'null':
-                case '(null)':
-                    $value = null;
+            if (is_string($value)) {
+                switch (strtolower($value)) {
+                    case 'true':
+                    case '(true)':
+                        $value = true;
+                        break;
+                    case 'false':
+                    case '(false)':
+                        $value = false;
+                        break;
+                    case 'empty':
+                    case '(empty)':
+                        $value = '';
+                        break;
+                    case 'null':
+                    case '(null)':
+                        $value = null;
+                }
             }
 
             $config->set(str_replace(':', '.', $key), $value);
