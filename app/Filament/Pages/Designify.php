@@ -6,13 +6,13 @@ use App\Contracts\Repository\SettingsRepositoryInterface;
 use App\Traits\Helpers\AvailableLanguages;
 use Filament\Actions\Action;
 use Filament\Forms\Components\ColorPicker;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Notifications\Notification;
-use Filament\Forms\Components\Repeater;
 use Filament\Pages\Concerns\InteractsWithHeaderActions;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Group;
@@ -22,8 +22,8 @@ use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Contracts\HasSchemas;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Console\Kernel;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class Designify extends Page implements HasSchemas
 {

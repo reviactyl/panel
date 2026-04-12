@@ -2,13 +2,13 @@
 
 namespace App\Providers;
 
-use Psr\Log\LoggerInterface as Log;
+use App\Contracts\Repository\SettingsRepositoryInterface;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Contracts\Encryption\Encrypter;
-use Illuminate\Contracts\Encryption\DecryptException;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use App\Contracts\Repository\SettingsRepositoryInterface;
+use Psr\Log\LoggerInterface as Log;
 
 class SettingsServiceProvider extends ServiceProvider
 {
@@ -225,13 +225,13 @@ class SettingsServiceProvider extends ServiceProvider
                 return [$setting->key => $setting->value];
             })->toArray();
         } catch (QueryException $exception) {
-            $log->notice('A query exception was encountered while trying to load settings from the database: ' . $exception->getMessage());
+            $log->notice('A query exception was encountered while trying to load settings from the database: '.$exception->getMessage());
 
             return;
         }
 
         foreach ($this->keys as $key) {
-            $value = array_get($values, 'settings::' . $key, $config->get(str_replace(':', '.', $key)));
+            $value = array_get($values, 'settings::'.$key, $config->get(str_replace(':', '.', $key)));
             if (in_array($key, self::$encrypted)) {
                 try {
                     $value = $encrypter->decrypt($value);
