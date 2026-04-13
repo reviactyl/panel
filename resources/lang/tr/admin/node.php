@@ -5,6 +5,14 @@ return [
     'plural-label' => 'Düğümler',
 
     'sections' => [
+        'overview' => [
+            'title' => 'Overview',
+            'information-label' => 'Node Information',
+            'version-label' => 'Wings Version',
+            'architecture-label' => 'Architecture',
+            'kernel-label' => 'Kernel',
+            'cpus-label' => 'CPU Threads',
+        ],
         'identity' => [
             'title' => 'Kimlik',
             'description' => 'Temel düğüm bilgileri.',
