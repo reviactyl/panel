@@ -10,6 +10,7 @@ use Illuminate\Auth\AuthManager;
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -78,7 +79,13 @@ abstract class AbstractLoginController extends Controller
 
         $this->clearLoginAttempts($request);
 
-        $this->auth->guard()->login($user, true);
+        $guard = $this->auth->guard();
+
+        if (! $guard instanceof StatefulGuard) {
+            throw new \RuntimeException('Configured auth guard does not support stateful login.');
+        }
+
+        $guard->login($user, true);
 
         Event::dispatch(new DirectLogin($user, true));
 
