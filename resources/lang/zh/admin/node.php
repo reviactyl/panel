@@ -5,6 +5,14 @@ return [
     'plural-label' => '节点',
 
     'sections' => [
+        'overview' => [
+            'title' => 'Overview',
+            'information-label' => 'Node Information',
+            'version-label' => 'Wings Version',
+            'architecture-label' => 'Architecture',
+            'kernel-label' => 'Kernel',
+            'cpus-label' => 'CPU Threads',
+        ],
         'identity' => [
             'title' => '身份信息',
             'description' => '基本节点信息。',
