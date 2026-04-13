@@ -1,12 +1,12 @@
 import { memo } from 'react';
 import { ServerContext } from '@/state/server';
-import ServerContentBlock from '@/components/elements/ServerContentBlock';
+import ServerContentBlock from '@/reviactyl/elements/ServerContentBlock';
 import isEqual from 'react-fast-compare';
-import Spinner from '@/components/elements/Spinner';
+import Spinner from '@/reviactyl/elements/Spinner';
 import Features from '@feature/Features';
 import ConsoleBlock from '@/components/server/console/ConsoleBlock';
 import ServerDetailsBlock from '@/components/server/console/ServerDetailsBlock';
-import { Alert } from '@/components/elements/alert';
+import { Alert } from '@/reviactyl/elements/alert';
 import { useTranslation } from 'react-i18next';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 

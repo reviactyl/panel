@@ -1,10 +1,10 @@
 import React from 'react';
-import Icon from '@/components/elements/Icon';
+import Icon from '@/reviactyl/elements/Icon';
 import { IconType } from 'react-icons';
 import classNames from 'classnames';
 import styles from './style.module.css';
 import useFitText from 'use-fit-text';
-import CopyOnClick from '@/components/elements/CopyOnClick';
+import CopyOnClick from '@/reviactyl/elements/CopyOnClick';
 
 interface StatBlockProps {
     title: string;

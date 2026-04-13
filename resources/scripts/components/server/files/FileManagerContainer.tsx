@@ -1,24 +1,24 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { httpErrorToHuman } from '@/api/http';
 import { motion } from 'framer-motion';
-import Spinner from '@/components/elements/Spinner';
+import Spinner from '@/reviactyl/elements/Spinner';
 import FileObjectRow from '@/components/server/files/FileObjectRow';
 import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcrumbs';
 import loadDirectory, { FileObject } from '@/api/server/files/loadDirectory';
 import NewDirectoryButton from '@/components/server/files/NewDirectoryButton';
 import UrlDownloadButton from '@/components/server/files/UrlDownloadButton';
 import { NavLink, useLocation } from 'react-router-dom';
-import Can from '@/components/elements/Can';
-import { ServerError } from '@/components/elements/ScreenBlock';
+import Can from '@/reviactyl/elements/Can';
+import { ServerError } from '@/reviactyl/elements/ScreenBlock';
 import tw from 'twin.macro';
 import { ServerContext } from '@/state/server';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import FileManagerStatus from '@/components/server/files/FileManagerStatus';
 import MassActionsBar from '@/components/server/files/MassActionsBar';
 import UploadButton from '@/components/server/files/UploadButton';
-import ServerContentBlock from '@/components/elements/ServerContentBlock';
+import ServerContentBlock from '@/reviactyl/elements/ServerContentBlock';
 import { useStoreActions } from '@/state/hooks';
-import ErrorBoundary from '@/components/elements/ErrorBoundary';
+import ErrorBoundary from '@/reviactyl/elements/ErrorBoundary';
 import { FileActionCheckbox } from '@/components/server/files/SelectFileCheckbox';
 import { hashToPath, encodePathSegments } from '@/helpers';
 import style from './style.module.css';
@@ -29,10 +29,10 @@ import ImageViewerModal from '@/components/server/files/ImageViewerModal';
 import getFileDownloadUrl from '@/api/server/files/getFileDownloadUrl';
 import { join } from 'pathe';
 import { bytesToString } from '@/lib/formatters';
-import Tooltip from '@/components/elements/tooltip/Tooltip';
+import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
 import { PlusSmIcon } from '@heroicons/react/solid';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
-import Input from '@/components/elements/Input';
+import Input from '@/reviactyl/elements/Input';
 import {
     FaArrowDown19,
     FaArrowDownAZ,

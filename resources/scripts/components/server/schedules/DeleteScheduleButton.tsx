@@ -4,9 +4,9 @@ import { ServerContext } from '@/state/server';
 import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
-import { Button } from '@/components/elements/button/index';
-import { Dialog } from '@/components/elements/dialog';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import { Button } from '@/reviactyl/elements/button/index';
+import { Dialog } from '@/reviactyl/elements/dialog';
+import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 
 interface Props {
     scheduleId: number;

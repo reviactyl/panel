@@ -3,10 +3,10 @@ import { Subuser } from '@/state/server/subusers';
 import { FaPen, FaUnlock, FaUserLock } from 'react-icons/fa6';
 import RemoveSubuserButton from '@/components/server/users/RemoveSubuserButton';
 import EditSubuserModal from '@/components/server/users/EditSubuserModal';
-import Can from '@/components/elements/Can';
+import Can from '@/reviactyl/elements/Can';
 import { useStoreState } from 'easy-peasy';
 import tw from 'twin.macro';
-import GreyRowBox from '@/components/elements/GreyRowBox';
+import GreyRowBox from '@/reviactyl/elements/GreyRowBox';
 
 interface Props {
     subuser: Subuser;

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import ConfirmationModal from '@/components/elements/ConfirmationModal';
+import ConfirmationModal from '@/reviactyl/elements/ConfirmationModal';
 import { ServerContext } from '@/state/server';
 import { FaTrash } from 'react-icons/fa6';
 import { Subuser } from '@/state/server/subusers';

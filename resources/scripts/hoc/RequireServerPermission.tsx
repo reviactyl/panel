@@ -1,6 +1,6 @@
 import React from 'react';
-import Can from '@/components/elements/Can';
-import { ServerError } from '@/components/elements/ScreenBlock';
+import Can from '@/reviactyl/elements/Can';
+import { ServerError } from '@/reviactyl/elements/ScreenBlock';
 
 export interface RequireServerPermissionProps {
     permissions: string | string[];

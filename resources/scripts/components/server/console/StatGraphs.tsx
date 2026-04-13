@@ -9,7 +9,7 @@ import { bytesToString } from '@/lib/formatters';
 import { CloudDownloadIcon, CloudUploadIcon } from '@heroicons/react/solid';
 import { theme } from 'twin.macro';
 import ChartBlock from '@/components/server/console/ChartBlock';
-import Tooltip from '@/components/elements/tooltip/Tooltip';
+import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
 
 export default () => {
     const status = ServerContext.useStoreState((state) => state.status.value);

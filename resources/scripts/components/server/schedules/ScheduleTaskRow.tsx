@@ -4,14 +4,14 @@ import { FaCircleArrowDown, FaClock, FaCode, FaFileZipper, FaPen, FaToggleOn, Fa
 import { IconType } from 'react-icons';
 import deleteScheduleTask from '@/api/server/schedules/deleteScheduleTask';
 import { httpErrorToHuman } from '@/api/http';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import TaskDetailsModal from '@/components/server/schedules/TaskDetailsModal';
-import Can from '@/components/elements/Can';
+import Can from '@/reviactyl/elements/Can';
 import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
 import tw from 'twin.macro';
-import ConfirmationModal from '@/components/elements/ConfirmationModal';
-import Icon from '@/components/elements/Icon';
+import ConfirmationModal from '@/reviactyl/elements/ConfirmationModal';
+import Icon from '@/reviactyl/elements/Icon';
 
 interface Props {
     schedule: Schedule;

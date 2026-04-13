@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import PageContentBlock from '@/components/elements/PageContentBlock';
+import PageContentBlock from '@/reviactyl/elements/PageContentBlock';
 import { ApplicationStore } from '@/state';
 import { useStoreState } from 'easy-peasy';
 import Card from '@/reviactyl/ui/Card';
@@ -8,7 +8,7 @@ import tw from 'twin.macro';
 import styled from 'styled-components';
 import { LogoContainer } from '@/reviactyl/ui/LogoContainer';
 import http from '@/api/http';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import { LogoutIcon } from '@heroicons/react/solid';
 
 const Container = styled.div`

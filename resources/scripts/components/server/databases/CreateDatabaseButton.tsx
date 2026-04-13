@@ -1,14 +1,14 @@
 import { useState } from 'react';
-import Modal from '@/components/elements/Modal';
+import Modal from '@/reviactyl/elements/Modal';
 import { Form, Formik, FormikHelpers } from 'formik';
-import Field from '@/components/elements/Field';
+import Field from '@/reviactyl/elements/Field';
 import { object, string } from 'yup';
 import createServerDatabase from '@/api/server/databases/createServerDatabase';
 import { ServerContext } from '@/state/server';
 import { httpErrorToHuman } from '@/api/http';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
-import Button from '@/components/elements/Button';
+import Button from '@/reviactyl/elements/Button';
 import tw from 'twin.macro';
 import { useTranslation } from 'react-i18next';
 

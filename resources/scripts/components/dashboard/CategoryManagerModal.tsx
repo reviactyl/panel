@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { object, string } from 'yup';
-import Modal from '@/components/elements/Modal';
-import Button from '@/components/elements/Button';
-import Field from '@/components/elements/Field';
+import Modal from '@/reviactyl/elements/Modal';
+import Button from '@/reviactyl/elements/Button';
+import Field from '@/reviactyl/elements/Field';
 import createServerCategory from '@/api/account/createServerCategory';
 import getServerCategories, { ServerCategory } from '@/api/account/getServerCategories';
 import deleteServerCategory from '@/api/account/deleteServerCategory';

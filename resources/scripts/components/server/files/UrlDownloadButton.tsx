@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import { Form, Formik, FormikHelpers } from 'formik';
-import Field from '@/components/elements/Field';
+import Field from '@/reviactyl/elements/Field';
 import { object, string } from 'yup';
 import pullFile from '@/api/server/files/pullFile';
 import tw from 'twin.macro';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/reviactyl/elements/button/index';
 import { useFlashKey } from '@/plugins/useFlash';
 import { WithClassname } from '@/components/types';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import { Dialog } from '@/components/elements/dialog';
+import { Dialog } from '@/reviactyl/elements/dialog';
 import { useTranslation } from 'react-i18next';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
-import Tooltip from '@/components/elements/tooltip/Tooltip';
+import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
 import { CloudDownloadIcon } from '@heroicons/react/solid';
 
 interface Values {

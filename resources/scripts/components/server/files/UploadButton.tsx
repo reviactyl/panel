@@ -1,19 +1,19 @@
 import axios, { AxiosProgressEvent } from 'axios';
 import getFileUploadUrl from '@/api/server/files/getFileUploadUrl';
 import tw from 'twin.macro';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/reviactyl/elements/button/index';
 import { useEffect, useRef, useState } from 'react';
-import { ModalMask } from '@/components/elements/Modal';
-import Fade from '@/components/elements/Fade';
+import { ModalMask } from '@/reviactyl/elements/Modal';
+import Fade from '@/reviactyl/elements/Fade';
 import useEventListener from '@/plugins/useEventListener';
 import { useFlashKey } from '@/plugins/useFlash';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import { ServerContext } from '@/state/server';
 import { WithClassname } from '@/components/types';
-import Portal from '@/components/elements/Portal';
+import Portal from '@/reviactyl/elements/Portal';
 import Card from '@/reviactyl/ui/Card';
 import { UploadIcon } from '@heroicons/react/solid';
-import Tooltip from '@/components/elements/tooltip/Tooltip';
+import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
 
 function isFileOrDirectory(event: DragEvent): boolean {
     if (!event.dataTransfer?.types) {

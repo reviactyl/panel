@@ -3,8 +3,8 @@ import { useParams } from 'react-router-dom';
 import tw from 'twin.macro';
 import { httpErrorToHuman } from '@/api/http';
 import axios from 'axios';
-import PageContentBlock from '@/components/elements/PageContentBlock';
-import ContentBox from '@/components/elements/ContentBox';
+import PageContentBlock from '@/reviactyl/elements/PageContentBlock';
+import ContentBox from '@/reviactyl/elements/ContentBox';
 import { useStoreActions } from 'easy-peasy';
 import styled from 'styled-components';
 

@@ -1,22 +1,22 @@
 import { useContext, useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import { Form, Formik, FormikHelpers } from 'formik';
-import Field from '@/components/elements/Field';
+import Field from '@/reviactyl/elements/Field';
 import { join } from 'pathe';
 import { object, string } from 'yup';
 import createDirectory from '@/api/server/files/createDirectory';
 import tw from 'twin.macro';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/reviactyl/elements/button/index';
 import { FileObject } from '@/api/server/files/loadDirectory';
 import { useFlashKey } from '@/plugins/useFlash';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import { WithClassname } from '@/components/types';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import { Dialog, DialogWrapperContext } from '@/components/elements/dialog';
-import Code from '@/components/elements/Code';
+import { Dialog, DialogWrapperContext } from '@/reviactyl/elements/dialog';
+import Code from '@/reviactyl/elements/Code';
 import asDialog from '@/hoc/asDialog';
 import { useTranslation } from 'react-i18next';
-import Tooltip from '@/components/elements/tooltip/Tooltip';
+import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
 import { FolderAddIcon } from '@heroicons/react/solid';
 
 interface Values {

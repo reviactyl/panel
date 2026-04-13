@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { Websocket } from '@/plugins/Websocket';
 import { ServerContext } from '@/state/server';
 import getWebsocketToken from '@/api/server/getWebsocketToken';
-import ContentContainer from '@/components/elements/ContentContainer';
+import ContentContainer from '@/reviactyl/elements/ContentContainer';
 import { motion } from 'framer-motion';
-import Spinner from '@/components/elements/Spinner';
+import Spinner from '@/reviactyl/elements/Spinner';
 import tw from 'twin.macro';
 import { useTranslation } from 'react-i18next';
 
