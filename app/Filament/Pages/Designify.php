@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Contracts\Repository\SettingsRepositoryInterface;
+use App\Filament\Widgets\PreviewWidget;
 use App\Traits\Helpers\AvailableLanguages;
 use Filament\Actions\Action;
 use Filament\Forms\Components\ColorPicker;
@@ -706,6 +707,13 @@ class Designify extends Page implements HasSchemas
                 ->modalHeading('Reset Designify?')
                 ->modalDescription('This will remove all saved Designify overrides and restore the default configuration.')
                 ->action(fn () => $this->resetToDefaults()),
+        ];
+    }
+
+    protected function getFooterWidgets(): array
+    {
+        return [
+            PreviewWidget::class,
         ];
     }
 }
