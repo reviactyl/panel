@@ -30,12 +30,12 @@ class DesignifyComposer
             'color50' => config('designify.theme1.color50') ?? '#f8f9fa',
             'color100' => config('designify.theme1.color100') ?? '#e1e4e8',
             'color200' => config('designify.theme1.color200') ?? '#c5cbd3',
-            'color300' => config('designify.theme1.color300') ?? '#9aa5b1',
-            'color400' => config('designify.theme1.color400') ?? '#6c7885',
-            'color500' => config('designify.theme1.color500') ?? '#55606d',
-            'color600' => config('designify.theme1.color600') ?? '#47505c',
-            'color700' => config('designify.theme1.color700') ?? '#38414d',
-            'color800' => config('designify.theme1.color800') ?? '#2f3741',
+            'color300' => config('designify.theme1.color300') ?? '#d4d4d8',
+            'color400' => config('designify.theme1.color400') ?? '#a1a1aa',
+            'color500' => config('designify.theme1.color500') ?? '#343437',
+            'color600' => config('designify.theme1.color600') ?? '#1e1e20',
+            'color700' => config('designify.theme1.color700') ?? '#18181b',
+            'color800' => config('designify.theme1.color800') ?? '#09090b',
             'color900' => config('designify.theme1.color900') ?? '#1d232b',
         ];
 
