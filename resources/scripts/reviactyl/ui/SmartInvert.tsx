@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect, useState } from 'react';
-import Switch from '@/components/elements/Switch';
+import Switch from '@/reviactyl/elements/Switch';
 import { useTranslation } from 'react-i18next';
 
 interface InvertProps {

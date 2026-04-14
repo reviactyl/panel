@@ -4,15 +4,19 @@ namespace App\Filament\Resources\Nodes\Schemas;
 
 use App\Models\ApiKey;
 use App\Models\Node;
+use App\Repositories\Wings\DaemonConfigurationRepository;
 use App\Services\Api\KeyCreationService;
+use App\Services\Helpers\SoftwareVersionService;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Infolists\Components\CodeEntry;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Actions;
+use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
@@ -24,10 +28,87 @@ class NodeForm
 {
     public static function configure(Schema $schema): Schema
     {
+        $softwareVersionService = app(SoftwareVersionService::class);
+        $isLatest = $softwareVersionService->isLatestPanel();
+
         return $schema
             ->components([
                 Tabs::make('Node Configuration')
                     ->tabs([
+                        Tab::make(trans('admin/node.sections.overview.title'))
+                            ->icon('tabler-layout-dashboard')
+                            ->schema([
+                                Fieldset::make()
+                                    ->label(trans('admin/node.sections.overview.information-label'))
+                                    ->columns(4)
+                                    ->columnSpanFull()
+                                    ->schema([
+                                        TextEntry::make('version')
+                                            ->label(trans('admin/node.sections.overview.version-label'))
+                                            ->state(function ($record) {
+                                                if (! $record) {
+                                                    return 'N/A';
+                                                }
+                                                try {
+                                                    $repository = app(DaemonConfigurationRepository::class);
+                                                    $data = $repository->setNode($record)->getSystemInformation();
+
+                                                    return $data['version'] ?? 'N/A';
+                                                } catch (\Exception $e) {
+                                                    return 'Unavailable';
+                                                }
+                                            }),
+
+                                        TextEntry::make('arch')
+                                            ->label(trans('admin/node.sections.overview.architecture-label'))
+                                            ->state(function ($record) {
+                                                if (! $record) {
+                                                    return 'N/A';
+                                                }
+                                                try {
+                                                    $repository = app(DaemonConfigurationRepository::class);
+                                                    $data = $repository->setNode($record)->getSystemInformation();
+
+                                                    return $data['architecture'] ?? 'N/A';
+                                                } catch (\Exception $e) {
+                                                    return 'Unavailable';
+                                                }
+                                            }),
+
+                                        TextEntry::make('kernel')
+                                            ->label(trans('admin/node.sections.overview.kernel-label'))
+                                            ->state(function ($record) {
+                                                if (! $record) {
+                                                    return 'N/A';
+                                                }
+                                                try {
+                                                    $repository = app(DaemonConfigurationRepository::class);
+                                                    $data = $repository->setNode($record)->getSystemInformation();
+
+                                                    return $data['kernel_version'] ?? 'N/A';
+                                                } catch (\Exception $e) {
+                                                    return 'Unavailable';
+                                                }
+                                            }),
+
+                                        TextEntry::make('cpus')
+                                            ->label(trans('admin/node.sections.overview.cpus-label'))
+                                            ->state(function ($record) {
+                                                if (! $record) {
+                                                    return 'N/A';
+                                                }
+                                                try {
+                                                    $repository = app(DaemonConfigurationRepository::class);
+                                                    $data = $repository->setNode($record)->getSystemInformation();
+
+                                                    return $data['cpu_count'] ?? 'N/A';
+                                                } catch (\Exception $e) {
+                                                    return 'Unavailable';
+                                                }
+                                            }),
+                                    ]),
+                            ]),
+
                         Tab::make(trans('admin/node.sections.identity.title'))
                             ->icon('heroicon-o-information-circle')
                             ->schema([

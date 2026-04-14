@@ -1,5 +1,5 @@
 import React from 'react';
-import PortaledModal, { ModalProps } from '@/components/elements/Modal';
+import PortaledModal, { ModalProps } from '@/reviactyl/elements/Modal';
 import ModalContext, { ModalContextValues } from '@/context/ModalContext';
 import isEqual from 'react-fast-compare';
 

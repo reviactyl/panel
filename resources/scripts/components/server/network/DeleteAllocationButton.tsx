@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { FaTrash } from 'react-icons/fa6';
 import tw from 'twin.macro';
-import Icon from '@/components/elements/Icon';
+import Icon from '@/reviactyl/elements/Icon';
 import { ServerContext } from '@/state/server';
 import deleteServerAllocation from '@/api/server/network/deleteServerAllocation';
 import getServerAllocations from '@/api/swr/getServerAllocations';
 import { useFlashKey } from '@/plugins/useFlash';
-import { Dialog } from '@/components/elements/dialog';
-import { Button } from '@/components/elements/button/index';
+import { Dialog } from '@/reviactyl/elements/dialog';
+import { Button } from '@/reviactyl/elements/button/index';
 
 interface Props {
     allocation: number;

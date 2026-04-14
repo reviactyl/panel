@@ -8,7 +8,8 @@ import { ApplicationStore } from '@/state';
 import { ExternalLinkIcon, LogoutIcon } from '@heroicons/react/solid';
 import { useTranslation } from 'react-i18next';
 import logout from '@/api/auth/logout';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import http from '@/api/http';
+import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 
 interface Props {
     isOpen?: boolean;

@@ -1,9 +1,9 @@
 import { useContext } from 'react';
 import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
+import Button from '@/reviactyl/elements/Button';
 import asModal from '@/hoc/asModal';
 import ModalContext from '@/context/ModalContext';
-import CopyOnClick from '@/components/elements/CopyOnClick';
+import CopyOnClick from '@/reviactyl/elements/CopyOnClick';
 import { useTranslation } from 'react-i18next';
 
 interface Props {

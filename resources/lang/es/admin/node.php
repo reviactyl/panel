@@ -5,6 +5,14 @@ return [
     'plural-label' => 'Nodes',
 
     'sections' => [
+        'overview' => [
+            'title' => 'Overview',
+            'information-label' => 'Node Information',
+            'version-label' => 'Wings Version',
+            'architecture-label' => 'Architecture',
+            'kernel-label' => 'Kernel',
+            'cpus-label' => 'CPU Threads',
+        ],
         'identity' => [
             'title' => 'Identity',
             'description' => 'Basic node information.',
@@ -112,7 +120,6 @@ return [
 
     'table' => [
         'health' => 'Health',
-        'health_version_prefix' => 'v',
         'health_http_status' => 'HTTP :status',
         'health_error' => ':error',
         'health_check_console' => 'check browser console',

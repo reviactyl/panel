@@ -7,10 +7,10 @@ import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { Formik, FormikHelpers } from 'formik';
 import { object, ref, string } from 'yup';
-import Field from '@/components/elements/Field';
-import Input from '@/components/elements/Input';
+import Field from '@/reviactyl/elements/Field';
+import Input from '@/reviactyl/elements/Input';
 import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
+import Button from '@/reviactyl/elements/Button';
 import { useTranslation } from 'react-i18next';
 
 interface Values {

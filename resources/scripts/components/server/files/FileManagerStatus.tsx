@@ -2,10 +2,10 @@ import { useContext, useEffect } from 'react';
 import { ServerContext } from '@/state/server';
 import { CloudUploadIcon, XIcon } from '@heroicons/react/solid';
 import asDialog from '@/hoc/asDialog';
-import { Dialog, DialogWrapperContext } from '@/components/elements/dialog';
-import { Button } from '@/components/elements/button/index';
-import Tooltip from '@/components/elements/tooltip/Tooltip';
-import Code from '@/components/elements/Code';
+import { Dialog, DialogWrapperContext } from '@/reviactyl/elements/dialog';
+import { Button } from '@/reviactyl/elements/button/index';
+import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
+import Code from '@/reviactyl/elements/Code';
 import { useSignal } from '@preact/signals-react';
 import { WithClassname } from '@/components/types';
 

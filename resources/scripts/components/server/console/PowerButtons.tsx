@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Button } from '@/components/elements/button/index';
-import Can from '@/components/elements/Can';
+import { Button } from '@/reviactyl/elements/button/index';
+import Can from '@/reviactyl/elements/Can';
 import { ServerContext } from '@/state/server';
 import { PowerAction } from '@/components/server/console/ServerConsoleContainer';
-import { Dialog } from '@/components/elements/dialog';
+import { Dialog } from '@/reviactyl/elements/dialog';
 import { useTranslation } from 'react-i18next';
 import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';

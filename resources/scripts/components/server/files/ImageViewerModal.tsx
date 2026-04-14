@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import Modal, { RequiredModalProps } from '@/components/elements/Modal';
+import Modal, { RequiredModalProps } from '@/reviactyl/elements/Modal';
 import Viewer from 'viewerjs';
 import 'viewerjs/dist/viewer.css';
 import tw from 'twin.macro';

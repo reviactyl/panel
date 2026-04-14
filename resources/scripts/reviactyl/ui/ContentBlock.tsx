@@ -1,4 +1,4 @@
-import PageContentBlock, { PageContentBlockProps } from '@/components/elements/PageContentBlock';
+import PageContentBlock, { PageContentBlockProps } from '@/reviactyl/elements/PageContentBlock';
 import React from 'react';
 import { ApplicationStore } from '@/state';
 import { useStoreState } from 'easy-peasy';

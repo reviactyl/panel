@@ -3,7 +3,6 @@
 use App\Console\Kernel as ConsoleKernel;
 use App\Exceptions\Handler as ExceptionHandler;
 use App\Http\Kernel as HttpKernel;
-use App\Http\Middleware\AdminAuthenticate;
 use App\Http\Middleware\RequireTwoFactorAuthentication;
 use Illuminate\Contracts\Console\Kernel as ConsoleKernelContract;
 use Illuminate\Contracts\Debug\ExceptionHandler as ExceptionHandlerContract;
@@ -24,10 +23,6 @@ return $app
         Route::middleware('web')->group(function () {
             Route::middleware(['auth.session', RequireTwoFactorAuthentication::class])
                 ->group(base_path('routes/base.php'));
-
-            Route::middleware(['auth.session', RequireTwoFactorAuthentication::class, AdminAuthenticate::class])
-                ->prefix('/designify')
-                ->group(base_path('routes/designify.php'));
 
             Route::middleware('guest')
                 ->prefix('/auth')

@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useActivityLogs } from '@/api/server/activity';
-import ServerContentBlock from '@/components/elements/ServerContentBlock';
+import ServerContentBlock from '@/reviactyl/elements/ServerContentBlock';
 import { useFlashKey } from '@/plugins/useFlash';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import Spinner from '@/components/elements/Spinner';
-import ActivityLogEntry from '@/components/elements/activity/ActivityLogEntry';
-import PaginationFooter from '@/components/elements/table/PaginationFooter';
+import Spinner from '@/reviactyl/elements/Spinner';
+import ActivityLogEntry from '@/reviactyl/elements/activity/ActivityLogEntry';
+import PaginationFooter from '@/reviactyl/elements/table/PaginationFooter';
 import { ActivityLogFilters } from '@/api/account/activity';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
-import { styles as btnStyles } from '@/components/elements/button/index';
+import { styles as btnStyles } from '@/reviactyl/elements/button/index';
 import { XCircleIcon } from '@heroicons/react/solid';
 import useLocationHash from '@/plugins/useLocationHash';
 

@@ -1,18 +1,18 @@
-import TitledGreyBox from '@/components/elements/TitledGreyBox';
+import TitledGreyBox from '@/reviactyl/elements/TitledGreyBox';
 import { ServerContext } from '@/state/server';
 import { useStoreState } from 'easy-peasy';
 import RenameServerBox from '@/components/server/settings/RenameServerBox';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import Can from '@/components/elements/Can';
+import Can from '@/reviactyl/elements/Can';
 import ReinstallServerBox from '@/components/server/settings/ReinstallServerBox';
 import tw from 'twin.macro';
-import Input from '@/components/elements/Input';
-import Label from '@/components/elements/Label';
-import ServerContentBlock from '@/components/elements/ServerContentBlock';
+import Input from '@/reviactyl/elements/Input';
+import Label from '@/reviactyl/elements/Label';
+import ServerContentBlock from '@/reviactyl/elements/ServerContentBlock';
 import isEqual from 'react-fast-compare';
-import CopyOnClick from '@/components/elements/CopyOnClick';
+import CopyOnClick from '@/reviactyl/elements/CopyOnClick';
 import { ip } from '@/lib/formatters';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/reviactyl/elements/button/index';
 import { useTranslation } from 'react-i18next';
 
 export default () => {

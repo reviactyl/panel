@@ -1,14 +1,14 @@
-import Modal from '@/components/elements/Modal';
+import Modal from '@/reviactyl/elements/Modal';
 import { Form, Formik, Field } from 'formik';
 import { object, string } from 'yup';
 import useFlash from '@/plugins/useFlash';
 import { Server } from '@/api/server/getServer';
 import getServerCategories from '@/api/account/getServerCategories';
 import useSWR from 'swr';
-import Button from '@/components/elements/Button';
-import Spinner from '@/components/elements/Spinner';
+import Button from '@/reviactyl/elements/Button';
+import Spinner from '@/reviactyl/elements/Spinner';
 import tw from 'twin.macro';
-import Select from '@/components/elements/Select';
+import Select from '@/reviactyl/elements/Select';
 import updateServerCategory from '@/api/server/updateServerCategory';
 import { useTranslation } from 'react-i18next';
 

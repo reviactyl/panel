@@ -65,7 +65,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->register(DesignifyServiceProvider::class);
+        $this->app->register(SettingsServiceProvider::class);
     }
 
     /**

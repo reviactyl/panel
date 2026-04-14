@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Server } from '@/api/server/getServer';
 import getServerResourceUsage, { ServerStats } from '@/api/server/getServerResourceUsage';
 import { bytesToString, ip, mbToBytes } from '@/lib/formatters';
-import Spinner from '@/components/elements/Spinner';
+import Spinner from '@/reviactyl/elements/Spinner';
 import Card from '@/reviactyl/ui/Card';
 import Title from '@/reviactyl/ui/Title';
 import { StatBlock } from '@/reviactyl/ui/StatBlock';

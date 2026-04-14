@@ -1,7 +1,7 @@
-import { Dialog, DialogProps } from '@/components/elements/dialog';
-import { Button } from '@/components/elements/button/index';
-import CopyOnClick from '@/components/elements/CopyOnClick';
-import { Alert } from '@/components/elements/alert';
+import { Dialog, DialogProps } from '@/reviactyl/elements/dialog';
+import { Button } from '@/reviactyl/elements/button/index';
+import CopyOnClick from '@/reviactyl/elements/CopyOnClick';
+import { Alert } from '@/reviactyl/elements/alert';
 import { useTranslation } from 'react-i18next';
 
 interface RecoveryTokenDialogProps extends DialogProps {
