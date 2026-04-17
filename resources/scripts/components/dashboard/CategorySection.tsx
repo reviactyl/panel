@@ -56,7 +56,10 @@ export default ({ category, servers, showOnlyAdmin, onCategoryChanged }: Props) 
                             </p>
                         )}
                     </div>
-                    <span css={tw`text-xs px-2 py-1 rounded-ui border flex-shrink-0 ml-auto`} style={{ color: displayColor, borderColor: displayColor }}>
+                    <span
+                        css={tw`text-xs px-2 py-1 rounded-ui border flex-shrink-0 ml-auto`}
+                        style={{ color: displayColor, borderColor: displayColor }}
+                    >
                         {t('categories.servers-count', { count: servers.length })}
                     </span>
                 </div>

@@ -199,7 +199,10 @@ export default () => {
                                     </Button.Text>
                                 )}
                                 {eggFilterOpen && (
-                                    <Card ref={eggFilterRef} className='absolute right-0 sm:left-auto top-full mt-1.5 z-10 min-w-[180px] !py-2 !px-2 shadow-lg'>
+                                    <Card
+                                        ref={eggFilterRef}
+                                        className='absolute right-0 sm:left-auto top-full mt-1.5 z-10 min-w-[180px] !py-2 !px-2 shadow-lg'
+                                    >
                                         {/* Egg filter is global (not user-specific): show for both "your servers" and "others' servers" */}
                                         {(eggs && eggs.length > 0) ||
                                         (rootAdmin && showOnlyAdmin && Array.isArray(eggs)) ? (

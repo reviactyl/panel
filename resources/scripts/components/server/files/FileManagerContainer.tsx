@@ -239,9 +239,9 @@ export default () => {
                             <div className={style.manager_actions}>
                                 <ExtensionSlot name={`server:files:actions:start`} />
                                 <FileManagerStatus />
-                                <UrlDownloadButton  />
-                                <NewDirectoryButton  />
-                                <UploadButton  />
+                                <UrlDownloadButton />
+                                <NewDirectoryButton />
+                                <UploadButton />
                                 <Tooltip content={t('new-file')}>
                                     <Button.Text
                                         onClick={() => {
