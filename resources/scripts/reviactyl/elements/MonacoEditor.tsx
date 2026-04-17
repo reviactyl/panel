@@ -8,45 +8,7 @@ import tw from 'twin.macro';
 import modes from '@/modes';
 import Spinner from './Spinner';
 
-declare global {
-    interface Window {
-        __MONACO_LOADED__?: boolean;
-    }
-}
-
-if (!window.__MONACO_LOADED__) {
-    window.__MONACO_LOADED__ = true;
-
-    self.MonacoEnvironment = {
-        getWorker(_: any, label: string) {
-            if (label === 'json') {
-                return new Worker(new URL('monaco-editor/esm/vs/language/json/json.worker', import.meta.url), {
-                    type: 'module',
-                });
-            }
-            if (label === 'css') {
-                return new Worker(new URL('monaco-editor/esm/vs/language/css/css.worker', import.meta.url), {
-                    type: 'module',
-                });
-            }
-            if (label === 'html') {
-                return new Worker(new URL('monaco-editor/esm/vs/language/html/html.worker', import.meta.url), {
-                    type: 'module',
-                });
-            }
-            if (label === 'typescript' || label === 'javascript') {
-                return new Worker(new URL('monaco-editor/esm/vs/language/typescript/ts.worker', import.meta.url), {
-                    type: 'module',
-                });
-            }
-            return new Worker(new URL('monaco-editor/esm/vs/editor/editor.worker', import.meta.url), {
-                type: 'module',
-            });
-        },
-    };
-
-    loader.config({ monaco });
-}
+loader.config({ monaco });
 
 const EditorContainer = styled.div`
     min-height: 16rem;
