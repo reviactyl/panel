@@ -13,7 +13,7 @@ import { Dialog } from '@/reviactyl/elements/dialog';
 import { useTranslation } from 'react-i18next';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
-import { CloudDownloadIcon } from '@heroicons/react/solid';
+import { FaCloudArrowUp } from 'react-icons/fa6';
 
 interface Values {
     url: string;
@@ -124,7 +124,7 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
                         }
                     >
                         <DownloadSpinner className={'w-8 h-8'} />
-                        <CloudDownloadIcon className={'h-3 absolute mx-auto animate-pulse'} />
+                        <FaCloudArrowUp className={'h-3 absolute mx-auto animate-pulse'} />
                     </button>
                 </Tooltip>
             )}
@@ -163,7 +163,7 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
             </Dialog>
             <Tooltip content={t('url-download.button')}>
                 <Button.Text onClick={() => setOpen(true)} className={className} aria-label={t('url-download.button')}>
-                    <CloudDownloadIcon className='h-5 w-5' />
+                    <FaCloudArrowUp className='h-5 w-5' />
                 </Button.Text>
             </Tooltip>
         </>

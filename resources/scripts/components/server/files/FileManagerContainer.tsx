@@ -30,7 +30,6 @@ import getFileDownloadUrl from '@/api/server/files/getFileDownloadUrl';
 import { join } from 'pathe';
 import { bytesToString } from '@/lib/formatters';
 import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
-import { PlusSmIcon } from '@heroicons/react/solid';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 import Input from '@/reviactyl/elements/Input';
 import {
@@ -40,7 +39,9 @@ import {
     FaArrowUp19,
     FaArrowUpAZ,
     FaArrowUpShortWide,
+    FaFileCirclePlus,
 } from 'react-icons/fa6';
+import { Button } from '@/reviactyl/elements/button';
 
 type SortType = 'name' | 'size' | 'date';
 type SortDirection = 'asc' | 'desc';
@@ -237,18 +238,19 @@ export default () => {
                         <Can action={'file.create'}>
                             <div className={style.manager_actions}>
                                 <ExtensionSlot name={`server:files:actions:start`} />
-                                <FileManagerStatus className={style.icon_action} />
-                                <UrlDownloadButton className={style.icon_action} />
-                                <NewDirectoryButton className={style.icon_action} />
-                                <UploadButton className={style.icon_action} />
+                                <FileManagerStatus />
+                                <UrlDownloadButton  />
+                                <NewDirectoryButton  />
+                                <UploadButton  />
                                 <Tooltip content={t('new-file')}>
-                                    <NavLink
-                                        to={`/server/${id}/files/new${window.location.hash}`}
-                                        className={style.icon_action}
+                                    <Button.Text
+                                        onClick={() => {
+                                            window.location.href = `/server/${id}/files/new${window.location.hash}`;
+                                        }}
                                         aria-label={t('new-file')}
                                     >
-                                        <PlusSmIcon className='h-5 w-5' />
-                                    </NavLink>
+                                        <FaFileCirclePlus className='h-5 w-5' />
+                                    </Button.Text>
                                 </Tooltip>
                                 <ExtensionSlot name={`server:files:actions:end`} />
                             </div>

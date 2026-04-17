@@ -17,7 +17,7 @@ import Code from '@/reviactyl/elements/Code';
 import asDialog from '@/hoc/asDialog';
 import { useTranslation } from 'react-i18next';
 import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
-import { FolderAddIcon } from '@heroicons/react/solid';
+import { FaFolderPlus } from 'react-icons/fa6';
 
 interface Values {
     directoryName: string;
@@ -118,7 +118,7 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
                     className={className}
                     aria-label={t('create-directory')}
                 >
-                    <FolderAddIcon className='h-5 w-5' />
+                    <FaFolderPlus className='h-5 w-5' />
                 </Button.Text>
             </Tooltip>
         </>
