@@ -3,6 +3,11 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v2.2.5
+### Fixed
+* Fixes crash upon ScreenBlock icon rendering.
+* Fixes container width of TopServerDetails.
+
 ## v2.2.4
 ### Fixed
 * Fixes task execution jobs to correctly dispatch the next job in the chain.
