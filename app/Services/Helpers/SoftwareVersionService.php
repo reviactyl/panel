@@ -49,6 +49,14 @@ class SoftwareVersionService
     }
 
     /**
+     * Get the v26 release status.
+     */
+    public function get26(): string
+    {
+        return Arr::get(self::$result, 'v26') ?? 'false';
+    }
+
+    /**
      * Get the URL for donations.
      */
     public function getDonations(): string

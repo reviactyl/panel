@@ -13,6 +13,19 @@
 @endsection
 
 @section('content')
+    @if ($version->get26() === 'true')
+        <div class="alert alert-success">
+            <h4><i class="icon fa fa-check"></i> Reviactyl v26 (Fission Falcon) is out!</h4>
+            <p><b>You are missing out on new features and improvements.</b> Upgrade your panel to Reviactyl v26 (Fission Falcon).</p>
+        </div>
+        <div class="row text-center" style="margin-bottom: 20px;">
+            <div class="box">
+                <a href="https://reviactyl.app/whats-new-in-v26">
+                    <img style="height:400px" src="https://cdn.reviactyl.app/@reviactyl/ocassions/fission_falcon.webp" />
+                </a>
+            </div>
+        </div>
+    @endif
     <div class="row">
         <div class="col-xs-12">
             <div
