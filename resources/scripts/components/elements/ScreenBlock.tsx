@@ -12,7 +12,7 @@ import Card from '@/reviactyl/ui/Card';
 
 interface BaseProps {
     title: string;
-    image: ComponentType<React.SVGProps<SVGSVGElement>>;
+    image: ComponentType<React.SVGProps<SVGSVGElement>> | string;
     message: string;
     onRetry?: () => void;
     onBack?: () => void;
@@ -59,7 +59,15 @@ const ScreenBlock = ({ title, image: Image, message, onBack, onRetry }: ScreenBl
                     </div>
                 )}
                 <div className="grid grid-rows-2 gap-x-4 items-center grid-cols-[auto,1fr]">
-                    <Image className="w-20 h-20 row-span-2 select-none" />
+                    {typeof Image === 'string' ? (
+                        <img
+                            src={Image}
+                            className="w-20 h-20 row-span-2 select-none"
+                        />
+                    ) : (
+                        <Image className="w-20 h-20 row-span-2 select-none" />
+                    )}
+
                     <h2 className="text-gray-200 font-bold text-3xl">{title}</h2>
                     <p className="text-sm text-gray-100">{message}</p>
                 </div>
