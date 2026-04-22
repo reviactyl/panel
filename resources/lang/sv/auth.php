@@ -64,7 +64,7 @@ return [
         'label' => 'Registrera',
         'create-account' => 'Create Account',
     ],
-    
+
     'failed' => 'Ingen matchande konto med dessa uppgifter kunde hittas.',
 
     'two_factor' => [

@@ -64,7 +64,7 @@ return [
         'label' => 'Registrar',
         'create-account' => 'Create Account',
     ],
-    
+
     'failed' => 'Nenhuma conta correspondente a essas credenciais foi encontrada.',
 
     'two_factor' => [

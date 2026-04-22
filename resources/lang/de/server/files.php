@@ -27,8 +27,8 @@ return [
         'url-invalid' => 'Please enter a valid URL.',
     ],
     'search' => [
-           'placeholder' => 'Dateien durchsuchen...',
-           'button' => 'Search',
-           'clear' => 'Suche leeren',
+        'placeholder' => 'Dateien durchsuchen...',
+        'button' => 'Search',
+        'clear' => 'Suche leeren',
     ],
 ];

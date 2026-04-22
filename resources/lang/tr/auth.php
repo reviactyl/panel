@@ -64,7 +64,7 @@ return [
         'label' => 'Kayıt Ol',
         'create-account' => 'Create Account',
     ],
-    
+
     'failed' => 'Bu kimlik bilgileriyle eşleşen bir hesap bulunamadı.',
 
     'two_factor' => [
