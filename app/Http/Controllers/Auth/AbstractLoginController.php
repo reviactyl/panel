@@ -6,16 +6,15 @@ use App\Events\Auth\DirectLogin;
 use App\Exceptions\DisplayException;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Events\Failed;
-use Illuminate\Container\Container;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
-use Illuminate\Contracts\Auth\StatefulGuard;
 
 abstract class AbstractLoginController extends Controller
 {
