@@ -6,7 +6,7 @@ use App\Events\Auth\DirectLogin;
 use App\Exceptions\DisplayException;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Auth\AuthManager;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -15,12 +15,13 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
+use Illuminate\Contracts\Auth\StatefulGuard;
 
 abstract class AbstractLoginController extends Controller
 {
     use AuthenticatesUsers;
 
-    protected AuthManager $auth;
+    protected StatefulGuard $auth;
 
     /**
      * Lockout time for failed login requests.
@@ -44,7 +45,6 @@ abstract class AbstractLoginController extends Controller
     {
         $this->lockoutTime = config('auth.lockout.time');
         $this->maxLoginAttempts = config('auth.lockout.attempts');
-        $this->auth = Container::getInstance()->make(AuthManager::class);
     }
 
     /**
@@ -78,7 +78,7 @@ abstract class AbstractLoginController extends Controller
 
         $this->clearLoginAttempts($request);
 
-        $this->auth->guard()->login($user, true);
+        Auth::login($user, true);
 
         Event::dispatch(new DirectLogin($user, true));
 
