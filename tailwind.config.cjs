@@ -38,6 +38,7 @@ module.exports = {
                 gray: gray,
                 neutral: gray,
                 cyan: colors.cyan,
+                amber: colors.amber,
                 reviactyl: reviactyl('--color-primary'),
                 success: reviactyl('--color-success'),
                 danger: reviactyl('--color-danger'),

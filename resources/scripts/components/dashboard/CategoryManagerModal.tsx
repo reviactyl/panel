@@ -252,8 +252,8 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
 
                     <div style={{ paddingRight: '0.5rem' }}>
                         {categories.length === 0 ? (
-                            <Card className='!border-2 !border-dashed !p-12 text-center'>
-                                <FaLayerGroup className='text-3xl text-gray-500 mb-4' />
+                            <Card className='!border-2 !border-dashed !p-12 flex items-center justify-center gap-3'>
+                                <FaLayerGroup className='text-3xl text-gray-400' />
                                 <p className='text-sm text-gray-400'>{t('categories.no-custom-categories')}</p>
                             </Card>
                         ) : (

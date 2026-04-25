@@ -56,7 +56,10 @@ export default ({ category, servers, showOnlyAdmin, onCategoryChanged }: Props) 
                             </p>
                         )}
                     </div>
-                    <span css={tw`text-xs text-[#94a3b8] px-2 py-1 rounded-md bg-[#1e293b] flex-shrink-0`}>
+                    <span
+                        css={tw`text-xs px-2 py-1 rounded-ui border flex-shrink-0 ml-auto`}
+                        style={{ color: displayColor, borderColor: displayColor }}
+                    >
                         {t('categories.servers-count', { count: servers.length })}
                     </span>
                 </div>
@@ -66,7 +69,7 @@ export default ({ category, servers, showOnlyAdmin, onCategoryChanged }: Props) 
 
             {/* CONTENT */}
             {open && (
-                <div css={tw`border-t border-[#334155] p-4`}>
+                <div css={tw`border-t border-gray-500 p-4`}>
                     <div css={tw`grid lg:grid-cols-2 gap-4`}>
                         {servers.map((server, index) => (
                             <ServerRow

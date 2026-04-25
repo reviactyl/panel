@@ -1,6 +1,6 @@
 import { useContext, useEffect } from 'react';
 import { ServerContext } from '@/state/server';
-import { CloudUploadIcon, XIcon } from '@heroicons/react/solid';
+import { XIcon } from '@heroicons/react/solid';
 import asDialog from '@/hoc/asDialog';
 import { Dialog, DialogWrapperContext } from '@/reviactyl/elements/dialog';
 import { Button } from '@/reviactyl/elements/button/index';
@@ -8,6 +8,7 @@ import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
 import Code from '@/reviactyl/elements/Code';
 import { useSignal } from '@preact/signals-react';
 import { WithClassname } from '@/components/types';
+import { FaCloudArrowDown } from 'react-icons/fa6';
 
 const svgProps = {
     cx: 16,
@@ -94,12 +95,12 @@ export default ({ className }: WithClassname) => {
                     <button
                         className={
                             className ||
-                            'flex items-center justify-center w-10 h-10 rounded-ui bg-gray-700 border border-gray-600 text-gray-300 hover:text-gray-100 hover:border-gray-500 transition-colors'
+                            'flex items-center justify-center w-10 h-10 rounded-ui bg-gray-700 border border-gray-600 text-blue-300 hover:text-blue-100 hover:border-gray-500 transition-colors'
                         }
                         onClick={() => (open.value = true)}
                     >
                         <Spinner progress={(progress.uploaded / progress.total) * 100} className={'w-8 h-8'} />
-                        <CloudUploadIcon className={'h-3 absolute mx-auto animate-pulse'} />
+                        <FaCloudArrowDown className={'h-3 absolute mx-auto animate-pulse'} />
                     </button>
                 </Tooltip>
             )}

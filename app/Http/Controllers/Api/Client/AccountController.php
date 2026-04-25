@@ -92,24 +92,4 @@ class AccountController extends ClientApiController
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
-
-    public function updateEditor(Request $request): JsonResponse
-    {
-        $request->validate([
-            'fileEditor' => ['required', 'string', 'max:255'],
-        ]);
-
-        $user = $request->user();
-        $original = $user->editor;
-        $user->editor = $request->input('fileEditor');
-        $user->save();
-
-        if ($original !== $user->editor) {
-            Activity::event('user:account.file-editor-changed')
-                ->property(['old' => $original, 'new' => $user->editor])
-                ->log();
-        }
-
-        return new JsonResponse([$user], Response::HTTP_OK);
-    }
 }

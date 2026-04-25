@@ -1,12 +1,14 @@
-import React, { useEffect, useRef, useState, lazy, Suspense } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import Editor, { loader } from '@monaco-editor/react';
 import type { Monaco } from '@monaco-editor/react';
 import type { editor } from 'monaco-editor';
+import * as monaco from 'monaco-editor';
 import styled from 'styled-components';
 import tw from 'twin.macro';
 import modes from '@/modes';
 import Spinner from './Spinner';
 
-const Editor = lazy(() => import('@monaco-editor/react'));
+loader.config({ monaco });
 
 const EditorContainer = styled.div`
     min-height: 16rem;
@@ -52,49 +54,15 @@ const findModeByFilename = (filename: string) => {
     return undefined;
 };
 
-// Map MIME types to Monaco languages
-const mimeToMonacoLanguage = (mime: string): string => {
-    const mimeMap: Record<string, string> = {
-        'text/x-csrc': 'c',
-        'text/x-c++src': 'cpp',
-        'text/x-csharp': 'csharp',
-        'text/css': 'css',
-        'text/x-dockerfile': 'dockerfile',
-        'text/x-go': 'go',
-        'text/html': 'html',
-        'text/x-java': 'java',
-        'text/javascript': 'javascript',
-        'application/javascript': 'javascript',
-        'application/json': 'json',
-        'text/x-kotlin': 'kotlin',
-        'text/x-lua': 'lua',
-        'text/x-gfm': 'markdown',
-        'text/x-markdown': 'markdown',
-        'text/x-nginx-conf': 'nginx',
-        'text/x-perl': 'perl',
-        'text/x-php': 'php',
-        'text/x-properties': 'ini',
-        'text/x-python': 'python',
-        'text/x-ruby': 'ruby',
-        'text/x-rustsrc': 'rust',
-        'text/x-scss': 'scss',
-        'text/x-sass': 'sass',
-        'text/x-sh': 'shell',
-        'application/x-sh': 'shell',
-        'application/x-sql': 'sql',
-        'text/x-sql': 'sql',
-        'text/x-swift': 'swift',
-        'text/x-toml': 'toml',
-        'application/xml': 'xml',
-        'text/xml': 'xml',
-        'text/x-yaml': 'yaml',
-        'text/plain': 'plaintext',
-    };
-
-    return mimeMap[mime] || 'plaintext';
-};
-
-export default ({ style, initialContent, filename, mode, fetchContent, onContentSaved, onModeChanged }: Props) => {
+export default function CodeEditor({
+    style,
+    initialContent,
+    filename,
+    mode,
+    fetchContent,
+    onContentSaved,
+    onModeChanged,
+}: Props) {
     const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
     const [monacoLanguage, setMonacoLanguage] = useState('plaintext');
 
@@ -102,20 +70,17 @@ export default ({ style, initialContent, filename, mode, fetchContent, onContent
         if (filename === undefined) {
             return;
         }
-
-        onModeChanged(findModeByFilename(filename)?.mime || 'text/plain');
+        onModeChanged(findModeByFilename(filename)?.mode || 'plaintext');
     }, [filename]);
 
     useEffect(() => {
-        setMonacoLanguage(mimeToMonacoLanguage(mode));
+        setMonacoLanguage(mode);
     }, [mode]);
 
-    const handleEditorDidMount = (editorInstance: editor.IStandaloneCodeEditor, monaco: Monaco) => {
+    const handleEditorDidMount = (editorInstance: editor.IStandaloneCodeEditor, monacoInstance: Monaco) => {
         editorRef.current = editorInstance;
 
-        editorInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
-            onContentSaved();
-        });
+        editorInstance.addCommand(monacoInstance.KeyMod.CtrlCmd | monacoInstance.KeyCode.KeyS, () => onContentSaved());
 
         fetchContent(() => Promise.resolve(editorInstance.getValue()));
 
@@ -132,37 +97,35 @@ export default ({ style, initialContent, filename, mode, fetchContent, onContent
 
     return (
         <EditorContainer style={style}>
-            <Suspense fallback={<Spinner centered size={Spinner.Size.LARGE} />}>
-                <Editor
-                    height='100%'
-                    language={monacoLanguage}
-                    value={initialContent || ''}
-                    theme='vs-dark'
-                    onMount={handleEditorDidMount}
-                    loading={<Spinner centered size={Spinner.Size.LARGE} />}
-                    options={{
-                        fontSize: 14,
-                        lineHeight: 22,
-                        minimap: { enabled: true },
-                        scrollBeyondLastLine: true,
-                        automaticLayout: true,
-                        tabSize: 4,
-                        insertSpaces: true,
-                        wordWrap: 'on',
-                        lineNumbers: 'on',
-                        folding: true,
-                        fixedOverflowWidgets: true,
-                        scrollbar: {
-                            verticalScrollbarSize: 10,
-                            horizontalScrollbarSize: 10,
-                        },
-                        bracketPairColorization: {
-                            enabled: true,
-                        },
-                        matchBrackets: 'always',
-                    }}
-                />
-            </Suspense>
+            <Editor
+                height='100%'
+                language={monacoLanguage}
+                value={initialContent || ''}
+                theme='vs-dark'
+                onMount={handleEditorDidMount}
+                loading={<Spinner centered size={Spinner.Size.LARGE} />}
+                options={{
+                    fontSize: 14,
+                    lineHeight: 22,
+                    minimap: { enabled: true },
+                    scrollBeyondLastLine: true,
+                    automaticLayout: true,
+                    tabSize: 4,
+                    insertSpaces: true,
+                    wordWrap: 'on',
+                    lineNumbers: 'on',
+                    folding: true,
+                    fixedOverflowWidgets: true,
+                    scrollbar: {
+                        verticalScrollbarSize: 10,
+                        horizontalScrollbarSize: 10,
+                    },
+                    bracketPairColorization: {
+                        enabled: true,
+                    },
+                    matchBrackets: 'always',
+                }}
+            />
         </EditorContainer>
     );
-};
+}

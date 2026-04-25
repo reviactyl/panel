@@ -65,7 +65,3 @@
         background-color: transparent !important;
     }
 }
-
-.chart_container {
-    @apply bg-gray-600 rounded shadow-lg pt-2 border-b-4 border-gray-700 relative;
-}

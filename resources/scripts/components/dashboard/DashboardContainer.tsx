@@ -174,7 +174,7 @@ export default () => {
                                 <Button.Text
                                     type='button'
                                     onClick={() => setModalVisible(true)}
-                                    className={`!p-2 rounded-lg transition border border-gray-500 hover:border-gray-400`}
+                                    className={`!p-2`}
                                     title={t('categories.manage')}
                                     aria-label={t('categories.manage')}
                                 >
@@ -186,10 +186,10 @@ export default () => {
                                     <Button.Text
                                         type='button'
                                         onClick={() => setEggFilterOpen((o) => !o)}
-                                        className={`!p-2 rounded-lg transition border ${
-                                            selectedEggId !== null
-                                                ? 'border-blue-500 hover:border-blue-400'
-                                                : 'border-gray-500 hover:border-gray-400'
+                                        className={`!p-2 ${
+                                            selectedEggId !== null || selectedCategory !== 'all'
+                                                ? 'bg-blue-700 hover:bg-blue-600'
+                                                : ''
                                         }`}
                                         title={t('filter-label')}
                                         aria-label={t('filter-label')}
@@ -199,11 +199,14 @@ export default () => {
                                     </Button.Text>
                                 )}
                                 {eggFilterOpen && (
-                                    <Card className='absolute right-0 sm:left-auto top-full mt-1.5 z-10 min-w-[180px] !py-2 !px-2 shadow-lg'>
+                                    <Card
+                                        ref={eggFilterRef}
+                                        className='absolute right-0 sm:left-auto top-full mt-1.5 z-10 min-w-[180px] !py-2 !px-2 shadow-lg'
+                                    >
                                         {/* Egg filter is global (not user-specific): show for both "your servers" and "others' servers" */}
                                         {(eggs && eggs.length > 0) ||
                                         (rootAdmin && showOnlyAdmin && Array.isArray(eggs)) ? (
-                                            <div className='mb-2 border-b border-gray-600 pb-2' ref={eggFilterRef}>
+                                            <div className='mb-2 border-b border-gray-600 pb-2'>
                                                 <p className='text-xs text-gray-200 uppercase px-2 pb-1.5'>
                                                     {t('eggs.filter-label')}
                                                 </p>
