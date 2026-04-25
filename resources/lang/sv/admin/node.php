@@ -5,6 +5,14 @@ return [
     'plural-label' => 'Noder',
 
     'sections' => [
+        'overview' => [
+            'title' => 'Overview',
+            'information-label' => 'Node Information',
+            'version-label' => 'Wings Version',
+            'architecture-label' => 'Architecture',
+            'kernel-label' => 'Kernel',
+            'cpus-label' => 'CPU Threads',
+        ],
         'identity' => [
             'title' => 'Identitet',
             'description' => 'Grundläggande information om noden.',

@@ -4,7 +4,7 @@ import ForgotPasswordContainer from '@/components/auth/ForgotPasswordContainer';
 import ResetPasswordContainer from '@/components/auth/ResetPasswordContainer';
 import LoginCheckpointContainer from '@/components/auth/LoginCheckpointContainer';
 import RegisterContainer from '@/components/auth/RegisterContainer';
-import { NotFound } from '@/components/elements/ScreenBlock';
+import { NotFound } from '@/reviactyl/elements/ScreenBlock';
 import styled from 'styled-components';
 import tw from 'twin.macro';
 

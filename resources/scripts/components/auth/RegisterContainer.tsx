@@ -3,14 +3,14 @@ import { Link } from 'react-router-dom';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
 import { Formik, FormikHelpers } from 'formik';
 import { object, string, ref as yupRef } from 'yup';
-import Field from '@/components/elements/Field';
+import Field from '@/reviactyl/elements/Field';
 import tw from 'twin.macro';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/reviactyl/elements/button/index';
 import useFlash from '@/plugins/useFlash';
-import Label from '@/components/elements/Label';
+import Label from '@/reviactyl/elements/Label';
 import { KeyIcon, UserIcon, MailIcon, EyeIcon, EyeOffIcon } from '@heroicons/react/solid';
 import Reaptcha from 'reaptcha';
-import Turnstile from '@/components/elements/Turnstile';
+import Turnstile from '@/reviactyl/elements/Turnstile';
 import { useStoreState } from 'easy-peasy';
 
 import register from '@/api/auth/register';

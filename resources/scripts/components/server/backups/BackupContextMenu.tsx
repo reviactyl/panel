@@ -1,19 +1,19 @@
 import { useState, useRef, forwardRef, useImperativeHandle } from 'react';
 import { FaBoxOpen, FaCloudArrowDown, FaEllipsis, FaLock, FaTrash, FaUnlock } from 'react-icons/fa6';
-import DropdownMenu, { DropdownButtonRow } from '@/components/elements/DropdownMenu';
+import DropdownMenu, { DropdownButtonRow } from '@/reviactyl/elements/DropdownMenu';
 import getBackupDownloadUrl from '@/api/server/backups/getBackupDownloadUrl';
 import useFlash from '@/plugins/useFlash';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import deleteBackup from '@/api/server/backups/deleteBackup';
-import Can from '@/components/elements/Can';
+import Can from '@/reviactyl/elements/Can';
 import tw from 'twin.macro';
 import getServerBackups from '@/api/swr/getServerBackups';
 import { ServerBackup } from '@/api/server/types';
 import { ServerContext } from '@/state/server';
-import Input from '@/components/elements/Input';
+import Input from '@/reviactyl/elements/Input';
 import { restoreServerBackup } from '@/api/server/backups';
 import http, { httpErrorToHuman } from '@/api/http';
-import { Dialog } from '@/components/elements/dialog';
+import { Dialog } from '@/reviactyl/elements/dialog';
 import { useTranslation } from 'react-i18next';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 

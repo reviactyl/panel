@@ -1,5 +1,5 @@
 import { ServerContext } from '@/state/server';
-import ScreenBlock from '@/components/elements/ScreenBlock';
+import ScreenBlock from '@/reviactyl/elements/ScreenBlock';
 import ServerInstallSvg from '@/assets/images/server_installing.svg';
 import ServerErrorSvg from '@/assets/images/server_error.svg';
 import ServerRestoreSvg from '@/assets/images/server_restore.svg';

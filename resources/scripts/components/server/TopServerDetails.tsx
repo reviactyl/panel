@@ -3,9 +3,9 @@ import { ServerContext } from '@/state/server';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import PowerButtons from '@/components/server/console/PowerButtons';
-import CopyOnClick from '@/components/elements/CopyOnClick';
+import CopyOnClick from '@/reviactyl/elements/CopyOnClick';
 import { ExternalLinkIcon } from '@heroicons/react/solid';
-import Can from '@/components/elements/Can';
+import Can from '@/reviactyl/elements/Can';
 import { bytesToString, ip, mbToBytes } from '@/lib/formatters';
 import Card from '@/reviactyl/ui/Card';
 import styled from 'styled-components';
@@ -27,7 +27,7 @@ const Limit = ({ limit, children }: { limit: string | null; children: React.Reac
 );
 
 const Container = styled.div`
-    ${tw`relative z-10 pt-4 pl-2`};
+    ${tw`relative z-10 pt-4 pl-2 w-full max-w-[75rem] mx-auto`};
 `;
 
 const UtilContainer = styled.div`
@@ -96,7 +96,7 @@ const TopServerDetails = () => {
 
     return (
         <Container>
-            <Card className={`!p-4 !px-8 max-w-6xl mx-auto w-full`}>
+            <Card className={`!p-4 !px-8 mx-auto`}>
                 <UtilContainer>
                     <div className={'flex items-center gap-x-3'}>
                         <Title className='text-3xl truncate flex-1 max-w-[400px]' title={name}>

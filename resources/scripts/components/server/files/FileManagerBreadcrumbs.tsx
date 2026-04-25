@@ -38,36 +38,32 @@ export default ({ renderLeft, withinFileEditor, isNewFile }: Props) => {
             });
 
     return (
-        <div css={tw`flex flex-grow-0 items-center text-sm text-gray-500 overflow-x-hidden whitespace-nowrap`}>
-            {renderLeft}
-            <span>/</span>
-            <span css={tw`text-gray-300`}>home</span>
-            <span>/</span>
-            <NavLink to={`/server/${id}/files`} css={tw`text-gray-200 no-underline hover:text-gray-100`}>
+        <div css={tw`flex flex-grow-0 items-center text-sm text-gray-500 overflow-x-hidden`}>
+            {renderLeft || <div css={tw`w-12`} />}/<span css={tw`px-1 text-gray-300`}>home</span>/
+            <NavLink to={`/server/${id}/files`} css={tw`px-1 text-gray-200 no-underline hover:text-gray-100`}>
                 container
             </NavLink>
-            <span>/</span>
+            /
             {breadcrumbs().map((crumb, index) =>
                 crumb.path ? (
                     <React.Fragment key={index}>
                         <NavLink
                             to={`/server/${id}/files#${encodePathSegments(crumb.path)}`}
-                            css={tw`text-gray-200 no-underline hover:text-gray-100`}
+                            css={tw`px-1 text-gray-200 no-underline hover:text-gray-100`}
                         >
                             {crumb.name}
                         </NavLink>
-                        <span>/</span>
+                        /
                     </React.Fragment>
                 ) : (
-                    <span key={index} css={tw`text-gray-300`}>
+                    <span key={index} css={tw`px-1 text-gray-300`}>
                         {crumb.name}
                     </span>
                 )
             )}
             {file && (
                 <React.Fragment>
-                    <span>/</span>
-                    <span css={tw`text-gray-300`}>{file}</span>
+                    <span css={tw`px-1 text-gray-300`}>{file}</span>
                 </React.Fragment>
             )}
         </div>

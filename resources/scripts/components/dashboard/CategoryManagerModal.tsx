@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { object, string } from 'yup';
-import Modal from '@/components/elements/Modal';
-import Button from '@/components/elements/Button';
-import Field from '@/components/elements/Field';
+import Modal from '@/reviactyl/elements/Modal';
+import Button from '@/reviactyl/elements/Button';
+import Field from '@/reviactyl/elements/Field';
 import createServerCategory from '@/api/account/createServerCategory';
 import getServerCategories, { ServerCategory } from '@/api/account/getServerCategories';
 import deleteServerCategory from '@/api/account/deleteServerCategory';
@@ -252,8 +252,8 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
 
                     <div style={{ paddingRight: '0.5rem' }}>
                         {categories.length === 0 ? (
-                            <Card className='!border-2 !border-dashed !p-12 text-center'>
-                                <FaLayerGroup className='text-3xl text-gray-500 mb-4' />
+                            <Card className='!border-2 !border-dashed !p-12 flex items-center justify-center gap-3'>
+                                <FaLayerGroup className='text-3xl text-gray-400' />
                                 <p className='text-sm text-gray-400'>{t('categories.no-custom-categories')}</p>
                             </Card>
                         ) : (

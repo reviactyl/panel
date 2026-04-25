@@ -9,7 +9,7 @@ import { bytesToString } from '@/lib/formatters';
 import { CloudDownloadIcon, CloudUploadIcon } from '@heroicons/react/solid';
 import { theme } from 'twin.macro';
 import ChartBlock from '@/components/server/console/ChartBlock';
-import Tooltip from '@/components/elements/tooltip/Tooltip';
+import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
 
 export default () => {
     const status = ServerContext.useStoreState((state) => state.status.value);
@@ -24,9 +24,17 @@ export default () => {
             scales: {
                 y: {
                     ticks: {
+                        color: `rgb(${getComputedStyle(document.documentElement)
+                            .getPropertyValue('--color-400')
+                            .trim()})`,
                         callback(value) {
                             return bytesToString(typeof value === 'string' ? parseInt(value, 10) : value);
                         },
+                    },
+                    grid: {
+                        color: `rgb(${getComputedStyle(document.documentElement)
+                            .getPropertyValue('--color-600')
+                            .trim()})`,
                     },
                 },
             },
@@ -35,8 +43,8 @@ export default () => {
             return {
                 ...opts,
                 label: !index ? 'Network In' : 'Network Out',
-                borderColor: !index ? theme('colors.cyan.400') : theme('colors.yellow.400'),
-                backgroundColor: hexToRgba(!index ? theme('colors.cyan.700') : theme('colors.yellow.700'), 0.5),
+                borderColor: !index ? theme('colors.blue.400') : theme('colors.amber.400'),
+                backgroundColor: hexToRgba(!index ? theme('colors.blue.700') : theme('colors.amber.700'), 0.5),
             };
         },
     });
@@ -79,10 +87,10 @@ export default () => {
                 legend={
                     <>
                         <Tooltip arrow content={'Inbound'}>
-                            <CloudDownloadIcon className={'mr-2 w-4 h-4 text-yellow-400'} />
+                            <CloudDownloadIcon className={'mr-2 w-4 h-4 text-blue-400'} />
                         </Tooltip>
                         <Tooltip arrow content={'Outbound'}>
-                            <CloudUploadIcon className={'w-4 h-4 text-cyan-400'} />
+                            <CloudUploadIcon className={'w-4 h-4 text-amber-400'} />
                         </Tooltip>
                     </>
                 }

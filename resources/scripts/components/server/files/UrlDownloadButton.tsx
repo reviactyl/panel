@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import { Form, Formik, FormikHelpers } from 'formik';
-import Field from '@/components/elements/Field';
+import Field from '@/reviactyl/elements/Field';
 import { object, string } from 'yup';
 import pullFile from '@/api/server/files/pullFile';
 import tw from 'twin.macro';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/reviactyl/elements/button/index';
 import { useFlashKey } from '@/plugins/useFlash';
 import { WithClassname } from '@/components/types';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import { Dialog } from '@/components/elements/dialog';
+import { Dialog } from '@/reviactyl/elements/dialog';
 import { useTranslation } from 'react-i18next';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
-import Tooltip from '@/components/elements/tooltip/Tooltip';
-import { CloudDownloadIcon } from '@heroicons/react/solid';
+import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
+import { FaCloudArrowUp } from 'react-icons/fa6';
 
 interface Values {
     url: string;
@@ -61,7 +61,7 @@ const extractFilename = (url: string): string | null => {
     }
 };
 
-export default ({ className, compact = false }: WithClassname & { compact?: boolean }) => {
+export default ({ className }: WithClassname & { compact?: boolean }) => {
     const { t } = useTranslation('server/files');
     const [open, setOpen] = useState(false);
     const [downloading, setDownloading] = useState(false);
@@ -124,7 +124,7 @@ export default ({ className, compact = false }: WithClassname & { compact?: bool
                         }
                     >
                         <DownloadSpinner className={'w-8 h-8'} />
-                        <CloudDownloadIcon className={'h-3 absolute mx-auto animate-pulse'} />
+                        <FaCloudArrowUp className={'h-3 absolute mx-auto animate-pulse'} />
                     </button>
                 </Tooltip>
             )}
@@ -161,21 +161,11 @@ export default ({ className, compact = false }: WithClassname & { compact?: bool
                     )}
                 </Formik>
             </Dialog>
-            {compact ? (
-                <Tooltip content={t('url-download.button')}>
-                    <Button.Text
-                        onClick={() => setOpen(true)}
-                        className={className}
-                        aria-label={t('url-download.button')}
-                    >
-                        <CloudDownloadIcon className='h-5 w-5' />
-                    </Button.Text>
-                </Tooltip>
-            ) : (
-                <Button.Text onClick={() => setOpen(true)} className={className}>
-                    {t('url-download.button')}
+            <Tooltip content={t('url-download.button')}>
+                <Button.Text onClick={() => setOpen(true)} className={className} aria-label={t('url-download.button')}>
+                    <FaCloudArrowUp className='h-5 w-5' />
                 </Button.Text>
-            )}
+            </Tooltip>
         </>
     );
 };

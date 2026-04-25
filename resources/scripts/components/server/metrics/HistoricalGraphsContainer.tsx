@@ -12,15 +12,15 @@ import {
 import { Line } from 'react-chartjs-2';
 import { ServerContext } from '@/state/server';
 import useSWR from 'swr';
-import Spinner from '@/components/elements/Spinner';
-import ServerContentBlock from '@/components/elements/ServerContentBlock';
+import Spinner from '@/reviactyl/elements/Spinner';
+import ServerContentBlock from '@/reviactyl/elements/ServerContentBlock';
 import { format } from 'date-fns';
 import http from '@/api/http';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import { ServerError } from '@/components/elements/ScreenBlock';
+import { ServerError } from '@/reviactyl/elements/ScreenBlock';
 import tw from 'twin.macro';
 import { useTranslation } from 'react-i18next';
-import Select from '@/components/elements/Select';
+import Select from '@/reviactyl/elements/Select';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 

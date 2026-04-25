@@ -6,13 +6,13 @@ import { useStoreState } from 'easy-peasy';
 import type { FormikHelpers } from 'formik';
 import { Formik } from 'formik';
 import { object, string } from 'yup';
-import Field from '@/components/elements/Field';
+import Field from '@/reviactyl/elements/Field';
 import tw from 'twin.macro';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/reviactyl/elements/button/index';
 import Reaptcha from 'reaptcha';
-import Turnstile from '@/components/elements/Turnstile';
+import Turnstile from '@/reviactyl/elements/Turnstile';
 import useFlash from '@/plugins/useFlash';
-import Label from '@/components/elements/Label';
+import Label from '@/reviactyl/elements/Label';
 import { KeyIcon, UserIcon, EyeIcon, EyeOffIcon } from '@heroicons/react/solid';
 import { useTranslation } from 'react-i18next';
 

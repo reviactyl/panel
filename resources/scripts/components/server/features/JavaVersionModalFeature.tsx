@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
-import Modal from '@/components/elements/Modal';
+import Modal from '@/reviactyl/elements/Modal';
 import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
+import Button from '@/reviactyl/elements/Button';
 import setSelectedDockerImage from '@/api/server/setSelectedDockerImage';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
-import Select from '@/components/elements/Select';
+import Select from '@/reviactyl/elements/Select';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
-import Can from '@/components/elements/Can';
+import Can from '@/reviactyl/elements/Can';
 import getServerStartup from '@/api/swr/getServerStartup';
-import InputSpinner from '@/components/elements/InputSpinner';
+import InputSpinner from '@/reviactyl/elements/InputSpinner';
 
 const MATCH_ERRORS = [
     'minecraft 1.17 requires running the server with java 16 or above',

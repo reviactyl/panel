@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
 import tw from 'twin.macro';
-import { Button } from '@/components/elements/button/index';
-import Fade from '@/components/elements/Fade';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import { Button } from '@/reviactyl/elements/button/index';
+import Fade from '@/reviactyl/elements/Fade';
+import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import useFlash from '@/plugins/useFlash';
 import compressFiles from '@/api/server/files/compressFiles';
 import { ServerContext } from '@/state/server';
 import deleteFiles from '@/api/server/files/deleteFiles';
 import RenameFileModal from '@/components/server/files/RenameFileModal';
-import Portal from '@/components/elements/Portal';
-import { Dialog } from '@/components/elements/dialog';
+import Portal from '@/reviactyl/elements/Portal';
+import { Dialog } from '@/reviactyl/elements/dialog';
 import { useTranslation } from 'react-i18next';
 
 const MassActionsBar = () => {

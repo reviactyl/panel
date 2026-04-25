@@ -1,23 +1,23 @@
 import { useState } from 'react';
 import { FaDatabase, FaEye, FaTrash } from 'react-icons/fa6';
-import Modal from '@/components/elements/Modal';
+import Modal from '@/reviactyl/elements/Modal';
 import { Form, Formik, FormikHelpers } from 'formik';
-import Field from '@/components/elements/Field';
+import Field from '@/reviactyl/elements/Field';
 import { object, string } from 'yup';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { ServerContext } from '@/state/server';
 import deleteServerDatabase from '@/api/server/databases/deleteServerDatabase';
 import { httpErrorToHuman } from '@/api/http';
 import RotatePasswordButton from '@/components/server/databases/RotatePasswordButton';
-import Can from '@/components/elements/Can';
+import Can from '@/reviactyl/elements/Can';
 import { ServerDatabase } from '@/api/server/databases/getServerDatabases';
 import useFlash from '@/plugins/useFlash';
 import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
-import Label from '@/components/elements/Label';
-import Input from '@/components/elements/Input';
-import GreyRowBox from '@/components/elements/GreyRowBox';
-import CopyOnClick from '@/components/elements/CopyOnClick';
+import Button from '@/reviactyl/elements/Button';
+import Label from '@/reviactyl/elements/Label';
+import Input from '@/reviactyl/elements/Input';
+import GreyRowBox from '@/reviactyl/elements/GreyRowBox';
+import CopyOnClick from '@/reviactyl/elements/CopyOnClick';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 
 interface Props {
