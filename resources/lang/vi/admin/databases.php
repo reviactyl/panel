@@ -2,10 +2,10 @@
 
 return [
 
-    'label' => 'Base de datos',
-    'plural-label' => 'Bases de datos',
+    'label' => 'Database',
+    'plural-label' => 'Databases',
 
-    'none' => 'Ninguno',
+    'none' => 'None',
 
     'sections' => [
         'host_details' => [
