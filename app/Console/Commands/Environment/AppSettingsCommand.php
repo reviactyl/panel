@@ -38,6 +38,8 @@ class AppSettingsCommand extends Command
                             {--new-salt : Whether or not to generate a new salt for Hashids.}
                             {--author= : The email that services created on this instance should be linked to.}
                             {--url= : The URL that this Panel is running on.}
+                            {--logo= : The URL to the logo to use for this Panel.}
+                            {--icon= : The URL to the icon to use for this Panel.}
                             {--timezone= : The timezone to use for Panel times.}
                             {--cache= : The cache driver backend to use.}
                             {--session= : The session driver backend to use.}
@@ -85,6 +87,18 @@ class AppSettingsCommand extends Command
         $this->variables['APP_URL'] = $this->option('url') ?? $this->ask(
             'Application URL',
             config('app.url', 'https://example.com')
+        );
+
+        $this->output->comment('The application LOGO can be any valid URL to an image file. This is used in the login screen and the dashboard of the Panel.');
+        $this->variables['APP_LOGO'] = $this->option('logo') ?? $this->ask(
+            'Application Logo URL',
+            config('app.logo', '/reviactyl/logo.png')
+        );
+
+        $this->output->comment('The application Icon can be any valid URL to .ico or .png file.');
+        $this->variables['APP_ICON'] = $this->option('icon') ?? $this->ask(
+            'Application Favicon URL',
+            config('app.icon', '/favicons/favicon.ico')
         );
 
         $this->output->comment('The timezone should match one of PHP\'s supported timezones. If you are unsure, please reference https://php.net/manual/en/timezones.php.');
