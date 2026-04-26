@@ -669,6 +669,7 @@ class Designify extends Page implements HasSchemas
             ->send();
 
         $this->dispatch('$refresh');
+        $this->js("window.dispatchEvent(new CustomEvent('reload-iframe'))");
     }
 
     public function resetToDefaults(): void
@@ -688,6 +689,10 @@ class Designify extends Page implements HasSchemas
             ->send();
 
         $this->dispatch('$refresh');
+
+        // We have to reload the window after resetting designify settings.
+        // Please open PR if there's another way without running js code.
+        $this->js('window.location.reload()');
     }
 
     protected function getHeaderActions(): array
