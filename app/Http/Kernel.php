@@ -11,6 +11,7 @@ use App\Http\Middleware\Api\Client\SubstituteClientBindings;
 use App\Http\Middleware\Api\Daemon\DaemonAuthenticate;
 use App\Http\Middleware\Api\IsValidJson;
 use App\Http\Middleware\EncryptCookies;
+use App\Http\Middleware\EnsureInstallationState;
 use App\Http\Middleware\EnsureStatefulRequests;
 use App\Http\Middleware\LanguageMiddleware;
 use App\Http\Middleware\MaintenanceMiddleware;
@@ -107,5 +108,6 @@ class Kernel extends HttpKernel
         'bindings' => SubstituteBindings::class,
         'captcha' => VerifyCaptcha::class,
         'node.maintenance' => MaintenanceMiddleware::class,
+        'installation' => EnsureInstallationState::class,
     ];
 }
