@@ -199,7 +199,7 @@ class DatabaseSettingsCommand extends Command
                 'prefix' => '',
                 'prefix_indexes' => true,
                 'search_path' => 'public',
-                'sslmode' => env('DB_SSLMODE', 'prefer'),
+                'sslmode' => config('database.connections.pgsql.sslmode', 'prefer'),
             ]);
         }
 
