@@ -119,6 +119,9 @@ importers:
       pathe:
         specifier: ^2.0.3
         version: 2.0.3
+      plyr-react:
+        specifier: ^6.0.0
+        version: 6.0.0(plyr@3.8.4)(react@19.2.4)
       qrcode.react:
         specifier: ^1.0.1
         version: 1.0.1(react@19.2.4)
@@ -2761,6 +2764,9 @@ packages:
   core-js-compat@3.48.0:
     resolution: {integrity: sha512-OM4cAF3D6VtH/WkLtWvyNC56EZVXsZdU3iqaMG2B4WvYrlqU831pc4UtG5yp0sE9z8Y02wVN7PjW5Zf9Gt0f1Q==}
 
+  core-js@3.49.0:
+    resolution: {integrity: sha512-es1U2+YTtzpwkxVLwAFdSpaIMyQaq0PBgm3YD1W3Qpsn1NAmO3KSgZfu+oGSWVu6NvLHoHCV/aYcsE5wiB7ALg==}
+
   cosmiconfig@6.0.0:
     resolution: {integrity: sha512-xb3ZL6+L8b9JLLCx3ZdoZy4+2ECphCMo2PwqgP1tlfVq6M6YReyzBJtvWWtbDSpNr9hn96pkCiZqUcFEc+54Qg==}
     engines: {node: '>=8'}
@@ -2855,6 +2861,9 @@ packages:
 
   csstype@3.2.3:
     resolution: {integrity: sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==}
+
+  custom-event-polyfill@1.0.7:
+    resolution: {integrity: sha512-TDDkd5DkaZxZFM8p+1I3yAlvM3rSr1wbrOliG4yJiwinMZN8z/iGL7BTlDkrJcYTmgUSb4ywVCc3ZaUtOtC76w==}
 
   data-view-buffer@1.0.2:
     resolution: {integrity: sha512-EmKO5V3OLXh1rtK2wgXRansaK1/mtVdTUEiEI0W8RkvgT05kfxaH29PliLnpLP73yYO6142Q72QNa8Wx/A5CqQ==}
@@ -3981,6 +3990,9 @@ packages:
   lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
 
+  loadjs@4.3.0:
+    resolution: {integrity: sha512-vNX4ZZLJBeDEOBvdr2v/F+0aN5oMuPu7JTqrMwp+DtgK+AryOlpy6Xtm2/HpNr+azEa828oQjOtWsB6iDtSfSQ==}
+
   locate-path@5.0.0:
     resolution: {integrity: sha512-t7hw9pI+WvuwNJXwk5zVHpyhIqzg2qTlklJOf0mVxGSbe3Fp2VieZcduNYjaLDoy6p9uGpQEGWG87WpMKlNq8g==}
     engines: {node: '>=8'}
@@ -4425,6 +4437,16 @@ packages:
     resolution: {integrity: sha512-HRDzbaKjC+AOWVXxAU/x54COGeIv9eb+6CkDSQoNTt4XyWoIJvuPsXizxu/Fr23EiekbtZwmh1IcIG/l/a10GQ==}
     engines: {node: '>=8'}
 
+  plyr-react@6.0.0:
+    resolution: {integrity: sha512-P8M+BuQoGrCd7m6K4QwwQlcSS1E26OeXuJTAmgLx11B9UqJrdc3Ka4TFwPwF3jul4EsVxSK9Zn1ME3DV8m9gdw==}
+    engines: {node: '>=16'}
+    peerDependencies:
+      plyr: ^3.7.7
+      react: '>=16.8'
+
+  plyr@3.8.4:
+    resolution: {integrity: sha512-DrzLbK9Wol3zeiuZCleD9aUOl0KAaBHR9H6WVVVYPZ4Ya+LYxUFTgSF1jooHcMQCv96Ws96wCaZzIoP3bES8pQ==}
+
   possible-typed-array-names@1.1.0:
     resolution: {integrity: sha512-/+5VFTchJDoVj3bhoqi6UeymcD00DAwb1nJwamzPvHEszJ4FpF6SNNbUbOS8yI56qHzdV8eK0qEfOSiodkTdxg==}
     engines: {node: '>= 0.4'}
@@ -4783,6 +4805,18 @@ packages:
   range-parser@1.2.1:
     resolution: {integrity: sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==}
     engines: {node: '>= 0.6'}
+
+  rangetouch@2.0.1:
+    resolution: {integrity: sha512-sln+pNSc8NGaHoLzwNBssFSf/rSYkqeBXzX1AtJlkJiUaVSJSbRAWJk+4omsXkN+EJalzkZhWQ3th1m0FpR5xA==}
+
+  react-aptor@2.0.0:
+    resolution: {integrity: sha512-YnCayokuhAwmBBP4Oc0bbT2l6ApfsjbY3DEEVUddIKZEBlGl1npzjHHzWnSqWuboSbMZvRqUM01Io9yiIp1wcg==}
+    engines: {node: '>=12.7.0'}
+    peerDependencies:
+      react: '>=16.8'
+    peerDependenciesMeta:
+      react:
+        optional: true
 
   react-chartjs-2@5.3.1:
     resolution: {integrity: sha512-h5IPXKg9EXpjoBzUfyWJvllMjG2mQ4EiuHQFhms/AjUm0XSZHhyRy2xVmLXHKrtcdrPO4mnGqRtYoD0vp95A0A==}
@@ -5484,6 +5518,9 @@ packages:
 
   uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
+
+  url-polyfill@1.1.14:
+    resolution: {integrity: sha512-p4f3TTAG6ADVF3mwbXw7hGw+QJyw5CnNGvYh5fCuQQZIiuKUswqcznyV3pGDP9j0TSmC4UvRKm8kl1QsX1diiQ==}
 
   use-fit-text@2.4.0:
     resolution: {integrity: sha512-Iy4LMrXcdxWlyZ5phntMpJMgyXGB1p3tV73y2r0QrZ6f/thPh+/QU3ie6RCXmjF8tHMs20FKMPskXeDYIla/Ww==}
@@ -8425,6 +8462,8 @@ snapshots:
     dependencies:
       browserslist: 4.28.1
 
+  core-js@3.49.0: {}
+
   cosmiconfig@6.0.0:
     dependencies:
       '@types/parse-json': 4.0.2
@@ -8520,6 +8559,8 @@ snapshots:
   csstype@2.6.21: {}
 
   csstype@3.2.3: {}
+
+  custom-event-polyfill@1.0.7: {}
 
   data-view-buffer@1.0.2:
     dependencies:
@@ -9985,6 +10026,8 @@ snapshots:
 
   lines-and-columns@1.2.4: {}
 
+  loadjs@4.3.0: {}
+
   locate-path@5.0.0:
     dependencies:
       p-locate: 4.1.0
@@ -10488,6 +10531,20 @@ snapshots:
     dependencies:
       find-up: 4.1.0
 
+  plyr-react@6.0.0(plyr@3.8.4)(react@19.2.4):
+    dependencies:
+      plyr: 3.8.4
+      react: 19.2.4
+      react-aptor: 2.0.0(react@19.2.4)
+
+  plyr@3.8.4:
+    dependencies:
+      core-js: 3.49.0
+      custom-event-polyfill: 1.0.7
+      loadjs: 4.3.0
+      rangetouch: 2.0.1
+      url-polyfill: 1.1.14
+
   possible-typed-array-names@1.1.0: {}
 
   postcss-attribute-case-insensitive@7.0.1(postcss@8.5.6):
@@ -10892,6 +10949,12 @@ snapshots:
   raf-schd@4.0.3: {}
 
   range-parser@1.2.1: {}
+
+  rangetouch@2.0.1: {}
+
+  react-aptor@2.0.0(react@19.2.4):
+    optionalDependencies:
+      react: 19.2.4
 
   react-chartjs-2@5.3.1(chart.js@3.9.1)(react@19.2.4):
     dependencies:
@@ -11733,6 +11796,8 @@ snapshots:
   uri-js@4.4.1:
     dependencies:
       punycode: 2.3.1
+
+  url-polyfill@1.1.14: {}
 
   use-fit-text@2.4.0(react@19.2.4):
     dependencies:

@@ -26,6 +26,8 @@ import { SearchIcon, FolderIcon, FolderOpenIcon, DocumentIcon } from '@heroicons
 import Card from '@/reviactyl/ui/Card';
 import { useTranslation } from 'react-i18next';
 import ImageViewerModal from '@/components/server/files/ImageViewerModal';
+import VideoViewerModal from '@/components/server/files/VideoViewerModal';
+import { isVideoFile } from '@/api/server/files/isVideoFile';
 import getFileDownloadUrl from '@/api/server/files/getFileDownloadUrl';
 import { join } from 'pathe';
 import { bytesToString } from '@/lib/formatters';
@@ -108,9 +110,11 @@ export default () => {
     const setSelectedFiles = ServerContext.useStoreActions((actions) => actions.files.setSelectedFiles);
     const selectedFilesLength = ServerContext.useStoreState((state) => state.files.selectedFiles.length);
 
-    // Image viewer state
+    // Media viewer state
     const [imageViewerVisible, setImageViewerVisible] = useState(false);
     const [selectedImage, setSelectedImage] = useState<{ url: string; name: string } | null>(null);
+    const [videoViewerVisible, setVideoViewerVisible] = useState(false);
+    const [selectedVideo, setSelectedVideo] = useState<{ url: string; name: string } | null>(null);
 
     const [sortType, setSortType] = useState<SortType>('name');
     const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
@@ -208,21 +212,31 @@ export default () => {
         setSelectedFiles(e.currentTarget.checked ? (query ? [] : filteredFiles.map((file) => file.name)) : []);
     };
 
-    const handleImageClick = (file: FileObject) => {
+    const handlePreviewClick = (file: FileObject) => {
         const filePath = join(directory, file.name);
         getFileDownloadUrl(uuid, filePath)
             .then((url) => {
-                setSelectedImage({ url, name: file.name });
-                setImageViewerVisible(true);
+                if (isVideoFile(file)) {
+                    setSelectedVideo({ url, name: file.name });
+                    setVideoViewerVisible(true);
+                } else {
+                    setSelectedImage({ url, name: file.name });
+                    setImageViewerVisible(true);
+                }
             })
             .catch((error) => {
-                console.error('Failed to get image URL:', error);
+                console.error('Failed to get media URL:', error);
             });
     };
 
     const handleImageViewerClose = () => {
         setImageViewerVisible(false);
         setSelectedImage(null);
+    };
+
+    const handleVideoViewerClose = () => {
+        setVideoViewerVisible(false);
+        setSelectedVideo(null);
     };
 
     if (error) {
@@ -399,7 +413,7 @@ export default () => {
                                 </div>
                             )}
                             {sortFiles(filteredFiles.slice(0, 250), sortType, sortDirection).map((file) => (
-                                <FileObjectRow key={file.key} file={file} onImageClick={handleImageClick} />
+                                <FileObjectRow key={file.key} file={file} onMediaClick={handlePreviewClick} />
                             ))}
                             <MassActionsBar />
                         </motion.div>
@@ -412,6 +426,15 @@ export default () => {
                     onDismissed={handleImageViewerClose}
                     imageUrl={selectedImage.url}
                     imageName={selectedImage.name}
+                    appear
+                />
+            )}
+            {selectedVideo && (
+                <VideoViewerModal
+                    visible={videoViewerVisible}
+                    onDismissed={handleVideoViewerClose}
+                    videoUrl={selectedVideo.url}
+                    videoName={selectedVideo.name}
                     appear
                 />
             )}

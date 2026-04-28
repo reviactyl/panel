@@ -44,6 +44,7 @@
         "md5": "^2.3.0",
         "monaco-editor": "^0.55.1",
         "pathe": "^2.0.3",
+        "plyr-react": "^6.0.0",
         "qrcode.react": "^1.0.1",
         "react": "19",
         "react-chartjs-2": "^5.3.1",
