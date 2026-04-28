@@ -198,6 +198,7 @@ class DesignifyComposer
             'supportCardLink' => config('designify.supportCardLink') ?? '',
             'billingCardLink' => config('designify.billingCardLink') ?? '',
             'alwaysShowKillButton' => config('designify.alwaysShowKillButton', false),
+            'cardType' => config('designify.cardType') ?? 'grid',
         ];
     }
 

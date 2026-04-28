@@ -12,6 +12,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\InteractsWithHeaderActions;
@@ -80,6 +81,7 @@ class Designify extends Page implements HasSchemas
         'designify:supportCardLink',
         'designify:billingCardLink',
         'designify:alwaysShowKillButton',
+        'designify:cardType',
         'designify:theme1:name',
         'designify:theme1:colorPrimary',
         'designify:theme1:color50',
@@ -259,6 +261,11 @@ class Designify extends Page implements HasSchemas
                         ->label('Look and Feel')
                         ->icon('tabler-layers-intersect')
                         ->schema($this->lookAndFeelSettings()),
+
+                    Tab::make('layout')
+                        ->label('Layout')
+                        ->icon('tabler-layout-grid')
+                        ->schema($this->layoutSettings()),
 
                     Tab::make('alerts')
                         ->label('Alerts')
@@ -461,6 +468,25 @@ class Designify extends Page implements HasSchemas
                         ])
                         ->searchable()
                         ->native(false)
+                        ->columnSpan(2),
+                ]),
+        ];
+    }
+
+    private function layoutSettings(): array
+    {
+        return [
+            Group::make()
+                ->columns(1)
+                ->schema([
+                    ToggleButtons::make('designify:cardType')
+                        ->label('Server Card Layout')
+                        ->inline()
+                        ->options([
+                            'grid' => 'Grid',
+                            'row' => 'Row',
+                        ])
+                        ->required()
                         ->columnSpan(2),
                 ]),
         ];
