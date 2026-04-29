@@ -34,7 +34,7 @@ return [
         'no_node_hint' => '请使用上方的下拉菜单',
         'error' => '错误',
         'error_desc' => '无法加载监控数据',
-        'error_fetch' => '无法从Agent获取数据',
+        'error_fetch' => 'Unable to fetch data from Agent',
         'error_node_gone' => '节点不再存在',
     ],
 
