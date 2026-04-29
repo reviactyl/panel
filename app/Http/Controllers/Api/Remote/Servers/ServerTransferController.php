@@ -9,7 +9,7 @@ use App\Models\Allocation;
 use App\Models\Server;
 use App\Models\ServerTransfer;
 use App\Repositories\Eloquent\ServerRepository;
-use App\Repositories\Wings\DaemonServerRepository;
+use App\Repositories\Agent\DaemonServerRepository;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;

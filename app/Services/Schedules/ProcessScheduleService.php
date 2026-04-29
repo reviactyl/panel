@@ -6,7 +6,7 @@ use App\Exceptions\DisplayException;
 use App\Exceptions\Http\Connection\DaemonConnectionException;
 use App\Jobs\Schedule\RunTaskJob;
 use App\Models\Schedule;
-use App\Repositories\Wings\DaemonServerRepository;
+use App\Repositories\Agent\DaemonServerRepository;
 use Exception;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Database\ConnectionInterface;
@@ -55,7 +55,7 @@ class ProcessScheduleService
             } catch (Exception $exception) {
                 if (! $exception instanceof DaemonConnectionException) {
                     // If we encountered some exception during this process that wasn't just an
-                    // issue connecting to Wings run the failed sequence for a job. Otherwise we
+                    // issue connecting to Agent run the failed sequence for a job. Otherwise we
                     // can just quietly mark the task as completed without actually running anything.
                     $job->failed($exception);
                 }

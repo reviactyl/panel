@@ -6,7 +6,7 @@ use App\Exceptions\Http\Connection\DaemonConnectionException;
 use App\Exceptions\Service\Node\ConfigurationNotPersistedException;
 use App\Models\Node;
 use App\Repositories\Eloquent\NodeRepository;
-use App\Repositories\Wings\DaemonConfigurationRepository;
+use App\Repositories\Agent\DaemonConfigurationRepository;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Support\Facades\Log;
@@ -57,10 +57,10 @@ class NodeUpdateService
                 Log::warning($exception, ['node_id' => $node->id]);
 
                 // Never actually throw these exceptions up the stack. If we were able to change the settings
-                // but something went wrong with Wings we just want to store the update and let the user manually
+                // but something went wrong with Agent we just want to store the update and let the user manually
                 // make changes as needed.
                 //
-                // This avoids issues with proxies such as Cloudflare which will see Wings as offline and then
+                // This avoids issues with proxies such as Cloudflare which will see Agent as offline and then
                 // inject their own response pages, causing this logic to get fucked up.
                 //
                 // @see https://github.com/pterodactyl/panel/issues/2712

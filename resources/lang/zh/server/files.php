@@ -18,7 +18,7 @@ return [
     'url-download' => [
         'button' => 'URL Download',
         'url-label' => 'File URL',
-        'url-description' => 'Enter a direct HTTPS URL to a file. The file will be downloaded to the current directory by Wings.',
+        'url-description' => 'Enter a direct HTTPS URL to a file. The file will be downloaded to the current directory by Agent.',
         'download' => 'Download',
         'cancel' => 'Cancel',
         'url-required' => 'A URL is required.',

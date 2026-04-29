@@ -8,7 +8,7 @@ return [
         'overview' => [
             'title' => 'Overview',
             'information-label' => 'Node Information',
-            'version-label' => 'Wings Version',
+            'version-label' => 'Agent Version',
             'architecture-label' => 'Architecture',
             'kernel-label' => 'Kernel',
             'cpus-label' => 'CPU Threads',
@@ -32,7 +32,7 @@ return [
         'configuration' => [
             'title' => 'Configuration',
             'config_description' => 'Configuration File',
-            'deploy_description' => 'Generate a custom deployment command that can be used to configure Wings on the target server.',
+            'deploy_description' => 'Generate a custom deployment command that can be used to configure Agent on the target server.',
         ],
     ],
 
@@ -164,7 +164,7 @@ return [
     'deployment' => [
         'generate_label' => 'Generate Deployment Token',
         'modal_heading' => 'Auto-Deploy Command',
-        'modal_description' => 'Run this command on your node to automatically configure Wings.',
+        'modal_description' => 'Run this command on your node to automatically configure Agent.',
         'modal_close' => 'Close',
         'command_label' => 'Deployment Command',
         'command_helper' => 'Copy and run this command on your node server.',

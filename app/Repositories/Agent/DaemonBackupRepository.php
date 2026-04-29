@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\Wings;
+namespace App\Repositories\Agent;
 
 use App\Exceptions\Http\Connection\DaemonConnectionException;
 use App\Models\Backup;
@@ -10,8 +10,8 @@ use Psr\Http\Message\ResponseInterface;
 use Webmozart\Assert\Assert;
 
 /**
- * @method \App\Repositories\Wings\DaemonBackupRepository setNode(\App\Models\Node $node)
- * @method \App\Repositories\Wings\DaemonBackupRepository setServer(\App\Models\Server $server)
+ * @method \App\Repositories\Agent\DaemonBackupRepository setNode(\App\Models\Node $node)
+ * @method \App\Repositories\Agent\DaemonBackupRepository setServer(\App\Models\Server $server)
  */
 class DaemonBackupRepository extends DaemonRepository
 {
@@ -53,7 +53,7 @@ class DaemonBackupRepository extends DaemonRepository
     }
 
     /**
-     * Sends a request to Wings to begin restoring a backup for a server.
+     * Sends a request to Agent to begin restoring a backup for a server.
      *
      * @throws DaemonConnectionException
      */

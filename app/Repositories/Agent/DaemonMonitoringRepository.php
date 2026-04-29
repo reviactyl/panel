@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Repositories\Wings;
+namespace App\Repositories\Agent;
 
 use GuzzleHttp\Exception\GuzzleException;
 
 class DaemonMonitoringRepository extends DaemonRepository
 {
     /**
-     * Get real-time system monitoring data from the Wings daemon.
+     * Get real-time system monitoring data from the Agent daemon.
      *
      * @throws GuzzleException
      */

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\Wings;
+namespace App\Repositories\Agent;
 
 use App\Models\Node;
 use App\Models\Server;

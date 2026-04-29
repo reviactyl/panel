@@ -89,7 +89,7 @@ class NodeJWTService
             $builder = $builder
                 ->withClaim('user_uuid', $this->user->uuid)
                 // The "user_id" claim is deprecated and should not be referenced — it remains
-                // here solely to ensure older versions of Wings are unaffected when the Panel
+                // here solely to ensure older versions of Agent are unaffected when the Panel
                 // is updated.
                 //
                 // This claim will be removed in Panel@1.11 or later.

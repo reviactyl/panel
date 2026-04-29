@@ -15,7 +15,7 @@ use App\Models\Server;
 use App\Models\User;
 use App\Repositories\Eloquent\ServerRepository;
 use App\Repositories\Eloquent\ServerVariableRepository;
-use App\Repositories\Wings\DaemonServerRepository;
+use App\Repositories\Agent\DaemonServerRepository;
 use App\Services\Deployment\AllocationSelectionService;
 use App\Services\Deployment\FindViableNodesService;
 use Illuminate\Database\ConnectionInterface;

@@ -55,7 +55,7 @@ pnpm run build
 This will generate a production JS bundle and associated assets, all located in `public/assets/` which will need to
 be uploaded to your server or CDN for clients to use.
 
-### Running Wings
-To run `wings` in development all you need to do is set up the configuration file as normal when adding a new node, and
-then you can build and run a local version of Wings by executing `make debug` in the Wings code directory. This must
+### Running Agent
+To run `agent` in development all you need to do is set up the configuration file as normal when adding a new node, and
+then you can build and run a local version of Agent by executing `make debug` in the Agent code directory. This must
 be run on a Linux VM of some sort, you cannot run this locally on macOS or Windows.

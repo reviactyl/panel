@@ -4,7 +4,7 @@ namespace App\Filament\Widgets;
 
 use App\Models\Node;
 use App\Models\Server;
-use App\Repositories\Wings\DaemonServerStatusRepository;
+use App\Repositories\Agent\DaemonServerStatusRepository;
 use Filament\Forms\Components\Placeholder;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -58,34 +58,34 @@ class ServersWidget extends BaseWidget
             return $this->emptyState(trans('admin/monitoring.servers.no_node'), '#94a3b8');
         }
 
-        $wingsRows = $this->fetchWingsData();
+        $agentRows = $this->fetchAgentData();
 
-        if ($wingsRows === null) {
+        if ($agentRows === null) {
             return $this->emptyState(trans('admin/monitoring.servers.error_fetch'), '#f87171');
         }
 
-        if (empty($wingsRows)) {
+        if (empty($agentRows)) {
             return $this->emptyState(trans('admin/monitoring.servers.no_servers'), '#94a3b8');
         }
 
-        // Index Wings data by UUID for O(1) lookup.
-        $wingsByUuid = [];
-        foreach ($wingsRows as $row) {
+        // Index Agent data by UUID for O(1) lookup.
+        $agentByUuid = [];
+        foreach ($agentRows as $row) {
             $uuid = $row['configuration']['uuid'] ?? null;
             if ($uuid) {
-                $wingsByUuid[$uuid] = $row;
+                $agentByUuid[$uuid] = $row;
             }
         }
 
         // Fetch panel server names for those UUIDs.
         $names = Server::query()
             ->where('node_id', $this->selectedNodeId)
-            ->whereIn('uuid', array_keys($wingsByUuid))
+            ->whereIn('uuid', array_keys($agentByUuid))
             ->pluck('name', 'uuid')
             ->all();
 
         $rows = '';
-        foreach ($wingsByUuid as $uuid => $row) {
+        foreach ($agentByUuid as $uuid => $row) {
             $rows .= $this->buildRow($uuid, $row, $names[$uuid] ?? null);
         }
 
@@ -221,7 +221,7 @@ class ServersWidget extends BaseWidget
         HTML);
     }
 
-    private function fetchWingsData(): ?array
+    private function fetchAgentData(): ?array
     {
         try {
             $node = Node::find($this->selectedNodeId);

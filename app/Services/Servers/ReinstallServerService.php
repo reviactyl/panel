@@ -3,7 +3,7 @@
 namespace App\Services\Servers;
 
 use App\Models\Server;
-use App\Repositories\Wings\DaemonServerRepository;
+use App\Repositories\Agent\DaemonServerRepository;
 use Illuminate\Database\ConnectionInterface;
 
 class ReinstallServerService

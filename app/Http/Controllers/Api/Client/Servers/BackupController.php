@@ -10,7 +10,7 @@ use App\Models\Backup;
 use App\Models\Permission;
 use App\Models\Server;
 use App\Repositories\Eloquent\BackupRepository;
-use App\Repositories\Wings\DaemonBackupRepository;
+use App\Repositories\Agent\DaemonBackupRepository;
 use App\Services\Backups\DeleteBackupService;
 use App\Services\Backups\DownloadLinkService;
 use App\Services\Backups\InitiateBackupService;
@@ -187,7 +187,7 @@ class BackupController extends ClientApiController
     }
 
     /**
-     * Handles restoring a backup by making a request to the Wings instance telling it
+     * Handles restoring a backup by making a request to the Agent instance telling it
      * to begin the process of finding (or downloading) the backup and unpacking it
      * over the server files.
      *
@@ -215,7 +215,7 @@ class BackupController extends ClientApiController
 
         $log->transaction(function () use ($backup, $server, $request) {
             // If the backup is for an S3 file we need to generate a unique Download link for
-            // it that will allow Wings to actually access the file.
+            // it that will allow Agent to actually access the file.
             if ($backup->disk === Backup::ADAPTER_AWS_S3) {
                 $url = $this->downloadLinkService->handle($backup, $request->user());
             }

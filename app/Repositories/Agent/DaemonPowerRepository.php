@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\Wings;
+namespace App\Repositories\Agent;
 
 use App\Exceptions\Http\Connection\DaemonConnectionException;
 use App\Models\Server;
@@ -9,8 +9,8 @@ use Psr\Http\Message\ResponseInterface;
 use Webmozart\Assert\Assert;
 
 /**
- * @method \App\Repositories\Wings\DaemonPowerRepository setNode(\App\Models\Node $node)
- * @method \App\Repositories\Wings\DaemonPowerRepository setServer(\App\Models\Server $server)
+ * @method \App\Repositories\Agent\DaemonPowerRepository setNode(\App\Models\Node $node)
+ * @method \App\Repositories\Agent\DaemonPowerRepository setServer(\App\Models\Server $server)
  */
 class DaemonPowerRepository extends DaemonRepository
 {

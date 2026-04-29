@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\Wings;
+namespace App\Repositories\Agent;
 
 use App\Exceptions\Http\Connection\DaemonConnectionException;
 use App\Models\Server;
@@ -9,8 +9,8 @@ use GuzzleHttp\Exception\TransferException;
 use Webmozart\Assert\Assert;
 
 /**
- * @method \App\Repositories\Wings\DaemonServerRepository setNode(\App\Models\Node $node)
- * @method \App\Repositories\Wings\DaemonServerRepository setServer(\App\Models\Server $server)
+ * @method \App\Repositories\Agent\DaemonServerRepository setNode(\App\Models\Node $node)
+ * @method \App\Repositories\Agent\DaemonServerRepository setServer(\App\Models\Server $server)
  */
 class DaemonServerRepository extends DaemonRepository
 {
@@ -35,7 +35,7 @@ class DaemonServerRepository extends DaemonRepository
     }
 
     /**
-     * Creates a new server on the Wings daemon.
+     * Creates a new server on the Agent daemon.
      *
      * @throws DaemonConnectionException
      */
@@ -56,7 +56,7 @@ class DaemonServerRepository extends DaemonRepository
     }
 
     /**
-     * Triggers a server sync on Wings.
+     * Triggers a server sync on Agent.
      *
      * @throws DaemonConnectionException
      */
@@ -145,7 +145,7 @@ class DaemonServerRepository extends DaemonRepository
 
     /**
      * Revokes an array of JWT JTI's by marking any token generated before the current time on
-     * the Wings instance as being invalid.
+     * the Agent instance as being invalid.
      *
      * @throws DaemonConnectionException
      */

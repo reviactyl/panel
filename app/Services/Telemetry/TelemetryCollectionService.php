@@ -13,7 +13,7 @@ use App\Models\Node;
 use App\Models\Server;
 use App\Models\User;
 use App\Repositories\Eloquent\SettingsRepository;
-use App\Repositories\Wings\DaemonConfigurationRepository;
+use App\Repositories\Agent\DaemonConfigurationRepository;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;

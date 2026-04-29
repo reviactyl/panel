@@ -6,7 +6,7 @@ use App\Exceptions\Http\HttpForbiddenException;
 use App\Exceptions\Repository\RecordNotFoundException;
 use App\Facades\Activity;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Wings\ServerConfigurationCollection;
+use App\Http\Resources\Agent\ServerConfigurationCollection;
 use App\Models\ActivityLog;
 use App\Models\Node;
 use App\Models\Server;
@@ -31,7 +31,7 @@ class ServerDetailsController extends Controller
     ) {}
 
     /**
-     * Returns details about the server that allows Wings to self-recover and ensure
+     * Returns details about the server that allows Agent to self-recover and ensure
      * that the state of the server matches the Panel at all times.
      *
      * @throws RecordNotFoundException
@@ -73,7 +73,7 @@ class ServerDetailsController extends Controller
         $servers = Server::query()->with('allocations', 'egg', 'mounts', 'variables', 'location')
             ->where('node_id', $node->id)
             // If you don't cast this to a string you'll end up with a stringified per_page returned in
-            // the metadata, and then Wings will panic crash as a result.
+            // the metadata, and then Agent will panic crash as a result.
             ->paginate((int) $request->input('per_page', 50));
 
         return new ServerConfigurationCollection($servers);
@@ -81,9 +81,9 @@ class ServerDetailsController extends Controller
 
     /**
      * Resets the state of all servers on the node to be normal. This is triggered
-     * when Wings restarts and is useful for ensuring that any servers on the node
+     * when Agent restarts and is useful for ensuring that any servers on the node
      * do not get incorrectly stuck in installing/restoring from backup states since
-     * a Wings reboot would completely stop those processes.
+     * a Agent reboot would completely stop those processes.
      *
      * @throws \Throwable
      */

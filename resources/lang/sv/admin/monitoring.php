@@ -34,7 +34,7 @@ return [
         'no_node_hint' => 'Use the dropdown above',
         'error' => 'Error',
         'error_desc' => 'Unable to load monitoring data',
-        'error_fetch' => 'Unable to fetch data from Wings',
+        'error_fetch' => 'Unable to fetch data from Agent',
         'error_node_gone' => 'Node no longer exists',
     ],
 
@@ -78,7 +78,7 @@ return [
         'heading' => 'Server Usage',
         'no_node' => 'Select a node to view server usage.',
         'no_servers' => 'No servers found on this node.',
-        'error_fetch' => 'Unable to fetch server data from Wings.',
+        'error_fetch' => 'Unable to fetch server data from Agent.',
         'col' => [
             'name' => 'Server',
             'state' => 'State',

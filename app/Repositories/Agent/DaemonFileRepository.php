@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\Wings;
+namespace App\Repositories\Agent;
 
 use App\Exceptions\Http\Connection\DaemonConnectionException;
 use App\Exceptions\Http\Server\FileSizeTooLargeException;
@@ -12,8 +12,8 @@ use Psr\Http\Message\ResponseInterface;
 use Webmozart\Assert\Assert;
 
 /**
- * @method \App\Repositories\Wings\DaemonFileRepository setNode(\App\Models\Node $node)
- * @method \App\Repositories\Wings\DaemonFileRepository setServer(\App\Models\Server $server)
+ * @method \App\Repositories\Agent\DaemonFileRepository setNode(\App\Models\Node $node)
+ * @method \App\Repositories\Agent\DaemonFileRepository setServer(\App\Models\Server $server)
  */
 class DaemonFileRepository extends DaemonRepository
 {

@@ -34,7 +34,7 @@ return [
         'no_node_hint' => 'Use o menu acima.',
         'error' => 'Erro',
         'error_desc' => 'Não foi possível carregar os dados de monitoramento.',
-        'error_fetch' => 'Não foi possível obter dados do Wings.',
+        'error_fetch' => 'Não foi possível obter dados do Agent.',
         'error_node_gone' => 'O node não existe mais.',
     ],
 
@@ -78,7 +78,7 @@ return [
         'heading' => 'Uso Do Servidor',
         'no_node' => 'Selecione um node para visualizar a utilização do servidor.',
         'no_servers' => 'Nenhum servidor encontrado neste node.',
-        'error_fetch' => 'Unable to fetch server data from Wings.',
+        'error_fetch' => 'Unable to fetch server data from Agent.',
         'col' => [
             'name' => 'Server',
             'state' => 'State',

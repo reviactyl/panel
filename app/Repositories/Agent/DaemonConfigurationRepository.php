@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\Wings;
+namespace App\Repositories\Agent;
 
 use App\Exceptions\Http\Connection\DaemonConnectionException;
 use App\Models\Node;
@@ -8,13 +8,13 @@ use GuzzleHttp\Exception\TransferException;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * @method \App\Repositories\Wings\DaemonConfigurationRepository setNode(\App\Models\Node $node)
- * @method \App\Repositories\Wings\DaemonConfigurationRepository setServer(\App\Models\Server $server)
+ * @method \App\Repositories\Agent\DaemonConfigurationRepository setNode(\App\Models\Node $node)
+ * @method \App\Repositories\Agent\DaemonConfigurationRepository setServer(\App\Models\Server $server)
  */
 class DaemonConfigurationRepository extends DaemonRepository
 {
     /**
-     * Returns system information from the wings instance.
+     * Returns system information from the agent instance.
      *
      * @throws DaemonConnectionException
      */

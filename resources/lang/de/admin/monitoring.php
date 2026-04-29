@@ -34,7 +34,7 @@ return [
         'no_node_hint' => 'Nutzen Sie das Dropdown Menü oben',
         'error' => 'Fehler',
         'error_desc' => 'Konnte Monitoring Daten nicht laden',
-        'error_fetch' => 'Konnte Wings Daten nicht abgreifen',
+        'error_fetch' => 'Konnte Agent Daten nicht abgreifen',
         'error_node_gone' => 'Node existiert nicht mehr',
     ],
 
@@ -78,7 +78,7 @@ return [
         'heading' => 'Server Nutzung',
         'no_node' => 'Wählen Sie eine Node aus, um Server Nutzung anzuzeigen.',
         'no_servers' => 'Keine Server auf dieser Node gefunden.',
-        'error_fetch' => 'Konnte Server Daten nicht von Wings abgreifen.',
+        'error_fetch' => 'Konnte Server Daten nicht von Agent abgreifen.',
         'col' => [
             'name' => 'Server',
             'state' => 'Zustand',

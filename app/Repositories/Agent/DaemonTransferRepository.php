@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\Wings;
+namespace App\Repositories\Agent;
 
 use App\Exceptions\Http\Connection\DaemonConnectionException;
 use App\Models\Node;
@@ -8,8 +8,8 @@ use GuzzleHttp\Exception\GuzzleException;
 use Lcobucci\JWT\Token\Plain;
 
 /**
- * @method \App\Repositories\Wings\DaemonTransferRepository setNode(\App\Models\Node $node)
- * @method \App\Repositories\Wings\DaemonTransferRepository setServer(\App\Models\Server $server)
+ * @method \App\Repositories\Agent\DaemonTransferRepository setNode(\App\Models\Node $node)
+ * @method \App\Repositories\Agent\DaemonTransferRepository setServer(\App\Models\Server $server)
  */
 class DaemonTransferRepository extends DaemonRepository
 {

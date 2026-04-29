@@ -4,7 +4,7 @@ namespace App\Filament\Resources\Nodes\Schemas;
 
 use App\Models\ApiKey;
 use App\Models\Node;
-use App\Repositories\Wings\DaemonConfigurationRepository;
+use App\Repositories\Agent\DaemonConfigurationRepository;
 use App\Services\Api\KeyCreationService;
 use App\Services\Helpers\SoftwareVersionService;
 use Filament\Actions\Action;
@@ -366,7 +366,7 @@ class NodeForm
                                                         $debug = config('app.debug');
                                                         $allowInsecure = $debug ? ' --allow-insecure' : '';
 
-                                                        $command = "cd /etc/reviactyl && sudo wings configure --panel-url {$appUrl} --token {$token} --node {$record->id}{$allowInsecure}";
+                                                        $command = "cd /etc/reviactyl && sudo agent configure --panel-url {$appUrl} --token {$token} --node {$record->id}{$allowInsecure}";
 
                                                         Notification::make()
                                                             ->title(trans('admin/node.deployment.token_success'))

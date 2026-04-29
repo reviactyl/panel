@@ -17,7 +17,7 @@ use App\Models\Permission;
 use App\Models\Server;
 use App\Models\Subuser;
 use App\Repositories\Eloquent\SubuserRepository;
-use App\Repositories\Wings\DaemonRevocationRepository;
+use App\Repositories\Agent\DaemonRevocationRepository;
 use App\Services\Subusers\SubuserCreationService;
 use App\Transformers\Api\Client\SubuserTransformer;
 use Illuminate\Http\JsonResponse;
@@ -111,7 +111,7 @@ class SubuserController extends ClientApiController
                 'revoked' => true,
             ]);
 
-        // Only update the database and hit up the Wings instance to invalidate JTI's if the permissions
+        // Only update the database and hit up the Agent instance to invalidate JTI's if the permissions
         // have actually changed for the user.
         if ($permissions !== $current) {
             $log->transaction(function ($instance) use ($request, $subuser, $server) {
@@ -125,8 +125,8 @@ class SubuserController extends ClientApiController
                         [$server->uuid],
                     );
                 } catch (DaemonConnectionException $exception) {
-                    // Don't block this request if we can't connect to the Wings instance. Chances are it is
-                    // offline and the token will be invalid once Wings boots back.
+                    // Don't block this request if we can't connect to the Agent instance. Chances are it is
+                    // offline and the token will be invalid once Agent boots back.
                     Log::warning($exception, ['user_id' => $subuser->user_id, 'server_id' => $server->id]);
 
                     $instance->property('revoked', false);
@@ -163,7 +163,7 @@ class SubuserController extends ClientApiController
                     [$server->uuid],
                 );
             } catch (DaemonConnectionException $exception) {
-                // Don't block this request if we can't connect to the Wings instance.
+                // Don't block this request if we can't connect to the Agent instance.
                 Log::warning($exception, ['user_id' => $subuser->user_id, 'server_id' => $server->id]);
 
                 $instance->property('revoked', false);

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Wings;
+namespace App\Http\Resources\Agent;
 
 use App\Models\Server;
 use App\Services\Eggs\EggConfigurationService;
@@ -12,7 +12,7 @@ class ServerConfigurationCollection extends ResourceCollection
 {
     /**
      * Converts a collection of Server models into an array of configuration responses
-     * that can be understood by Wings. Make sure you've properly loaded the required
+     * that can be understood by Agent. Make sure you've properly loaded the required
      * relationships on the Server models before calling this function, otherwise you'll
      * have some serious performance issues from all the N+1 queries.
      */

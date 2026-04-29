@@ -174,7 +174,7 @@ class UpgradeCommand extends Command
         });
 
         $this->newLine(2);
-        $this->info('Panel has been successfully upgraded. Please ensure you also update any Wings instances: https://reviactyl.app/docs/wings/upgrading/');
+        $this->info('Panel has been successfully upgraded. Please ensure you also update any Agent instances: https://reviactyl.app/docs/agent/upgrading/');
     }
 
     protected function withProgress(ProgressBar $bar, \Closure $callback)

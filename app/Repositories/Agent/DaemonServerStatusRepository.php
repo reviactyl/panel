@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\Wings;
+namespace App\Repositories\Agent;
 
 use GuzzleHttp\Exception\GuzzleException;
 
@@ -9,7 +9,7 @@ class DaemonServerStatusRepository extends DaemonRepository
     /**
      * Fetch the status and resource utilization of all servers on this node.
      *
-     * Wings returns an array of APIResponse objects, each containing:
+     * Agent returns an array of APIResponse objects, each containing:
      *   - state        (string)  e.g. "running", "offline", "starting"
      *   - is_suspended (bool)
      *   - utilization  (object)  cpu_absolute, memory_bytes, memory_limit_bytes,

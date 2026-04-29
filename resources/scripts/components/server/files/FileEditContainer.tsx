@@ -48,7 +48,7 @@ export default () => {
 
         setError('');
         const path = hashToPath(hash);
-        // Guard: if path resolves to root (no file hash), redirect rather than asking Wings to read "/" and getting a 200/500 error.
+        // Guard: if path resolves to root (no file hash), redirect rather than asking Agent to read "/" and getting a 200/500 error.
         if (path === '/' || path === '') {
             navigate(`/server/${id}/files`);
             return;

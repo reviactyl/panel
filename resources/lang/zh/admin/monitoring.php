@@ -34,7 +34,7 @@ return [
         'no_node_hint' => '请使用上方的下拉菜单',
         'error' => '错误',
         'error_desc' => '无法加载监控数据',
-        'error_fetch' => '无法从Wings获取数据',
+        'error_fetch' => '无法从Agent获取数据',
         'error_node_gone' => '节点不再存在',
     ],
 
@@ -78,7 +78,7 @@ return [
         'heading' => 'Server Usage',
         'no_node' => 'Select a node to view server usage.',
         'no_servers' => 'No servers found on this node.',
-        'error_fetch' => 'Unable to fetch server data from Wings.',
+        'error_fetch' => 'Unable to fetch server data from Agent.',
         'col' => [
             'name' => 'Server',
             'state' => 'State',

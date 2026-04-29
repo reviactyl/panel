@@ -6,7 +6,7 @@ use App\Exceptions\Http\Connection\DaemonConnectionException;
 use App\Http\Controllers\Api\Client\ClientApiController;
 use App\Http\Requests\Api\Client\Servers\GetServerRequest;
 use App\Models\Server;
-use App\Repositories\Wings\DaemonServerRepository;
+use App\Repositories\Agent\DaemonServerRepository;
 use App\Transformers\Api\Client\StatsTransformer;
 use Carbon\Carbon;
 use Illuminate\Cache\Repository;

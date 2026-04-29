@@ -7,7 +7,7 @@ use App\Exceptions\Service\Backup\BackupLockedException;
 use App\Extensions\Backups\BackupManager;
 use App\Extensions\Filesystem\S3Filesystem;
 use App\Models\Backup;
-use App\Repositories\Wings\DaemonBackupRepository;
+use App\Repositories\Agent\DaemonBackupRepository;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Http\Response;

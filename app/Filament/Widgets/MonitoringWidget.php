@@ -3,7 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Node;
-use App\Repositories\Wings\DaemonMonitoringRepository;
+use App\Repositories\Agent\DaemonMonitoringRepository;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Database\Eloquent\ModelNotFoundException;

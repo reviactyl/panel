@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\Wings;
+namespace App\Repositories\Agent;
 
 use App\Exceptions\Http\Connection\DaemonConnectionException;
 use GuzzleHttp\Exception\TransferException;
@@ -8,7 +8,7 @@ use GuzzleHttp\Exception\TransferException;
 class DaemonRevocationRepository extends DaemonRepository
 {
     /**
-     * Deauthorizes a user (disconnects websockets and SFTP) on the Wings instance for
+     * Deauthorizes a user (disconnects websockets and SFTP) on the Agent instance for
      * the provided servers. If no servers are provided, the user is deauthorized on all
      * servers on the instance.
      *
