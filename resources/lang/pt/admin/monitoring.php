@@ -34,7 +34,7 @@ return [
         'no_node_hint' => 'Use o menu acima.',
         'error' => 'Erro',
         'error_desc' => 'Não foi possível carregar os dados de monitoramento.',
-        'error_fetch' => 'Não foi possível obter dados do Agent.',
+        'error_fetch' => 'Unable to fetch data from Agent',
         'error_node_gone' => 'O node não existe mais.',
     ],
 
