@@ -8,7 +8,7 @@ import GreyRowBox from '@/reviactyl/elements/GreyRowBox';
 import Spinner from '@/reviactyl/elements/Spinner';
 import styled from 'styled-components';
 import isEqual from 'react-fast-compare';
-import { FaFloppyDisk, FaMemory, FaMicrochip, FaServer } from 'react-icons/fa6';
+import { FaFloppyDisk, FaMemory, FaMicrochip } from 'react-icons/fa6';
 import { useTranslation } from 'react-i18next';
 import ChangeCategoryModal from '@/components/dashboard/ChangeCategoryModal';
 import Blur from '@/reviactyl/ui/Blur';
@@ -111,14 +111,9 @@ export default ({
                     }}
                 />
             )}
-            <StatusIndicatorBox
-                as={Link}
-                to={`/server/${server.id}`}
-                className={className}
-                $status={stats?.status}
-            >
+            <StatusIndicatorBox as={Link} to={`/server/${server.id}`} className={className} $status={stats?.status}>
                 <div css={tw`flex items-center col-span-12 sm:col-span-5 lg:col-span-6`}>
-                    <img src={server.eggImage ? server.eggImage : '/reviactyl/icon.png'} className="h-10 w-10 mr-4" />
+                    <img src={server.eggImage ? server.eggImage : '/reviactyl/icon.png'} className='h-10 w-10 mr-4' />
                     <div>
                         <Title css={tw`text-lg break-words`}>{server.name}</Title>
                         <div css={tw`flex items-center gap-2 flex-wrap`}>
@@ -155,9 +150,7 @@ export default ({
                     </div>
                 </div>
                 <div css={tw`flex-1 ml-4 lg:block lg:col-span-2 hidden`}>
-                    <div
-                        className={'flex justify-center items-center gap-1 text-center'}
-                    >
+                    <div className={'flex justify-center items-center gap-1 text-center'}>
                         <Blur className={`text-sm font-semibold text-gray-400`}>
                             {server.allocations
                                 .filter((alloc) => alloc.isDefault)
