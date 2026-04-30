@@ -81,6 +81,7 @@ class SettingsServiceProvider extends ServiceProvider
         'designify:billingCardLink',
         'designify:alwaysShowKillButton',
         'designify:cardType',
+        'designify:layoutType',
         'designify:theme1:name',
         'designify:theme1:colorPrimary',
         'designify:theme1:color50',

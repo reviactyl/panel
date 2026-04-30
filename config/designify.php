@@ -73,6 +73,8 @@ return [
 
     'cardType' => 'grid',
 
+    'layoutType' => 'classic',
+
     'theme1' => [
         'name' => 'Petrascia',
         'colorPrimary' => '#3b82f6',

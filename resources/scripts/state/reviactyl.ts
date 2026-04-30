@@ -28,6 +28,7 @@ export interface ReviactylSettings {
     billingCardLink: string;
     alwaysShowKillButton: boolean;
     cardType: 'grid' | 'row';
+    layoutType: 'modern' | 'classic' | 'compact' | 'accent';
 }
 
 export interface ReviactylSettingsStore {

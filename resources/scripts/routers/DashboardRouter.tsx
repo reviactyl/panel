@@ -7,14 +7,10 @@ import { NotFound } from '@/reviactyl/elements/ScreenBlock';
 import Spinner from '@/reviactyl/elements/Spinner';
 import routes from '@/routers/routes';
 import { RouterContainer } from '@/reviactyl/ui/RouterContainer';
-import Navbar from '@/reviactyl/ui/Navbar';
-import { LogoContainer } from '@/reviactyl/ui/LogoContainer';
 import { XIcon, MenuIcon, ExternalLinkIcon } from '@heroicons/react/solid';
-import tw from 'twin.macro';
 import { ContentContainer } from '@/reviactyl/ui/ContentContainer';
 import { motion } from 'framer-motion';
-import Sidebar from '@/reviactyl/ui/Sidebar';
-import { ApplicationStore } from '@/state';
+import { Navbar, Sidebar } from '@/reviactyl/components/Layout';
 import { useStoreState } from 'easy-peasy';
 import Announcement from '@/reviactyl/ui/Announcement';
 import MaintenanceAlert from '@/reviactyl/ui/MaintenanceAlert';
@@ -76,13 +72,17 @@ const DashboardNavigation = () => {
     return (
         <>
             <div>
-                <Navigate id='index.dashboard' to='/' end className='mt-2'>
-                    <span className='flex items-center'>
-                        <FaHouse className='w-5 mr-1' /> {t('index.dashboard')}
-                    </span>
-                </Navigate>
+                <div className='mt-2'>
+                    <span className='label -mb-2'>Dashboard</span>
+                    <Navigate id='index.dashboard' to='/' end className='mt-2'>
+                        <span className='flex items-center'>
+                            <FaHouse className='w-5 mr-1' /> {t('index.dashboard')}
+                        </span>
+                    </Navigate>
+                </div>
 
                 <div className='mt-2'>
+                    <span className='label'>Account</span>
                     {routes.account
                         .filter((route) => !!route.name)
                         .map((route) => (
@@ -133,8 +133,6 @@ const DashboardNavigation = () => {
 
 function DashboardRouter() {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
-    const logo = useStoreState((state: ApplicationStore) => state.settings.data!.logo);
-    const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
     const isUnderMaintenance = useStoreState((state) => state.reviactyl.data?.isUnderMaintenance);
     const rootAdmin = useStoreState((state) => state.user.data?.rootAdmin);
     const injectedRoutes = useExtensionRoutes('dashboardRouter');
@@ -154,14 +152,6 @@ function DashboardRouter() {
                                 {isSidebarOpen ? <XIcon className='w-6 h-6' /> : <MenuIcon className='w-6 h-6' />}
                             </button>
                         </div>
-                        <LogoContainer>
-                            <img
-                                src={logo}
-                                alt={name}
-                                onClick={() => (window.location.href = '/')}
-                                css={tw`h-[3rem] mt-5 cursor-pointer`}
-                            />
-                        </LogoContainer>
                     </Navbar>
                     <ContentContainer>
                         {isSidebarOpen && (

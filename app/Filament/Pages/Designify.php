@@ -82,6 +82,7 @@ class Designify extends Page implements HasSchemas
         'designify:billingCardLink',
         'designify:alwaysShowKillButton',
         'designify:cardType',
+        'designify:layoutType',
         'designify:theme1:name',
         'designify:theme1:colorPrimary',
         'designify:theme1:color50',
@@ -485,6 +486,17 @@ class Designify extends Page implements HasSchemas
                         ->options([
                             'grid' => 'Grid',
                             'row' => 'Row',
+                        ])
+                        ->required()
+                        ->columnSpan(2),
+                    ToggleButtons::make('designify:layoutType')
+                        ->label('Navbar & Sidebar Layout')
+                        ->inline()
+                        ->options([
+                            'modern' => 'Modern',
+                            'classic' => 'Classic',
+                            'compact' => 'Compact',
+                            'accent' => 'Accent',
                         ])
                         ->required()
                         ->columnSpan(2),

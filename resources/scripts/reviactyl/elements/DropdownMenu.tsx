@@ -9,11 +9,11 @@ interface Props {
 }
 
 export const DropdownButtonRow = styled.button<{ danger?: boolean }>`
-    ${tw`p-2 flex items-center rounded-ui w-full text-gray-500`};
+    ${tw`p-2 flex items-center rounded-ui w-full text-gray-400`};
     transition: 150ms all ease;
 
     &:hover {
-        ${(props) => (props.danger ? tw`text-red-700 bg-red-100` : tw`text-gray-700 bg-gray-100`)};
+        ${(props) => (props.danger ? tw`text-red-300 bg-gray-600` : tw`text-gray-300 bg-gray-600`)};
     }
 `;
 
