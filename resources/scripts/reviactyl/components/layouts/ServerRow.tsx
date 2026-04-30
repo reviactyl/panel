@@ -14,8 +14,6 @@ import ChangeCategoryModal from '@/components/dashboard/ChangeCategoryModal';
 import Blur from '@/reviactyl/ui/Blur';
 import Title from '@/reviactyl/ui/Title';
 
-// Determines if the current value is in an alarm threshold so we can show it in red rather
-// than the more faded default style.
 const isAlarmState = (current: number, limit: number): boolean => limit > 0 && current / (limit * 1024 * 1024) >= 0.9;
 
 const Icon = memo(
@@ -26,30 +24,12 @@ const Icon = memo(
 );
 
 const IconDescription = styled.p<{ $alarm: boolean }>`
-    ${tw`text-sm ml-2`};
+    ${tw`text-xs ml-2`};
     ${(props) => (props.$alarm ? tw`text-white` : tw`text-gray-400`)};
 `;
 
 const StatusIndicatorBox = styled(GreyRowBox)<{ $status: ServerPowerState | undefined }>`
-    ${tw`grid grid-cols-12 gap-4 relative overflow-hidden rounded-ui`};
-
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-
-    clip-path: inset(0 round 1rem);
-
-    &::before {
-        content: '';
-        ${tw`absolute inset-0 z-0`};
-        backdrop-filter: blur(12px);
-        background: rgba(15, 23, 42, 0.55);
-        border-radius: inherit;
-    }
-
-    & > * {
-        ${tw`relative z-10`};
-    }
+    ${tw`grid grid-cols-12 gap-4 relative overflow-hidden bg-gray-700 border border-gray-600 rounded-ui`};
 
     & .status-bar {
         ${tw`w-2 absolute right-0 z-20 rounded-full m-1 opacity-50 transition-all duration-150`};
@@ -97,8 +77,6 @@ export default ({
     }, [stats?.isSuspended, server.status]);
 
     useEffect(() => {
-        // Don't waste a HTTP request if there is nothing important to show to the user because
-        // the server is suspended.
         if (isSuspended) return;
 
         getStats().then(() => {
@@ -138,18 +116,9 @@ export default ({
                 to={`/server/${server.id}`}
                 className={className}
                 $status={stats?.status}
-                style={{
-                    backgroundImage: `url(${server.eggBanner || '/reviactyl/default-bg.png'})`,
-                }}
             >
                 <div css={tw`flex items-center col-span-12 sm:col-span-5 lg:col-span-6`}>
-                    <div
-                        className={
-                            'rounded-full bg-gray-600/60 backdrop-blur-md border border-gray-500/50 px-6 py-3 mr-4'
-                        }
-                    >
-                        <FaServer />
-                    </div>
+                    <img src={server.eggImage ? server.eggImage : '/reviactyl/icon.png'} className="h-10 w-10 mr-4" />
                     <div>
                         <Title css={tw`text-lg break-words`}>{server.name}</Title>
                         <div css={tw`flex items-center gap-2 flex-wrap`}>
@@ -187,7 +156,7 @@ export default ({
                 </div>
                 <div css={tw`flex-1 ml-4 lg:block lg:col-span-2 hidden`}>
                     <div
-                        className={'flex justify-center bg-gray-600/50 rounded-lg border border-gray-500/50 py-2 px-3'}
+                        className={'flex justify-center items-center gap-1 text-center'}
                     >
                         <Blur className={`text-sm font-semibold text-gray-400`}>
                             {server.allocations

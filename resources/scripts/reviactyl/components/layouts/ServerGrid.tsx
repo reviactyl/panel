@@ -87,21 +87,8 @@ export default ({
                 />
             )}
             <Link to={`/server/${server.id}/`} className={className}>
-                <Card className='!p-0'>
-                    <div
-                        className='rounded-ui bg-center bg-cover bg-no-repeat bg-center relative px-6 pt-6 pb-6 z-10'
-                        style={{
-                            backgroundImage: `url(${
-                                server.eggBanner ? server.eggBanner : '/reviactyl/default-bg.png'
-                            })`,
-                        }}
-                    >
-                        <div
-                            className={'z-[-1] absolute inset-0 rounded-ui backdrop-blur-sm'}
-                            css={
-                                'background-image: linear-gradient(0deg, rgb(var(--color-700)) 10%, color-mix(in srgb, rgb(var(--color-700)) 35%, transparent) 55%);'
-                            }
-                        />
+                <Card className='!p-6 relative overflow-hidden'>
+                    <img src={server.eggImage || '/reviactyl/icon.png'} className={`absolute right-4 top-1/2 -translate-y-1/2 h-[120px] w-[120px] opacity-20 pointer-events-none select-none`} />
                         <div className='flex items-center justify-between pb-5 gap-x-2'>
                             <div className='flex-1 min-w-0'>
                                 <Title className='text-2xl truncate' title={server.name}>
@@ -246,7 +233,6 @@ export default ({
                                 </React.Fragment>
                             )}
                         </div>
-                    </div>
                 </Card>
             </Link>
         </React.Fragment>

@@ -62,7 +62,7 @@ class EggResource extends Resource
                                         Forms\Components\TextInput::make('author')
                                             ->email()
                                             ->disabled(),
-                                        Forms\Components\TextInput::make('banner')
+                                        Forms\Components\TextInput::make('image')
                                             ->maxLength(191),
                                         Forms\Components\Textarea::make('description')
                                             ->columnSpanFull(),

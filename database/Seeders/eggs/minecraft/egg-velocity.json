@@ -4,9 +4,9 @@
         "version": "RCYL_v26",
         "update_url": null
     },
-    "exported_at": "2026-03-09T06:35:09+00:00",
+    "exported_at": "2026-04-30T04:34:14+00:00",
     "name": "Velocity",
-    "banner": "https:\/\/cdn.reviactyl.app\/@reviactyl\/eggs\/minecraft\/noon_hillclimbers.webp",
+    "image": "https:\/\/assets.papermc.io\/brand\/velocity_logo_blue.min.svg",
     "author": "authors@reviactyl.app",
     "description": "Velocity is the modern, high-performance proxy. Designed with performance and stability in mind, it’s a full alternative to Waterfall with its own plugin ecosystem.",
     "features": [
