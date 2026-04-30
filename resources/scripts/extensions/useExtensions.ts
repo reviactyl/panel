@@ -19,7 +19,6 @@ export const useExtensions = () => {
             revalidateOnFocus: true,
             revalidateOnReconnect: false,
             dedupingInterval: 3_000,
-            refreshInterval: 3_000,
             refreshWhenHidden: false,
         }
     );
