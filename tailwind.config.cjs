@@ -18,6 +18,7 @@ const gray = {
     700: reviactyl('--color-700'),
     800: reviactyl('--color-800'),
     900: reviactyl('--color-900'),
+    950: reviactyl('--color-950'),
 };
 
 module.exports = {
