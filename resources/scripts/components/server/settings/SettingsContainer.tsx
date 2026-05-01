@@ -61,14 +61,14 @@ export default () => {
                     <TitledGreyBox title={t('info.title')} css={tw`mb-6 md:mb-10`}>
                         <div css={tw`flex items-center justify-between text-sm`}>
                             <p>{t('info.node')}</p>
-                            <code css={tw`font-mono bg-gray-800 rounded-ui border border-gray-600 py-1 px-2`}>
+                            <code css={tw`font-mono bg-gray-900 rounded-ui border border-gray-800 py-1 px-2`}>
                                 {node}
                             </code>
                         </div>
                         <CopyOnClick text={uuid}>
                             <div css={tw`flex items-center justify-between mt-2 text-sm`}>
                                 <p>{t('info.server')}</p>
-                                <code css={tw`font-mono bg-gray-800 rounded-ui border border-gray-600 py-1 px-2`}>
+                                <code css={tw`font-mono bg-gray-900 rounded-ui border border-gray-800 py-1 px-2`}>
                                     {uuid}
                                 </code>
                             </div>

@@ -13,7 +13,7 @@ export const DropdownButtonRow = styled.button<{ danger?: boolean }>`
     transition: 150ms all ease;
 
     &:hover {
-        ${(props) => (props.danger ? tw`text-red-300 bg-gray-600` : tw`text-gray-300 bg-gray-600`)};
+        ${(props) => (props.danger ? tw`text-red-300 bg-gray-700` : tw`text-gray-300 bg-gray-700`)};
     }
 `;
 
@@ -118,7 +118,7 @@ class DropdownMenu extends React.PureComponent<Props, State> {
                             this.setState({ visible: false });
                         }}
                         style={{ width: '12rem' }}
-                        css={tw`absolute bg-gray-700 p-2 rounded-ui border border-gray-600 shadow-lg text-gray-100 z-50`}
+                        css={tw`absolute bg-gray-800 p-2 rounded-ui border border-gray-800 shadow-lg text-gray-100 z-50`}
                     >
                         {this.props.children}
                     </div>

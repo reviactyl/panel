@@ -25,7 +25,7 @@ const NavbarContainer = styled.div`
 `;
 
 const SidebarContainer = styled.div<{ $isOpen: boolean }>`
-    ${tw`w-[225px] self-start m-2 border border-gray-600 rounded-ui bg-gray-700 text-white flex flex-col z-40 transition-transform duration-300 ease-in-out`};
+    ${tw`w-[225px] self-start m-2 border border-gray-800 rounded-ui bg-gray-900 text-white flex flex-col z-40 transition-transform duration-300 ease-in-out`};
 
     ${({ $isOpen }) =>
         $isOpen
@@ -50,7 +50,7 @@ const SidebarContainer = styled.div<{ $isOpen: boolean }>`
 `;
 
 const SidebarHeader = styled.div`
-    ${tw`sticky top-0 z-10 bg-gray-700 border-b border-gray-600`}
+    ${tw`sticky top-0 z-10 bg-gray-900 border-b border-gray-800`}
 `;
 
 const SidebarContent = styled.div`
@@ -58,7 +58,7 @@ const SidebarContent = styled.div`
 `;
 
 const SidebarFooter = styled.div`
-    ${tw`sticky bottom-0 z-10 bg-gray-700 p-3 border-t border-gray-600`}
+    ${tw`sticky bottom-0 z-10 bg-gray-900 p-3 border-t border-gray-800`}
 `;
 
 const LogoutButton = styled.button`
@@ -73,16 +73,19 @@ export const SideNavigation = styled.div`
     ${tw`flex flex-col gap-1 pb-4 -mt-1`};
 
     & .label {
-        ${tw`flex items-center ml-2 mr-2 px-3 pt-2 pb-1 text-sm font-semibold text-gray-100 uppercase rounded-ui transition-all duration-300`};
+        ${tw`flex items-center ml-2 mr-2 px-3 pt-2 pb-1 text-sm font-semibold text-gray-400 transition-all duration-300`};
     }
     a {
         ${tw`flex items-center ml-2 mr-2 px-5 py-2 text-sm font-medium text-gray-200 rounded-ui transition-all duration-300`};
 
-        &:hover,
+        &:hover {
+            background-color: rgb(var(--color-700) / 0.2);
+        }
+
         &:focus,
         &.active {
             ${tw`text-reviactyl`};
-            background-color: rgb(var(--color-primary) / 0.2);
+            background-color: rgb(var(--color-700) / 0.2);
         }
     }
 `;

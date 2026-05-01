@@ -89,7 +89,7 @@ const StartupContainer = () => {
             <div css={tw`md:flex`}>
                 <TitledGreyBox title={t('startup-command')} css={tw`flex-1`}>
                     <div css={tw`px-1 py-2`}>
-                        <p css={tw`font-mono bg-gray-800 rounded-ui border border-gray-600 py-2 px-4`}>
+                        <p css={tw`font-mono bg-gray-900 rounded-ui border border-gray-800 py-2 px-4`}>
                             {data.invocation}
                         </p>
                     </div>

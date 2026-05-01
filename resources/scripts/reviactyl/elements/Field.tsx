@@ -13,7 +13,7 @@ interface OwnProps {
     validate?: (value: any) => undefined | string | Promise<any>;
 }
 const IconWrapper = styled.div`
-    ${tw`bg-gray-600 border-2 !border-r-0 rounded-l-ui p-3`}
+    ${tw`bg-gray-700 border-2 !border-r-0 rounded-l-ui p-3`}
 `;
 
 type Props = OwnProps & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'name'>;
@@ -30,7 +30,7 @@ const Field = forwardRef<HTMLInputElement, Props>(
                                 className={
                                     touched[field.name] && errors[field.name]
                                         ? 'border-red-400 text-red-400'
-                                        : 'border-gray-500 text-gray-500'
+                                        : 'border-gray-600 text-gray-600'
                                 }
                             >
                                 <Icon className='w-5 h-5' />

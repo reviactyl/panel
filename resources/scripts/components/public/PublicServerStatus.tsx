@@ -75,29 +75,29 @@ export default () => {
                             </p>
 
                             <div css={tw`grid grid-cols-1 md:grid-cols-2 gap-4`}>
-                                <div css={tw`bg-gray-700 p-4 rounded-lg`}>
+                                <div css={tw`bg-gray-900 p-4 rounded-lg`}>
                                     <h3 css={tw`text-gray-400 text-sm uppercase tracking-wide mb-1`}>Status</h3>
                                     <p css={tw`text-2xl font-bold capitalize`}>{status.status}</p>
                                 </div>
                             </div>
 
                             {status.utilization && (
-                                <div css={tw`mt-6 pt-6 border-t border-gray-700`}>
+                                <div css={tw`mt-6 pt-6 border-t border-gray-800`}>
                                     <h2 css={tw`text-xl font-bold mb-4`}>Resource Usage</h2>
                                     <div css={tw`grid grid-cols-1 md:grid-cols-3 gap-4`}>
-                                        <div css={tw`bg-gray-800 p-3 rounded`}>
+                                        <div css={tw`bg-gray-900 p-3 rounded`}>
                                             <div css={tw`text-gray-400 text-xs uppercase mb-1`}>CPU</div>
                                             <div css={tw`text-lg font-mono`}>
                                                 {status.utilization.cpu_absolute.toFixed(2)}%
                                             </div>
                                         </div>
-                                        <div css={tw`bg-gray-800 p-3 rounded`}>
+                                        <div css={tw`bg-gray-900 p-3 rounded`}>
                                             <div css={tw`text-gray-400 text-xs uppercase mb-1`}>Memory</div>
                                             <div css={tw`text-lg font-mono`}>
                                                 {bytesToString(status.utilization.memory_bytes)}
                                             </div>
                                         </div>
-                                        <div css={tw`bg-gray-800 p-3 rounded`}>
+                                        <div css={tw`bg-gray-900 p-3 rounded`}>
                                             <div css={tw`text-gray-400 text-xs uppercase mb-1`}>Disk</div>
                                             <div css={tw`text-lg font-mono`}>
                                                 {bytesToString(status.utilization.disk_bytes)}

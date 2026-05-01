@@ -29,7 +29,7 @@ const IconDescription = styled.p<{ $alarm: boolean }>`
 `;
 
 const StatusIndicatorBox = styled(GreyRowBox)<{ $status: ServerPowerState | undefined }>`
-    ${tw`grid grid-cols-12 gap-4 relative overflow-hidden bg-gray-700 border border-gray-600 rounded-ui`};
+    ${tw`grid grid-cols-12 gap-4 relative overflow-hidden bg-gray-900 border border-gray-800 rounded-ui`};
 
     & .status-bar {
         ${tw`w-2 absolute right-0 z-20 rounded-full m-1 opacity-50 transition-all duration-150`};
@@ -174,7 +174,7 @@ export default ({
                             </div>
                         ) : server.isTransferring || server.status ? (
                             <div css={tw`flex-1 text-center`}>
-                                <span css={tw`bg-gray-500 rounded-ui px-2 py-1 text-gray-100 text-xs`}>
+                                <span css={tw`bg-gray-600 rounded-ui px-2 py-1 text-gray-100 text-xs`}>
                                     {server.isTransferring
                                         ? t('server.transferring')
                                         : server.status === 'installing'

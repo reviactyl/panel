@@ -19,7 +19,7 @@ import ScheduleCronRow from '@/components/server/schedules/ScheduleCronRow';
 import RunScheduleButton from '@/components/server/schedules/RunScheduleButton';
 
 const CronBox = ({ title, value }: { title: string; value: string }) => (
-    <div css={tw`bg-gray-700 rounded-ui p-3`}>
+    <div css={tw`bg-gray-900 rounded-ui p-3`}>
         <p css={tw`text-gray-300 text-sm`}>{title}</p>
         <p css={tw`text-xl font-medium text-gray-100`}>{value}</p>
     </div>
@@ -80,15 +80,15 @@ export default () => {
                 <Spinner size={'large'} centered />
             ) : (
                 <>
-                    <ScheduleCronRow cron={schedule.cron} css={tw`sm:hidden bg-gray-700 rounded mb-4 p-3`} />
-                    <div css={tw`rounded-ui shadow bg-gray-700 border border-gray-600`}>
-                        <div css={tw`sm:flex items-center p-3 sm:p-6 border-b-4 border-gray-600 rounded-t`}>
+                    <ScheduleCronRow cron={schedule.cron} css={tw`sm:hidden bg-gray-900 rounded mb-4 p-3`} />
+                    <div css={tw`rounded-ui shadow bg-gray-900 border border-gray-800`}>
+                        <div css={tw`sm:flex items-center p-3 sm:p-6 border-b-4 border-gray-800 rounded-t`}>
                             <div css={tw`flex-1`}>
                                 <h3 css={tw`flex items-center text-gray-100 text-2xl`}>
                                     {schedule.name}
                                     {schedule.isProcessing ? (
                                         <span
-                                            css={tw`flex items-center rounded-full px-2 py-px text-xs ml-4 uppercase bg-gray-600 text-white`}
+                                            css={tw`flex items-center rounded-full px-2 py-px text-xs ml-4 uppercase bg-gray-700 text-white`}
                                         >
                                             <Spinner css={tw`w-3! h-3! mr-2`} />
                                             Processing
@@ -104,7 +104,7 @@ export default () => {
                                     ) : (
                                         <span css={tw`text-gray-300`}>n/a</span>
                                     )}
-                                    <span css={tw`ml-4 pl-4 border-l-4 border-gray-600 py-px`}>
+                                    <span css={tw`ml-4 pl-4 border-l-4 border-gray-800 py-px`}>
                                         Next run at:&nbsp;
                                         {schedule.nextRunAt ? (
                                             format(schedule.nextRunAt, "MMM do 'at' h:mma")
@@ -130,7 +130,7 @@ export default () => {
                             <CronBox title={'Month'} value={schedule.cron.month} />
                             <CronBox title={'Day (Week)'} value={schedule.cron.dayOfWeek} />
                         </div>
-                        <div css={tw`bg-gray-700 rounded-b`}>
+                        <div css={tw`bg-gray-900 rounded-b`}>
                             {schedule.tasks.length > 0
                                 ? schedule.tasks
                                       .sort((a, b) =>

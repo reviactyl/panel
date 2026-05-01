@@ -147,9 +147,9 @@ function LoginContainer() {
                     {Object.values(socialSettings).some(Boolean) && (
                         <div css={tw`mt-4 grid grid-cols-1 gap-2`}>
                             <div css={tw`relative flex py-2 items-center`}>
-                                <div css={tw`flex-grow border-t border-gray-600`}></div>
+                                <div css={tw`flex-grow border-t border-gray-800`}></div>
                                 <span css={tw`flex-shrink mx-4 text-gray-400 text-xs`}>{t('social.or')}</span>
-                                <div css={tw`flex-grow border-t border-gray-600`}></div>
+                                <div css={tw`flex-grow border-t border-gray-800`}></div>
                             </div>
                             {socialSettings.google && (
                                 <Button

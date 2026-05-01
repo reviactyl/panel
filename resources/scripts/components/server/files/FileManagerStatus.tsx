@@ -43,7 +43,7 @@ const FileUploadList = () => {
     return (
         <div className={'space-y-2 mt-6'}>
             {uploads.map(([name, file]) => (
-                <div key={name} className={'flex items-center space-x-3 bg-gray-700 p-3 rounded'}>
+                <div key={name} className={'flex items-center space-x-3 bg-gray-900 p-3 rounded'}>
                     <Tooltip content={`${Math.floor((file.loaded / file.total) * 100)}%`} placement={'left'}>
                         <div className={'flex-shrink-0'}>
                             <Spinner progress={(file.loaded / file.total) * 100} className={'w-6 h-6'} />
@@ -52,7 +52,7 @@ const FileUploadList = () => {
                     <Code>{name}</Code>
                     <button
                         onClick={cancelFileUpload.bind(this, name)}
-                        className={'text-gray-500 hover:text-gray-200 transition-colors duration-75'}
+                        className={'text-gray-600 hover:text-gray-200 transition-colors duration-75'}
                     >
                         <XIcon className={'w-5 h-5'} />
                     </button>
@@ -95,7 +95,7 @@ export default ({ className }: WithClassname) => {
                     <button
                         className={
                             className ||
-                            'flex items-center justify-center w-10 h-10 rounded-ui bg-gray-700 border border-gray-600 text-blue-300 hover:text-blue-100 hover:border-gray-500 transition-colors'
+                            'flex items-center justify-center w-10 h-10 rounded-ui bg-gray-900 border border-gray-800 text-blue-300 hover:text-blue-100 hover:border-gray-600 transition-colors'
                         }
                         onClick={() => (open.value = true)}
                     >

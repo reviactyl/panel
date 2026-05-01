@@ -50,7 +50,7 @@ export default () => {
             ) : !data?.items.length ? (
                 <p className={'text-sm text-center text-gray-400'}>No activity logs available for this server.</p>
             ) : (
-                <div className={'bg-gray-700 rounded-ui border border-gray-600'}>
+                <div className={'bg-gray-900 rounded-ui border border-gray-800'}>
                     {data?.items.map((activity) => (
                         <ActivityLogEntry key={activity.id} activity={activity}>
                             <span />

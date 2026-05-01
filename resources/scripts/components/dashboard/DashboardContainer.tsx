@@ -206,7 +206,7 @@ export default () => {
                                         {/* Egg filter is global (not user-specific): show for both "your servers" and "others' servers" */}
                                         {(eggs && eggs.length > 0) ||
                                         (rootAdmin && showOnlyAdmin && Array.isArray(eggs)) ? (
-                                            <div className='mb-2 border-b border-gray-600 pb-2'>
+                                            <div className='mb-2 border-b border-gray-800 pb-2'>
                                                 <p className='text-xs text-gray-200 uppercase px-2 pb-1.5'>
                                                     {t('eggs.filter-label')}
                                                 </p>

@@ -131,7 +131,7 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
 
     return (
         <Modal visible={visible} onDismissed={onDismissed} dismissable={true} size={'lg'} noScroll={true}>
-            <div className='mb-6 border-b border-gray-600 pb-4'>
+            <div className='mb-6 border-b border-gray-800 pb-4'>
                 <Title className='text-2xl font-semibold text-gray-100'>{t('categories.manage-title')}</Title>
             </div>
 
@@ -245,7 +245,7 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
                             </div>
                             <h3 className='text-lg font-semibold text-gray-200'>{t('categories.arrange-order')}</h3>
                         </div>
-                        <span className='text-xs text-gray-400 bg-gray-800 px-2.5 py-1 rounded-ui border border-gray-600'>
+                        <span className='text-xs text-gray-400 bg-gray-900 px-2.5 py-1 rounded-ui border border-gray-800'>
                             {t('categories.categories-count', { count: categories.length })}
                         </span>
                     </div>
@@ -265,7 +265,7 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
                                                 <Draggable key={cat.uuid} draggableId={cat.uuid} index={index}>
                                                     {(provided, snapshot) => (
                                                         <DragItem
-                                                            className='bg-gray-700 border border-gray-600 rounded-ui'
+                                                            className='bg-gray-900 border border-gray-800 rounded-ui'
                                                             ref={provided.innerRef}
                                                             {...provided.draggableProps}
                                                             {...provided.dragHandleProps}
@@ -279,7 +279,7 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
                                                                 }}
                                                             >
                                                                 <FaBars
-                                                                    className='text-gray-500'
+                                                                    className='text-gray-600'
                                                                     style={{
                                                                         marginRight: '0.75rem',
                                                                         cursor: 'grab',

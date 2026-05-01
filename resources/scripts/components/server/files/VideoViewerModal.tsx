@@ -5,7 +5,7 @@ import tw from 'twin.macro';
 import styled from 'styled-components';
 
 const PlayerContainer = styled.div`
-    ${tw`flex items-center justify-center bg-gray-800 rounded-ui overflow-hidden`};
+    ${tw`flex items-center justify-center bg-gray-900 rounded-ui overflow-hidden`};
     min-height: 360px;
     max-height: 80vh;
 

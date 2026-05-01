@@ -40,7 +40,7 @@ export default () => {
                         data.map((key, index) => (
                             <GreyRowBox
                                 key={key.fingerprint}
-                                css={[tw`bg-gray-600 flex space-x-4 items-center`, index > 0 && tw`mt-2`]}
+                                css={[tw`bg-gray-700 flex space-x-4 items-center`, index > 0 && tw`mt-2`]}
                             >
                                 <FaKey className={'text-gray-300'} />
                                 <div css={tw`flex-1`}>

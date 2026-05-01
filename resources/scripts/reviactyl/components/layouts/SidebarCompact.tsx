@@ -26,7 +26,7 @@ const NavbarContainer = styled.div`
 `;
 
 const SidebarContainer = styled.div<{ $isOpen: boolean }>`
-    ${tw`w-[225px] self-start border border-gray-600 bg-gray-700 text-white flex flex-col z-40 transition-transform duration-300 ease-in-out`};
+    ${tw`w-[225px] self-start border border-gray-800 bg-gray-900 text-white flex flex-col z-40 transition-transform duration-300 ease-in-out`};
 
     ${({ $isOpen }) =>
         $isOpen
@@ -58,16 +58,19 @@ export const SideNavigation = styled.div`
     ${tw`flex flex-col gap-1 pb-4 -mt-1`};
 
     & .label {
-        ${tw`flex items-center ml-2 mr-2 px-3 pt-2 pb-1 text-sm font-semibold text-gray-100 uppercase rounded-ui transition-all duration-300`};
+        ${tw`flex items-center ml-2 mr-2 px-3 pt-2 pb-1 text-sm font-semibold text-gray-400 transition-all duration-300`};
     }
     a {
         ${tw`flex items-center ml-2 mr-2 px-5 py-2 text-sm font-medium text-gray-200 rounded-ui transition-all duration-300`};
 
-        &:hover,
+        &:hover {
+            background-color: rgb(var(--color-700) / 0.2);
+        }
+
         &:focus,
         &.active {
             ${tw`text-reviactyl`};
-            background-color: rgb(var(--color-primary) / 0.2);
+            background-color: rgb(var(--color-700) / 0.2);
         }
     }
 `;
@@ -102,7 +105,7 @@ export const NavbarCompact = ({ children }: NavbarProps) => {
     }, []);
 
     return (
-        <NavbarContainer className={`${blurred ? 'shadow' : ''} bg-gray-700 border-b border-gray-600/50`}>
+        <NavbarContainer className={`${blurred ? 'shadow' : ''} bg-gray-900 border-b border-gray-800/50`}>
             <SpinnerOverlay visible={isLoggingOut} />
             <div className='w-full flex items-center justify-between h-full px-4 sm:px-6 md:px-8'>
                 <div className='flex items-center gap-4'>

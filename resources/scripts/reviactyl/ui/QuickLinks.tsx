@@ -16,7 +16,7 @@ const CardsGrid = styled.div`
 `;
 
 const CardLink = styled.a`
-    ${tw`flex items-center justify-between p-4 rounded-ui text-gray-100 bg-gray-700 border border-gray-600 hover:bg-gray-600 transition-all duration-200 cursor-pointer`}
+    ${tw`flex items-center justify-between p-4 rounded-ui text-gray-100 bg-gray-900 border border-gray-800 hover:bg-gray-700 transition-all duration-200 cursor-pointer`}
 `;
 
 const IconWrapper = styled.div<{ $color?: string }>`

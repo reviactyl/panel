@@ -60,7 +60,7 @@ export default ({ schedule, task }: Props) => {
     const ActionIcon = icon;
 
     return (
-        <div css={tw`sm:flex items-center p-3 sm:p-6 border-b border-gray-800`}>
+        <div css={tw`sm:flex items-center p-3 sm:p-6 border-b border-gray-900`}>
             <SpinnerOverlay visible={isLoading} fixed size={'large'} />
             <TaskDetailsModal
                 schedule={schedule}
@@ -86,7 +86,7 @@ export default ({ schedule, task }: Props) => {
                             <p css={tw`text-xs uppercase text-gray-400 mb-1`}>Ignoring files & folders:</p>
                         )}
                         <div
-                            css={tw`font-mono bg-gray-800 rounded py-1 px-2 text-sm w-auto inline-block whitespace-pre-wrap break-all`}
+                            css={tw`font-mono bg-gray-900 rounded py-1 px-2 text-sm w-auto inline-block whitespace-pre-wrap break-all`}
                         >
                             {task.payload}
                         </div>
@@ -104,7 +104,7 @@ export default ({ schedule, task }: Props) => {
                 )}
                 {task.sequenceId > 1 && task.timeOffset > 0 && (
                     <div css={tw`mr-6`}>
-                        <div css={tw`flex items-center px-2 py-1 bg-gray-500 text-sm rounded-full`}>
+                        <div css={tw`flex items-center px-2 py-1 bg-gray-600 text-sm rounded-full`}>
                             <Icon icon={FaClock} css={tw`w-3 h-3 mr-2`} />
                             {task.timeOffset}s later
                         </div>
@@ -114,7 +114,7 @@ export default ({ schedule, task }: Props) => {
                     <button
                         type={'button'}
                         aria-label={'Edit scheduled task'}
-                        css={tw`block text-sm p-2 text-gray-500 hover:text-gray-100 transition-colors duration-150 mr-4 ml-auto sm:ml-0`}
+                        css={tw`block text-sm p-2 text-gray-600 hover:text-gray-100 transition-colors duration-150 mr-4 ml-auto sm:ml-0`}
                         onClick={() => setIsEditing(true)}
                     >
                         <FaPen />
@@ -124,7 +124,7 @@ export default ({ schedule, task }: Props) => {
                     <button
                         type={'button'}
                         aria-label={'Delete scheduled task'}
-                        css={tw`block text-sm p-2 text-gray-500 hover:text-red-600 transition-colors duration-150`}
+                        css={tw`block text-sm p-2 text-gray-600 hover:text-red-600 transition-colors duration-150`}
                         onClick={() => setVisible(true)}
                     >
                         <FaTrash />

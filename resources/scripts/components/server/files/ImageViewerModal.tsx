@@ -7,7 +7,7 @@ import styled from 'styled-components';
 
 // Quick styled component for the viewer container (might put this into its own file later)
 const ViewerContainer = styled.div`
-    ${tw`flex items-center justify-center bg-gray-800 rounded-ui overflow-hidden`};
+    ${tw`flex items-center justify-center bg-gray-900 rounded-ui overflow-hidden`};
     min-height: 500px;
     max-height: 80vh;
 

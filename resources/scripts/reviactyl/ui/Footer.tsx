@@ -8,7 +8,7 @@ const Container = styled.div`
 `;
 
 const Copyright = styled.div`
-    ${tw`text-center text-gray-500 text-xs`}
+    ${tw`text-center text-gray-600 text-xs`}
 `;
 
 export default () => {
@@ -21,7 +21,7 @@ export default () => {
                     rel={'noopener nofollow noreferrer'}
                     href={'https://reviactyl.app'}
                     target={'_blank'}
-                    css={tw`no-underline text-gray-500 hover:text-gray-300`}
+                    css={tw`no-underline text-gray-600 hover:text-gray-300`}
                 >
                     Reviactyl&trade;
                 </a>

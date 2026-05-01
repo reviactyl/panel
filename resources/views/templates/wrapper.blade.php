@@ -121,6 +121,7 @@ SOFTWARE.
             --color-700: {{ reviactyl($reviactylConfiguration['color700']) }};
             --color-800: {{ reviactyl($reviactylConfiguration['color800']) }};
             --color-900: {{ reviactyl($reviactylConfiguration['color900']) }};
+            --color-950: {{ reviactyl($reviactylConfiguration['color950']) }};
         }
     </style>
 
@@ -132,7 +133,7 @@ SOFTWARE.
     @vite('resources/scripts/index.tsx')
 </head>
 
-<body class="{{ $css['body'] ?? 'bg-neutral-50' }}" style="{{ $css['style'] ?? '' }}">
+<body class="{{ $css['body'] ?? 'bg-gray-950' }}" style="{{ $css['style'] ?? '' }}">
     @section('content')
         @yield('above-container')
         @yield('container')

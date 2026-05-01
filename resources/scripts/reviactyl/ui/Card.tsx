@@ -9,7 +9,7 @@ interface CardProps {
 }
 
 const CardDefault = styled.div`
-    ${tw`rounded-ui bg-gray-700 border border-gray-600`}
+    ${tw`rounded-ui bg-gray-900 border border-gray-800`}
 `;
 
 const Card = forwardRef<HTMLDivElement, CardProps & React.HTMLAttributes<HTMLDivElement>>(

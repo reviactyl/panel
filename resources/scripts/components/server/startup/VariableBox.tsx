@@ -62,7 +62,7 @@ const VariableBox = ({ variable }: Props) => {
             title={
                 <p className='text-sm uppercase'>
                     {!variable.isEditable && (
-                        <span className='bg-gray-700 text-xs py-1 px-2 rounded-full mr-2 mb-1'>Read Only</span>
+                        <span className='bg-gray-900 text-xs py-1 px-2 rounded-full mr-2 mb-1'>Read Only</span>
                     )}
                     {variable.name}
                 </p>

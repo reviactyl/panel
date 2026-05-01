@@ -152,12 +152,12 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
                             visibleRef.current = false;
                             setVisible(false);
                         }}
-                        className='bg-gray-800/40 backdrop-blur-sm transition-all duration-300 ease-in-out'
+                        className='bg-gray-900/40 backdrop-blur-sm transition-all duration-300 ease-in-out'
                     >
                         <div className={'w-full flex items-center justify-center pointer-events-none'}>
                             <Card
                                 className={
-                                    'flex items-center space-x-4 w-full ring-4 ring-gray-600 ring-opacity-60 p-6 mx-10 max-w-sm'
+                                    'flex items-center space-x-4 w-full ring-4 ring-gray-700 ring-opacity-60 p-6 mx-10 max-w-sm'
                                 }
                             >
                                 <FaUpload className={'w-10 h-10 flex-shrink-0'} />

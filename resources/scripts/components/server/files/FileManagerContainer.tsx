@@ -87,12 +87,12 @@ const RecursiveFileRow = ({ file, serverId }: { file: SearchResult; serverId: st
         : `/server/${serverId}/files#${encodePathSegments(file.fullPath)}`;
     const Icon = file.isFile ? DocumentIcon : FolderIcon;
     return (
-        <div className='flex items-center py-2 px-2 border-b border-gray-700 last:border-0 hover:bg-gray-700 rounded-ui'>
+        <div className='flex items-center py-2 px-2 border-b border-gray-800 last:border-0 hover:bg-gray-900 rounded-ui'>
             <Icon className='w-4 h-4 mr-3 flex-none text-gray-400' aria-hidden='true' />
             <NavLink to={to} className='flex-1 text-sm text-gray-200 truncate hover:text-primary-400 min-w-0'>
                 {file.fullPath}
             </NavLink>
-            {file.isFile && <span className='text-xs text-gray-500 ml-3 flex-none'>{bytesToString(file.size)}</span>}
+            {file.isFile && <span className='text-xs text-gray-600 ml-3 flex-none'>{bytesToString(file.size)}</span>}
         </div>
     );
 };
@@ -116,7 +116,7 @@ export default () => {
     const [videoViewerVisible, setVideoViewerVisible] = useState(false);
     const [selectedVideo, setSelectedVideo] = useState<{ url: string; name: string } | null>(null);
 
-    const [sortType, setSortType] = useState<SortType>('name');
+    const [sortType, setSortType] = useState<SortType>('size');
     const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
 
     const [inputValue, setInputValue] = useState('');
@@ -293,7 +293,7 @@ export default () => {
                         </div>
                     </div>
                     <div className='flex flex-wrap md:flex-nowrap items-center gap-2 mt-2'>
-                        <div className='order-3 w-full min-w-0 md:order-none md:flex-1 md:w-auto bg-gray-600 rounded-ui py-2'>
+                        <div className='order-3 w-full min-w-0 md:order-none md:flex-1 md:w-auto bg-gray-800 rounded-ui py-2'>
                             <FileManagerBreadcrumbs
                                 renderLeft={
                                     <FileActionCheckbox
@@ -307,7 +307,7 @@ export default () => {
                         </div>
                     </div>
                 </Card>
-                <Card className={'flex items-center mb-1 !rounded-none !px-2 !py-2 !bg-gray-600 hidden md:block'}>
+                <Card className={'flex items-center mb-1 !rounded-none !px-2 !py-2 !bg-gray-800 hidden md:block'}>
                     <div className='order-4 md:order-none flex items-center gap-1'>
                         <div className='flex-1 ml-[55px]'>
                             <button
@@ -380,7 +380,7 @@ export default () => {
                         isSearching && recursiveResults.length === 0 ? (
                             <Spinner size={'base'} centered />
                         ) : recursiveResults.length === 0 ? (
-                            <div className={'flex flex-col items-center justify-center py-10 text-gray-500'}>
+                            <div className={'flex flex-col items-center justify-center py-10 text-gray-600'}>
                                 <SearchIcon className={'w-10 h-10 mb-2 opacity-40'} />
                                 <p className={'text-sm'}>{t('no-results')}</p>
                             </div>
@@ -390,14 +390,14 @@ export default () => {
                                 animate={{ opacity: 1 }}
                                 transition={{ duration: 0.15, ease: 'easeIn' }}
                             >
-                                {isSearching && <p css={tw`text-xs text-gray-500 text-center mb-2`}>Searching...</p>}
+                                {isSearching && <p css={tw`text-xs text-gray-600 text-center mb-2`}>Searching...</p>}
                                 {recursiveResults.map((file) => (
                                     <RecursiveFileRow key={file.fullPath} file={file} serverId={id} />
                                 ))}
                             </motion.div>
                         )
                     ) : !filteredFiles.length ? (
-                        <div className={'flex flex-col items-center justify-center py-10 text-gray-500'}>
+                        <div className={'flex flex-col items-center justify-center py-10 text-gray-600'}>
                             <FolderOpenIcon className={'w-12 h-12 mb-2 opacity-40'} />
                             <p className={'text-sm'}>{t('empty')}</p>
                         </div>

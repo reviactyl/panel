@@ -98,7 +98,7 @@ const MassActionsBar = () => {
                     <div className={'pointer-events-none fixed bottom-0 mb-6 flex justify-center w-full z-50'}>
                         <Fade timeout={75} in={selectedFiles.length > 0} unmountOnExit>
                             <div
-                                className={`flex items-center space-x-4 pointer-events-auto rounded-ui p-4 bg-gray-800/50 backdrop-blur-md border border-gray-600`}
+                                className={`flex items-center space-x-4 pointer-events-auto rounded-ui p-4 bg-gray-900/50 backdrop-blur-md border border-gray-800`}
                             >
                                 <Button onClick={() => setShowMove(true)}>{t('move')}</Button>
                                 <Button onClick={onClickCompress}>{t('archive')}</Button>

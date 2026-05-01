@@ -63,8 +63,8 @@ const PIDLimitModalFeature = () => {
                     </div>
                     <p css={tw`mt-4`}>This server has reached the maximum process or memory limit.</p>
                     <p css={tw`mt-4`}>
-                        Increasing <code css={tw`font-mono bg-gray-900`}>container_pid_limit</code> in the agent
-                        configuration, <code css={tw`font-mono bg-gray-900`}>config.yml</code>, might help resolve this
+                        Increasing <code css={tw`font-mono bg-gray-950`}>container_pid_limit</code> in the agent
+                        configuration, <code css={tw`font-mono bg-gray-950`}>config.yml</code>, might help resolve this
                         issue.
                     </p>
                     <p css={tw`mt-4`}>
@@ -87,7 +87,7 @@ const PIDLimitModalFeature = () => {
                         and give them the error below.
                     </p>
                     <p css={tw`mt-4`}>
-                        <code css={tw`font-mono bg-gray-900`}>
+                        <code css={tw`font-mono bg-gray-950`}>
                             pthread_create failed, Possibly out of memory or process/resource limits reached
                         </code>
                     </p>
