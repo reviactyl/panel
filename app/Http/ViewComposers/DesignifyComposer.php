@@ -146,7 +146,7 @@ class DesignifyComposer
             'colorDanger' => config('designify.colorDanger') ?? '#8F1F20',
             'colorSecondary' => config('designify.colorSecondary') ?? '#2B2B40',
             'colorDiscord' => config('designify.colorDiscord') ?? '#5865F2',
-            'color50'  => config('designify.color50')  ?? '#fafafa',
+            'color50' => config('designify.color50') ?? '#fafafa',
             'color100' => config('designify.color100') ?? '#f4f4f5',
             'color200' => config('designify.color200') ?? '#e4e4e7',
             'color300' => config('designify.color300') ?? '#d4d4d8',

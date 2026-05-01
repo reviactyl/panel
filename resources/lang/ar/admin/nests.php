@@ -1,7 +1,7 @@
 <?php
 
 return [
-    
+
     'label' => 'العش',
     'plural_label' => 'الأعشاش',
 
@@ -28,7 +28,7 @@ return [
         'eggs' => 'القوالب',
         'servers' => 'الخوادم',
     ],
-    
+
     'actions' => [
         'import' => 'Import Egg',
     ],
