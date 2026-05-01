@@ -71,6 +71,7 @@ class NestSeeder extends Seeder
             $this->creationService->handle([
                 'name' => 'Minecraft',
                 'description' => 'Minecraft - the classic game from Mojang. With support for Vanilla MC, Spigot, and many others!',
+                'image' => 'https://cdn.reviactyl.app/@reviactyl/eggs/minecraft/vanilla.webp',
             ], 'authors@reviactyl.app');
         }
     }
@@ -86,6 +87,7 @@ class NestSeeder extends Seeder
             $this->creationService->handle([
                 'name' => 'Source Engine',
                 'description' => 'Includes support for most Source Dedicated Server games.',
+                'image' => 'https://cdn.reviactyl.app/@reviactyl/eggs/source/steam.webp',
             ], 'authors@reviactyl.app');
         }
     }
@@ -101,6 +103,7 @@ class NestSeeder extends Seeder
             $this->creationService->handle([
                 'name' => 'Voice Servers',
                 'description' => 'Voice servers such as Mumble and Teamspeak 3.',
+                'image' => 'https://cdn.reviactyl.app/@reviactyl/eggs/voice/teamspeak.webp',
             ], 'authors@reviactyl.app');
         }
     }
@@ -116,6 +119,7 @@ class NestSeeder extends Seeder
             $this->creationService->handle([
                 'name' => 'Rust',
                 'description' => 'Rust - A game where you must fight to survive.',
+                'image' => 'https://cdn.reviactyl.app/@reviactyl/eggs/rust/rust.webp',
             ], 'authors@reviactyl.app');
         }
     }

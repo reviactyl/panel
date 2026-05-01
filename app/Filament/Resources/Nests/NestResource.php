@@ -12,6 +12,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -61,6 +62,9 @@ class NestResource extends Resource
                         ->maxLength(191)
                         ->helperText(trans('admin/nests.helpers.name')),
 
+                    TextInput::make('image')
+                        ->nullable(),
+
                     TextInput::make('author')
                         ->label(trans('admin/nests.fields.author'))
                         ->email()
@@ -81,9 +85,8 @@ class NestResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')
-                    ->label(trans('admin/nests.columns.id'))
-                    ->sortable(),
+                ImageColumn::make('image')
+                    ->getStateUsing(fn ($record) => $record->image ?: url('/reviactyl/icon.png')),
 
                 TextColumn::make('name')
                     ->label(trans('admin/nests.columns.name'))
