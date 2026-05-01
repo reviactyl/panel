@@ -4,9 +4,9 @@
         "version": "RCYL_v26",
         "update_url": null
     },
-    "exported_at": "2026-03-08T09:52:23+00:00",
+    "exported_at": "2026-05-01T13:52:06+00:00",
     "name": "Forge Minecraft",
-    "banner": "https:\/\/cdn.reviactyl.app\/@reviactyl\/eggs\/minecraft\/night_waterfall.webp",
+    "image": "https:\/\/cdn.reviactyl.app\/@reviactyl\/eggs\/minecraft\/forge.webp",
     "author": "authors@reviactyl.app",
     "description": "Minecraft Forge Server. Minecraft Forge is a modding API (Application Programming Interface), which makes it easier to create mods, and also make sure mods are compatible with each other.",
     "features": [],
