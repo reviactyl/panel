@@ -34,7 +34,7 @@ return [
         'no_node_hint' => 'Yukarıdaki açılır menüyü kullanın',
         'error' => 'Hata',
         'error_desc' => 'İzleme verileri yüklenemiyor',
-        'error_fetch' => 'Agent ten veri alınamıyor',
+        'error_fetch' => 'Unable to fetch data from Agent',
         'error_node_gone' => 'Düğüm artık mevcut değil',
     ],
 
@@ -78,7 +78,7 @@ return [
         'heading' => 'Sunucu Kullanımı',
         'no_node' => 'Sunucu kullanımını görüntülemek için bir düğüm seçin.',
         'no_servers' => 'Bu düğümde sunucu bulunamadı.',
-        'error_fetch' => 'Agent ten sunucu verileri alınamıyor.',
+        'error_fetch' => 'Unable to fetch server data from Agent.',
         'col' => [
             'name' => 'Sunucu',
             'state' => 'Durum',
