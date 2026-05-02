@@ -58,5 +58,6 @@ export default defineConfig({
     test: {
         environment: 'happy-dom',
         include: ['resources/scripts/**/*.{spec,test}.{ts,tsx}'],
+        globals: true,
     },
 });
