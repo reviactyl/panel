@@ -4,10 +4,15 @@
 </a>
 </p>
 
-# Reviactyl v26 | React 19, Laravel 12, FilamentPHP 5
-[![Crowdin](https://badges.crowdin.net/reviactyl/localized.svg)](https://crowdin.com/project/reviactyl) ![GitHub Release](https://img.shields.io/github/v/release/reviactyl/panel) ![CalVer Badge](https://img.shields.io/badge/calver-YY.MM.MICRO-22bfda)
-
+# Reviactyl Panel
+###### REVIACTYL (Pronounced as "/ˌrɛ.viˈæk.tɪl/", "ray-wee-yak-till"), CODENAME; Fission Falcon 
 **Reviactyl** is a modern and open-source game server management panel built using Laravel, React, FilamentPHP, Vite, and Go. It focuses on security and performance by running every game server inside isolated Docker containers while providing users with a clean and intuitive interface.
+
+###### BUILT WITH
+![laravel](https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white) ![tailwind](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white) ![react](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB) ![vite](https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E)
+
+
+[![Crowdin](https://badges.crowdin.net/reviactyl/localized.svg)](https://crowdin.com/project/reviactyl) ![GitHub Release](https://img.shields.io/github/v/release/reviactyl/panel) ![CalVer Badge](https://img.shields.io/badge/calver-YY.MM.MICRO-22bfda)
 
 Manage Game Servers like Never Before!
 
@@ -67,8 +72,10 @@ https://github.com/reviactyl/panel/tree/2.0-develop
  </picture>
 </a>
 
-## License
+## Licenses & Attribution
 
-Pterodactyl® Copyright © 2015 - 2022 Dane Everitt and contributors. (Licensed under [MIT](https://github.com/reviactyl/panel/blob/develop/THIRD_PARTY.md))
+Pterodactyl® Copyright © 2015 - 2022 Dane Everitt and contributors. (Licensed under [MIT](https://github.com/reviactyl/panel/blob/develop/licenses/pterodactyl))
 
 Reviactyl™, Copyright © 2025 - 2026 Reviactyl and contributors. (Licensed under [MIT](https://github.com/reviactyl/panel/blob/develop/LICENSE.md))
+
+###### Copyright © 2025 - Current, Reviactyl and Contributors.
