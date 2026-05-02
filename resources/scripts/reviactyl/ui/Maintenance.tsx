@@ -22,7 +22,7 @@ const CardContainer = styled.div`
 export default () => {
     const logo = useStoreState((state: ApplicationStore) => state.settings.data!.logo);
     const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
-    const maintenance = useStoreState((state) => state.reviactyl.data!.maintenance);
+    const maintenance = useStoreState((state) => state.designify.data!.maintenance);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
     const onTriggerLogout = () => {
         setIsLoggingOut(true);

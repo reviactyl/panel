@@ -13,7 +13,7 @@ const AlertContainer = styled.div`
 `;
 
 const MaintenanceAlert = () => {
-    const isUnderMaintenance = useStoreState((state: ApplicationStore) => state.reviactyl.data!.isUnderMaintenance);
+    const isUnderMaintenance = useStoreState((state: ApplicationStore) => state.designify.data!.isUnderMaintenance);
     return (
         <>
             {isUnderMaintenance ? (

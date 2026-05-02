@@ -56,7 +56,7 @@ const hexToRgbString = (hex: string) => {
 };
 
 const getThemeFromConfig = (key: PaletteKey): ThemeData => {
-    const conf = typeof window !== 'undefined' ? window.ReviactylConfiguration || {} : {};
+    const conf = typeof window !== 'undefined' ? window.PanelConfiguration || {} : {};
     const t = conf[key.toLowerCase()] || {};
     return {
         displayName: t.name || key,

@@ -38,9 +38,9 @@ interface CardData {
 
 const QuickLinks = () => {
     const { t } = useTranslation('dashboard/index');
-    const statusCardLink = useStoreState((state: ApplicationStore) => state.reviactyl.data?.statusCardLink);
-    const supportCardLink = useStoreState((state: ApplicationStore) => state.reviactyl.data?.supportCardLink);
-    const billingCardLink = useStoreState((state: ApplicationStore) => state.reviactyl.data?.billingCardLink);
+    const statusCardLink = useStoreState((state: ApplicationStore) => state.designify.data?.statusCardLink);
+    const supportCardLink = useStoreState((state: ApplicationStore) => state.designify.data?.supportCardLink);
+    const billingCardLink = useStoreState((state: ApplicationStore) => state.designify.data?.billingCardLink);
 
     const cards: CardData[] = [];
 

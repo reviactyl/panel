@@ -4,7 +4,7 @@ import { ApplicationStore } from '@/state';
 import { useStoreState } from 'easy-peasy';
 
 export const ContentContainer: React.FC<React.PropsWithChildren> = ({ children }) => {
-    const layoutType = useStoreState((state: ApplicationStore) => state.reviactyl.data!.layoutType);
+    const layoutType = useStoreState((state: ApplicationStore) => state.designify.data!.layoutType);
     return (
         <div
             className={`flex ${layoutType !== 'modern' ? 'pt-16' : ''}`}

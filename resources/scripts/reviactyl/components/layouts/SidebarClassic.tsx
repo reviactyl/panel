@@ -99,7 +99,7 @@ export const SidebarClassic = React.forwardRef<HTMLDivElement, SidebarProps>(({ 
     const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
     const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
-    const sidebarLogout = useStoreState((state) => state.reviactyl.data?.sidebarLogout);
+    const sidebarLogout = useStoreState((state) => state.designify.data?.sidebarLogout);
 
     const onLogout = () => {
         setIsLoggingOut(true);

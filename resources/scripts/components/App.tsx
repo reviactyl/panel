@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { StoreProvider } from 'easy-peasy';
 import { store } from '@/state';
 import { SiteSettings } from '@/state/settings';
-import { ReviactylSettings } from '@/state/reviactyl';
+import { DesignifySettings } from '@/state/designify';
 import ProgressBar from '@/reviactyl/elements/ProgressBar';
 import { NotFound } from '@/reviactyl/elements/ScreenBlock';
 import tw from 'twin.macro';
@@ -23,7 +23,7 @@ const PublicServerStatus = lazy(() => import('@/components/public/PublicServerSt
 
 interface ExtendedWindow extends Window {
     SiteConfiguration?: SiteSettings;
-    ReviactylConfiguration?: ReviactylSettings;
+    PanelConfiguration?: DesignifySettings;
     PanelUser?: {
         uuid: string;
         username: string;
@@ -42,7 +42,7 @@ interface ExtendedWindow extends Window {
 // setupInterceptors(history);
 
 function App() {
-    const { PanelUser, SiteConfiguration, ReviactylConfiguration } = window as ExtendedWindow;
+    const { PanelUser, SiteConfiguration, PanelConfiguration } = window as ExtendedWindow;
     if (PanelUser && !store.getState().user.data) {
         store.getActions().user.setUserData({
             uuid: PanelUser.uuid,
@@ -63,8 +63,8 @@ function App() {
         store.getActions().settings.setSettings(SiteConfiguration!);
     }
 
-    if (!store.getState().reviactyl.data) {
-        store.getActions().reviactyl.setReviactyl(ReviactylConfiguration!);
+    if (!store.getState().designify.data) {
+        store.getActions().designify.setDesignify(PanelConfiguration!);
     }
 
     return (

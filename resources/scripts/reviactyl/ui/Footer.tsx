@@ -12,8 +12,8 @@ const Copyright = styled.div`
 `;
 
 export default () => {
-    const customCopyright = useStoreState((state) => state.reviactyl.data!.customCopyright);
-    const copyright = useStoreState((state) => state.reviactyl.data!.copyright);
+    const customCopyright = useStoreState((state) => state.designify.data!.customCopyright);
+    const copyright = useStoreState((state) => state.designify.data!.copyright);
     return (
         <Container>
             <Copyright>

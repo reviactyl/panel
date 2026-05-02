@@ -9,7 +9,7 @@ import { useStoreState } from 'easy-peasy';
 type Props = React.ComponentProps<typeof SidebarModern> & React.ComponentProps<typeof SidebarClassic>;
 
 export const Sidebar: React.FC<Props> = ({ ...props }) => {
-    const layoutType = useStoreState((state: ApplicationStore) => state.reviactyl.data!.layoutType);
+    const layoutType = useStoreState((state: ApplicationStore) => state.designify.data!.layoutType);
     return (
         <>
             {layoutType === 'modern' ? (
@@ -26,7 +26,7 @@ export const Sidebar: React.FC<Props> = ({ ...props }) => {
 };
 
 export const Navbar = ({ children }: { children: React.ReactNode }) => {
-    const layoutType = useStoreState((state: ApplicationStore) => state.reviactyl.data!.layoutType);
+    const layoutType = useStoreState((state: ApplicationStore) => state.designify.data!.layoutType);
     return (
         <>
             {layoutType === 'modern' ? (

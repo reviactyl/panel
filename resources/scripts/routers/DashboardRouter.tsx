@@ -18,7 +18,7 @@ import QuickLinks from '@/reviactyl/ui/QuickLinks';
 import Maintenance from '@/reviactyl/ui/Maintenance';
 import { useTranslation } from 'react-i18next';
 import { FaHouse } from 'react-icons/fa6';
-import { ReviactylSidebarButton } from '@/state/reviactyl';
+import { DesignifySidebarButton } from '@/state/designify';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 import { useExtensionRoutes } from '@/extensions/useExtensionRoutes';
 import { useExtensions } from '@/extensions/useExtensions';
@@ -45,7 +45,7 @@ const NavItem = ({ route }: Props) => {
 
 const DashboardNavigation = () => {
     const { t } = useTranslation('routes');
-    const customSidebarButtons = useStoreState((state) => state.reviactyl.data?.sidebarButtons ?? []);
+    const customSidebarButtons = useStoreState((state) => state.designify.data?.sidebarButtons ?? []);
     const { data: extensionData } = useExtensions();
 
     const dashboardExtensionRoutes = (Array.isArray(extensionData) ? extensionData : []).flatMap((extension) =>
@@ -62,7 +62,7 @@ const DashboardNavigation = () => {
             }))
     );
     const normalizedSidebarButtons = (Array.isArray(customSidebarButtons) ? customSidebarButtons : []).filter(
-        (button): button is ReviactylSidebarButton =>
+        (button): button is DesignifySidebarButton =>
             typeof button?.label === 'string' &&
             button.label.trim().length > 0 &&
             typeof button?.url === 'string' &&
@@ -133,7 +133,7 @@ const DashboardNavigation = () => {
 
 function DashboardRouter() {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
-    const isUnderMaintenance = useStoreState((state) => state.reviactyl.data?.isUnderMaintenance);
+    const isUnderMaintenance = useStoreState((state) => state.designify.data?.isUnderMaintenance);
     const rootAdmin = useStoreState((state) => state.user.data?.rootAdmin);
     const injectedRoutes = useExtensionRoutes('dashboardRouter');
 

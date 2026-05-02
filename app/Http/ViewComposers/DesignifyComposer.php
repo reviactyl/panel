@@ -286,6 +286,6 @@ class DesignifyComposer
 
     public function compose(View $view): void
     {
-        $view->with('reviactylConfiguration', $this->reviactylDefaults);
+        $view->with('panelConfiguration', $this->reviactylDefaults);
     }
 }

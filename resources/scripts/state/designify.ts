@@ -1,17 +1,17 @@
 import { action, Action } from 'easy-peasy';
 
-export interface ReviactylAlert {
+export interface DesignifyAlert {
     type: string;
     message: string;
 }
 
-export interface ReviactylSidebarButton {
+export interface DesignifySidebarButton {
     label: string;
     url: string;
     newTab: boolean;
 }
 
-export interface ReviactylSettings {
+export interface DesignifySettings {
     customCopyright: boolean;
     copyright: string;
     isUnderMaintenance: boolean;
@@ -21,8 +21,8 @@ export interface ReviactylSettings {
     allocationBlur: boolean;
     alertType: string;
     alertMessage: string;
-    alerts?: ReviactylAlert[];
-    sidebarButtons?: ReviactylSidebarButton[];
+    alerts?: DesignifyAlert[];
+    sidebarButtons?: DesignifySidebarButton[];
     statusCardLink: string;
     supportCardLink: string;
     billingCardLink: string;
@@ -31,17 +31,17 @@ export interface ReviactylSettings {
     layoutType: 'modern' | 'classic' | 'compact' | 'accent';
 }
 
-export interface ReviactylSettingsStore {
-    data?: ReviactylSettings;
-    setReviactyl: Action<ReviactylSettingsStore, ReviactylSettings>;
+export interface DesignifySettingsStore {
+    data?: DesignifySettings;
+    setDesignify: Action<DesignifySettingsStore, DesignifySettings>;
 }
 
-const reviactyl: ReviactylSettingsStore = {
+const designify: DesignifySettingsStore = {
     data: undefined,
 
-    setReviactyl: action((state, payload) => {
+    setDesignify: action((state, payload) => {
         state.data = payload;
     }),
 };
 
-export default reviactyl;
+export default designify;
