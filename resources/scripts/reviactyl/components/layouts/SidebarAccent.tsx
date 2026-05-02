@@ -26,7 +26,7 @@ const NavbarContainer = styled.div`
 `;
 
 const SidebarContainer = styled.div<{ $isOpen: boolean }>`
-    ${tw`w-[225px] self-start bg-gray-900 lg:bg-transparent text-white flex flex-col z-40 transition-transform duration-300 ease-in-out`};
+    ${tw`w-[225px] 2xl:w-64 self-start bg-gray-900 lg:bg-transparent text-white flex flex-col z-40 transition-transform duration-300 ease-in-out`};
 
     ${({ $isOpen }) =>
         $isOpen
