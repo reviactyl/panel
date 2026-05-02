@@ -18,7 +18,7 @@ Manage Game Servers like Never Before!
 
 ## Features
 
-* ` 🌩️ ` **Customizable Options**: Reviactyl offers various* options that lets you customize the panel to your liking.
+* ` 🌩️ ` **Customizable Options**: Reviactyl offers various options that lets you customize the panel to your liking.
 * ` 🎨 ` **Client-side Theme Selector**: Let your clients' choose between various styles according to their liking.
 * ` 🖥️ ` **Modern UI**: Reviactyl offers a modern and sleek UI that's more accessible than other modifications on market.
 * ` 🌍 ` **Multilingual**: Reviactyl is fully translatable and can be localized to your native language.
@@ -45,20 +45,9 @@ Contributors help the development of Reviactyl panel. To start contributing you 
   <img src="https://contrib.rocks/image?repo=reviactyl/panel" />
 </a>
 
-## v26 Milestone (The Future of Game-Server Management)
-
-Reviactyl v26 focuses on modernizing codebase, bringing more stability and exposing a beautiful frontend for admins & users.
-
-- [x] React 19 Migration
-- [X] Yarn -> pnpm Migration
-- [X] Laravel 12 Migration
-- [X] FilamentPHP for Admin Dashboard
-- [X] Extensions System
-- [ ] [Remaining Tasks](https://github.com/reviactyl/panel/milestone/1)
-
 And much more!
 
-## v2 Branch
+## v2 Branch (LTS / Maintenance Only)
 
 https://github.com/reviactyl/panel/tree/2.0-develop
 
