@@ -208,6 +208,7 @@ class DesignifyComposer
             'alwaysShowKillButton' => config('designify.alwaysShowKillButton', false),
             'cardType' => config('designify.cardType') ?? 'grid',
             'layoutType' => config('designify.layoutType') ?? 'classic',
+            'avatarType' => config('designify.avatarType') ?? 'gravatar',
         ];
     }
 

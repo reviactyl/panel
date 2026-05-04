@@ -7,6 +7,8 @@
         "node": ">=22"
     },
     "dependencies": {
+        "@dicebear/collection": "^9.4.2",
+        "@dicebear/core": "^9.4.2",
         "@floating-ui/react": "^0.27.19",
         "@headlessui/react": "^2.2.9",
         "@hello-pangea/dnd": "^18.0.1",

@@ -84,6 +84,7 @@ class Designify extends Page implements HasSchemas
         'designify:alwaysShowKillButton',
         'designify:cardType',
         'designify:layoutType',
+        'designify:avatarType',
         'designify:theme1:name',
         'designify:theme1:colorPrimary',
         'designify:theme1:color50',
@@ -339,6 +340,16 @@ class Designify extends Page implements HasSchemas
                         ->label('Always Show Kill Button')
                         ->inline(false)
                         ->columnSpan(1),
+
+                    Select::make('designify:avatarType')
+                        ->label('Avatar Type')
+                        ->options([
+                            'gravatar' => 'Gravatar',
+                            'initials' => 'Initials',
+                            'identicon' => 'Identicon',
+                            'thumbs' => 'Thumbs',
+                            'rings' => 'Rings',
+                        ]),
                 ]),
 
             Group::make()

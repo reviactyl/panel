@@ -29,6 +29,7 @@ export interface DesignifySettings {
     alwaysShowKillButton: boolean;
     cardType: 'grid' | 'row';
     layoutType: 'modern' | 'classic' | 'compact' | 'accent';
+    avatarType: string;
 }
 
 export interface DesignifySettingsStore {

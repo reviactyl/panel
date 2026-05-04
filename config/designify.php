@@ -75,6 +75,8 @@ return [
     'cardType' => 'grid',
 
     'layoutType' => 'classic',
+    
+    'avatarType' => 'gravatar',
 
     'theme1' => [
         'name' => 'Petrascia',
