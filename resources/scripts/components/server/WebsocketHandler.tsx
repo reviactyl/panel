@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import Spinner from '@/reviactyl/elements/Spinner';
 import tw from 'twin.macro';
 import { useTranslation } from 'react-i18next';
+import { FaTriangleExclamation } from 'react-icons/fa6';
 
 const reconnectErrors = ['jwt: exp claim is invalid', 'jwt: created too far in past (denylist)'];
 
@@ -114,7 +115,7 @@ export default () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.15, ease: 'easeIn' }}
-            css={tw`bg-red-500 py-2`}
+            css={tw`fixed top-4 right-4 z-50 bg-danger border-danger/50 py-2 px-4 rounded-lg shadow-lg`}
         >
             <ContentContainer css={tw`flex items-center justify-center`}>
                 {error === 'connecting' ? (
@@ -123,7 +124,10 @@ export default () => {
                         <p css={tw`ml-2 text-sm text-red-100`}>{t('connection-trouble')}</p>
                     </>
                 ) : (
-                    <p css={tw`ml-2 text-sm text-white`}>{error}</p>
+                    <>
+                        <FaTriangleExclamation css={tw`text-red-400`} />
+                        <p css={tw`ml-2 text-sm text-white`}>{error}</p>
+                    </>
                 )}
             </ContentContainer>
         </motion.div>
