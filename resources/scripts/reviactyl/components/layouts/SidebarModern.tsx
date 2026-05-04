@@ -5,11 +5,13 @@ import { Link } from 'react-router-dom';
 import Avatar from '@/reviactyl/ui/Avatar';
 import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
-import { ExternalLinkIcon, LogoutIcon } from '@heroicons/react/solid';
+import { ExternalLinkIcon } from '@heroicons/react/solid';
 import { useTranslation } from 'react-i18next';
 import http from '@/api/http';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import Logo from '@/reviactyl/ui/Logo';
+import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
+import { FaArrowRightToBracket } from 'react-icons/fa6';
 
 interface SidebarProps {
     isOpen?: boolean;
@@ -61,14 +63,6 @@ const SidebarFooter = styled.div`
     ${tw`sticky bottom-0 z-10 bg-gray-900 p-3 border-t border-gray-800`}
 `;
 
-const LogoutButton = styled.button`
-    ${tw`flex items-center justify-center gap-2 w-full px-4 py-2 text-sm font-medium text-red-400 bg-red-500/10 border border-red-500/30 rounded-ui transition-all duration-300`};
-
-    &:hover {
-        ${tw`text-red-300 bg-red-500/20 border-red-500/50`};
-    }
-`;
-
 export const SideNavigation = styled.div`
     ${tw`flex flex-col gap-1 pb-4 -mt-1`};
 
@@ -117,14 +111,6 @@ export const SidebarModern = React.forwardRef<HTMLDivElement, SidebarProps>(({ c
 
             <SidebarContent>{children ? <SideNavigation>{children}</SideNavigation> : null}</SidebarContent>
 
-            {sidebarLogout && (
-                <SidebarFooter>
-                    <LogoutButton onClick={onLogout}>
-                        <LogoutIcon className='w-4 h-4' />
-                        {t('index.logout')}
-                    </LogoutButton>
-                </SidebarFooter>
-            )}
             <SidebarFooter>
                 <div className='flex items-center gap-3'>
                     <Link to='/account'>
@@ -148,6 +134,13 @@ export const SidebarModern = React.forwardRef<HTMLDivElement, SidebarProps>(({ c
                             </span>
                         </Link>
                     </div>
+                    {sidebarLogout && (
+                        <div onClick={onLogout}>
+                            <Tooltip content={t('index.logout')}>
+                                <FaArrowRightToBracket className='h-10 text-gray-600 hover:text-danger/80 cursor-pointer' />
+                            </Tooltip>
+                        </div>
+                    )}
                 </div>
             </SidebarFooter>
         </SidebarContainer>
