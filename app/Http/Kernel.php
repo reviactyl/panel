@@ -21,7 +21,7 @@ use App\Http\Middleware\SetSecurityHeaders;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\UpdateLastSeen;
 use App\Http\Middleware\VerifyCaptcha;
-use App\Http\Middleware\VerifyCsrfToken;
+use App\Http\Middleware\PreventRequestForgery;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
 use Illuminate\Auth\Middleware\Authorize;
@@ -66,7 +66,7 @@ class Kernel extends HttpKernel
             AddQueuedCookiesToResponse::class,
             StartSession::class,
             ShareErrorsFromSession::class,
-            VerifyCsrfToken::class,
+            PreventRequestForgery::class,
             SubstituteBindings::class,
             LanguageMiddleware::class,
             UpdateLastSeen::class,
@@ -102,7 +102,7 @@ class Kernel extends HttpKernel
         'auth.basic' => AuthenticateWithBasicAuth::class,
         'auth.session' => AuthenticateSession::class,
         'guest' => RedirectIfAuthenticated::class,
-        'csrf' => VerifyCsrfToken::class,
+        'csrf' => PreventRequestForgery::class,
         'throttle' => ThrottleRequests::class,
         'can' => Authorize::class,
         'bindings' => SubstituteBindings::class,

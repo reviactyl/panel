@@ -5,7 +5,7 @@ namespace App\Providers\Filament;
 use App\Http\Middleware\AdminAuthenticate;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\LanguageMiddleware;
-use App\Http\Middleware\VerifyCsrfToken;
+use App\Http\Middleware\PreventRequestForgery;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -46,7 +46,7 @@ class AdminPanelProvider extends PanelProvider
                 EncryptCookies::class,
                 StartSession::class,
                 AuthenticateSession::class,
-                VerifyCsrfToken::class,
+                PreventRequestForgery::class,
                 AddQueuedCookiesToResponse::class,
                 ShareErrorsFromSession::class,
                 SubstituteBindings::class,
