@@ -181,7 +181,7 @@ class CreateServerForm
                                 TextInput::make('custom_image')
                                     ->label(trans('admin/server.create.fields.custom_image.label'))
                                     ->maxLength(191)
-                                    ->placeholder(trans('admin/server.create.fields.custom_image.placeholder'))
+                                    ->placeholder('ghcr.io/reviactyl/images:java_25')
                                     ->helperText(trans('admin/server.create.fields.custom_image.helper')),
                             ])
                             ->columnSpan(['lg' => 6]),
@@ -335,7 +335,7 @@ class CreateServerForm
     private static function dockerImageOptions(Get $get): array
     {
         $egg = filled($get('egg_id')) ? Egg::query()->find($get('egg_id')) : null;
-        
+
         return collect($egg !== null ? $egg->docker_images : [])
             ->mapWithKeys(fn (string $image, string $label): array => [
                 $image => ctype_digit($label) ? $image : sprintf('%s (%s)', $label, $image),

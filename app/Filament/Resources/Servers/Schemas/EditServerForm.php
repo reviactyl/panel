@@ -217,7 +217,7 @@ class EditServerForm
                                                         TextInput::make('custom_image')
                                                             ->label(trans('admin/server.create.fields.custom_image.label'))
                                                             ->maxLength(191)
-                                                            ->placeholder(trans('admin/server.create.fields.custom_image.placeholder'))
+                                                            ->placeholder('ghcr.io/reviactyl/images:java_25')
                                                             ->helperText(trans('admin/server.create.fields.custom_image.helper')),
                                                     ]),
                                             ])
