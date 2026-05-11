@@ -2,11 +2,14 @@
 
 namespace App\Filament\Resources\Nodes\Schemas;
 
+use App\Services\Helpers\RandomWordService;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Components\Wizard;
 use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Schema;
@@ -21,8 +24,7 @@ class CreateNodeForm
                     Step::make(trans('admin/node.sections.identity.title'))
                         ->icon('heroicon-o-information-circle')
                         ->schema([
-                            Section::make()
-                                ->description(trans('admin/node.sections.identity.description'))
+                            Grid::make()
                                 ->schema([
                                     TextInput::make('name')
                                         ->label(trans('admin/node.fields.name.label'))
@@ -30,13 +32,12 @@ class CreateNodeForm
                                         ->maxLength(100)
                                         ->placeholder(trans('admin/node.fields.name.placeholder'))
                                         ->helperText(trans('admin/node.fields.name.helper'))
-                                        ->columnSpanFull(),
-
-                                    Textarea::make('description')
-                                        ->label(trans('admin/node.fields.description.label'))
-                                        ->placeholder(trans('admin/node.fields.description.placeholder'))
-                                        ->helperText(trans('admin/node.fields.description.helper'))
-                                        ->columnSpanFull(),
+                                        ->columnSpan(1)
+                                        ->suffixAction(Action::make('random')
+                                            ->label('Random')
+                                            ->icon('tabler-dice-'.rand(1, 6))
+                                            ->action(fn (Set $set) => RandomWordService::setRandomName($set))
+                                        ),
 
                                     Select::make('location_id')
                                         ->label(trans('admin/node.fields.location.label'))
@@ -45,6 +46,12 @@ class CreateNodeForm
                                         ->searchable()
                                         ->preload()
                                         ->helperText(trans('admin/node.fields.location.helper'))
+                                        ->columnSpan(1),
+
+                                    Textarea::make('description')
+                                        ->label(trans('admin/node.fields.description.label'))
+                                        ->placeholder(trans('admin/node.fields.description.placeholder'))
+                                        ->helperText(trans('admin/node.fields.description.helper'))
                                         ->columnSpanFull(),
 
                                     Toggle::make('public')
@@ -63,8 +70,7 @@ class CreateNodeForm
                     Step::make(trans('admin/node.sections.resources.title'))
                         ->icon('heroicon-o-cpu-chip')
                         ->schema([
-                            Section::make()
-                                ->description(trans('admin/node.sections.resources.description'))
+                            Grid::make()
                                 ->schema([
                                     TextInput::make('memory')
                                         ->label(trans('admin/node.fields.memory.label'))
@@ -113,8 +119,7 @@ class CreateNodeForm
                     Step::make(trans('admin/node.sections.daemon.title'))
                         ->icon('heroicon-o-command-line')
                         ->schema([
-                            Section::make()
-                                ->description(trans('admin/node.sections.daemon.description'))
+                            Grid::make()
                                 ->schema([
                                     TextInput::make('daemonBase')
                                         ->label(trans('admin/node.fields.daemon_base.label'))
@@ -154,8 +159,7 @@ class CreateNodeForm
                     Step::make(trans('admin/node.sections.connection.title'))
                         ->icon('heroicon-o-globe-alt')
                         ->schema([
-                            Section::make()
-                                ->description(trans('admin/node.sections.connection.description'))
+                            Grid::make()
                                 ->schema([
                                     TextInput::make('fqdn')
                                         ->label(trans('admin/node.fields.fqdn.label'))
