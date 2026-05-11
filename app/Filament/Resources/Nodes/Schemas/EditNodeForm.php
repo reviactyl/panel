@@ -24,7 +24,7 @@ use Filament\Schemas\Schema;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Phiki\Grammar\Grammar;
 
-class NodeForm
+class EditNodeForm
 {
     public static function configure(Schema $schema): Schema
     {
@@ -107,7 +107,8 @@ class NodeForm
                                                 }
                                             }),
                                     ]),
-                            ]),
+                            ])
+                            ->hidden(fn ($record) => ! $record || ! $record->id),
 
                         Tab::make(trans('admin/node.sections.identity.title'))
                             ->icon('heroicon-o-information-circle')
