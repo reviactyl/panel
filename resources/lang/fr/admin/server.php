@@ -205,7 +205,6 @@ return [
         ],
         'image' => [
             'label' => 'Docker Image',
-            'placeholder' => 'e.g. ghcr.io/pterodactyl/yolks:java_17',
             'helper' => 'Docker image used to run this server.',
             'custom' => 'Custom',
         ],
