@@ -205,7 +205,6 @@ return [
         ],
         'image' => [
             'label' => 'صورة دوكر',
-            'placeholder' => 'e.g. ghcr.io/pterodactyl/yolks:java_17',
             'helper' => 'صورة دوكر المستخدمة لتشغيل هذا الخادم.',
             'custom' => 'مخصص',
         ],
