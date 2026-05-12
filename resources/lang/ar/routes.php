@@ -5,6 +5,10 @@ return [
         'dashboard' => 'لوحة التحكم',
         'logout' => 'تسجيل الخروج',
     ],
+    'sidebar' => [
+        'more' => 'More',
+        'extensions' => 'Extensions',
+    ],
     'account' => [
         'overview' => 'النظرة على الحساب',
         'api' => 'مفتاح واجهة برمجة التطبيقات',
