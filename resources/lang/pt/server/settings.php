@@ -13,6 +13,7 @@ return [
         'title' => 'Informações de Debug',
         'node' => 'Node',
         'server' => 'ID do Servidor',
+        'public-status-page' => 'Public Status Page',
     ],
     'rename' => [
         'title' => 'Alterar Detalhes do Servidor',
