@@ -6,6 +6,8 @@ return [
         '2fa-required' => 'Se requieren 2-Factores',
         '2fa-alert' => 'Tu cuenta debe tener habilitada la autenticación de doble factor para continuar.',
         'administrator' => 'Administrador',
+        'admin' => 'Admin',
+        'profile' => 'Profile',
         'logout' => 'Cerrar sesión',
         'user' => 'Usuario',
         'update-email' => 'Actualizar dirección de correo electrónico',
@@ -43,9 +45,11 @@ return [
         ],
     ],
     'email' => [
+        'label' => 'Email',
         'password-required' => 'Debes proporcionar la contraseña actual de tu cuenta.',
         'updated' => 'Tu correo electrónico principal ha sido actualizado.',
         'confirm-password' => 'Confirmar contraseña',
+        'error-title' => 'Error',
         'update' => 'Actualizar correo electrónico',
     ],
     'theme-selector' => [
@@ -58,6 +62,7 @@ return [
         'new' => 'Nueva contraseña',
         'description' => 'Tu nueva contraseña debe tener al menos 8 caracteres de longitud y ser única para este sitio web.',
         'confirm-new' => 'Confirmar nueva contraseña',
+        'error-title' => 'Error',
         'update' => 'Actualizar contraseña',
     ],
     '2fa' => [
@@ -69,6 +74,7 @@ return [
         'setup' => [
             'scan' => 'Escanea el código QR de arriba usando la aplicación de autenticación en dos pasos de tu elección. Luego, introduce el código de 6 dígitos generado en el campo de abajo.',
             'password' => 'Contraseña de la cuenta',
+            'cancel' => 'Cancel',
             'waiting' => 'Esperando a que cargue el código QR...',
             'enter' => 'Debes introducir el código de 6 dígitos y tu contraseña para continuar.',
             'enable' => 'Habilitar',
@@ -113,6 +119,7 @@ return [
     'ssh' => [
         'title' => 'Claves SSH',
         'add-key' => 'Añadir clave SSH',
+        'fingerprint' => 'SHA256',
         'not-exist' => 'No existen claves SSH para esta cuenta.',
         'added-on' => 'Añadido el',
         'create' => [
