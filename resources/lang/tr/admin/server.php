@@ -297,6 +297,7 @@ return [
 
     'actions' => [
         'edit' => 'Düzenle',
+        'random' => 'Random',
         'toggle_install_status' => 'Kurulum Durumunu Değiştir',
         'suspend' => 'Askıya Al',
         'unsuspend' => 'Askıdan Al',
