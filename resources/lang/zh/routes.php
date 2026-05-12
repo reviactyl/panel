@@ -5,6 +5,10 @@ return [
         'dashboard' => '仪表板',
         'logout' => '登出',
     ],
+    'sidebar' => [
+        'more' => 'More',
+        'extensions' => 'Extensions',
+    ],
     'account' => [
         'overview' => '账户概览',
         'api' => 'API 密钥',
