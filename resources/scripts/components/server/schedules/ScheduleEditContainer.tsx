@@ -9,7 +9,7 @@ import DeleteScheduleButton from '@/components/server/schedules/DeleteScheduleBu
 import Can from '@/reviactyl/elements/Can';
 import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
-import PageContentBlock from '@/reviactyl/elements/PageContentBlock';
+import ServerContentBlock from '@/reviactyl/elements/ServerContentBlock';
 import tw from 'twin.macro';
 import { Button } from '@/reviactyl/elements/button/index';
 import ScheduleTaskRow from '@/components/server/schedules/ScheduleTaskRow';
@@ -17,9 +17,11 @@ import isEqual from 'react-fast-compare';
 import { format } from 'date-fns';
 import ScheduleCronRow from '@/components/server/schedules/ScheduleCronRow';
 import RunScheduleButton from '@/components/server/schedules/RunScheduleButton';
+import Card from '@/reviactyl/ui/Card';
+import { useTranslation } from 'react-i18next';
 
 const CronBox = ({ title, value }: { title: string; value: string }) => (
-    <div css={tw`bg-gray-900 rounded-ui p-3`}>
+    <div css={tw`bg-gray-800 rounded-ui p-3 mx-2`}>
         <p css={tw`text-gray-300 text-sm`}>{title}</p>
         <p css={tw`text-xl font-medium text-gray-100`}>{value}</p>
     </div>
@@ -27,16 +29,14 @@ const CronBox = ({ title, value }: { title: string; value: string }) => (
 
 const ActivePill = ({ active }: { active: boolean }) => (
     <span
-        css={[
-            tw`rounded-full px-2 py-px text-xs ml-4 uppercase`,
-            active ? tw`bg-green-600 text-green-100` : tw`bg-red-600 text-red-100`,
-        ]}
+        className={`rounded-ui px-2 py-px text-xs ml-4 uppercase ${active ? 'bg-success/20 text-success' : 'bg-danger/20 text-danger'}`}
     >
         {active ? 'Active' : 'Inactive'}
     </span>
 );
 
-export default () => {
+const ScheduleEditContainer = () => {
+    const { t } = useTranslation('server/schedules');
     const { id: scheduleId } = useParams<'id'>();
     const navigate = useNavigate();
 
@@ -74,14 +74,14 @@ export default () => {
     }, []);
 
     return (
-        <PageContentBlock title={'Schedules'}>
+        <ServerContentBlock className="pt-1" title={'Schedules'}>
             <FlashMessageRender byKey={'schedules'} css={tw`mb-4`} />
             {!schedule || isLoading ? (
                 <Spinner size={'large'} centered />
             ) : (
                 <>
-                    <ScheduleCronRow cron={schedule.cron} css={tw`sm:hidden bg-gray-900 rounded mb-4 p-3`} />
-                    <div css={tw`rounded-ui shadow bg-gray-900 border border-gray-800`}>
+                    <ScheduleCronRow cron={schedule.cron} css={tw`sm:hidden bg-gray-900 rounded-ui mb-4 p-3`} />
+                    <Card className="!p-1">
                         <div css={tw`sm:flex items-center p-3 sm:p-6 border-b-4 border-gray-800 rounded-t`}>
                             <div css={tw`flex-1`}>
                                 <h3 css={tw`flex items-center text-gray-100 text-2xl`}>
@@ -124,11 +124,11 @@ export default () => {
                             </div>
                         </div>
                         <div css={tw`hidden sm:grid grid-cols-5 md:grid-cols-5 gap-4 mb-4 mt-4`}>
-                            <CronBox title={'Minute'} value={schedule.cron.minute} />
-                            <CronBox title={'Hour'} value={schedule.cron.hour} />
-                            <CronBox title={'Day (Month)'} value={schedule.cron.dayOfMonth} />
-                            <CronBox title={'Month'} value={schedule.cron.month} />
-                            <CronBox title={'Day (Week)'} value={schedule.cron.dayOfWeek} />
+                            <CronBox title={t('cron.minute')} value={schedule.cron.minute} />
+                            <CronBox title={t('cron.hour')} value={schedule.cron.hour} />
+                            <CronBox title={t('cron.day-month')} value={schedule.cron.dayOfMonth} />
+                            <CronBox title={t('cron.month')} value={schedule.cron.month} />
+                            <CronBox title={t('cron.day-week')} value={schedule.cron.dayOfWeek} />
                         </div>
                         <div css={tw`bg-gray-900 rounded-b`}>
                             {schedule.tasks.length > 0
@@ -145,7 +145,7 @@ export default () => {
                                       ))
                                 : null}
                         </div>
-                    </div>
+                    </Card>
                     <EditScheduleModal visible={showEditModal} schedule={schedule} onModalDismissed={toggleEditModal} />
                     <div css={tw`mt-6 flex sm:justify-end`}>
                         <Can action={'schedule.delete'}>
@@ -162,6 +162,8 @@ export default () => {
                     </div>
                 </>
             )}
-        </PageContentBlock>
+        </ServerContentBlock>
     );
 };
+
+export default ScheduleEditContainer;

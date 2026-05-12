@@ -62,7 +62,7 @@ export default ({ schedule, task }: Props) => {
     const ActionIcon = icon;
 
     return (
-        <div css={tw`sm:flex items-center p-3 sm:p-6 border-b border-gray-900`}>
+        <div css={tw`sm:flex items-center p-3 sm:p-6 border border-gray-800 rounded-ui p-1 mt-2`}>
             <SpinnerOverlay visible={isLoading} fixed size={'large'} />
             <TaskDetailsModal
                 schedule={schedule}
@@ -81,14 +81,14 @@ export default ({ schedule, task }: Props) => {
             </ConfirmationModal>
             <ActionIcon className={'text-lg text-white hidden md:block'} />
             <div css={tw`flex-none sm:flex-1 w-full sm:w-auto overflow-x-auto`}>
-                <p css={tw`md:ml-6 text-gray-200 uppercase text-sm`}>{title}</p>
+                <p css={tw`md:ml-6 text-gray-200 font-semibold uppercase text-sm`}>{title}</p>
                 {task.payload && (
                     <div css={tw`md:ml-6 mt-2`}>
                         {task.action === 'backup' && (
-                            <p css={tw`text-xs uppercase text-gray-400 mb-1`}>{t('ignoring-files-folders')}</p>
+                            <p css={tw`text-xs uppercase text-gray-400 font-semibold mb-1`}>{t('ignoring-files-folders')}</p>
                         )}
                         <div
-                            css={tw`font-mono bg-gray-900 rounded py-1 px-2 text-sm w-auto inline-block whitespace-pre-wrap break-all`}
+                            css={tw`font-mono bg-gray-800 rounded py-1 px-2 text-sm w-auto inline-block whitespace-pre-wrap break-all`}
                         >
                             {task.payload}
                         </div>
