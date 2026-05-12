@@ -297,6 +297,7 @@ return [
 
     'actions' => [
         'edit' => 'Editar',
+        'random' => 'Random',
         'toggle_install_status' => 'Alternar status de instalação',
         'suspend' => 'Suspender',
         'unsuspend' => 'Cancelar suspensão',
