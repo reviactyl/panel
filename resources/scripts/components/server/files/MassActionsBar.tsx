@@ -82,6 +82,7 @@ const MassActionsBar = () => {
                         <li key={file}>{file}</li>
                     ))}
                     {selectedFiles.length > 15 && <li>and {selectedFiles.length - 15} others</li>}
+                    </p>
                 </Dialog.Confirm>
                 {showMove && (
                     <RenameFileModal
