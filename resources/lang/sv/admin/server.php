@@ -297,6 +297,7 @@ return [
 
     'actions' => [
         'edit' => 'Redigera',
+        'random' => 'Random',
         'toggle_install_status' => 'Växla installationsstatus',
         'suspend' => 'Stäng av',
         'unsuspend' => 'Återaktivera',
