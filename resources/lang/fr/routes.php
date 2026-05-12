@@ -5,6 +5,10 @@ return [
         'dashboard' => 'Dashboard',
         'logout' => 'Déconnexion',
     ],
+    'sidebar' => [
+        'more' => 'More',
+        'extensions' => 'Extensions',
+    ],
     'account' => [
         'overview' => 'Aperçu du compte',
         'api' => 'Clés API',
