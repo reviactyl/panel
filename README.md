@@ -23,7 +23,7 @@ Manage Game Servers like Never Before!
 * ` 🖥️ ` **Modern UI**: Reviactyl offers a modern and sleek UI that's more accessible than other modifications on market.
 * ` 🌍 ` **Multilingual**: Reviactyl is fully translatable and can be localized to your native language.
 * ` 🧩 ` **Extensions API**: Reviactyl provides a robust Extensions API that allows developers to create and integrate custom functionality seamlessly.
-* ` 📦 ` **Modern Software**: Reviactyl is built with Laravel 12, Filament v5, React v19 Vite for User Dashboard.
+* ` 📦 ` **Modern Software**: Reviactyl is built with Laravel 13, Filament v5, React v19 Vite for User Dashboard.
 * ` 🔋 ` **Batteries Included**: Reviactyl has most of core features built-in, which means there's no need of spending money for basic features.
 * ` 🍀 ` **Open Source & Free**: Reviactyl is the free open-source game server management panel built upon Pterodactyl offering modern codebase, security, & improvements.
 
