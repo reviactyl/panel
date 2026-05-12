@@ -5,6 +5,10 @@ return [
         'dashboard' => 'Panel',
         'logout' => 'Çıkış Yap',
     ],
+    'sidebar' => [
+        'more' => 'More',
+        'extensions' => 'Extensions',
+    ],
     'account' => [
         'overview' => 'Hesap Özeti',
         'api' => 'API Anahtarları',
