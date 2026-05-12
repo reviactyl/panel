@@ -26,7 +26,7 @@ class ServerStatusController extends Controller
                 ->orWhere('uuidShort', $server)
                 ->firstOrFail();
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'Server not found'], 404);
+            return response()->json(['error' => trans('strings.server-not-found')], 404);
         }
 
         $response = [

@@ -34,7 +34,7 @@ class CreateNodeForm
                                         ->helperText(trans('admin/node.fields.name.helper'))
                                         ->columnSpan(1)
                                         ->suffixAction(Action::make('random')
-                                            ->label('Random')
+                                            ->label(trans('admin/node.actions.random'))
                                             ->icon('tabler-dice-'.rand(1, 6))
                                             ->action(fn (Set $set) => RandomWordService::setRandomName($set))
                                         ),

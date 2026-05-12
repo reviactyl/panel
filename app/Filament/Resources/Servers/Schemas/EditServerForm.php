@@ -63,7 +63,7 @@ class EditServerForm
                                             ->maxLength(191)
                                             ->helperText(trans('admin/server.edit.fields.server_name.helper'))
                                             ->suffixAction(Action::make('random')
-                                                ->label('Random')
+                                                ->label(trans('admin/server.actions.random'))
                                                 ->icon('tabler-dice-'.rand(1, 6))
                                                 ->action(fn (Set $set) => RandomWordService::setRandomName($set))
                                             ),
@@ -106,7 +106,7 @@ class EditServerForm
                                     ->columns(2),
                             ]),
 
-                        Tab::make('Build Configuration')
+                        Tab::make(trans('admin/server.edit.tabs.build_configuration'))
                             ->icon('heroicon-o-cpu-chip')
                             ->schema([
                                 Grid::make(12)
@@ -291,7 +291,7 @@ class EditServerForm
                                                         ->label(trans('admin/server.edit.actions.transfer_server'))
                                                         ->color('success')
                                                         ->disabled(fn (?Server $record): bool => ! self::canTransfer($record))
-                                                        ->modalHeading('Transfer Server')
+                                                        ->modalHeading(trans('admin/server.edit.actions.transfer_server'))
                                                         ->modalSubmitActionLabel(trans('admin/server.edit.actions.confirm'))
                                                         ->form([
                                                             Select::make('node_id')

@@ -47,8 +47,8 @@ export default ({ className }: PowerButtonProps) => {
                 open={open}
                 hideCloseIcon
                 onClose={() => setOpen(false)}
-                title={'Forcibly Stop Process'}
-                confirm={'Continue'}
+                title={t('force-stop-title')}
+                confirm={t('force-stop-confirm')}
                 onConfirmed={onButtonClick.bind(this, 'kill-confirmed')}
             >
                 {t('kill-warning')}

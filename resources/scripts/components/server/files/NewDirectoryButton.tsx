@@ -42,15 +42,18 @@ const generateDirectoryData = (name: string): FileObject => ({
     isEditable: () => false,
 });
 
-const NewDirectoryDialog = asDialog({
-    title: 'Create Directory',
-})(() => {
+const NewDirectoryDialog = asDialog({})(() => {
+    const { t } = useTranslation('server/files');
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const directory = ServerContext.useStoreState((state) => state.files.directory);
 
     const { mutate } = useFileManagerSwr();
-    const { close } = useContext(DialogWrapperContext);
+    const { close, setProps } = useContext(DialogWrapperContext);
     const { clearAndAddHttpError } = useFlashKey('files:directory-modal');
+
+    useEffect(() => {
+        setProps({ title: t('create-directory') });
+    }, [setProps, t]);
 
     useEffect(() => {
         return () => {
@@ -80,9 +83,9 @@ const NewDirectoryDialog = asDialog({
                 <>
                     <FlashMessageRender key={'files:directory-modal'} />
                     <Form css={tw`m-0`}>
-                        <Field autoFocus id={'directoryName'} name={'directoryName'} label={'Name'} />
+                        <Field autoFocus id={'directoryName'} name={'directoryName'} label={t('directory-name-label')} />
                         <p css={tw`mt-2 text-sm md:text-base break-all`}>
-                            <span css={tw`text-gray-200`}>This directory will be created as&nbsp;</span>
+                            <span css={tw`text-gray-200`}>{t('directory-created-as')}&nbsp;</span>
                             <Code>
                                 /home/container
                                 <span css={tw`text-cyan-200`}>
@@ -93,10 +96,10 @@ const NewDirectoryDialog = asDialog({
                     </Form>
                     <Dialog.Footer>
                         <Button.Text className={'w-full sm:w-auto'} onClick={close}>
-                            Cancel
+                            {t('cancel')}
                         </Button.Text>
                         <Button className={'w-full sm:w-auto'} onClick={submitForm}>
-                            Create
+                            {t('create')}
                         </Button>
                     </Dialog.Footer>
                 </>

@@ -34,7 +34,7 @@ class EditNodeForm
 
         return $schema
             ->components([
-                Tabs::make('Node Configuration')
+                Tabs::make(trans('admin/node.sections.tabs.title'))
                     ->tabs([
                         Tab::make(trans('admin/node.sections.overview.title'))
                             ->icon('tabler-layout-dashboard')
@@ -48,16 +48,16 @@ class EditNodeForm
                                             ->label(trans('admin/node.sections.overview.version-label'))
                                             ->state(function ($record) {
                                                 if (! $record) {
-                                                    return 'N/A';
+                                                    return trans('admin/node.general.na');
                                                 }
 
                                                 try {
                                                     $repository = app(DaemonConfigurationRepository::class);
                                                     $data = $repository->setNode($record)->getSystemInformation();
 
-                                                    return $data['version'] ?? 'N/A';
+                                                    return $data['version'] ?? trans('admin/node.general.na');
                                                 } catch (\Exception $e) {
-                                                    return 'Unavailable';
+                                                    return trans('admin/node.general.unavailable');
                                                 }
                                             }),
 
@@ -65,16 +65,16 @@ class EditNodeForm
                                             ->label(trans('admin/node.sections.overview.architecture-label'))
                                             ->state(function ($record) {
                                                 if (! $record) {
-                                                    return 'N/A';
+                                                    return trans('admin/node.general.na');
                                                 }
 
                                                 try {
                                                     $repository = app(DaemonConfigurationRepository::class);
                                                     $data = $repository->setNode($record)->getSystemInformation();
 
-                                                    return $data['architecture'] ?? 'N/A';
+                                                    return $data['architecture'] ?? trans('admin/node.general.na');
                                                 } catch (\Exception $e) {
-                                                    return 'Unavailable';
+                                                    return trans('admin/node.general.unavailable');
                                                 }
                                             }),
 
@@ -82,16 +82,16 @@ class EditNodeForm
                                             ->label(trans('admin/node.sections.overview.kernel-label'))
                                             ->state(function ($record) {
                                                 if (! $record) {
-                                                    return 'N/A';
+                                                    return trans('admin/node.general.na');
                                                 }
 
                                                 try {
                                                     $repository = app(DaemonConfigurationRepository::class);
                                                     $data = $repository->setNode($record)->getSystemInformation();
 
-                                                    return $data['kernel_version'] ?? 'N/A';
+                                                    return $data['kernel_version'] ?? trans('admin/node.general.na');
                                                 } catch (\Exception $e) {
-                                                    return 'Unavailable';
+                                                    return trans('admin/node.general.unavailable');
                                                 }
                                             }),
 
@@ -99,21 +99,21 @@ class EditNodeForm
                                             ->label(trans('admin/node.sections.overview.cpus-label'))
                                             ->state(function ($record) {
                                                 if (! $record) {
-                                                    return 'N/A';
+                                                    return trans('admin/node.general.na');
                                                 }
 
                                                 try {
                                                     $repository = app(DaemonConfigurationRepository::class);
                                                     $data = $repository->setNode($record)->getSystemInformation();
 
-                                                    return $data['cpu_count'] ?? 'N/A';
+                                                    return $data['cpu_count'] ?? trans('admin/node.general.na');
                                                 } catch (\Exception $e) {
-                                                    return 'Unavailable';
+                                                    return trans('admin/node.general.unavailable');
                                                 }
                                             }),
 
                                         TextEntry::make('cpu_usage')
-                                            ->label('CPU Usage')
+                                            ->label(trans('admin/node.sections.overview.cpu-usage-label'))
                                             ->badge()
                                             ->color(function ($record) {
                                                 try {
@@ -133,7 +133,7 @@ class EditNodeForm
                                             })
                                             ->state(function ($record) {
                                                 if (! $record) {
-                                                    return 'N/A';
+                                                    return trans('admin/node.general.na');
                                                 }
 
                                                 try {
@@ -142,12 +142,12 @@ class EditNodeForm
 
                                                     return number_format($data['cpu']['usage_percent'] ?? 0, 2).'%';
                                                 } catch (\Throwable $e) {
-                                                    return 'Unavailable';
+                                                    return trans('admin/node.general.unavailable');
                                                 }
                                             }),
 
                                         TextEntry::make('memory_usage')
-                                            ->label('Memory Usage')
+                                            ->label(trans('admin/node.sections.overview.memory-usage-label'))
                                             ->badge()
                                             ->color(function ($record) {
                                                 try {
@@ -167,7 +167,7 @@ class EditNodeForm
                                             })
                                             ->state(function ($record) {
                                                 if (! $record) {
-                                                    return 'N/A';
+                                                    return trans('admin/node.general.na');
                                                 }
 
                                                 try {
@@ -176,12 +176,12 @@ class EditNodeForm
 
                                                     return number_format($data['memory']['usage_percent'] ?? 0, 2).'%';
                                                 } catch (\Throwable $e) {
-                                                    return 'Unavailable';
+                                                    return trans('admin/node.general.unavailable');
                                                 }
                                             }),
 
                                         TextEntry::make('disk_usage')
-                                            ->label('Disk Usage')
+                                            ->label(trans('admin/node.sections.overview.disk-usage-label'))
                                             ->badge()
                                             ->color(function ($record) {
                                                 try {
@@ -201,7 +201,7 @@ class EditNodeForm
                                             })
                                             ->state(function ($record) {
                                                 if (! $record) {
-                                                    return 'N/A';
+                                                    return trans('admin/node.general.na');
                                                 }
 
                                                 try {
@@ -210,13 +210,13 @@ class EditNodeForm
 
                                                     return number_format($data['disk']['usage_percent'] ?? 0, 2).'%';
                                                 } catch (\Throwable $e) {
-                                                    return 'Unavailable';
+                                                    return trans('admin/node.general.unavailable');
                                                 }
                                             }),
 
                                         Actions::make([
                                             Action::make('viewMonitoring')
-                                                ->label('View Monitoring')
+                                                ->label(trans('admin/node.actions.view_monitoring'))
                                                 ->icon('heroicon-o-chart-bar')
                                                 ->color('primary')
                                                 ->url(fn ($record) => "/admin/monitoring?node={$record->id}")
@@ -446,7 +446,7 @@ class EditNodeForm
                                                 ])
                                                 ->fillForm(function ($record) {
                                                     if (! $record || ! $record->id) {
-                                                        return ['command' => 'Please save the node first.'];
+                                                        return ['command' => trans('admin/node.deployment.save_first')];
                                                     }
 
                                                     try {
@@ -472,7 +472,7 @@ class EditNodeForm
                                                             $keyCreationService = app(KeyCreationService::class);
                                                             $key = $keyCreationService->setKeyType(ApiKey::TYPE_APPLICATION)->handle([
                                                                 'user_id' => $user->id,
-                                                                'memo' => 'Automatically generated node deployment key.',
+                                                                'memo' => trans('admin/node.deployment.auto_generated_key'),
                                                                 'allowed_ips' => [],
                                                             ], ['r_nodes' => 1]);
                                                         }
@@ -494,7 +494,7 @@ class EditNodeForm
 
                                                         return ['command' => $command];
                                                     } catch (\Exception $e) {
-                                                        return ['command' => 'Error generating token. Please try again.'];
+                                                        return ['command' => trans('admin/node.deployment.error')];
                                                     }
                                                 })
                                                 ->action(function () {

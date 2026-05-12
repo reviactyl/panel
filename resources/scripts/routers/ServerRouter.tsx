@@ -149,7 +149,7 @@ const ServerNavigation = () => {
 
             {serverExtensionRoutes.length > 0 && (
                 <div>
-                    <span className='label'>EXTENSIONS</span>
+                    <span className='label'>{t('sidebar.extensions')}</span>
                     {serverExtensionRoutes.map((route) => {
                         const normalizedPath = route.path.replace(/^\/+/, '');
                         const to = route.path.startsWith('/server/')
@@ -180,7 +180,7 @@ const ServerNavigation = () => {
 
             {normalizedSidebarButtons.length > 0 && (
                 <div>
-                    <span className='label'>MORE</span>
+                    <span className='label'>{t('sidebar.more')}</span>
                     {normalizedSidebarButtons.map((button, index) => (
                         <a
                             key={`${button.url}-${index}`}

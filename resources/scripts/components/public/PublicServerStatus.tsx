@@ -7,6 +7,7 @@ import PageContentBlock from '@/reviactyl/elements/PageContentBlock';
 import ContentBox from '@/reviactyl/elements/ContentBox';
 import { useStoreActions } from 'easy-peasy';
 import styled from 'styled-components';
+import { useTranslation } from 'react-i18next';
 
 interface Utilization {
     memory_bytes: number;
@@ -31,6 +32,7 @@ const StatusIndicator = styled.div<{ status: string }>`
 
 export default () => {
     const { id } = useParams<{ id: string }>();
+    const { t } = useTranslation('strings');
     const [status, setStatus] = useState<ServerStatus | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -53,14 +55,14 @@ export default () => {
     }, [id]);
 
     return (
-        <PageContentBlock title={'Server Status'}>
+        <PageContentBlock title={t('server-status')}>
             <div css={tw`w-full max-w-3xl mx-auto`}>
                 {error && <div css={tw`mb-4 p-4 bg-red-600 rounded text-white`}>{error}</div>}
 
                 {loading ? (
                     <ContentBox>
                         <div css={tw`flex justify-center items-center p-8`}>
-                            <p css={tw`text-gray-400`}>Loading server status...</p>
+                            <p css={tw`text-gray-400`}>{t('loading-server-status')}</p>
                         </div>
                     </ContentBox>
                 ) : status ? (
@@ -71,34 +73,34 @@ export default () => {
                                 {status.name}
                             </h1>
                             <p css={tw`text-gray-300 mb-6 whitespace-pre-wrap`}>
-                                {status.description || 'No description provided.'}
+                                {status.description || t('no-description')}
                             </p>
 
                             <div css={tw`grid grid-cols-1 md:grid-cols-2 gap-4`}>
                                 <div css={tw`bg-gray-900 p-4 rounded-lg`}>
-                                    <h3 css={tw`text-gray-400 text-sm uppercase tracking-wide mb-1`}>Status</h3>
+                                    <h3 css={tw`text-gray-400 text-sm uppercase tracking-wide mb-1`}>{t('status')}</h3>
                                     <p css={tw`text-2xl font-bold capitalize`}>{status.status}</p>
                                 </div>
                             </div>
 
                             {status.utilization && (
                                 <div css={tw`mt-6 pt-6 border-t border-gray-800`}>
-                                    <h2 css={tw`text-xl font-bold mb-4`}>Resource Usage</h2>
+                                    <h2 css={tw`text-xl font-bold mb-4`}>{t('resource-usage')}</h2>
                                     <div css={tw`grid grid-cols-1 md:grid-cols-3 gap-4`}>
                                         <div css={tw`bg-gray-900 p-3 rounded`}>
-                                            <div css={tw`text-gray-400 text-xs uppercase mb-1`}>CPU</div>
+                                            <div css={tw`text-gray-400 text-xs uppercase mb-1`}>{t('cpu')}</div>
                                             <div css={tw`text-lg font-mono`}>
                                                 {status.utilization.cpu_absolute.toFixed(2)}%
                                             </div>
                                         </div>
                                         <div css={tw`bg-gray-900 p-3 rounded`}>
-                                            <div css={tw`text-gray-400 text-xs uppercase mb-1`}>Memory</div>
+                                            <div css={tw`text-gray-400 text-xs uppercase mb-1`}>{t('memory')}</div>
                                             <div css={tw`text-lg font-mono`}>
                                                 {bytesToString(status.utilization.memory_bytes)}
                                             </div>
                                         </div>
                                         <div css={tw`bg-gray-900 p-3 rounded`}>
-                                            <div css={tw`text-gray-400 text-xs uppercase mb-1`}>Disk</div>
+                                            <div css={tw`text-gray-400 text-xs uppercase mb-1`}>{t('disk')}</div>
                                             <div css={tw`text-lg font-mono`}>
                                                 {bytesToString(status.utilization.disk_bytes)}
                                             </div>
@@ -112,7 +114,7 @@ export default () => {
                     !error && (
                         <ContentBox>
                             <div css={tw`flex justify-center items-center p-8`}>
-                                <p css={tw`text-gray-400`}>Server not found.</p>
+                                <p css={tw`text-gray-400`}>{t('server-not-found')}</p>
                             </div>
                         </ContentBox>
                     )

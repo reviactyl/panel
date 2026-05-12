@@ -54,17 +54,21 @@ class EggResource extends Resource
                                             ->disabled(fn ($context) => $context === 'edit')
                                             ->dehydrated(),
                                         Forms\Components\TextInput::make('name')
+                                            ->label(trans('admin/eggs.fields.name'))
                                             ->required()
                                             ->maxLength(191),
                                         Forms\Components\TextInput::make('uuid')
                                             ->label(trans('admin/eggs.fields.uuid'))
                                             ->disabled(),
                                         Forms\Components\TextInput::make('author')
+                                            ->label(trans('admin/eggs.fields.author'))
                                             ->email()
                                             ->disabled(),
                                         Forms\Components\TextInput::make('image')
+                                            ->label(trans('admin/eggs.fields.image'))
                                             ->maxLength(191),
                                         Forms\Components\Textarea::make('description')
+                                            ->label(trans('admin/eggs.fields.description'))
                                             ->columnSpanFull(),
                                     ])->columns(2),
 
@@ -136,6 +140,7 @@ class EggResource extends Resource
                                             ->required()
                                             ->maxLength(191),
                                         Forms\Components\TextInput::make('default_value')
+                                            ->label(trans('admin/eggs.fields.default_value'))
                                             ->dehydrateStateUsing(fn ($state) => $state ?? '')
                                             ->maxLength(191),
                                         Forms\Components\Toggle::make('user_viewable')

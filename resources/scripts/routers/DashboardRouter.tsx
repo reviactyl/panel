@@ -73,7 +73,7 @@ const DashboardNavigation = () => {
         <>
             <div>
                 <div className='mt-2'>
-                    <span className='label -mb-2'>Dashboard</span>
+                    <span className='label -mb-2'>{t('index.dashboard')}</span>
                     <Navigate id='index.dashboard' to='/' end className='mt-2'>
                         <span className='flex items-center'>
                             <FaHouse className='w-5 mr-1' /> {t('index.dashboard')}
@@ -82,7 +82,7 @@ const DashboardNavigation = () => {
                 </div>
 
                 <div className='mt-2'>
-                    <span className='label'>Account</span>
+                    <span className='label'>{t('account.overview')}</span>
                     {routes.account
                         .filter((route) => !!route.name)
                         .map((route) => (
@@ -93,7 +93,7 @@ const DashboardNavigation = () => {
 
             {normalizedSidebarButtons.length > 0 && (
                 <div className='mt-2'>
-                    <span className='label'>MORE</span>
+                    <span className='label'>{t('sidebar.more')}</span>
                     {normalizedSidebarButtons.map((button, index) => (
                         <a
                             key={`${button.url}-${index}`}
@@ -112,7 +112,7 @@ const DashboardNavigation = () => {
 
             {dashboardExtensionRoutes.length > 0 && (
                 <div className='mt-2'>
-                    <span className='label'>EXTENSIONS</span>
+                    <span className='label'>{t('sidebar.extensions')}</span>
                     {dashboardExtensionRoutes.map((route) => (
                         <Navigate
                             key={route.id}

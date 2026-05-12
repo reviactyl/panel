@@ -35,7 +35,7 @@ const MassActionsBar = () => {
     const onClickCompress = () => {
         setLoading(true);
         clearFlashes('files');
-        setLoadingMessage('Archiving files...');
+        setLoadingMessage(t('mass-actions.archiving'));
 
         compressFiles(uuid, directory, selectedFiles)
             .then(() => mutate())
@@ -48,7 +48,7 @@ const MassActionsBar = () => {
         setLoading(true);
         setShowConfirm(false);
         clearFlashes('files');
-        setLoadingMessage('Deleting files...');
+        setLoadingMessage(t('mass-actions.deleting'));
 
         deleteFiles(uuid, directory, selectedFiles)
             .then(() => {
@@ -69,17 +69,15 @@ const MassActionsBar = () => {
                     {loadingMessage}
                 </SpinnerOverlay>
                 <Dialog.Confirm
-                    title={'Delete Files'}
+                    title={t('mass-actions.delete-title')}
                     open={showConfirm}
-                    confirm={'Delete'}
+                    confirm={t('mass-actions.delete-confirm')}
                     onClose={() => setShowConfirm(false)}
                     onConfirmed={onClickConfirmDeletion}
                 >
                     <p className={'mb-2'}>
-                        Are you sure you want to delete&nbsp;
-                        <span className={'font-semibold text-gray-50'}>{selectedFiles.length} files</span>? This is a
-                        permanent action and the files cannot be recovered.
-                    </p>
+                        {t('mass-actions.delete-message-start')}&nbsp;
+                        <span className={'font-semibold text-gray-50'}>{selectedFiles.length} {t('mass-actions.delete-message-files')}</span>{t('mass-actions.delete-message-end')}
                     {selectedFiles.slice(0, 15).map((file) => (
                         <li key={file}>{file}</li>
                     ))}

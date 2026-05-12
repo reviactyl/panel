@@ -9,6 +9,7 @@ import Code from '@/reviactyl/elements/Code';
 import { useSignal } from '@preact/signals-react';
 import { WithClassname } from '@/components/types';
 import { FaCloudArrowDown } from 'react-icons/fa6';
+import { useTranslation } from 'react-i18next';
 
 const svgProps = {
     cx: 16,
@@ -33,7 +34,12 @@ const Spinner = ({ progress, className }: { progress: number; className?: string
 );
 
 const FileUploadList = () => {
-    const { close } = useContext(DialogWrapperContext);
+    const { t } = useTranslation('server/files');
+    const { close, setProps } = useContext(DialogWrapperContext);
+
+    useEffect(() => {
+        setProps({ title: t('uploads-title'), description: t('uploads-description') });
+    }, [setProps, t]);
     const cancelFileUpload = ServerContext.useStoreActions((actions) => actions.files.cancelFileUpload);
     const clearFileUploads = ServerContext.useStoreActions((actions) => actions.files.clearFileUploads);
     const uploads = ServerContext.useStoreState((state) =>
@@ -60,20 +66,18 @@ const FileUploadList = () => {
             ))}
             <Dialog.Footer>
                 <Button.Danger variant={Button.Variants.Secondary} onClick={() => clearFileUploads()}>
-                    Cancel Uploads
+                    {t('cancel-uploads')}
                 </Button.Danger>
-                <Button.Text onClick={close}>Close</Button.Text>
+                <Button.Text onClick={close}>{t('close')}</Button.Text>
             </Dialog.Footer>
         </div>
     );
 };
 
-const FileUploadListDialog = asDialog({
-    title: 'File Uploads',
-    description: 'The following files are being uploaded to your server.',
-})(FileUploadList);
+const FileUploadListDialog = asDialog({})(FileUploadList);
 
 export default ({ className }: WithClassname) => {
+    const { t } = useTranslation('server/files');
     const open = useSignal(false);
 
     const count = ServerContext.useStoreState((state) => Object.keys(state.files.uploads).length);
@@ -91,7 +95,7 @@ export default ({ className }: WithClassname) => {
     return (
         <>
             {count > 0 && (
-                <Tooltip content={`${count} files are uploading, click to view`}>
+                <Tooltip content={t('uploads-tooltip', { count })}>
                     <button
                         className={
                             className ||

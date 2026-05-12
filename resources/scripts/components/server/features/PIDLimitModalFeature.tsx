@@ -8,10 +8,12 @@ import useFlash from '@/plugins/useFlash';
 import { SocketEvent } from '@/components/server/events';
 import { useStoreState } from 'easy-peasy';
 import { FaTriangleExclamation } from 'react-icons/fa6';
+import { useTranslation } from 'react-i18next';
 
 const PIDLimitModalFeature = () => {
     const [visible, setVisible] = useState(false);
     const [loading] = useState(false);
+    const { t } = useTranslation('server/features');
 
     const status = ServerContext.useStoreState((state) => state.status.value);
     const { clearFlashes } = useFlash();
@@ -61,7 +63,7 @@ const PIDLimitModalFeature = () => {
                         <FaTriangleExclamation css={tw`pr-4`} color={'orange'} size={'4em'} />
                         <h2 css={tw`text-2xl mb-4 text-gray-100 `}>Memory or process limit reached...</h2>
                     </div>
-                    <p css={tw`mt-4`}>This server has reached the maximum process or memory limit.</p>
+                    <p css={tw`mt-4`}>{t('pid-limit.message')}</p>
                     <p css={tw`mt-4`}>
                         Increasing <code css={tw`font-mono bg-gray-950`}>container_pid_limit</code> in the agent
                         configuration, <code css={tw`font-mono bg-gray-950`}>config.yml</code>, might help resolve this

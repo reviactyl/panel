@@ -85,7 +85,7 @@ export const SideNavigation = styled.div`
 `;
 
 export const SidebarModern = React.forwardRef<HTMLDivElement, SidebarProps>(({ children, isOpen = false }, ref) => {
-    const { t } = useTranslation('routes');
+    const { t } = useTranslation('dashboard/account');
     const nameFirst = useStoreState((state) => state.user.data?.name_first);
     const nameLast = useStoreState((state) => state.user.data?.name_last);
     const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
@@ -119,7 +119,7 @@ export const SidebarModern = React.forwardRef<HTMLDivElement, SidebarProps>(({ c
                     <div className='flex flex-col'>
                         <div className='flex items-center gap-x-1'>
                             <span className='text-xs tracking-widest uppercase text-white/50'>
-                                {rootAdmin ? 'Administrator' : name + ' User'}
+                                {rootAdmin ? t('overview.administrator') : `${name} ${t('overview.user')}`}
                             </span>
                             {rootAdmin && (
                                 // eslint-disable-next-line react/jsx-no-target-blank
@@ -136,7 +136,7 @@ export const SidebarModern = React.forwardRef<HTMLDivElement, SidebarProps>(({ c
                     </div>
                     {sidebarLogout && (
                         <div onClick={onLogout}>
-                            <Tooltip content={t('index.logout')}>
+                            <Tooltip content={t('overview.logout')}>
                                 <FaArrowRightToBracket className='h-10 text-gray-600 hover:text-danger/80 cursor-pointer' />
                             </Tooltip>
                         </div>

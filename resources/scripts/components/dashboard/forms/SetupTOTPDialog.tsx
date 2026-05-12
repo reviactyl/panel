@@ -102,7 +102,7 @@ const ConfigureTwoFactorForm = ({ onTokens }: Props) => {
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.currentTarget.value)}
             />
             <Dialog.Footer>
-                <Button.Text onClick={close}>Cancel</Button.Text>
+                <Button.Text onClick={close}>{t('2fa.setup.cancel')}</Button.Text>
                 <Tooltip
                     disabled={password.length > 0 && value.length === 6}
                     content={!token ? (t('2fa.setup.waiting') as string) : (t('2fa.setup.enter') as string)}
@@ -121,8 +121,14 @@ const ConfigureTwoFactorForm = ({ onTokens }: Props) => {
     );
 };
 
-export default asDialog({
+ConfigureTwoFactorForm.defaultProps = {
+    onTokens: () => {},
+};
+
+const WrappedComponent = asDialog({
     title: 'Enable Two-Step Verification',
     description:
         "Help protect your account from unauthorized access. You'll be prompted for a verification code each time you sign in.",
 })(ConfigureTwoFactorForm);
+
+export default WrappedComponent;

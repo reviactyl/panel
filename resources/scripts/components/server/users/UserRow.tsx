@@ -7,6 +7,7 @@ import Can from '@/reviactyl/elements/Can';
 import { useStoreState } from 'easy-peasy';
 import tw from 'twin.macro';
 import GreyRowBox from '@/reviactyl/elements/GreyRowBox';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     subuser: Subuser;
@@ -15,6 +16,7 @@ interface Props {
 export default ({ subuser }: Props) => {
     const uuid = useStoreState((state) => state.user!.data!.uuid);
     const [visible, setVisible] = useState(false);
+    const { t } = useTranslation('server/users');
 
     return (
         <GreyRowBox css={tw`mb-2`}>
@@ -35,20 +37,20 @@ export default ({ subuser }: Props) => {
                     )}
                     &nbsp;
                 </p>
-                <p css={tw`text-2xs text-gray-600 uppercase hidden md:block`}>2FA Enabled</p>
+                <p css={tw`text-2xs text-gray-600 uppercase hidden md:block`}>{t('two-factor-enabled')}</p>
             </div>
             <div css={tw`ml-4 hidden md:block`}>
                 <p css={tw`font-medium text-center`}>
                     {subuser.permissions.filter((permission) => permission !== 'websocket.connect').length}
                 </p>
-                <p css={tw`text-2xs text-gray-600 uppercase`}>Permissions</p>
+                <p css={tw`text-2xs text-gray-600 uppercase`}>{t('permissions-label')}</p>
             </div>
             {subuser.uuid !== uuid && (
                 <>
                     <Can action={'user.update'}>
                         <button
                             type={'button'}
-                            aria-label={'Edit subuser'}
+                            aria-label={t('edit-subuser')}
                             css={tw`block text-sm p-1 md:p-2 text-gray-600 hover:text-gray-100 transition-colors duration-150 mx-4`}
                             onClick={() => setVisible(true)}
                         >

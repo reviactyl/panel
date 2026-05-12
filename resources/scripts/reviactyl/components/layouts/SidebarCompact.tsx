@@ -11,6 +11,7 @@ import SearchContainer from '@/components/dashboard/search/SearchContainer';
 import Logo from '@/reviactyl/ui/Logo';
 import DropdownMenu, { DropdownButtonRow } from '@/reviactyl/elements/DropdownMenu';
 import { FaArrowRightToBracket, FaGears, FaUser } from 'react-icons/fa6';
+import { useTranslation } from 'react-i18next';
 
 interface SidebarProps {
     isOpen?: boolean;
@@ -84,6 +85,7 @@ export const SidebarCompact = React.forwardRef<HTMLDivElement, SidebarProps>(({ 
 });
 
 export const NavbarCompact = ({ children }: NavbarProps) => {
+    const { t } = useTranslation('dashboard/account');
     const [blurred, setBlurred] = useState(false);
     const rootAdmin = useStoreState((state: ApplicationStore) => state.user.data!.rootAdmin);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -122,18 +124,18 @@ export const NavbarCompact = ({ children }: NavbarProps) => {
                     >
                         <NavLink to='/account'>
                             <DropdownButtonRow>
-                                <FaUser className='h-4 w-4 inline-flex mr-2' /> Profile
+                                <FaUser className='h-4 w-4 inline-flex mr-2' /> {t('overview.profile')}
                             </DropdownButtonRow>
                         </NavLink>
                         {rootAdmin && (
                             <NavLink to='/admin'>
                                 <DropdownButtonRow>
-                                    <FaGears className='h-4 w-4 inline-flex mr-2' /> Admin
+                                    <FaGears className='h-4 w-4 inline-flex mr-2' /> {t('overview.admin')}
                                 </DropdownButtonRow>
                             </NavLink>
                         )}
                         <DropdownButtonRow onClick={onTriggerLogout} danger>
-                            <FaArrowRightToBracket className='h-4 w-4 inline-flex mr-2' /> Logout
+                            <FaArrowRightToBracket className='h-4 w-4 inline-flex mr-2' /> {t('overview.logout')}
                         </DropdownButtonRow>
                     </DropdownMenu>
                 </div>

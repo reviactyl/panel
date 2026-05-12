@@ -6,6 +6,8 @@ return [
         '2fa-required' => '2-Factor Required',
         '2fa-alert' => 'Your account must have two-factor authentication enabled in order to continue.',
         'administrator' => 'Administrator',
+        'admin' => 'Admin',
+        'profile' => 'Profile',
         'logout' => 'Logout',
         'user' => 'User',
         'update-email' => 'Update Email Address',
@@ -43,9 +45,11 @@ return [
         ],
     ],
     'email' => [
+        'label' => 'Email',
         'password-required' => 'You must provide your current account password.',
         'updated' => 'Your primary email has been updated.',
         'confirm-password' => 'Confirm Password',
+        'error-title' => 'Error',
         'update' => 'Update Email',
     ],
     'theme-selector' => [
@@ -58,6 +62,7 @@ return [
         'new' => 'New Password',
         'description' => 'Your new password should be at least 8 characters in length and unique to this website.',
         'confirm-new' => 'Confirm New Password',
+        'error-title' => 'Error',
         'update' => 'Update Password',
     ],
     '2fa' => [
@@ -69,6 +74,7 @@ return [
         'setup' => [
             'scan' => 'Scan the QR code above using the two-step authentication app of your choice. Then, enter the 6-digit code generated into the field below.',
             'password' => 'Account Password',
+            'cancel' => 'Cancel',
             'waiting' => 'Waiting for QR code to load...',
             'enter' => 'You must enter the 6-digit code and your password to continue.',
             'enable' => 'Enable',
@@ -113,6 +119,7 @@ return [
     'ssh' => [
         'title' => 'SSH Keys',
         'add-key' => 'Add SSH Key',
+        'fingerprint' => 'SHA256',
         'not-exist' => 'No SSH Keys exist for this account.',
         'added-on' => 'Added on',
         'create' => [

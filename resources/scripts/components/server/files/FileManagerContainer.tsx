@@ -321,7 +321,7 @@ export default () => {
                                 }}
                                 className={'flex items-center gap-x-1 text-sm text-gray-300 !text-gray-200'}
                             >
-                                <span css={tw`text-xs font-semibold`}>Name</span>
+                                <span css={tw`text-xs font-semibold`}>{t('name')}</span>
                                 {sortType === 'name' ? (
                                     <FaArrowDownAZ className={sortDirection === 'asc' ? 'rotate-180' : ''} />
                                 ) : (
@@ -341,7 +341,7 @@ export default () => {
                                 }}
                                 className={'flex items-center gap-x-1 text-sm text-gray-300 !text-gray-200'}
                             >
-                                <span css={tw`text-xs font-semibold`}>Size</span>
+                                <span css={tw`text-xs font-semibold`}>{t('size')}</span>
                                 {sortType === 'size' ? (
                                     <FaArrowDown19 className={sortDirection === 'asc' ? 'rotate-180' : ''} />
                                 ) : (
@@ -361,7 +361,7 @@ export default () => {
                                 }}
                                 className={'flex items-center gap-x-1 text-sm text-gray-300 !text-gray-200'}
                             >
-                                <span css={tw`text-xs font-semibold`}>Date</span>
+                                <span css={tw`text-xs font-semibold`}>{t('date')}</span>
                                 {sortType === 'date' ? (
                                     <FaArrowDownShortWide className={sortDirection === 'asc' ? 'rotate-180' : ''} />
                                 ) : (
@@ -390,7 +390,7 @@ export default () => {
                                 animate={{ opacity: 1 }}
                                 transition={{ duration: 0.15, ease: 'easeIn' }}
                             >
-                                {isSearching && <p css={tw`text-xs text-gray-600 text-center mb-2`}>Searching...</p>}
+                                {isSearching && <p css={tw`text-xs text-gray-600 text-center mb-2`}>{t('searching')}</p>}
                                 {recursiveResults.map((file) => (
                                     <RecursiveFileRow key={file.fullPath} file={file} serverId={id} />
                                 ))}

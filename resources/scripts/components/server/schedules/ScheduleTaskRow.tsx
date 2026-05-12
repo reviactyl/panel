@@ -12,6 +12,7 @@ import { ServerContext } from '@/state/server';
 import tw from 'twin.macro';
 import ConfirmationModal from '@/reviactyl/elements/ConfirmationModal';
 import Icon from '@/reviactyl/elements/Icon';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     schedule: Schedule;
@@ -38,6 +39,7 @@ export default ({ schedule, task }: Props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const appendSchedule = ServerContext.useStoreActions((actions) => actions.schedules.appendSchedule);
+    const { t } = useTranslation('server/schedules');
 
     const onConfirmDeletion = () => {
         setIsLoading(true);
@@ -69,13 +71,13 @@ export default ({ schedule, task }: Props) => {
                 onModalDismissed={() => setIsEditing(false)}
             />
             <ConfirmationModal
-                title={'Confirm task deletion'}
-                buttonText={'Delete Task'}
+                title={t('confirm-task-deletion')}
+                buttonText={t('delete-task')}
                 onConfirmed={onConfirmDeletion}
                 visible={visible}
                 onModalDismissed={() => setVisible(false)}
             >
-                Are you sure you want to delete this task? This action cannot be undone.
+                {t('confirm-task-deletion-body')}
             </ConfirmationModal>
             <ActionIcon className={'text-lg text-white hidden md:block'} />
             <div css={tw`flex-none sm:flex-1 w-full sm:w-auto overflow-x-auto`}>
@@ -83,7 +85,7 @@ export default ({ schedule, task }: Props) => {
                 {task.payload && (
                     <div css={tw`md:ml-6 mt-2`}>
                         {task.action === 'backup' && (
-                            <p css={tw`text-xs uppercase text-gray-400 mb-1`}>Ignoring files & folders:</p>
+                            <p css={tw`text-xs uppercase text-gray-400 mb-1`}>{t('ignoring-files-folders')}</p>
                         )}
                         <div
                             css={tw`font-mono bg-gray-900 rounded py-1 px-2 text-sm w-auto inline-block whitespace-pre-wrap break-all`}
@@ -98,7 +100,7 @@ export default ({ schedule, task }: Props) => {
                     <div css={tw`mr-6`}>
                         <div css={tw`flex items-center px-2 py-1 bg-yellow-500 text-yellow-800 text-sm rounded-full`}>
                             <Icon icon={FaCircleArrowDown} css={tw`w-3 h-3 mr-2`} />
-                            Continues on Failure
+                            {t('continues-on-failure')}
                         </div>
                     </div>
                 )}
@@ -106,14 +108,14 @@ export default ({ schedule, task }: Props) => {
                     <div css={tw`mr-6`}>
                         <div css={tw`flex items-center px-2 py-1 bg-gray-600 text-sm rounded-full`}>
                             <Icon icon={FaClock} css={tw`w-3 h-3 mr-2`} />
-                            {task.timeOffset}s later
+                            {t('time-offset-later', { time: task.timeOffset })}
                         </div>
                     </div>
                 )}
                 <Can action={'schedule.update'}>
                     <button
                         type={'button'}
-                        aria-label={'Edit scheduled task'}
+                        aria-label={t('edit-scheduled-task')}
                         css={tw`block text-sm p-2 text-gray-600 hover:text-gray-100 transition-colors duration-150 mr-4 ml-auto sm:ml-0`}
                         onClick={() => setIsEditing(true)}
                     >
@@ -123,7 +125,7 @@ export default ({ schedule, task }: Props) => {
                 <Can action={'schedule.update'}>
                     <button
                         type={'button'}
-                        aria-label={'Delete scheduled task'}
+                        aria-label={t('delete-scheduled-task')}
                         css={tw`block text-sm p-2 text-gray-600 hover:text-red-600 transition-colors duration-150`}
                         onClick={() => setVisible(true)}
                     >

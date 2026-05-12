@@ -74,7 +74,7 @@ export default () => {
                             </div>
                         </CopyOnClick>
                         <div css={tw`mt-6`}>
-                            <Label>Public Status Page</Label>
+                            <Label>{t('info.public-status-page')}</Label>
                             <CopyOnClick text={`${window.location.origin}/status/${uuid}`}>
                                 <Input type={'text'} value={`${window.location.origin}/status/${uuid}`} readOnly />
                             </CopyOnClick>
