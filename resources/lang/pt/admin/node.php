@@ -12,6 +12,12 @@ return [
             'architecture-label' => 'Architecture',
             'kernel-label' => 'Kernel',
             'cpus-label' => 'CPU Threads',
+            'cpu-usage-label' => 'CPU Usage',
+            'memory-usage-label' => 'Memory Usage',
+            'disk-usage-label' => 'Disk Usage',
+        ],
+        'tabs' => [
+            'title' => 'Node Configuration',
         ],
         'identity' => [
             'title' => 'Identidade',
@@ -159,6 +165,8 @@ return [
         'edit' => 'Editar',
         'delete' => 'Apagar',
         'view' => 'Ver',
+        'random' => 'Random',
+        'view_monitoring' => 'View Monitoring',
     ],
 
     'deployment' => [
@@ -170,6 +178,14 @@ return [
         'command_helper' => 'Copy and run this command on your node server.',
         'token_success' => 'Token Generated Successfully',
         'token_success_body' => 'Copy and run the command below on your node.',
+        'save_first' => 'Please save the node first.',
+        'auto_generated_key' => 'Automatically generated node deployment key.',
+        'error' => 'Error generating token. Please try again.',
+    ],
+
+    'general' => [
+        'na' => 'N/A',
+        'unavailable' => 'Unavailable',
     ],
 
     'messages' => [
