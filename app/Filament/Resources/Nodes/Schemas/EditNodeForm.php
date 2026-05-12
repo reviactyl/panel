@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Nodes\Schemas;
 use App\Models\ApiKey;
 use App\Models\Node;
 use App\Repositories\Agent\DaemonConfigurationRepository;
+use App\Repositories\Agent\DaemonMonitoringRepository;
 use App\Services\Api\KeyCreationService;
 use App\Services\Helpers\SoftwareVersionService;
 use Filament\Actions\Action;
@@ -49,6 +50,7 @@ class EditNodeForm
                                                 if (! $record) {
                                                     return 'N/A';
                                                 }
+
                                                 try {
                                                     $repository = app(DaemonConfigurationRepository::class);
                                                     $data = $repository->setNode($record)->getSystemInformation();
@@ -65,6 +67,7 @@ class EditNodeForm
                                                 if (! $record) {
                                                     return 'N/A';
                                                 }
+
                                                 try {
                                                     $repository = app(DaemonConfigurationRepository::class);
                                                     $data = $repository->setNode($record)->getSystemInformation();
@@ -81,6 +84,7 @@ class EditNodeForm
                                                 if (! $record) {
                                                     return 'N/A';
                                                 }
+
                                                 try {
                                                     $repository = app(DaemonConfigurationRepository::class);
                                                     $data = $repository->setNode($record)->getSystemInformation();
@@ -97,6 +101,7 @@ class EditNodeForm
                                                 if (! $record) {
                                                     return 'N/A';
                                                 }
+
                                                 try {
                                                     $repository = app(DaemonConfigurationRepository::class);
                                                     $data = $repository->setNode($record)->getSystemInformation();
@@ -106,6 +111,118 @@ class EditNodeForm
                                                     return 'Unavailable';
                                                 }
                                             }),
+
+                                        TextEntry::make('cpu_usage')
+                                            ->label('CPU Usage')
+                                            ->badge()
+                                            ->color(function ($record) {
+                                                try {
+                                                    $repository = app(DaemonMonitoringRepository::class);
+                                                    $data = $repository->setNode($record)->getSystemMonitoring();
+
+                                                    $usage = (float) ($data['cpu']['usage_percent'] ?? 0);
+
+                                                    return match (true) {
+                                                        $usage >= 80 => 'danger',
+                                                        $usage >= 50 => 'warning',
+                                                        default => 'success',
+                                                    };
+                                                } catch (\Throwable $e) {
+                                                    return 'gray';
+                                                }
+                                            })
+                                            ->state(function ($record) {
+                                                if (! $record) {
+                                                    return 'N/A';
+                                                }
+
+                                                try {
+                                                    $repository = app(DaemonMonitoringRepository::class);
+                                                    $data = $repository->setNode($record)->getSystemMonitoring();
+
+                                                    return number_format($data['cpu']['usage_percent'] ?? 0, 2).'%';
+                                                } catch (\Throwable $e) {
+                                                    return 'Unavailable';
+                                                }
+                                            }),
+
+                                        TextEntry::make('memory_usage')
+                                            ->label('Memory Usage')
+                                            ->badge()
+                                            ->color(function ($record) {
+                                                try {
+                                                    $repository = app(DaemonMonitoringRepository::class);
+                                                    $data = $repository->setNode($record)->getSystemMonitoring();
+
+                                                    $usage = (float) ($data['memory']['usage_percent'] ?? 0);
+
+                                                    return match (true) {
+                                                        $usage >= 80 => 'danger',
+                                                        $usage >= 50 => 'warning',
+                                                        default => 'success',
+                                                    };
+                                                } catch (\Throwable $e) {
+                                                    return 'gray';
+                                                }
+                                            })
+                                            ->state(function ($record) {
+                                                if (! $record) {
+                                                    return 'N/A';
+                                                }
+
+                                                try {
+                                                    $repository = app(DaemonMonitoringRepository::class);
+                                                    $data = $repository->setNode($record)->getSystemMonitoring();
+
+                                                    return number_format($data['memory']['usage_percent'] ?? 0, 2).'%';
+                                                } catch (\Throwable $e) {
+                                                    return 'Unavailable';
+                                                }
+                                            }),
+
+                                        TextEntry::make('disk_usage')
+                                            ->label('Disk Usage')
+                                            ->badge()
+                                            ->color(function ($record) {
+                                                try {
+                                                    $repository = app(DaemonMonitoringRepository::class);
+                                                    $data = $repository->setNode($record)->getSystemMonitoring();
+
+                                                    $usage = (float) ($data['disk']['usage_percent'] ?? 0);
+
+                                                    return match (true) {
+                                                        $usage >= 80 => 'danger',
+                                                        $usage >= 50 => 'warning',
+                                                        default => 'success',
+                                                    };
+                                                } catch (\Throwable $e) {
+                                                    return 'gray';
+                                                }
+                                            })
+                                            ->state(function ($record) {
+                                                if (! $record) {
+                                                    return 'N/A';
+                                                }
+
+                                                try {
+                                                    $repository = app(DaemonMonitoringRepository::class);
+                                                    $data = $repository->setNode($record)->getSystemMonitoring();
+
+                                                    return number_format($data['disk']['usage_percent'] ?? 0, 2).'%';
+                                                } catch (\Throwable $e) {
+                                                    return 'Unavailable';
+                                                }
+                                            }),
+
+                                        Actions::make([
+                                            Action::make('viewMonitoring')
+                                                ->label('View Monitoring')
+                                                ->icon('heroicon-o-chart-bar')
+                                                ->color('primary')
+                                                ->url(fn ($record) => "/admin/monitoring?node={$record->id}")
+                                                ->openUrlInNewTab(false),
+                                        ])
+                                            ->columnSpanFull(),
                                     ]),
                             ])
                             ->hidden(fn ($record) => ! $record || ! $record->id),
