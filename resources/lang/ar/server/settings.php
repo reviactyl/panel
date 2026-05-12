@@ -13,6 +13,7 @@ return [
         'title' => 'معلومات التصحيح',
         'node' => 'العقد',
         'server' => 'معرف السيرفر',
+        'public-status-page' => 'Public Status Page',
     ],
     'rename' => [
         'title' => 'تعديل بيانات السيرفر',
