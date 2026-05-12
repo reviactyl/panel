@@ -7,18 +7,16 @@ import { Actions, useStoreActions, useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import createOrUpdateSubuser from '@/api/server/users/createOrUpdateSubuser';
 import { ServerContext } from '@/state/server';
-import { useTranslation } from 'react-i18next';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import Can from '@/reviactyl/elements/Can';
 import { usePermissions } from '@/plugins/usePermissions';
-    const { t } = useTranslation('server/users');
 import { useDeepCompareMemo } from '@/plugins/useDeepCompareMemo';
 import tw from 'twin.macro';
 import Button from '@/reviactyl/elements/Button';
 import Select from '@/reviactyl/elements/Select';
-            .max(191, t('email-max'))
-            .email(t('email-valid'))
-            .required(t('email-valid')),
+import PermissionTitleBox from '@/components/server/users/PermissionTitleBox';
+import asModal from '@/hoc/asModal';
+import PermissionRow from '@/components/server/users/PermissionRow';
 import ModalContext from '@/context/ModalContext';
 
 type Props = {
@@ -36,11 +34,13 @@ const PRESET_PERMISSIONS = {
         'control.start',
         'control.stop',
         'control.restart',
-                        {subuser ? t(canEditUser ? 'modify-permissions' : 'view-permissions', { email: subuser.email }) : t('create-new-subuser')}
+        'file.create',
+        'file.read',
+        'file.update',
         'file.delete',
         'file.archive',
         'file.sftp',
-                            {subuser ? t('save') : t('invite-user')}
+        'backup.create',
         'backup.read',
         'backup.delete',
         'backup.download',
@@ -48,9 +48,10 @@ const PRESET_PERMISSIONS = {
         'startup.read',
         'settings.rename',
     ],
-                        <h3 css={tw`text-white font-semibold mb-2`}>{t('role-presets')}</h3>
+    moderator: [
         'control.console',
-                            {t('role-presets-description')}
+        'control.start',
+        'control.stop',
         'control.restart',
         'user.create',
         'user.read',
@@ -58,7 +59,8 @@ const PRESET_PERMISSIONS = {
         'user.delete',
         'file.read',
     ],
-                            {t('limited-permissions')}
+    viewer: ['control.console', 'file.read', 'user.read'],
+};
 
 const PresetSelector = ({ editablePermissions }: { editablePermissions: string[] }) => {
     const { setFieldValue } = useFormikContext<Values>();
@@ -66,8 +68,10 @@ const PresetSelector = ({ editablePermissions }: { editablePermissions: string[]
     const onPresetChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const val = e.target.value;
         if (val === 'all') {
-                            label={t('user-email')}
-                            description={t('user-email-description')}
+            setFieldValue('permissions', editablePermissions);
+        } else if (val === 'none') {
+            setFieldValue('permissions', []);
+        } else {
             // @ts-expect-error keys are valid
             const preset: string[] = PRESET_PERMISSIONS[val] || [];
             const perms = preset.filter((p) => editablePermissions.includes(p));
@@ -78,13 +82,13 @@ const PresetSelector = ({ editablePermissions }: { editablePermissions: string[]
     return (
         <Select onChange={onPresetChange} defaultValue={'custom'}>
             <option value='custom' disabled>
-                {t('preset-select')}
+                Select a preset...
             </option>
-            <option value='all'>{t('preset-full-access')}</option>
-            <option value='power'>{t('preset-power-user')}</option>
-            <option value='moderator'>{t('preset-moderator')}</option>
-            <option value='viewer'>{t('preset-viewer')}</option>
-            <option value='none'>{t('preset-no-access')}</option>
+            <option value='all'>Full Access (Select All)</option>
+            <option value='power'>Power User (Control + Files + Backups)</option>
+            <option value='moderator'>Moderator (Control + Users)</option>
+            <option value='viewer'>Viewer (Read Only)</option>
+            <option value='none'>No Access (Select None)</option>
         </Select>
     );
 };
@@ -179,7 +183,7 @@ const EditSubuserModal = ({ subuser }: Props) => {
                 </div>
                 <FlashMessageRender byKey={'user:edit'} css={tw`mt-4`} />
                 <div css={tw`mt-6`}>
-                    <label css={tw`mb-2 text-gray-300 font-bold block text-sm`}>{t('select-info')}</label>
+                    <label css={tw`mb-2 text-gray-300 font-bold block text-sm`}>Select Info</label>
                     <div css={tw`p-4 bg-gray-700 rounded-lg border border-gray-600`}>
                         <h3 css={tw`text-white font-semibold mb-2`}>Role Presets</h3>
                         <p css={tw`text-gray-300 text-sm mb-4`}>

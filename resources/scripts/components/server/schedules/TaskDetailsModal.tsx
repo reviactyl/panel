@@ -64,79 +64,81 @@ const ActionListener = () => {
     return null;
 };
 
-import { useTranslation } from 'react-i18next';
 const TaskDetailsModal = ({ schedule, task }: Props) => {
     const { dismiss } = useContext(ModalContext);
     const { clearFlashes, addError } = useFlash();
-    const { t } = useTranslation('server/schedules');
 
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const appendSchedule = ServerContext.useStoreActions((actions) => actions.schedules.appendSchedule);
     const backupLimit = ServerContext.useStoreState((state) => state.server.data!.featureLimits.backups);
-            then: string().required(t('task-payload-required')),
+
     useEffect(() => {
         return () => {
             clearFlashes('schedule:task');
         };
-            .typeError(t('time-offset-type'))
-            .required(t('time-offset-required'))
-            .min(0, t('time-offset-min'))
-            .max(900, t('time-offset-max')),
+    }, []);
+
+    const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
+        clearFlashes('schedule:task');
         if (backupLimit === 0 && values.action === 'backup') {
             setSubmitting(false);
             addError({
-            message: t('backup-limit-zero'),
+                message: "A backup task cannot be created when the server's backup limit is set to 0.",
                 key: 'schedule:task',
             });
         } else {
             createOrUpdateScheduleTask(uuid, schedule.id, task?.id, values)
-        <h2 css={tw`text-2xl mb-6`}>{task ? t('edit-task') : t('create-task')}</h2>
+                .then((task) => {
                     let tasks = schedule.tasks.map((t) => (t.id === task.id ? task : t));
                     if (!schedule.tasks.find((t) => t.id === task.id)) {
-                <Label>{t('action')}</Label>
+                        tasks = [...tasks, task];
                     }
 
                     appendSchedule({ ...schedule, tasks });
-                        <option value={'command'}>{t('action-command')}</option>
-                        <option value={'power'}>{t('action-power')}</option>
-                        <option value={'backup'}>{t('action-backup')}</option>
+                    dismiss();
+                })
+                .catch((error) => {
                     console.error(error);
                     setSubmitting(false);
                     addError({ message: httpErrorToHuman(error), key: 'schedule:task' });
                 });
         }
     };
-                    label={t('time-offset')}
-                    description={t('time-offset-description')}
+
+    return (
+        <Formik
+            onSubmit={submit}
             validationSchema={schema}
             initialValues={{
                 action: task?.action || 'command',
                 payload: task?.payload || '',
                 timeOffset: task?.timeOffset.toString() || '0',
                 continueOnFailure: task?.continueOnFailure || false,
-                    <Label>{t('payload')}</Label>
+            }}
         >
             {({ isSubmitting, values }) => (
                 <Form css={tw`m-0`}>
                     <FlashMessageRender byKey={'schedule:task'} css={tw`mb-4`} />
                     <h2 css={tw`text-2xl mb-6`}>{task ? 'Edit Task' : 'Create Task'}</h2>
                     <div css={tw`flex`}>
-                    <Label>{t('payload')}</Label>
+                        <div css={tw`mr-2 w-1/3`}>
                             <Label>Action</Label>
                             <ActionListener />
-                            <option value={'start'}>{t('power-start')}</option>
-                            <option value={'restart'}>{t('power-restart')}</option>
-                            <option value={'stop'}>{t('power-stop')}</option>
-                            <option value={'kill'}>{t('power-kill')}</option>
+                            <FormikFieldWrapper name={'action'}>
+                                <FormikField as={Select} name={'action'}>
+                                    <option value={'command'}>Send command</option>
+                                    <option value={'power'}>Send power action</option>
                                     <option value={'backup'}>Create backup</option>
                                 </FormikField>
                             </FormikFieldWrapper>
                         </div>
                         <div css={tw`flex-1 ml-6`}>
-                    <Label>{t('ignored-files')}</Label>
+                            <Field
                                 name={'timeOffset'}
                                 label={'Time offset (in seconds)'}
-                        description={t('ignored-files-description')}
+                                description={
+                                    'The amount of time to wait after the previous task executes before running this one. If this is the first task on a schedule this will not be applied.'
+                                }
                             />
                         </div>
                     </div>
@@ -146,13 +148,13 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
                                 <Label>Payload</Label>
                                 <FormikFieldWrapper name={'payload'}>
                                     <FormikField as={Textarea} name={'payload'} rows={6} />
-                description={t('continue-on-failure-description')}
-                label={t('continue-on-failure')}
+                                </FormikFieldWrapper>
+                            </div>
                         ) : values.action === 'power' ? (
                             <div>
                                 <Label>Payload</Label>
                                 <FormikFieldWrapper name={'payload'}>
-                {task ? t('save-changes') : t('create-task')}
+                                    <FormikField as={Select} name={'payload'}>
                                         <option value={'start'}>Start the server</option>
                                         <option value={'restart'}>Restart the server</option>
                                         <option value={'stop'}>Stop the server</option>
