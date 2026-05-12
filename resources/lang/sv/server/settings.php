@@ -13,6 +13,7 @@ return [
         'title' => 'Felsökningsinformation',
         'node' => 'Nod',
         'server' => 'Server ID',
+        'public-status-page' => 'Public Status Page',
     ],
     'rename' => [
         'title' => 'Ändra serverdetaljer',
