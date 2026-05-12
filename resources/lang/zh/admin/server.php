@@ -297,6 +297,7 @@ return [
 
     'actions' => [
         'edit' => '编辑',
+        'random' => 'Random',
         'toggle_install_status' => '切换安装状态',
         'suspend' => '暂停',
         'unsuspend' => '解除暂停',
