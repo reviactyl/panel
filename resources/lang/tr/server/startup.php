@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Başlangıç',
+    'read-only' => 'Read Only',
     'startup-command' => 'Başlangıç Komutu',
     'docker-image' => 'Docker Görüntüsü',
     'docker-info' => 'Bu, sunucu örneğini çalıştırırken kullanılacak bir Docker görüntüsünü seçmenize izin veren gelişmiş bir özelliktir.',
