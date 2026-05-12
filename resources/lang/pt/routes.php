@@ -5,6 +5,10 @@ return [
         'dashboard' => 'Painel',
         'logout' => 'Sair',
     ],
+    'sidebar' => [
+        'more' => 'More',
+        'extensions' => 'Extensions',
+    ],
     'account' => [
         'overview' => 'Visão Geral da Conta',
         'api' => 'Chaves de API',
