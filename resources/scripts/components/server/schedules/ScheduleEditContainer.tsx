@@ -29,7 +29,9 @@ const CronBox = ({ title, value }: { title: string; value: string }) => (
 
 const ActivePill = ({ active }: { active: boolean }) => (
     <span
-        className={`rounded-ui px-2 py-px text-xs ml-4 uppercase ${active ? 'bg-success/20 text-success' : 'bg-danger/20 text-danger'}`}
+        className={`rounded-ui px-2 py-px text-xs ml-4 uppercase ${
+            active ? 'bg-success/20 text-success' : 'bg-danger/20 text-danger'
+        }`}
     >
         {active ? 'Active' : 'Inactive'}
     </span>
@@ -74,14 +76,14 @@ const ScheduleEditContainer = () => {
     }, []);
 
     return (
-        <ServerContentBlock className="pt-1" title={'Schedules'}>
+        <ServerContentBlock className='pt-1' title={'Schedules'}>
             <FlashMessageRender byKey={'schedules'} css={tw`mb-4`} />
             {!schedule || isLoading ? (
                 <Spinner size={'large'} centered />
             ) : (
                 <>
                     <ScheduleCronRow cron={schedule.cron} css={tw`sm:hidden bg-gray-900 rounded-ui mb-4 p-3`} />
-                    <Card className="!p-1">
+                    <Card className='!p-1'>
                         <div css={tw`sm:flex items-center p-3 sm:p-6 border-b-4 border-gray-800 rounded-t`}>
                             <div css={tw`flex-1`}>
                                 <h3 css={tw`flex items-center text-gray-100 text-2xl`}>

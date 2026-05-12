@@ -96,7 +96,8 @@ export default ({
     }
 
     const diskLimit = server.limits.disk !== 0 ? bytesToString(mbToBytes(server.limits.disk)) : t('server.unlimited');
-    const memoryLimit = server.limits.memory !== 0 ? bytesToString(mbToBytes(server.limits.memory)) : t('server.unlimited');
+    const memoryLimit =
+        server.limits.memory !== 0 ? bytesToString(mbToBytes(server.limits.memory)) : t('server.unlimited');
     const cpuLimit = server.limits.cpu !== 0 ? server.limits.cpu + ' %' : t('server.unlimited');
 
     return (

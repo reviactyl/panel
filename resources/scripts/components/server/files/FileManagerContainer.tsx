@@ -390,7 +390,9 @@ export default () => {
                                 animate={{ opacity: 1 }}
                                 transition={{ duration: 0.15, ease: 'easeIn' }}
                             >
-                                {isSearching && <p css={tw`text-xs text-gray-600 text-center mb-2`}>{t('searching')}</p>}
+                                {isSearching && (
+                                    <p css={tw`text-xs text-gray-600 text-center mb-2`}>{t('searching')}</p>
+                                )}
                                 {recursiveResults.map((file) => (
                                     <RecursiveFileRow key={file.fullPath} file={file} serverId={id} />
                                 ))}

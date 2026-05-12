@@ -17,7 +17,9 @@ export default ({ schedule }: { schedule: Schedule }) => (
         </div>
         <div>
             <p
-                className={`rounded-ui px-2 py-px text-xs ml-4 uppercase sm:hidden ${schedule.isActive ? 'bg-success/20 text-success' : 'bg-danger/20 text-danger'}`}
+                className={`rounded-ui px-2 py-px text-xs ml-4 uppercase sm:hidden ${
+                    schedule.isActive ? 'bg-success/20 text-success' : 'bg-danger/20 text-danger'
+                }`}
             >
                 {schedule.isActive ? 'Active' : 'Inactive'}
             </p>
@@ -25,7 +27,9 @@ export default ({ schedule }: { schedule: Schedule }) => (
         <ScheduleCronRow cron={schedule.cron} css={tw`mx-auto sm:mx-8 w-full sm:w-auto mt-4 sm:mt-0`} />
         <div>
             <p
-                className={`py-1 px-3 rounded-ui text-xs uppercase text-white hidden sm:block ${schedule.isActive && !schedule.isProcessing ? 'bg-success/50' : 'bg-gray-600/50'}`}
+                className={`py-1 px-3 rounded-ui text-xs uppercase text-white hidden sm:block ${
+                    schedule.isActive && !schedule.isProcessing ? 'bg-success/50' : 'bg-gray-600/50'
+                }`}
             >
                 {schedule.isProcessing ? 'Processing' : schedule.isActive ? 'Active' : 'Inactive'}
             </p>

@@ -43,10 +43,7 @@ export default ({ database, className }: Props) => {
     const schema = object().shape({
         confirm: string()
             .required(t('confirm-name-required'))
-            .oneOf(
-                [database.name.split('_', 2)[1] ?? database.name, database.name],
-                t('confirm-name-required')
-            ),
+            .oneOf([database.name.split('_', 2)[1] ?? database.name, database.name], t('confirm-name-required')),
     });
 
     const submit = (_: { confirm: string }, { setSubmitting }: FormikHelpers<{ confirm: string }>) => {

@@ -45,7 +45,8 @@ export default () => {
                         <p className='text-center'>{maintenance}</p>
                     </Card>
                     <button className='flex items-center mx-auto mt-2' onClick={onTriggerLogout}>
-                        <span className='text-danger/80'>{t('logout')}</span> <LogoutIcon className='w-5 h-5 text-danger/80' />
+                        <span className='text-danger/80'>{t('logout')}</span>{' '}
+                        <LogoutIcon className='w-5 h-5 text-danger/80' />
                     </button>
                 </CardContainer>
             </Container>

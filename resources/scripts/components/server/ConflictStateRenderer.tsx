@@ -35,11 +35,7 @@ export default () => {
         <ScreenBlock
             title={isTransferring ? t('server-transferring-title') : t('server-restoring-title')}
             image={ServerRestoreSvg}
-            message={
-                isTransferring
-                    ? t('server-transferring-message')
-                    : t('server-restoring-message')
-            }
+            message={isTransferring ? t('server-transferring-message') : t('server-restoring-message')}
         />
     );
 };

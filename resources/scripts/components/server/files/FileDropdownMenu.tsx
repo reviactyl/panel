@@ -145,7 +145,8 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                 onConfirmed={doDeletion}
             >
                 {t('dropdown.delete-confirm-message')}&nbsp;
-                <span className={'font-semibold text-gray-50'}>{file.name}</span> {t('dropdown.delete-confirm-once-deleted')}.
+                <span className={'font-semibold text-gray-50'}>{file.name}</span>{' '}
+                {t('dropdown.delete-confirm-once-deleted')}.
             </Dialog.Confirm>
             {modal === 'chmod' && (
                 <ChmodFileModal
@@ -195,7 +196,12 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                 )}
                 {file.isFile && <Row onClick={doDownload} icon={FaFileArrowDown} title={t('dropdown.download')} />}
                 <Can action={'file.delete'}>
-                    <Row onClick={() => setShowConfirmation(true)} icon={FaTrash} title={t('dropdown.delete')} $danger />
+                    <Row
+                        onClick={() => setShowConfirmation(true)}
+                        icon={FaTrash}
+                        title={t('dropdown.delete')}
+                        $danger
+                    />
                 </Can>
                 <ExtensionSlot name='server:files:dropdown:end' />
             </DropdownMenu>

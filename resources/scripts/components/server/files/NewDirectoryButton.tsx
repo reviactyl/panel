@@ -83,7 +83,12 @@ const NewDirectoryDialog = asDialog({})(() => {
                 <>
                     <FlashMessageRender key={'files:directory-modal'} />
                     <Form css={tw`m-0`}>
-                        <Field autoFocus id={'directoryName'} name={'directoryName'} label={t('directory-name-label')} />
+                        <Field
+                            autoFocus
+                            id={'directoryName'}
+                            name={'directoryName'}
+                            label={t('directory-name-label')}
+                        />
                         <p css={tw`mt-2 text-sm md:text-base break-all`}>
                             <span css={tw`text-gray-200`}>{t('directory-created-as')}&nbsp;</span>
                             <Code>

@@ -77,11 +77,14 @@ const MassActionsBar = () => {
                 >
                     <p className={'mb-2'}>
                         {t('mass-actions.delete-message-start')}&nbsp;
-                        <span className={'font-semibold text-gray-50'}>{selectedFiles.length} {t('mass-actions.delete-message-files')}</span>{t('mass-actions.delete-message-end')}
-                    {selectedFiles.slice(0, 15).map((file) => (
-                        <li key={file}>{file}</li>
-                    ))}
-                    {selectedFiles.length > 15 && <li>and {selectedFiles.length - 15} others</li>}
+                        <span className={'font-semibold text-gray-50'}>
+                            {selectedFiles.length} {t('mass-actions.delete-message-files')}
+                        </span>
+                        {t('mass-actions.delete-message-end')}
+                        {selectedFiles.slice(0, 15).map((file) => (
+                            <li key={file}>{file}</li>
+                        ))}
+                        {selectedFiles.length > 15 && <li>and {selectedFiles.length - 15} others</li>}
                     </p>
                 </Dialog.Confirm>
                 {showMove && (

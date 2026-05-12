@@ -45,7 +45,9 @@ export default () => {
                                 <FaKey className={'text-gray-300'} />
                                 <div css={tw`flex-1`}>
                                     <p css={tw`text-sm break-words font-medium`}>{key.name}</p>
-                                    <p css={tw`text-xs mt-1 font-mono truncate`}>{t('ssh.fingerprint')}:{key.fingerprint}</p>
+                                    <p css={tw`text-xs mt-1 font-mono truncate`}>
+                                        {t('ssh.fingerprint')}:{key.fingerprint}
+                                    </p>
                                     <p css={tw`text-xs mt-1 text-gray-300 uppercase`}>
                                         {t('ssh.added-on')}:&nbsp;
                                         {format(key.createdAt, 'MMM do, yyyy HH:mm')}

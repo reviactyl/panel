@@ -68,9 +68,7 @@ const RenameFileModal = ({ files, useMoveTerminology, ...props }: OwnProps) => {
                                     id={'file_name'}
                                     name={'name'}
                                     label={t('file-name-label')}
-                                    description={
-                                        useMoveTerminology ? t('move-description') : undefined
-                                    }
+                                    description={useMoveTerminology ? t('move-description') : undefined}
                                     autoFocus
                                 />
                             </div>
