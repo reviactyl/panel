@@ -5,6 +5,10 @@ return [
         'dashboard' => 'Instrumentpanel',
         'logout' => 'Logga ut',
     ],
+    'sidebar' => [
+        'more' => 'More',
+        'extensions' => 'Extensions',
+    ],
     'account' => [
         'overview' => 'Kontoinformation',
         'api' => 'API-nycklar',
