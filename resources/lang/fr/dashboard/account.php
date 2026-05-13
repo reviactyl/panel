@@ -6,6 +6,8 @@ return [
         '2fa-required' => 'F2A Requis',
         '2fa-alert' => 'Votre compte doit disposer de l\'authentification à deux facteurs pour pouvoir continuer.',
         'administrator' => 'Administrateur',
+        'admin' => 'Admin',
+        'profile' => 'Profile',
         'logout' => 'Se déconnecter',
         'user' => 'Utilisateur',
         'update-email' => 'Mettre à jour l\'adresse mail',
@@ -43,9 +45,11 @@ return [
         ],
     ],
     'email' => [
+        'label' => 'Email',
         'password-required' => 'Vous devez fournir le mot de passe de votre compte actuel. Mettre à jour l\'adresse mail.',
         'updated' => 'Votre adresse mail principale a été mise à jour.',
         'confirm-password' => 'Confirmer le mot de passe',
+        'error-title' => 'Error',
         'update' => 'Mettre à jour l\'adresse mail',
     ],
     'theme-selector' => [
@@ -58,6 +62,7 @@ return [
         'new' => 'Nouveau mot de passe',
         'description' => 'Votre nouveau mot de passe doit comporter au moins 8 caractères et être unique à ce site Web.',
         'confirm-new' => 'Confirmer le mot de passe',
+        'error-title' => 'Error',
         'update' => 'Mettre à jour le mot de passe',
     ],
     '2fa' => [
@@ -69,6 +74,7 @@ return [
         'setup' => [
             'scan' => 'Scannez le code QR ci-dessus à l\'aide de l\'application d\'authentification en deux étapes de votre choix. Ensuite, saisissez le code à 6 chiffres généré dans le champ ci-dessous.',
             'password' => 'Mot de passe',
+            'cancel' => 'Cancel',
             'waiting' => 'Chargement du QR code...',
             'enter' => 'Vous devez saisir le code à 6 chiffres et votre mot de passe pour continuer.',
             'enable' => 'Activer',
@@ -113,6 +119,7 @@ return [
     'ssh' => [
         'title' => 'Clés SSH',
         'add-key' => 'Ajouter une clé SSH',
+        'fingerprint' => 'SHA256',
         'not-exist' => 'Il n\'existe aucune clé SSH pour ce compte.',
         'added-on' => 'Ajoutée le',
         'create' => [

@@ -6,6 +6,8 @@ return [
         '2fa-required' => '2 Steg verifikation',
         '2fa-alert' => 'Ditt konto behöver ha Två stegs verifikation på till att funka.',
         'administrator' => 'Administrator',
+        'admin' => 'Admin',
+        'profile' => 'Profile',
         'logout' => 'Logga ut',
         'user' => 'Användare',
         'update-email' => 'Uppdatera E-post adress',
@@ -43,9 +45,11 @@ return [
         ],
     ],
     'email' => [
+        'label' => 'Email',
         'password-required' => 'Du måste ange ditt kontos lösenord',
         'updated' => 'Din primära E-post har blivit uppdaterad',
         'confirm-password' => 'Bekräfta ditt lösenord',
+        'error-title' => 'Error',
         'update' => 'Uppdatera E-post',
     ],
     'theme-selector' => [
@@ -58,6 +62,7 @@ return [
         'new' => 'Nytt lösenord',
         'description' => 'Ditt nya lösenord ska vara minst 8 tecken långt och unikt för den här webbplatsen.',
         'confirm-new' => 'Bekräfta nya lösenordet',
+        'error-title' => 'Error',
         'update' => 'Uppdatera lösenordet',
     ],
     '2fa' => [
@@ -69,6 +74,7 @@ return [
         'setup' => [
             'scan' => 'Skanna QR-koden ovan med den tvåstegsautentiseringsapp du väljer. Ange sedan den 6-siffriga koden som genererats i fältet nedan',
             'password' => 'Kontolösenord',
+            'cancel' => 'Cancel',
             'waiting' => 'Väntar på att QR-koden ska laddas...',
             'enter' => 'Du måste ange den 6-siffriga koden och ditt lösenord för att fortsätta',
             'enable' => 'Aktivera',
@@ -113,6 +119,7 @@ return [
     'ssh' => [
         'title' => 'SSH-nycklar',
         'add-key' => 'Lägg till SSH-nyckel',
+        'fingerprint' => 'SHA256',
         'not-exist' => 'Inga SSH-nycklar finns för detta konto',
         'added-on' => 'Lagd till',
         'create' => [

@@ -5,6 +5,10 @@ return [
         'dashboard' => 'डैशबोर्ड',
         'logout' => 'लॉग आउट',
     ],
+    'sidebar' => [
+        'more' => 'More',
+        'extensions' => 'Extensions',
+    ],
     'account' => [
         'overview' => 'खाता अवलोकन',
         'api' => 'API कुंजियाँ',

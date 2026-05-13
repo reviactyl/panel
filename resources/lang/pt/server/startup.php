@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Startup',
+    'read-only' => 'Read Only',
     'startup-command' => 'Comando de Startup',
     'docker-image' => 'Imagem Docker',
     'docker-info' => 'Este é um recurso avançado que permite selecionar uma imagem Docker para usar ao executar esta instância do servidor.',

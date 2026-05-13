@@ -6,6 +6,8 @@ return [
         '2fa-required' => 'Autenticação de Dois Fatores Obrigatória',
         '2fa-alert' => 'Sua conta deve ter a autenticação de dois fatores ativada para continuar.',
         'administrator' => 'Administrador',
+        'admin' => 'Admin',
+        'profile' => 'Profile',
         'logout' => 'Sair',
         'user' => 'Usuário',
         'update-email' => 'Atualizar Endereço de E-mail',
@@ -43,9 +45,11 @@ return [
         ],
     ],
     'email' => [
+        'label' => 'Email',
         'password-required' => 'Você deve fornecer a senha atual da conta.',
         'updated' => 'Seu e-mail principal foi atualizado.',
         'confirm-password' => 'Confirmar Senha',
+        'error-title' => 'Error',
         'update' => 'Atualizar E-mail',
     ],
     'theme-selector' => [
@@ -58,6 +62,7 @@ return [
         'new' => 'Nova Senha',
         'description' => 'Sua nova senha deve ter pelo menos 8 caracteres e ser única neste site.',
         'confirm-new' => 'Confirmar Nova Senha',
+        'error-title' => 'Error',
         'update' => 'Atualizar Senha',
     ],
     '2fa' => [
@@ -69,6 +74,7 @@ return [
         'setup' => [
             'scan' => 'Escaneie o QR Code acima usando o aplicativo de autenticação de sua preferência. Em seguida, insira o código de 6 dígitos gerado no campo abaixo.',
             'password' => 'Senha da Conta',
+            'cancel' => 'Cancel',
             'waiting' => 'Aguardando o carregamento do QR Code...',
             'enter' => 'Você deve inserir o código de 6 dígitos e sua senha para continuar.',
             'enable' => 'Ativar',
@@ -113,6 +119,7 @@ return [
     'ssh' => [
         'title' => 'Chaves SSH',
         'add-key' => 'Adicionar Chave SSH',
+        'fingerprint' => 'SHA256',
         'not-exist' => 'Não existem chaves SSH para esta conta.',
         'added-on' => 'Adicionada em',
         'create' => [

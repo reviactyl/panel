@@ -11,4 +11,12 @@ return [
     'network-inbound' => 'Network (Inbound)',
     'network-outbound' => 'Network (Outbound)',
     'offline' => 'Offline',
+    'cpu' => 'CPU',
+    'memory' => 'Memory',
+    'network' => 'Network',
+    'cpu-load' => 'CPU Load',
+    'network-in' => 'Network In',
+    'network-out' => 'Network Out',
+    'inbound' => 'Inbound',
+    'outbound' => 'Outbound',
 ];

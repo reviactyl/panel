@@ -5,6 +5,10 @@ return [
         'dashboard' => 'Dashboard',
         'logout' => 'Keluar',
     ],
+    'sidebar' => [
+        'more' => 'More',
+        'extensions' => 'Extensions',
+    ],
     'account' => [
         'overview' => 'Ringkasan Akun',
         'api' => 'Kunci API',

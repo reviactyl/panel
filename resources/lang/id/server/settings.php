@@ -13,6 +13,7 @@ return [
         'title' => 'Informasi Debug',
         'node' => 'Node',
         'server' => 'ID Server',
+        'public-status-page' => 'Public Status Page',
     ],
     'rename' => [
         'title' => 'Ubah Detail Server',

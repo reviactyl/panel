@@ -297,6 +297,7 @@ return [
 
     'actions' => [
         'edit' => 'Edit',
+        'random' => 'Random',
         'toggle_install_status' => 'Toggle Install Status',
         'suspend' => 'Suspend',
         'unsuspend' => 'Unsuspend',

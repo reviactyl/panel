@@ -6,6 +6,8 @@ return [
         '2fa-required' => '2-Faktor Diperlukan',
         '2fa-alert' => 'Akun Anda harus mengaktifkan otentikasi dua faktor untuk melanjutkan.',
         'administrator' => 'Administrator',
+        'admin' => 'Admin',
+        'profile' => 'Profile',
         'logout' => 'Keluar',
         'user' => 'Pengguna',
         'update-email' => 'Perbarui Alamat Email',
@@ -43,9 +45,11 @@ return [
         ],
     ],
     'email' => [
+        'label' => 'Email',
         'password-required' => 'Anda harus memberikan kata sandi akun Anda saat ini.',
         'updated' => 'Email utama Anda telah diperbarui.',
         'confirm-password' => 'Konfirmasi Kata Sandi',
+        'error-title' => 'Error',
         'update' => 'Perbarui Email',
     ],
     'theme-selector' => [
@@ -58,6 +62,7 @@ return [
         'new' => 'Kata Sandi Baru',
         'description' => 'Kata sandi baru Anda harus memiliki setidaknya 8 karakter dan unik untuk situs web ini.',
         'confirm-new' => 'Konfirmasi Kata Sandi Baru',
+        'error-title' => 'Error',
         'update' => 'Perbarui Kata Sandi',
     ],
     '2fa' => [
@@ -69,6 +74,7 @@ return [
         'setup' => [
             'scan' => 'Pindai kode QR di atas menggunakan aplikasi otentikasi dua langkah pilihan Anda. Kemudian, masukkan kode 6 digit yang dihasilkan ke kolom di bawah.',
             'password' => 'Kata Sandi Akun',
+            'cancel' => 'Cancel',
             'waiting' => 'Menunggu kode QR dimuat...',
             'enter' => 'Anda harus memasukkan kode 6 digit dan kata sandi Anda untuk melanjutkan.',
             'enable' => 'Aktifkan',
@@ -113,6 +119,7 @@ return [
     'ssh' => [
         'title' => 'Kunci SSH',
         'add-key' => 'Tambah Kunci SSH',
+        'fingerprint' => 'SHA256',
         'not-exist' => 'Tidak ada Kunci SSH untuk akun ini.',
         'added-on' => 'Ditambahkan pada',
         'create' => [

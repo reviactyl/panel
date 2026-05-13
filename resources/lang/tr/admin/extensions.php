@@ -38,6 +38,7 @@ return [
         'uninstall_failed' => 'Failed to uninstall extension.',
         'could_not_locate_file' => 'Could not locate uploaded package file.',
         'invalid_file_type' => 'Only .rext files are allowed.',
+        'upload_hint' => 'Only .rext extension packages are allowed.',
         'install_failed' => 'Extension install failed.',
         'install_success' => 'Installed :name (:version) successfully.',
     ],

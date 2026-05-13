@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Startup',
+    'read-only' => 'Read Only',
     'startup-command' => 'Perintah Startup',
     'docker-image' => 'Docker Image',
     'docker-info' => 'Ini adalah fitur lanjutan yang memungkinkan Anda memilih Docker image untuk digunakan saat menjalankan instance server ini.',

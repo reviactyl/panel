@@ -2,6 +2,7 @@
 
 return [
     'title' => 'स्टार्टअप',
+    'read-only' => 'Read Only',
     'startup-command' => 'स्टार्टअप कमांड',
     'docker-image' => 'Docker इमेज',
     'docker-info' => 'यह एक उन्नत सुविधा है जो आपको इस सर्वर इंस्टेंस को चलाते समय उपयोग करने के लिए Docker इमेज चुनने की अनुमति देती है।',
