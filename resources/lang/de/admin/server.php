@@ -34,14 +34,14 @@ return [
     'status' => [
         'online' => 'Online',
         'offline' => 'Offline',
-        'starting' => 'Starting',
-        'stopping' => 'Stopping',
-        'crashed' => 'Crashed',
-        'installing' => 'Installing',
-        'restoring_backup' => 'Restoring Backup',
-        'install_failed' => 'Install Failed',
-        'reinstall_failed' => 'Reinstall Failed',
-        'suspended' => 'Suspended',
+        'starting' => 'Wird gestartet',
+        'stopping' => 'Wird gestoppt',
+        'crashed' => 'Abgestürzt',
+        'installing' => 'Wird installiert',
+        'restoring_backup' => 'Backup wird wiederhergestellt',
+        'install_failed' => 'Installation fehlgeschlagen',
+        'reinstall_failed' => 'Neuinstallation fehlgeschlagen',
+        'suspended' => 'Suspendiert',
     ],
 
     'create' => [
@@ -138,13 +138,13 @@ return [
                 'helper' => 'If the selected Egg has an install script attached to it, the script will run during install unless this is checked.',
             ],
             'image' => [
-                'label' => 'Docker Image',
-                'helper' => 'Select an image from the dropdown, or enter a custom image below.',
+                'label' => 'Docker-Image',
+                'helper' => 'Wählen Sie ein Image aus der Dropdown-Liste oder geben Sie unten ein benutzerdefiniertes Image ein.',
             ],
             'custom_image' => [
-                'label' => 'Custom Docker Image',
-                'placeholder' => 'Or enter a custom image...',
-                'helper' => 'This is the default Docker image that will be used to run this server.',
+                'label' => 'Benutzerdefiniertes Docker-Image',
+                'placeholder' => 'Oder geben Sie ein benutzerdefiniertes Image ein...',
+                'helper' => 'Dies ist das Standard-Docker-Image, das zum Ausführen dieses Servers verwendet wird.',
             ],
             'startup' => [
                 'label' => 'Startup Command',
@@ -456,12 +456,12 @@ return [
             ],
             'image' => [
                 'label' => 'Image',
-                'helper' => 'Select an image from the dropdown, or enter a custom image below.',
+                'helper' => 'Wählen Sie ein Image aus der Dropdown-Liste oder geben Sie unten ein benutzerdefiniertes Image ein.',
             ],
             'custom_image' => [
-                'label' => 'Custom Image',
-                'placeholder' => 'Or enter a custom image...',
-                'helper' => 'This is the Docker image that will be used to run this server.',
+                'label' => 'Benutzerdefiniertes Image',
+                'placeholder' => 'Oder geben Sie ein benutzerdefiniertes Image ein...',
+                'helper' => 'Dies ist das Docker-Image, das zum Ausführen dieses Servers verwendet wird.',
             ],
             'transfer_node' => [
                 'label' => 'Node',

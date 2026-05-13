@@ -7,7 +7,7 @@ return [
         '2fa-alert' => 'Ihr Konto muss die Zwei-Faktor-Authentifizierung aktiviert haben, um fortzufahren.',
         'administrator' => 'Administrator',
         'admin' => 'Admin',
-        'profile' => 'Profile',
+        'profile' => 'Profil',
         'logout' => 'Abmelden',
         'user' => 'Benutzer',
         'update-email' => 'E-Mail-Adresse aktualisieren',
@@ -74,7 +74,7 @@ return [
         'setup' => [
             'scan' => 'Scannen Sie den obigen QR-Code mit der Zwei-Schritt-Authentifizierungs-App Ihrer Wahl. Geben Sie dann den generierten 6-stelligen Code in das Feld unten ein.',
             'password' => 'Kontopasswort',
-            'cancel' => 'Cancel',
+            'cancel' => 'Abbrechen',
             'waiting' => 'Warte auf das Laden des QR-Codes...',
             'enter' => 'Sie müssen den 6-stelligen Code und Ihr Passwort eingeben, um fortzufahren.',
             'enable' => 'Aktivieren',

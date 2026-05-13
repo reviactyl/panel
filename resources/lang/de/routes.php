@@ -6,8 +6,8 @@ return [
         'logout' => 'Abmelden',
     ],
     'sidebar' => [
-        'more' => 'More',
-        'extensions' => 'Extensions',
+        'more' => 'Mehr',
+        'extensions' => 'Erweiterungen',
     ],
     'account' => [
         'overview' => 'Kontoübersicht',
@@ -23,7 +23,7 @@ return [
         'metrics' => 'Metriken',
         'databases' => 'Datenbanken',
         'schedules' => 'Zeitpläne',
-        'backups' => 'Backups',
+        'backups' => 'Sicherungen',
         'users' => 'Benutzer',
         'settings' => 'Einstellungen',
         'activity' => 'Aktivität',
