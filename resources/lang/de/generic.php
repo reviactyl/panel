@@ -3,6 +3,6 @@
 return [
     'never' => 'Nie',
     'not-found-title' => '404',
-    'not-found-message' => 'The requested resource was not found.',
-    'server-error-title' => 'Something went wrong',
+    'not-found-message' => 'Die angeforderte Ressource wurde nicht gefunden.',
+    'server-error-title' => 'Etwas ist schiefgelaufen',
 ];
