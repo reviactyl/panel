@@ -3,11 +3,11 @@
 return [
 
     'columns' => [
-        'user' => 'المستخدم',
-        'action' => 'الإجراء',
-        'time' => 'الوقت',
+        'user' => 'User',
+        'action' => 'Action',
+        'time' => 'Time',
     ],
 
-    'fallback_actor' => 'النظام',
+    'fallback_actor' => 'System',
 
 ];
