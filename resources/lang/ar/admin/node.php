@@ -2,26 +2,26 @@
 
 return [
     'label' => 'العقد',
-    'plural-label' => 'العقد',
+    'plural-label' => 'العقود',
 
     'sections' => [
         'overview' => [
-            'title' => 'نظرة عامة',
-            'information-label' => 'معلومات العقدة',
-            'version-label' => 'إصدار Agent',
-            'architecture-label' => 'المعمارية',
-            'kernel-label' => 'النواة',
-            'cpus-label' => 'خيوط المعالج',
-            'cpu-usage-label' => 'استخدام المعالج',
-            'memory-usage-label' => 'استخدام الذاكرة',
-            'disk-usage-label' => 'استخدام القرص',
+            'title' => 'Overview',
+            'information-label' => 'Node Information',
+            'version-label' => 'Agent Version',
+            'architecture-label' => 'Architecture',
+            'kernel-label' => 'Kernel',
+            'cpus-label' => 'CPU Threads',
+            'cpu-usage-label' => 'CPU Usage',
+            'memory-usage-label' => 'Memory Usage',
+            'disk-usage-label' => 'Disk Usage',
         ],
         'tabs' => [
-            'title' => 'إعدادات العقدة',
+            'title' => 'Node Configuration',
         ],
         'identity' => [
             'title' => 'الهوية',
-            'description' => 'معلومات العقدة الأساسية وتفاصيل الاتصال.',
+            'description' => 'معلومات العقدة الأساسية تفاصيل الاتصال.',
         ],
         'connection' => [
             'title' => 'تفاصيل الاتصال',
@@ -32,13 +32,13 @@ return [
             'description' => 'تحديد حدود الذاكرة ومساحة التخزين لهذه العقدة.',
         ],
         'daemon' => [
-            'title' => 'إعدادات خدمة Daemon',
-            'description' => 'ضبط الإعدادات الخاصة بالخدمة.',
+            'title' => 'إعدادات الخدمة Daemon',
+            'description' => 'ضبط الإعدادات الخاصة بالخدمة (daemon-specific).',
         ],
         'configuration' => [
-            'title' => 'الإعدادات',
-            'config_description' => 'ملف الإعدادات',
-            'deploy_description' => 'أنشئ أمر نشر مخصص يمكن استخدامه لإعداد Agent على الخادم المستهدف.',
+            'title' => 'Configuration',
+            'config_description' => 'Configuration File',
+            'deploy_description' => 'Generate a custom deployment command that can be used to configure Agent on the target server.',
         ],
     ],
 
@@ -48,7 +48,7 @@ return [
         ],
         'public' => [
             'label' => 'عام',
-            'helper' => 'عند تعيين العقدة كخاصة، سيتم منع النشر التلقائي عليها',
+            'helper' => 'عند تعيين العقدة كخاصة، سيتم منع النشر التلقائي عليها ',
         ],
         'name' => [
             'label' => 'الاسم',
@@ -56,7 +56,7 @@ return [
             'helper' => 'اسم وصفي لهذه العقدة.',
         ],
         'description' => [
-            'label' => 'الوصف',
+            'label' => 'وصف',
             'placeholder' => 'وصف العقدة',
             'helper' => 'وصف اختياري لهذه العقدة.',
         ],
@@ -76,7 +76,7 @@ return [
         ],
         'behind_proxy' => [
             'label' => 'خلف وكيل بروكسي',
-            'helper' => 'قم بالتفعيل إذا كانت هذه العقدة خلف وكيل مثل Cloudflare.',
+            'helper' => 'قم بالتفعيل إذا كانت هذه العقدة خلف وكيل مثل كلاودفلير.',
         ],
         'maintenance_mode' => [
             'label' => 'وضع الصيانة',
@@ -108,7 +108,7 @@ return [
             'helper' => 'المجلد الذي يتم فيه تخزين ملفات الخوادم.',
         ],
         'daemon_listen' => [
-            'label' => 'منفذ خدمة Daemon',
+            'label' => 'منفذ الخدمة Daemon',
             'helper' => 'المنفذ الذي تستمع عليه الخدمة لاتصالات HTTP.',
         ],
         'daemon_sftp' => [
@@ -119,16 +119,16 @@ return [
             'label' => 'معرف التوكن',
         ],
         'container_text' => [
-            'label' => 'بادئة الحاوية',
-            'helper' => 'بادئة النص المعروضة في أسماء الحاويات.',
+            'label' => 'برفكس الحاوية',
+            'helper' => 'برفكس النص المعروضة في أسماء الحاويات.',
         ],
     ],
 
     'table' => [
-        'health' => 'الحالة',
+        'health' => 'Health',
         'health_http_status' => 'HTTP :status',
         'health_error' => ':error',
-        'health_check_console' => 'تحقق من وحدة تحكم المتصفح',
+        'health_check_console' => 'check browser console',
         'id' => 'المعرف',
         'uuid' => 'UUID',
         'name' => 'الاسم',
@@ -143,8 +143,8 @@ return [
         'disk' => 'القرص',
         'disk_overallocate' => 'تجاوز القرص',
         'upload_size' => 'حجم الرفع',
-        'daemon_listen' => 'منفذ الدايمون',
-        'daemon_sftp' => 'منفذ SFTP',
+        'daemon_listen' => 'بورت الدايمون',
+        'daemon_sftp' => 'بورت SFTP',
         'daemon_base' => 'المجلد الأساسي',
         'servers' => 'الخوادم',
         'created' => 'تاريخ الإنشاء',
@@ -152,12 +152,12 @@ return [
     ],
 
     'filters' => [
-        'public' => 'عام',
-        'maintenance' => 'الصيانة',
-        'public_true' => 'عام',
-        'public_false' => 'خاص',
-        'maintenance_true' => 'تحت الصيانة',
-        'maintenance_false' => 'نشط',
+        'public' => 'Public',
+        'maintenance' => 'Maintenance',
+        'public_true' => 'Public',
+        'public_false' => 'Private',
+        'maintenance_true' => 'Under Maintenance',
+        'maintenance_false' => 'Active',
     ],
 
     'actions' => [
@@ -165,41 +165,41 @@ return [
         'edit' => 'تعديل',
         'delete' => 'حذف',
         'view' => 'عرض',
-        'random' => 'عشوائي',
-        'view_monitoring' => 'عرض المراقبة',
+        'random' => 'Random',
+        'view_monitoring' => 'View Monitoring',
     ],
 
     'deployment' => [
-        'generate_label' => 'إنشاء توكن النشر',
-        'modal_heading' => 'أمر النشر التلقائي',
-        'modal_description' => 'قم بتشغيل هذا الأمر على عقدتك لإعداد Agent تلقائيًا.',
-        'modal_close' => 'إغلاق',
-        'command_label' => 'أمر النشر',
-        'command_helper' => 'انسخ هذا الأمر وقم بتشغيله على خادم العقدة الخاص بك.',
-        'token_success' => 'تم إنشاء التوكن بنجاح',
-        'token_success_body' => 'انسخ وشغل الأمر أدناه على عقدتك.',
-        'save_first' => 'يرجى حفظ العقدة أولاً.',
-        'auto_generated_key' => 'مفتاح نشر العقدة تم إنشاؤه تلقائيًا.',
-        'error' => 'حدث خطأ أثناء إنشاء التوكن. يرجى المحاولة مرة أخرى.',
+        'generate_label' => 'Generate Deployment Token',
+        'modal_heading' => 'Auto-Deploy Command',
+        'modal_description' => 'Run this command on your node to automatically configure Agent.',
+        'modal_close' => 'Close',
+        'command_label' => 'Deployment Command',
+        'command_helper' => 'Copy and run this command on your node server.',
+        'token_success' => 'Token Generated Successfully',
+        'token_success_body' => 'Copy and run the command below on your node.',
+        'save_first' => 'Please save the node first.',
+        'auto_generated_key' => 'Automatically generated node deployment key.',
+        'error' => 'Error generating token. Please try again.',
     ],
 
     'general' => [
-        'na' => 'غير متوفر',
-        'unavailable' => 'غير متاح',
+        'na' => 'N/A',
+        'unavailable' => 'Unavailable',
     ],
 
     'messages' => [
         'created' => 'تم إنشاء العقدة بنجاح.',
         'updated' => 'تم تحديث العقدة بنجاح.',
         'deleted' => 'تم حذف العقدة بنجاح.',
-        'cannot_delete_with_servers' => 'لا يمكن حذف عقدة تحتوي على خوادم نشطة.',
+        'cannot_delete_with_servers' => 'لا يمكن حذف عقدة بها خوادم نشطة.',
     ],
 
     'allocations' => [
         'label' => 'التخصيصات',
         'table' => [
             'ip' => 'IP',
-            'port' => 'المنفذ',
+            'port' => 'بورت',
             'alias' => 'الاسم المستعار',
             'server' => 'الخادم',
             'notes' => 'ملاحظات',
@@ -212,7 +212,7 @@ return [
                 'helper' => 'يدعم IP واحد أو CIDR (مثال: 192.0.2.1 أو 192.0.2.0/24).',
             ],
             'allocation_ports' => [
-                'label' => 'المنافذ',
+                'label' => 'البورتات',
                 'helper' => 'أدخل المنافذ أو النطاقات (مثال: 25565, 25566, 25570-25580).',
             ],
             'allocation_alias' => [
@@ -232,14 +232,14 @@ return [
     ],
 
     'validation' => [
-        'fqdn_not_resolvable' => 'اسم المضيف المؤهل بالكامل (FQDN) أو عنوان IP المقدم لا يشير إلى عنوان IP صالح.',
-        'fqdn_required_for_ssl' => 'اسم مجال مؤهل بالكامل يشير إلى عنوان IP عام مطلوب لاستخدام SSL لهذه العقدة.',
+        'fqdn_not_resolvable' => 'اسم المضيف المؤهل بالكامل (FQDN) أو عنوان IP المقدم لا يحل إلى عنوان IP صالح.',
+        'fqdn_required_for_ssl' => 'اسم مجال مؤهل بالكامل يحل إلى عنوان IP عام مطلوب لاستخدام SSL لهذه العقدة.',
     ],
     'notices' => [
         'allocations_added' => 'تمت إضافة التخصيصات بنجاح إلى هذه العقدة.',
         'node_deleted' => 'تمت إزالة العقدة بنجاح من اللوحة.',
         'location_required' => 'يجب أن يكون لديك موقع واحد على الأقل مهيأ قبل أن تتمكن من إضافة عقدة إلى هذه اللوحة.',
-        'node_created' => 'تم إنشاء عقدة جديدة بنجاح. يمكنك تكوين الدايمون تلقائيًا على هذا الجهاز بزيارة علامة التبويب `الإعدادات`. قبل أن تتمكن من إضافة أي خوادم، يجب عليك أولاً تخصيص عنوان IP واحد ومنفذ واحد على الأقل.',
+        'node_created' => 'تم إنشاء عقدة جديدة بنجاح. يمكنك تكوين الدايمون تلقائياً على هذا الجهاز بزيارة علامة التبويب `الإعدادات`. قبل أن تتمكن من إضافة أي خوادم، يجب عليك أولاً تخصيص عنوان IP واحد ومنفذ واحد على الأقل.',
         'node_updated' => 'تم تحديث معلومات العقدة. إذا تم تغيير أي إعدادات للدايمون، فستحتاج إلى إعادة تشغيله حتى تدخل هذه التغييرات حيز التنفيذ.',
         'unallocated_deleted' => 'تم حذف جميع المنافذ غير المخصصة لـ <code>:ip</code>.',
     ],
