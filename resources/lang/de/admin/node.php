@@ -6,39 +6,39 @@ return [
 
     'sections' => [
         'overview' => [
-            'title' => 'Overview',
-            'information-label' => 'Node Information',
-            'version-label' => 'Agent Version',
-            'architecture-label' => 'Architecture',
+            'title' => 'Übersicht',
+            'information-label' => 'Node-Informationen',
+            'version-label' => 'Agent-Version',
+            'architecture-label' => 'Architektur',
             'kernel-label' => 'Kernel',
-            'cpus-label' => 'CPU Threads',
-            'cpu-usage-label' => 'CPU Usage',
-            'memory-usage-label' => 'Memory Usage',
-            'disk-usage-label' => 'Disk Usage',
+            'cpus-label' => 'CPU-Threads',
+            'cpu-usage-label' => 'CPU-Auslastung',
+            'memory-usage-label' => 'Speicherauslastung',
+            'disk-usage-label' => 'Festplattenauslastung',
         ],
         'tabs' => [
-            'title' => 'Node Configuration',
+            'title' => 'Node-Konfiguration',
         ],
         'identity' => [
             'title' => 'Identität',
-            'description' => 'Grundlegende Node Informationen.',
+            'description' => 'Grundlegende Node-Informationen.',
         ],
         'connection' => [
             'title' => 'Verbindungsdetails',
-            'description' => 'Konfigurieren Sie, wie eine Verbindung zu dieser Node hergestellt wird.',
+            'description' => 'Konfiguriere, wie eine Verbindung zu dieser Node hergestellt wird.',
         ],
         'resources' => [
             'title' => 'Ressourcenzuweisung',
-            'description' => 'Definieren Sie Speicher- und Festplattenlimits für diese Node.',
+            'description' => 'Definiere Speicher- und Festplattenlimits für diese Node.',
         ],
         'daemon' => [
             'title' => 'Daemon-Konfiguration',
-            'description' => 'Konfigurieren Sie daemon-spezifische Einstellungen.',
+            'description' => 'Konfiguriere daemon-spezifische Einstellungen.',
         ],
         'configuration' => [
-            'title' => 'Configuration',
-            'config_description' => 'Configuration File',
-            'deploy_description' => 'Generate a custom deployment command that can be used to configure Agent on the target server.',
+            'title' => 'Konfiguration',
+            'config_description' => 'Konfigurationsdatei',
+            'deploy_description' => 'Generiere einen benutzerdefinierten Deployment-Befehl zur Konfiguration des Agents auf dem Zielserver.',
         ],
     ],
 
@@ -48,16 +48,16 @@ return [
         ],
         'public' => [
             'label' => 'Öffentlich',
-            'helper' => 'Wenn Sie eine Node auf privat setzen, wird die automatische Bereitstellung auf dieser Node verweigert.',
+            'helper' => 'Wenn eine Node privat gesetzt wird, wird die automatische Bereitstellung auf dieser Node verhindert.',
         ],
         'name' => [
             'label' => 'Name',
-            'placeholder' => 'Node Name',
+            'placeholder' => 'Node-Name',
             'helper' => 'Ein beschreibender Name für diese Node.',
         ],
         'description' => [
             'label' => 'Beschreibung',
-            'placeholder' => 'Node Beschreibung',
+            'placeholder' => 'Node-Beschreibung',
             'helper' => 'Optionale Beschreibung für diese Node.',
         ],
         'location' => [
@@ -67,12 +67,12 @@ return [
         'fqdn' => [
             'label' => 'FQDN',
             'placeholder' => 'node.example.com',
-            'helper' => 'Vollständig qualifizierter Domainname oder IP-Adresse.',
+            'helper' => 'Vollqualifizierter Domainname oder IP-Adresse.',
         ],
         'ssl' => [
             'label' => 'Verwendet SSL',
-            'helper' => 'Ob der Daemon auf dieser Node so konfiguriert ist, dass er SSL für die sichere Kommunikation verwendet.',
-            'helper_forced' => 'Dieses Panel läuft über HTTPS, daher ist SSL für diese Node erzwungen.',
+            'helper' => 'Ob der Daemon auf dieser Node SSL für sichere Kommunikation verwendet.',
+            'helper_forced' => 'Dieses Panel läuft über HTTPS, daher ist SSL für diese Node erforderlich.',
         ],
         'behind_proxy' => [
             'label' => 'Hinter Proxy',
@@ -80,43 +80,43 @@ return [
         ],
         'maintenance_mode' => [
             'label' => 'Wartungsmodus',
-            'helper' => 'Verhindert, dass neue Server auf dieser Node erstellt werden.',
+            'helper' => 'Verhindert die Erstellung neuer Server auf dieser Node.',
         ],
         'memory' => [
             'label' => 'Gesamtspeicher',
-            'helper' => 'Gesamtspeicher in MiB, der auf dieser Node verfügbar ist.',
+            'helper' => 'Gesamter verfügbarer Speicher auf dieser Node in MiB.',
         ],
         'memory_overallocate' => [
             'label' => 'Speicherüberbelegung',
-            'helper' => 'Prozentsatz des Speichers, der überbelegt werden soll. Verwenden Sie -1, um die Überprüfung zu deaktivieren.',
+            'helper' => 'Prozentsatz des Speichers, der überbelegt werden darf. Verwende -1, um die Überprüfung zu deaktivieren.',
         ],
         'disk' => [
             'label' => 'Gesamter Festplattenspeicher',
-            'helper' => 'Gesamter Festplattenspeicher in MiB, der auf dieser Node verfügbar ist.',
+            'helper' => 'Gesamter verfügbarer Festplattenspeicher auf dieser Node in MiB.',
         ],
         'disk_overallocate' => [
             'label' => 'Festplattenüberbelegung',
-            'helper' => 'Prozentsatz der Festplatte, der überbelegt werden soll. Verwenden Sie -1, um die Überprüfung zu deaktivieren.',
+            'helper' => 'Prozentsatz des Festplattenspeichers, der überbelegt werden darf. Verwende -1, um die Überprüfung zu deaktivieren.',
         ],
         'upload_size' => [
             'label' => 'Maximale Upload-Größe',
-            'helper' => 'Maximale Dateiupload-Größe, die über das Web-Panel erlaubt ist.',
+            'helper' => 'Maximale Dateigröße für Uploads über das Web-Panel.',
         ],
         'daemon_base' => [
             'label' => 'Basisverzeichnis',
             'placeholder' => '/home/daemon-files',
-            'helper' => 'Verzeichnis, in dem die Serverdateien gespeichert werden.',
+            'helper' => 'Verzeichnis, in dem Serverdateien gespeichert werden.',
         ],
         'daemon_listen' => [
-            'label' => 'Daemon Port',
-            'helper' => 'Der Port, auf dem der Daemon für die HTTP-Kommunikation lauscht.',
+            'label' => 'Daemon-Port',
+            'helper' => 'Port, auf dem der Daemon HTTP-Kommunikation akzeptiert.',
         ],
         'daemon_sftp' => [
-            'label' => 'SFTP Port',
-            'helper' => 'Der Port, der für SFTP-Verbindungen verwendet wird.',
+            'label' => 'SFTP-Port',
+            'helper' => 'Port für SFTP-Verbindungen.',
         ],
         'daemon_token_id' => [
-            'label' => 'Token ID',
+            'label' => 'Token-ID',
         ],
         'container_text' => [
             'label' => 'Container-Präfix',
@@ -125,10 +125,10 @@ return [
     ],
 
     'table' => [
-        'health' => 'Health',
+        'health' => 'Status',
         'health_http_status' => 'HTTP :status',
         'health_error' => ':error',
-        'health_check_console' => 'check browser console',
+        'health_check_console' => 'Browser-Konsole prüfen',
         'id' => 'ID',
         'uuid' => 'UUID',
         'name' => 'Name',
@@ -143,8 +143,8 @@ return [
         'disk' => 'Festplatte',
         'disk_overallocate' => 'Festplattenüberbelegung',
         'upload_size' => 'Maximale Upload-Größe',
-        'daemon_listen' => 'Daemon Port',
-        'daemon_sftp' => 'SFTP Port',
+        'daemon_listen' => 'Daemon-Port',
+        'daemon_sftp' => 'SFTP-Port',
         'daemon_base' => 'Basisverzeichnis',
         'servers' => 'Server',
         'created' => 'Erstellt',
@@ -152,12 +152,12 @@ return [
     ],
 
     'filters' => [
-        'public' => 'Public',
-        'maintenance' => 'Maintenance',
-        'public_true' => 'Public',
-        'public_false' => 'Private',
-        'maintenance_true' => 'Under Maintenance',
-        'maintenance_false' => 'Active',
+        'public' => 'Öffentlich',
+        'maintenance' => 'Wartung',
+        'public_true' => 'Öffentlich',
+        'public_false' => 'Privat',
+        'maintenance_true' => 'In Wartung',
+        'maintenance_false' => 'Aktiv',
     ],
 
     'actions' => [
@@ -165,27 +165,27 @@ return [
         'edit' => 'Bearbeiten',
         'delete' => 'Löschen',
         'view' => 'Ansehen',
-        'random' => 'Random',
-        'view_monitoring' => 'View Monitoring',
+        'random' => 'Zufällig',
+        'view_monitoring' => 'Monitoring anzeigen',
     ],
 
     'deployment' => [
-        'generate_label' => 'Generate Deployment Token',
-        'modal_heading' => 'Auto-Deploy Command',
-        'modal_description' => 'Run this command on your node to automatically configure Agent.',
-        'modal_close' => 'Close',
-        'command_label' => 'Deployment Command',
-        'command_helper' => 'Copy and run this command on your node server.',
-        'token_success' => 'Token Generated Successfully',
-        'token_success_body' => 'Copy and run the command below on your node.',
-        'save_first' => 'Please save the node first.',
-        'auto_generated_key' => 'Automatically generated node deployment key.',
-        'error' => 'Error generating token. Please try again.',
+        'generate_label' => 'Deployment-Token generieren',
+        'modal_heading' => 'Auto-Deploy-Befehl',
+        'modal_description' => 'Führe diesen Befehl auf deiner Node aus, um den Agent automatisch zu konfigurieren.',
+        'modal_close' => 'Schließen',
+        'command_label' => 'Deployment-Befehl',
+        'command_helper' => 'Kopiere und führe diesen Befehl auf deinem Node-Server aus.',
+        'token_success' => 'Token erfolgreich generiert',
+        'token_success_body' => 'Kopiere und führe den folgenden Befehl auf deiner Node aus.',
+        'save_first' => 'Bitte speichere zuerst die Node.',
+        'auto_generated_key' => 'Automatisch generierter Node-Deployment-Schlüssel.',
+        'error' => 'Fehler beim Generieren des Tokens. Bitte versuche es erneut.',
     ],
 
     'general' => [
-        'na' => 'N/A',
-        'unavailable' => 'Unavailable',
+        'na' => 'N/V',
+        'unavailable' => 'Nicht verfügbar',
     ],
 
     'messages' => [
@@ -208,15 +208,15 @@ return [
         ],
         'fields' => [
             'allocation_ip' => [
-                'label' => 'IP Adresse',
-                'helper' => 'Unterstützt einzelne IP oder CIDR (z.B. 192.0.2.1 oder 192.0.2.0/24).',
+                'label' => 'IP-Adresse',
+                'helper' => 'Unterstützt einzelne IPs oder CIDR (z.B. 192.0.2.1 oder 192.0.2.0/24).',
             ],
             'allocation_ports' => [
                 'label' => 'Ports',
-                'helper' => 'Geben Sie Ports oder Bereiche ein (z.B. 25565, 25566, 25570-25580).',
+                'helper' => 'Gib Ports oder Bereiche ein (z.B. 25565, 25566, 25570-25580).',
             ],
             'allocation_alias' => [
-                'label' => 'IP Alias',
+                'label' => 'IP-Alias',
                 'helper' => 'Optionaler Alias, der anstelle der IP angezeigt wird.',
             ],
         ],
@@ -227,20 +227,20 @@ return [
         'messages' => [
             'created' => 'Allocation hinzugefügt.',
             'deleted' => 'Allocation gelöscht.',
-            'failed' => 'Allocation Aktion fehlgeschlagen.',
+            'failed' => 'Allocation-Aktion fehlgeschlagen.',
         ],
     ],
 
     'validation' => [
-        'fqdn_not_resolvable' => 'Der angegebene FQDN oder die IP-Adresse kann nicht in eine gültige IP-Adresse aufgelöst werden.',
-        'fqdn_required_for_ssl' => 'Ein vollqualifizierter Domainname, der in eine öffentliche IP-Adresse aufgelöst wird, ist erforderlich, um SSL für diesen Node zu verwenden.',
+        'fqdn_not_resolvable' => 'Der angegebene FQDN oder die IP-Adresse konnte nicht zu einer gültigen IP-Adresse aufgelöst werden.',
+        'fqdn_required_for_ssl' => 'Ein vollqualifizierter Domainname, der zu einer öffentlichen IP-Adresse aufgelöst wird, ist erforderlich, um SSL auf dieser Node zu verwenden.',
     ],
     'notices' => [
-        'allocations_added' => 'Zuweisungen wurden diesem Node erfolgreich hinzugefügt.',
+        'allocations_added' => 'Allocations wurden dieser Node erfolgreich hinzugefügt.',
         'node_deleted' => 'Node wurde erfolgreich aus dem Panel entfernt.',
-        'location_required' => 'Sie müssen mindestens einen Standort konfiguriert haben, bevor Sie einen Node zu diesem Panel hinzufügen können.',
-        'node_created' => 'Neue Node erfolgreich erstellt. Sie können den Daemon auf dieser Maschine automatisch konfigurieren, indem Sie den "Konfiguration" Tab besuchen. Bevor Sie Server hinzufügen können, müssen Sie mindestens eine Allocation erstellen.',
-        'node_updated' => 'Die Node-Informationen wurden aktualisiert. Wenn Daemon-Einstellungen geändert wurden, müssen Sie ihn neu starten, damit diese Änderungen wirksam werden.',
+        'location_required' => 'Du musst mindestens einen Standort konfiguriert haben, bevor du eine Node zu diesem Panel hinzufügen kannst.',
+        'node_created' => 'Neue Node erfolgreich erstellt. Du kannst den Daemon auf dieser Maschine automatisch konfigurieren, indem du den Tab „Konfiguration“ besuchst. Bevor du Server hinzufügen kannst, musst du mindestens eine Allocation erstellen.',
+        'node_updated' => 'Die Node-Informationen wurden aktualisiert. Falls Daemon-Einstellungen geändert wurden, musst du den Daemon neu starten, damit die Änderungen wirksam werden.',
         'unallocated_deleted' => 'Alle nicht zugewiesenen Ports für <code>:ip</code> wurden gelöscht.',
     ],
 ];

@@ -6,42 +6,42 @@ return [
     'plural_label' => 'Nests',
 
     'sections' => [
-        'configuration' => 'Nest Konfiguration',
+        'configuration' => 'Nest-Konfiguration',
     ],
 
     'fields' => [
         'name' => 'Name',
-        'author' => 'Ersteller',
+        'author' => 'Autor',
         'description' => 'Beschreibung',
     ],
 
     'helpers' => [
-        'name' => 'Ein eindeutiger Name um dieses Nest zu identifizieren.',
-        'author' => 'Der Ersteller dieses Nests. Muss eine gültige E-Mail sein.',
+        'name' => 'Ein eindeutiger Name, um dieses Nest zu identifizieren.',
+        'author' => 'Der Autor dieses Nests. Muss eine gültige E-Mail-Adresse sein.',
         'description' => 'Eine Beschreibung dieses Nests.',
     ],
 
     'columns' => [
         'id' => 'ID',
         'name' => 'Name',
-        'author' => 'Ersteller',
+        'author' => 'Autor',
         'eggs' => 'Eggs',
         'servers' => 'Server',
     ],
     
     'actions' => [
-        'import' => 'Import Egg',
+        'import' => 'Egg importieren',
     ],
 
     'import' => [
-        'file_label' => 'Egg File (JSON)',
-        'nest_label' => 'Associated Nest',
-        'file_not_found' => 'File not found',
-        'file_not_found_body' => 'Could not locate uploaded file.',
-        'invalid_format' => 'Invalid file format',
-        'invalid_format_body' => 'Unexpected file format received.',
-        'success' => 'Egg imported successfully',
-        'failed' => 'Failed to import egg',
+        'file_label' => 'Egg-Datei (JSON)',
+        'nest_label' => 'Zugehöriges Nest',
+        'file_not_found' => 'Datei nicht gefunden',
+        'file_not_found_body' => 'Die hochgeladene Datei konnte nicht gefunden werden.',
+        'invalid_format' => 'Ungültiges Dateiformat',
+        'invalid_format_body' => 'Unerwartetes Dateiformat erhalten.',
+        'success' => 'Egg erfolgreich importiert',
+        'failed' => 'Import des Eggs fehlgeschlagen',
     ],
 
     'notices' => [
@@ -51,19 +51,19 @@ return [
     ],
     'eggs' => [
         'notices' => [
-            'imported' => 'Dieses Ei und seine zugehörigen Variablen wurden erfolgreich importiert.',
-            'updated_via_import' => 'Dieses Ei wurde unter Verwendung der bereitgestellten Datei aktualisiert.',
-            'deleted' => 'Das angeforderte Ei wurde erfolgreich aus dem Panel gelöscht.',
-            'updated' => 'Die Ei-Konfiguration wurde erfolgreich aktualisiert.',
-            'script_updated' => 'Das Ei-Installationsskript wurde aktualisiert und wird ausgeführt, wann immer Server installiert werden.',
-            'egg_created' => 'Ein neues Ei wurde erfolgreich gelegt. Sie müssen alle laufenden Daemons neu starten, um dieses neue Ei anzuwenden.',
+            'imported' => 'Dieses Egg und seine zugehörigen Variablen wurden erfolgreich importiert.',
+            'updated_via_import' => 'Dieses Egg wurde mit der bereitgestellten Datei aktualisiert.',
+            'deleted' => 'Das angeforderte Egg wurde erfolgreich aus dem Panel gelöscht.',
+            'updated' => 'Die Egg-Konfiguration wurde erfolgreich aktualisiert.',
+            'script_updated' => 'Das Installationsskript des Eggs wurde aktualisiert und wird bei jeder Serverinstallation ausgeführt.',
+            'egg_created' => 'Ein neues Egg wurde erfolgreich erstellt. Sie müssen alle laufenden Daemons neu starten, um dieses neue Egg anzuwenden.',
         ],
     ],
     'variables' => [
         'notices' => [
             'variable_deleted' => 'Die Variable ":variable" wurde gelöscht und steht Servern nach einem Rebuild nicht mehr zur Verfügung.',
-            'variable_updated' => 'Die Variable ":variable" wurde aktualisiert. Sie müssen alle Server, die diese Variable verwenden, neu erstellen, um Änderungen zu übernehmen.',
-            'variable_created' => 'Neue Variable wurde erfolgreich erstellt und diesem Ei zugewiesen.',
+            'variable_updated' => 'Die Variable ":variable" wurde aktualisiert. Sie müssen alle Server, die diese Variable verwenden, neu erstellen, um die Änderungen zu übernehmen.',
+            'variable_created' => 'Neue Variable wurde erfolgreich erstellt und diesem Egg zugewiesen.',
         ],
     ],
 ];
