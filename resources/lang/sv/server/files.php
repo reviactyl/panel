@@ -18,7 +18,7 @@ return [
     'cancel' => 'Avboka',
     'create' => 'Skapa',
     'rename' => 'Döpa om',
-    'move' => 'Flytta',
+    'move' => 'Move',
     'file-mode-label' => 'Filläge',
     'new-location' => 'Ny plats:',
     'cancel-uploads' => 'Avbryt uppladdningar',
