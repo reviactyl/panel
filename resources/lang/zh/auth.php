@@ -64,7 +64,7 @@ return [
         'label' => '注册',
         'create-account' => 'Create Account',
     ],
-    
+
     'failed' => '未找到与这些凭证匹配的账户。',
 
     'two_factor' => [

@@ -1,7 +1,7 @@
 <?php
 
 return [
-    
+
     'label' => '预设',
     'plural_label' => '预设',
 
@@ -28,7 +28,7 @@ return [
         'eggs' => '预设',
         'servers' => '服务器',
     ],
-    
+
     'actions' => [
         'import' => 'Import Egg',
     ],

@@ -64,7 +64,7 @@ return [
         'label' => 'Register',
         'create-account' => 'Create Account',
     ],
-    
+
     'failed' => 'Aucun compte correspondant à ces informations d\'identification n\'a été trouvé.',
 
     'two_factor' => [
