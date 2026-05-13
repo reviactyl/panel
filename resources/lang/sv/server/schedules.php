@@ -5,7 +5,7 @@ return [
     'no-schedules' => 'Det finns inga scheman konfigurerade för denna server.',
     'create-schedule' => 'Skapa schema',
     'last-run-at' => 'Senast körning på: :time',
-    'aldrig' => 'aldrig',
+    'never' => 'never',
     'active' => 'Aktiv',
     'inactive' => 'Inaktiv',
     'processing' => 'Bearbetning',

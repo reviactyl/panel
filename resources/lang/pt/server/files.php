@@ -18,7 +18,7 @@ return [
     'cancel' => 'Cancelar',
     'create' => 'Criar',
     'rename' => 'Renomear',
-    'move' => 'Mover',
+    'move' => 'Move',
     'file-mode-label' => 'Modo de arquivo',
     'new-location' => 'Nova localização:',
     'cancel-uploads' => 'Cancelar envios',

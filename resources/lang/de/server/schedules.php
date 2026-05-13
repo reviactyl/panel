@@ -5,7 +5,7 @@ return [
     'no-schedules' => 'Für diesen Server sind keine Zeitpläne konfiguriert.',
     'create-schedule' => 'Zeitplan erstellen',
     'last-run-at' => 'Letzter Lauf bei: :time',
-    'niemals' => 'niemals',
+    'never' => 'never',
     'active' => 'Aktiv',
     'inactive' => 'Inaktiv',
     'processing' => 'Verarbeitung',

@@ -5,7 +5,7 @@ return [
     'no-schedules' => 'لا توجد جداول زمنية معدة لهذا الخادم.',
     'create-schedule' => 'إنشاء جدول زمني',
     'last-run-at' => 'آخر تشغيل في: :time',
-    'أبداً' => 'أبداً',
+    'never' => 'never',
     'active' => 'نشيط',
     'inactive' => 'غير نشط',
     'processing' => 'يعالج',

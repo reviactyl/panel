@@ -5,7 +5,7 @@ return [
     'no-schedules' => 'Không có lịch trình nào được cấu hình cho máy chủ này.',
     'create-schedule' => 'Tạo lịch trình',
     'last-run-at' => 'Lần chạy cuối cùng lúc: :time',
-    'không bao giờ' => 'không bao giờ',
+    'never' => 'never',
     'active' => 'Tích cực',
     'inactive' => 'Không hoạt động',
     'processing' => 'Xử lý',

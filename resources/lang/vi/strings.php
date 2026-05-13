@@ -37,7 +37,7 @@ return [
     'expires' => 'Hết hạn',
     'public_key' => 'Mã thông báo',
     'api_access' => 'Truy cập API',
-    'không bao giờ' => 'không bao giờ',
+    'never' => 'never',
     'sign_out' => 'Đăng xuất',
     'admin_control' => 'Kiểm soát quản trị viên',
     'required' => 'Yêu cầu',

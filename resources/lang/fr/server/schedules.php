@@ -5,7 +5,7 @@ return [
     'no-schedules' => 'Aucune tâche automatique n\'a été configurée sur ce serveur.',
     'create-schedule' => 'Ajouter une tâches automatique',
     'last-run-at' => 'Dernière exécution à : :time',
-    'jamais' => 'jamais',
+    'never' => 'never',
     'active' => 'Actif',
     'inactive' => 'Inactif',
     'processing' => 'Traitement',

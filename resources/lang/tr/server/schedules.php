@@ -5,7 +5,7 @@ return [
     'no-schedules' => 'Bu sunucu için yapılandırılmış zamanlama yok.',
     'create-schedule' => 'Zamanlama Oluştur',
     'last-run-at' => 'Son çalıştırma saati: :time',
-    'Asla' => 'Asla',
+    'never' => 'never',
     'active' => 'Aktif',
     'inactive' => 'Etkin değil',
     'processing' => 'İşleme',
