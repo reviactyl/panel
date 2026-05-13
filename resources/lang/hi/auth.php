@@ -64,7 +64,7 @@ return [
         'label' => 'Register',
         'create-account' => 'Create Account',
     ],
-    
+
     'failed' => 'इन क्रेडेंशियल्स से मेल खाने वाला कोई खाता नहीं मिला।',
 
     'two_factor' => [
