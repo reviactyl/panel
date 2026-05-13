@@ -6,8 +6,8 @@ return [
         'logout' => 'تسجيل الخروج',
     ],
     'sidebar' => [
-        'more' => 'المزيد',
-        'extensions' => 'الإضافات',
+        'more' => 'More',
+        'extensions' => 'Extensions',
     ],
     'account' => [
         'overview' => 'النظرة على الحساب',
