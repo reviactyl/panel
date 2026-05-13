@@ -64,7 +64,7 @@ return [
         'label' => 'Register',
         'create-account' => 'Create Account',
     ],
-    
+
     'failed' => 'Tidak ada akun yang cocok dengan kredensial tersebut.',
 
     'two_factor' => [
