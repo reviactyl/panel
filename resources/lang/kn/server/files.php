@@ -18,7 +18,7 @@ return [
     'cancel' => 'ರದ್ದುಮಾಡಿ',
     'create' => 'ರಚಿಸಿ',
     'rename' => 'ಮರುಹೆಸರಿಸು',
-    'move' => 'ಸರಿಸಿ',
+    'move' => 'Move',
     'file-mode-label' => 'ಫೈಲ್ ಮೋಡ್',
     'new-location' => 'ಹೊಸ ಸ್ಥಳ:',
     'cancel-uploads' => 'ಅಪ್‌ಲೋಡ್‌ಗಳನ್ನು ರದ್ದುಮಾಡಿ',
