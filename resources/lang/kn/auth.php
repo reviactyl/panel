@@ -64,7 +64,7 @@ return [
         'label' => 'Register',
         'create-account' => 'Create Account',
     ],
-    
+
     'failed' => 'No account matching those credentials could be found.',
 
     'two_factor' => [
