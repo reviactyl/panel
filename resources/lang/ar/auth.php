@@ -64,7 +64,7 @@ return [
         'label' => 'تسجيل',
         'create-account' => 'Create Account',
     ],
-    
+
     'failed' => 'لا يوجد حساب يطابق تلك البيانات.',
 
     'two_factor' => [
