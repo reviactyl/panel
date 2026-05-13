@@ -18,7 +18,7 @@ return [
     'cancel' => 'Hủy bỏ',
     'create' => 'Tạo nên',
     'rename' => 'Đổi tên',
-    'move' => 'Di chuyển',
+    'move' => 'Move',
     'file-mode-label' => 'Chế độ tập tin',
     'new-location' => 'Vị trí mới:',
     'cancel-uploads' => 'Hủy tải lên',
