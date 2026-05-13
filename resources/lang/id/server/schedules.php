@@ -5,7 +5,7 @@ return [
     'no-schedules' => 'Tidak ada jadwal yang dikonfigurasi untuk server ini.',
     'create-schedule' => 'Buat Jadwal',
     'last-run-at' => 'Terakhir dijalankan pada: :time',
-    'tidak pernah' => 'tidak pernah',
+    'never' => 'never',
     'active' => 'Aktif',
     'inactive' => 'Tidak aktif',
     'processing' => 'Pengolahan',
