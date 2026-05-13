@@ -84,7 +84,7 @@ return [
         'title' => 'Bezeichnen',
         'general' => 'Allgemein',
         'colors' => 'Farben',
-        'look-and-feel' => 'Look and Feel',
+        'look-and-feel' => 'Look & Feel',
         'layout' => 'Layout',
         'alerts' => 'Warnungen',
         'meta-options' => 'Meta-Optionen',
