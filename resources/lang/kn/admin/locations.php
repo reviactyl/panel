@@ -2,44 +2,44 @@
 
 return [
 
-    'label' => 'Location',
-    'plural-label' => 'Locations',
+    'label' => 'ಸ್ಥಳ',
+    'plural-label' => 'ಸ್ಥಳಗಳು',
 
     'section' => [
-        'title' => 'Location Details',
-        'description' => 'Define a location that nodes can be assigned to.',
+        'title' => 'ಸ್ಥಳದ ವಿವರಗಳು',
+        'description' => 'ನೋಡ್‌ಗಳನ್ನು ನಿಯೋಜಿಸಬಹುದಾದ ಸ್ಥಳವನ್ನು ವಿವರಿಸಿ.',
     ],
 
     'fields' => [
         'short' => [
-            'label' => 'Short Code',
+            'label' => 'ಕಿರು ಕೋಡ್',
             'placeholder' => 'us.nyc.1',
-            'helper' => 'A short identifier for this location.',
+            'helper' => 'ಈ ಸ್ಥಳಕ್ಕಾಗಿ ಕಿರು ಗುರುತಿಸುವಿಕೆ.',
         ],
 
         'long' => [
-            'label' => 'Description',
-            'placeholder' => 'New York City, NY, USA',
-            'helper' => 'A longer description of this location.',
+            'label' => 'ವಿವರಣೆ',
+            'placeholder' => 'ನ್ಯೂಯಾರ್ಕ್ ನಗರ, NY, USA',
+            'helper' => 'ಈ ಸ್ಥಳದ ದೀರ್ಘ ವಿವರಣೆ.',
         ],
     ],
 
     'table' => [
         'id' => 'ID',
-        'short' => 'Short Code',
-        'long' => 'Description',
-        'nodes' => 'Nodes',
-        'servers' => 'Servers',
-        'created' => 'Created',
+        'short' => 'ಕಿರು ಕೋಡ್',
+        'long' => 'ವಿವರಣೆ',
+        'nodes' => 'ನೋಡ್ಗಳು',
+        'servers' => 'ಸರ್ವರ್‌ಗಳು',
+        'created' => 'ರಚಿಸಲಾಗಿದೆ',
     ],
 
     'actions' => [
-        'edit' => 'Edit',
-        'delete' => 'Delete',
+        'edit' => 'ಸಂಪಾದಿಸು',
+        'delete' => 'ಅಳಿಸಿ',
     ],
 
     'messages' => [
-        'cannot_delete_with_nodes' => 'Cannot delete a location with associated nodes.',
+        'cannot_delete_with_nodes' => 'ಸಂಯೋಜಿತ ನೋಡ್‌ಗಳೊಂದಿಗೆ ಸ್ಥಳವನ್ನು ಅಳಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.',
     ],
 
 ];

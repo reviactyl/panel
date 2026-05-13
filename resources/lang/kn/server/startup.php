@@ -1,11 +1,11 @@
 <?php
 
 return [
-    'title' => 'Startup',
-    'read-only' => 'Read Only',
-    'startup-command' => 'Startup Command',
+    'title' => 'ಪ್ರಾರಂಭ',
+    'read-only' => 'ಓದಲು ಮಾತ್ರ',
+    'startup-command' => 'ಸ್ಟಾರ್ಟ್ಅಪ್ ಕಮಾಂಡ್',
     'docker-image' => 'Docker Image',
-    'docker-info' => 'This is an advanced feature allowing you to select a Docker image to use when running this server instance.',
-    'manually-set-docker' => 'This server\'s Docker image has been manually set by an administrator and cannot be changed through this UI.',
-    'variables' => 'Variables',
+    'docker-info' => 'ಇದು ಸುಧಾರಿತ ವೈಶಿಷ್ಟ್ಯವಾಗಿದ್ದು, ಈ ಸರ್ವರ್ ನಿದರ್ಶನವನ್ನು ಚಾಲನೆ ಮಾಡುವಾಗ ಬಳಸಲು ಡಾಕರ್ ಚಿತ್ರವನ್ನು ಆಯ್ಕೆ ಮಾಡಲು ನಿಮಗೆ ಅನುಮತಿಸುತ್ತದೆ.',
+    'manually-set-docker' => 'ಈ ಸರ್ವರ್‌ನ ಡಾಕರ್ ಚಿತ್ರವನ್ನು ನಿರ್ವಾಹಕರು ಹಸ್ತಚಾಲಿತವಾಗಿ ಹೊಂದಿಸಿದ್ದಾರೆ ಮತ್ತು ಈ UI ಮೂಲಕ ಬದಲಾಯಿಸಲಾಗುವುದಿಲ್ಲ.',
+    'variables' => 'ಅಸ್ಥಿರ',
 ];

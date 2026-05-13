@@ -13,13 +13,13 @@ return [
     'fields' => [
         'short' => [
             'label' => 'Code Court',
-            'placeholder' => 'us.nyc.1',
+            'placeholder' => 'nous.nyc.1',
             'helper' => 'Un identifiant court pour cet emplacement.',
         ],
 
         'long' => [
             'label' => 'Description',
-            'placeholder' => 'New York City, NY, USA',
+            'placeholder' => 'New York, NY, États-Unis',
             'helper' => 'Une description plus détaillée de cet emplacement.',
         ],
     ],

@@ -19,7 +19,7 @@ return [
 
         'long' => [
             'label' => 'Açıklama',
-            'placeholder' => 'New York City, NY, USA',
+            'placeholder' => 'New York City, NY, ABD',
             'helper' => 'Bu konumun daha uzun bir açıklaması.',
         ],
     ],

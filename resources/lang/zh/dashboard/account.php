@@ -6,8 +6,8 @@ return [
         '2fa-required' => '需要2步验证',
         '2fa-alert' => '您的账户必须启用双重认证才能继续。',
         'administrator' => '管理员',
-        'admin' => 'Admin',
-        'profile' => 'Profile',
+        'admin' => '行政',
+        'profile' => '轮廓',
         'logout' => '退出登录',
         'user' => '用户',
         'update-email' => '更新电子邮件地址',
@@ -23,7 +23,7 @@ return [
         'loading' => '加载中……',
         'social' => [
             'title' => '社交登录',
-            'date_format' => 'MMM do, yyyy',
+            'date_format' => '嗯嗯，yyyy',
             'unlink' => [
                 'title' => '解除账户关联',
                 'confirm' => '确定要解除关联你的 :provider 账户吗？
@@ -46,11 +46,11 @@ return [
         ],
     ],
     'email' => [
-        'label' => 'Email',
+        'label' => '电子邮件',
         'password-required' => '您必须提供当前的账户密码。',
         'updated' => '您的主电子邮件已更新。',
         'confirm-password' => '确认密码',
-        'error-title' => 'Error',
+        'error-title' => '错误',
         'update' => '更新电子邮件',
     ],
     'theme-selector' => [
@@ -63,7 +63,7 @@ return [
         'new' => '新密码',
         'description' => '您的新密码长度应至少为 8 个字符，且对此网站应是唯一的。',
         'confirm-new' => '确认新密码',
-        'error-title' => 'Error',
+        'error-title' => '错误',
         'update' => '更新密码',
     ],
     '2fa' => [
@@ -75,7 +75,7 @@ return [
         'setup' => [
             'scan' => '使用您选择的两步认证应用程序扫描上方的二维码。然后，将生成的 6 位代码输入到下方字段中。',
             'password' => '账户密码',
-            'cancel' => 'Cancel',
+            'cancel' => '取消',
             'waiting' => '正在等待二维码加载……',
             'enter' => '请输入 6 位验证码和您的密码以继续。',
             'enable' => '启用',

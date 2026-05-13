@@ -18,7 +18,7 @@ return [
         'first_name' => 'Primeiro Nome',
         'last_name' => 'Ultimo Nome',
         'language' => 'Linguagem',
-        'geolocate' => 'Geolocate (Automatic)',
+        'geolocate' => 'Geolocalizar (Automático)',
         'password' => 'Senha',
         'password_confirmation' => 'Confirmar Senha',
         'root_admin' => 'Administrador Root',

@@ -9,7 +9,7 @@ return [
 
     'sections' => [
         'host_details' => [
-            'title' => 'Host Details',
+            'title' => 'Gastgeberdetails',
             'description' => 'Datenbank in den Host Einstellungen konfigurieren.',
         ],
 
@@ -25,7 +25,7 @@ return [
     'placeholders' => [
         'name' => 'Produktions MySQL',
         'host' => '127.0.0.1',
-        'username' => 'reviactyl',
+        'username' => 'Reviactyl',
     ],
 
     'helpers' => [
@@ -40,8 +40,8 @@ return [
     'columns' => [
         'id' => 'ID',
         'name' => 'Name',
-        'host' => 'Host',
-        'port' => 'Port',
+        'host' => 'Gastgeber',
+        'port' => 'Hafen',
         'username' => 'Benutzername',
         'linked_node' => 'Verknüpfte Node',
         'databases' => 'Datenbanken',

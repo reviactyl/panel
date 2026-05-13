@@ -13,7 +13,7 @@ return [
         'title' => 'डीबग जानकारी',
         'node' => 'नोड',
         'server' => 'सर्वर आईडी',
-        'public-status-page' => 'Public Status Page',
+        'public-status-page' => 'सार्वजनिक स्थिति पृष्ठ',
     ],
     'rename' => [
         'title' => 'सर्वर विवरण बदलें',

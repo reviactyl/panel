@@ -2,43 +2,43 @@
 
 return [
 
-    'label' => 'Mount',
-    'plural_label' => 'Mounts',
+    'label' => 'Gunung',
+    'plural_label' => 'Gunung',
 
     'sections' => [
-        'configuration' => 'Mount Configuration',
+        'configuration' => 'Konfigurasi Pemasangan',
     ],
 
     'fields' => [
-        'name' => 'Name',
-        'description' => 'Description',
-        'source' => 'Source Path',
-        'target' => 'Target Path',
-        'read_only' => 'Read Only',
-        'user_mountable' => 'User Mountable',
+        'name' => 'Nama',
+        'description' => 'Keterangan',
+        'source' => 'Jalur Sumber',
+        'target' => 'Jalur Sasaran',
+        'read_only' => 'Hanya Baca',
+        'user_mountable' => 'Dapat Dipasang Pengguna',
     ],
 
     'helpers' => [
-        'name' => 'A unique name used to separate this mount from another.',
-        'description' => 'A longer, human-readable description of this mount.',
-        'source' => 'The file path on the host machine to mount to containers.',
-        'target' => 'The path inside the container to mount this as.',
-        'read_only' => 'If set, the mount will be read-only inside the container.',
-        'user_mountable' => 'If set, users will be able to mount this to their servers.',
+        'name' => 'Nama unik yang digunakan untuk memisahkan tunggangan ini dari tunggangan lainnya.',
+        'description' => 'Deskripsi gunung ini yang lebih panjang dan dapat dibaca manusia.',
+        'source' => 'Jalur file pada mesin host untuk dipasang ke kontainer.',
+        'target' => 'Jalur di dalam wadah untuk memasang ini sebagai.',
+        'read_only' => 'Jika disetel, mount akan bersifat read-only di dalam container.',
+        'user_mountable' => 'Jika disetel, pengguna akan dapat memasangnya ke server mereka.',
     ],
 
     'columns' => [
         'id' => 'ID',
-        'name' => 'Name',
-        'source' => 'Source',
+        'name' => 'Nama',
+        'source' => 'Sumber',
         'target' => 'Target',
-        'read_only' => 'Read Only',
-        'user_mountable' => 'User Mountable',
+        'read_only' => 'Hanya Baca',
+        'user_mountable' => 'Dapat Dipasang Pengguna',
     ],
 
     'actions' => [
-        'attach_egg' => 'Attach Egg',
-        'attach_node' => 'Attach Node',
+        'attach_egg' => 'Lampirkan Telur',
+        'attach_node' => 'Lampirkan Node',
     ],
 
 ];

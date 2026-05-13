@@ -2,11 +2,11 @@
 
 return [
 
-    'label' => 'Mount',
-    'plural_label' => 'Mounts',
+    'label' => 'Monter',
+    'plural_label' => 'Montures',
 
     'sections' => [
-        'configuration' => 'Mount Configuration',
+        'configuration' => 'Configuration du montage',
     ],
 
     'fields' => [
@@ -15,16 +15,16 @@ return [
         'source' => 'Chemin Source',
         'target' => 'Chemin Cible',
         'read_only' => 'Lecture seule',
-        'user_mountable' => 'User Mountable',
+        'user_mountable' => 'Montable par l\'utilisateur',
     ],
 
     'helpers' => [
-        'name' => 'A unique name used to separate this mount from another.',
-        'description' => 'A longer, human-readable description of this mount.',
-        'source' => 'The file path on the host machine to mount to containers.',
-        'target' => 'The path inside the container to mount this as.',
-        'read_only' => 'If set, the mount will be read-only inside the container.',
-        'user_mountable' => 'If set, users will be able to mount this to their servers.',
+        'name' => 'Un nom unique utilisé pour séparer cette monture d\'une autre.',
+        'description' => 'Une description plus longue et lisible par l\'homme de cette monture.',
+        'source' => 'Le chemin du fichier sur la machine hôte à monter sur les conteneurs.',
+        'target' => 'Le chemin à l’intérieur du conteneur sous lequel monter ceci.',
+        'read_only' => 'S\'il est défini, le montage sera en lecture seule à l\'intérieur du conteneur.',
+        'user_mountable' => 'S\'il est défini, les utilisateurs pourront le monter sur leurs serveurs.',
     ],
 
     'columns' => [
@@ -33,12 +33,12 @@ return [
         'source' => 'Source',
         'target' => 'Cible',
         'read_only' => 'Lecture seule',
-        'user_mountable' => 'User Mountable',
+        'user_mountable' => 'Montable par l\'utilisateur',
     ],
 
     'actions' => [
-        'attach_egg' => 'Attach Egg',
-        'attach_node' => 'Attach Node',
+        'attach_egg' => 'Attacher l\'œuf',
+        'attach_node' => 'Attacher un nœud',
     ],
 
 ];

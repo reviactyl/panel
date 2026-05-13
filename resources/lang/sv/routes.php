@@ -6,8 +6,8 @@ return [
         'logout' => 'Logga ut',
     ],
     'sidebar' => [
-        'more' => 'More',
-        'extensions' => 'Extensions',
+        'more' => 'Mer',
+        'extensions' => 'Tillägg',
     ],
     'account' => [
         'overview' => 'Kontoinformation',

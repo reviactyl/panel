@@ -2,44 +2,44 @@
 
 return [
 
-    'label' => 'Location',
-    'plural-label' => 'Locations',
+    'label' => 'जगह',
+    'plural-label' => 'स्थानों',
 
     'section' => [
-        'title' => 'Location Details',
-        'description' => 'Define a location that nodes can be assigned to.',
+        'title' => 'स्थान विवरण',
+        'description' => 'उस स्थान को परिभाषित करें जिसे नोड्स आवंटित किए जा सकते हैं।',
     ],
 
     'fields' => [
         'short' => [
-            'label' => 'Short Code',
-            'placeholder' => 'us.nyc.1',
-            'helper' => 'A short identifier for this location.',
+            'label' => 'लघु कूट संख्या',
+            'placeholder' => 'हमें.nyc.1',
+            'helper' => 'इस स्थान के लिए एक संक्षिप्त पहचानकर्ता.',
         ],
 
         'long' => [
-            'label' => 'Description',
-            'placeholder' => 'New York City, NY, USA',
-            'helper' => 'A longer description of this location.',
+            'label' => 'विवरण',
+            'placeholder' => 'न्यूयॉर्क शहर, एनवाई, यूएसए',
+            'helper' => 'इस स्थान का विस्तृत विवरण.',
         ],
     ],
 
     'table' => [
         'id' => 'ID',
-        'short' => 'Short Code',
-        'long' => 'Description',
-        'nodes' => 'Nodes',
-        'servers' => 'Servers',
-        'created' => 'Created',
+        'short' => 'लघु कूट संख्या',
+        'long' => 'विवरण',
+        'nodes' => 'नोड्स',
+        'servers' => 'सर्वर',
+        'created' => 'बनाया था',
     ],
 
     'actions' => [
-        'edit' => 'Edit',
-        'delete' => 'Delete',
+        'edit' => 'संपादन करना',
+        'delete' => 'मिटाना',
     ],
 
     'messages' => [
-        'cannot_delete_with_nodes' => 'Cannot delete a location with associated nodes.',
+        'cannot_delete_with_nodes' => 'संबद्ध नोड्स वाला कोई स्थान नहीं हटाया जा सकता.',
     ],
 
 ];

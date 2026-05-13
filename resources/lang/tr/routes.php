@@ -6,8 +6,8 @@ return [
         'logout' => 'Çıkış Yap',
     ],
     'sidebar' => [
-        'more' => 'More',
-        'extensions' => 'Extensions',
+        'more' => 'Daha',
+        'extensions' => 'Uzantılar',
     ],
     'account' => [
         'overview' => 'Hesap Özeti',

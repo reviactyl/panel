@@ -2,46 +2,46 @@
 
 return [
 
-    'label' => 'Nest',
-    'plural_label' => 'Nests',
+    'label' => 'घोंसला',
+    'plural_label' => 'घोंसले',
 
     'sections' => [
-        'configuration' => 'Nest Configuration',
+        'configuration' => 'घोंसला विन्यास',
     ],
 
     'fields' => [
-        'name' => 'Name',
-        'author' => 'Author',
-        'description' => 'Description',
+        'name' => 'नाम',
+        'author' => 'लेखक',
+        'description' => 'विवरण',
     ],
 
     'helpers' => [
-        'name' => 'A unique name used to identify this nest.',
-        'author' => 'The author of this nest. Must be a valid email.',
-        'description' => 'A description of this nest.',
+        'name' => 'इस घोंसले की पहचान के लिए एक अनोखा नाम इस्तेमाल किया गया।',
+        'author' => 'इस घोंसले के लेखक. एक वैध ईमेल होना चाहिए.',
+        'description' => 'इस घोंसले का विवरण.',
     ],
 
     'columns' => [
         'id' => 'ID',
-        'name' => 'Name',
-        'author' => 'Author',
-        'eggs' => 'Eggs',
-        'servers' => 'Servers',
+        'name' => 'नाम',
+        'author' => 'लेखक',
+        'eggs' => 'अंडे',
+        'servers' => 'सर्वर',
     ],
 
     'actions' => [
-        'import' => 'Import Egg',
+        'import' => 'अंडा आयात करें',
     ],
 
     'import' => [
-        'file_label' => 'Egg File (JSON)',
-        'nest_label' => 'Associated Nest',
-        'file_not_found' => 'File not found',
-        'file_not_found_body' => 'Could not locate uploaded file.',
-        'invalid_format' => 'Invalid file format',
-        'invalid_format_body' => 'Unexpected file format received.',
-        'success' => 'Egg imported successfully',
-        'failed' => 'Failed to import egg',
+        'file_label' => 'अंडा फ़ाइल (JSON)',
+        'nest_label' => 'एसोसिएटेड नेस्ट',
+        'file_not_found' => 'फ़ाइल प्राप्त नहीं हुई',
+        'file_not_found_body' => 'अपलोड की गई फ़ाइल का पता नहीं लगाया जा सका.',
+        'invalid_format' => 'अमान्य फाइल प्रारूप',
+        'invalid_format_body' => 'अप्रत्याशित फ़ाइल स्वरूप प्राप्त हुआ.',
+        'success' => 'अंडा सफलतापूर्वक आयात किया गया',
+        'failed' => 'अंडा आयात करने में विफल',
     ],
 
     'notices' => [

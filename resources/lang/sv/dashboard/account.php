@@ -5,9 +5,9 @@ return [
         'account-overview' => 'Konto',
         '2fa-required' => '2 Steg verifikation',
         '2fa-alert' => 'Ditt konto behöver ha Två stegs verifikation på till att funka.',
-        'administrator' => 'Administrator',
-        'admin' => 'Admin',
-        'profile' => 'Profile',
+        'administrator' => 'Administratör',
+        'admin' => 'Administration',
+        'profile' => 'Profil',
         'logout' => 'Logga ut',
         'user' => 'Användare',
         'update-email' => 'Uppdatera E-post adress',
@@ -45,11 +45,11 @@ return [
         ],
     ],
     'email' => [
-        'label' => 'Email',
+        'label' => 'E-post',
         'password-required' => 'Du måste ange ditt kontos lösenord',
         'updated' => 'Din primära E-post har blivit uppdaterad',
         'confirm-password' => 'Bekräfta ditt lösenord',
-        'error-title' => 'Error',
+        'error-title' => 'Fel',
         'update' => 'Uppdatera E-post',
     ],
     'theme-selector' => [
@@ -62,7 +62,7 @@ return [
         'new' => 'Nytt lösenord',
         'description' => 'Ditt nya lösenord ska vara minst 8 tecken långt och unikt för den här webbplatsen.',
         'confirm-new' => 'Bekräfta nya lösenordet',
-        'error-title' => 'Error',
+        'error-title' => 'Fel',
         'update' => 'Uppdatera lösenordet',
     ],
     '2fa' => [
@@ -74,7 +74,7 @@ return [
         'setup' => [
             'scan' => 'Skanna QR-koden ovan med den tvåstegsautentiseringsapp du väljer. Ange sedan den 6-siffriga koden som genererats i fältet nedan',
             'password' => 'Kontolösenord',
-            'cancel' => 'Cancel',
+            'cancel' => 'Avboka',
             'waiting' => 'Väntar på att QR-koden ska laddas...',
             'enter' => 'Du måste ange den 6-siffriga koden och ditt lösenord för att fortsätta',
             'enable' => 'Aktivera',
@@ -129,7 +129,7 @@ return [
             'save' => 'Spara',
         ],
         'delete' => [
-            'delete-ssh-key' => 'Delete SSH Key',
+            'delete-ssh-key' => 'Ta bort SSH-nyckel',
             'delete-key' => 'Ta bort nyckel',
             'info' => 'Att ta bort SSH-nyckeln kommer att ogiltigförklara dess användning över panelen',
         ],

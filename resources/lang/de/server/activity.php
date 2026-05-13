@@ -2,6 +2,6 @@
 
 return [
     'activity' => [
-        'no-logs' => 'No activity logs available for this server.',
+        'no-logs' => 'Für diesen Server sind keine Aktivitätsprotokolle verfügbar.',
     ],
 ];

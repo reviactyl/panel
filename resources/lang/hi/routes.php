@@ -6,8 +6,8 @@ return [
         'logout' => 'लॉग आउट',
     ],
     'sidebar' => [
-        'more' => 'More',
-        'extensions' => 'Extensions',
+        'more' => 'अधिक',
+        'extensions' => 'एक्सटेंशन',
     ],
     'account' => [
         'overview' => 'खाता अवलोकन',
@@ -20,7 +20,7 @@ return [
         'files' => 'फ़ाइलें',
         'startup' => 'स्टार्टअप',
         'network' => 'नेटवर्क',
-        'metrics' => 'Metrics',
+        'metrics' => 'मेट्रिक्स',
         'databases' => 'डेटाबेस',
         'schedules' => 'अनुसूचियाँ',
         'backups' => 'बैकअप्स',

@@ -2,13 +2,13 @@
 
 return [
     'navigation' => [
-        'label' => 'Monitoring',
-        'group' => 'Administration',
+        'label' => 'Überwachung',
+        'group' => 'Verwaltung',
     ],
 
     'page' => [
-        'title' => 'Monitoring',
-        'heading' => 'Live Monitoring',
+        'title' => 'Überwachung',
+        'heading' => 'Live-Überwachung',
     ],
 
     'actions' => [
@@ -26,7 +26,7 @@ return [
         'memory_usage' => 'Arbeitsspeicher Nutzung',
         'disk_usage' => 'Speicher Nutzung',
         'network_traffic' => 'Netzwerk Traffic',
-        'uptime' => 'Uptime',
+        'uptime' => 'Betriebszeit',
         'goroutines' => ':count goroutinen',
         'last_updated' => 'Zuletzt aktualisiert',
         'no_node' => 'Keine Node ausgewählt',
@@ -34,19 +34,19 @@ return [
         'no_node_hint' => 'Nutzen Sie das Dropdown Menü oben',
         'error' => 'Fehler',
         'error_desc' => 'Konnte Monitoring Daten nicht laden',
-        'error_fetch' => 'Unable to fetch data from Agent',
+        'error_fetch' => 'Es können keine Daten vom Agenten abgerufen werden',
         'error_node_gone' => 'Node existiert nicht mehr',
     ],
 
     'details' => [
-        'heading' => 'System Details',
-        'button' => 'Details',
+        'heading' => 'Systemdetails',
+        'button' => 'Einzelheiten',
         'close' => 'Schließen',
         'no_data' => 'Keine daten verfügbar. Stellen Sie sicher, dass die Node online ist.',
 
         'cpu_section' => 'CPU',
         'cpu_total' => 'Gesamtauslastung',
-        'cpu_cores' => 'Cores',
+        'cpu_cores' => 'Kerne',
         'per_core' => 'Pro-Core Auslastung',
 
         'memory_section' => 'Arbeitsspeicher',
@@ -55,7 +55,7 @@ return [
         'free_memory' => 'Frei',
         'available_memory' => 'Verfügbar',
 
-        'swap_section' => 'Swap',
+        'swap_section' => 'Tauschen',
         'swap_none' => 'Swap nicht konfiguriert.',
         'swap_total' => 'Insgesamt',
         'swap_used' => 'Verwendet',
@@ -69,16 +69,16 @@ return [
         'packets_received' => 'Packets empfangen',
 
         'runtime_section' => 'Laufzeit',
-        'go_version' => 'Go Version',
+        'go_version' => 'Go-Version',
         'arch' => 'Architektur',
         'goroutines' => 'Goroutinen',
-        'uptime' => 'Uptime',
+        'uptime' => 'Betriebszeit',
     ],
     'servers' => [
         'heading' => 'Server Nutzung',
         'no_node' => 'Wählen Sie eine Node aus, um Server Nutzung anzuzeigen.',
         'no_servers' => 'Keine Server auf dieser Node gefunden.',
-        'error_fetch' => 'Unable to fetch server data from Agent.',
+        'error_fetch' => 'Serverdaten können nicht vom Agent abgerufen werden.',
         'col' => [
             'name' => 'Server',
             'state' => 'Zustand',
@@ -86,15 +86,15 @@ return [
             'memory' => 'Arbeitsspeicher',
             'disk' => 'Speicherplatz',
             'network' => 'Netzwerk',
-            'uptime' => 'Uptime',
+            'uptime' => 'Betriebszeit',
         ],
         'states' => [
-            'running' => 'Running',
-            'starting' => 'Starting',
-            'stopping' => 'Stopping',
+            'running' => 'Läuft',
+            'starting' => 'Beginnt',
+            'stopping' => 'Anhalten',
             'offline' => 'Offline',
-            'crashed' => 'Crashed',
-            'unknown' => 'Unknown',
+            'crashed' => 'Abgestürzt',
+            'unknown' => 'Unbekannt',
         ],
     ],
 ];

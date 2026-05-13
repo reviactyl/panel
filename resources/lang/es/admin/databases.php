@@ -9,52 +9,52 @@ return [
 
     'sections' => [
         'host_details' => [
-            'title' => 'Host Details',
-            'description' => 'Configure the database host connection settings.',
+            'title' => 'Detalles del anfitrión',
+            'description' => 'Configure los ajustes de conexión del host de la base de datos.',
         ],
 
         'authentication' => [
-            'title' => 'Authentication',
+            'title' => 'Autenticación',
         ],
 
         'linked_node' => [
-            'title' => 'Linked Node',
+            'title' => 'Nodo vinculado',
         ],
     ],
 
     'placeholders' => [
-        'name' => 'Production MySQL',
+        'name' => 'MySQL de producción',
         'host' => '127.0.0.1',
-        'username' => 'reviactyl',
+        'username' => 'reviactilo',
     ],
 
     'helpers' => [
-        'host' => 'The hostname or IP address of the database server.',
-        'linked_node' => 'Optional. Link this host to a specific node.',
+        'host' => 'El nombre de host o la dirección IP del servidor de la base de datos.',
+        'linked_node' => 'Opcional. Vincula este host a un nodo específico.',
     ],
 
     'fields' => [
-        'linked_node' => 'Linked Node',
+        'linked_node' => 'Nodo vinculado',
     ],
 
     'columns' => [
         'id' => 'ID',
-        'name' => 'Name',
-        'host' => 'Host',
-        'port' => 'Port',
-        'username' => 'Username',
-        'linked_node' => 'Linked Node',
-        'databases' => 'Databases',
-        'created' => 'Created',
+        'name' => 'Nombre',
+        'host' => 'Anfitrión',
+        'port' => 'Puerto',
+        'username' => 'Nombre de usuario',
+        'linked_node' => 'Nodo vinculado',
+        'databases' => 'Bases de datos',
+        'created' => 'Creado',
     ],
 
     'actions' => [
-        'edit' => 'Edit',
-        'delete' => 'Delete',
+        'edit' => 'Editar',
+        'delete' => 'Borrar',
     ],
 
     'errors' => [
-        'cannot_delete' => 'Cannot delete a database host with associated databases.',
+        'cannot_delete' => 'No se puede eliminar un host de base de datos con bases de datos asociadas.',
     ],
 
 ];

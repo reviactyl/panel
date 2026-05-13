@@ -15,10 +15,10 @@ return [
 
     'help-btn' => 'Få hjälp',
     'docs-btn' => 'Dokumentation',
-    'metrics-header' => 'User Activity Metrics',
-    'most-active-country' => 'Most Active Country',
-    'activity-description' => 'Based on recent login activity.',
-    'no_activity' => 'There is no recent activity to display.',
-    'activity-header' => 'Recent Activity',
-    'more-btn' => 'View More',
+    'metrics-header' => 'Användaraktivitetsstatistik',
+    'most-active-country' => 'Mest aktiva landet',
+    'activity-description' => 'Baserat på senaste inloggningsaktivitet.',
+    'no_activity' => 'Det finns ingen ny aktivitet att visa.',
+    'activity-header' => 'Senaste aktivitet',
+    'more-btn' => 'Visa mer',
 ];

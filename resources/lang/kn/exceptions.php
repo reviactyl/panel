@@ -1,62 +1,62 @@
 <?php
 
 return [
-    'daemon_connection_failed' => 'There was an exception while attempting to communicate with the daemon resulting in a HTTP/:code response code. This exception has been logged.',
+    'daemon_connection_failed' => 'HTTP/:code ಪ್ರತಿಕ್ರಿಯೆ ಕೋಡ್‌ಗೆ ಕಾರಣವಾದ ಡೀಮನ್‌ನೊಂದಿಗೆ ಸಂವಹನ ನಡೆಸಲು ಪ್ರಯತ್ನಿಸುವಾಗ ಒಂದು ಅಪವಾದವಿದೆ. ಈ ವಿನಾಯಿತಿಯನ್ನು ಲಾಗ್ ಮಾಡಲಾಗಿದೆ.',
     'node' => [
-        'servers_attached' => 'A node must have no servers linked to it in order to be deleted.',
-        'daemon_off_config_updated' => 'The daemon configuration has been updated, however there was an error encountered while attempting to automatically update the configuration file on the Daemon. You will need to manually update the configuration file (config.yml) for the daemon to apply these changes.',
+        'servers_attached' => 'ಅಳಿಸಲು ನೋಡ್‌ಗೆ ಯಾವುದೇ ಸರ್ವರ್‌ಗಳನ್ನು ಲಿಂಕ್ ಮಾಡಬಾರದು.',
+        'daemon_off_config_updated' => 'ಡೀಮನ್ ಕಾನ್ಫಿಗರೇಶನ್ ಅನ್ನು ನವೀಕರಿಸಲಾಗಿದೆ, ಆದಾಗ್ಯೂ ಡೀಮನ್‌ನಲ್ಲಿ ಕಾನ್ಫಿಗರೇಶನ್ ಫೈಲ್ ಅನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ನವೀಕರಿಸಲು ಪ್ರಯತ್ನಿಸುವಾಗ ದೋಷ ಎದುರಾಗಿದೆ. ಈ ಬದಲಾವಣೆಗಳನ್ನು ಅನ್ವಯಿಸಲು ಡೀಮನ್‌ಗಾಗಿ ನೀವು ಕಾನ್ಫಿಗರೇಶನ್ ಫೈಲ್ (config.yml) ಅನ್ನು ಹಸ್ತಚಾಲಿತವಾಗಿ ನವೀಕರಿಸಬೇಕಾಗುತ್ತದೆ.',
     ],
     'allocations' => [
-        'server_using' => 'A server is currently assigned to this allocation. An allocation can only be deleted if no server is currently assigned.',
-        'too_many_ports' => 'Adding more than 1000 ports in a single range at once is not supported.',
-        'invalid_mapping' => 'The mapping provided for :port was invalid and could not be processed.',
-        'cidr_out_of_range' => 'CIDR notation only allows masks between /25 and /32.',
-        'port_out_of_range' => 'Ports in an allocation must be greater than 1024 and less than or equal to 65535.',
+        'server_using' => 'ಈ ಹಂಚಿಕೆಗೆ ಪ್ರಸ್ತುತ ಸರ್ವರ್ ಅನ್ನು ನಿಯೋಜಿಸಲಾಗಿದೆ. ಪ್ರಸ್ತುತ ಯಾವುದೇ ಸರ್ವರ್ ಅನ್ನು ನಿಯೋಜಿಸದಿದ್ದರೆ ಮಾತ್ರ ಹಂಚಿಕೆಯನ್ನು ಅಳಿಸಬಹುದು.',
+        'too_many_ports' => 'ಒಂದೇ ಶ್ರೇಣಿಯಲ್ಲಿ 1000 ಕ್ಕೂ ಹೆಚ್ಚು ಪೋರ್ಟ್‌ಗಳನ್ನು ಏಕಕಾಲದಲ್ಲಿ ಸೇರಿಸುವುದನ್ನು ಬೆಂಬಲಿಸುವುದಿಲ್ಲ.',
+        'invalid_mapping' => ':port ಗಾಗಿ ಒದಗಿಸಲಾದ ಮ್ಯಾಪಿಂಗ್ ಅಮಾನ್ಯವಾಗಿದೆ ಮತ್ತು ಪ್ರಕ್ರಿಯೆಗೊಳಿಸಲಾಗಲಿಲ್ಲ.',
+        'cidr_out_of_range' => 'CIDR ಸಂಕೇತವು /25 ಮತ್ತು /32 ನಡುವಿನ ಮುಖವಾಡಗಳನ್ನು ಮಾತ್ರ ಅನುಮತಿಸುತ್ತದೆ.',
+        'port_out_of_range' => 'ಹಂಚಿಕೆಯಲ್ಲಿನ ಪೋರ್ಟ್‌ಗಳು 1024 ಕ್ಕಿಂತ ಹೆಚ್ಚಿರಬೇಕು ಮತ್ತು 65535 ಕ್ಕಿಂತ ಕಡಿಮೆ ಅಥವಾ ಸಮನಾಗಿರಬೇಕು.',
     ],
     'nest' => [
-        'delete_has_servers' => 'A Nest with active servers attached to it cannot be deleted from the Panel.',
+        'delete_has_servers' => 'ಪ್ಯಾನೆಲ್‌ನಿಂದ ಸಕ್ರಿಯ ಸರ್ವರ್‌ಗಳನ್ನು ಲಗತ್ತಿಸಲಾದ ನೆಸ್ಟ್ ಅನ್ನು ಅಳಿಸಲಾಗುವುದಿಲ್ಲ.',
         'egg' => [
-            'delete_has_servers' => 'An Egg with active servers attached to it cannot be deleted from the Panel.',
-            'invalid_copy_id' => 'The Egg selected for copying a script from either does not exist, or is copying a script itself.',
-            'must_be_child' => 'The "Copy Settings From" directive for this Egg must be a child option for the selected Nest.',
-            'has_children' => 'This Egg is a parent to one or more other Eggs. Please delete those Eggs before deleting this Egg.',
+            'delete_has_servers' => 'ಪ್ಯಾನೆಲ್‌ನಿಂದ ಸಕ್ರಿಯ ಸರ್ವರ್‌ಗಳನ್ನು ಲಗತ್ತಿಸಲಾದ ಮೊಟ್ಟೆಯನ್ನು ಅಳಿಸಲಾಗುವುದಿಲ್ಲ.',
+            'invalid_copy_id' => 'ಸ್ಕ್ರಿಪ್ಟ್ ಅನ್ನು ನಕಲಿಸಲು ಆಯ್ಕೆ ಮಾಡಲಾದ ಎಗ್ ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ ಅಥವಾ ಸ್ಕ್ರಿಪ್ಟ್ ಅನ್ನು ಸ್ವತಃ ನಕಲಿಸುತ್ತಿದೆ.',
+            'must_be_child' => 'ಈ ಮೊಟ್ಟೆಯ "ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ನಕಲು ಮಾಡು" ನಿರ್ದೇಶನವು ಆಯ್ಕೆಮಾಡಿದ ನೆಸ್ಟ್‌ಗೆ ಮಕ್ಕಳ ಆಯ್ಕೆಯಾಗಿರಬೇಕು.',
+            'has_children' => 'ಈ ಮೊಟ್ಟೆಯು ಒಂದು ಅಥವಾ ಹೆಚ್ಚಿನ ಇತರ ಮೊಟ್ಟೆಗಳಿಗೆ ಪೋಷಕವಾಗಿದೆ. ಈ ಮೊಟ್ಟೆಯನ್ನು ಅಳಿಸುವ ಮೊದಲು ದಯವಿಟ್ಟು ಆ ಮೊಟ್ಟೆಗಳನ್ನು ಅಳಿಸಿ.',
         ],
         'variables' => [
-            'env_not_unique' => 'The environment variable :name must be unique to this Egg.',
-            'reserved_name' => 'The environment variable :name is protected and cannot be assigned to a variable.',
-            'bad_validation_rule' => 'The validation rule ":rule" is not a valid rule for this application.',
+            'env_not_unique' => 'ಪರಿಸರ ವೇರಿಯಬಲ್ :name ಈ ಮೊಟ್ಟೆಗೆ ವಿಶಿಷ್ಟವಾಗಿರಬೇಕು.',
+            'reserved_name' => 'ಪರಿಸರ ವೇರಿಯಬಲ್ :name ಅನ್ನು ರಕ್ಷಿಸಲಾಗಿದೆ ಮತ್ತು ವೇರಿಯೇಬಲ್‌ಗೆ ನಿಯೋಜಿಸಲಾಗುವುದಿಲ್ಲ.',
+            'bad_validation_rule' => 'ಮೌಲ್ಯೀಕರಣ ನಿಯಮ ":rule" ಈ ಅಪ್ಲಿಕೇಶನ್‌ಗೆ ಮಾನ್ಯವಾದ ನಿಯಮವಲ್ಲ.',
         ],
         'importer' => [
-            'json_error' => 'There was an error while attempting to parse the JSON file: :error.',
-            'file_error' => 'The JSON file provided was not valid.',
-            'invalid_json_provided' => 'The JSON file provided is not in a format that can be recognized.',
+            'json_error' => 'JSON ಫೈಲ್ ಅನ್ನು ಪಾರ್ಸ್ ಮಾಡಲು ಪ್ರಯತ್ನಿಸುವಾಗ ದೋಷ ಕಂಡುಬಂದಿದೆ: :error.',
+            'file_error' => 'ಒದಗಿಸಿದ JSON ಫೈಲ್ ಮಾನ್ಯವಾಗಿಲ್ಲ.',
+            'invalid_json_provided' => 'ಒದಗಿಸಿದ JSON ಫೈಲ್ ಗುರುತಿಸಬಹುದಾದ ಸ್ವರೂಪದಲ್ಲಿಲ್ಲ.',
         ],
     ],
     'subusers' => [
-        'editing_self' => 'Editing your own subuser account is not permitted.',
-        'user_is_owner' => 'You cannot add the server owner as a subuser for this server.',
-        'subuser_exists' => 'A user with that email address is already assigned as a subuser for this server.',
+        'editing_self' => 'ನಿಮ್ಮ ಸ್ವಂತ ಉಪಬಳಕೆದಾರ ಖಾತೆಯನ್ನು ಸಂಪಾದಿಸಲು ಅನುಮತಿಯಿಲ್ಲ.',
+        'user_is_owner' => 'ಈ ಸರ್ವರ್‌ಗೆ ನೀವು ಸರ್ವರ್ ಮಾಲೀಕರನ್ನು ಉಪಬಳಕೆದಾರರಾಗಿ ಸೇರಿಸಲಾಗುವುದಿಲ್ಲ.',
+        'subuser_exists' => 'ಆ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ಹೊಂದಿರುವ ಬಳಕೆದಾರರನ್ನು ಈಗಾಗಲೇ ಈ ಸರ್ವರ್‌ಗೆ ಉಪಬಳಕೆದಾರರಾಗಿ ನಿಯೋಜಿಸಲಾಗಿದೆ.',
     ],
     'databases' => [
-        'delete_has_databases' => 'Cannot delete a database host server that has active databases linked to it.',
+        'delete_has_databases' => 'ಸಕ್ರಿಯ ಡೇಟಾಬೇಸ್‌ಗಳನ್ನು ಲಿಂಕ್ ಮಾಡಲಾದ ಡೇಟಾಬೇಸ್ ಹೋಸ್ಟ್ ಸರ್ವರ್ ಅನ್ನು ಅಳಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.',
     ],
     'tasks' => [
-        'chain_interval_too_long' => 'The maximum interval time for a chained task is 15 minutes.',
+        'chain_interval_too_long' => 'ಚೈನ್ಡ್ ಕಾರ್ಯಕ್ಕೆ ಗರಿಷ್ಠ ಮಧ್ಯಂತರ ಸಮಯ 15 ನಿಮಿಷಗಳು.',
     ],
     'locations' => [
-        'has_nodes' => 'Cannot delete a location that has active nodes attached to it.',
+        'has_nodes' => 'ಸಕ್ರಿಯ ನೋಡ್‌ಗಳನ್ನು ಲಗತ್ತಿಸಲಾದ ಸ್ಥಳವನ್ನು ಅಳಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.',
     ],
     'users' => [
-        'node_revocation_failed' => 'Failed to revoke keys on <a href=":link">Node #:node</a>. :error',
+        'node_revocation_failed' => '<a href=":link">ನೋಡ್ #:node</a> ನಲ್ಲಿ ಕೀಗಳನ್ನು ಹಿಂತೆಗೆದುಕೊಳ್ಳಲು ವಿಫಲವಾಗಿದೆ. :error',
     ],
     'deployment' => [
-        'no_viable_nodes' => 'No nodes satisfying the requirements specified for automatic deployment could be found.',
-        'no_viable_allocations' => 'No allocations satisfying the requirements for automatic deployment were found.',
+        'no_viable_nodes' => 'ಸ್ವಯಂಚಾಲಿತ ನಿಯೋಜನೆಗಾಗಿ ನಿರ್ದಿಷ್ಟಪಡಿಸಿದ ಅವಶ್ಯಕತೆಗಳನ್ನು ಪೂರೈಸುವ ಯಾವುದೇ ನೋಡ್‌ಗಳು ಕಂಡುಬಂದಿಲ್ಲ.',
+        'no_viable_allocations' => 'ಸ್ವಯಂಚಾಲಿತ ನಿಯೋಜನೆಯ ಅವಶ್ಯಕತೆಗಳನ್ನು ಪೂರೈಸುವ ಯಾವುದೇ ಹಂಚಿಕೆಗಳು ಕಂಡುಬಂದಿಲ್ಲ.',
     ],
     'api' => [
-        'resource_not_found' => 'The requested resource does not exist on this server.',
+        'resource_not_found' => 'ವಿನಂತಿಸಿದ ಸಂಪನ್ಮೂಲವು ಈ ಸರ್ವರ್‌ನಲ್ಲಿ ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ.',
     ],
     'social' => [
-        'unlink_only_login' => 'You cannot unlink your only login method without setting a password first.',
+        'unlink_only_login' => 'ಪಾಸ್ವರ್ಡ್ ಅನ್ನು ಮೊದಲು ಹೊಂದಿಸದೆ ನಿಮ್ಮ ಏಕೈಕ ಲಾಗಿನ್ ವಿಧಾನವನ್ನು ನೀವು ಅನ್ಲಿಂಕ್ ಮಾಡಲು ಸಾಧ್ಯವಿಲ್ಲ.',
     ],
 ];

@@ -28,7 +28,7 @@ return [
         'id' => 'ID',
         'short' => 'Kurzkennung',
         'long' => 'Beschreibung',
-        'nodes' => 'Nodes',
+        'nodes' => 'Knoten',
         'servers' => 'Server',
         'created' => 'Erstellt',
     ],

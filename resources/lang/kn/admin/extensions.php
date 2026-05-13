@@ -2,45 +2,45 @@
 
 return [
 
-    'label' => 'Extension',
-    'plural-label' => 'Extensions',
+    'label' => 'ವಿಸ್ತರಣೆ',
+    'plural-label' => 'ವಿಸ್ತರಣೆಗಳು',
 
     'columns' => [
         'id' => 'ID',
-        'name' => 'Name',
-        'version' => 'Version',
-        'author' => 'Author',
-        'enabled' => 'Enabled',
-        'updated' => 'Updated',
-        'manifest_json' => 'Manifest JSON',
+        'name' => 'ಹೆಸರು',
+        'version' => 'ಆವೃತ್ತಿ',
+        'author' => 'ಲೇಖಕ',
+        'enabled' => 'ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ',
+        'updated' => 'ನವೀಕರಿಸಲಾಗಿದೆ',
+        'manifest_json' => 'ಮ್ಯಾನಿಫೆಸ್ಟ್ JSON',
     ],
 
     'modals' => [
-        'manifest' => 'Extension Manifest',
+        'manifest' => 'ವಿಸ್ತರಣೆ ಮ್ಯಾನಿಫೆಸ್ಟ್',
     ],
 
     'actions' => [
-        'edit' => 'Edit',
-        'upload' => 'Upload',
-        'manifest' => 'View Manifest',
-        'disable' => 'Disable',
-        'enable' => 'Enable',
-        'delete' => 'Delete',
-        'close' => 'Close',
+        'edit' => 'ಸಂಪಾದಿಸು',
+        'upload' => 'ಅಪ್ಲೋಡ್ ಮಾಡಿ',
+        'manifest' => 'ಮ್ಯಾನಿಫೆಸ್ಟ್ ವೀಕ್ಷಿಸಿ',
+        'disable' => 'ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ',
+        'enable' => 'ಸಕ್ರಿಯಗೊಳಿಸಿ',
+        'delete' => 'ಅಳಿಸಿ',
+        'close' => 'ಮುಚ್ಚಿ',
     ],
 
     'alerts' => [
-        'enabled' => 'Extension enabled.',
-        'enable_failed' => 'Failed to enable extension.',
-        'disabled' => 'Extension disabled.',
-        'disable_failed' => 'Failed to disable extension.',
-        'uninstalled' => 'Extension uninstalled.',
-        'uninstall_failed' => 'Failed to uninstall extension.',
-        'could_not_locate_file' => 'Could not locate uploaded package file.',
-        'invalid_file_type' => 'Only .rext files are allowed.',
-        'upload_hint' => 'Only .rext extension packages are allowed.',
-        'install_failed' => 'Extension install failed.',
-        'install_success' => 'Installed :name (:version) successfully.',
+        'enabled' => 'ವಿಸ್ತರಣೆಯನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ.',
+        'enable_failed' => 'ವಿಸ್ತರಣೆಯನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲು ವಿಫಲವಾಗಿದೆ.',
+        'disabled' => 'ವಿಸ್ತರಣೆಯನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ.',
+        'disable_failed' => 'ವಿಸ್ತರಣೆಯನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲು ವಿಫಲವಾಗಿದೆ.',
+        'uninstalled' => 'ವಿಸ್ತರಣೆಯನ್ನು ಅಸ್ಥಾಪಿಸಲಾಗಿದೆ.',
+        'uninstall_failed' => 'ವಿಸ್ತರಣೆಯನ್ನು ಅಸ್ಥಾಪಿಸಲು ವಿಫಲವಾಗಿದೆ.',
+        'could_not_locate_file' => 'ಅಪ್‌ಲೋಡ್ ಮಾಡಿದ ಪ್ಯಾಕೇಜ್ ಫೈಲ್ ಅನ್ನು ಪತ್ತೆ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.',
+        'invalid_file_type' => '.rext ಫೈಲ್‌ಗಳನ್ನು ಮಾತ್ರ ಅನುಮತಿಸಲಾಗಿದೆ.',
+        'upload_hint' => '.rext ವಿಸ್ತರಣೆ ಪ್ಯಾಕೇಜ್‌ಗಳನ್ನು ಮಾತ್ರ ಅನುಮತಿಸಲಾಗಿದೆ.',
+        'install_failed' => 'ವಿಸ್ತರಣೆ ಸ್ಥಾಪನೆ ವಿಫಲವಾಗಿದೆ.',
+        'install_success' => ':name (:version) ಅನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಸ್ಥಾಪಿಸಲಾಗಿದೆ.',
     ],
 
 ];

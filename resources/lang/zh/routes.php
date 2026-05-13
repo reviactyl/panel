@@ -6,8 +6,8 @@ return [
         'logout' => '登出',
     ],
     'sidebar' => [
-        'more' => 'More',
-        'extensions' => 'Extensions',
+        'more' => '更多的',
+        'extensions' => '扩展',
     ],
     'account' => [
         'overview' => '账户概览',

@@ -2,20 +2,20 @@
 
 return [
     'flag' => 'de',
-    'title' => 'Dashboard',
+    'title' => 'Armaturenbrett',
     'servers-user' => [
-        'title' => 'Your Servers',
-        'subtitle' => 'Here you can see all the servers you have access to.',
+        'title' => 'Ihre Server',
+        'subtitle' => 'Hier sehen Sie alle Server, auf die Sie Zugriff haben.',
     ],
     'servers-admin' => [
-        'title' => 'Others\' Servers',
-        'subtitle' => 'Here you can see all the servers created on this panel.',
+        'title' => 'Server anderer',
+        'subtitle' => 'Hier sehen Sie alle in diesem Bereich erstellten Server.',
     ],
     'other-servers' => 'Zeige Server von anderen',
     'your-servers' => 'Zeige Ihre Server',
     'no-servers' => 'Es sind keine Server mit ihrem Account verknüpft.',
     'no-other-servers' => 'Es gibt keine Server zum anzeigen.',
-    'filter-label' => 'Server Filter',
+    'filter-label' => 'Serverfilter',
     'eggs' => [
         'all' => 'Alle',
         'filter-label' => 'Durch Egg filtern',
@@ -41,7 +41,7 @@ return [
         'unlimited' => 'Unbegrenzt',
     ],
     'status-card' => [
-        'title' => 'Server Status',
+        'title' => 'Serverstatus',
         'description' => 'Server Status überprüfen',
     ],
     'support-card' => [

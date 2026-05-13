@@ -2,12 +2,12 @@
 
 return [
     'index' => [
-        'dashboard' => 'Dashboard',
+        'dashboard' => 'Armaturenbrett',
         'logout' => 'Abmelden',
     ],
     'sidebar' => [
-        'more' => 'More',
-        'extensions' => 'Extensions',
+        'more' => 'Mehr',
+        'extensions' => 'Erweiterungen',
     ],
     'account' => [
         'overview' => 'Kontoübersicht',

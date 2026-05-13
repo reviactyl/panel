@@ -62,7 +62,7 @@ return [
         'min-length' => 'Lösenord måste vara minst 8 tecken långt.',
         'confirm-label' => 'Bekräfta lösenord',
         'label' => 'Registrera',
-        'create-account' => 'Create Account',
+        'create-account' => 'Skapa konto',
     ],
 
     'failed' => 'Ingen matchande konto med dessa uppgifter kunde hittas.',

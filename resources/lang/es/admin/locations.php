@@ -2,44 +2,44 @@
 
 return [
 
-    'label' => 'Location',
-    'plural-label' => 'Locations',
+    'label' => 'Ubicación',
+    'plural-label' => 'Ubicaciones',
 
     'section' => [
-        'title' => 'Location Details',
-        'description' => 'Define a location that nodes can be assigned to.',
+        'title' => 'Detalles de la ubicación',
+        'description' => 'Defina una ubicación a la que se puedan asignar los nodos.',
     ],
 
     'fields' => [
         'short' => [
-            'label' => 'Short Code',
-            'placeholder' => 'us.nyc.1',
-            'helper' => 'A short identifier for this location.',
+            'label' => 'Código corto',
+            'placeholder' => 'nosotros.nyc.1',
+            'helper' => 'Un identificador corto para esta ubicación.',
         ],
 
         'long' => [
-            'label' => 'Description',
-            'placeholder' => 'New York City, NY, USA',
-            'helper' => 'A longer description of this location.',
+            'label' => 'Descripción',
+            'placeholder' => 'Nueva York, Nueva York, Estados Unidos',
+            'helper' => 'Una descripción más larga de esta ubicación.',
         ],
     ],
 
     'table' => [
         'id' => 'ID',
-        'short' => 'Short Code',
-        'long' => 'Description',
-        'nodes' => 'Nodes',
-        'servers' => 'Servers',
-        'created' => 'Created',
+        'short' => 'Código corto',
+        'long' => 'Descripción',
+        'nodes' => 'Nodos',
+        'servers' => 'Servidores',
+        'created' => 'Creado',
     ],
 
     'actions' => [
-        'edit' => 'Edit',
-        'delete' => 'Delete',
+        'edit' => 'Editar',
+        'delete' => 'Borrar',
     ],
 
     'messages' => [
-        'cannot_delete_with_nodes' => 'Cannot delete a location with associated nodes.',
+        'cannot_delete_with_nodes' => 'No se puede eliminar una ubicación con nodos asociados.',
     ],
 
 ];

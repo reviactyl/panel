@@ -7,7 +7,7 @@ return [
         '2fa-alert' => 'Ihr Konto muss die Zwei-Faktor-Authentifizierung aktiviert haben, um fortzufahren.',
         'administrator' => 'Administrator',
         'admin' => 'Admin',
-        'profile' => 'Profile',
+        'profile' => 'Profil',
         'logout' => 'Abmelden',
         'user' => 'Benutzer',
         'update-email' => 'E-Mail-Adresse aktualisieren',
@@ -45,11 +45,11 @@ return [
         ],
     ],
     'email' => [
-        'label' => 'Email',
+        'label' => 'E-Mail',
         'password-required' => 'Sie müssen Ihr aktuelles Kontopasswort angeben.',
         'updated' => 'Ihre primäre E-Mail wurde aktualisiert.',
         'confirm-password' => 'Passwort bestätigen',
-        'error-title' => 'Error',
+        'error-title' => 'Fehler',
         'update' => 'E-Mail aktualisieren',
     ],
     'theme-selector' => [
@@ -62,7 +62,7 @@ return [
         'new' => 'Neues Passwort',
         'description' => 'Ihr neues Passwort sollte mindestens 8 Zeichen lang sein und für diese Website eindeutig sein.',
         'confirm-new' => 'Neues Passwort bestätigen',
-        'error-title' => 'Error',
+        'error-title' => 'Fehler',
         'update' => 'Passwort aktualisieren',
     ],
     '2fa' => [
@@ -74,7 +74,7 @@ return [
         'setup' => [
             'scan' => 'Scannen Sie den obigen QR-Code mit der Zwei-Schritt-Authentifizierungs-App Ihrer Wahl. Geben Sie dann den generierten 6-stelligen Code in das Feld unten ein.',
             'password' => 'Kontopasswort',
-            'cancel' => 'Cancel',
+            'cancel' => 'Stornieren',
             'waiting' => 'Warte auf das Laden des QR-Codes...',
             'enter' => 'Sie müssen den 6-stelligen Code und Ihr Passwort eingeben, um fortzufahren.',
             'enable' => 'Aktivieren',

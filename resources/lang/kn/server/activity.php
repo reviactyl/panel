@@ -2,6 +2,6 @@
 
 return [
     'activity' => [
-        'no-logs' => 'No activity logs available for this server.',
+        'no-logs' => 'ಈ ಸರ್ವರ್‌ಗೆ ಯಾವುದೇ ಚಟುವಟಿಕೆ ಲಾಗ್‌ಗಳು ಲಭ್ಯವಿಲ್ಲ.',
     ],
 ];

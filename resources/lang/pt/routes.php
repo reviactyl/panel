@@ -6,8 +6,8 @@ return [
         'logout' => 'Sair',
     ],
     'sidebar' => [
-        'more' => 'More',
-        'extensions' => 'Extensions',
+        'more' => 'Mais',
+        'extensions' => 'Extensões',
     ],
     'account' => [
         'overview' => 'Visão Geral da Conta',
@@ -23,7 +23,7 @@ return [
         'metrics' => 'Métricas',
         'databases' => 'Bancos de Dados',
         'schedules' => 'Agendamentos',
-        'backups' => 'Backups',
+        'backups' => 'Cópias de segurança',
         'users' => 'Usuários',
         'settings' => 'Configurações',
         'activity' => 'Atividade',

@@ -13,13 +13,13 @@ return [
     'fields' => [
         'short' => [
             'label' => 'Código curto',
-            'placeholder' => 'us.nyc.1',
+            'placeholder' => 'nós.nyc.1',
             'helper' => 'Um identificador curto para este local.',
         ],
 
         'long' => [
             'label' => 'Descrição',
-            'placeholder' => 'New York City, NY, USA',
+            'placeholder' => 'Cidade de Nova York, NY, EUA',
             'helper' => 'Uma descrição mais detalhada deste local',
         ],
     ],
@@ -28,7 +28,7 @@ return [
         'id' => 'ID',
         'short' => 'Código curto',
         'long' => 'Descrição',
-        'nodes' => 'Nodes',
+        'nodes' => 'Nós',
         'servers' => 'Servidores',
         'created' => 'Criar',
     ],

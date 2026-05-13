@@ -2,59 +2,59 @@
 
 return [
 
-    'label' => 'Database',
-    'plural-label' => 'Databases',
+    'label' => 'डेटाबेस',
+    'plural-label' => 'डेटाबेस',
 
-    'none' => 'None',
+    'none' => 'कोई नहीं',
 
     'sections' => [
         'host_details' => [
-            'title' => 'Host Details',
-            'description' => 'Configure the database host connection settings.',
+            'title' => 'मेज़बान विवरण',
+            'description' => 'डेटाबेस होस्ट कनेक्शन सेटिंग्स कॉन्फ़िगर करें।',
         ],
 
         'authentication' => [
-            'title' => 'Authentication',
+            'title' => 'प्रमाणीकरण',
         ],
 
         'linked_node' => [
-            'title' => 'Linked Node',
+            'title' => 'लिंक किया गया नोड',
         ],
     ],
 
     'placeholders' => [
-        'name' => 'Production MySQL',
+        'name' => 'उत्पादन MySQL',
         'host' => '127.0.0.1',
         'username' => 'reviactyl',
     ],
 
     'helpers' => [
-        'host' => 'The hostname or IP address of the database server.',
-        'linked_node' => 'Optional. Link this host to a specific node.',
+        'host' => 'डेटाबेस सर्वर का होस्टनाम या आईपी पता।',
+        'linked_node' => 'वैकल्पिक। इस होस्ट को एक विशिष्ट नोड से लिंक करें।',
     ],
 
     'fields' => [
-        'linked_node' => 'Linked Node',
+        'linked_node' => 'लिंक किया गया नोड',
     ],
 
     'columns' => [
         'id' => 'ID',
-        'name' => 'Name',
-        'host' => 'Host',
-        'port' => 'Port',
-        'username' => 'Username',
-        'linked_node' => 'Linked Node',
-        'databases' => 'Databases',
-        'created' => 'Created',
+        'name' => 'नाम',
+        'host' => 'मेज़बान',
+        'port' => 'पत्तन',
+        'username' => 'उपयोगकर्ता नाम',
+        'linked_node' => 'लिंक किया गया नोड',
+        'databases' => 'डेटाबेस',
+        'created' => 'बनाया था',
     ],
 
     'actions' => [
-        'edit' => 'Edit',
-        'delete' => 'Delete',
+        'edit' => 'संपादन करना',
+        'delete' => 'मिटाना',
     ],
 
     'errors' => [
-        'cannot_delete' => 'Cannot delete a database host with associated databases.',
+        'cannot_delete' => 'संबद्ध डेटाबेस के साथ डेटाबेस होस्ट को हटाया नहीं जा सकता।',
     ],
 
 ];

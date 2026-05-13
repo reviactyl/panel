@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'title' => 'Startup',
-    'read-only' => 'Read Only',
+    'title' => 'Rintisan',
+    'read-only' => 'Hanya Baca',
     'startup-command' => 'Perintah Startup',
     'docker-image' => 'Docker Image',
     'docker-info' => 'Ini adalah fitur lanjutan yang memungkinkan Anda memilih Docker image untuk digunakan saat menjalankan instance server ini.',

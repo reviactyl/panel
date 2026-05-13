@@ -2,6 +2,6 @@
 
 return [
     'pid-limit' => [
-        'message' => 'This server has reached the maximum process or memory limit.',
+        'message' => 'Máy chủ này đã đạt đến giới hạn bộ nhớ hoặc quy trình tối đa.',
     ],
 ];

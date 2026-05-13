@@ -2,12 +2,12 @@
 
 return [
     'index' => [
-        'dashboard' => 'Dashboard',
+        'dashboard' => 'Dasbor',
         'logout' => 'Keluar',
     ],
     'sidebar' => [
-        'more' => 'More',
-        'extensions' => 'Extensions',
+        'more' => 'Lagi',
+        'extensions' => 'Ekstensi',
     ],
     'account' => [
         'overview' => 'Ringkasan Akun',
@@ -18,9 +18,9 @@ return [
     'server' => [
         'console' => 'Konsol',
         'files' => 'File',
-        'startup' => 'Startup',
+        'startup' => 'Rintisan',
         'network' => 'Jaringan',
-        'metrics' => 'Metrics',
+        'metrics' => 'Metrik',
         'databases' => 'Database',
         'schedules' => 'Jadwal',
         'backups' => 'Backup',

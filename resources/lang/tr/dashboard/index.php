@@ -4,12 +4,12 @@ return [
     'flag' => 'tr',
     'title' => 'Panel',
     'servers-user' => [
-        'title' => 'Your Servers',
-        'subtitle' => 'Here you can see all the servers you have access to.',
+        'title' => 'Sunucularınız',
+        'subtitle' => 'Burada erişiminiz olan tüm sunucuları görebilirsiniz.',
     ],
     'servers-admin' => [
-        'title' => 'Others\' Servers',
-        'subtitle' => 'Here you can see all the servers created on this panel.',
+        'title' => 'Başkalarının Sunucuları',
+        'subtitle' => 'Burada bu panelde oluşturulan tüm sunucuları görebilirsiniz.',
     ],
     'other-servers' => 'Diğerlerinin sunucuları gösteriliyor',
     'your-servers' => 'Sunucularınız gösteriliyor',

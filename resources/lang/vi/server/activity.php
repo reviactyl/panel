@@ -2,6 +2,6 @@
 
 return [
     'activity' => [
-        'no-logs' => 'No activity logs available for this server.',
+        'no-logs' => 'Không có nhật ký hoạt động nào cho máy chủ này.',
     ],
 ];

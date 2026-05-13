@@ -11,9 +11,9 @@ return [
     ],
     'info' => [
         'title' => 'Information de Debug',
-        'node' => 'Node',
+        'node' => 'Nœud',
         'server' => 'Identifiant du serveur',
-        'public-status-page' => 'Public Status Page',
+        'public-status-page' => 'Page d\'état publique',
     ],
     'rename' => [
         'title' => 'Modifier les détails du serveur',
@@ -27,7 +27,7 @@ return [
         'confirm' => 'Je veux réinstaller le serveur',
         'info' => 'Votre serveur sera arrêté et certains fichiers pourraient être supprimés ou modifiés au cours de ce processus. Êtes-vous sûr de vouloir continuer ?',
         'info-1' => 'La réinstallation de votre serveur l\'arrêtera, puis relancera le script d\'installation qui l\'a initialement configuré.',
-        'info-2' => 'Some files may be deleted or modified during this process, please back up your data before continuing.',
+        'info-2' => 'Certains fichiers peuvent être supprimés ou modifiés au cours de ce processus, veuillez sauvegarder vos données avant de continuer.',
         'button' => 'Réinstaller le serveur',
     ],
 ];

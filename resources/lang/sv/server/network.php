@@ -4,7 +4,7 @@ return [
     'title' => 'Nätverk',
     'created' => 'Du använder för närvarande {{count}} av {{limit}} tillåtna allokeringar för denna server.',
     'create' => 'Skapa allokering',
-    'delete-allocation-title' => 'Remove Allocation',
-    'delete-allocation-confirm' => 'Delete',
-    'delete-allocation-message' => 'This allocation will be immediately removed from your server.',
+    'delete-allocation-title' => 'Ta bort allokering',
+    'delete-allocation-confirm' => 'Radera',
+    'delete-allocation-message' => 'Denna tilldelning kommer omedelbart att tas bort från din server.',
 ];

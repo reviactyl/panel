@@ -25,7 +25,7 @@ return [
     'placeholders' => [
         'name' => '生产环境 MySQL',
         'host' => '127.0.0.1',
-        'username' => 'reviactyl',
+        'username' => '瑞维阿克蒂尔',
     ],
 
     'helpers' => [

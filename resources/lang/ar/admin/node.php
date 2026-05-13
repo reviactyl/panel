@@ -6,18 +6,18 @@ return [
 
     'sections' => [
         'overview' => [
-            'title' => 'Overview',
-            'information-label' => 'Node Information',
-            'version-label' => 'Agent Version',
-            'architecture-label' => 'Architecture',
-            'kernel-label' => 'Kernel',
-            'cpus-label' => 'CPU Threads',
-            'cpu-usage-label' => 'CPU Usage',
-            'memory-usage-label' => 'Memory Usage',
-            'disk-usage-label' => 'Disk Usage',
+            'title' => 'ملخص',
+            'information-label' => 'معلومات العقدة',
+            'version-label' => 'نسخة الوكيل',
+            'architecture-label' => 'بنيان',
+            'kernel-label' => 'نواة',
+            'cpus-label' => 'خيوط وحدة المعالجة المركزية',
+            'cpu-usage-label' => 'استخدام وحدة المعالجة المركزية',
+            'memory-usage-label' => 'استخدام الذاكرة',
+            'disk-usage-label' => 'استخدام القرص',
         ],
         'tabs' => [
-            'title' => 'Node Configuration',
+            'title' => 'تكوين العقدة',
         ],
         'identity' => [
             'title' => 'الهوية',
@@ -36,9 +36,9 @@ return [
             'description' => 'ضبط الإعدادات الخاصة بالخدمة (daemon-specific).',
         ],
         'configuration' => [
-            'title' => 'Configuration',
-            'config_description' => 'Configuration File',
-            'deploy_description' => 'Generate a custom deployment command that can be used to configure Agent on the target server.',
+            'title' => 'إعدادات',
+            'config_description' => 'ملف التكوين',
+            'deploy_description' => 'قم بإنشاء أمر نشر مخصص يمكن استخدامه لتكوين الوكيل على الخادم الهدف.',
         ],
     ],
 
@@ -66,7 +66,7 @@ return [
         ],
         'fqdn' => [
             'label' => 'FQDN',
-            'placeholder' => 'node.example.com',
+            'placeholder' => 'العقدة.example.com',
             'helper' => 'اسم نطاق كامل أو عنوان IP.',
         ],
         'ssl' => [
@@ -125,10 +125,10 @@ return [
     ],
 
     'table' => [
-        'health' => 'Health',
+        'health' => 'صحة',
         'health_http_status' => 'HTTP :status',
         'health_error' => ':error',
-        'health_check_console' => 'check browser console',
+        'health_check_console' => 'تحقق من وحدة تحكم المتصفح',
         'id' => 'المعرف',
         'uuid' => 'UUID',
         'name' => 'الاسم',
@@ -152,12 +152,12 @@ return [
     ],
 
     'filters' => [
-        'public' => 'Public',
-        'maintenance' => 'Maintenance',
-        'public_true' => 'Public',
-        'public_false' => 'Private',
-        'maintenance_true' => 'Under Maintenance',
-        'maintenance_false' => 'Active',
+        'public' => 'عام',
+        'maintenance' => 'صيانة',
+        'public_true' => 'عام',
+        'public_false' => 'خاص',
+        'maintenance_true' => 'تحت الصيانة',
+        'maintenance_false' => 'نشيط',
     ],
 
     'actions' => [
@@ -165,27 +165,27 @@ return [
         'edit' => 'تعديل',
         'delete' => 'حذف',
         'view' => 'عرض',
-        'random' => 'Random',
-        'view_monitoring' => 'View Monitoring',
+        'random' => 'عشوائي',
+        'view_monitoring' => 'عرض المراقبة',
     ],
 
     'deployment' => [
-        'generate_label' => 'Generate Deployment Token',
-        'modal_heading' => 'Auto-Deploy Command',
-        'modal_description' => 'Run this command on your node to automatically configure Agent.',
-        'modal_close' => 'Close',
-        'command_label' => 'Deployment Command',
-        'command_helper' => 'Copy and run this command on your node server.',
-        'token_success' => 'Token Generated Successfully',
-        'token_success_body' => 'Copy and run the command below on your node.',
-        'save_first' => 'Please save the node first.',
-        'auto_generated_key' => 'Automatically generated node deployment key.',
-        'error' => 'Error generating token. Please try again.',
+        'generate_label' => 'إنشاء رمز النشر',
+        'modal_heading' => 'أمر النشر التلقائي',
+        'modal_description' => 'قم بتشغيل هذا الأمر على العقدة الخاصة بك لتكوين الوكيل تلقائيًا.',
+        'modal_close' => 'يغلق',
+        'command_label' => 'أمر النشر',
+        'command_helper' => 'انسخ هذا الأمر وقم بتشغيله على خادم العقدة الخاص بك.',
+        'token_success' => 'تم إنشاء الرمز المميز بنجاح',
+        'token_success_body' => 'انسخ الأمر أدناه وقم بتشغيله على عقدتك.',
+        'save_first' => 'الرجاء حفظ العقدة أولا.',
+        'auto_generated_key' => 'مفتاح نشر العقدة الذي تم إنشاؤه تلقائيًا.',
+        'error' => 'حدث خطأ أثناء إنشاء الرمز المميز. يرجى المحاولة مرة أخرى.',
     ],
 
     'general' => [
-        'na' => 'N/A',
-        'unavailable' => 'Unavailable',
+        'na' => 'لا يوجد',
+        'unavailable' => 'غير متاح',
     ],
 
     'messages' => [
@@ -198,7 +198,7 @@ return [
     'allocations' => [
         'label' => 'التخصيصات',
         'table' => [
-            'ip' => 'IP',
+            'ip' => 'الملكية الفكرية',
             'port' => 'بورت',
             'alias' => 'الاسم المستعار',
             'server' => 'الخادم',

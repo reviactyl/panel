@@ -2,7 +2,7 @@
 
 return [
     'title' => 'Démarrage',
-    'read-only' => 'Read Only',
+    'read-only' => 'Lecture seule',
     'startup-command' => 'Commande de démarrage',
     'docker-image' => 'Image Docker',
     'docker-info' => 'Il s\'agit d\'une fonctionnalité avancée qui vous permet de sélectionner une image Docker à utiliser lors de l\'exécution de cette instance de serveur.',

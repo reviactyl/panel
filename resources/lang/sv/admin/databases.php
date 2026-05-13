@@ -40,8 +40,8 @@ return [
     'columns' => [
         'id' => 'ID',
         'name' => 'Namn',
-        'host' => 'Host',
-        'port' => 'Port',
+        'host' => 'Värd',
+        'port' => 'Hamn',
         'username' => 'Användarnamn',
         'linked_node' => 'Länka noder',
         'databases' => 'Databaser',

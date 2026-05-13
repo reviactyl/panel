@@ -6,8 +6,8 @@ return [
         'logout' => 'Cerrar sesión',
     ],
     'sidebar' => [
-        'more' => 'More',
-        'extensions' => 'Extensions',
+        'more' => 'Más',
+        'extensions' => 'Extensiones',
     ],
     'account' => [
         'overview' => 'Resumen de la cuenta',
@@ -20,7 +20,7 @@ return [
         'files' => 'Archivos',
         'startup' => 'Inicio',
         'network' => 'Red',
-        'metrics' => 'Metrics',
+        'metrics' => 'Métrica',
         'databases' => 'Bases de datos',
         'schedules' => 'Programaciones',
         'backups' => 'Copias de seguridad',

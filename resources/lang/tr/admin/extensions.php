@@ -2,45 +2,45 @@
 
 return [
 
-    'label' => 'Extension',
-    'plural-label' => 'Extensions',
+    'label' => 'Eklenti',
+    'plural-label' => 'Uzantılar',
 
     'columns' => [
         'id' => 'ID',
-        'name' => 'Name',
-        'version' => 'Version',
-        'author' => 'Author',
-        'enabled' => 'Enabled',
-        'updated' => 'Updated',
-        'manifest_json' => 'Manifest JSON',
+        'name' => 'İsim',
+        'version' => 'Sürüm',
+        'author' => 'Yazar',
+        'enabled' => 'Etkinleştirilmiş',
+        'updated' => 'Güncellendi',
+        'manifest_json' => 'JSON\'u bildir',
     ],
 
     'modals' => [
-        'manifest' => 'Extension Manifest',
+        'manifest' => 'Uzantı Bildirimi',
     ],
 
     'actions' => [
-        'edit' => 'Edit',
-        'upload' => 'Upload',
-        'manifest' => 'View Manifest',
-        'disable' => 'Disable',
-        'enable' => 'Enable',
-        'delete' => 'Delete',
-        'close' => 'Close',
+        'edit' => 'Düzenlemek',
+        'upload' => 'Yüklemek',
+        'manifest' => 'Manifest\'i Görüntüle',
+        'disable' => 'Devre dışı bırakmak',
+        'enable' => 'Olanak vermek',
+        'delete' => 'Silmek',
+        'close' => 'Kapalı',
     ],
 
     'alerts' => [
-        'enabled' => 'Extension enabled.',
-        'enable_failed' => 'Failed to enable extension.',
-        'disabled' => 'Extension disabled.',
-        'disable_failed' => 'Failed to disable extension.',
-        'uninstalled' => 'Extension uninstalled.',
-        'uninstall_failed' => 'Failed to uninstall extension.',
-        'could_not_locate_file' => 'Could not locate uploaded package file.',
-        'invalid_file_type' => 'Only .rext files are allowed.',
-        'upload_hint' => 'Only .rext extension packages are allowed.',
-        'install_failed' => 'Extension install failed.',
-        'install_success' => 'Installed :name (:version) successfully.',
+        'enabled' => 'Uzantı etkinleştirildi.',
+        'enable_failed' => 'Uzantı etkinleştirilemedi.',
+        'disabled' => 'Uzantı devre dışı bırakıldı.',
+        'disable_failed' => 'Uzantı devre dışı bırakılamadı.',
+        'uninstalled' => 'Uzantı kaldırıldı.',
+        'uninstall_failed' => 'Uzantı kaldırılamadı.',
+        'could_not_locate_file' => 'Yüklenen paket dosyası bulunamadı.',
+        'invalid_file_type' => 'Yalnızca .rext dosyalarına izin verilir.',
+        'upload_hint' => 'Yalnızca .rext uzantılı paketlere izin verilir.',
+        'install_failed' => 'Uzantı yüklemesi başarısız oldu.',
+        'install_success' => ':name (:version) başarıyla kuruldu.',
     ],
 
 ];
