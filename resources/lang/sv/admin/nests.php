@@ -1,7 +1,7 @@
 <?php
 
 return [
-    
+
     'label' => 'Nest',
     'plural_label' => 'Nesten',
 
@@ -28,7 +28,7 @@ return [
         'eggs' => 'Ägg',
         'servers' => 'Servrar',
     ],
-    
+
     'actions' => [
         'import' => 'Import Egg',
     ],
