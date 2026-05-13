@@ -64,7 +64,7 @@ return [
         'label' => 'Registrieren',
         'create-account' => 'Create Account',
     ],
-    
+
     'failed' => 'Diese Kombination aus Zugangsdaten wurde nicht in unserer Datenbank gefunden.',
 
     'two_factor' => [
