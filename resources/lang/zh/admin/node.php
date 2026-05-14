@@ -127,7 +127,6 @@ return [
     'table' => [
         'health' => '健康',
         'health_http_status' => 'HTTP :status',
-        'health_error' => ':error',
         'health_check_console' => '检查浏览器控制台',
         'id' => 'ID',
         'uuid' => '通用唯一标识符',

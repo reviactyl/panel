@@ -27,7 +27,6 @@ return [
         'disk_usage' => 'Sử dụng đĩa',
         'network_traffic' => 'Lưu lượng mạng',
         'uptime' => 'Thời gian hoạt động',
-        'goroutines' => 'goroutine :count',
         'last_updated' => 'Cập nhật lần cuối',
         'no_node' => 'Không có nút nào được chọn',
         'no_node_desc' => 'Vui lòng chọn một nút để xem dữ liệu giám sát',

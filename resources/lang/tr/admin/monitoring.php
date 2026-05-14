@@ -27,7 +27,6 @@ return [
         'disk_usage' => 'Disk Kullanımı',
         'network_traffic' => 'Ağ Trafiği',
         'uptime' => 'Çalışma Süresi',
-        'goroutines' => ':count goroutine',
         'last_updated' => 'Son Güncelleme',
         'no_node' => 'Düğüm Seçilmedi',
         'no_node_desc' => 'İzleme verilerini görüntülemek için lütfen bir düğüm seçin',

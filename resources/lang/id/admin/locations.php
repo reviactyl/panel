@@ -13,13 +13,11 @@ return [
     'fields' => [
         'short' => [
             'label' => 'Kode Pendek',
-            'placeholder' => 'kami.nyc.1',
             'helper' => 'Pengidentifikasi singkat untuk lokasi ini.',
         ],
 
         'long' => [
             'label' => 'Keterangan',
-            'placeholder' => 'Kota New York, NY, AS',
             'helper' => 'Deskripsi yang lebih panjang tentang lokasi ini.',
         ],
     ],

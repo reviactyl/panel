@@ -127,7 +127,6 @@ return [
     'table' => [
         'health' => 'Hälsa',
         'health_http_status' => 'HTTP :status',
-        'health_error' => ':error',
         'health_check_console' => 'kolla webbläsarkonsolen',
         'id' => 'ID',
         'uuid' => 'UUID',

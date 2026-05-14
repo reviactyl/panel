@@ -13,13 +13,11 @@ return [
     'fields' => [
         'short' => [
             'label' => 'Código corto',
-            'placeholder' => 'nosotros.nyc.1',
             'helper' => 'Un identificador corto para esta ubicación.',
         ],
 
         'long' => [
             'label' => 'Descripción',
-            'placeholder' => 'Nueva York, Nueva York, Estados Unidos',
             'helper' => 'Una descripción más larga de esta ubicación.',
         ],
     ],

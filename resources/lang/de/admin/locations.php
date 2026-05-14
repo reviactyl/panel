@@ -13,13 +13,11 @@ return [
     'fields' => [
         'short' => [
             'label' => 'Kurzkennung',
-            'placeholder' => 'de.berlin.1',
             'helper' => 'Ein Kurze Kennung für diesen Standort.',
         ],
 
         'long' => [
             'label' => 'Beschreibung',
-            'placeholder' => 'Berlin, Deutschland',
             'helper' => 'Eine längere Beschreibung dieses Standortes.',
         ],
     ],

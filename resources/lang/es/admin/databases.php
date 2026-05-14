@@ -24,8 +24,6 @@ return [
 
     'placeholders' => [
         'name' => 'MySQL de producción',
-        'host' => '127.0.0.1',
-        'username' => 'reviactilo',
     ],
 
     'helpers' => [

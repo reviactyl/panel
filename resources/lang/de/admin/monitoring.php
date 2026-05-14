@@ -27,7 +27,6 @@ return [
         'disk_usage' => 'Speicher Nutzung',
         'network_traffic' => 'Netzwerk Traffic',
         'uptime' => 'Betriebszeit',
-        'goroutines' => ':count goroutinen',
         'last_updated' => 'Zuletzt aktualisiert',
         'no_node' => 'Keine Node ausgewählt',
         'no_node_desc' => 'Bitte wählen Sie eine Node um Monitoring Daten zu sehen',

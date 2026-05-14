@@ -27,7 +27,6 @@ return [
         'disk_usage' => 'डिस्क उपयोग',
         'network_traffic' => 'नेटवर्क ट्रैफ़िक',
         'uptime' => 'अपटाइम',
-        'goroutines' => ':count गोरोइन्स',
         'last_updated' => 'आखरी अपडेट',
         'no_node' => 'कोई नोड चयनित नहीं',
         'no_node_desc' => 'मॉनिटरिंग डेटा देखने के लिए कृपया एक नोड चुनें',

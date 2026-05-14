@@ -127,7 +127,6 @@ return [
     'table' => [
         'health' => 'صحة',
         'health_http_status' => 'HTTP :status',
-        'health_error' => ':error',
         'health_check_console' => 'تحقق من وحدة تحكم المتصفح',
         'id' => 'المعرف',
         'uuid' => 'UUID',

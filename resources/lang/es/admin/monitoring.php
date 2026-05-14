@@ -27,7 +27,6 @@ return [
         'disk_usage' => 'Uso del disco',
         'network_traffic' => 'Tráfico de red',
         'uptime' => 'tiempo de actividad',
-        'goroutines' => 'Gorrutinas :count',
         'last_updated' => 'Última actualización',
         'no_node' => 'Ningún nodo seleccionado',
         'no_node_desc' => 'Seleccione un nodo para ver los datos de monitoreo',

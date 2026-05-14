@@ -27,7 +27,6 @@ return [
         'disk_usage' => 'استخدام القرص',
         'network_traffic' => 'حركة مرور الشبكة',
         'uptime' => 'الجهوزية',
-        'goroutines' => ':count goroutines',
         'last_updated' => 'آخر تحديث',
         'no_node' => 'لم يتم تحديد عقدة',
         'no_node_desc' => 'الرجاء تحديد عقدة لعرض بيانات المراقبة',

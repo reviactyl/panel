@@ -27,7 +27,6 @@ return [
         'disk_usage' => '磁盘使用量',
         'network_traffic' => '网络流量',
         'uptime' => '运行时间',
-        'goroutines' => ':count 个协程',
         'last_updated' => '最后更新',
         'no_node' => '未选择节点',
         'no_node_desc' => '请选择一个节点以查看监控数据',

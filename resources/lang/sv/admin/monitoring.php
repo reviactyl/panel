@@ -27,7 +27,6 @@ return [
         'disk_usage' => 'Diskanvändning',
         'network_traffic' => 'Nätverkstrafik',
         'uptime' => 'Upptid',
-        'goroutines' => ':count-goroutiner',
         'last_updated' => 'Senast uppdaterad',
         'no_node' => 'Ingen nod vald',
         'no_node_desc' => 'Välj en nod för att se övervakningsdata',

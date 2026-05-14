@@ -13,13 +13,11 @@ return [
     'fields' => [
         'short' => [
             'label' => 'ಕಿರು ಕೋಡ್',
-            'placeholder' => 'us.nyc.1',
             'helper' => 'ಈ ಸ್ಥಳಕ್ಕಾಗಿ ಕಿರು ಗುರುತಿಸುವಿಕೆ.',
         ],
 
         'long' => [
             'label' => 'ವಿವರಣೆ',
-            'placeholder' => 'ನ್ಯೂಯಾರ್ಕ್ ನಗರ, NY, USA',
             'helper' => 'ಈ ಸ್ಥಳದ ದೀರ್ಘ ವಿವರಣೆ.',
         ],
     ],
