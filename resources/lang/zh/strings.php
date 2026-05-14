@@ -96,7 +96,6 @@ return [
     'file-name' => '文件名',
     'file-name-description' => '输入该文件应保存的名称。',
     'copyright' => '&copy; :year Reviactyl™ 软件',
-    'local_network' => '本地网络',
     'server-status' => '服务器状态',
     'loading-server-status' => '正在加载服务器状态...',
     'no-description' => '没有提供描述。',
