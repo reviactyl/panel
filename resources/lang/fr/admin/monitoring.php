@@ -27,7 +27,6 @@ return [
         'disk_usage' => 'Utilisation du disque',
         'network_traffic' => 'Trafic réseau',
         'uptime' => 'Temps de disponibilité',
-        'goroutines' => 'Les goroutines :count',
         'last_updated' => 'Dernière mise à jour',
         'no_node' => 'Aucun nœud sélectionné',
         'no_node_desc' => 'Veuillez sélectionner un nœud pour afficher les données de surveillance',
