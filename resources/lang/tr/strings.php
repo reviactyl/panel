@@ -96,7 +96,6 @@ return [
     'file-name' => 'Dosya adı',
     'file-name-description' => 'Bu dosyanın kaydedileceği adı girin.',
     'copyright' => '&copy; :year Reviactyl™ Yazılım',
-    'local_network' => 'Yerel Ağ',
     'server-status' => 'Sunucu Durumu',
     'loading-server-status' => 'Sunucu durumu yükleniyor...',
     'no-description' => 'Açıklama sağlanmadı.',
