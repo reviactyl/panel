@@ -96,7 +96,6 @@ return [
     'file-name' => 'Filnamn',
     'file-name-description' => 'Ange namnet som filen ska sparas som.',
     'copyright' => '&copy; :year Revacity™ Programvara',
-    'local_network' => 'Lokalt nätverk',
     'server-status' => 'Serverstatus',
     'loading-server-status' => 'Laddar serverstatus...',
     'no-description' => 'Ingen beskrivning tillhandahålls.',
