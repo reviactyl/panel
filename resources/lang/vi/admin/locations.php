@@ -13,13 +13,11 @@ return [
     'fields' => [
         'short' => [
             'label' => 'Mã ngắn',
-            'placeholder' => 'chúng tôi.nyc.1',
             'helper' => 'Mã định danh ngắn cho vị trí này.',
         ],
 
         'long' => [
             'label' => 'Sự miêu tả',
-            'placeholder' => 'Thành phố New York, NY, Hoa Kỳ',
             'helper' => 'Mô tả dài hơn về vị trí này.',
         ],
     ],
