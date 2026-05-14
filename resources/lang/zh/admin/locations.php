@@ -13,13 +13,11 @@ return [
     'fields' => [
         'short' => [
             'label' => '标识码',
-            'placeholder' => 'us.nyc.1',
             'helper' => '此位置的简短标识符。',
         ],
 
         'long' => [
             'label' => '描述',
-            'placeholder' => '美国 纽约市',
             'helper' => '此位置的详细描述。',
         ],
     ],
