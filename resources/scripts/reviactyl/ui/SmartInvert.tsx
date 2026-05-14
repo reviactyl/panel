@@ -55,9 +55,9 @@ export const InvertToggle = () => {
         <div className='flex justify-between items-center mb-2'>
             <p className='flex-1'>{t('overview.smart-invert')}</p>
             <div className='flex gap-x-2 items-center'>
-                <span className='text-sm text-gray-300'>{t('overview.on')}</span>
-                <Switch key={enabled ? 'on' : 'off'} name='smart_invert' defaultChecked={enabled} onChange={toggle} />
                 <span className='text-sm text-gray-300'>{t('overview.off')}</span>
+                <Switch key={enabled ? 'on' : 'off'} name='smart_invert' defaultChecked={enabled} onChange={toggle} />
+                <span className='text-sm text-gray-300'>{t('overview.on')}</span>
             </div>
         </div>
     );
