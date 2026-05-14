@@ -27,7 +27,15 @@ export const Invert = ({ children }: InvertProps) => {
         <div className='relative'>
             {children}
             {enabled && (
-                <div className='pointer-events-none fixed inset-0 z-[9999] mix-blend-difference bg-white'></div>
+                <>
+                    <div className='pointer-events-none fixed inset-0 z-[9999] mix-blend-difference bg-white'></div>
+                    <style>{`
+                        img, video, canvas, svg image, [style*="background-image"] {
+                            filter: invert(1);
+                            mix-blend-mode: difference;
+                        }
+                    `}</style>
+                </>
             )}
         </div>
     );
