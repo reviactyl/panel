@@ -104,7 +104,6 @@ return [
         ],
         'daemon_base' => [
             'label' => 'ಮೂಲ ಡೈರೆಕ್ಟರಿ',
-            'placeholder' => '/home/demon-files',
             'helper' => 'ಸರ್ವರ್ ಫೈಲ್‌ಗಳನ್ನು ಸಂಗ್ರಹಿಸಲಾಗಿರುವ ಡೈರೆಕ್ಟರಿ.',
         ],
         'daemon_listen' => [
