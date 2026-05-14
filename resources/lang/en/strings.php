@@ -96,7 +96,6 @@ return [
     'file-name' => 'File Name',
     'file-name-description' => 'Enter the name that this file should be saved as.',
     'copyright' => '&copy; :year Reviactyl™ Software',
-    'local_network' => 'Local Network',
     'server-status' => 'Server Status',
     'loading-server-status' => 'Loading server status...',
     'no-description' => 'No description provided.',
