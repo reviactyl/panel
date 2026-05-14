@@ -6,7 +6,7 @@ return [
     'server-installing' => 'Server ini sedang menjalankan proses instalasi dan sebagian besar tindakan tidak tersedia.',
     'server-transferring' => 'Server ini sedang ditransfer ke node lain dan semua tindakan tidak tersedia.',
     'run-command' => 'Ketik perintah...',
-    'connection-trouble' => "Kami mengalami masalah saat terhubung ke server Anda, harap tunggu...",
+    'connection-trouble' => 'Kami mengalami masalah saat terhubung ke server Anda, harap tunggu...',
     'uptime' => 'Waktu aktif',
     'network-inbound' => 'Jaringan (Masuk)',
     'network-outbound' => 'Jaringan (Keluar)',
