@@ -24,8 +24,6 @@ return [
 
     'placeholders' => [
         'name' => 'Üretim MySQL\'i',
-        'host' => '127.0.0.1',
-        'username' => 'reviaktil',
     ],
 
     'helpers' => [
