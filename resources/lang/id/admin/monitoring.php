@@ -27,7 +27,6 @@ return [
         'disk_usage' => 'Penggunaan Disk',
         'network_traffic' => 'Lalu Lintas Jaringan',
         'uptime' => 'Waktu aktif',
-        'goroutines' => 'goroutine :count',
         'last_updated' => 'Terakhir Diperbarui',
         'no_node' => 'Tidak Ada Node yang Dipilih',
         'no_node_desc' => 'Silakan pilih node untuk melihat data pemantauan',
