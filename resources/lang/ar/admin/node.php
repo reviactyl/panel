@@ -104,7 +104,6 @@ return [
         ],
         'daemon_base' => [
             'label' => 'المجلد الأساسي',
-            'placeholder' => '/home/daemon-files',
             'helper' => 'المجلد الذي يتم فيه تخزين ملفات الخوادم.',
         ],
         'daemon_listen' => [
