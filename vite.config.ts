@@ -34,6 +34,12 @@ export default defineConfig({
 
     plugins,
 
+    server: {
+        watch: {
+            ignored: ['**/vendor/**'],
+        },
+    },
+    
     resolve: {
         alias: {
             '@': resolve(dirname(fileURLToPath(import.meta.url)), 'resources', 'scripts'),
