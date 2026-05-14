@@ -104,7 +104,6 @@ return [
         ],
         'daemon_base' => [
             'label' => 'Bas-katalog',
-            'placeholder' => '/home/daemon-filer',
             'helper' => 'Katalog där serverfiler lagras.',
         ],
         'daemon_listen' => [

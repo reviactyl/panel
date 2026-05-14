@@ -104,7 +104,6 @@ return [
         ],
         'daemon_base' => [
             'label' => 'Temel Dizin',
-            'placeholder' => '/home/daemon-dosyaları',
             'helper' => 'Sunucu dosyalarının depolandığı dizin.',
         ],
         'daemon_listen' => [
