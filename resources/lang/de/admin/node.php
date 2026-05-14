@@ -104,7 +104,6 @@ return [
         ],
         'daemon_base' => [
             'label' => 'Basisverzeichnis',
-            'placeholder' => '/home/daemon-files',
             'helper' => 'Verzeichnis, in dem die Serverdateien gespeichert werden.',
         ],
         'daemon_listen' => [
