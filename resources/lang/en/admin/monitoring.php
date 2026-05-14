@@ -27,7 +27,6 @@ return [
         'disk_usage' => 'Disk Usage',
         'network_traffic' => 'Network Traffic',
         'uptime' => 'Uptime',
-        'goroutines' => ':count goroutines',
         'last_updated' => 'Last Updated',
         'no_node' => 'No Node Selected',
         'no_node_desc' => 'Please select a node to view monitoring data',

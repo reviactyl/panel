@@ -330,7 +330,7 @@ class EditNodeForm
                                             ->required()
                                             ->maxLength(255)
                                             ->default('/var/lib/reviactyl/volumes')
-                                            ->placeholder(trans('admin/node.fields.daemon_base.placeholder'))
+                                            ->placeholder('/var/lib/reviactyl/volumes')
                                             ->helperText(trans('admin/node.fields.daemon_base.helper')),
 
                                         TextInput::make('daemonListen')

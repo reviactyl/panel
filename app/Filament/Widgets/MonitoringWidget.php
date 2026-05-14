@@ -108,7 +108,7 @@ class MonitoringWidget extends BaseWidget
                 ->icon('heroicon-o-signal'),
 
             Stat::make(trans('admin/monitoring.stats.uptime'), $this->formatUptime($data['runtime']['uptime_seconds']))
-                ->description(trans('admin/monitoring.stats.goroutines', ['count' => $data['runtime']['goroutines']]).' | '.$data['runtime']['go_version'])
+                ->description($data['runtime']['goroutines'].' goroutines | '.$data['runtime']['go_version'])
                 ->descriptionIcon('heroicon-o-clock')
                 ->color('success')
                 ->icon('heroicon-o-clock'),
