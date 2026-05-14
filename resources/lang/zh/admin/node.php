@@ -104,7 +104,6 @@ return [
         ],
         'daemon_base' => [
             'label' => '基础目录',
-            'placeholder' => '/home/守护程序文件',
             'helper' => '服务器文件存储的目录。',
         ],
         'daemon_listen' => [
