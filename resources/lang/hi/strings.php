@@ -96,7 +96,6 @@ return [
     'file-name' => 'फ़ाइल का नाम',
     'file-name-description' => 'वह नाम दर्ज करें जिसके रूप में इस फ़ाइल को सहेजा जाना चाहिए।',
     'copyright' => '&copy; :year Reviactyl™ Software',
-    'local_network' => 'स्थानीय नेटवर्क',
     'server-status' => 'सर्वर की स्थिति',
     'loading-server-status' => 'सर्वर स्थिति लोड हो रही है...',
     'no-description' => 'कोई विवरण नहीं दिया गया.',
