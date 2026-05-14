@@ -104,7 +104,6 @@ return [
         ],
         'daemon_base' => [
             'label' => 'Thư mục cơ sở',
-            'placeholder' => '/home/tập tin daemon',
             'helper' => 'Thư mục nơi lưu trữ các tập tin máy chủ.',
         ],
         'daemon_listen' => [
