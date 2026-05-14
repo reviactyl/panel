@@ -104,7 +104,6 @@ return [
         ],
         'daemon_base' => [
             'label' => 'Direktori Dasar',
-            'placeholder' => '/home/daemon-files',
             'helper' => 'Direktori tempat file server disimpan.',
         ],
         'daemon_listen' => [
