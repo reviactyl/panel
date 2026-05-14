@@ -74,7 +74,7 @@ return [
 
     'cardType' => 'grid',
 
-    'layoutType' => 'classic',
+    'layoutType' => 'modern',
 
     'avatarType' => 'gravatar',
 

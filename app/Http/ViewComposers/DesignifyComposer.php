@@ -207,7 +207,7 @@ class DesignifyComposer
             'billingCardLink' => config('designify.billingCardLink') ?? '',
             'alwaysShowKillButton' => config('designify.alwaysShowKillButton', false),
             'cardType' => config('designify.cardType') ?? 'grid',
-            'layoutType' => config('designify.layoutType') ?? 'classic',
+            'layoutType' => config('designify.layoutType') ?? 'modern',
             'avatarType' => config('designify.avatarType') ?? 'gravatar',
         ];
     }
