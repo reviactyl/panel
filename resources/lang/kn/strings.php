@@ -96,7 +96,6 @@ return [
     'file-name' => 'ಫೈಲ್ ಹೆಸರು',
     'file-name-description' => 'ಈ ಫೈಲ್ ಅನ್ನು ಉಳಿಸಬೇಕಾದ ಹೆಸರನ್ನು ನಮೂದಿಸಿ.',
     'copyright' => '&copy; :year Reviactyl™ Software',
-    'local_network' => 'ಸ್ಥಳೀಯ ನೆಟ್ವರ್ಕ್',
     'server-status' => 'ಸರ್ವರ್ ಸ್ಥಿತಿ',
     'loading-server-status' => 'ಸರ್ವರ್ ಸ್ಥಿತಿಯನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ...',
     'no-description' => 'ಯಾವುದೇ ವಿವರಣೆಯನ್ನು ಒದಗಿಸಲಾಗಿಲ್ಲ.',
