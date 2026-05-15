@@ -36,7 +36,7 @@ export default defineConfig({
 
     server: {
         watch: {
-            ignored: ['**/vendor/**'],
+            ignored: ['**/vendor/**', '**/storage/**', '**/bootstrap/**', '**/resources/views/**', '**/database/**'],
         },
     },
     
