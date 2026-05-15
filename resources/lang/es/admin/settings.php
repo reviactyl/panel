@@ -31,6 +31,8 @@ return [
         'recaptcha-secret-key' => 'Clave secreta reCAPTCHA',
         'turnstile-site-key' => 'Clave del sitio del torniquete',
         'turnstile-secret-key' => 'Llave secreta del torniquete',
+        'registration-title' => 'Registration',
+        'registration-enabled' => 'Allow New Registrations',
     ],
     'mail' => [
         'title' => 'Correo',
