@@ -31,6 +31,8 @@ return [
         'recaptcha-secret-key' => 'reCAPTCHA Gizli Anahtarı',
         'turnstile-site-key' => 'Turnike Sitesi Anahtarı',
         'turnstile-secret-key' => 'Turnike Gizli Anahtarı',
+        'registration-title' => 'Registration',
+        'registration-enabled' => 'Allow New Registrations',
     ],
     'mail' => [
         'title' => 'Posta',
