@@ -28,6 +28,7 @@ class SettingsServiceProvider extends ServiceProvider
         'panel:console:count',
         'panel:console:frequency',
         'panel:auth:2fa_required',
+        'panel:auth:registration_enabled',
         'panel:client_features:allocations:enabled',
         'panel:client_features:allocations:range_start',
         'panel:client_features:allocations:range_end',

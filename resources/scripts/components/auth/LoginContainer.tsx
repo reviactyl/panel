@@ -29,6 +29,7 @@ function LoginContainer() {
 
     const { clearFlashes, clearAndAddHttpError, addFlash } = useFlash();
     const { provider, recaptcha, turnstile } = useStoreState((state) => state.settings.data!.captcha);
+    const registrationEnabled = useStoreState((state) => state.settings.data?.registrationEnabled ?? true);
 
     const socialSettings = window.SocialLoginConfiguration || { google: false, discord: false, github: false };
 
@@ -208,12 +209,14 @@ function LoginContainer() {
                         >
                             {t('forgot-password.label')}
                         </Link>
-                        <Link
-                            to={'/auth/register'}
-                            css={tw`text-xs text-gray-400 tracking-wide no-underline hover:text-gray-300`}
-                        >
-                            Don&apos;t have an account? Create one
-                        </Link>
+                        {registrationEnabled && (
+                            <Link
+                                to={'/auth/register'}
+                                css={tw`text-xs text-gray-400 tracking-wide no-underline hover:text-gray-300`}
+                            >
+                                Don&apos;t have an account? Create one
+                            </Link>
+                        )}
                         {window.PanelConfiguration?.billingCardLink && (
                             <a
                                 href={window.PanelConfiguration.billingCardLink}

@@ -31,6 +31,8 @@ return [
         'recaptcha-secret-key' => 'reCAPTCHA Secret Key',
         'turnstile-site-key' => 'Turnstile Site Key',
         'turnstile-secret-key' => 'Turnstile Secret Key',
+        'registration-title' => 'Registration',
+        'registration-enabled' => 'Allow New Registrations',
     ],
     'mail' => [
         'title' => 'Mail',
