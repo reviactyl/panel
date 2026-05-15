@@ -31,6 +31,8 @@ return [
         'recaptcha-secret-key' => 'Kunci Rahasia reCAPTCHA',
         'turnstile-site-key' => 'Kunci Situs Pintu Putar',
         'turnstile-secret-key' => 'Kunci Rahasia Pintu Putar',
+        'registration-title' => 'Registration',
+        'registration-enabled' => 'Allow New Registrations',
     ],
     'mail' => [
         'title' => 'Surat',
