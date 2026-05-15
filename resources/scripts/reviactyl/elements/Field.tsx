@@ -13,7 +13,7 @@ interface OwnProps {
     validate?: (value: any) => undefined | string | Promise<any>;
 }
 const IconWrapper = styled.div`
-    ${tw`bg-gray-700 border-2 !border-r-0 rounded-l-ui p-3`}
+    ${tw`bg-gray-800 border !border-r-0 rounded-l-ui p-3`}
 `;
 
 type Props = OwnProps & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'name'>;
