@@ -131,10 +131,10 @@ function LoginContainer() {
                             />
                             <button
                                 type={'button'}
-                                css={tw`absolute border-l-2 top-[10px] right-[6px] py-2 p-1 border-gray-300 text-gray-300`}
+                                css={tw`absolute top-[10px] right-[6px] py-2 p-1 text-gray-500`}
                                 onClick={() => setShow(!show)}
                             >
-                                {show ? <EyeOffIcon className='h-5 w-5' /> : <EyeIcon className='h-5 w-5' />}
+                                {show ? <EyeIcon className='h-5 w-5' /> : <EyeOffIcon className='h-5 w-5' />}
                             </button>
                         </div>
                     </div>
