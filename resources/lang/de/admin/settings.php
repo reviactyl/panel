@@ -31,6 +31,8 @@ return [
         'recaptcha-secret-key' => 'reCAPTCHA-Geheimschlüssel',
         'turnstile-site-key' => 'Drehkreuz-Standortschlüssel',
         'turnstile-secret-key' => 'Geheimer Drehkreuzschlüssel',
+        'registration-title' => 'Registration',
+        'registration-enabled' => 'Allow New Registrations',
     ],
     'mail' => [
         'title' => 'Post',
