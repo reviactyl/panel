@@ -96,7 +96,6 @@ return [
     'file-name' => 'Nombre del archivo',
     'file-name-description' => 'Ingrese el nombre con el que se debe guardar este archivo.',
     'copyright' => '&copy; :year Reviactyl™ Software',
-    'local_network' => 'Red local',
     'server-status' => 'Estado del servidor',
     'loading-server-status' => 'Cargando estado del servidor...',
     'no-description' => 'No se proporciona descripción.',

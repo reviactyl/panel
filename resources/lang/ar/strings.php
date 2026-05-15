@@ -96,7 +96,6 @@ return [
     'file-name' => 'اسم الملف',
     'file-name-description' => 'أدخل الاسم الذي يجب حفظ هذا الملف به.',
     'copyright' => '&copy; :year Reviactyl™ Software',
-    'local_network' => 'الشبكة المحلية',
     'server-status' => 'حالة الخادم',
     'loading-server-status' => 'جارٍ تحميل حالة الخادم...',
     'no-description' => 'لم يتم تقديم أي وصف.',

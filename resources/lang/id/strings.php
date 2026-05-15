@@ -96,7 +96,6 @@ return [
     'file-name' => 'Nama File',
     'file-name-description' => 'Masukkan nama untuk menyimpan file ini.',
     'copyright' => '&copy; :year Reviactyl™ Software',
-    'local_network' => 'Jaringan Lokal',
     'server-status' => 'Status Server',
     'loading-server-status' => 'Memuat status server...',
     'no-description' => 'Tidak ada deskripsi yang diberikan.',

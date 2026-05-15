@@ -96,7 +96,6 @@ return [
     'file-name' => 'Tên tệp',
     'file-name-description' => 'Nhập tên mà tập tin này sẽ được lưu dưới dạng.',
     'copyright' => '&copy; :year Reviactyl™ Software',
-    'local_network' => 'Mạng cục bộ',
     'server-status' => 'Trạng thái máy chủ',
     'loading-server-status' => 'Đang tải trạng thái máy chủ...',
     'no-description' => 'Không có mô tả được cung cấp.',

@@ -96,7 +96,6 @@ return [
     'file-name' => 'Nom de fichier',
     'file-name-description' => 'Entrez le nom sous lequel ce fichier doit être enregistré.',
     'copyright' => '&copy; :year Reviactyl™ Software',
-    'local_network' => 'Réseau local',
     'server-status' => 'Statut du serveur',
     'loading-server-status' => 'Chargement de l\'état du serveur...',
     'no-description' => 'Aucune description fournie.',
