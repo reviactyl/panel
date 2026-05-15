@@ -31,6 +31,8 @@ return [
         'recaptcha-secret-key' => 'reCAPTCHA 密钥',
         'turnstile-site-key' => '旋转栅门站点密钥',
         'turnstile-secret-key' => '旋转栅门秘密钥匙',
+        'registration-title' => 'Registration',
+        'registration-enabled' => 'Allow New Registrations',
     ],
     'mail' => [
         'title' => '邮件',
