@@ -1,8 +1,8 @@
 import { Fragment, useEffect, useMemo, useState } from 'react';
-import Modal, { RequiredModalProps } from '@/components/elements/Modal';
+import Modal, { RequiredModalProps } from '@/reviactyl/elements/Modal';
 import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
-import Input from '@/components/elements/Input';
+import Button from '@/reviactyl/elements/Button';
+import Input from '@/reviactyl/elements/Input';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { FaArrowLeft, FaFile, FaFolder, FaFolderPlus, FaSpinner } from 'react-icons/fa';
 import { join, relative } from 'pathe';
@@ -271,7 +271,7 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
                             id={'new_move_folder_name'}
                             type={'text'}
                             value={newFolderName}
-                            onChange={(e) => setNewFolderName(e.currentTarget.value)}
+                                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewFolderName(e.currentTarget.value)}
                             placeholder={'Folder name'}
                             disabled={isCreatingFolder || isSubmitting}
                         />
