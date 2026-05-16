@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b4a095afb93703a542eeee27e068c577",
+    "content-hash": "66913cfd17073f46a8f90123533bc29d",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -2366,35 +2366,16 @@
         },
         {
             "name": "laragear/meta-model",
+            "description": "Let other developers customize your package model and migrations",
+            "keywords": [
+                "database",
+                "model",
+                "laravel",
+                "eloquent"
+            ],
+            "homepage": "",
             "version": "v3.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Laragear/MetaModel.git",
-                "reference": "5f6f15e390c934cb10068117555242c2d29e9caa"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Laragear/MetaModel/zipball/5f6f15e390c934cb10068117555242c2d29e9caa",
-                "reference": "5f6f15e390c934cb10068117555242c2d29e9caa",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/container": "12.*|13.*",
-                "illuminate/contracts": "12.*|13.*",
-                "illuminate/database": "12.*|13.*",
-                "php": "^8.3"
-            },
-            "require-dev": {
-                "mockery/mockery": "^1.6",
-                "phpunit/phpunit": "12.*|13.*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Laragear\\MetaModel\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
+            "version_normalized": "3.0.0.0",
             "license": [
                 "MIT"
             ],
@@ -2406,13 +2387,18 @@
                     "role": "Developer"
                 }
             ],
-            "description": "Let other developers customize your package model and migrations",
-            "keywords": [
-                "database",
-                "eloquent",
-                "laravel",
-                "model"
-            ],
+            "source": {
+                "url": "https://github.com/Laragear/MetaModel.git",
+                "type": "git",
+                "reference": "5f6f15e390c934cb10068117555242c2d29e9caa"
+            },
+            "dist": {
+                "url": "https://api.github.com/repos/Laragear/MetaModel/zipball/5f6f15e390c934cb10068117555242c2d29e9caa",
+                "type": "zip",
+                "shasum": "",
+                "reference": "5f6f15e390c934cb10068117555242c2d29e9caa"
+            },
+            "type": "library",
             "support": {
                 "issues": "https://github.com/Laragear/MetaModel/issues",
                 "source": "https://github.com/Laragear/MetaModel"
@@ -2427,56 +2413,38 @@
                     "type": "Paypal"
                 }
             ],
-            "time": "2026-03-04T16:50:11+00:00"
-        },
-        {
-            "name": "laragear/webauthn",
-            "version": "v5.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Laragear/WebAuthn.git",
-                "reference": "719ba978a18c95118e1ac5bba810522d0768ebb8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Laragear/WebAuthn/zipball/719ba978a18c95118e1ac5bba810522d0768ebb8",
-                "reference": "719ba978a18c95118e1ac5bba810522d0768ebb8",
-                "shasum": ""
+            "time": "2026-03-04T16:50:11+00:00",
+            "autoload": {
+                "psr-4": {
+                    "Laragear\\MetaModel\\": "src"
+                }
             },
             "require": {
-                "ext-json": "*",
-                "ext-openssl": "*",
-                "illuminate/auth": "12.*|13.*",
-                "illuminate/config": "12.*|13.*",
+                "illuminate/contracts": "12.*|13.*",
+                "illuminate/container": "12.*|13.*",
                 "illuminate/database": "12.*|13.*",
-                "illuminate/encryption": "12.*|13.*",
-                "illuminate/http": "12.*|13.*",
-                "illuminate/session": "12.*|13.*",
-                "illuminate/support": "12.*|13.*",
-                "laragear/meta-model": "3.*",
                 "php": "^8.3"
             },
             "require-dev": {
-                "ext-sodium": "*",
-                "orchestra/testbench": "10.*|11.*"
-            },
-            "suggest": {
-                "paragonie/sodium_compat": "To enable EdDSA 25519 keys from authenticators, if `ext-sodium` is unavailable."
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Laragear\\WebAuthn\\WebAuthnServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Laragear\\WebAuthn\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
+                "phpunit/phpunit": "12.*|13.*",
+                "mockery/mockery": "^1.6"
+            }
+        },
+        {
+            "name": "laragear/webauthn",
+            "description": "Authenticate users with Passkeys: fingerprints, patterns and biometric data.",
+            "keywords": [
+                "Authentication",
+                "laravel",
+                "webauthn",
+                "faceid",
+                "touchid",
+                "windows hello",
+                "passkeys"
+            ],
+            "homepage": "https://github.com/laragear/webauthn",
+            "version": "v5.0.2",
+            "version_normalized": "5.0.2.0",
             "license": [
                 "MIT"
             ],
@@ -2492,17 +2460,18 @@
                     "role": "Developer"
                 }
             ],
-            "description": "Authenticate users with Passkeys: fingerprints, patterns and biometric data.",
-            "homepage": "https://github.com/laragear/webauthn",
-            "keywords": [
-                "Authentication",
-                "faceid",
-                "laravel",
-                "passkeys",
-                "touchid",
-                "webauthn",
-                "windows hello"
-            ],
+            "source": {
+                "url": "https://github.com/Laragear/WebAuthn.git",
+                "type": "git",
+                "reference": "719ba978a18c95118e1ac5bba810522d0768ebb8"
+            },
+            "dist": {
+                "url": "https://api.github.com/repos/Laragear/WebAuthn/zipball/719ba978a18c95118e1ac5bba810522d0768ebb8",
+                "type": "zip",
+                "shasum": "",
+                "reference": "719ba978a18c95118e1ac5bba810522d0768ebb8"
+            },
+            "type": "library",
             "support": {
                 "issues": "https://github.com/Laragear/WebAuthn/issues",
                 "source": "https://github.com/Laragear/WebAuthn"
@@ -2517,8 +2486,40 @@
                     "type": "Paypal"
                 }
             ],
-            "abandoned": "laravel/passkeys",
-            "time": "2026-05-08T18:25:42+00:00"
+            "time": "2026-05-08T18:25:42+00:00",
+            "autoload": {
+                "psr-4": {
+                    "Laragear\\WebAuthn\\": "src"
+                }
+            },
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Laragear\\WebAuthn\\WebAuthnServiceProvider"
+                    ]
+                }
+            },
+            "require": {
+                "php": "^8.3",
+                "ext-json": "*",
+                "ext-openssl": "*",
+                "illuminate/auth": "12.*|13.*",
+                "illuminate/config": "12.*|13.*",
+                "illuminate/database": "12.*|13.*",
+                "illuminate/encryption": "12.*|13.*",
+                "illuminate/http": "12.*|13.*",
+                "illuminate/session": "12.*|13.*",
+                "illuminate/support": "12.*|13.*",
+                "laragear/meta-model": "3.*"
+            },
+            "require-dev": {
+                "ext-sodium": "*",
+                "orchestra/testbench": "10.*|11.*"
+            },
+            "suggest": {
+                "paragonie/sodium_compat": "To enable EdDSA 25519 keys from authenticators, if `ext-sodium` is unavailable."
+            },
+            "abandoned": "laravel/passkeys"
         },
         {
             "name": "laravel/framework",

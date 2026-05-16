@@ -27,8 +27,6 @@ return [
         'title' => 'Keamanan',
         'provider' => 'Penyedia Captcha',
         'disabled' => 'Dengan disabilitas',
-        'passkey-require-username' => 'Require Username for Passkey Login',
-        'passkey-require-username-hint' => 'When enabled, users must enter username/email before using passkey login. When disabled, discoverable (username-less) passkeys are allowed.',
         'recaptcha-site-key' => 'Kunci Situs reCAPTCHA',
         'recaptcha-secret-key' => 'Kunci Rahasia reCAPTCHA',
         'turnstile-site-key' => 'Kunci Situs Pintu Putar',
@@ -54,8 +52,6 @@ return [
     'oauth' => [
         'enabled' => 'Diaktifkan',
         'disabled' => 'Dengan disabilitas',
-        'passkey-require-username' => 'Require Username for Passkey Login',
-        'passkey-require-username-hint' => 'When enabled, users must enter username/email before using passkey login. When disabled, discoverable (username-less) passkeys are allowed.',
         'id-label' => 'ID Klien',
         'secret-label' => 'Rahasia Klien',
     ],

@@ -27,8 +27,6 @@ return [
         'title' => 'सुरक्षा',
         'provider' => 'कैप्चा प्रदाता',
         'disabled' => 'अक्षम',
-        'passkey-require-username' => 'Require Username for Passkey Login',
-        'passkey-require-username-hint' => 'When enabled, users must enter username/email before using passkey login. When disabled, discoverable (username-less) passkeys are allowed.',
         'recaptcha-site-key' => 'रीकैप्चा साइट कुंजी',
         'recaptcha-secret-key' => 'रीकैप्चा गुप्त कुंजी',
         'turnstile-site-key' => 'टर्नस्टाइल साइट कुंजी',
@@ -54,8 +52,6 @@ return [
     'oauth' => [
         'enabled' => 'सक्रिय',
         'disabled' => 'अक्षम',
-        'passkey-require-username' => 'Require Username for Passkey Login',
-        'passkey-require-username-hint' => 'When enabled, users must enter username/email before using passkey login. When disabled, discoverable (username-less) passkeys are allowed.',
         'id-label' => 'ग्राहक आईडी',
         'secret-label' => 'ग्राहक रहस्य',
     ],

@@ -27,8 +27,6 @@ return [
         'title' => '安全',
         'provider' => '验证提供方',
         'disabled' => '残疾人',
-        'passkey-require-username' => 'Require Username for Passkey Login',
-        'passkey-require-username-hint' => 'When enabled, users must enter username/email before using passkey login. When disabled, discoverable (username-less) passkeys are allowed.',
         'recaptcha-site-key' => 'reCAPTCHA 站点密钥',
         'recaptcha-secret-key' => 'reCAPTCHA 密钥',
         'turnstile-site-key' => '旋转栅门站点密钥',

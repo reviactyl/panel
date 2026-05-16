@@ -27,8 +27,6 @@ return [
         'title' => 'Segurança',
         'provider' => 'Provedor de Captcha',
         'disabled' => 'Desabilitado',
-        'passkey-require-username' => 'Require Username for Passkey Login',
-        'passkey-require-username-hint' => 'When enabled, users must enter username/email before using passkey login. When disabled, discoverable (username-less) passkeys are allowed.',
         'recaptcha-site-key' => 'Chave do site reCAPTCHA',
         'recaptcha-secret-key' => 'Chave secreta reCAPTCHA',
         'turnstile-site-key' => 'Chave do site da catraca',

@@ -27,8 +27,6 @@ return [
         'title' => 'Säkerhet',
         'provider' => 'Captcha-leverantör',
         'disabled' => 'Inaktiverad',
-        'passkey-require-username' => 'Require Username for Passkey Login',
-        'passkey-require-username-hint' => 'When enabled, users must enter username/email before using passkey login. When disabled, discoverable (username-less) passkeys are allowed.',
         'recaptcha-site-key' => 'reCAPTCHA webbplatsnyckel',
         'recaptcha-secret-key' => 'hemlig nyckel för reCAPTCHA',
         'turnstile-site-key' => 'Vändkors platsnyckel',
