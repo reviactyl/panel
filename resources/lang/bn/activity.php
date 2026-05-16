@@ -14,7 +14,7 @@ return [
         'using-sftp' => 'Using SFTP',
     ],
     'auth' => [
-        'fail' => 'Failed log in',
+        'fail' => 'লগইন ব্যর্থ হয়েছে।',
         'success' => 'Logged in',
         'password-reset' => 'Password reset',
         'reset-password' => 'Requested password reset',
