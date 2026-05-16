@@ -1,0 +1,26 @@
+<?php
+
+return [
+    'control' => 'Control',
+    'management' => 'Management',
+    'administration' => 'Administration',
+    'start' => 'Start',
+    'stop' => 'Stop',
+    'restart' => 'Restart',
+    'kill' => 'Kill',
+    'kill-warning' => 'Forcibly stopping a server can lead to data corruption.',
+    'hide-stats' => 'Hide Stats',
+    'show-stats' => 'Show Stats',
+    'force-stop-title' => 'Forcibly Stop Process',
+    'force-stop-confirm' => 'Continue',
+    'installer-running-title' => 'Running Installer',
+    'installer-running-message' => 'Your server should be ready soon, please try again in a few minutes.',
+    'server-suspended-title' => 'Server Suspended',
+    'server-suspended-message' => 'This server is suspended and cannot be accessed.',
+    'node-maintenance-title' => 'Node under Maintenance',
+    'node-maintenance-message' => 'The node of this server is currently under maintenance.',
+    'server-transferring-title' => 'Transferring',
+    'server-transferring-message' => 'Your server is being transferred to a new node, please check back later.',
+    'server-restoring-title' => 'Restoring from Backup',
+    'server-restoring-message' => 'Your server is currently being restored from a backup, please check back in a few minutes.',
+];
