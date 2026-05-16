@@ -271,9 +271,9 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
                             id={'new_move_folder_name'}
                             type={'text'}
                             value={newFolderName}
-                                                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                                    setNewFolderName(e.currentTarget.value)
-                                                }
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                setNewFolderName(e.currentTarget.value)
+                            }
                             placeholder={'Folder name'}
                             disabled={isCreatingFolder || isSubmitting}
                         />
