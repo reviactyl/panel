@@ -10,10 +10,17 @@ use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Laragear\WebAuthn\Http\Requests\AssertionRequest;
 
 class PasskeyLoginController extends AbstractLoginController
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->auth = Auth::guard();
+    }
+
     /**
      * Return a WebAuthn assertion challenge for passkey login.
      */
@@ -79,12 +86,12 @@ class PasskeyLoginController extends AbstractLoginController
             'type' => 'required|string|in:public-key',
         ]);
 
-        if (! $this->auth->guard()->attempt($credentials, true)) {
+        if (! $this->auth->attempt($credentials, true)) {
             $this->sendFailedLoginResponse($request);
         }
 
         /** @var User $user */
-        $user = $this->auth->guard()->user();
+        $user = $this->auth->user();
 
         if (! $user) {
             $this->sendFailedLoginResponse($request);

@@ -1,12 +1,12 @@
-import { FormEvent, useEffect, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import useSWR from 'swr';
 import tw from 'twin.macro';
-import Label from '@/components/elements/Label';
-import Input from '@/components/elements/Input';
-import Spinner from '@/components/elements/Spinner';
-import Code from '@/components/elements/Code';
-import { Dialog } from '@/components/elements/dialog';
-import { Button } from '@/components/elements/button';
+import Label from '@/reviactyl/elements/Label';
+import Input from '@/reviactyl/elements/Input';
+import Spinner from '@/reviactyl/elements/Spinner';
+import Code from '@/reviactyl/elements/Code';
+import { Dialog } from '@/reviactyl/elements/dialog';
+import { Button } from '@/reviactyl/elements/button';
 import { useFlashKey } from '@/plugins/useFlash';
 import { useTranslation } from 'react-i18next';
 import { deleteAccountPasskey, getAccountPasskeys, registerAccountPasskey } from '@/api/account/passkeys';
@@ -131,7 +131,7 @@ export default () => {
                             value={name}
                             maxLength={191}
                             disabled={isRegistering || deletingId !== null}
-                            onChange={(event) => setName(event.currentTarget.value)}
+                            onChange={(event: ChangeEvent<HTMLInputElement>) => setName(event.currentTarget.value)}
                             placeholder={t('passkeys.name-placeholder')}
                         />
                     </div>
@@ -142,7 +142,7 @@ export default () => {
                             value={password}
                             required
                             disabled={isRegistering || deletingId !== null}
-                            onChange={(event) => setPassword(event.currentTarget.value)}
+                            onChange={(event: ChangeEvent<HTMLInputElement>) => setPassword(event.currentTarget.value)}
                         />
                     </div>
                 </div>

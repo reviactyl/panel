@@ -1,5 +1,5 @@
 import ContentBlock from '@/reviactyl/ui/ContentBlock';
-import TitledGreyBox from '@/components/elements/TitledGreyBox';
+import TitledGreyBox from '@/reviactyl/elements/TitledGreyBox';
 import PasskeysForm from '@/components/dashboard/forms/PasskeysForm';
 import { useTranslation } from 'react-i18next';
 
