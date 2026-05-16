@@ -1,15 +1,15 @@
 <?php
 
 return [
-    'home' => 'Home',
+    'home' => 'Rumah',
     'administration' => [
         'title' => 'Administrasi',
-        'dashboard' => 'Dashboard',
+        'dashboard' => 'Dasbor',
         'settings' => 'Pengaturan',
         'api' => 'API Aplikasi',
-        'activity_log' => 'Activity Log',
-        'user_activity_metrics' => 'User Activity Metrics',
-        'no_data' => 'No data available.',
+        'activity_log' => 'Catatan Aktivitas',
+        'user_activity_metrics' => 'Metrik Aktivitas Pengguna',
+        'no_data' => 'Tidak ada data yang tersedia.',
     ],
     'management' => [
         'title' => 'Manajemen',
@@ -21,7 +21,7 @@ return [
     ],
     'service' => [
         'title' => 'Manajemen Layanan',
-        'extensions' => 'Extensions',
+        'extensions' => 'Ekstensi',
         'mounts' => 'Mount',
         'nests' => 'Nest',
     ],

@@ -1,19 +1,19 @@
 import axios, { AxiosProgressEvent } from 'axios';
 import getFileUploadUrl from '@/api/server/files/getFileUploadUrl';
 import tw from 'twin.macro';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/reviactyl/elements/button/index';
 import { useEffect, useRef, useState } from 'react';
-import { ModalMask } from '@/components/elements/Modal';
-import Fade from '@/components/elements/Fade';
+import { ModalMask } from '@/reviactyl/elements/Modal';
+import Fade from '@/reviactyl/elements/Fade';
 import useEventListener from '@/plugins/useEventListener';
 import { useFlashKey } from '@/plugins/useFlash';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import { ServerContext } from '@/state/server';
 import { WithClassname } from '@/components/types';
-import Portal from '@/components/elements/Portal';
+import Portal from '@/reviactyl/elements/Portal';
 import Card from '@/reviactyl/ui/Card';
-import { UploadIcon } from '@heroicons/react/solid';
-import Tooltip from '@/components/elements/tooltip/Tooltip';
+import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
+import { FaUpload } from 'react-icons/fa6';
 
 function isFileOrDirectory(event: DragEvent): boolean {
     if (!event.dataTransfer?.types) {
@@ -152,15 +152,15 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
                             visibleRef.current = false;
                             setVisible(false);
                         }}
-                        className='bg-gray-800/40 backdrop-blur-sm transition-all duration-300 ease-in-out'
+                        className='bg-gray-900/40 backdrop-blur-sm transition-all duration-300 ease-in-out'
                     >
                         <div className={'w-full flex items-center justify-center pointer-events-none'}>
                             <Card
                                 className={
-                                    'flex items-center space-x-4 w-full ring-4 ring-gray-600 ring-opacity-60 p-6 mx-10 max-w-sm'
+                                    'flex items-center space-x-4 w-full ring-4 ring-gray-700 ring-opacity-60 p-6 mx-10 max-w-sm'
                                 }
                             >
-                                <UploadIcon className={'w-10 h-10 flex-shrink-0'} />
+                                <FaUpload className={'w-10 h-10 flex-shrink-0'} />
                                 <p className={'font-header flex-1 text-lg text-gray-100 text-center'}>
                                     Drag and drop files to upload.
                                 </p>
@@ -184,13 +184,13 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
                 multiple
             />
             <Tooltip content={'Upload'}>
-                <Button
+                <Button.Text
                     className={className}
                     aria-label={'Upload'}
                     onClick={() => fileUploadInput.current && fileUploadInput.current.click()}
                 >
-                    <UploadIcon className='h-5 w-5' />
-                </Button>
+                    <FaUpload className='h-5 w-5' />
+                </Button.Text>
             </Tooltip>
         </>
     );

@@ -1,11 +1,24 @@
-import styled from 'styled-components';
-import tw from 'twin.macro';
+import React from 'react';
+import { css } from 'twin.macro';
+import { ApplicationStore } from '@/state';
+import { useStoreState } from 'easy-peasy';
 
-export const ContentContainer = styled.div`
-    ${tw`flex pt-16`}
-    padding-inline-end: 0.25rem;
+export const ContentContainer: React.FC<React.PropsWithChildren> = ({ children }) => {
+    const layoutType = useStoreState((state: ApplicationStore) => state.designify.data!.layoutType);
+    return (
+        <div
+            className={`flex ${layoutType !== 'modern' ? 'pt-16' : ''}`}
+            css={[
+                css`
+                    padding-inline-end: 0.25rem;
 
-    @media (min-width: 1024px) {
-        padding-inline-start: 250px;
-    }
-`;
+                    @media (min-width: 1024px) {
+                        padding-inline-start: 250px;
+                    }
+                `,
+            ]}
+        >
+            {children}
+        </div>
+    );
+};

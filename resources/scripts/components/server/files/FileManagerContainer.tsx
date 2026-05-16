@@ -1,24 +1,24 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { httpErrorToHuman } from '@/api/http';
 import { motion } from 'framer-motion';
-import Spinner from '@/components/elements/Spinner';
+import Spinner from '@/reviactyl/elements/Spinner';
 import FileObjectRow from '@/components/server/files/FileObjectRow';
 import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcrumbs';
 import loadDirectory, { FileObject } from '@/api/server/files/loadDirectory';
 import NewDirectoryButton from '@/components/server/files/NewDirectoryButton';
 import UrlDownloadButton from '@/components/server/files/UrlDownloadButton';
 import { NavLink, useLocation } from 'react-router-dom';
-import Can from '@/components/elements/Can';
-import { ServerError } from '@/components/elements/ScreenBlock';
+import Can from '@/reviactyl/elements/Can';
+import { ServerError } from '@/reviactyl/elements/ScreenBlock';
 import tw from 'twin.macro';
 import { ServerContext } from '@/state/server';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import FileManagerStatus from '@/components/server/files/FileManagerStatus';
 import MassActionsBar from '@/components/server/files/MassActionsBar';
 import UploadButton from '@/components/server/files/UploadButton';
-import ServerContentBlock from '@/components/elements/ServerContentBlock';
+import ServerContentBlock from '@/reviactyl/elements/ServerContentBlock';
 import { useStoreActions } from '@/state/hooks';
-import ErrorBoundary from '@/components/elements/ErrorBoundary';
+import ErrorBoundary from '@/reviactyl/elements/ErrorBoundary';
 import { FileActionCheckbox } from '@/components/server/files/SelectFileCheckbox';
 import { hashToPath, encodePathSegments } from '@/helpers';
 import style from './style.module.css';
@@ -26,13 +26,14 @@ import { SearchIcon, FolderIcon, FolderOpenIcon, DocumentIcon } from '@heroicons
 import Card from '@/reviactyl/ui/Card';
 import { useTranslation } from 'react-i18next';
 import ImageViewerModal from '@/components/server/files/ImageViewerModal';
+import VideoViewerModal from '@/components/server/files/VideoViewerModal';
+import { isVideoFile } from '@/api/server/files/isVideoFile';
 import getFileDownloadUrl from '@/api/server/files/getFileDownloadUrl';
 import { join } from 'pathe';
 import { bytesToString } from '@/lib/formatters';
-import Tooltip from '@/components/elements/tooltip/Tooltip';
-import { PlusSmIcon } from '@heroicons/react/solid';
+import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
-import Input from '@/components/elements/Input';
+import Input from '@/reviactyl/elements/Input';
 import {
     FaArrowDown19,
     FaArrowDownAZ,
@@ -40,7 +41,9 @@ import {
     FaArrowUp19,
     FaArrowUpAZ,
     FaArrowUpShortWide,
+    FaFileCirclePlus,
 } from 'react-icons/fa6';
+import { Button } from '@/reviactyl/elements/button';
 
 type SortType = 'name' | 'size' | 'date';
 type SortDirection = 'asc' | 'desc';
@@ -84,12 +87,12 @@ const RecursiveFileRow = ({ file, serverId }: { file: SearchResult; serverId: st
         : `/server/${serverId}/files#${encodePathSegments(file.fullPath)}`;
     const Icon = file.isFile ? DocumentIcon : FolderIcon;
     return (
-        <div className='flex items-center py-2 px-2 border-b border-gray-700 last:border-0 hover:bg-gray-700 rounded-ui'>
+        <div className='flex items-center py-2 px-2 border-b border-gray-800 last:border-0 hover:bg-gray-900 rounded-ui'>
             <Icon className='w-4 h-4 mr-3 flex-none text-gray-400' aria-hidden='true' />
             <NavLink to={to} className='flex-1 text-sm text-gray-200 truncate hover:text-primary-400 min-w-0'>
                 {file.fullPath}
             </NavLink>
-            {file.isFile && <span className='text-xs text-gray-500 ml-3 flex-none'>{bytesToString(file.size)}</span>}
+            {file.isFile && <span className='text-xs text-gray-600 ml-3 flex-none'>{bytesToString(file.size)}</span>}
         </div>
     );
 };
@@ -107,11 +110,13 @@ export default () => {
     const setSelectedFiles = ServerContext.useStoreActions((actions) => actions.files.setSelectedFiles);
     const selectedFilesLength = ServerContext.useStoreState((state) => state.files.selectedFiles.length);
 
-    // Image viewer state
+    // Media viewer state
     const [imageViewerVisible, setImageViewerVisible] = useState(false);
     const [selectedImage, setSelectedImage] = useState<{ url: string; name: string } | null>(null);
+    const [videoViewerVisible, setVideoViewerVisible] = useState(false);
+    const [selectedVideo, setSelectedVideo] = useState<{ url: string; name: string } | null>(null);
 
-    const [sortType, setSortType] = useState<SortType>('name');
+    const [sortType, setSortType] = useState<SortType>('size');
     const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
 
     const [inputValue, setInputValue] = useState('');
@@ -207,21 +212,31 @@ export default () => {
         setSelectedFiles(e.currentTarget.checked ? (query ? [] : filteredFiles.map((file) => file.name)) : []);
     };
 
-    const handleImageClick = (file: FileObject) => {
+    const handlePreviewClick = (file: FileObject) => {
         const filePath = join(directory, file.name);
         getFileDownloadUrl(uuid, filePath)
             .then((url) => {
-                setSelectedImage({ url, name: file.name });
-                setImageViewerVisible(true);
+                if (isVideoFile(file)) {
+                    setSelectedVideo({ url, name: file.name });
+                    setVideoViewerVisible(true);
+                } else {
+                    setSelectedImage({ url, name: file.name });
+                    setImageViewerVisible(true);
+                }
             })
             .catch((error) => {
-                console.error('Failed to get image URL:', error);
+                console.error('Failed to get media URL:', error);
             });
     };
 
     const handleImageViewerClose = () => {
         setImageViewerVisible(false);
         setSelectedImage(null);
+    };
+
+    const handleVideoViewerClose = () => {
+        setVideoViewerVisible(false);
+        setSelectedVideo(null);
     };
 
     if (error) {
@@ -237,18 +252,19 @@ export default () => {
                         <Can action={'file.create'}>
                             <div className={style.manager_actions}>
                                 <ExtensionSlot name={`server:files:actions:start`} />
-                                <FileManagerStatus className={style.icon_action} />
-                                <UrlDownloadButton className={style.icon_action} />
-                                <NewDirectoryButton className={style.icon_action} />
-                                <UploadButton className={style.icon_action} />
+                                <FileManagerStatus />
+                                <UrlDownloadButton />
+                                <NewDirectoryButton />
+                                <UploadButton />
                                 <Tooltip content={t('new-file')}>
-                                    <NavLink
-                                        to={`/server/${id}/files/new${window.location.hash}`}
-                                        className={style.icon_action}
+                                    <Button.Text
+                                        onClick={() => {
+                                            window.location.href = `/server/${id}/files/new${window.location.hash}`;
+                                        }}
                                         aria-label={t('new-file')}
                                     >
-                                        <PlusSmIcon className='h-5 w-5' />
-                                    </NavLink>
+                                        <FaFileCirclePlus className='h-5 w-5' />
+                                    </Button.Text>
                                 </Tooltip>
                                 <ExtensionSlot name={`server:files:actions:end`} />
                             </div>
@@ -277,7 +293,7 @@ export default () => {
                         </div>
                     </div>
                     <div className='flex flex-wrap md:flex-nowrap items-center gap-2 mt-2'>
-                        <div className='order-3 w-full min-w-0 md:order-none md:flex-1 md:w-auto bg-gray-600 rounded-ui py-2'>
+                        <div className='order-3 w-full min-w-0 md:order-none md:flex-1 md:w-auto bg-gray-800 rounded-ui py-2'>
                             <FileManagerBreadcrumbs
                                 renderLeft={
                                     <FileActionCheckbox
@@ -291,7 +307,7 @@ export default () => {
                         </div>
                     </div>
                 </Card>
-                <Card className={'flex items-center mb-1 !rounded-none !px-2 !py-2 !bg-gray-600 hidden md:block'}>
+                <Card className={'flex items-center mb-1 !rounded-none !px-2 !py-2 !bg-gray-800 hidden md:block'}>
                     <div className='order-4 md:order-none flex items-center gap-1'>
                         <div className='flex-1 ml-[55px]'>
                             <button
@@ -305,7 +321,7 @@ export default () => {
                                 }}
                                 className={'flex items-center gap-x-1 text-sm text-gray-300 !text-gray-200'}
                             >
-                                <span css={tw`text-xs font-semibold`}>Name</span>
+                                <span css={tw`text-xs font-semibold`}>{t('name')}</span>
                                 {sortType === 'name' ? (
                                     <FaArrowDownAZ className={sortDirection === 'asc' ? 'rotate-180' : ''} />
                                 ) : (
@@ -325,7 +341,7 @@ export default () => {
                                 }}
                                 className={'flex items-center gap-x-1 text-sm text-gray-300 !text-gray-200'}
                             >
-                                <span css={tw`text-xs font-semibold`}>Size</span>
+                                <span css={tw`text-xs font-semibold`}>{t('size')}</span>
                                 {sortType === 'size' ? (
                                     <FaArrowDown19 className={sortDirection === 'asc' ? 'rotate-180' : ''} />
                                 ) : (
@@ -345,7 +361,7 @@ export default () => {
                                 }}
                                 className={'flex items-center gap-x-1 text-sm text-gray-300 !text-gray-200'}
                             >
-                                <span css={tw`text-xs font-semibold`}>Date</span>
+                                <span css={tw`text-xs font-semibold`}>{t('date')}</span>
                                 {sortType === 'date' ? (
                                     <FaArrowDownShortWide className={sortDirection === 'asc' ? 'rotate-180' : ''} />
                                 ) : (
@@ -364,7 +380,7 @@ export default () => {
                         isSearching && recursiveResults.length === 0 ? (
                             <Spinner size={'base'} centered />
                         ) : recursiveResults.length === 0 ? (
-                            <div className={'flex flex-col items-center justify-center py-10 text-gray-500'}>
+                            <div className={'flex flex-col items-center justify-center py-10 text-gray-600'}>
                                 <SearchIcon className={'w-10 h-10 mb-2 opacity-40'} />
                                 <p className={'text-sm'}>{t('no-results')}</p>
                             </div>
@@ -374,14 +390,16 @@ export default () => {
                                 animate={{ opacity: 1 }}
                                 transition={{ duration: 0.15, ease: 'easeIn' }}
                             >
-                                {isSearching && <p css={tw`text-xs text-gray-500 text-center mb-2`}>Searching...</p>}
+                                {isSearching && (
+                                    <p css={tw`text-xs text-gray-600 text-center mb-2`}>{t('searching')}</p>
+                                )}
                                 {recursiveResults.map((file) => (
                                     <RecursiveFileRow key={file.fullPath} file={file} serverId={id} />
                                 ))}
                             </motion.div>
                         )
                     ) : !filteredFiles.length ? (
-                        <div className={'flex flex-col items-center justify-center py-10 text-gray-500'}>
+                        <div className={'flex flex-col items-center justify-center py-10 text-gray-600'}>
                             <FolderOpenIcon className={'w-12 h-12 mb-2 opacity-40'} />
                             <p className={'text-sm'}>{t('empty')}</p>
                         </div>
@@ -397,7 +415,7 @@ export default () => {
                                 </div>
                             )}
                             {sortFiles(filteredFiles.slice(0, 250), sortType, sortDirection).map((file) => (
-                                <FileObjectRow key={file.key} file={file} onImageClick={handleImageClick} />
+                                <FileObjectRow key={file.key} file={file} onMediaClick={handlePreviewClick} />
                             ))}
                             <MassActionsBar />
                         </motion.div>
@@ -410,6 +428,15 @@ export default () => {
                     onDismissed={handleImageViewerClose}
                     imageUrl={selectedImage.url}
                     imageName={selectedImage.name}
+                    appear
+                />
+            )}
+            {selectedVideo && (
+                <VideoViewerModal
+                    visible={videoViewerVisible}
+                    onDismissed={handleVideoViewerClose}
+                    videoUrl={selectedVideo.url}
+                    videoName={selectedVideo.name}
                     appear
                 />
             )}

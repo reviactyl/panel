@@ -15,7 +15,7 @@ class ServerConfigurationStructureService
     /**
      * Return a configuration array for a specific server when passed a server model.
      *
-     * DO NOT MODIFY THIS FUNCTION. This powers legacy code handling for the new Wings
+     * DO NOT MODIFY THIS FUNCTION. This powers legacy code handling for the new Agent
      * daemon, if you modify the structure eggs will break unexpectedly.
      */
     public function handle(Server $server, array $override = [], bool $legacy = false): array
@@ -36,7 +36,7 @@ class ServerConfigurationStructureService
     }
 
     /**
-     * Returns the new data format used for the Wings daemon.
+     * Returns the new data format used for the Agent daemon.
      */
     protected function returnCurrentFormat(Server $server): array
     {

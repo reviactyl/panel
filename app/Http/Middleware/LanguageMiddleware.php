@@ -6,6 +6,7 @@ use App\Contracts\Repository\SettingsRepositoryInterface;
 use App\Services\Helpers\GeoIPService;
 use App\Services\Helpers\GeoLocaleService;
 use App\Traits\Helpers\AvailableLanguages;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 
@@ -26,23 +27,29 @@ class LanguageMiddleware
     public function handle(Request $request, \Closure $next): mixed
     {
         $user = $request->user();
+        $fallbackLocale = config('app.locale', 'en');
 
-        if ($user !== null) {
-            if ($user->language === 'geo') {
-                $defaultLocale = $this->settings->get('settings::app:locale', config('app.locale', 'en'));
-                $locale = $this->resolveGeoLocale($request, $defaultLocale);
+        try {
+            if ($user !== null) {
+                if ($user->language === 'geo') {
+                    $defaultLocale = $this->settings->get('settings::app:locale', $fallbackLocale);
+                    $locale = $this->resolveGeoLocale($request, $defaultLocale);
+                } else {
+                    $locale = $user->language;
+                }
             } else {
-                $locale = $user->language;
-            }
-        } else {
-            $defaultLocale = $this->settings->get('settings::app:locale', config('app.locale', 'en'));
-            $geolocateEnabled = (bool) $this->settings->get('settings::app:locale:geolocate', false);
+                $defaultLocale = $this->settings->get('settings::app:locale', $fallbackLocale);
+                $geolocateEnabled = (bool) $this->settings->get('settings::app:locale:geolocate', false);
 
-            if ($geolocateEnabled) {
-                $locale = $this->resolveGeoLocale($request, $defaultLocale);
-            } else {
-                $locale = $defaultLocale;
+                if ($geolocateEnabled) {
+                    $locale = $this->resolveGeoLocale($request, $defaultLocale);
+                } else {
+                    $locale = $defaultLocale;
+                }
             }
+        } catch (QueryException $exception) {
+            // During fresh installs the settings table is not present yet.
+            $locale = $fallbackLocale;
         }
 
         $this->app->setLocale($locale);

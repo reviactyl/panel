@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react';
-import ContentBox from '@/components/elements/ContentBox';
+import ContentBox from '@/reviactyl/elements/ContentBox';
 import CreateApiKeyForm from '@/components/dashboard/forms/CreateApiKeyForm';
 import getApiKeys, { ApiKey } from '@/api/account/getApiKeys';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import deleteApiKey from '@/api/account/deleteApiKey';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { format } from 'date-fns';
-import PageContentBlock from '@/components/elements/PageContentBlock';
+import PageContentBlock from '@/reviactyl/elements/PageContentBlock';
 import tw from 'twin.macro';
-import GreyRowBox from '@/components/elements/GreyRowBox';
-import { Dialog } from '@/components/elements/dialog';
+import GreyRowBox from '@/reviactyl/elements/GreyRowBox';
+import { Dialog } from '@/reviactyl/elements/dialog';
 import { useFlashKey } from '@/plugins/useFlash';
-import Code from '@/components/elements/Code';
+import Code from '@/reviactyl/elements/Code';
 import { useTranslation } from 'react-i18next';
 import { FaKey, FaTrash } from 'react-icons/fa6';
 
@@ -66,7 +66,7 @@ export default () => {
                         keys.map((key, index) => (
                             <GreyRowBox
                                 key={key.identifier}
-                                css={[tw`bg-gray-600 flex items-center`, index > 0 && tw`mt-2`]}
+                                css={[tw`bg-gray-700 flex items-center`, index > 0 && tw`mt-2`]}
                             >
                                 <FaKey css={tw`text-gray-300`} />
                                 <div css={tw`ml-4 flex-1 overflow-hidden`}>
@@ -79,7 +79,7 @@ export default () => {
                                     </p>
                                 </div>
                                 <p css={tw`text-sm ml-4 hidden md:block`}>
-                                    <code css={tw`font-mono py-1 px-2 bg-gray-900 rounded`}>{key.identifier}</code>
+                                    <code css={tw`font-mono py-1 px-2 bg-gray-950 rounded`}>{key.identifier}</code>
                                 </p>
                                 <button css={tw`ml-4 p-2 text-sm`} onClick={() => setDeleteIdentifier(key.identifier)}>
                                     <FaTrash

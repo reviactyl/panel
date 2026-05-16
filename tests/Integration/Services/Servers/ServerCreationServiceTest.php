@@ -10,7 +10,7 @@ use App\Models\Node;
 use App\Models\Objects\DeploymentObject;
 use App\Models\Server;
 use App\Models\User;
-use App\Repositories\Wings\DaemonServerRepository;
+use App\Repositories\Agent\DaemonServerRepository;
 use App\Services\Servers\ServerCreationService;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Psr7\Request;
@@ -30,7 +30,7 @@ class ServerCreationServiceTest extends IntegrationTestCase
     protected Egg $bungeecord;
 
     /**
-     * Stub the calls to Wings so that we don't actually hit those API endpoints.
+     * Stub the calls to Agent so that we don't actually hit those API endpoints.
      */
     protected function setUp(): void
     {
@@ -151,10 +151,10 @@ class ServerCreationServiceTest extends IntegrationTestCase
     }
 
     /**
-     * Test that a server is deleted from the Panel if Wings returns an error during the creation
+     * Test that a server is deleted from the Panel if Agent returns an error during the creation
      * process.
      */
-    public function test_error_encountered_by_wings_causes_server_to_be_deleted()
+    public function test_error_encountered_by_agent_causes_server_to_be_deleted()
     {
         /** @var User $user */
         $user = User::factory()->create();

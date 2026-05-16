@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Server } from '@/api/server/getServer';
 import { ServerCategory } from '@/api/server/types';
-import ServerRow from '@/components/dashboard/ServerRow';
+import { LayoutContainer, ServerLayout } from '@/components/dashboard/ServerLayout';
 import tw from 'twin.macro';
 import styled from 'styled-components';
 import { ChevronDownIcon } from '@heroicons/react/solid';
@@ -44,7 +44,7 @@ export default ({ category, servers, showOnlyAdmin, onCategoryChanged }: Props) 
             <div css={tw`absolute left-0 top-0 h-full w-1`} style={{ backgroundColor: displayColor }} />
 
             {/* HEADER */}
-            <HeaderButton className='hover:bg-gray-600' onClick={() => setOpen(!open)}>
+            <HeaderButton className='hover:bg-gray-700' onClick={() => setOpen(!open)}>
                 <div css={tw`flex items-center gap-3 flex-1 min-w-0`}>
                     <div css={tw`min-w-0`}>
                         <span css={tw`font-medium`} style={{ color: displayColor }}>
@@ -56,7 +56,10 @@ export default ({ category, servers, showOnlyAdmin, onCategoryChanged }: Props) 
                             </p>
                         )}
                     </div>
-                    <span css={tw`text-xs text-[#94a3b8] px-2 py-1 rounded-md bg-[#1e293b] flex-shrink-0`}>
+                    <span
+                        css={tw`text-xs px-2 py-1 rounded-ui border flex-shrink-0 ml-auto`}
+                        style={{ color: displayColor, borderColor: displayColor }}
+                    >
                         {t('categories.servers-count', { count: servers.length })}
                     </span>
                 </div>
@@ -66,10 +69,10 @@ export default ({ category, servers, showOnlyAdmin, onCategoryChanged }: Props) 
 
             {/* CONTENT */}
             {open && (
-                <div css={tw`border-t border-[#334155] p-4`}>
-                    <div css={tw`grid lg:grid-cols-2 gap-4`}>
+                <div css={tw`border-t border-gray-600 p-4`}>
+                    <LayoutContainer>
                         {servers.map((server, index) => (
-                            <ServerRow
+                            <ServerLayout
                                 key={server.uuid}
                                 server={server}
                                 css={index > 0 ? tw`mt-2` : undefined}
@@ -77,7 +80,7 @@ export default ({ category, servers, showOnlyAdmin, onCategoryChanged }: Props) 
                                 showCategory={!showOnlyAdmin}
                             />
                         ))}
-                    </div>
+                    </LayoutContainer>
                 </div>
             )}
         </Card>

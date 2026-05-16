@@ -63,7 +63,7 @@ class WebsocketControllerTest extends ClientApiIntegrationTestCase
 
         $connection = $response->json('data.socket');
         $this->assertStringStartsWith('wss://', $connection, 'Failed asserting that websocket connection address has expected "wss://" prefix.');
-        $this->assertStringEndsWith("/api/servers/$server->uuid/ws", $connection, 'Failed asserting that websocket connection address uses expected Wings endpoint.');
+        $this->assertStringEndsWith("/api/servers/$server->uuid/ws", $connection, 'Failed asserting that websocket connection address uses expected Agent endpoint.');
 
         $config = Configuration::forSymmetricSigner(new Sha256(), $key = InMemory::plainText($server->node->getDecryptedKey()));
         $config->setValidationConstraints(new SignedWith(new Sha256(), $key));

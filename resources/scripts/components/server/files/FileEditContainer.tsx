@@ -1,30 +1,26 @@
 import { useEffect, useState } from 'react';
 import getFileContents from '@/api/server/files/getFileContents';
 import { httpErrorToHuman } from '@/api/http';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import saveFileContents from '@/api/server/files/saveFileContents';
 import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcrumbs';
 import { useLocation, useNavigate } from 'react-router-dom';
 import FileNameModal from '@/components/server/files/FileNameModal';
-import Can from '@/components/elements/Can';
+import Can from '@/reviactyl/elements/Can';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import ContentBlock from '@/reviactyl/ui/ContentBlock';
-import { ServerError } from '@/components/elements/ScreenBlock';
+import { ServerError } from '@/reviactyl/elements/ScreenBlock';
 import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
-import Select from '@/components/elements/Select';
+import Button from '@/reviactyl/elements/Button';
+import Select from '@/reviactyl/elements/Select';
 import modes from '@/modes';
 import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
-import ErrorBoundary from '@/components/elements/ErrorBoundary';
+import ErrorBoundary from '@/reviactyl/elements/ErrorBoundary';
 import { encodePathSegments, hashToPath } from '@/helpers';
 import { dirname } from 'pathe';
-import CodemirrorEditor from '@/components/elements/CodemirrorEditor';
-import MonacoEditor from '@/components/elements/MonacoEditor';
+import MonacoEditor from '@/reviactyl/elements/MonacoEditor';
 import Card from '@/reviactyl/ui/Card';
-
-import { ApplicationStore } from '@/state';
-import { useStoreState } from 'easy-peasy';
 
 export default () => {
     const [error, setError] = useState('');
@@ -42,7 +38,6 @@ export default () => {
     const id = ServerContext.useStoreState((state) => state.server.data!.id);
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const setDirectory = ServerContext.useStoreActions((actions) => actions.files.setDirectory);
-    const user = useStoreState((state: ApplicationStore) => state.user.data);
 
     const { addError, clearFlashes } = useFlash();
 
@@ -53,7 +48,7 @@ export default () => {
 
         setError('');
         const path = hashToPath(hash);
-        // Guard: if path resolves to root (no file hash), redirect rather than asking Wings to read "/" and getting a 200/500 error.
+        // Guard: if path resolves to root (no file hash), redirect rather than asking Agent to read "/" and getting a 200/500 error.
         if (path === '/' || path === '') {
             navigate(`/server/${id}/files`);
             return;
@@ -107,17 +102,17 @@ export default () => {
             </ErrorBoundary>
             {hash.replace(/^#/, '').endsWith('.pteroignore') && (
                 <Card className='!rounded-none mb-1'>
-                    <div css={tw`mb-4 p-4 rounded-ui border border-gray-600`}>
+                    <div css={tw`mb-4 p-4 rounded-ui border border-gray-800`}>
                         <p css={tw`text-gray-300 text-sm`}>
                             You&apos;re editing a{' '}
-                            <code css={tw`font-mono bg-gray-900 rounded-ui border border-gray-600 py-px px-1`}>
+                            <code css={tw`font-mono bg-gray-950 rounded-ui border border-gray-800 py-px px-1`}>
                                 .pteroignore
                             </code>{' '}
                             file. Any files or directories listed in here will be excluded from backups. Wildcards are
                             supported by using an asterisk (
-                            <code css={tw`font-mono bg-gray-900 rounded-ui border border-gray-600 py-px px-1`}>*</code>
+                            <code css={tw`font-mono bg-gray-950 rounded-ui border border-gray-800 py-px px-1`}>*</code>
                             ). You can negate a prior rule by prepending an exclamation point (
-                            <code css={tw`font-mono bg-gray-900 rounded-ui border border-gray-600 py-px px-1`}>!</code>
+                            <code css={tw`font-mono bg-gray-950 rounded-ui border border-gray-800 py-px px-1`}>!</code>
                             ).
                         </p>
                     </div>
@@ -133,48 +128,28 @@ export default () => {
             />
             <Card css={tw`relative !p-1 !rounded-none mb-1`}>
                 <SpinnerOverlay visible={loading} />
-                {user?.fileEditor === 'cm' && (
-                    <CodemirrorEditor
-                        mode={mode}
-                        filename={hash.replace(/^#/, '')}
-                        onModeChanged={setMode}
-                        initialContent={content}
-                        fetchContent={(value) => {
-                            fetchFileContent = value;
-                        }}
-                        onContentSaved={() => {
-                            if (isNewFile) {
-                                setModalVisible(true);
-                            } else {
-                                save();
-                            }
-                        }}
-                    />
-                )}
-                {user?.fileEditor === 'mo' && (
-                    <MonacoEditor
-                        mode={mode}
-                        filename={hash.replace(/^#/, '')}
-                        onModeChanged={setMode}
-                        initialContent={content}
-                        fetchContent={(value) => {
-                            fetchFileContent = value;
-                        }}
-                        onContentSaved={() => {
-                            if (isNewFile) {
-                                setModalVisible(true);
-                            } else {
-                                save();
-                            }
-                        }}
-                    />
-                )}
+                <MonacoEditor
+                    mode={mode}
+                    filename={hash.replace(/^#/, '')}
+                    onModeChanged={setMode}
+                    initialContent={content}
+                    fetchContent={(value) => {
+                        fetchFileContent = value;
+                    }}
+                    onContentSaved={() => {
+                        if (isNewFile) {
+                            setModalVisible(true);
+                        } else {
+                            save();
+                        }
+                    }}
+                />
             </Card>
             <Card css={tw`flex justify-end !rounded-t-none !px-2 !py-3`}>
-                <div css={tw`flex-1 sm:flex-none rounded-ui bg-gray-700 border border-gray-600 mr-4`}>
+                <div css={tw`flex-1 sm:flex-none rounded-ui bg-gray-900 border border-gray-800 mr-4`}>
                     <Select value={mode} onChange={(e) => setMode(e.currentTarget.value)}>
                         {modes.map((mode) => (
-                            <option key={`${mode.name}_${mode.mime}`} value={mode.mime}>
+                            <option key={`${mode.name}_${mode.mode}`} value={mode.mode}>
                                 {mode.name}
                             </option>
                         ))}

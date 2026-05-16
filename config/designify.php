@@ -12,16 +12,17 @@ return [
     'colorDanger' => '#8F1F20',
     'colorSecondary' => '#2B2B40',
 
-    'color50' => '#F4F4F5',
-    'color100' => '#DEDEE2',
-    'color200' => '#D2D2DB',
-    'color300' => '#8282A4',
-    'color400' => '#5E5E7F',
-    'color500' => '#42425B',
-    'color600' => '#1B1B21',
-    'color700' => '#141416',
-    'color800' => '#070709',
-    'color900' => '#07070C',
+    'color50' => '#fafafa',
+    'color100' => '#f4f4f5',
+    'color200' => '#e4e4e7',
+    'color300' => '#d4d4d8',
+    'color400' => '#9f9fa9',
+    'color500' => '#71717b',
+    'color600' => '#52525c',
+    'color700' => '#3f3f46',
+    'color800' => '#27272a',
+    'color900' => '#18181b',
+    'color950' => '#09090b',
 
     'themeSelector' => true,
     'sidebarLogout' => false,
@@ -41,11 +42,41 @@ return [
     'alertMessage' => '**Welcome to Reviactyl!** You can modify Theme Look & Feel using [Designify](/admin/designify) at the administration area.',
     'alerts' => '[{"type":"info","message":"**Welcome to Reviactyl!** You can modify Theme Look & Feel using [Designify](/admin/designify) at the administration area."}]',
 
+    'errors' => [
+        '403' => [
+            'title' => 'Access Forbidden',
+            'message' => 'You do not have permission to access this resource. Please contact the administrator if you believe this is an error.',
+            'button' => 'Back to Dashboard',
+            'image' => '',
+            'color' => '#f59e0b',
+        ],
+        '404' => [
+            'title' => 'Page Not Found',
+            'message' => 'The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.',
+            'button' => 'Back to Dashboard',
+            'image' => '',
+            'color' => '#3b82f6',
+        ],
+        '500' => [
+            'title' => 'Internal Server Error',
+            'message' => 'We encountered an error while processing your request. Please try again later or contact support if the problem persists.',
+            'button' => 'Try Again',
+            'image' => '',
+            'color' => '#ef4444',
+        ],
+    ],
+
     'statusCardLink' => '',
     'supportCardLink' => '',
     'billingCardLink' => '',
 
     'alwaysShowKillButton' => false,
+
+    'cardType' => 'grid',
+
+    'layoutType' => 'modern',
+
+    'avatarType' => 'gravatar',
 
     'theme1' => [
         'name' => 'Petrascia',
@@ -60,6 +91,7 @@ return [
         'color700' => '#38414d',
         'color800' => '#2f3741',
         'color900' => '#1d232b',
+        'color950' => '#1d232b',
     ],
 
     'theme2' => [
@@ -75,6 +107,7 @@ return [
         'color700' => '#361F32',
         'color800' => '#280D25',
         'color900' => '#160613',
+        'color950' => '#160613',
     ],
 
     'theme3' => [
@@ -90,6 +123,7 @@ return [
         'color700' => '#291F34',
         'color800' => '#1B0E27',
         'color900' => '#0E0615',
+        'color950' => '#0E0615',
     ],
 
     'theme4' => [
@@ -105,6 +139,7 @@ return [
         'color700' => '#341E1A',
         'color800' => '#270F0A',
         'color900' => '#150704',
+        'color950' => '#150704',
     ],
 
     'theme5' => [
@@ -120,6 +155,7 @@ return [
         'color700' => '#331C17',
         'color800' => '#270F08',
         'color900' => '#150603',
+        'color950' => '#150603',
     ],
 
     'theme6' => [
@@ -135,6 +171,7 @@ return [
         'color700' => '#334155',
         'color800' => '#1e293b',
         'color900' => '#0f172a',
+        'color950' => '#0f172a',
     ],
 
     'theme7' => [
@@ -150,5 +187,6 @@ return [
         'color700' => '#404040',
         'color800' => '#262626',
         'color900' => '#171717',
+        'color950' => '#000000',
     ],
 ];

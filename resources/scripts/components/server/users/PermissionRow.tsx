@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import tw from 'twin.macro';
-import Checkbox from '@/components/elements/Checkbox';
+import Checkbox from '@/reviactyl/elements/Checkbox';
 import { useStoreState } from 'easy-peasy';
-import Label from '@/components/elements/Label';
+import Label from '@/reviactyl/elements/Label';
 
 const Container = styled.label`
     ${tw`flex items-center border border-transparent rounded md:p-2 transition-colors duration-75`};
@@ -12,7 +12,7 @@ const Container = styled.label`
         ${tw`cursor-pointer`};
 
         &:hover {
-            ${tw`border-gray-500 bg-gray-800`};
+            ${tw`border-gray-600 bg-gray-900`};
         }
     }
 

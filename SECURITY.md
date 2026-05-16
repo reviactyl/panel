@@ -4,10 +4,10 @@
 
 The following versions of Reviactyl are receiving active support and maintenance. Any security vulnerabilities discovered must be reproducible in supported versions.
 
-| Panel  | Wings       | Supported          |
+| Panel  | Agent       | Supported          |
 |--------|--------------|--------------------|
 | 2.2.x | wings@1.12.x | :white_check_mark: |
-| 26.x  | wings@1.12.x | :white_check_mark: |
+| 26.x  | agent@26.x | :white_check_mark: |
 
 
 

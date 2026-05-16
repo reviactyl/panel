@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import { Form, Formik, FormikHelpers } from 'formik';
-import Field from '@/components/elements/Field';
+import Field from '@/reviactyl/elements/Field';
 import { object, string } from 'yup';
 import pullFile from '@/api/server/files/pullFile';
 import tw from 'twin.macro';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/reviactyl/elements/button/index';
 import { useFlashKey } from '@/plugins/useFlash';
 import { WithClassname } from '@/components/types';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import { Dialog } from '@/components/elements/dialog';
+import { Dialog } from '@/reviactyl/elements/dialog';
 import { useTranslation } from 'react-i18next';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
-import Tooltip from '@/components/elements/tooltip/Tooltip';
-import { CloudDownloadIcon } from '@heroicons/react/solid';
+import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
+import { FaCloudArrowUp } from 'react-icons/fa6';
 
 interface Values {
     url: string;
@@ -120,11 +120,11 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
                     <button
                         className={
                             className ||
-                            'relative flex items-center justify-center w-10 h-10 rounded-ui bg-gray-700 border border-gray-600 text-gray-300'
+                            'relative flex items-center justify-center w-10 h-10 rounded-ui bg-gray-900 border border-gray-800 text-gray-300'
                         }
                     >
                         <DownloadSpinner className={'w-8 h-8'} />
-                        <CloudDownloadIcon className={'h-3 absolute mx-auto animate-pulse'} />
+                        <FaCloudArrowUp className={'h-3 absolute mx-auto animate-pulse'} />
                     </button>
                 </Tooltip>
             )}
@@ -163,7 +163,7 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
             </Dialog>
             <Tooltip content={t('url-download.button')}>
                 <Button.Text onClick={() => setOpen(true)} className={className} aria-label={t('url-download.button')}>
-                    <CloudDownloadIcon className='h-5 w-5' />
+                    <FaCloudArrowUp className='h-5 w-5' />
                 </Button.Text>
             </Tooltip>
         </>

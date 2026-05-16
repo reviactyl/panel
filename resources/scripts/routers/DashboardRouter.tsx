@@ -3,18 +3,14 @@ import { Suspense } from 'react';
 import { useRoutes } from 'react-router-dom';
 import Navigate from '@/reviactyl/components/Navigate';
 import DashboardContainer from '@/components/dashboard/DashboardContainer';
-import { NotFound } from '@/components/elements/ScreenBlock';
-import Spinner from '@/components/elements/Spinner';
+import { NotFound } from '@/reviactyl/elements/ScreenBlock';
+import Spinner from '@/reviactyl/elements/Spinner';
 import routes from '@/routers/routes';
 import { RouterContainer } from '@/reviactyl/ui/RouterContainer';
-import Navbar from '@/reviactyl/ui/Navbar';
-import { LogoContainer } from '@/reviactyl/ui/LogoContainer';
 import { XIcon, MenuIcon, ExternalLinkIcon } from '@heroicons/react/solid';
-import tw from 'twin.macro';
 import { ContentContainer } from '@/reviactyl/ui/ContentContainer';
 import { motion } from 'framer-motion';
-import Sidebar from '@/reviactyl/ui/Sidebar';
-import { ApplicationStore } from '@/state';
+import { Navbar, Sidebar } from '@/reviactyl/components/Layout';
 import { useStoreState } from 'easy-peasy';
 import Announcement from '@/reviactyl/ui/Announcement';
 import MaintenanceAlert from '@/reviactyl/ui/MaintenanceAlert';
@@ -22,7 +18,7 @@ import QuickLinks from '@/reviactyl/ui/QuickLinks';
 import Maintenance from '@/reviactyl/ui/Maintenance';
 import { useTranslation } from 'react-i18next';
 import { FaHouse } from 'react-icons/fa6';
-import { ReviactylSidebarButton } from '@/state/reviactyl';
+import { DesignifySidebarButton } from '@/state/designify';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 import { useExtensionRoutes } from '@/extensions/useExtensionRoutes';
 import { useExtensions } from '@/extensions/useExtensions';
@@ -49,7 +45,7 @@ const NavItem = ({ route }: Props) => {
 
 const DashboardNavigation = () => {
     const { t } = useTranslation('routes');
-    const customSidebarButtons = useStoreState((state) => state.reviactyl.data?.sidebarButtons ?? []);
+    const customSidebarButtons = useStoreState((state) => state.designify.data?.sidebarButtons ?? []);
     const { data: extensionData } = useExtensions();
 
     const dashboardExtensionRoutes = (Array.isArray(extensionData) ? extensionData : []).flatMap((extension) =>
@@ -66,7 +62,7 @@ const DashboardNavigation = () => {
             }))
     );
     const normalizedSidebarButtons = (Array.isArray(customSidebarButtons) ? customSidebarButtons : []).filter(
-        (button): button is ReviactylSidebarButton =>
+        (button): button is DesignifySidebarButton =>
             typeof button?.label === 'string' &&
             button.label.trim().length > 0 &&
             typeof button?.url === 'string' &&
@@ -76,13 +72,17 @@ const DashboardNavigation = () => {
     return (
         <>
             <div>
-                <Navigate id='index.dashboard' to='/' end className='mt-2'>
-                    <span className='flex items-center'>
-                        <FaHouse className='w-5 mr-1' /> {t('index.dashboard')}
-                    </span>
-                </Navigate>
+                <div className='mt-2'>
+                    <span className='label -mb-2'>{t('index.dashboard')}</span>
+                    <Navigate id='index.dashboard' to='/' end className='mt-2'>
+                        <span className='flex items-center'>
+                            <FaHouse className='w-5 mr-1' /> {t('index.dashboard')}
+                        </span>
+                    </Navigate>
+                </div>
 
                 <div className='mt-2'>
+                    <span className='label'>{t('account.overview')}</span>
                     {routes.account
                         .filter((route) => !!route.name)
                         .map((route) => (
@@ -93,7 +93,7 @@ const DashboardNavigation = () => {
 
             {normalizedSidebarButtons.length > 0 && (
                 <div className='mt-2'>
-                    <span className='label'>MORE</span>
+                    <span className='label'>{t('sidebar.more')}</span>
                     {normalizedSidebarButtons.map((button, index) => (
                         <a
                             key={`${button.url}-${index}`}
@@ -112,7 +112,7 @@ const DashboardNavigation = () => {
 
             {dashboardExtensionRoutes.length > 0 && (
                 <div className='mt-2'>
-                    <span className='label'>EXTENSIONS</span>
+                    <span className='label'>{t('sidebar.extensions')}</span>
                     {dashboardExtensionRoutes.map((route) => (
                         <Navigate
                             key={route.id}
@@ -133,9 +133,7 @@ const DashboardNavigation = () => {
 
 function DashboardRouter() {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
-    const logo = useStoreState((state: ApplicationStore) => state.settings.data!.logo);
-    const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
-    const isUnderMaintenance = useStoreState((state) => state.reviactyl.data?.isUnderMaintenance);
+    const isUnderMaintenance = useStoreState((state) => state.designify.data?.isUnderMaintenance);
     const rootAdmin = useStoreState((state) => state.user.data?.rootAdmin);
     const injectedRoutes = useExtensionRoutes('dashboardRouter');
 
@@ -149,25 +147,17 @@ function DashboardRouter() {
                         <div className='lg:hidden'>
                             <button
                                 onClick={() => setSidebarOpen(!isSidebarOpen)}
-                                className='text-gray-500 bg-gray-700 p-2 rounded-ui'
+                                className='text-gray-600 bg-gray-900 p-2 rounded-ui'
                             >
                                 {isSidebarOpen ? <XIcon className='w-6 h-6' /> : <MenuIcon className='w-6 h-6' />}
                             </button>
                         </div>
-                        <LogoContainer>
-                            <img
-                                src={logo}
-                                alt={name}
-                                onClick={() => (window.location.href = '/')}
-                                css={tw`h-[3rem] mt-5 cursor-pointer`}
-                            />
-                        </LogoContainer>
                     </Navbar>
                     <ContentContainer>
                         {isSidebarOpen && (
                             <div
                                 onClick={() => setSidebarOpen(false)}
-                                className='fixed inset-0 z-30 bg-gray-800/40 backdrop-blur-sm transition-all duration-300 ease-in-out lg:hidden'
+                                className='fixed inset-0 z-30 bg-gray-900/40 backdrop-blur-sm transition-all duration-300 ease-in-out lg:hidden'
                             />
                         )}
                         <motion.div

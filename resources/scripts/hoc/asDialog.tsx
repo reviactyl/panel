@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Dialog, DialogProps, DialogWrapperContext, WrapperProps } from '@/components/elements/dialog';
+import { Dialog, DialogProps, DialogWrapperContext, WrapperProps } from '@/reviactyl/elements/dialog';
 
 function asDialog(
     initialProps?: WrapperProps

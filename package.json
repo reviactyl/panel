@@ -7,6 +7,8 @@
         "node": ">=22"
     },
     "dependencies": {
+        "@dicebear/collection": "^9.4.2",
+        "@dicebear/core": "^9.4.2",
         "@floating-ui/react": "^0.27.19",
         "@headlessui/react": "^2.2.9",
         "@hello-pangea/dnd": "^18.0.1",
@@ -22,7 +24,7 @@
         "@xterm/addon-web-links": "^0.12.0",
         "@xterm/xterm": "^6.0.0",
         "add": "^2.0.6",
-        "axios": "^1.13.5",
+        "axios": "^1.15.2",
         "boring-avatars": "^1.7.0",
         "chart.js": "^3.8.0",
         "classnames": "^2.3.1",
@@ -39,11 +41,12 @@
         "history": "^4.9.0",
         "i18next": "^25.8.10",
         "i18next-browser-languagedetector": "^8.2.0",
-        "i18next-http-backend": "^3.0.2",
+        "i18next-http-backend": "^3.0.5",
         "i18next-multiload-backend-adapter": "^2.3.0",
         "md5": "^2.3.0",
         "monaco-editor": "^0.55.1",
         "pathe": "^2.0.3",
+        "plyr-react": "^6.0.0",
         "qrcode.react": "^1.0.1",
         "react": "19",
         "react-chartjs-2": "^5.3.1",
@@ -60,7 +63,7 @@
         "swr": "^0.2.3",
         "tailwindcss": "^3.0.24",
         "use-fit-text": "^2.4.0",
-        "uuid": "^13.0.0",
+        "uuid": "^14.0.0",
         "viewerjs": "^1.11.7",
         "yup": "^0.29.1"
     },
@@ -121,7 +124,7 @@
         "identity-obj-proxy": "^3.0.0",
         "jest": "^28.1.1",
         "laravel-vite-plugin": "^2.1.0",
-        "postcss": "^8.5.6",
+        "postcss": "^8.5.10",
         "postcss-import": "^14.1.0",
         "postcss-loader": "^8.2.0",
         "postcss-nesting": "^13.0.2",
@@ -164,5 +167,5 @@
             "fileName": true
         }
     },
-    "packageManager": "pnpm@10.33.0+sha512.10568bb4a6afb58c9eb3630da90cc9516417abebd3fabbe6739f0ae795728da1491e9db5a544c76ad8eb7570f5c4bb3d6c637b2cb41bfdcdb47fa823c8649319"
+    "packageManager": "pnpm@11.1.2+sha512.415a1cc25974731e75455c1468371be74c5aa5fb7621b50d4056d222451609f11412f23fd602e6169f1e060466641f798597e1be961a10688836a67b16569499"
 }

@@ -2,43 +2,43 @@
 
 return [
 
-    'label' => 'Mount',
-    'plural_label' => 'Mounts',
+    'label' => 'Montar',
+    'plural_label' => 'monturas',
 
     'sections' => [
-        'configuration' => 'Mount Configuration',
+        'configuration' => 'Configuración de montaje',
     ],
 
     'fields' => [
-        'name' => 'Name',
-        'description' => 'Description',
-        'source' => 'Source Path',
-        'target' => 'Target Path',
-        'read_only' => 'Read Only',
-        'user_mountable' => 'User Mountable',
+        'name' => 'Nombre',
+        'description' => 'Descripción',
+        'source' => 'Ruta de origen',
+        'target' => 'Ruta de destino',
+        'read_only' => 'Solo lectura',
+        'user_mountable' => 'Montable por el usuario',
     ],
 
     'helpers' => [
-        'name' => 'A unique name used to separate this mount from another.',
-        'description' => 'A longer, human-readable description of this mount.',
-        'source' => 'The file path on the host machine to mount to containers.',
-        'target' => 'The path inside the container to mount this as.',
-        'read_only' => 'If set, the mount will be read-only inside the container.',
-        'user_mountable' => 'If set, users will be able to mount this to their servers.',
+        'name' => 'Un nombre único utilizado para separar esta montura de otra.',
+        'description' => 'Una descripción más larga y legible por humanos de esta montura.',
+        'source' => 'La ruta del archivo en la máquina host para montar en contenedores.',
+        'target' => 'La ruta dentro del contenedor para montar esto como.',
+        'read_only' => 'Si se establece, el montaje será de solo lectura dentro del contenedor.',
+        'user_mountable' => 'Si se configura, los usuarios podrán montar esto en sus servidores.',
     ],
 
     'columns' => [
         'id' => 'ID',
-        'name' => 'Name',
-        'source' => 'Source',
-        'target' => 'Target',
-        'read_only' => 'Read Only',
-        'user_mountable' => 'User Mountable',
+        'name' => 'Nombre',
+        'source' => 'Fuente',
+        'target' => 'Objetivo',
+        'read_only' => 'Solo lectura',
+        'user_mountable' => 'Montable por el usuario',
     ],
 
     'actions' => [
-        'attach_egg' => 'Attach Egg',
-        'attach_node' => 'Attach Node',
+        'attach_egg' => 'adjuntar huevo',
+        'attach_node' => 'Adjuntar nodo',
     ],
 
 ];

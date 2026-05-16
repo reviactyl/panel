@@ -3,8 +3,8 @@ import { FaTrash } from 'react-icons/fa6';
 import { useState } from 'react';
 import { useFlashKey } from '@/plugins/useFlash';
 import { deleteSSHKey, useSSHKeys } from '@/api/account/ssh-keys';
-import { Dialog } from '@/components/elements/dialog';
-import Code from '@/components/elements/Code';
+import { Dialog } from '@/reviactyl/elements/dialog';
+import Code from '@/reviactyl/elements/Code';
 import { useTranslation } from 'react-i18next';
 
 export default ({ name, fingerprint }: { name: string; fingerprint: string }) => {

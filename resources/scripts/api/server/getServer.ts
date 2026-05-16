@@ -63,7 +63,7 @@ export interface Server {
     category: ServerCategory | null;
     nestId: number;
     eggId: number;
-    eggBanner: string;
+    eggImage: string;
     containerText: string;
 }
 
@@ -108,7 +108,7 @@ export const rawDataToServerObject = ({ attributes: data }: FractalResponseData)
             : null,
     nestId: data.nest_id,
     eggId: data.egg_id,
-    eggBanner: data.egg_banner,
+    eggImage: data.egg_image,
     containerText: data.containerText,
 });
 

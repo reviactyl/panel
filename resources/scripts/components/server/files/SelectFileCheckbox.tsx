@@ -2,11 +2,11 @@ import * as React from 'react';
 import tw from 'twin.macro';
 import { ServerContext } from '@/state/server';
 import styled from 'styled-components';
-import Input from '@/components/elements/Input';
+import Input from '@/reviactyl/elements/Input';
 
 export const FileActionCheckbox = styled(Input)`
     && {
-        ${tw`border-gray-500 bg-transparent`};
+        ${tw`border-gray-600 bg-transparent`};
 
         &:not(:checked) {
             ${tw`hover:border-gray-300`};

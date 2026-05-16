@@ -12,15 +12,15 @@ import {
 import { Line } from 'react-chartjs-2';
 import { ServerContext } from '@/state/server';
 import useSWR from 'swr';
-import Spinner from '@/components/elements/Spinner';
-import ServerContentBlock from '@/components/elements/ServerContentBlock';
+import Spinner from '@/reviactyl/elements/Spinner';
+import ServerContentBlock from '@/reviactyl/elements/ServerContentBlock';
 import { format } from 'date-fns';
 import http from '@/api/http';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import { ServerError } from '@/components/elements/ScreenBlock';
+import { ServerError } from '@/reviactyl/elements/ScreenBlock';
 import tw from 'twin.macro';
 import { useTranslation } from 'react-i18next';
-import Select from '@/components/elements/Select';
+import Select from '@/reviactyl/elements/Select';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -172,25 +172,25 @@ export default () => {
             </div>
 
             <div css={tw`grid grid-cols-1 md:grid-cols-2 gap-4`}>
-                <div css={tw`bg-gray-700 p-4 rounded-ui border border-gray-600`}>
+                <div css={tw`bg-gray-900 p-4 rounded-ui border border-gray-800`}>
                     <h3 css={tw`text-gray-200 mb-2 font-semibold`}>{t('charts.cpu.title')}</h3>
                     <div css={tw`h-64`}>
                         <Line options={{ ...chartOptions, maintainAspectRatio: false }} data={cpuData} />
                     </div>
                 </div>
-                <div css={tw`bg-gray-700 p-4 rounded-ui border border-gray-600`}>
+                <div css={tw`bg-gray-900 p-4 rounded-ui border border-gray-800`}>
                     <h3 css={tw`text-gray-200 mb-2 font-semibold`}>{t('charts.memory.title')}</h3>
                     <div css={tw`h-64`}>
                         <Line options={{ ...chartOptions, maintainAspectRatio: false }} data={memoryData} />
                     </div>
                 </div>
-                <div css={tw`bg-gray-700 p-4 rounded-ui border border-gray-600`}>
+                <div css={tw`bg-gray-900 p-4 rounded-ui border border-gray-800`}>
                     <h3 css={tw`text-gray-200 mb-2 font-semibold`}>{t('charts.disk.title')}</h3>
                     <div css={tw`h-64`}>
                         <Line options={{ ...chartOptions, maintainAspectRatio: false }} data={diskData} />
                     </div>
                 </div>
-                <div css={tw`bg-gray-700 p-4 rounded-ui border border-gray-600`}>
+                <div css={tw`bg-gray-900 p-4 rounded-ui border border-gray-800`}>
                     <h3 css={tw`text-gray-200 mb-2 font-semibold`}>{t('charts.network.title')}</h3>
                     <div css={tw`h-64`}>
                         <Line options={{ ...chartOptions, maintainAspectRatio: false }} data={networkData} />

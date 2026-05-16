@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import ConfirmationModal from '@/components/elements/ConfirmationModal';
+import ConfirmationModal from '@/reviactyl/elements/ConfirmationModal';
 import { ServerContext } from '@/state/server';
 import { FaTrash } from 'react-icons/fa6';
 import { Subuser } from '@/state/server/subusers';
@@ -8,8 +8,10 @@ import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
 import tw from 'twin.macro';
+import { useTranslation } from 'react-i18next';
 
 export default ({ subuser }: { subuser: Subuser }) => {
+    const { t } = useTranslation('server/users');
     const [loading, setLoading] = useState(false);
     const [showConfirmation, setShowConfirmation] = useState(false);
 
@@ -35,20 +37,19 @@ export default ({ subuser }: { subuser: Subuser }) => {
     return (
         <>
             <ConfirmationModal
-                title={'Delete this subuser?'}
-                buttonText={'Yes, remove subuser'}
+                title={t('remove-subuser-title')}
+                buttonText={t('remove-subuser-confirm')}
                 visible={showConfirmation}
                 showSpinnerOverlay={loading}
                 onConfirmed={() => doDeletion()}
                 onModalDismissed={() => setShowConfirmation(false)}
             >
-                Are you sure you wish to remove this subuser? They will have all access to this server revoked
-                immediately.
+                {t('remove-subuser-message')}
             </ConfirmationModal>
             <button
                 type={'button'}
-                aria-label={'Delete subuser'}
-                css={tw`block text-sm p-2 text-gray-500 hover:text-red-600 transition-colors duration-150`}
+                aria-label={t('delete-subuser-aria')}
+                css={tw`block text-sm p-2 text-gray-600 hover:text-red-600 transition-colors duration-150`}
                 onClick={() => setShowConfirmation(true)}
             >
                 <FaTrash />

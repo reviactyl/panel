@@ -30,13 +30,14 @@ class DesignifyComposer
             'color50' => config('designify.theme1.color50') ?? '#f8f9fa',
             'color100' => config('designify.theme1.color100') ?? '#e1e4e8',
             'color200' => config('designify.theme1.color200') ?? '#c5cbd3',
-            'color300' => config('designify.theme1.color300') ?? '#9aa5b1',
-            'color400' => config('designify.theme1.color400') ?? '#6c7885',
-            'color500' => config('designify.theme1.color500') ?? '#55606d',
-            'color600' => config('designify.theme1.color600') ?? '#47505c',
-            'color700' => config('designify.theme1.color700') ?? '#38414d',
-            'color800' => config('designify.theme1.color800') ?? '#2f3741',
+            'color300' => config('designify.theme1.color300') ?? '#d4d4d8',
+            'color400' => config('designify.theme1.color400') ?? '#a1a1aa',
+            'color500' => config('designify.theme1.color500') ?? '#343437',
+            'color600' => config('designify.theme1.color600') ?? '#1e1e20',
+            'color700' => config('designify.theme1.color700') ?? '#18181b',
+            'color800' => config('designify.theme1.color800') ?? '#09090b',
             'color900' => config('designify.theme1.color900') ?? '#1d232b',
+            'color950' => config('designify.theme1.color950') ?? '#09090b',
         ];
 
         $this->Theme2 = [
@@ -52,6 +53,7 @@ class DesignifyComposer
             'color700' => config('designify.theme2.color700') ?? '#361F32',
             'color800' => config('designify.theme2.color800') ?? '#280D25',
             'color900' => config('designify.theme2.color900') ?? '#160613',
+            'color950' => config('designify.theme2.color950') ?? '#160613',
         ];
 
         $this->Theme3 = [
@@ -67,6 +69,7 @@ class DesignifyComposer
             'color700' => config('designify.theme3.color700') ?? '#291F34',
             'color800' => config('designify.theme3.color800') ?? '#1B0E27',
             'color900' => config('designify.theme3.color900') ?? '#0E0615',
+            'color950' => config('designify.theme3.color950') ?? '#0E0615',
         ];
 
         $this->Theme4 = [
@@ -82,6 +85,7 @@ class DesignifyComposer
             'color700' => config('designify.theme4.color700') ?? '#341E1A',
             'color800' => config('designify.theme4.color800') ?? '#270F0A',
             'color900' => config('designify.theme4.color900') ?? '#150704',
+            'color950' => config('designify.theme4.color950') ?? '#150704',
         ];
 
         $this->Theme5 = [
@@ -97,6 +101,7 @@ class DesignifyComposer
             'color700' => config('designify.theme5.color700') ?? '#331C17',
             'color800' => config('designify.theme5.color800') ?? '#270F08',
             'color900' => config('designify.theme5.color900') ?? '#150603',
+            'color950' => config('designify.theme5.color950') ?? '#150603',
         ];
 
         $this->Theme6 = [
@@ -112,6 +117,7 @@ class DesignifyComposer
             'color700' => config('designify.theme6.color700') ?? '#334155',
             'color800' => config('designify.theme6.color800') ?? '#1e293b',
             'color900' => config('designify.theme6.color900') ?? '#0f172a',
+            'color950' => config('designify.theme6.color950') ?? '#09090b',
         ];
 
         $this->Theme7 = [
@@ -127,6 +133,7 @@ class DesignifyComposer
             'color700' => config('designify.theme7.color700') ?? '#404040',
             'color800' => config('designify.theme7.color800') ?? '#262626',
             'color900' => config('designify.theme7.color900') ?? '#171717',
+            'color950' => config('designify.theme7.color950') ?? '#09090b',
         ];
 
         $this->reviactylDefaults = [
@@ -139,16 +146,17 @@ class DesignifyComposer
             'colorDanger' => config('designify.colorDanger') ?? '#8F1F20',
             'colorSecondary' => config('designify.colorSecondary') ?? '#2B2B40',
             'colorDiscord' => config('designify.colorDiscord') ?? '#5865F2',
-            'color50' => config('designify.color50') ?? '#F4F4F5',
-            'color100' => config('designify.color100') ?? '#DEDEE2',
-            'color200' => config('designify.color200') ?? '#D2D2DB',
-            'color300' => config('designify.color300') ?? '#8282A4',
-            'color400' => config('designify.color400') ?? '#5E5E7F',
-            'color500' => config('designify.color500') ?? '#42425B',
-            'color600' => config('designify.color600') ?? '#1B1B21',
-            'color700' => config('designify.color700') ?? '#141416',
-            'color800' => config('designify.color800') ?? '#070709',
-            'color900' => config('designify.color900') ?? '#07070C',
+            'color50' => config('designify.color50') ?? '#fafafa',
+            'color100' => config('designify.color100') ?? '#f4f4f5',
+            'color200' => config('designify.color200') ?? '#e4e4e7',
+            'color300' => config('designify.color300') ?? '#d4d4d8',
+            'color400' => config('designify.color400') ?? '#9f9fa9',
+            'color500' => config('designify.color500') ?? '#71717b',
+            'color600' => config('designify.color600') ?? '#52525c',
+            'color700' => config('designify.color700') ?? '#3f3f46',
+            'color800' => config('designify.color800') ?? '#27272a',
+            'color900' => config('designify.color900') ?? '#18181b',
+            'color950' => config('designify.color950') ?? '#09090b',
             'theme1' => $this->Theme1,
             'theme2' => $this->Theme2,
             'theme3' => $this->Theme3,
@@ -171,10 +179,36 @@ class DesignifyComposer
             'site_description' => config('designify.site_description') ?? 'Our official control panel made better with Reviactyl.',
             'site_image' => config('designify.site_image') ?? '/reviactyl/logo.png',
             'site_favicon' => config('designify.site_favicon') ?? '/reviactyl/icon.png',
+            'errors' => [
+                '403' => [
+                    'title' => config('designify.errors.403.title') ?? 'Access Forbidden',
+                    'message' => config('designify.errors.403.message') ?? 'You do not have permission to access this resource. Please contact the administrator if you believe this is an error.',
+                    'button' => config('designify.errors.403.button') ?? 'Back to Dashboard',
+                    'image' => config('designify.errors.403.image') ?? '',
+                    'color' => config('designify.errors.403.color') ?? '#f59e0b',
+                ],
+                '404' => [
+                    'title' => config('designify.errors.404.title') ?? 'Page Not Found',
+                    'message' => config('designify.errors.404.message') ?? 'The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.',
+                    'button' => config('designify.errors.404.button') ?? 'Back to Dashboard',
+                    'image' => config('designify.errors.404.image') ?? '',
+                    'color' => config('designify.errors.404.color') ?? '#3b82f6',
+                ],
+                '500' => [
+                    'title' => config('designify.errors.500.title') ?? 'Internal Server Error',
+                    'message' => config('designify.errors.500.message') ?? 'We encountered an error while processing your request. Please try again later or contact support if the problem persists.',
+                    'button' => config('designify.errors.500.button') ?? 'Try Again',
+                    'image' => config('designify.errors.500.image') ?? '',
+                    'color' => config('designify.errors.500.color') ?? '#ef4444',
+                ],
+            ],
             'statusCardLink' => config('designify.statusCardLink') ?? '',
             'supportCardLink' => config('designify.supportCardLink') ?? '',
             'billingCardLink' => config('designify.billingCardLink') ?? '',
             'alwaysShowKillButton' => config('designify.alwaysShowKillButton', false),
+            'cardType' => config('designify.cardType') ?? 'grid',
+            'layoutType' => config('designify.layoutType') ?? 'modern',
+            'avatarType' => config('designify.avatarType') ?? 'gravatar',
         ];
     }
 
@@ -253,6 +287,6 @@ class DesignifyComposer
 
     public function compose(View $view): void
     {
-        $view->with('reviactylConfiguration', $this->reviactylDefaults);
+        $view->with('panelConfiguration', $this->reviactylDefaults);
     }
 }

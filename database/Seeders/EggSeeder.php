@@ -85,10 +85,10 @@ class EggSeeder extends Seeder
             if ($egg instanceof Egg) {
                 $this->updateImporterService->handle($egg, $file);
 
-                if ($egg->author !== $decoded['author'] || $egg->banner !== ($decoded['banner'] ?? null)) {
+                if ($egg->author !== $decoded['author'] || $egg->image !== ($decoded['image'] ?? null)) {
                     $egg->update([
                         'author' => $decoded['author'],
-                        'banner' => $decoded['banner'] ?? null,
+                        'image' => $decoded['image'] ?? null,
                     ]);
                 }
 

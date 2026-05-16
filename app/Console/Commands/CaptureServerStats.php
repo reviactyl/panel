@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Exceptions\Http\Connection\DaemonConnectionException;
 use App\Models\Server;
 use App\Models\ServerStatsHistory;
-use App\Repositories\Wings\DaemonServerRepository;
+use App\Repositories\Agent\DaemonServerRepository;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 

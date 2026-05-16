@@ -1,10 +1,10 @@
 import { Field, Form, Formik, FormikHelpers } from 'formik';
 import { object, string } from 'yup';
-import FormikFieldWrapper from '@/components/elements/FormikFieldWrapper';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import FormikFieldWrapper from '@/reviactyl/elements/FormikFieldWrapper';
+import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
-import Input, { Textarea } from '@/components/elements/Input';
+import Button from '@/reviactyl/elements/Button';
+import Input, { Textarea } from '@/reviactyl/elements/Input';
 import styled from 'styled-components';
 import { useFlashKey } from '@/plugins/useFlash';
 import { createSSHKey, useSSHKeys } from '@/api/account/ssh-keys';

@@ -10,18 +10,18 @@ use App\Http\Middleware\Api\Client\RequireClientApiKey;
 use App\Http\Middleware\Api\Client\SubstituteClientBindings;
 use App\Http\Middleware\Api\Daemon\DaemonAuthenticate;
 use App\Http\Middleware\Api\IsValidJson;
-use App\Http\Middleware\EditorMiddleware;
 use App\Http\Middleware\EncryptCookies;
+use App\Http\Middleware\EnsureInstallationState;
 use App\Http\Middleware\EnsureStatefulRequests;
 use App\Http\Middleware\LanguageMiddleware;
 use App\Http\Middleware\MaintenanceMiddleware;
+use App\Http\Middleware\PreventRequestForgery;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\RequireTwoFactorAuthentication;
 use App\Http\Middleware\SetSecurityHeaders;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\UpdateLastSeen;
 use App\Http\Middleware\VerifyCaptcha;
-use App\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
 use Illuminate\Auth\Middleware\Authorize;
@@ -66,10 +66,9 @@ class Kernel extends HttpKernel
             AddQueuedCookiesToResponse::class,
             StartSession::class,
             ShareErrorsFromSession::class,
-            VerifyCsrfToken::class,
+            PreventRequestForgery::class,
             SubstituteBindings::class,
             LanguageMiddleware::class,
-            EditorMiddleware::class,
             UpdateLastSeen::class,
         ],
         'api' => [
@@ -103,11 +102,12 @@ class Kernel extends HttpKernel
         'auth.basic' => AuthenticateWithBasicAuth::class,
         'auth.session' => AuthenticateSession::class,
         'guest' => RedirectIfAuthenticated::class,
-        'csrf' => VerifyCsrfToken::class,
+        'csrf' => PreventRequestForgery::class,
         'throttle' => ThrottleRequests::class,
         'can' => Authorize::class,
         'bindings' => SubstituteBindings::class,
         'captcha' => VerifyCaptcha::class,
         'node.maintenance' => MaintenanceMiddleware::class,
+        'installation' => EnsureInstallationState::class,
     ];
 }

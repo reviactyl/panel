@@ -1,18 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
-import Modal, { RequiredModalProps } from '@/components/elements/Modal';
+import Modal, { RequiredModalProps } from '@/reviactyl/elements/Modal';
 import { Field, Form, Formik, FormikHelpers, useFormikContext } from 'formik';
 import { Actions, useStoreActions, useStoreState } from 'easy-peasy';
 import { object, string } from 'yup';
 import debounce from 'debounce';
-import FormikFieldWrapper from '@/components/elements/FormikFieldWrapper';
-import InputSpinner from '@/components/elements/InputSpinner';
+import FormikFieldWrapper from '@/reviactyl/elements/FormikFieldWrapper';
+import InputSpinner from '@/reviactyl/elements/InputSpinner';
 import getServers from '@/api/getServers';
 import { Server } from '@/api/server/getServer';
 import { ApplicationStore } from '@/state';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import tw from 'twin.macro';
-import Input from '@/components/elements/Input';
+import Input from '@/reviactyl/elements/Input';
 import { ip } from '@/lib/formatters';
 import { useTranslation } from 'react-i18next';
 
@@ -23,7 +23,7 @@ interface Values {
 }
 
 const ServerResult = styled(Link)`
-    ${tw`flex items-center bg-gray-900 p-4 rounded border-l-4 border-gray-900 no-underline transition-all duration-150`};
+    ${tw`flex items-center bg-gray-950 p-4 rounded border-l-4 border-gray-950 no-underline transition-all duration-150`};
 
     &:hover {
         ${tw`shadow border-cyan-500`};

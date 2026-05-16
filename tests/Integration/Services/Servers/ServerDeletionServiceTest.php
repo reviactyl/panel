@@ -5,7 +5,7 @@ namespace Tests\Integration\Services\Servers;
 use App\Exceptions\Http\Connection\DaemonConnectionException;
 use App\Models\Database;
 use App\Models\DatabaseHost;
-use App\Repositories\Wings\DaemonServerRepository;
+use App\Repositories\Agent\DaemonServerRepository;
 use App\Services\Databases\DatabaseManagementService;
 use App\Services\Servers\ServerDeletionService;
 use GuzzleHttp\Exception\BadResponseException;
@@ -53,9 +53,9 @@ class ServerDeletionServiceTest extends IntegrationTestCase
 
     /**
      * Test that a server is not deleted if the force option is not set and an error
-     * is returned by wings.
+     * is returned by agent.
      */
-    public function test_regular_delete_fails_if_wings_returns_error()
+    public function test_regular_delete_fails_if_agent_returns_error()
     {
         $server = $this->createServerModel();
 
@@ -71,9 +71,9 @@ class ServerDeletionServiceTest extends IntegrationTestCase
     }
 
     /**
-     * Test that a 404 from Wings while deleting a server does not cause the deletion to fail.
+     * Test that a 404 from Agent while deleting a server does not cause the deletion to fail.
      */
-    public function test_regular_delete_ignores404_from_wings()
+    public function test_regular_delete_ignores404_from_agent()
     {
         $server = $this->createServerModel();
 
@@ -87,10 +87,10 @@ class ServerDeletionServiceTest extends IntegrationTestCase
     }
 
     /**
-     * Test that an error from Wings does not cause the deletion to fail if the server is being
+     * Test that an error from Agent does not cause the deletion to fail if the server is being
      * force deleted.
      */
-    public function test_force_delete_ignores_exception_from_wings()
+    public function test_force_delete_ignores_exception_from_agent()
     {
         $server = $this->createServerModel();
 

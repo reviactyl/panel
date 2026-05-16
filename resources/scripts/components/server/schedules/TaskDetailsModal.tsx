@@ -4,19 +4,19 @@ import { Field as FormikField, Form, Formik, FormikHelpers, useField } from 'for
 import { ServerContext } from '@/state/server';
 import createOrUpdateScheduleTask from '@/api/server/schedules/createOrUpdateScheduleTask';
 import { httpErrorToHuman } from '@/api/http';
-import Field from '@/components/elements/Field';
+import Field from '@/reviactyl/elements/Field';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { boolean, number, object, string } from 'yup';
 import useFlash from '@/plugins/useFlash';
-import FormikFieldWrapper from '@/components/elements/FormikFieldWrapper';
+import FormikFieldWrapper from '@/reviactyl/elements/FormikFieldWrapper';
 import tw from 'twin.macro';
-import Label from '@/components/elements/Label';
-import { Textarea } from '@/components/elements/Input';
-import { Button } from '@/components/elements/button/index';
-import Select from '@/components/elements/Select';
+import Label from '@/reviactyl/elements/Label';
+import { Textarea } from '@/reviactyl/elements/Input';
+import { Button } from '@/reviactyl/elements/button/index';
+import Select from '@/reviactyl/elements/Select';
 import ModalContext from '@/context/ModalContext';
 import asModal from '@/hoc/asModal';
-import FormikSwitch from '@/components/elements/FormikSwitch';
+import FormikSwitch from '@/reviactyl/elements/FormikSwitch';
 
 interface Props {
     schedule: Schedule;
@@ -176,7 +176,7 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
                             </div>
                         )}
                     </div>
-                    <div css={tw`mt-6 bg-gray-700 border border-gray-800 shadow-inner p-4 rounded`}>
+                    <div css={tw`mt-6 bg-gray-900 border border-gray-900 shadow-inner p-4 rounded`}>
                         <FormikSwitch
                             name={'continueOnFailure'}
                             description={'Future tasks will be run when this task fails.'}

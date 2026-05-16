@@ -1,12 +1,12 @@
 import { memo } from 'react';
 import { ServerContext } from '@/state/server';
-import ServerContentBlock from '@/components/elements/ServerContentBlock';
+import ServerContentBlock from '@/reviactyl/elements/ServerContentBlock';
 import isEqual from 'react-fast-compare';
-import Spinner from '@/components/elements/Spinner';
+import Spinner from '@/reviactyl/elements/Spinner';
 import Features from '@feature/Features';
 import ConsoleBlock from '@/components/server/console/ConsoleBlock';
-import ServerDetailsBlock from '@/components/server/console/ServerDetailsBlock';
-import { Alert } from '@/components/elements/alert';
+import StatGraphs from '@/components/server/console/StatGraphs';
+import { Alert } from '@/reviactyl/elements/alert';
 import { useTranslation } from 'react-i18next';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 
@@ -36,9 +36,9 @@ const ServerConsoleContainer = () => {
                     <ConsoleBlock />
                 </Spinner.Suspense>
             </div>
-            <div className={'mt-2'}>
+            <div className={'grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-4 mt-2'}>
                 <Spinner.Suspense>
-                    <ServerDetailsBlock />
+                    <StatGraphs />
                 </Spinner.Suspense>
             </div>
             <ExtensionSlot name='server:console:below' />

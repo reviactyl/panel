@@ -1,16 +1,16 @@
 import { useEffect, useState, useMemo, useRef } from 'react';
 import { Server } from '@/api/server/getServer';
 import getServers from '@/api/getServers';
-import Spinner from '@/components/elements/Spinner';
-import PageContentBlock from '@/components/elements/PageContentBlock';
+import Spinner from '@/reviactyl/elements/Spinner';
+import PageContentBlock from '@/reviactyl/elements/PageContentBlock';
 import useFlash from '@/plugins/useFlash';
 import { useStoreState } from 'easy-peasy';
 import { usePersistedState } from '@/plugins/usePersistedState';
-import Switch from '@/components/elements/Switch';
+import Switch from '@/reviactyl/elements/Switch';
 import tw from 'twin.macro';
 import useSWR from 'swr';
 import { PaginatedResult } from '@/api/http';
-import Pagination from '@/components/elements/Pagination';
+import Pagination from '@/reviactyl/elements/Pagination';
 import { useLocation } from 'react-router-dom';
 import Card from '@/reviactyl/ui/Card';
 import Title from '@/reviactyl/ui/Title';
@@ -20,9 +20,9 @@ import getServerCategories from '@/api/account/getServerCategories';
 import getClientEggs from '@/api/getClientEggs';
 import CategorySection from '@/components/dashboard/CategorySection';
 import CategoryManagerModal from '@/components/dashboard/CategoryManagerModal';
-import ServerRow from '@/components/dashboard/ServerRow';
-import Select from '../elements/Select';
-import { Button } from '../elements/button';
+import { LayoutContainer, ServerLayout } from '@/components/dashboard/ServerLayout';
+import Select from '@/reviactyl/elements/Select';
+import { Button } from '@/reviactyl/elements/button';
 import { FaUserGear } from 'react-icons/fa6';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 
@@ -174,7 +174,7 @@ export default () => {
                                 <Button.Text
                                     type='button'
                                     onClick={() => setModalVisible(true)}
-                                    className={`!p-2 rounded-lg transition border border-gray-500 hover:border-gray-400`}
+                                    className={`!p-2`}
                                     title={t('categories.manage')}
                                     aria-label={t('categories.manage')}
                                 >
@@ -186,10 +186,10 @@ export default () => {
                                     <Button.Text
                                         type='button'
                                         onClick={() => setEggFilterOpen((o) => !o)}
-                                        className={`!p-2 rounded-lg transition border ${
-                                            selectedEggId !== null
-                                                ? 'border-blue-500 hover:border-blue-400'
-                                                : 'border-gray-500 hover:border-gray-400'
+                                        className={`!p-2 ${
+                                            selectedEggId !== null || selectedCategory !== 'all'
+                                                ? 'bg-blue-700 hover:bg-blue-600'
+                                                : ''
                                         }`}
                                         title={t('filter-label')}
                                         aria-label={t('filter-label')}
@@ -199,11 +199,14 @@ export default () => {
                                     </Button.Text>
                                 )}
                                 {eggFilterOpen && (
-                                    <Card className='absolute right-0 sm:left-auto top-full mt-1.5 z-10 min-w-[180px] !py-2 !px-2 shadow-lg'>
+                                    <Card
+                                        ref={eggFilterRef}
+                                        className='absolute right-0 sm:left-auto top-full mt-1.5 z-10 min-w-[180px] !py-2 !px-2 shadow-lg'
+                                    >
                                         {/* Egg filter is global (not user-specific): show for both "your servers" and "others' servers" */}
                                         {(eggs && eggs.length > 0) ||
                                         (rootAdmin && showOnlyAdmin && Array.isArray(eggs)) ? (
-                                            <div className='mb-2 border-b border-gray-600 pb-2' ref={eggFilterRef}>
+                                            <div className='mb-2 border-b border-gray-800 pb-2'>
                                                 <p className='text-xs text-gray-200 uppercase px-2 pb-1.5'>
                                                     {t('eggs.filter-label')}
                                                 </p>
@@ -285,16 +288,16 @@ export default () => {
                             }
                             if (showOnlyAdmin) {
                                 return (
-                                    <div className='grid lg:grid-cols-2 gap-4'>
+                                    <LayoutContainer>
                                         {items.map((server, index) => (
-                                            <ServerRow
+                                            <ServerLayout
                                                 key={server.uuid}
                                                 server={server}
                                                 css={index > 0 ? tw`mt-2` : undefined}
                                                 showCategory={false}
                                             />
                                         ))}
-                                    </div>
+                                    </LayoutContainer>
                                 );
                             }
                             return sortedCategorySlugs.length > 0 ? (

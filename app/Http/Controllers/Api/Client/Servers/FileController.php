@@ -17,7 +17,7 @@ use App\Http\Requests\Api\Client\Servers\Files\PullFileRequest;
 use App\Http\Requests\Api\Client\Servers\Files\RenameFileRequest;
 use App\Http\Requests\Api\Client\Servers\Files\WriteFileContentRequest;
 use App\Models\Server;
-use App\Repositories\Wings\DaemonFileRepository;
+use App\Repositories\Agent\DaemonFileRepository;
 use App\Services\Nodes\NodeJWTService;
 use App\Transformers\Api\Client\FileObjectTransformer;
 use Carbon\CarbonImmutable;
@@ -244,7 +244,7 @@ class FileController extends ClientApiController
     }
 
     /**
-     * Requests that a file be downloaded from a remote location by Wings.
+     * Requests that a file be downloaded from a remote location by Agent.
      *
      * @throws \Throwable
      */

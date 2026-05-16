@@ -18,7 +18,7 @@ return [
         'first_name' => '名',
         'last_name' => '姓',
         'language' => '语言',
-        'geolocate' => 'Geolocate (Automatic)',
+        'geolocate' => '地理定位（自动）',
         'password' => '密码',
         'password_confirmation' => '确认密码',
         'root_admin' => '超级管理员',

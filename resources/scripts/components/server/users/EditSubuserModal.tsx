@@ -2,18 +2,18 @@ import React, { useContext, useEffect, useRef } from 'react';
 import { Subuser } from '@/state/server/subusers';
 import { Form, Formik, useFormikContext } from 'formik';
 import { array, object, string } from 'yup';
-import Field from '@/components/elements/Field';
+import Field from '@/reviactyl/elements/Field';
 import { Actions, useStoreActions, useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import createOrUpdateSubuser from '@/api/server/users/createOrUpdateSubuser';
 import { ServerContext } from '@/state/server';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import Can from '@/components/elements/Can';
+import Can from '@/reviactyl/elements/Can';
 import { usePermissions } from '@/plugins/usePermissions';
 import { useDeepCompareMemo } from '@/plugins/useDeepCompareMemo';
 import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
-import Select from '@/components/elements/Select';
+import Button from '@/reviactyl/elements/Button';
+import Select from '@/reviactyl/elements/Select';
 import PermissionTitleBox from '@/components/server/users/PermissionTitleBox';
 import asModal from '@/hoc/asModal';
 import PermissionRow from '@/components/server/users/PermissionRow';
@@ -184,7 +184,7 @@ const EditSubuserModal = ({ subuser }: Props) => {
                 <FlashMessageRender byKey={'user:edit'} css={tw`mt-4`} />
                 <div css={tw`mt-6`}>
                     <label css={tw`mb-2 text-gray-300 font-bold block text-sm`}>Select Info</label>
-                    <div css={tw`p-4 bg-gray-600 rounded-lg border border-gray-500`}>
+                    <div css={tw`p-4 bg-gray-700 rounded-lg border border-gray-600`}>
                         <h3 css={tw`text-white font-semibold mb-2`}>Role Presets</h3>
                         <p css={tw`text-gray-300 text-sm mb-4`}>
                             Select a preset to automatically configure permissions for this user. You can still

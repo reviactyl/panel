@@ -1,6 +1,6 @@
 import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
-import { ReviactylAlert } from '@/state/reviactyl';
+import { DesignifyAlert } from '@/state/designify';
 import Md2React from '@/reviactyl/ui/Md2React';
 import { BellIcon, CheckIcon, ExclamationIcon, InboxInIcon, InformationCircleIcon } from '@heroicons/react/solid';
 import styled from 'styled-components';
@@ -43,11 +43,11 @@ const getAlertIcon = (type: string) =>
     );
 
 const Announcement = () => {
-    const reviactyl = useStoreState((state: ApplicationStore) => state.reviactyl.data);
+    const reviactyl = useStoreState((state: ApplicationStore) => state.designify.data);
     const configuredAlerts = reviactyl?.alerts ?? [];
     const fallbackAlertType = reviactyl?.alertType;
     const fallbackAlertMessage = reviactyl?.alertMessage;
-    const alerts: ReviactylAlert[] =
+    const alerts: DesignifyAlert[] =
         configuredAlerts.length > 0
             ? configuredAlerts
             : fallbackAlertType && fallbackAlertMessage

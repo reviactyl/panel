@@ -25,48 +25,48 @@ class InfoCommand extends Command
      */
     public function handle()
     {
-        $this->output->title('Version Information');
+        $this->output->title(trans('command/messages.info.titles.version'));
         $this->table([], [
-            ['Panel Version', $this->config->get('app.version')],
-            ['Latest Version', $this->versionService->getPanel()],
-            ['Up-to-Date', $this->versionService->isLatestPanel() ? 'Yes' : $this->formatText('No', 'bg=red')],
-            ['Unique Identifier', $this->config->get('panel.service.author')],
+            [trans('command/messages.info.fields.panel_version'), $this->config->get('app.version')],
+            [trans('command/messages.info.fields.latest_version'), $this->versionService->getPanel()],
+            [trans('command/messages.info.fields.up_to_date'), $this->versionService->isLatestPanel() ? trans('command/messages.info.yes') : $this->formatText(trans('command/messages.info.no'), 'bg=red')],
+            [trans('command/messages.info.fields.unique_identifier'), $this->config->get('panel.service.author')],
         ], 'compact');
 
-        $this->output->title('Application Configuration');
+        $this->output->title(trans('command/messages.info.titles.application'));
         $this->table([], [
-            ['Environment', $this->formatText($this->config->get('app.env'), $this->config->get('app.env') === 'production' ?: 'bg=red')],
-            ['Debug Mode', $this->formatText($this->config->get('app.debug') ? 'Yes' : 'No', ! $this->config->get('app.debug') ?: 'bg=red')],
-            ['Installation URL', $this->config->get('app.url')],
-            ['Installation Directory', base_path()],
-            ['Timezone', $this->config->get('app.timezone')],
-            ['Cache Driver', $this->config->get('cache.default')],
-            ['Queue Driver', $this->config->get('queue.default')],
-            ['Session Driver', $this->config->get('session.driver')],
-            ['Filesystem Driver', $this->config->get('filesystems.default')],
-            ['Proxies', $this->config->get('trustedproxies.proxies')],
+            [trans('command/messages.info.fields.environment'), $this->formatText($this->config->get('app.env'), $this->config->get('app.env') === 'production' ?: 'bg=red')],
+            [trans('command/messages.info.fields.debug_mode'), $this->formatText($this->config->get('app.debug') ? trans('command/messages.info.yes') : trans('command/messages.info.no'), ! $this->config->get('app.debug') ?: 'bg=red')],
+            [trans('command/messages.info.fields.installation_url'), $this->config->get('app.url')],
+            [trans('command/messages.info.fields.installation_directory'), base_path()],
+            [trans('command/messages.info.fields.timezone'), $this->config->get('app.timezone')],
+            [trans('command/messages.info.fields.cache_driver'), $this->config->get('cache.default')],
+            [trans('command/messages.info.fields.queue_driver'), $this->config->get('queue.default')],
+            [trans('command/messages.info.fields.session_driver'), $this->config->get('session.driver')],
+            [trans('command/messages.info.fields.filesystem_driver'), $this->config->get('filesystems.default')],
+            [trans('command/messages.info.fields.proxies'), $this->config->get('trustedproxies.proxies')],
         ], 'compact');
 
-        $this->output->title('Database Configuration');
+        $this->output->title(trans('command/messages.info.titles.database'));
         $driver = $this->config->get('database.default');
         $this->table([], [
-            ['Driver', $driver],
-            ['Host', $this->config->get("database.connections.$driver.host")],
-            ['Port', $this->config->get("database.connections.$driver.port")],
-            ['Database', $this->config->get("database.connections.$driver.database")],
-            ['Username', $this->config->get("database.connections.$driver.username")],
+            [trans('command/messages.info.fields.driver'), $driver],
+            [trans('command/messages.info.fields.host'), $this->config->get("database.connections.$driver.host")],
+            [trans('command/messages.info.fields.port'), $this->config->get("database.connections.$driver.port")],
+            [trans('command/messages.info.fields.database'), $this->config->get("database.connections.$driver.database")],
+            [trans('command/messages.info.fields.username'), $this->config->get("database.connections.$driver.username")],
         ], 'compact');
 
         // TODO: Update this to handle other mail drivers
-        $this->output->title('Email Configuration');
+        $this->output->title(trans('command/messages.info.titles.email'));
         $this->table([], [
-            ['Driver', $this->config->get('mail.default')],
-            ['Host', $this->config->get('mail.mailers.smtp.host')],
-            ['Port', $this->config->get('mail.mailers.smtp.port')],
-            ['Username', $this->config->get('mail.mailers.smtp.username')],
-            ['From Address', $this->config->get('mail.from.address')],
-            ['From Name', $this->config->get('mail.from.name')],
-            ['Encryption', $this->config->get('mail.mailers.smtp.encryption')],
+            [trans('command/messages.info.fields.driver'), $this->config->get('mail.default')],
+            [trans('command/messages.info.fields.host'), $this->config->get('mail.mailers.smtp.host')],
+            [trans('command/messages.info.fields.port'), $this->config->get('mail.mailers.smtp.port')],
+            [trans('command/messages.info.fields.username'), $this->config->get('mail.mailers.smtp.username')],
+            [trans('command/messages.info.fields.from_address'), $this->config->get('mail.from.address')],
+            [trans('command/messages.info.fields.from_name'), $this->config->get('mail.from.name')],
+            [trans('command/messages.info.fields.encryption'), $this->config->get('mail.mailers.smtp.encryption')],
         ], 'compact');
     }
 

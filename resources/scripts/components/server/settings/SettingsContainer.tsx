@@ -1,18 +1,18 @@
-import TitledGreyBox from '@/components/elements/TitledGreyBox';
+import TitledGreyBox from '@/reviactyl/elements/TitledGreyBox';
 import { ServerContext } from '@/state/server';
 import { useStoreState } from 'easy-peasy';
 import RenameServerBox from '@/components/server/settings/RenameServerBox';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import Can from '@/components/elements/Can';
+import Can from '@/reviactyl/elements/Can';
 import ReinstallServerBox from '@/components/server/settings/ReinstallServerBox';
 import tw from 'twin.macro';
-import Input from '@/components/elements/Input';
-import Label from '@/components/elements/Label';
-import ServerContentBlock from '@/components/elements/ServerContentBlock';
+import Input from '@/reviactyl/elements/Input';
+import Label from '@/reviactyl/elements/Label';
+import ServerContentBlock from '@/reviactyl/elements/ServerContentBlock';
 import isEqual from 'react-fast-compare';
-import CopyOnClick from '@/components/elements/CopyOnClick';
+import CopyOnClick from '@/reviactyl/elements/CopyOnClick';
 import { ip } from '@/lib/formatters';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/reviactyl/elements/button/index';
 import { useTranslation } from 'react-i18next';
 
 export default () => {
@@ -61,20 +61,20 @@ export default () => {
                     <TitledGreyBox title={t('info.title')} css={tw`mb-6 md:mb-10`}>
                         <div css={tw`flex items-center justify-between text-sm`}>
                             <p>{t('info.node')}</p>
-                            <code css={tw`font-mono bg-gray-800 rounded-ui border border-gray-600 py-1 px-2`}>
+                            <code css={tw`font-mono bg-gray-900 rounded-ui border border-gray-800 py-1 px-2`}>
                                 {node}
                             </code>
                         </div>
                         <CopyOnClick text={uuid}>
                             <div css={tw`flex items-center justify-between mt-2 text-sm`}>
                                 <p>{t('info.server')}</p>
-                                <code css={tw`font-mono bg-gray-800 rounded-ui border border-gray-600 py-1 px-2`}>
+                                <code css={tw`font-mono bg-gray-900 rounded-ui border border-gray-800 py-1 px-2`}>
                                     {uuid}
                                 </code>
                             </div>
                         </CopyOnClick>
                         <div css={tw`mt-6`}>
-                            <Label>Public Status Page</Label>
+                            <Label>{t('info.public-status-page')}</Label>
                             <CopyOnClick text={`${window.location.origin}/status/${uuid}`}>
                                 <Input type={'text'} value={`${window.location.origin}/status/${uuid}`} readOnly />
                             </CopyOnClick>

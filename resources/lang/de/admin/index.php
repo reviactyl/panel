@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'title' => 'Dashboard',
+    'title' => 'Armaturenbrett',
     'uptodate-header' => 'Das Panel ist auf der neusten Version',
     'uptodate-body' => 'Sie verwenden :version. Das Panel ist auf der neusten Version!',
     'notuptodate-header' => 'Das Panel ist veraltet',

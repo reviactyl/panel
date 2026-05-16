@@ -2,8 +2,12 @@
 
 return [
     'index' => [
-        'dashboard' => 'Dashboard',
+        'dashboard' => 'Tableau de bord',
         'logout' => 'Déconnexion',
+    ],
+    'sidebar' => [
+        'more' => 'Plus',
+        'extensions' => 'Rallonges',
     ],
     'account' => [
         'overview' => 'Aperçu du compte',
@@ -16,7 +20,7 @@ return [
         'files' => 'Fichiers',
         'startup' => 'Démarrage',
         'network' => 'Réseau',
-        'metrics' => 'Metrics',
+        'metrics' => 'Métrique',
         'databases' => 'Base de données',
         'schedules' => 'Tâches automatiques',
         'backups' => 'Sauvegardes',

@@ -1,0 +1,26 @@
+<?php
+
+return [
+    'control' => 'Điều khiển',
+    'management' => 'Sự quản lý',
+    'administration' => 'Sự quản lý',
+    'start' => 'Bắt đầu',
+    'stop' => 'Dừng lại',
+    'restart' => 'Khởi động lại',
+    'kill' => 'Giết',
+    'kill-warning' => 'Việc buộc dừng máy chủ có thể dẫn đến hỏng dữ liệu.',
+    'hide-stats' => 'Ẩn số liệu thống kê',
+    'show-stats' => 'Hiển thị số liệu thống kê',
+    'force-stop-title' => 'Buộc dừng quá trình',
+    'force-stop-confirm' => 'Tiếp tục',
+    'installer-running-title' => 'Đang chạy trình cài đặt',
+    'installer-running-message' => 'Máy chủ của bạn sẽ sớm sẵn sàng, vui lòng thử lại sau vài phút.',
+    'server-suspended-title' => 'Máy chủ bị treo',
+    'server-suspended-message' => 'Máy chủ này bị treo và không thể truy cập được.',
+    'node-maintenance-title' => 'Nút đang bảo trì',
+    'node-maintenance-message' => 'Nút của máy chủ này hiện đang được bảo trì.',
+    'server-transferring-title' => 'Chuyển giao',
+    'server-transferring-message' => 'Máy chủ của bạn đang được chuyển sang một nút mới, vui lòng kiểm tra lại sau.',
+    'server-restoring-title' => 'Khôi phục từ bản sao lưu',
+    'server-restoring-message' => 'Máy chủ của bạn hiện đang được khôi phục từ bản sao lưu, vui lòng kiểm tra lại sau vài phút.',
+];

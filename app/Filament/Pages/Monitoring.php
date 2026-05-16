@@ -6,7 +6,7 @@ use App\Filament\Widgets\MonitoringWidget;
 use App\Filament\Widgets\NodeSelectorWidget;
 use App\Filament\Widgets\ServersWidget;
 use App\Models\Node;
-use App\Repositories\Wings\DaemonMonitoringRepository;
+use App\Repositories\Agent\DaemonMonitoringRepository;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Placeholder;
 use Filament\Pages\Page;

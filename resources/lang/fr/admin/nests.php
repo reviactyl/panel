@@ -25,23 +25,23 @@ return [
         'id' => 'ID',
         'name' => 'Nom',
         'author' => 'Auteur',
-        'eggs' => 'Eggs',
+        'eggs' => 'Œufs',
         'servers' => 'Serveurs',
     ],
 
     'actions' => [
-        'import' => 'Import Egg',
+        'import' => 'Importer des œufs',
     ],
 
     'import' => [
-        'file_label' => 'Egg File (JSON)',
-        'nest_label' => 'Associated Nest',
-        'file_not_found' => 'File not found',
-        'file_not_found_body' => 'Could not locate uploaded file.',
-        'invalid_format' => 'Invalid file format',
-        'invalid_format_body' => 'Unexpected file format received.',
-        'success' => 'Egg imported successfully',
-        'failed' => 'Failed to import egg',
+        'file_label' => 'Fichier œuf (JSON)',
+        'nest_label' => 'Nid associé',
+        'file_not_found' => 'Fichier introuvable',
+        'file_not_found_body' => 'Impossible de localiser le fichier téléchargé.',
+        'invalid_format' => 'Format de fichier invalide',
+        'invalid_format_body' => 'Format de fichier inattendu reçu.',
+        'success' => 'Oeuf importé avec succès',
+        'failed' => 'Échec de l\'importation de l\'œuf',
     ],
 
     'notices' => [

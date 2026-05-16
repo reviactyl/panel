@@ -1,19 +1,19 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import TitledGreyBox from '@/components/elements/TitledGreyBox';
+import TitledGreyBox from '@/reviactyl/elements/TitledGreyBox';
 import tw from 'twin.macro';
 import VariableBox from '@/components/server/startup/VariableBox';
-import ServerContentBlock from '@/components/elements/ServerContentBlock';
+import ServerContentBlock from '@/reviactyl/elements/ServerContentBlock';
 import getServerStartup from '@/api/swr/getServerStartup';
-import Spinner from '@/components/elements/Spinner';
-import { ServerError } from '@/components/elements/ScreenBlock';
+import Spinner from '@/reviactyl/elements/Spinner';
+import { ServerError } from '@/reviactyl/elements/ScreenBlock';
 import { httpErrorToHuman } from '@/api/http';
 import { ServerContext } from '@/state/server';
 import { useDeepCompareEffect } from '@/plugins/useDeepCompareEffect';
-import Select from '@/components/elements/Select';
+import Select from '@/reviactyl/elements/Select';
 import isEqual from 'react-fast-compare';
-import Input from '@/components/elements/Input';
+import Input from '@/reviactyl/elements/Input';
 import setSelectedDockerImage from '@/api/server/setSelectedDockerImage';
-import InputSpinner from '@/components/elements/InputSpinner';
+import InputSpinner from '@/reviactyl/elements/InputSpinner';
 import useFlash from '@/plugins/useFlash';
 import { useTranslation } from 'react-i18next';
 
@@ -89,7 +89,7 @@ const StartupContainer = () => {
             <div css={tw`md:flex`}>
                 <TitledGreyBox title={t('startup-command')} css={tw`flex-1`}>
                     <div css={tw`px-1 py-2`}>
-                        <p css={tw`font-mono bg-gray-800 rounded-ui border border-gray-600 py-2 px-4`}>
+                        <p css={tw`font-mono bg-gray-900 rounded-ui border border-gray-800 py-2 px-4`}>
                             {data.invocation}
                         </p>
                     </div>

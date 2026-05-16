@@ -1,13 +1,13 @@
 import { useRef, type MouseEvent } from 'react';
 import { FaBoxArchive, FaEllipsis, FaLock } from 'react-icons/fa6';
 import { format, formatDistanceToNow } from 'date-fns';
-import Spinner from '@/components/elements/Spinner';
+import Spinner from '@/reviactyl/elements/Spinner';
 import { bytesToString } from '@/lib/formatters';
-import Can from '@/components/elements/Can';
+import Can from '@/reviactyl/elements/Can';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import BackupContextMenu, { BackupContextMenuHandle } from '@/components/server/backups/BackupContextMenu';
 import tw from 'twin.macro';
-import GreyRowBox from '@/components/elements/GreyRowBox';
+import GreyRowBox from '@/reviactyl/elements/GreyRowBox';
 import getServerBackups from '@/api/swr/getServerBackups';
 import { ServerBackup } from '@/api/server/types';
 import { SocketEvent } from '@/components/server/events';
@@ -97,7 +97,7 @@ export default ({ backup, className }: Props) => {
                 <p title={format(backup.createdAt, 'ddd, MMMM do, yyyy HH:mm:ss')} css={tw`text-sm`}>
                     {formatDistanceToNow(backup.createdAt, { includeSeconds: true, addSuffix: true })}
                 </p>
-                <p css={tw`text-2xs text-gray-500 uppercase mt-1`}>{t('created')}</p>
+                <p css={tw`text-2xs text-gray-600 uppercase mt-1`}>{t('created')}</p>
             </div>
             <Can action={['backup.download', 'backup.restore', 'backup.delete']} matchAny>
                 <div css={tw`mt-4 md:mt-0 ml-6`} style={{ marginRight: '-0.5rem' }}>

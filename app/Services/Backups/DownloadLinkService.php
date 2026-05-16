@@ -18,7 +18,7 @@ class DownloadLinkService
 
     /**
      * Returns the URL that allows for a backup to be downloaded by an individual
-     * user, or by the Wings control software.
+     * user, or by the Agent control software.
      */
     public function handle(Backup $backup, User $user): string
     {

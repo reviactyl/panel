@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Start',
+    'read-only' => 'Endast läs',
     'startup-command' => 'Startkommando',
     'docker-image' => 'Docker-avbildning',
     'docker-info' => 'Detta är en avancerad funktion som låter dig välja en Docker-avbildning att använda när du kör denna serverinstans.',

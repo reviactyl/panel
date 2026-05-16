@@ -1,17 +1,19 @@
 import { useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
-import Modal from '@/components/elements/Modal';
+import Modal from '@/reviactyl/elements/Modal';
 import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
+import Button from '@/reviactyl/elements/Button';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
 import { SocketEvent } from '@/components/server/events';
 import { useStoreState } from 'easy-peasy';
 import { FaTriangleExclamation } from 'react-icons/fa6';
+import { useTranslation } from 'react-i18next';
 
 const PIDLimitModalFeature = () => {
     const [visible, setVisible] = useState(false);
     const [loading] = useState(false);
+    const { t } = useTranslation('server/features');
 
     const status = ServerContext.useStoreState((state) => state.status.value);
     const { clearFlashes } = useFlash();
@@ -61,14 +63,14 @@ const PIDLimitModalFeature = () => {
                         <FaTriangleExclamation css={tw`pr-4`} color={'orange'} size={'4em'} />
                         <h2 css={tw`text-2xl mb-4 text-gray-100 `}>Memory or process limit reached...</h2>
                     </div>
-                    <p css={tw`mt-4`}>This server has reached the maximum process or memory limit.</p>
+                    <p css={tw`mt-4`}>{t('pid-limit.message')}</p>
                     <p css={tw`mt-4`}>
-                        Increasing <code css={tw`font-mono bg-gray-900`}>container_pid_limit</code> in the wings
-                        configuration, <code css={tw`font-mono bg-gray-900`}>config.yml</code>, might help resolve this
+                        Increasing <code css={tw`font-mono bg-gray-950`}>container_pid_limit</code> in the agent
+                        configuration, <code css={tw`font-mono bg-gray-950`}>config.yml</code>, might help resolve this
                         issue.
                     </p>
                     <p css={tw`mt-4`}>
-                        <b>Note: Wings must be restarted for the configuration file changes to take effect</b>
+                        <b>Note: Agent must be restarted for the configuration file changes to take effect</b>
                     </p>
                     <div css={tw`mt-8 sm:flex items-center justify-end`}>
                         <Button onClick={() => setVisible(false)} css={tw`w-full sm:w-auto border-transparent`}>
@@ -87,7 +89,7 @@ const PIDLimitModalFeature = () => {
                         and give them the error below.
                     </p>
                     <p css={tw`mt-4`}>
-                        <code css={tw`font-mono bg-gray-900`}>
+                        <code css={tw`font-mono bg-gray-950`}>
                             pthread_create failed, Possibly out of memory or process/resource limits reached
                         </code>
                     </p>

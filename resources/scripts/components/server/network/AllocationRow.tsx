@@ -2,23 +2,23 @@ import { memo, useCallback, useState } from 'react';
 import isEqual from 'react-fast-compare';
 import tw from 'twin.macro';
 import { FaNetworkWired } from 'react-icons/fa6';
-import InputSpinner from '@/components/elements/InputSpinner';
-import { Textarea } from '@/components/elements/Input';
-import Can from '@/components/elements/Can';
-import { Button } from '@/components/elements/button/index';
-import GreyRowBox from '@/components/elements/GreyRowBox';
+import InputSpinner from '@/reviactyl/elements/InputSpinner';
+import { Textarea } from '@/reviactyl/elements/Input';
+import Can from '@/reviactyl/elements/Can';
+import { Button } from '@/reviactyl/elements/button/index';
+import GreyRowBox from '@/reviactyl/elements/GreyRowBox';
 import { Allocation } from '@/api/server/getServer';
 import styled from 'styled-components';
 import { debounce } from 'debounce';
 import setServerAllocationNotes from '@/api/server/network/setServerAllocationNotes';
 import { useFlashKey } from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
-import CopyOnClick from '@/components/elements/CopyOnClick';
+import CopyOnClick from '@/reviactyl/elements/CopyOnClick';
 import DeleteAllocationButton from '@/components/server/network/DeleteAllocationButton';
 import setPrimaryServerAllocation from '@/api/server/network/setPrimaryServerAllocation';
 import getServerAllocations from '@/api/swr/getServerAllocations';
 import { ip } from '@/lib/formatters';
-import Code from '@/components/elements/Code';
+import Code from '@/reviactyl/elements/Code';
 
 const Label = styled.label`
     ${tw`uppercase text-xs mt-1 text-gray-400 block px-1 select-none transition-colors duration-150`}

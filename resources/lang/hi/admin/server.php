@@ -1,186 +1,312 @@
 <?php
 
 return [
-    'label' => 'Server',
-    'plural-label' => 'Servers',
+    'label' => 'सर्वर',
+    'plural-label' => 'सर्वर',
 
     'sections' => [
         'identity' => [
-            'title' => 'Identity',
-            'description' => 'Basic server information and ownership.',
+            'title' => 'पहचान',
+            'description' => 'बुनियादी सर्वर जानकारी और स्वामित्व.',
         ],
         'allocation' => [
-            'title' => 'Allocation',
-            'description' => 'Select the node and network allocation for this server.',
+            'title' => 'आवंटन',
+            'description' => 'इस सर्वर के लिए नोड और नेटवर्क आवंटन का चयन करें।',
         ],
         'startup' => [
-            'title' => 'Startup',
-            'description' => 'Configure the egg, startup command, and Docker image.',
+            'title' => 'चालू होना',
+            'description' => 'अंडा, स्टार्टअप कमांड और डॉकर छवि कॉन्फ़िगर करें।',
         ],
         'resources' => [
-            'title' => 'Resource Limits',
-            'description' => 'Define the server resource limits.',
+            'title' => 'संसाधन सीमाएँ',
+            'description' => 'सर्वर संसाधन सीमाएँ परिभाषित करें।',
         ],
         'feature_limits' => [
-            'title' => 'Feature Limits',
-            'description' => 'Limit databases, allocations, and backups.',
+            'title' => 'फ़ीचर सीमाएँ',
+            'description' => 'डेटाबेस, आवंटन और बैकअप सीमित करें।',
         ],
         'environment' => [
-            'title' => 'Environment Variables',
-            'description' => 'Set environment values for the selected egg.',
+            'title' => 'पर्यावरण चर',
+            'description' => 'चयनित अंडे के लिए पर्यावरण मान निर्धारित करें।',
+        ],
+    ],
+
+    'status' => [
+        'online' => 'ऑनलाइन',
+        'offline' => 'ऑफलाइन',
+        'starting' => 'प्रारंभ',
+        'stopping' => 'रोक',
+        'crashed' => 'दुर्घटनाग्रस्त',
+        'installing' => 'स्थापित कर रहा है',
+        'restoring_backup' => 'बैकअप बहाल किया जा रहा है',
+        'install_failed' => 'इंस्टॉल विफल',
+        'reinstall_failed' => 'पुनः स्थापित करना विफल',
+        'suspended' => 'निलंबित',
+    ],
+
+    'create' => [
+        'sections' => [
+            'core_details' => 'मुख्य विवरण',
+            'allocation' => 'आवंटन प्रबंधन',
+            'feature_limits' => 'एप्लिकेशन फ़ीचर सीमाएँ',
+            'resources' => 'संसाधन प्रबंधन',
+            'nest' => 'घोंसला विन्यास',
+            'docker' => 'डॉकर कॉन्फ़िगरेशन',
+            'startup' => 'स्टार्टअप कॉन्फ़िगरेशन',
+            'variables' => 'सेवा चर',
+        ],
+
+        'fields' => [
+            'name' => [
+                'label' => 'सर्वर नाम',
+                'placeholder' => 'सर्वर नाम',
+                'helper' => 'वर्ण सीमाएँ: a-z A-Z 0-9 _ -। और रिक्त स्थान.',
+            ],
+            'owner' => [
+                'label' => 'सर्वर स्वामी',
+                'helper' => 'सर्वर स्वामी का ईमेल पता.',
+            ],
+            'description' => [
+                'label' => 'सर्वर विवरण',
+                'helper' => 'इस सर्वर का संक्षिप्त विवरण.',
+            ],
+            'start_on_completion' => [
+                'label' => 'इंस्टॉल होने पर सर्वर प्रारंभ करें',
+            ],
+            'node' => [
+                'label' => 'नोड',
+                'helper' => 'वह नोड जिस पर यह सर्वर तैनात किया जाएगा।',
+            ],
+            'allocation' => [
+                'label' => 'डिफ़ॉल्ट आवंटन',
+                'helper' => 'मुख्य आवंटन जो इस सर्वर को सौंपा जाएगा।',
+            ],
+            'additional_allocations' => [
+                'label' => 'अतिरिक्त आवंटन',
+                'helper' => 'निर्माण पर इस सर्वर को आवंटित करने के लिए अतिरिक्त आवंटन।',
+            ],
+            'database_limit' => [
+                'label' => 'डेटाबेस सीमा',
+                'helper' => 'किसी उपयोगकर्ता को इस सर्वर के लिए डेटाबेस की कुल संख्या बनाने की अनुमति है।',
+            ],
+            'allocation_limit' => [
+                'label' => 'आवंटन सीमा',
+                'helper' => 'किसी उपयोगकर्ता को इस सर्वर के लिए आवंटन की कुल संख्या बनाने की अनुमति है।',
+            ],
+            'backup_limit' => [
+                'label' => 'बैकअप सीमा',
+                'helper' => 'इस सर्वर के लिए बनाए जा सकने वाले बैकअप की कुल संख्या.',
+            ],
+            'cpu' => [
+                'label' => 'सीपीयू सीमा',
+                'helper' => 'बिना सीपीयू सीमा के 0 सेट करें। एक पूर्ण वर्चुअल कोर 100% है।',
+            ],
+            'threads' => [
+                'label' => 'सीपीयू पिनिंग',
+                'helper' => 'उन्नत: एकल संख्या या अल्पविराम से अलग की गई सूची का उपयोग करें, उदाहरण के लिए 0, 0-1,3, या 0,1,3,4।',
+            ],
+            'memory' => [
+                'label' => 'याद',
+                'helper' => 'इस कंटेनर के लिए अनुमत मेमोरी की अधिकतम मात्रा. असीमित के लिए 0 सेट करें.',
+            ],
+            'swap' => [
+                'label' => 'बदलना',
+                'helper' => 'स्वैप को अक्षम करने के लिए 0 सेट करें, या असीमित स्वैप की अनुमति देने के लिए -1 सेट करें।',
+            ],
+            'disk' => [
+                'label' => 'डिस्क मैं स्थान',
+                'helper' => 'असीमित डिस्क उपयोग की अनुमति देने के लिए 0 सेट करें।',
+            ],
+            'io' => [
+                'label' => 'ब्लॉक आईओ वजन',
+                'helper' => 'उन्नत: अन्य चल रहे कंटेनरों के सापेक्ष IO प्रदर्शन। वैल्यू 10 से 1000 होनी चाहिए.',
+            ],
+            'oom_disabled' => [
+                'label' => 'OOM किलर सक्षम करें',
+                'helper' => 'यदि सर्वर मेमोरी सीमा का उल्लंघन करता है तो उसे समाप्त कर देता है।',
+            ],
+            'nest' => [
+                'label' => 'घोंसला',
+                'helper' => 'उस नेस्ट का चयन करें जिसके अंतर्गत इस सर्वर को समूहीकृत किया जाएगा।',
+            ],
+            'egg' => [
+                'label' => 'अंडा',
+                'helper' => 'उस अंडे का चयन करें जो परिभाषित करेगा कि इस सर्वर को कैसे संचालित करना चाहिए।',
+            ],
+            'skip_scripts' => [
+                'label' => 'एग इंस्टाल स्क्रिप्ट छोड़ें',
+                'helper' => 'यदि चयनित एग के साथ एक इंस्टाल स्क्रिप्ट जुड़ी हुई है, तो स्क्रिप्ट इंस्टाल के दौरान चलेगी जब तक कि इसकी जाँच नहीं की जाती।',
+            ],
+            'image' => [
+                'label' => 'Docker Image',
+                'helper' => 'ड्रॉपडाउन से एक छवि चुनें, या नीचे एक कस्टम छवि दर्ज करें।',
+            ],
+            'custom_image' => [
+                'label' => 'कस्टम डॉकर छवि',
+                'placeholder' => 'या एक कस्टम छवि दर्ज करें...',
+                'helper' => 'यह डिफ़ॉल्ट डॉकर छवि है जिसका उपयोग इस सर्वर को चलाने के लिए किया जाएगा।',
+            ],
+            'startup' => [
+                'label' => 'स्टार्टअप कमांड',
+                'helper' => 'उपलब्ध विकल्प: {{SERVER_MEMORY}}, {{SERVER_IP}}, और {{SERVER_PORT}}।',
+            ],
+            'environment_placeholder' => [
+                'label' => 'सेवा चर कॉन्फ़िगर करने के लिए एक अंडे का चयन करें',
+            ],
         ],
     ],
 
     'fields' => [
         'advanced_mode' => [
-            'label' => 'Advanced Mode',
-            'helper' => 'Toggle to show additional server configuration options. Toggle on only if you understand the implications of the additional settings.',
+            'label' => 'उन्नत मोड',
+            'helper' => 'अतिरिक्त सर्वर कॉन्फ़िगरेशन विकल्प दिखाने के लिए टॉगल करें। यदि आप अतिरिक्त सेटिंग्स के निहितार्थ को समझते हैं तो ही टॉगल चालू करें।',
         ],
         'external_id' => [
-            'label' => 'External ID',
-            'helper' => 'Optional unique identifier for this server.',
+            'label' => 'बाहरी आईडी',
+            'helper' => 'इस सर्वर के लिए वैकल्पिक विशिष्ट पहचानकर्ता.',
         ],
         'owner' => [
-            'label' => 'Owner',
-            'helper' => 'Select the user that owns this server.',
+            'label' => 'मालिक',
+            'helper' => 'उस उपयोगकर्ता का चयन करें जिसके पास यह सर्वर है.',
         ],
         'name' => [
-            'label' => 'Name',
-            'placeholder' => 'Server Name',
-            'helper' => 'A short name for this server.',
+            'label' => 'नाम',
+            'placeholder' => 'सर्वर नाम',
+            'helper' => 'इस सर्वर का संक्षिप्त नाम.',
         ],
         'description' => [
-            'label' => 'Description',
-            'placeholder' => 'Server description',
-            'helper' => 'Optional description for this server.',
+            'label' => 'विवरण',
+            'placeholder' => 'सर्वर विवरण',
+            'helper' => 'इस सर्वर के लिए वैकल्पिक विवरण.',
         ],
         'node' => [
-            'label' => 'Node',
-            'helper' => 'The node this server will be deployed to.',
+            'label' => 'नोड',
+            'helper' => 'यह सर्वर जिस नोड पर तैनात किया जाएगा।',
         ],
         'allocation' => [
-            'label' => 'Primary Allocation',
-            'helper' => 'The default IP/port allocation for this server.',
+            'label' => 'प्राथमिक आवंटन',
+            'helper' => 'इस सर्वर के लिए डिफ़ॉल्ट आईपी/पोर्ट आवंटन।',
         ],
         'additional_allocations' => [
-            'label' => 'Additional Allocations',
-            'helper' => 'Optional extra allocations to assign.',
+            'label' => 'अतिरिक्त आवंटन',
+            'helper' => 'असाइन करने के लिए वैकल्पिक अतिरिक्त आवंटन।',
         ],
         'nest' => [
-            'label' => 'Nest',
-            'helper' => 'The service nest for this server.',
+            'label' => 'घोंसला',
+            'helper' => 'इस सर्वर के लिए सर्विस नेस्ट.',
         ],
         'egg' => [
-            'label' => 'Egg',
-            'helper' => 'The egg that defines server behavior.',
+            'label' => 'अंडा',
+            'helper' => 'अंडा जो सर्वर व्यवहार को परिभाषित करता है।',
         ],
         'startup' => [
-            'label' => 'Startup Command',
-            'helper' => 'The startup command for the server.',
+            'label' => 'स्टार्टअप कमांड',
+            'helper' => 'सर्वर के लिए स्टार्टअप कमांड.',
         ],
         'image' => [
             'label' => 'Docker Image',
-            'placeholder' => 'e.g. ghcr.io/reviactyl/images:java_17',
-            'helper' => 'Docker image used to run this server.',
-            'custom' => 'Custom',
+            'helper' => 'इस सर्वर को चलाने के लिए डॉकर छवि का उपयोग किया जाता है।',
+            'custom' => 'रिवाज़',
         ],
         'skip_scripts' => [
-            'label' => 'Skip Egg Scripts',
-            'helper' => 'Skip egg install scripts during creation.',
+            'label' => 'अंडा स्क्रिप्ट छोड़ें',
+            'helper' => 'निर्माण के दौरान एग इंस्टाल स्क्रिप्ट छोड़ें।',
         ],
         'start_on_completion' => [
-            'label' => 'Start on Completion',
-            'helper' => 'Automatically start the server after installation.',
+            'label' => 'समापन पर प्रारंभ करें',
+            'helper' => 'इंस्टालेशन के बाद सर्वर स्वचालित रूप से प्रारंभ हो जाएगा।',
         ],
         'memory' => [
-            'label' => 'Memory',
-            'helper' => 'Total memory allocation. Set to 0 for unlimited. (Unlimited Memory doesn\'t work for Minecraft Eggs due to Startup Command)',
+            'label' => 'याद',
+            'helper' => 'कुल मेमोरी आवंटन. असीमित के लिए 0 पर सेट करें. (स्टार्टअप कमांड के कारण माइनक्राफ्ट एग्स के लिए अनलिमिटेड मेमोरी काम नहीं करती है)',
         ],
         'swap' => [
-            'label' => 'Swap',
-            'helper' => 'Swap memory allocation. Set to 0 to disable swap or -1 to allow unlimited swap.',
+            'label' => 'बदलना',
+            'helper' => 'स्मृति आवंटन स्वैप करें. स्वैप को अक्षम करने के लिए 0 पर सेट करें या असीमित स्वैप की अनुमति देने के लिए -1 पर सेट करें।',
         ],
         'disk' => [
-            'label' => 'Disk',
-            'helper' => 'Disk space allocation. Set to 0 for unlimited.',
+            'label' => 'डिस्क',
+            'helper' => 'डिस्क स्थान आवंटन. असीमित के लिए 0 पर सेट करें.',
         ],
         'io' => [
-            'label' => 'IO Weight',
-            'helper' => 'Relative disk I/O priority (10-1000).',
+            'label' => 'आईओ वजन',
+            'helper' => 'सापेक्ष डिस्क I/O प्राथमिकता (10-1000)।',
         ],
         'cpu' => [
             'label' => 'CPU',
-            'helper' => 'CPU limit in percent. 100% means one full core, 200% means two full cores, etc.',
+            'helper' => 'सीपीयू सीमा प्रतिशत में. 100% का अर्थ है एक पूर्ण कोर, 200% का अर्थ है दो पूर्ण कोर, आदि।',
         ],
         'enter_size_in_gib' => [
-            'label' => 'Enter size in GiB',
-            'helper' => 'You can enter sizes in GiB by using the "GiB" suffix (e.g. 10GiB = 10240MiB).',
+            'label' => 'GiB में आकार दर्ज करें',
+            'helper' => 'आप "GiB" प्रत्यय (जैसे 10GiB = 10240MiB) का उपयोग करके GiB में आकार दर्ज कर सकते हैं।',
         ],
         'threads' => [
-            'label' => 'CPU Threads',
-            'helper' => 'Optional thread pinning. Example: 0-1,3.',
+            'label' => 'सीपीयू थ्रेड्स',
+            'helper' => 'वैकल्पिक थ्रेड पिनिंग। उदाहरण: 0-1,3.',
         ],
         'oom_disabled' => [
-            'label' => 'Disable OOM Killer',
-            'helper' => 'Prevent the kernel from killing the process when out of memory.',
+            'label' => 'OOM किलर अक्षम करें',
+            'helper' => 'मेमोरी से बाहर होने पर कर्नेल को प्रक्रिया को ख़त्म करने से रोकें।',
         ],
         'database_limit' => [
-            'label' => 'Database Limit',
-            'helper' => 'Maximum number of databases.',
+            'label' => 'डेटाबेस सीमा',
+            'helper' => 'डेटाबेस की अधिकतम संख्या.',
         ],
         'allocation_limit' => [
-            'label' => 'Allocation Limit',
-            'helper' => 'Maximum number of allocations.',
+            'label' => 'आवंटन सीमा',
+            'helper' => 'आवंटन की अधिकतम संख्या.',
         ],
         'backup_limit' => [
-            'label' => 'Backup Limit',
-            'helper' => 'Maximum number of backups.',
+            'label' => 'बैकअप सीमा',
+            'helper' => 'बैकअप की अधिकतम संख्या.',
         ],
         'environment' => [
-            'key' => 'Variable',
-            'value' => 'Value',
-            'helper' => 'Environment variables for this egg.',
+            'key' => 'चर',
+            'value' => 'कीमत',
+            'helper' => 'इस अंडे के लिए पर्यावरण चर.',
         ],
         'use_custom_image' => [
-            'label' => 'Use Custom Image',
-            'helper' => 'Toggle to use a custom Docker image instead of one provided by the egg.',
+            'label' => 'कस्टम छवि का प्रयोग करें',
+            'helper' => 'अंडे द्वारा प्रदान की गई कस्टम डॉकर छवि के बजाय कस्टम डॉकर छवि का उपयोग करने के लिए टॉगल करें।',
         ],
     ],
 
     'table' => [
         'id' => 'ID',
-        'name' => 'Name',
-        'owner' => 'Owner',
-        'node' => 'Node',
-        'allocation' => 'Allocation',
-        'status' => 'Status',
-        'egg' => 'Egg',
-        'memory' => 'Memory',
-        'disk' => 'Disk',
+        'name' => 'नाम',
+        'owner' => 'मालिक',
+        'node' => 'नोड',
+        'allocation' => 'आवंटन',
+        'status' => 'स्थिति',
+        'egg' => 'अंडा',
+        'memory' => 'याद',
+        'disk' => 'डिस्क',
         'cpu' => 'CPU',
-        'created' => 'Created',
-        'updated' => 'Updated',
-        'installed' => 'Installed',
-        'no_status' => 'No Status',
+        'created' => 'बनाया था',
+        'updated' => 'अद्यतन',
+        'installed' => 'स्थापित',
+        'no_status' => 'कोई स्थिति नहीं',
+        'unlimited' => 'असीमित',
     ],
 
     'messages' => [
-        'created' => 'Server has been successfully created.',
-        'updated' => 'Server has been successfully updated.',
-        'deleted' => 'Server has been successfully deleted.',
+        'created' => 'सर्वर सफलतापूर्वक बनाया गया है.',
+        'updated' => 'सर्वर सफलतापूर्वक अद्यतन कर दिया गया है.',
+        'deleted' => 'सर्वर सफलतापूर्वक हटा दिया गया है.',
     ],
 
     'actions' => [
-        'edit' => 'Edit',
-        'toggle_install_status' => 'Toggle Install Status',
-        'suspend' => 'Suspend',
-        'unsuspend' => 'Unsuspend',
-        'suspended' => 'Suspended',
-        'unsuspended' => 'Unsuspended',
-        'reinstall' => 'Reinstall',
-        'delete' => 'Delete',
-        'delete_forcibly' => 'Forcibly Delete',
-        'view' => 'View',
+        'edit' => 'संपादन करना',
+        'random' => 'यादृच्छिक',
+        'toggle_install_status' => 'इंस्टॉल स्थिति टॉगल करें',
+        'suspend' => 'निलंबित करें',
+        'unsuspend' => 'निलंबन रद्द किया',
+        'suspended' => 'निलंबित',
+        'unsuspended' => 'निलंबन हटा',
+        'reinstall' => 'पुनर्स्थापित',
+        'delete' => 'मिटाना',
+        'delete_forcibly' => 'जबरन हटाएं',
+        'view' => 'देखना',
     ],
 
     'exceptions' => [
@@ -193,10 +319,10 @@ return [
 
     'alerts' => [
         'install_toggled' => 'इस सर्वर के लिए इंस्टॉलेशन स्थिति टॉगल कर दी गई है।',
-        'server_suspended' => 'Server has been :action.',
+        'server_suspended' => 'सर्वर :action. हो गया है',
         'server_reinstalled' => 'इस सर्वर को अभी से शुरू होने वाली पुनर्स्थापना के लिए कतारबद्ध कर दिया गया है।',
         'server_deleted' => 'सर्वर को सिस्टम से सफलतापूर्वक हटा दिया गया है।',
-        'server_delete_failed' => 'Failed to delete server.',
+        'server_delete_failed' => 'सर्वर हटाने में विफल.',
         'startup_changed' => 'इस सर्वर के लिए स्टार्टअप कॉन्फ़िगरेशन अपडेट कर दिया गया है। यदि इस सर्वर का नेस्ट या egg बदला गया था तो अब एक पुनर्स्थापना होगी।',
         'server_created' => 'सर्वर पैनल पर सफलतापूर्वक बनाया गया। कृपया डेमन को इस सर्वर को पूरी तरह से इंस्टॉल करने के लिए कुछ मिनट दें।',
         'build_updated' => 'इस सर्वर के बिल्ड विवरण अपडेट कर दिए गए हैं। कुछ परिवर्तनों को प्रभावी होने के लिए पुनः आरंभ की आवश्यकता हो सकती है।',
@@ -208,5 +334,218 @@ return [
         'transfer_nodes_required' => 'सर्वर ट्रांसफर करने से पहले आपके पास कम से कम दो नोड कॉन्फ़िगर होने चाहिए।',
         'transfer_started' => 'सर्वर ट्रांसफर शुरू हो गया है।',
         'transfer_not_viable' => 'आपने जो नोड चुना है उसमें इस सर्वर को समायोजित करने के लिए आवश्यक डिस्क स्पेस या मेमोरी उपलब्ध नहीं है।',
+        'primary_allocation_updated' => 'प्राथमिक आवंटन अद्यतन किया गया.',
+        'database_created' => 'डेटाबेस बनाया गया.',
+        'database_password_reset' => 'डेटाबेस पासवर्ड रीसेट.',
+        'database_deleted' => 'डेटाबेस हटा दिया गया.',
+    ],
+
+    'edit' => [
+        'tabs' => [
+            'information' => 'जानकारी',
+            'build_configuration' => 'कॉन्फ़िगरेशन बनाएँ',
+            'startup' => 'चालू होना',
+            'manage' => 'प्रबंधित करना',
+        ],
+
+        'sections' => [
+            'resource_management' => 'संसाधन प्रबंधन',
+            'application_feature_limits' => 'एप्लिकेशन फ़ीचर सीमाएँ',
+            'allocation_management' => 'आवंटन प्रबंधन',
+            'startup_command_modification' => 'स्टार्टअप कमांड संशोधन',
+            'service_configuration' => 'सेवा विन्यास',
+            'docker_image_configuration' => 'डॉकर छवि विन्यास',
+            'service_variables' => 'सेवा चर',
+            'reinstall_server' => 'सर्वर पुनः स्थापित करें',
+            'install_status' => 'स्थिति स्थापित करें',
+            'suspend_server' => 'सर्वर निलंबित करें',
+            'unsuspend_server' => 'सर्वर को निलंबित करें',
+            'transfer_server' => 'स्थानांतरण सर्वर',
+            'delete_server' => 'सर्वर हटाएँ',
+        ],
+
+        'section_descriptions' => [
+            'service_configuration' => 'इन मानों को बदलने से पुनर्स्थापना ट्रिगर हो सकती है। उस ऑपरेशन के लिए सर्वर तुरंत बंद कर दिया जाएगा।',
+            'reinstall_server' => 'यह निर्दिष्ट सेवा स्क्रिप्ट के साथ सर्वर को पुनः स्थापित करेगा। यह सर्वर डेटा को अधिलेखित कर सकता है.',
+            'install_status' => 'इंस्टॉल स्थिति को अनइंस्टॉल से इंस्टॉल में बदलें, या इसके विपरीत।',
+            'suspend_server' => 'यह चल रही प्रक्रियाओं को रोक देगा और उपयोगकर्ता को पैनल या एपीआई के माध्यम से सर्वर को प्रबंधित करने से रोक देगा।',
+            'unsuspend_server' => 'यह सर्वर को निलंबित कर देगा और सामान्य उपयोगकर्ता पहुंच बहाल कर देगा।',
+            'transfer_server_transferring' => 'यह सर्वर वर्तमान में दूसरे नोड पर स्थानांतरित किया जा रहा है।',
+            'transfer_server' => 'इस सर्वर को इस पैनल से जुड़े किसी अन्य नोड पर स्थानांतरित करें।',
+            'delete_server' => 'यह सर्वर को पैनल और एजेंट से स्थायी रूप से हटा देता है। यदि आवश्यक हो तो बलपूर्वक हटाएं एजेंट को हटाएं।',
+        ],
+
+        'fields' => [
+            'server_name' => [
+                'label' => 'सर्वर नाम',
+                'helper' => 'वर्ण सीमाएँ: a-zA-Z0-9_-, रिक्त स्थान, और मानक मुद्रण योग्य वर्ण।',
+            ],
+            'server_owner' => [
+                'label' => 'सर्वर स्वामी',
+                'helper' => 'स्वामित्व बदलने से पिछले मालिक के डेमॉन टोकन स्वचालित रूप से रद्द हो जाते हैं।',
+            ],
+            'server_description' => [
+                'label' => 'सर्वर विवरण',
+                'helper' => 'इस सर्वर का संक्षिप्त विवरण.',
+            ],
+            'server_uuid' => [
+                'label' => 'सर्वर यूयूआईडी',
+            ],
+            'server_uuid_short' => [
+                'label' => 'सर्वर यूयूआईडी (लघु)',
+            ],
+            'external_identifier' => [
+                'label' => 'बाहरी पहचानकर्ता',
+                'helper' => 'बाहरी पहचानकर्ता निर्दिष्ट न करने के लिए इसे खाली छोड़ दें। बाहरी आईडी इस सर्वर के लिए अद्वितीय होनी चाहिए।',
+            ],
+            'game_port' => [
+                'label' => 'गेम पोर्ट',
+                'helper' => 'डिफ़ॉल्ट कनेक्शन पता जो इस गेम सर्वर के लिए उपयोग किया जाएगा।',
+            ],
+            'additional_ports' => [
+                'label' => 'अतिरिक्त बंदरगाह',
+                'helper' => 'अतिरिक्त पोर्ट असाइन करें या हटाएँ. विभिन्न आईपी पर समान पोर्ट एक ही सर्वर को नहीं सौंपे जा सकते।',
+            ],
+            'startup_command' => [
+                'label' => 'स्टार्टअप कमांड',
+                'helper' => 'डिफ़ॉल्ट रूप से उपलब्ध: {{SERVER_MEMORY}}, {{SERVER_IP}}, और {{SERVER_PORT}}।',
+            ],
+            'default_startup_command' => [
+                'label' => 'डिफ़ॉल्ट स्टार्टअप कमांड',
+                'error' => 'त्रुटि: स्टार्टअप परिभाषित नहीं है!',
+            ],
+            'cpu_limit' => [
+                'label' => 'सीपीयू सीमा',
+                'helper' => 'प्रत्येक वर्चुअल कोर 100% है। अप्रतिबंधित CPU समय के लिए 0 सेट करें।',
+            ],
+            'cpu_pinning' => [
+                'label' => 'सीपीयू पिनिंग',
+                'helper' => 'उन्नत: सभी कोर के लिए खाली छोड़ें। उदाहरण: 0, 0-1,3, या 0,1,3,4।',
+            ],
+            'allocated_memory' => [
+                'label' => 'आवंटित मेमोरी',
+                'helper' => 'इस कंटेनर के लिए अनुमत मेमोरी की अधिकतम मात्रा. असीमित के लिए 0 सेट करें.',
+            ],
+            'allocated_swap' => [
+                'label' => 'आवंटित स्वैप',
+                'helper' => 'स्वैप को अक्षम करने के लिए 0 सेट करें, या असीमित स्वैप की अनुमति देने के लिए -1 सेट करें।',
+            ],
+            'disk_space_limit' => [
+                'label' => 'डिस्क स्थान सीमा',
+                'helper' => 'असीमित डिस्क उपयोग की अनुमति देने के लिए 0 सेट करें।',
+            ],
+            'block_io_proportion' => [
+                'label' => 'ब्लॉक आईओ अनुपात',
+                'helper' => 'उन्नत: अन्य चल रहे कंटेनरों के सापेक्ष IO प्रदर्शन। वैल्यू 10 से 1000 होनी चाहिए.',
+            ],
+            'disable_oom_killer' => [
+                'label' => 'OOM किलर अक्षम करें',
+                'helper' => 'OOM किलर को सक्षम करने से सर्वर प्रक्रियाएँ अप्रत्याशित रूप से बाहर निकल सकती हैं।',
+            ],
+            'database_limit' => [
+                'label' => 'डेटाबेस सीमा',
+                'helper' => 'किसी उपयोगकर्ता को इस सर्वर के लिए डेटाबेस की कुल संख्या बनाने की अनुमति है।',
+            ],
+            'allocation_limit' => [
+                'label' => 'आवंटन सीमा',
+                'helper' => 'किसी उपयोगकर्ता को इस सर्वर के लिए आवंटन की कुल संख्या बनाने की अनुमति है।',
+            ],
+            'backup_limit' => [
+                'label' => 'बैकअप सीमा',
+                'helper' => 'इस सर्वर के लिए बनाए जा सकने वाले बैकअप की कुल संख्या.',
+            ],
+            'image' => [
+                'label' => 'छवि',
+                'helper' => 'ड्रॉपडाउन से एक छवि चुनें, या नीचे एक कस्टम छवि दर्ज करें।',
+            ],
+            'custom_image' => [
+                'label' => 'कस्टम छवि',
+                'placeholder' => 'या एक कस्टम छवि दर्ज करें...',
+                'helper' => 'यह डॉकर छवि है जिसका उपयोग इस सर्वर को चलाने के लिए किया जाएगा।',
+            ],
+            'transfer_node' => [
+                'label' => 'नोड',
+                'helper' => 'वह नोड जिस पर यह सर्वर स्थानांतरित किया जाएगा।',
+            ],
+            'transfer_allocation' => [
+                'label' => 'डिफ़ॉल्ट आवंटन',
+                'helper' => 'मुख्य आवंटन जो इस सर्वर को सौंपा जाएगा।',
+            ],
+            'transfer_additional_allocations' => [
+                'label' => 'अतिरिक्त आवंटन',
+                'helper' => 'स्थानांतरण पर इस सर्वर को आवंटित करने के लिए अतिरिक्त आवंटन।',
+            ],
+        ],
+
+        'actions' => [
+            'reinstall_server' => 'सर्वर पुनः स्थापित करें',
+            'toggle_install_status' => 'इंस्टॉल स्थिति टॉगल करें',
+            'suspend_server' => 'सर्वर निलंबित करें',
+            'unsuspend_server' => 'सर्वर को निलंबित करें',
+            'transfer_server' => 'स्थानांतरण सर्वर',
+            'confirm' => 'पुष्टि करना',
+            'delete_server' => 'सर्वर हटाएँ',
+            'forcibly_delete_server' => 'सर्वर को जबरन हटाएं',
+        ],
+    ],
+
+    'allocations' => [
+        'title' => 'आवंटन',
+
+        'table' => [
+            'ip' => 'आई पी',
+            'port' => 'पत्तन',
+            'alias' => 'उपनाम',
+            'primary' => 'प्राथमिक',
+            'notes' => 'टिप्पणियाँ',
+            'created' => 'बनाया था',
+        ],
+
+        'placeholder' => [
+            'no_alias_assigned' => 'कोई उपनाम निर्दिष्ट नहीं',
+        ],
+
+        'actions' => [
+            'make_primary' => 'प्राथमिक बनाना',
+        ],
+    ],
+
+    'databases' => [
+        'title' => 'डेटाबेस',
+
+        'table' => [
+            'database' => 'डेटाबेस',
+            'username' => 'उपयोगकर्ता नाम',
+            'remote' => 'दूर',
+            'host' => 'मेज़बान',
+            'max_connections' => 'अधिकतम कनेक्शन',
+            'created' => 'बनाया था',
+        ],
+
+        'placeholder' => [
+            'unlimited' => 'असीमित',
+        ],
+
+        'actions' => [
+            'create_database' => 'डेटाबेस बनाएं',
+            'reset_password' => 'पासवर्ड रीसेट',
+            'delete' => 'मिटाना',
+        ],
+
+        'create_modal' => [
+            'database_name' => [
+                'label' => 'डेटाबेस का नाम',
+                'helper' => 'पैनल पुराने व्यवस्थापक पैनल से मेल खाते हुए इसे सर्वर आईडी के साथ उपसर्ग करेगा।',
+            ],
+            'database_host' => [
+                'label' => 'डेटाबेस होस्ट',
+            ],
+            'remote' => [
+                'label' => 'दूर',
+            ],
+            'max_connections' => [
+                'label' => 'अधिकतम कनेक्शन',
+            ],
+        ],
     ],
 ];

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
-import Modal from '@/components/elements/Modal';
+import Modal from '@/reviactyl/elements/Modal';
 import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
+import Button from '@/reviactyl/elements/Button';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
 import { SocketEvent } from '@/components/server/events';
@@ -58,7 +58,7 @@ const SteamDiskSpaceFeature = () => {
                     </p>
                     <p css={tw`mt-4`}>
                         Ensure the machine has enough disk space by typing{' '}
-                        <code css={tw`font-mono bg-gray-900 rounded py-1 px-2`}>df -h</code> on the machine hosting this
+                        <code css={tw`font-mono bg-gray-950 rounded py-1 px-2`}>df -h</code> on the machine hosting this
                         server. Delete files or increase the available disk space to resolve the issue.
                     </p>
                     <div css={tw`mt-8 sm:flex items-center justify-end`}>

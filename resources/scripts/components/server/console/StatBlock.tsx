@@ -1,10 +1,10 @@
 import React from 'react';
-import Icon from '@/components/elements/Icon';
+import Icon from '@/reviactyl/elements/Icon';
 import { IconType } from 'react-icons';
 import classNames from 'classnames';
 import styles from './style.module.css';
 import useFitText from 'use-fit-text';
-import CopyOnClick from '@/components/elements/CopyOnClick';
+import CopyOnClick from '@/reviactyl/elements/CopyOnClick';
 
 interface StatBlockProps {
     title: string;
@@ -20,14 +20,14 @@ export default ({ title, copyOnClick, icon, color, className, children }: StatBl
 
     return (
         <CopyOnClick text={copyOnClick}>
-            <div className={classNames(styles.stat_block, 'bg-gray-700', className)}>
-                <div className={classNames(styles.status_bar, color || 'bg-gray-600')} />
-                <div className={classNames(styles.icon, color || 'bg-gray-600')}>
+            <div className={classNames(styles.stat_block, 'bg-gray-900', className)}>
+                <div className={classNames(styles.status_bar, color || 'bg-gray-700')} />
+                <div className={classNames(styles.icon, color || 'bg-gray-700')}>
                     <Icon
                         icon={icon}
                         className={classNames({
-                            'text-gray-100': !color || color === 'bg-gray-600',
-                            'text-gray-50': color && color !== 'bg-gray-600',
+                            'text-gray-100': !color || color === 'bg-gray-700',
+                            'text-gray-50': color && color !== 'bg-gray-700',
                         })}
                     />
                 </div>

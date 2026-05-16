@@ -27,12 +27,11 @@ function bytesToString(bytes: number, decimals = 2): string {
  * Formats an IPv4 or IPv6 address.
  */
 function ip(value: string): string {
-    // Efficient IPv6 regex avoids ambiguous backtracking
-    return /^(([a-f0-9]{1,4}:){7}[a-f0-9]{1,4}|(([a-f0-9]{1,4}:){1,7}:)|(([a-f0-9]{1,4}:){1,6}:[a-f0-9]{1,4})|(([a-f0-9]{1,4}:){1,5}(:[a-f0-9]{1,4}){1,2})|(([a-f0-9]{1,4}:){1,4}(:[a-f0-9]{1,4}){1,3})|(([a-f0-9]{1,4}:){1,3}(:[a-f0-9]{1,4}){1,4})|(([a-f0-9]{1,4}:){1,2}(:[a-f0-9]{1,4}){1,5})|([a-f0-9]{1,4}:)((:[a-f0-9]{1,4}){1,6})|(:((:[a-f0-9]{1,4}){1,7}|:)))(%[0-9a-zA-Z]{1,})?$/.test(
-        value
-    )
-        ? `[${value}]`
-        : value;
+    if (value.startsWith('[') && value.endsWith(']')) {
+        return value;
+    }
+
+    return value.includes(':') ? `[${value}]` : value;
 }
 
 export { ip, mbToBytes, bytesToString };

@@ -1,16 +1,17 @@
 import { memo, useState } from 'react';
 import { ServerEggVariable } from '@/api/server/types';
-import TitledGreyBox from '@/components/elements/TitledGreyBox';
+import TitledGreyBox from '@/reviactyl/elements/TitledGreyBox';
 import { usePermissions } from '@/plugins/usePermissions';
-import InputSpinner from '@/components/elements/InputSpinner';
-import Input from '@/components/elements/Input';
-import Switch from '@/components/elements/Switch';
+import { useTranslation } from 'react-i18next';
+import InputSpinner from '@/reviactyl/elements/InputSpinner';
+import Input from '@/reviactyl/elements/Input';
+import Switch from '@/reviactyl/elements/Switch';
 import { debounce } from 'debounce';
 import updateStartupVariable from '@/api/server/updateStartupVariable';
 import useFlash from '@/plugins/useFlash';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import getServerStartup from '@/api/swr/getServerStartup';
-import Select from '@/components/elements/Select';
+import Select from '@/reviactyl/elements/Select';
 import isEqual from 'react-fast-compare';
 import { ServerContext } from '@/state/server';
 
@@ -20,6 +21,7 @@ interface Props {
 
 const VariableBox = ({ variable }: Props) => {
     const FLASH_KEY = `server:startup:${variable.envVariable}`;
+    const { t } = useTranslation('server/startup');
 
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const [loading, setLoading] = useState(false);
@@ -62,7 +64,7 @@ const VariableBox = ({ variable }: Props) => {
             title={
                 <p className='text-sm uppercase'>
                     {!variable.isEditable && (
-                        <span className='bg-gray-700 text-xs py-1 px-2 rounded-full mr-2 mb-1'>Read Only</span>
+                        <span className='bg-gray-900 text-xs py-1 px-2 rounded-full mr-2 mb-1'>{t('read-only')}</span>
                     )}
                     {variable.name}
                 </p>

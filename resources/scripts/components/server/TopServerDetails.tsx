@@ -3,9 +3,9 @@ import { ServerContext } from '@/state/server';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import PowerButtons from '@/components/server/console/PowerButtons';
-import CopyOnClick from '@/components/elements/CopyOnClick';
+import CopyOnClick from '@/reviactyl/elements/CopyOnClick';
 import { ExternalLinkIcon } from '@heroicons/react/solid';
-import Can from '@/components/elements/Can';
+import Can from '@/reviactyl/elements/Can';
 import { bytesToString, ip, mbToBytes } from '@/lib/formatters';
 import Card from '@/reviactyl/ui/Card';
 import styled from 'styled-components';
@@ -27,7 +27,7 @@ const Limit = ({ limit, children }: { limit: string | null; children: React.Reac
 );
 
 const Container = styled.div`
-    ${tw`relative z-10 pt-4 pl-2`};
+    ${tw`relative z-10 pt-4 pl-2 w-full max-w-[75rem] mx-auto`};
 `;
 
 const UtilContainer = styled.div`
@@ -96,7 +96,7 @@ const TopServerDetails = () => {
 
     return (
         <Container>
-            <Card className={`!p-4 !px-8 max-w-6xl mx-auto w-full`}>
+            <Card className={`!p-4 !px-8 mx-auto`}>
                 <UtilContainer>
                     <div className={'flex items-center gap-x-3'}>
                         <Title className='text-3xl truncate flex-1 max-w-[400px]' title={name}>
@@ -117,14 +117,14 @@ const TopServerDetails = () => {
             </Card>
             <div className='w-full sm:hidden flex justify-center mb-2 mt-2'>
                 <button
-                    className='w-full py-2 bg-gray-700 border border-gray-600 text-gray-100 rounded-ui'
+                    className='w-full py-2 bg-gray-900 border border-gray-800 text-gray-100 rounded-ui'
                     onClick={() => setShowStats((prev) => !prev)}
                 >
                     {showStats ? t('hide-stats') : t('show-stats')}
                 </button>
             </div>
             <StatContainer className={`${showStats ? 'flex' : 'hidden'} sm:flex`}>
-                <StatBlock className='bg-gray-700 border-gray-600'>
+                <StatBlock className='bg-gray-900 border-gray-800'>
                     <span className='w-5 text-gray-300'>
                         <FaGlobe />
                     </span>
@@ -133,7 +133,7 @@ const TopServerDetails = () => {
                     </CopyOnClick>
                 </StatBlock>
 
-                <StatBlock className='bg-gray-700 border-gray-600'>
+                <StatBlock className='bg-gray-900 border-gray-800'>
                     <span className='w-5 text-gray-300'>
                         <FaMicrochip />
                     </span>
@@ -146,7 +146,7 @@ const TopServerDetails = () => {
                     </span>
                 </StatBlock>
 
-                <StatBlock className='bg-gray-700 border-gray-600'>
+                <StatBlock className='bg-gray-900 border-gray-800'>
                     <span className='w-5 text-gray-300'>
                         <FaMemory />
                     </span>
@@ -159,7 +159,7 @@ const TopServerDetails = () => {
                     </span>
                 </StatBlock>
 
-                <StatBlock className='bg-gray-700 border-gray-600'>
+                <StatBlock className='bg-gray-900 border-gray-800'>
                     <span className='w-5 text-gray-300'>
                         <FaFloppyDisk />
                     </span>
@@ -168,7 +168,7 @@ const TopServerDetails = () => {
                     </span>
                 </StatBlock>
 
-                <StatBlock className='bg-gray-700 border-gray-600'>
+                <StatBlock className='bg-gray-900 border-gray-800'>
                     <span className='w-5 text-gray-300'>
                         <FaHashtag />
                     </span>

@@ -3,13 +3,13 @@ import { ActivityLogFilters, useActivityLogs } from '@/api/account/activity';
 import { useFlashKey } from '@/plugins/useFlash';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { Link } from 'react-router-dom';
-import PaginationFooter from '@/components/elements/table/PaginationFooter';
+import PaginationFooter from '@/reviactyl/elements/table/PaginationFooter';
 import { DesktopComputerIcon, XCircleIcon } from '@heroicons/react/solid';
-import Spinner from '@/components/elements/Spinner';
-import { styles as btnStyles } from '@/components/elements/button/index';
+import Spinner from '@/reviactyl/elements/Spinner';
+import { styles as btnStyles } from '@/reviactyl/elements/button/index';
 import classNames from 'classnames';
-import ActivityLogEntry from '@/components/elements/activity/ActivityLogEntry';
-import Tooltip from '@/components/elements/tooltip/Tooltip';
+import ActivityLogEntry from '@/reviactyl/elements/activity/ActivityLogEntry';
+import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
 import useLocationHash from '@/plugins/useLocationHash';
 import ContentBlock from '@/reviactyl/ui/ContentBlock';
 import { useTranslation } from 'react-i18next';
@@ -49,7 +49,7 @@ export default () => {
             {!data && isValidating ? (
                 <Spinner centered />
             ) : (
-                <div className={'bg-gray-700 border border-gray-600 rounded-ui'}>
+                <div className={'bg-gray-900 border border-gray-800 rounded-ui'}>
                     {data?.items.map((activity) => (
                         <ActivityLogEntry key={activity.id} activity={activity}>
                             {typeof activity.properties.useragent === 'string' && (

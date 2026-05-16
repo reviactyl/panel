@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import getSocialLogins, { SocialLogin } from '@/api/account/getSocialLogins';
 import unlinkSocialLogin from '@/api/account/unlinkSocialLogin';
-import TitledGreyBox from '@/components/elements/TitledGreyBox';
-import { Button } from '@/components/elements/button';
+import TitledGreyBox from '@/reviactyl/elements/TitledGreyBox';
+import { Button } from '@/reviactyl/elements/button';
 import tw from 'twin.macro';
 import { format } from 'date-fns';
 import { FaGoogle, FaDiscord, FaGithub, FaLink, FaUnlink, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import { Dialog } from '@/components/elements/dialog';
+import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
+import { Dialog } from '@/reviactyl/elements/dialog';
 import styled from 'styled-components';
 import { Trans } from 'react-i18next';
 
@@ -30,7 +30,7 @@ const Container = styled.div`
 `;
 
 const Item = styled.div`
-    ${tw`flex items-center justify-between p-4 rounded-ui border border-gray-600`}
+    ${tw`flex items-center justify-between p-4 rounded-ui border border-gray-800`}
 `;
 
 export default () => {
@@ -109,7 +109,7 @@ export default () => {
                                                 })}
                                             </span>
                                         ) : (
-                                            <span css={tw`text-gray-500 flex items-center`}>
+                                            <span css={tw`text-gray-600 flex items-center`}>
                                                 <FaTimesCircle css={tw`mr-1`} />
                                                 {t('overview.social.status.not-connected')}
                                             </span>

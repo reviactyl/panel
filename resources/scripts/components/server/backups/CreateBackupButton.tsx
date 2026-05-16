@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react';
-import Modal, { RequiredModalProps } from '@/components/elements/Modal';
+import Modal, { RequiredModalProps } from '@/reviactyl/elements/Modal';
 import { Field as FormikField, Form, Formik, FormikHelpers, useFormikContext } from 'formik';
 import { boolean, object, string } from 'yup';
-import Field from '@/components/elements/Field';
-import FormikFieldWrapper from '@/components/elements/FormikFieldWrapper';
+import Field from '@/reviactyl/elements/Field';
+import FormikFieldWrapper from '@/reviactyl/elements/FormikFieldWrapper';
 import useFlash from '@/plugins/useFlash';
 import createServerBackup from '@/api/server/backups/createServerBackup';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import Button from '@/components/elements/Button';
+import Button from '@/reviactyl/elements/Button';
 import tw from 'twin.macro';
-import { Textarea } from '@/components/elements/Input';
+import { Textarea } from '@/reviactyl/elements/Input';
 import getServerBackups from '@/api/swr/getServerBackups';
 import { ServerContext } from '@/state/server';
-import FormikSwitch from '@/components/elements/FormikSwitch';
-import Can from '@/components/elements/Can';
+import FormikSwitch from '@/reviactyl/elements/FormikSwitch';
+import Can from '@/reviactyl/elements/Can';
 import { useTranslation } from 'react-i18next';
 
 interface Values {
@@ -38,7 +38,7 @@ const ModalContent = ({ ...props }: RequiredModalProps) => {
                     </FormikFieldWrapper>
                 </div>
                 <Can action={'backup.delete'}>
-                    <div css={tw`mt-6 bg-gray-700 border border-gray-800 shadow-inner p-4 rounded`}>
+                    <div css={tw`mt-6 bg-gray-900 border border-gray-900 shadow-inner p-4 rounded`}>
                         <FormikSwitch name={'isLocked'} label={'Locked'} description={t('locked-description')} />
                     </div>
                 </Can>

@@ -21,7 +21,7 @@ return [
     ],
     'service' => [
         'title' => '服务管理',
-        'extensions' => 'Extensions',
+        'extensions' => '扩展',
         'mounts' => '挂载',
         'nests' => '预设',
     ],

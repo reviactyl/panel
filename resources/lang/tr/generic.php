@@ -3,6 +3,6 @@
 return [
     'never' => 'Asla',
     'not-found-title' => '404',
-    'not-found-message' => 'The requested resource was not found.',
-    'server-error-title' => 'Something went wrong',
+    'not-found-message' => 'İstenilen kaynak bulunamadı.',
+    'server-error-title' => 'Bir şeyler ters gitti',
 ];

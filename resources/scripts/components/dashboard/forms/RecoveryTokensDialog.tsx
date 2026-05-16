@@ -1,7 +1,7 @@
-import { Dialog, DialogProps } from '@/components/elements/dialog';
-import { Button } from '@/components/elements/button/index';
-import CopyOnClick from '@/components/elements/CopyOnClick';
-import { Alert } from '@/components/elements/alert';
+import { Dialog, DialogProps } from '@/reviactyl/elements/dialog';
+import { Button } from '@/reviactyl/elements/button/index';
+import CopyOnClick from '@/reviactyl/elements/CopyOnClick';
+import { Alert } from '@/reviactyl/elements/alert';
 import { useTranslation } from 'react-i18next';
 
 interface RecoveryTokenDialogProps extends DialogProps {
@@ -28,13 +28,13 @@ export default ({ tokens, open, onClose }: RecoveryTokenDialogProps) => {
         >
             <Dialog.Icon position={'container'} type={'success'} />
             <CopyOnClick text={tokens.join('\n')} showInNotification={false}>
-                <pre className={'bg-gray-800 rounded p-2 mt-6'}>
+                <pre className={'bg-gray-900 rounded p-2 mt-6'}>
                     {grouped.map((value) => (
                         <span key={value.join('_')} className={'block'}>
                             {value[0]}
-                            <span className={'mx-2 selection:bg-gray-800'}>&nbsp;</span>
+                            <span className={'mx-2 selection:bg-gray-900'}>&nbsp;</span>
                             {value[1]}
-                            <span className={'selection:bg-gray-800'}>&nbsp;</span>
+                            <span className={'selection:bg-gray-900'}>&nbsp;</span>
                         </span>
                     ))}
                 </pre>

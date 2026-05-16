@@ -47,6 +47,7 @@ class Settings extends Page implements HasSchemas
         'app:locale',
         'app:locale:geolocate',
         'panel:auth:2fa_required',
+        'panel:auth:registration_enabled',
         'app:debug',
         'app:pwa',
 
@@ -305,6 +306,19 @@ class Settings extends Page implements HasSchemas
                         ->label(trans('admin/settings.security.turnstile-secret-key'))
                         ->columnSpan(1)
                         ->visible(fn ($get) => $get('captcha:provider') === 'turnstile'),
+                ]),
+
+            Section::make(trans('admin/settings.security.registration-title'))
+                ->columns(2)
+                ->schema([
+                    Toggle::make('panel:auth:registration_enabled')
+                        ->label(trans('admin/settings.security.registration-enabled'))
+                        ->inline(false)
+                        ->onIcon('tabler-check')
+                        ->offIcon('tabler-x')
+                        ->onColor('success')
+                        ->offColor('danger')
+                        ->columnSpan(2),
                 ]),
         ];
     }

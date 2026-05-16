@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect, useState } from 'react';
-import Switch from '@/components/elements/Switch';
+import Switch from '@/reviactyl/elements/Switch';
 import { useTranslation } from 'react-i18next';
 
 interface InvertProps {
@@ -27,7 +27,15 @@ export const Invert = ({ children }: InvertProps) => {
         <div className='relative'>
             {children}
             {enabled && (
-                <div className='pointer-events-none fixed inset-0 z-[9999] mix-blend-difference bg-white'></div>
+                <>
+                    <div className='pointer-events-none fixed inset-0 z-[9999] mix-blend-difference bg-white'></div>
+                    <style>{`
+                        img, video, canvas, svg image, [style*="background-image"] {
+                            filter: invert(1);
+                            mix-blend-mode: difference;
+                        }
+                    `}</style>
+                </>
             )}
         </div>
     );
@@ -55,9 +63,9 @@ export const InvertToggle = () => {
         <div className='flex justify-between items-center mb-2'>
             <p className='flex-1'>{t('overview.smart-invert')}</p>
             <div className='flex gap-x-2 items-center'>
-                <span className='text-sm text-gray-300'>{t('overview.on')}</span>
-                <Switch key={enabled ? 'on' : 'off'} name='smart_invert' defaultChecked={enabled} onChange={toggle} />
                 <span className='text-sm text-gray-300'>{t('overview.off')}</span>
+                <Switch key={enabled ? 'on' : 'off'} name='smart_invert' defaultChecked={enabled} onChange={toggle} />
+                <span className='text-sm text-gray-300'>{t('overview.on')}</span>
             </div>
         </div>
     );
