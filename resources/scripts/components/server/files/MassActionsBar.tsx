@@ -35,7 +35,7 @@ const MassActionsBar = () => {
     const onClickCompress = () => {
         setLoading(true);
         clearFlashes('files');
-        setLoadingMessage('Archiving files...');
+        setLoadingMessage(t('mass-actions.archiving'));
 
         compressFiles(uuid, directory, selectedFiles)
             .then(() => mutate())
@@ -48,7 +48,7 @@ const MassActionsBar = () => {
         setLoading(true);
         setShowConfirm(false);
         clearFlashes('files');
-        setLoadingMessage('Deleting files...');
+        setLoadingMessage(t('mass-actions.deleting'));
 
         deleteFiles(uuid, directory, selectedFiles)
             .then(() => {
@@ -69,21 +69,23 @@ const MassActionsBar = () => {
                     {loadingMessage}
                 </SpinnerOverlay>
                 <Dialog.Confirm
-                    title={'Delete Files'}
+                    title={t('mass-actions.delete-title')}
                     open={showConfirm}
-                    confirm={'Delete'}
+                    confirm={t('mass-actions.delete-confirm')}
                     onClose={() => setShowConfirm(false)}
                     onConfirmed={onClickConfirmDeletion}
                 >
                     <p className={'mb-2'}>
-                        Are you sure you want to delete&nbsp;
-                        <span className={'font-semibold text-gray-50'}>{selectedFiles.length} files</span>? This is a
-                        permanent action and the files cannot be recovered.
+                        {t('mass-actions.delete-message-start')}&nbsp;
+                        <span className={'font-semibold text-gray-50'}>
+                            {selectedFiles.length} {t('mass-actions.delete-message-files')}
+                        </span>
+                        {t('mass-actions.delete-message-end')}
+                        {selectedFiles.slice(0, 15).map((file) => (
+                            <li key={file}>{file}</li>
+                        ))}
+                        {selectedFiles.length > 15 && <li>and {selectedFiles.length - 15} others</li>}
                     </p>
-                    {selectedFiles.slice(0, 15).map((file) => (
-                        <li key={file}>{file}</li>
-                    ))}
-                    {selectedFiles.length > 15 && <li>and {selectedFiles.length - 15} others</li>}
                 </Dialog.Confirm>
                 {showMove && (
                     <RenameFileModal
@@ -98,7 +100,7 @@ const MassActionsBar = () => {
                     <div className={'pointer-events-none fixed bottom-0 mb-6 flex justify-center w-full z-50'}>
                         <Fade timeout={75} in={selectedFiles.length > 0} unmountOnExit>
                             <div
-                                className={`flex items-center space-x-4 pointer-events-auto rounded-ui p-4 bg-gray-800/50 backdrop-blur-md border border-gray-600`}
+                                className={`flex items-center space-x-4 pointer-events-auto rounded-ui p-4 bg-gray-900/50 backdrop-blur-md border border-gray-800`}
                             >
                                 <Button onClick={() => setShowMove(true)}>{t('move')}</Button>
                                 <Button onClick={onClickCompress}>{t('archive')}</Button>

@@ -23,9 +23,7 @@ return [
     ],
 
     'placeholders' => [
-        'name' => 'Production MySQL',
-        'host' => '127.0.0.1',
-        'username' => 'reviactyl',
+        'name' => 'Üretim MySQL\'i',
     ],
 
     'helpers' => [
@@ -40,8 +38,8 @@ return [
     'columns' => [
         'id' => 'KİMLİK',
         'name' => 'İsim',
-        'host' => 'Host',
-        'port' => 'Port',
+        'host' => 'Ev sahibi',
+        'port' => 'Liman',
         'username' => 'Kullanıcı Adı',
         'linked_node' => 'Bağlı Düğüm',
         'databases' => 'Veritabanları',

@@ -2,44 +2,42 @@
 
 return [
 
-    'label' => 'Location',
-    'plural-label' => 'Locations',
+    'label' => 'Vị trí',
+    'plural-label' => 'Địa điểm',
 
     'section' => [
-        'title' => 'Location Details',
-        'description' => 'Define a location that nodes can be assigned to.',
+        'title' => 'Chi tiết vị trí',
+        'description' => 'Xác định vị trí mà các nút có thể được chỉ định.',
     ],
 
     'fields' => [
         'short' => [
-            'label' => 'Short Code',
-            'placeholder' => 'us.nyc.1',
-            'helper' => 'A short identifier for this location.',
+            'label' => 'Mã ngắn',
+            'helper' => 'Mã định danh ngắn cho vị trí này.',
         ],
 
         'long' => [
-            'label' => 'Description',
-            'placeholder' => 'New York City, NY, USA',
-            'helper' => 'A longer description of this location.',
+            'label' => 'Sự miêu tả',
+            'helper' => 'Mô tả dài hơn về vị trí này.',
         ],
     ],
 
     'table' => [
         'id' => 'ID',
-        'short' => 'Short Code',
-        'long' => 'Description',
-        'nodes' => 'Nodes',
-        'servers' => 'Servers',
-        'created' => 'Created',
+        'short' => 'Mã ngắn',
+        'long' => 'Sự miêu tả',
+        'nodes' => 'Nút',
+        'servers' => 'Máy chủ',
+        'created' => 'Tạo',
     ],
 
     'actions' => [
-        'edit' => 'Edit',
-        'delete' => 'Delete',
+        'edit' => 'Biên tập',
+        'delete' => 'Xóa bỏ',
     ],
 
     'messages' => [
-        'cannot_delete_with_nodes' => 'Cannot delete a location with associated nodes.',
+        'cannot_delete_with_nodes' => 'Không thể xóa vị trí có các nút được liên kết.',
     ],
 
 ];

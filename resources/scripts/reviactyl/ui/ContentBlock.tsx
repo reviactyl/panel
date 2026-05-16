@@ -16,7 +16,7 @@ const ContentBlock = ({ title, description, children, ...props }: Props) => {
     return (
         <PageContentBlock title={`${title} | ${name}`} {...props}>
             <Title className='text-4xl mb-2'>{title}</Title>
-            <p className='text-xs text-gray-500'>{description}</p>
+            <p className='text-xs text-gray-600'>{description}</p>
             {children}
         </PageContentBlock>
     );

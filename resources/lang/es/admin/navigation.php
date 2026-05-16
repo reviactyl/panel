@@ -1,15 +1,15 @@
 <?php
 
 return [
-    'home' => 'Home',
+    'home' => 'Hogar',
     'administration' => [
         'title' => 'Administración',
         'dashboard' => 'Panel de control',
         'settings' => 'Ajustes',
         'api' => 'API de la aplicación',
-        'activity_log' => 'Activity Log',
-        'user_activity_metrics' => 'User Activity Metrics',
-        'no_data' => 'No data available.',
+        'activity_log' => 'Registro de actividad',
+        'user_activity_metrics' => 'Métricas de actividad del usuario',
+        'no_data' => 'No hay datos disponibles.',
     ],
     'management' => [
         'title' => 'Gestión',
@@ -21,7 +21,7 @@ return [
     ],
     'service' => [
         'title' => 'Gestión de servicios',
-        'extensions' => 'Extensions',
+        'extensions' => 'Extensiones',
         'mounts' => 'Monturas',
         'nests' => 'Nidos',
     ],

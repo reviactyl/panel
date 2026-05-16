@@ -1,30 +1,30 @@
 <?php
 
 return [
-    'title' => 'Historical Metrics',
-    'error' => 'Unable to load historical stats.',
+    'title' => 'Số liệu lịch sử',
+    'error' => 'Không thể tải số liệu thống kê lịch sử.',
     'time_range' => [
-        'last_24_hours' => 'Last 24 Hours',
-        'last_3_days' => 'Last 3 Days',
-        'last_7_days' => 'Last 7 Days',
+        'last_24_hours' => '24 giờ qua',
+        'last_3_days' => '3 ngày qua',
+        'last_7_days' => '7 ngày qua',
     ],
     'charts' => [
         'cpu' => [
-            'title' => 'CPU History',
-            'label' => 'CPU Usage (%)',
+            'title' => 'Lịch sử CPU',
+            'label' => 'Mức sử dụng CPU (%)',
         ],
         'memory' => [
-            'title' => 'Memory History',
-            'label' => 'Memory Usage (MB)',
+            'title' => 'Lịch sử bộ nhớ',
+            'label' => 'Mức sử dụng bộ nhớ (MB)',
         ],
         'disk' => [
-            'title' => 'Disk History',
-            'label' => 'Disk Usage (MB)',
+            'title' => 'Lịch sử đĩa',
+            'label' => 'Mức sử dụng đĩa (MB)',
         ],
         'network' => [
-            'title' => 'Network History',
-            'rx_label' => 'Network RX (MB)',
-            'tx_label' => 'Network TX (MB)',
+            'title' => 'Lịch sử mạng',
+            'rx_label' => 'Mạng RX (MB)',
+            'tx_label' => 'Mạng TX (MB)',
         ],
     ],
 ];

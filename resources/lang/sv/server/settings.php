@@ -12,7 +12,8 @@ return [
     'info' => [
         'title' => 'Felsökningsinformation',
         'node' => 'Nod',
-        'server' => 'Server ID',
+        'server' => 'Server-ID',
+        'public-status-page' => 'Offentlig statussida',
     ],
     'rename' => [
         'title' => 'Ändra serverdetaljer',

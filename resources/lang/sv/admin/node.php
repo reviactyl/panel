@@ -6,12 +6,18 @@ return [
 
     'sections' => [
         'overview' => [
-            'title' => 'Overview',
-            'information-label' => 'Node Information',
-            'version-label' => 'Wings Version',
-            'architecture-label' => 'Architecture',
-            'kernel-label' => 'Kernel',
-            'cpus-label' => 'CPU Threads',
+            'title' => 'Översikt',
+            'information-label' => 'Nodinformation',
+            'version-label' => 'Agentversion',
+            'architecture-label' => 'Arkitektur',
+            'kernel-label' => 'Kärna',
+            'cpus-label' => 'CPU-trådar',
+            'cpu-usage-label' => 'CPU-användning',
+            'memory-usage-label' => 'Minnesanvändning',
+            'disk-usage-label' => 'Diskanvändning',
+        ],
+        'tabs' => [
+            'title' => 'Nodkonfiguration',
         ],
         'identity' => [
             'title' => 'Identitet',
@@ -30,9 +36,9 @@ return [
             'description' => 'Konfigurera daemon-specifika inställningar.',
         ],
         'configuration' => [
-            'title' => 'Configuration',
-            'config_description' => 'Configuration File',
-            'deploy_description' => 'Generate a custom deployment command that can be used to configure Wings on the target server.',
+            'title' => 'Konfiguration',
+            'config_description' => 'Inställningsfil',
+            'deploy_description' => 'Generera ett anpassat distributionskommando som kan användas för att konfigurera Agent på målservern.',
         ],
     ],
 
@@ -98,7 +104,6 @@ return [
         ],
         'daemon_base' => [
             'label' => 'Bas-katalog',
-            'placeholder' => '/home/daemon-files',
             'helper' => 'Katalog där serverfiler lagras.',
         ],
         'daemon_listen' => [
@@ -119,10 +124,9 @@ return [
     ],
 
     'table' => [
-        'health' => 'Health',
+        'health' => 'Hälsa',
         'health_http_status' => 'HTTP :status',
-        'health_error' => ':error',
-        'health_check_console' => 'check browser console',
+        'health_check_console' => 'kolla webbläsarkonsolen',
         'id' => 'ID',
         'uuid' => 'UUID',
         'name' => 'Namn',
@@ -146,30 +150,40 @@ return [
     ],
 
     'filters' => [
-        'public' => 'Public',
-        'maintenance' => 'Maintenance',
-        'public_true' => 'Public',
-        'public_false' => 'Private',
-        'maintenance_true' => 'Under Maintenance',
-        'maintenance_false' => 'Active',
+        'public' => 'Offentlig',
+        'maintenance' => 'Underhåll',
+        'public_true' => 'Offentlig',
+        'public_false' => 'Privat',
+        'maintenance_true' => 'Under Underhåll',
+        'maintenance_false' => 'Aktiv',
     ],
 
     'actions' => [
-        'create' => 'Create',
+        'create' => 'Skapa',
         'edit' => 'Redigera',
         'delete' => 'Ta bort',
         'view' => 'Visa',
+        'random' => 'Slumpmässig',
+        'view_monitoring' => 'Visa övervakning',
     ],
 
     'deployment' => [
-        'generate_label' => 'Generate Deployment Token',
-        'modal_heading' => 'Auto-Deploy Command',
-        'modal_description' => 'Run this command on your node to automatically configure Wings.',
-        'modal_close' => 'Close',
-        'command_label' => 'Deployment Command',
-        'command_helper' => 'Copy and run this command on your node server.',
-        'token_success' => 'Token Generated Successfully',
-        'token_success_body' => 'Copy and run the command below on your node.',
+        'generate_label' => 'Generera distributionstoken',
+        'modal_heading' => 'Auto-deploy kommando',
+        'modal_description' => 'Kör det här kommandot på din nod för att automatiskt konfigurera Agent.',
+        'modal_close' => 'Nära',
+        'command_label' => 'Utplaceringskommando',
+        'command_helper' => 'Kopiera och kör det här kommandot på din nodserver.',
+        'token_success' => 'Token har skapats framgångsrikt',
+        'token_success_body' => 'Kopiera och kör kommandot nedan på din nod.',
+        'save_first' => 'Spara noden först.',
+        'auto_generated_key' => 'Automatiskt genererad noddistributionsnyckel.',
+        'error' => 'Error generating token. Försök igen.',
+    ],
+
+    'general' => [
+        'na' => 'N/A',
+        'unavailable' => 'Inte tillgänglig',
     ],
 
     'messages' => [
@@ -180,10 +194,10 @@ return [
     ],
 
     'allocations' => [
-        'label' => 'Allocations',
+        'label' => 'Tilldelningar',
         'table' => [
             'ip' => 'IP',
-            'port' => 'Port',
+            'port' => 'Hamn',
             'alias' => 'Alias',
             'server' => 'Server',
             'notes' => 'Anteckningar',
@@ -223,7 +237,7 @@ return [
         'allocations_added' => 'Allokeringar har lagts till framgångsrikt på denna nod.',
         'node_deleted' => 'Noden har tagits bort framgångsrikt från panelen.',
         'location_required' => 'Du måste ha minst en plats konfigurerad innan du kan lägga till en nod i denna panel.',
-        'node_created' => 'Successfully created new node. You can automatically configure the daemon on this machine by visiting the \'Configuration\' tab. Before you can add any servers you must first allocate at least one IP address and port.',
+        'node_created' => 'Ny nod har skapats. Du kan automatiskt konfigurera demonen på den här maskinen genom att besöka fliken \'Konfiguration\'. Innan du kan lägga till några servrar måste du först tilldela minst en IP-adress och port.',
         'node_updated' => 'Nodinformationen har uppdaterats. Om några daemoninställningar ändrades behöver du starta om den för att dessa ändringar ska träda i kraft.',
         'unallocated_deleted' => 'Alla icke-allokerade portar för <code>:ip</code> har tagits bort.',
     ],

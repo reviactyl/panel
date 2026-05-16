@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'title' => 'Dashboard',
+    'title' => 'Painel',
     'uptodate-header' => 'Seu painel está atualizado',
     'uptodate-body' => 'Você está usando :version. Seu painel está na última versão!',
     'notuptodate-header' => 'Seu painel não está atualizado',
@@ -19,6 +19,6 @@ return [
     'most-active-country' => 'País mais ativo',
     'activity-description' => 'Com base na atividade de login recente.',
     'no_activity' => 'Não há atividades recentes para exibir.',
-    'activity-header' => 'Recent Activity',
-    'more-btn' => 'View More',
+    'activity-header' => 'Atividade recente',
+    'more-btn' => 'Ver mais',
 ];

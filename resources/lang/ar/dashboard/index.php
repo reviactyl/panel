@@ -4,18 +4,18 @@ return [
     'flag' => 'sa',
     'title' => 'لوحة التحكم',
     'servers-user' => [
-        'title' => 'Your Servers',
-        'subtitle' => 'Here you can see all the servers you have access to.',
+        'title' => 'الخوادم الخاصة بك',
+        'subtitle' => 'هنا يمكنك رؤية جميع الخوادم التي يمكنك الوصول إليها.',
     ],
     'servers-admin' => [
-        'title' => 'Others\' Servers',
-        'subtitle' => 'Here you can see all the servers created on this panel.',
+        'title' => 'خوادم الآخرين',
+        'subtitle' => 'هنا يمكنك رؤية جميع الخوادم التي تم إنشاؤها على هذه اللوحة.',
     ],
     'other-servers' => 'عرض سيرفرات الآخرين',
     'your-servers' => 'عرض سيرفراتك',
     'no-servers' => 'لا توجد سيرفرات مرتبطة بحسابك.',
     'no-other-servers' => 'لا توجد سيرفرات أخرى لعرضها.',
-    'filter-label' => 'Server Filter',
+    'filter-label' => 'تصفية الخادم',
     'eggs' => [
         'all' => 'الكل',
         'filter-label' => 'تصفية حسب البيضة',
@@ -54,7 +54,7 @@ return [
     ],
     'categories' => [
         'all-categories' => 'جميع الفئات',
-        'filter-label' => 'Filter by category',
+        'filter-label' => 'تصفية حسب الفئة',
         'primary' => 'الأساسية',
         'manage' => 'إدارة',
         'set-category' => 'تعيين كاتيغوري',

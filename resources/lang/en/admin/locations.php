@@ -13,13 +13,11 @@ return [
     'fields' => [
         'short' => [
             'label' => 'Short Code',
-            'placeholder' => 'us.nyc.1',
             'helper' => 'A short identifier for this location.',
         ],
 
         'long' => [
             'label' => 'Description',
-            'placeholder' => 'New York City, NY, USA',
             'helper' => 'A longer description of this location.',
         ],
     ],

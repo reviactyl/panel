@@ -4,7 +4,7 @@ return [
     'home' => 'Accueil',
     'administration' => [
         'title' => 'Administration',
-        'dashboard' => 'Dashboard',
+        'dashboard' => 'Tableau de bord',
         'settings' => 'Paramètres',
         'api' => 'API',
         'activity_log' => 'Journal d’activité',
@@ -14,14 +14,14 @@ return [
     'management' => [
         'title' => 'Gestion',
         'databases' => 'Base de données',
-        'locations' => 'Locations',
+        'locations' => 'Emplacements',
         'nodes' => 'Noeuds',
         'servers' => 'Serveurs',
         'users' => 'Utilisateurs',
     ],
     'service' => [
         'title' => 'Gestion des services',
-        'extensions' => 'Extensions',
+        'extensions' => 'Rallonges',
         'mounts' => 'Supports',
         'nests' => 'Nids',
     ],

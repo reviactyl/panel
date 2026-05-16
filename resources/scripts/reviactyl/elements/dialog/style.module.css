@@ -3,7 +3,7 @@
 }
 
 .panel {
-    @apply relative bg-gray-700 border border-gray-600 rounded-ui max-w-xl w-full mx-auto shadow-lg text-left;
+    @apply relative bg-gray-800 border border-gray-700 rounded-ui max-w-xl w-full mx-auto shadow-lg text-left;
 }
 
 .title {

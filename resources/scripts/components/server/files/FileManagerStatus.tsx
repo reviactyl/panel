@@ -9,6 +9,7 @@ import Code from '@/reviactyl/elements/Code';
 import { useSignal } from '@preact/signals-react';
 import { WithClassname } from '@/components/types';
 import { FaCloudArrowDown } from 'react-icons/fa6';
+import { useTranslation } from 'react-i18next';
 
 const svgProps = {
     cx: 16,
@@ -33,7 +34,12 @@ const Spinner = ({ progress, className }: { progress: number; className?: string
 );
 
 const FileUploadList = () => {
-    const { close } = useContext(DialogWrapperContext);
+    const { t } = useTranslation('server/files');
+    const { close, setProps } = useContext(DialogWrapperContext);
+
+    useEffect(() => {
+        setProps({ title: t('uploads-title'), description: t('uploads-description') });
+    }, [setProps, t]);
     const cancelFileUpload = ServerContext.useStoreActions((actions) => actions.files.cancelFileUpload);
     const clearFileUploads = ServerContext.useStoreActions((actions) => actions.files.clearFileUploads);
     const uploads = ServerContext.useStoreState((state) =>
@@ -43,7 +49,7 @@ const FileUploadList = () => {
     return (
         <div className={'space-y-2 mt-6'}>
             {uploads.map(([name, file]) => (
-                <div key={name} className={'flex items-center space-x-3 bg-gray-700 p-3 rounded'}>
+                <div key={name} className={'flex items-center space-x-3 bg-gray-900 p-3 rounded'}>
                     <Tooltip content={`${Math.floor((file.loaded / file.total) * 100)}%`} placement={'left'}>
                         <div className={'flex-shrink-0'}>
                             <Spinner progress={(file.loaded / file.total) * 100} className={'w-6 h-6'} />
@@ -52,7 +58,7 @@ const FileUploadList = () => {
                     <Code>{name}</Code>
                     <button
                         onClick={cancelFileUpload.bind(this, name)}
-                        className={'text-gray-500 hover:text-gray-200 transition-colors duration-75'}
+                        className={'text-gray-600 hover:text-gray-200 transition-colors duration-75'}
                     >
                         <XIcon className={'w-5 h-5'} />
                     </button>
@@ -60,20 +66,18 @@ const FileUploadList = () => {
             ))}
             <Dialog.Footer>
                 <Button.Danger variant={Button.Variants.Secondary} onClick={() => clearFileUploads()}>
-                    Cancel Uploads
+                    {t('cancel-uploads')}
                 </Button.Danger>
-                <Button.Text onClick={close}>Close</Button.Text>
+                <Button.Text onClick={close}>{t('close')}</Button.Text>
             </Dialog.Footer>
         </div>
     );
 };
 
-const FileUploadListDialog = asDialog({
-    title: 'File Uploads',
-    description: 'The following files are being uploaded to your server.',
-})(FileUploadList);
+const FileUploadListDialog = asDialog({})(FileUploadList);
 
 export default ({ className }: WithClassname) => {
+    const { t } = useTranslation('server/files');
     const open = useSignal(false);
 
     const count = ServerContext.useStoreState((state) => Object.keys(state.files.uploads).length);
@@ -91,11 +95,11 @@ export default ({ className }: WithClassname) => {
     return (
         <>
             {count > 0 && (
-                <Tooltip content={`${count} files are uploading, click to view`}>
+                <Tooltip content={t('uploads-tooltip', { count })}>
                     <button
                         className={
                             className ||
-                            'flex items-center justify-center w-10 h-10 rounded-ui bg-gray-700 border border-gray-600 text-blue-300 hover:text-blue-100 hover:border-gray-500 transition-colors'
+                            'flex items-center justify-center w-10 h-10 rounded-ui bg-gray-900 border border-gray-800 text-blue-300 hover:text-blue-100 hover:border-gray-600 transition-colors'
                         }
                         onClick={() => (open.value = true)}
                     >

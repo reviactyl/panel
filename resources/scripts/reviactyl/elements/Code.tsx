@@ -5,7 +5,7 @@ interface CodeProps {
 }
 
 export default ({ children }: CodeProps) => (
-    <code className={'font-mono text-sm px-2 py-1 inline-block rounded-ui bg-gray-800 border border-gray-600'}>
+    <code className={'font-mono text-sm px-2 py-1 inline-block rounded-ui bg-gray-900 border border-gray-800'}>
         {children}
     </code>
 );

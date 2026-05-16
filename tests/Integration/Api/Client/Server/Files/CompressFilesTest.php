@@ -3,7 +3,7 @@
 namespace Tests\Integration\Api\Client\Server\Files;
 
 use App\Models\Permission;
-use App\Repositories\Wings\DaemonFileRepository;
+use App\Repositories\Agent\DaemonFileRepository;
 use Mockery\MockInterface;
 use Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
@@ -20,7 +20,7 @@ class CompressFilesTest extends ClientApiIntegrationTestCase
             ->assertForbidden();
     }
 
-    public function test_endpoint_triggers_wings_call(): void
+    public function test_endpoint_triggers_agent_call(): void
     {
         [$user, $server] = $this->generateTestAccount([Permission::ACTION_FILE_ARCHIVE]);
 

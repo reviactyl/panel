@@ -41,12 +41,14 @@ class Nest extends Model
     protected $fillable = [
         'name',
         'description',
+        'image',
     ];
 
     public static array $validationRules = [
         'author' => 'required|string|email',
         'name' => 'required|string|max:191',
         'description' => 'nullable|string',
+        'image' => 'string|nullable',
     ];
 
     /**

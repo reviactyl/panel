@@ -11,8 +11,9 @@ return [
     ],
     'info' => [
         'title' => 'Debug-Informationen',
-        'node' => 'Node',
+        'node' => 'Knoten',
         'server' => 'Server-ID',
+        'public-status-page' => 'Öffentliche Statusseite',
     ],
     'rename' => [
         'title' => 'Serverdetails ändern',

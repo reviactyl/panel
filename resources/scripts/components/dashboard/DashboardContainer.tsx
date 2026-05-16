@@ -20,7 +20,7 @@ import getServerCategories from '@/api/account/getServerCategories';
 import getClientEggs from '@/api/getClientEggs';
 import CategorySection from '@/components/dashboard/CategorySection';
 import CategoryManagerModal from '@/components/dashboard/CategoryManagerModal';
-import ServerRow from '@/components/dashboard/ServerRow';
+import { LayoutContainer, ServerLayout } from '@/components/dashboard/ServerLayout';
 import Select from '@/reviactyl/elements/Select';
 import { Button } from '@/reviactyl/elements/button';
 import { FaUserGear } from 'react-icons/fa6';
@@ -206,7 +206,7 @@ export default () => {
                                         {/* Egg filter is global (not user-specific): show for both "your servers" and "others' servers" */}
                                         {(eggs && eggs.length > 0) ||
                                         (rootAdmin && showOnlyAdmin && Array.isArray(eggs)) ? (
-                                            <div className='mb-2 border-b border-gray-600 pb-2'>
+                                            <div className='mb-2 border-b border-gray-800 pb-2'>
                                                 <p className='text-xs text-gray-200 uppercase px-2 pb-1.5'>
                                                     {t('eggs.filter-label')}
                                                 </p>
@@ -288,16 +288,16 @@ export default () => {
                             }
                             if (showOnlyAdmin) {
                                 return (
-                                    <div className='grid lg:grid-cols-2 gap-4'>
+                                    <LayoutContainer>
                                         {items.map((server, index) => (
-                                            <ServerRow
+                                            <ServerLayout
                                                 key={server.uuid}
                                                 server={server}
                                                 css={index > 0 ? tw`mt-2` : undefined}
                                                 showCategory={false}
                                             />
                                         ))}
-                                    </div>
+                                    </LayoutContainer>
                                 );
                             }
                             return sortedCategorySlugs.length > 0 ? (

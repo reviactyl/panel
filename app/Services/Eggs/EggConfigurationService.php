@@ -76,13 +76,13 @@ class EggConfigurationService
         $structure = $this->configurationStructureService->handle($server, [], true);
 
         $response = [];
-        // Normalize the output of the configuration for the new Wings Daemon to more
+        // Normalize the output of the configuration for the new Agent Daemon to more
         // easily ingest, as well as make things more flexible down the road.
         foreach ($configs as $file => $data) {
             // Try to head off any errors relating to parsing a set of configuration files
             // or other JSON data for the egg. This should probably be blocked at the time
             // of egg creation/update, but it isn't so this check will at least prevent a
-            // 500 error which would crash the entire Wings boot process.
+            // 500 error which would crash the entire Agent boot process.
             //
             // @see https://github.com/pterodactyl/panel/issues/3055
             if (! is_object($data) || ! isset($data->find)) {

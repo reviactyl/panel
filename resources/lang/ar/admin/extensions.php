@@ -2,44 +2,45 @@
 
 return [
 
-    'label' => 'Extension',
-    'plural-label' => 'Extensions',
+    'label' => 'امتداد',
+    'plural-label' => 'ملحقات',
 
     'columns' => [
         'id' => 'ID',
-        'name' => 'Name',
-        'version' => 'Version',
-        'author' => 'Author',
-        'enabled' => 'Enabled',
-        'updated' => 'Updated',
-        'manifest_json' => 'Manifest JSON',
+        'name' => 'اسم',
+        'version' => 'إصدار',
+        'author' => 'مؤلف',
+        'enabled' => 'ممكّن',
+        'updated' => 'تم التحديث',
+        'manifest_json' => 'بيان JSON',
     ],
 
     'modals' => [
-        'manifest' => 'Extension Manifest',
+        'manifest' => 'بيان التمديد',
     ],
 
     'actions' => [
-        'edit' => 'Edit',
-        'upload' => 'Upload',
-        'manifest' => 'View Manifest',
-        'disable' => 'Disable',
-        'enable' => 'Enable',
-        'delete' => 'Delete',
-        'close' => 'Close',
+        'edit' => 'يحرر',
+        'upload' => 'رفع',
+        'manifest' => 'عرض البيان',
+        'disable' => 'إبطال',
+        'enable' => 'يُمكَِن',
+        'delete' => 'يمسح',
+        'close' => 'يغلق',
     ],
 
     'alerts' => [
-        'enabled' => 'Extension enabled.',
-        'enable_failed' => 'Failed to enable extension.',
-        'disabled' => 'Extension disabled.',
-        'disable_failed' => 'Failed to disable extension.',
-        'uninstalled' => 'Extension uninstalled.',
-        'uninstall_failed' => 'Failed to uninstall extension.',
-        'could_not_locate_file' => 'Could not locate uploaded package file.',
-        'invalid_file_type' => 'Only .rext files are allowed.',
-        'install_failed' => 'Extension install failed.',
-        'install_success' => 'Installed :name (:version) successfully.',
+        'enabled' => 'تم تمكين الامتداد.',
+        'enable_failed' => 'فشل في تمكين الامتداد.',
+        'disabled' => 'تم تعطيل الإضافة.',
+        'disable_failed' => 'فشل في تعطيل التمديد.',
+        'uninstalled' => 'تم إلغاء تثبيت الإضافة.',
+        'uninstall_failed' => 'فشل في إلغاء تثبيت الامتداد.',
+        'could_not_locate_file' => 'تعذر تحديد موقع ملف الحزمة الذي تم تحميله.',
+        'invalid_file_type' => 'يُسمح فقط بملفات ‎.rext.',
+        'upload_hint' => 'يُسمح فقط بحزم ملحق .rext.',
+        'install_failed' => 'فشل تثبيت الإضافة.',
+        'install_success' => 'تم تثبيت :name (:version) بنجاح.',
     ],
 
 ];

@@ -10,15 +10,17 @@ import { CloudDownloadIcon, CloudUploadIcon } from '@heroicons/react/solid';
 import { theme } from 'twin.macro';
 import ChartBlock from '@/components/server/console/ChartBlock';
 import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
+import { useTranslation } from 'react-i18next';
 
 export default () => {
+    const { t } = useTranslation('server/console');
     const status = ServerContext.useStoreState((state) => state.status.value);
     const limits = ServerContext.useStoreState((state) => state.server.data!.limits);
     const previous = useRef<Record<'tx' | 'rx', number>>({ tx: -1, rx: -1 });
 
-    const cpu = useChartTickLabel('CPU', limits.cpu, '%', 2);
-    const memory = useChartTickLabel('Memory', limits.memory, 'MiB');
-    const network = useChart('Network', {
+    const cpu = useChartTickLabel(t('cpu'), limits.cpu, '%', 2);
+    const memory = useChartTickLabel(t('memory'), limits.memory, 'MiB');
+    const network = useChart(t('network'), {
         sets: 2,
         options: {
             scales: {
@@ -42,7 +44,7 @@ export default () => {
         callback(opts, index) {
             return {
                 ...opts,
-                label: !index ? 'Network In' : 'Network Out',
+                label: !index ? t('network-in') : t('network-out'),
                 borderColor: !index ? theme('colors.blue.400') : theme('colors.amber.400'),
                 backgroundColor: hexToRgba(!index ? theme('colors.blue.700') : theme('colors.amber.700'), 0.5),
             };
@@ -76,20 +78,20 @@ export default () => {
 
     return (
         <>
-            <ChartBlock title={'CPU Load'}>
+            <ChartBlock title={t('cpu-load')}>
                 <Line {...cpu.props} />
             </ChartBlock>
-            <ChartBlock title={'Memory'}>
+            <ChartBlock title={t('memory')}>
                 <Line {...memory.props} />
             </ChartBlock>
             <ChartBlock
-                title={'Network'}
+                title={t('network')}
                 legend={
                     <>
-                        <Tooltip arrow content={'Inbound'}>
+                        <Tooltip arrow content={t('inbound')}>
                             <CloudDownloadIcon className={'mr-2 w-4 h-4 text-blue-400'} />
                         </Tooltip>
-                        <Tooltip arrow content={'Outbound'}>
+                        <Tooltip arrow content={t('outbound')}>
                             <CloudUploadIcon className={'w-4 h-4 text-amber-400'} />
                         </Tooltip>
                     </>

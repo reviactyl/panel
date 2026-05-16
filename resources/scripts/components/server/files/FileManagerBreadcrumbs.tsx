@@ -38,7 +38,7 @@ export default ({ renderLeft, withinFileEditor, isNewFile }: Props) => {
             });
 
     return (
-        <div css={tw`flex flex-grow-0 items-center text-sm text-gray-500 overflow-x-hidden`}>
+        <div css={tw`flex flex-grow-0 items-center text-sm text-gray-600 overflow-x-hidden`}>
             {renderLeft || <div css={tw`w-12`} />}/<span css={tw`px-1 text-gray-300`}>home</span>/
             <NavLink to={`/server/${id}/files`} css={tw`px-1 text-gray-200 no-underline hover:text-gray-100`}>
                 container

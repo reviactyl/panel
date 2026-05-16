@@ -17,7 +17,7 @@ export default ({ className }: PowerButtonProps) => {
     const [open, setOpen] = useState(false);
     const status = ServerContext.useStoreState((state) => state.status.value);
     const instance = ServerContext.useStoreState((state) => state.socket.instance);
-    const alwaysShowKillButton = useStoreState((state: ApplicationStore) => state.reviactyl.data?.alwaysShowKillButton);
+    const alwaysShowKillButton = useStoreState((state: ApplicationStore) => state.designify.data?.alwaysShowKillButton);
 
     const killable = status === 'stopping';
     const onButtonClick = (
@@ -47,8 +47,8 @@ export default ({ className }: PowerButtonProps) => {
                 open={open}
                 hideCloseIcon
                 onClose={() => setOpen(false)}
-                title={'Forcibly Stop Process'}
-                confirm={'Continue'}
+                title={t('force-stop-title')}
+                confirm={t('force-stop-confirm')}
                 onConfirmed={onButtonClick.bind(this, 'kill-confirmed')}
             >
                 {t('kill-warning')}

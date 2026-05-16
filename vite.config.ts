@@ -34,6 +34,12 @@ export default defineConfig({
 
     plugins,
 
+    server: {
+        watch: {
+            ignored: ['**/vendor/**', '**/storage/**', '**/bootstrap/**', '**/resources/views/**', '**/database/**'],
+        },
+    },
+    
     resolve: {
         alias: {
             '@': resolve(dirname(fileURLToPath(import.meta.url)), 'resources', 'scripts'),
@@ -58,5 +64,6 @@ export default defineConfig({
     test: {
         environment: 'happy-dom',
         include: ['resources/scripts/**/*.{spec,test}.{ts,tsx}'],
+        globals: true,
     },
 });

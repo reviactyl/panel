@@ -6,7 +6,7 @@ import Input from '@/reviactyl/elements/Input';
 
 export const FileActionCheckbox = styled(Input)`
     && {
-        ${tw`border-gray-500 bg-transparent`};
+        ${tw`border-gray-600 bg-transparent`};
 
         &:not(:checked) {
             ${tw`hover:border-gray-300`};

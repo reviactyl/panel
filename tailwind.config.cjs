@@ -18,6 +18,7 @@ const gray = {
     700: reviactyl('--color-700'),
     800: reviactyl('--color-800'),
     900: reviactyl('--color-900'),
+    950: reviactyl('--color-950'),
 };
 
 module.exports = {
@@ -32,10 +33,9 @@ module.exports = {
             },
             colors: {
                 black: '#131a20',
-                // "primary" and "neutral" are deprecated, prefer the use of "blue" and "gray"
-                // in new code.
                 primary: colors.blue,
                 gray: gray,
+                // neutral color is deprecated, but we need to keep it for legacy reasons until we can update all references to it.
                 neutral: gray,
                 cyan: colors.cyan,
                 amber: colors.amber,

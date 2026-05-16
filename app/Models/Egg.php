@@ -110,7 +110,7 @@ class Egg extends Model implements Identifiable
         'script_entry',
         'script_container',
         'copy_script_from',
-        'banner',
+        'image',
     ];
 
     /**
@@ -146,7 +146,7 @@ class Egg extends Model implements Identifiable
         'config_files' => 'required_without:config_from|nullable|json',
         'update_url' => 'sometimes|nullable|string',
         'force_outgoing_ip' => 'sometimes|boolean',
-        'banner' => 'string|nullable',
+        'image' => 'string|nullable',
     ];
 
     protected $attributes = [
@@ -157,7 +157,7 @@ class Egg extends Model implements Identifiable
         'config_logs' => null,
         'config_files' => null,
         'update_url' => null,
-        'banner' => null,
+        'image' => null,
     ];
 
     /**

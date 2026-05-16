@@ -3,7 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Node;
-use App\Repositories\Wings\DaemonMonitoringRepository;
+use App\Repositories\Agent\DaemonMonitoringRepository;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -108,7 +108,7 @@ class MonitoringWidget extends BaseWidget
                 ->icon('heroicon-o-signal'),
 
             Stat::make(trans('admin/monitoring.stats.uptime'), $this->formatUptime($data['runtime']['uptime_seconds']))
-                ->description(trans('admin/monitoring.stats.goroutines', ['count' => $data['runtime']['goroutines']]).' | '.$data['runtime']['go_version'])
+                ->description($data['runtime']['goroutines'].' goroutines | '.$data['runtime']['go_version'])
                 ->descriptionIcon('heroicon-o-clock')
                 ->color('success')
                 ->icon('heroicon-o-clock'),

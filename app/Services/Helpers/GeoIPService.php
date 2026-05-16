@@ -21,7 +21,7 @@ class GeoIPService
     {
         if (! $this->isPublicIP($ip)) {
             return [
-                'country' => __('strings.local_network'),
+                'country' => 'Local Network',
                 'code' => 'LOCAL',
             ];
         }

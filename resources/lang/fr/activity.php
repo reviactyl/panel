@@ -21,7 +21,7 @@ return [
         'checkpoint' => 'Authentification à deux facteurs requise',
         'recovery-token' => 'Jeton de récupération à deux facteurs utilisé',
         'token' => 'Défi à deux facteurs résolu',
-        'ip-blocked' => 'Blocked request from unlisted IP address for :identifier',
+        'ip-blocked' => 'Demande bloquée depuis une adresse IP non répertoriée pour :identifier',
         'sftp' => [
             'fail' => 'Échec de la connexion SFTP',
         ],
@@ -110,7 +110,7 @@ return [
             'delete' => 'Suppression de l\'allocation :allocation',
         ],
         'schedule' => [
-            'create' => 'Création d\'une tâche automatique : :nom',
+            'create' => 'Création du planning :name',
             'update' => 'Modification de la tâche automatique : :name',
             'execute' => 'Éxecution manuelle de la tâche automatique :name',
             'delete' => 'Suppression de la tâche automatique :name',
@@ -118,7 +118,7 @@ return [
         'task' => [
             'create' => 'Ajout d\'un ordre \':action\' pour la tâche automatique :name',
             'update' => 'Modification de l\'ordre \':action\' pour la tâche automatique :name',
-            'delete' => 'Suppression de l\'ordre \':action\' pour la tâche automatique :name',
+            'delete' => 'Suppression d\'une tâche pour le planning :name',
         ],
         'settings' => [
             'rename' => 'Renommage du serveur de :old à :new',

@@ -4,18 +4,18 @@ return [
     'flag' => 'br',
     'title' => 'Painel',
     'servers-user' => [
-        'title' => 'Your Servers',
-        'subtitle' => 'Here you can see all the servers you have access to.',
+        'title' => 'Seus servidores',
+        'subtitle' => 'Aqui você pode ver todos os servidores aos quais tem acesso.',
     ],
     'servers-admin' => [
-        'title' => 'Others\' Servers',
-        'subtitle' => 'Here you can see all the servers created on this panel.',
+        'title' => 'Servidores de outros',
+        'subtitle' => 'Aqui você pode ver todos os servidores criados neste painel.',
     ],
     'other-servers' => 'Mostrando servidores de outros',
     'your-servers' => 'Mostrando seus servidores',
     'no-servers' => 'Não há servidores associados à sua conta.',
     'no-other-servers' => 'Não há outros servidores para exibir.',
-    'filter-label' => 'Server Filter',
+    'filter-label' => 'Filtro de servidor',
     'eggs' => [
         'all' => 'Todos',
         'filter-label' => 'Filtrar por Egg',
@@ -28,8 +28,8 @@ return [
         'form-description' => 'Insira um nome de servidor, uuid, ou alocação para começar a pesquisa.',
     ],
     'server' => [
-        'online' => 'Online',
-        'offline' => 'Offline',
+        'online' => 'On-line',
+        'offline' => 'Off-line',
         'starting' => 'Iniciando',
         'stopping' => 'Parando',
         'suspended' => 'Suspenso',
@@ -54,7 +54,7 @@ return [
     ],
     'categories' => [
         'all-categories' => 'Todas as categorias',
-        'filter-label' => 'Filter by category',
+        'filter-label' => 'Filtrar por categoria',
         'primary' => 'Primário',
         'manage' => 'Gerenciar',
         'set-category' => 'Definir categoria',

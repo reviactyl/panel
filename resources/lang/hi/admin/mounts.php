@@ -2,43 +2,43 @@
 
 return [
 
-    'label' => 'Mount',
-    'plural_label' => 'Mounts',
+    'label' => 'पर्वत',
+    'plural_label' => 'माउंट',
 
     'sections' => [
-        'configuration' => 'Mount Configuration',
+        'configuration' => 'माउंट कॉन्फ़िगरेशन',
     ],
 
     'fields' => [
-        'name' => 'Name',
-        'description' => 'Description',
-        'source' => 'Source Path',
-        'target' => 'Target Path',
-        'read_only' => 'Read Only',
-        'user_mountable' => 'User Mountable',
+        'name' => 'नाम',
+        'description' => 'विवरण',
+        'source' => 'स्रोत पथ',
+        'target' => 'लक्षित रास्ता',
+        'read_only' => 'केवल पढ़ने के लिए',
+        'user_mountable' => 'उपयोगकर्ता माउंटेबल',
     ],
 
     'helpers' => [
-        'name' => 'A unique name used to separate this mount from another.',
-        'description' => 'A longer, human-readable description of this mount.',
-        'source' => 'The file path on the host machine to mount to containers.',
-        'target' => 'The path inside the container to mount this as.',
-        'read_only' => 'If set, the mount will be read-only inside the container.',
-        'user_mountable' => 'If set, users will be able to mount this to their servers.',
+        'name' => 'इस पर्वत को दूसरे पर्वत से अलग करने के लिए एक अनोखा नाम प्रयोग किया जाता है।',
+        'description' => 'इस पर्वत का एक लंबा, मानव-पठनीय विवरण।',
+        'source' => 'कंटेनरों पर माउंट करने के लिए होस्ट मशीन पर फ़ाइल पथ।',
+        'target' => 'इसे माउंट करने के लिए कंटेनर के अंदर का पथ।',
+        'read_only' => 'यदि सेट किया गया है, तो माउंट कंटेनर के अंदर केवल-पढ़ने के लिए होगा।',
+        'user_mountable' => 'यदि सेट किया गया है, तो उपयोगकर्ता इसे अपने सर्वर पर माउंट कर सकेंगे।',
     ],
 
     'columns' => [
         'id' => 'ID',
-        'name' => 'Name',
-        'source' => 'Source',
-        'target' => 'Target',
-        'read_only' => 'Read Only',
-        'user_mountable' => 'User Mountable',
+        'name' => 'नाम',
+        'source' => 'स्रोत',
+        'target' => 'लक्ष्य',
+        'read_only' => 'केवल पढ़ने के लिए',
+        'user_mountable' => 'उपयोगकर्ता माउंटेबल',
     ],
 
     'actions' => [
-        'attach_egg' => 'Attach Egg',
-        'attach_node' => 'Attach Node',
+        'attach_egg' => 'अंडा संलग्न करें',
+        'attach_node' => 'नोड संलग्न करें',
     ],
 
 ];

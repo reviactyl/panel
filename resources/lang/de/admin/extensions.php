@@ -2,44 +2,45 @@
 
 return [
 
-    'label' => 'Extension',
-    'plural-label' => 'Extensions',
+    'label' => 'Verlängerung',
+    'plural-label' => 'Erweiterungen',
 
     'columns' => [
         'id' => 'ID',
         'name' => 'Name',
         'version' => 'Version',
-        'author' => 'Author',
-        'enabled' => 'Enabled',
-        'updated' => 'Updated',
-        'manifest_json' => 'Manifest JSON',
+        'author' => 'Autor',
+        'enabled' => 'Ermöglicht',
+        'updated' => 'Aktualisiert',
+        'manifest_json' => 'JSON manifestieren',
     ],
 
     'modals' => [
-        'manifest' => 'Extension Manifest',
+        'manifest' => 'Erweiterungsmanifest',
     ],
 
     'actions' => [
-        'edit' => 'Edit',
-        'upload' => 'Upload',
-        'manifest' => 'View Manifest',
-        'disable' => 'Disable',
-        'enable' => 'Enable',
-        'delete' => 'Delete',
-        'close' => 'Close',
+        'edit' => 'Bearbeiten',
+        'upload' => 'Hochladen',
+        'manifest' => 'Manifest anzeigen',
+        'disable' => 'Deaktivieren',
+        'enable' => 'Aktivieren',
+        'delete' => 'Löschen',
+        'close' => 'Schließen',
     ],
 
     'alerts' => [
-        'enabled' => 'Extension enabled.',
-        'enable_failed' => 'Failed to enable extension.',
-        'disabled' => 'Extension disabled.',
-        'disable_failed' => 'Failed to disable extension.',
-        'uninstalled' => 'Extension uninstalled.',
-        'uninstall_failed' => 'Failed to uninstall extension.',
-        'could_not_locate_file' => 'Could not locate uploaded package file.',
-        'invalid_file_type' => 'Only .rext files are allowed.',
-        'install_failed' => 'Extension install failed.',
-        'install_success' => 'Installed :name (:version) successfully.',
+        'enabled' => 'Erweiterung aktiviert.',
+        'enable_failed' => 'Die Erweiterung konnte nicht aktiviert werden.',
+        'disabled' => 'Erweiterung deaktiviert.',
+        'disable_failed' => 'Die Erweiterung konnte nicht deaktiviert werden.',
+        'uninstalled' => 'Erweiterung deinstalliert.',
+        'uninstall_failed' => 'Die Deinstallation der Erweiterung ist fehlgeschlagen.',
+        'could_not_locate_file' => 'Die hochgeladene Paketdatei konnte nicht gefunden werden.',
+        'invalid_file_type' => 'Es sind nur .rext-Dateien zulässig.',
+        'upload_hint' => 'Es sind nur .rext-Erweiterungspakete zulässig.',
+        'install_failed' => 'Die Installation der Erweiterung ist fehlgeschlagen.',
+        'install_success' => ':name (:version) erfolgreich installiert.',
     ],
 
 ];

@@ -15,10 +15,10 @@ return [
 
     'help-btn' => 'Obtener ayuda',
     'docs-btn' => 'Documentación',
-    'metrics-header' => 'User Activity Metrics',
-    'most-active-country' => 'Most Active Country',
-    'activity-description' => 'Based on recent login activity.',
-    'no_activity' => 'There is no recent activity to display.',
-    'activity-header' => 'Recent Activity',
-    'more-btn' => 'View More',
+    'metrics-header' => 'Métricas de actividad del usuario',
+    'most-active-country' => 'País más activo',
+    'activity-description' => 'Basado en la actividad de inicio de sesión reciente.',
+    'no_activity' => 'No hay actividad reciente para mostrar.',
+    'activity-header' => 'Actividad reciente',
+    'more-btn' => 'Ver más',
 ];

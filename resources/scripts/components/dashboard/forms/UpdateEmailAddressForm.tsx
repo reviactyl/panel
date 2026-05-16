@@ -40,7 +40,7 @@ export default () => {
                 addFlash({
                     type: 'error',
                     key: 'account:email',
-                    title: 'Error',
+                    title: t('email.error-title'),
                     message: httpErrorToHuman(error),
                 })
             )
@@ -56,7 +56,7 @@ export default () => {
                 <React.Fragment>
                     <SpinnerOverlay size={'large'} visible={isSubmitting} />
                     <Form css={tw`m-0`}>
-                        <Field id={'current_email'} type={'email'} name={'email'} label={'Email'} />
+                        <Field id={'current_email'} type={'email'} name={'email'} label={t('email.label')} />
                         <div css={tw`mt-6`}>
                             <Field
                                 id={'confirm_password'}

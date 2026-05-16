@@ -13,6 +13,7 @@ return [
         'title' => 'Debug 信息',
         'node' => '节点',
         'server' => '服务器 ID',
+        'public-status-page' => '公共状态页面',
     ],
     'rename' => [
         'title' => '更改服务器详情',

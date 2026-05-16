@@ -4,7 +4,7 @@ return [
     'daemon_connection_failed' => 'Terjadi pengecualian saat mencoba berkomunikasi dengan daemon yang menghasilkan kode respons HTTP/:code. Pengecualian ini telah dicatat.',
     'node' => [
         'servers_attached' => 'Sebuah node tidak boleh memiliki server yang terhubung dengannya agar dapat dihapus.',
-        'daemon_off_config_updated' => 'The daemon configuration has been updated, however there was an error encountered while attempting to automatically update the configuration file on the Daemon. You will need to manually update the configuration file (config.yml) for the daemon to apply these changes.',
+        'daemon_off_config_updated' => 'Konfigurasi daemon telah diperbarui, namun terjadi kesalahan saat mencoba memperbarui file konfigurasi pada Daemon secara otomatis. Anda perlu memperbarui file konfigurasi (config.yml) secara manual agar daemon dapat menerapkan perubahan ini.',
     ],
     'allocations' => [
         'server_using' => 'Sebuah server sedang menggunakan alokasi ini. Alokasi hanya dapat dihapus jika tidak ada server yang sedang menggunakannya.',
@@ -57,6 +57,6 @@ return [
         'resource_not_found' => 'Sumber daya yang diminta tidak ada di server ini.',
     ],
     'social' => [
-        'unlink_only_login' => 'You cannot unlink your only login method without setting a password first.',
+        'unlink_only_login' => 'Anda tidak dapat memutuskan tautan satu-satunya metode login Anda tanpa menetapkan kata sandi terlebih dahulu.',
     ],
 ];

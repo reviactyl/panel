@@ -1,28 +1,28 @@
 <?php
 
 return [
-    'title' => 'Application API',
-    'list-title' => 'Credentials List',
-    'key' => 'Key',
-    'memo' => 'Memo',
-    'last-used' => 'Last Used',
-    'created' => 'Created On',
-    'author' => 'Author',
-    'never-used' => 'Never Used',
+    'title' => 'API ứng dụng',
+    'list-title' => 'Danh sách thông tin xác thực',
+    'key' => 'Chìa khóa',
+    'memo' => 'Bản ghi nhớ',
+    'last-used' => 'Được sử dụng lần cuối',
+    'created' => 'Được tạo vào ngày',
+    'author' => 'Tác giả',
+    'never-used' => 'không bao giờ được sử dụng',
 
-    'revoke' => 'Revoke',
-    'revoke-title' => 'Revoke API Key',
-    'revoke-warning' => 'Once this API key is revoked any applications currently using it will stop working.',
-    'revoked' => 'API Key has been revoked.',
+    'revoke' => 'Thu hồi',
+    'revoke-title' => 'Thu hồi khóa API',
+    'revoke-warning' => 'Sau khi khóa API này bị thu hồi, mọi ứng dụng hiện đang sử dụng sẽ ngừng hoạt động.',
+    'revoked' => 'Khóa API đã bị thu hồi.',
 
-    'permissions' => 'Select Permissions',
-    'read-only' => 'Read',
-    'read-write' => 'Read & Write',
-    'none' => 'None',
+    'permissions' => 'Chọn quyền',
+    'read-only' => 'Đọc',
+    'read-write' => 'Đọc & Viết',
+    'none' => 'Không có',
 
-    'description' => 'Description',
-    'info' => 'Once you have assigned permissions and created this set of credentials you will be unable to come back and edit it. If you need to make changes down the road you will need to create a new set of credentials.',
+    'description' => 'Sự miêu tả',
+    'info' => 'Khi bạn đã chỉ định quyền và tạo bộ thông tin xác thực này, bạn sẽ không thể quay lại và chỉnh sửa nó. Nếu bạn cần thực hiện các thay đổi sau này, bạn sẽ cần tạo một bộ thông tin xác thực mới.',
 
-    'create-btn' => 'Create New',
-    'new-btn' => 'Create Credentials',
+    'create-btn' => 'Tạo mới',
+    'new-btn' => 'Tạo thông tin xác thực',
 ];

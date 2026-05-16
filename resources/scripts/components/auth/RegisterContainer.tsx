@@ -169,7 +169,7 @@ const RegisterContainer = () => {
                         />
                         <button
                             type={'button'}
-                            css={tw`absolute border-l-2 top-[34px] right-[6px] py-2 p-1 border-gray-300 text-gray-300`}
+                            css={tw`absolute top-[36px] right-[6px] py-2 p-1 text-gray-500`}
                             onClick={() => setShow(!show)}
                         >
                             {show ? <EyeOffIcon className='h-5 w-5' /> : <EyeIcon className='h-5 w-5' />}

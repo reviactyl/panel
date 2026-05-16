@@ -43,7 +43,7 @@ export default () => {
                 addFlash({
                     key: 'account:password',
                     type: 'error',
-                    title: 'Error',
+                    title: t('password.error-title'),
                     message: httpErrorToHuman(error),
                 })
             )

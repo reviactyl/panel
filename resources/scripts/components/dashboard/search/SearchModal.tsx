@@ -23,7 +23,7 @@ interface Values {
 }
 
 const ServerResult = styled(Link)`
-    ${tw`flex items-center bg-gray-900 p-4 rounded border-l-4 border-gray-900 no-underline transition-all duration-150`};
+    ${tw`flex items-center bg-gray-950 p-4 rounded border-l-4 border-gray-950 no-underline transition-all duration-150`};
 
     &:hover {
         ${tw`shadow border-cyan-500`};

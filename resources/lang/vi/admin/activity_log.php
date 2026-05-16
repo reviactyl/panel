@@ -3,11 +3,11 @@
 return [
 
     'columns' => [
-        'user' => 'User',
-        'action' => 'Action',
-        'time' => 'Time',
+        'user' => 'người dùng',
+        'action' => 'Hoạt động',
+        'time' => 'Thời gian',
     ],
 
-    'fallback_actor' => 'System',
+    'fallback_actor' => 'Hệ thống',
 
 ];

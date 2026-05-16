@@ -31,6 +31,131 @@ return [
         ],
     ],
 
+    'status' => [
+        'online' => 'On-line',
+        'offline' => 'Off-line',
+        'starting' => 'Começando',
+        'stopping' => 'Parando',
+        'crashed' => 'Falha',
+        'installing' => 'Instalando',
+        'restoring_backup' => 'Restaurando Backup',
+        'install_failed' => 'Falha na instalação',
+        'reinstall_failed' => 'Falha na reinstalação',
+        'suspended' => 'Suspenso',
+    ],
+
+    'create' => [
+        'sections' => [
+            'core_details' => 'Detalhes principais',
+            'allocation' => 'Gerenciamento de Alocação',
+            'feature_limits' => 'Limites de recursos do aplicativo',
+            'resources' => 'Gerenciamento de recursos',
+            'nest' => 'Configuração do ninho',
+            'docker' => 'Configuração do Docker',
+            'startup' => 'Configuração de inicialização',
+            'variables' => 'Variáveis ​​de serviço',
+        ],
+
+        'fields' => [
+            'name' => [
+                'label' => 'Nome do servidor',
+                'placeholder' => 'Nome do servidor',
+                'helper' => 'Limites de caracteres: a-z A-Z 0-9 _ - . e espaços.',
+            ],
+            'owner' => [
+                'label' => 'Proprietário do servidor',
+                'helper' => 'Endereço de e-mail do proprietário do servidor.',
+            ],
+            'description' => [
+                'label' => 'Descrição do servidor',
+                'helper' => 'Uma breve descrição deste servidor.',
+            ],
+            'start_on_completion' => [
+                'label' => 'Iniciar o servidor quando instalado',
+            ],
+            'node' => [
+                'label' => 'Nó',
+                'helper' => 'O nó no qual este servidor será implantado.',
+            ],
+            'allocation' => [
+                'label' => 'Alocação padrão',
+                'helper' => 'A alocação principal que será atribuída a este servidor.',
+            ],
+            'additional_allocations' => [
+                'label' => 'Alocações Adicionais',
+                'helper' => 'Alocações adicionais a serem atribuídas a este servidor na criação.',
+            ],
+            'database_limit' => [
+                'label' => 'Limite de banco de dados',
+                'helper' => 'O número total de bancos de dados que um usuário pode criar para este servidor.',
+            ],
+            'allocation_limit' => [
+                'label' => 'Limite de Alocação',
+                'helper' => 'O número total de alocações que um usuário pode criar para este servidor.',
+            ],
+            'backup_limit' => [
+                'label' => 'Limite de backup',
+                'helper' => 'O número total de backups que podem ser criados para este servidor.',
+            ],
+            'cpu' => [
+                'label' => 'Limite de CPU',
+                'helper' => 'Defina 0 para nenhum limite de CPU. Um núcleo virtual completo é 100%.',
+            ],
+            'threads' => [
+                'label' => 'Fixação de CPU',
+                'helper' => 'Avançado: use um único número ou uma lista separada por vírgulas, por exemplo 0, 0-1,3 ou 0,1,3,4.',
+            ],
+            'memory' => [
+                'label' => 'Memória',
+                'helper' => 'A quantidade máxima de memória permitida para este contêiner. Defina 0 para ilimitado.',
+            ],
+            'swap' => [
+                'label' => 'Trocar',
+                'helper' => 'Defina 0 para desabilitar a troca ou -1 para permitir troca ilimitada.',
+            ],
+            'disk' => [
+                'label' => 'Espaço em disco',
+                'helper' => 'Defina 0 para permitir uso ilimitado do disco.',
+            ],
+            'io' => [
+                'label' => 'Bloco IO Peso',
+                'helper' => 'Avançado: desempenho de E/S em relação a outros contêineres em execução. O valor deve ser de 10 a 1000.',
+            ],
+            'oom_disabled' => [
+                'label' => 'Habilitar assassino OOM',
+                'helper' => 'Encerra o servidor se ele violar os limites de memória.',
+            ],
+            'nest' => [
+                'label' => 'Ninho',
+                'helper' => 'Selecione o Nest em que este servidor será agrupado.',
+            ],
+            'egg' => [
+                'label' => 'Ovo',
+                'helper' => 'Selecione o Egg que definirá como este servidor deverá operar.',
+            ],
+            'skip_scripts' => [
+                'label' => 'Pular script de instalação do Egg',
+                'helper' => 'Se o Egg selecionado tiver um script de instalação anexado, o script será executado durante a instalação, a menos que esta opção esteja marcada.',
+            ],
+            'image' => [
+                'label' => 'Docker Image',
+                'helper' => 'Selecione uma imagem no menu suspenso ou insira uma imagem personalizada abaixo.',
+            ],
+            'custom_image' => [
+                'label' => 'Imagem Docker personalizada',
+                'placeholder' => 'Ou insira uma imagem personalizada...',
+                'helper' => 'Esta é a imagem padrão do Docker que será usada para executar este servidor.',
+            ],
+            'startup' => [
+                'label' => 'Comando de inicialização',
+                'helper' => 'Substitutos disponíveis: {{SERVER_MEMORY}}, {{SERVER_IP}} e {{SERVER_PORT}}.',
+            ],
+            'environment_placeholder' => [
+                'label' => 'Selecione um ovo para configurar variáveis ​​de serviço',
+            ],
+        ],
+    ],
+
     'fields' => [
         'advanced_mode' => [
             'label' => 'Modo Avançado',
@@ -55,7 +180,7 @@ return [
             'helper' => 'Descrição opcional para este servidor.',
         ],
         'node' => [
-            'label' => 'Node',
+            'label' => 'Nó',
             'helper' => 'O node no qual este servidor será implantado.',
         ],
         'allocation' => [
@@ -67,11 +192,11 @@ return [
             'helper' => 'Alocações extras opcionais para atribuir.',
         ],
         'nest' => [
-            'label' => 'Nest',
+            'label' => 'Ninho',
             'helper' => 'O Nest escolhido para esse servidor',
         ],
         'egg' => [
-            'label' => 'Egg',
+            'label' => 'Ovo',
             'helper' => 'O Egg que define o comportamento do servidor.',
         ],
         'startup' => [
@@ -80,7 +205,6 @@ return [
         ],
         'image' => [
             'label' => 'Imagem Docker',
-            'placeholder' => 'e.g. ghcr.io/reviactyl/images:java_17',
             'helper' => 'Imagem Docker usada para executar este servidor.',
             'custom' => 'Personalizado',
         ],
@@ -97,7 +221,7 @@ return [
             'helper' => 'Alocação total de memória. Defina como 0 para ilimitada. (Memória ilimitada não funciona para ovos do Minecraft devido ao comando de inicialização)',
         ],
         'swap' => [
-            'label' => 'Swap',
+            'label' => 'Trocar',
             'helper' => 'Alocação de memória de Swap. Defina como 0 para desativar a troca ou -1 para permitir troca ilimitada.',
         ],
         'disk' => [
@@ -134,7 +258,7 @@ return [
         ],
         'backup_limit' => [
             'label' => 'Limite de backup',
-            'helper' => 'Maximum number of backups.',
+            'helper' => 'Número máximo de backups.',
         ],
         'environment' => [
             'key' => 'Variável',
@@ -151,10 +275,10 @@ return [
         'id' => 'ID',
         'name' => 'Nome',
         'owner' => 'Dono',
-        'node' => 'Node',
+        'node' => 'Nó',
         'allocation' => 'Alocações',
         'status' => 'Status',
-        'egg' => 'Egg',
+        'egg' => 'Ovo',
         'memory' => 'Memória',
         'disk' => 'Armazenamento',
         'cpu' => 'CPU',
@@ -162,6 +286,7 @@ return [
         'updated' => 'Atualizar',
         'installed' => 'Instalado',
         'no_status' => 'Sem Status',
+        'unlimited' => 'Ilimitado',
     ],
 
     'messages' => [
@@ -172,6 +297,7 @@ return [
 
     'actions' => [
         'edit' => 'Editar',
+        'random' => 'Aleatório',
         'toggle_install_status' => 'Alternar status de instalação',
         'suspend' => 'Suspender',
         'unsuspend' => 'Cancelar suspensão',
@@ -208,5 +334,218 @@ return [
         'transfer_nodes_required' => 'Você deve ter pelo menos dois nós configurados antes de poder transferir servidores.',
         'transfer_started' => 'A transferência do servidor foi iniciada.',
         'transfer_not_viable' => 'O nó selecionado não tem o espaço em disco ou memória disponível necessários para acomodar este servidor.',
+        'primary_allocation_updated' => 'Alocação primária atualizada.',
+        'database_created' => 'Banco de dados criado.',
+        'database_password_reset' => 'Redefinição de senha do banco de dados.',
+        'database_deleted' => 'Banco de dados excluído.',
+    ],
+
+    'edit' => [
+        'tabs' => [
+            'information' => 'Informação',
+            'build_configuration' => 'Configuração de compilação',
+            'startup' => 'Comece',
+            'manage' => 'Gerenciar',
+        ],
+
+        'sections' => [
+            'resource_management' => 'Gerenciamento de recursos',
+            'application_feature_limits' => 'Limites de recursos do aplicativo',
+            'allocation_management' => 'Gerenciamento de Alocação',
+            'startup_command_modification' => 'Modificação do comando de inicialização',
+            'service_configuration' => 'Configuração de serviço',
+            'docker_image_configuration' => 'Configuração de imagem Docker',
+            'service_variables' => 'Variáveis ​​de serviço',
+            'reinstall_server' => 'Reinstale o servidor',
+            'install_status' => 'Status de instalação',
+            'suspend_server' => 'Suspender Servidor',
+            'unsuspend_server' => 'Cancelar suspensão do servidor',
+            'transfer_server' => 'Servidor de transferência',
+            'delete_server' => 'Excluir servidor',
+        ],
+
+        'section_descriptions' => [
+            'service_configuration' => 'A alteração desses valores pode acionar uma reinstalação. O servidor será parado imediatamente para essa operação.',
+            'reinstall_server' => 'Isto irá reinstalar o servidor com os scripts de serviço atribuídos. Isso pode substituir os dados do servidor.',
+            'install_status' => 'Altere o status da instalação de desinstalado para instalado ou vice-versa.',
+            'suspend_server' => 'Isso interromperá a execução de processos e impedirá que o usuário gerencie o servidor por meio do painel ou API.',
+            'unsuspend_server' => 'Isso cancelará a suspensão do servidor e restaurará o acesso normal do usuário.',
+            'transfer_server_transferring' => 'Este servidor está sendo transferido para outro nó.',
+            'transfer_server' => 'Transfira este servidor para outro nó conectado a este painel.',
+            'delete_server' => 'Isso exclui permanentemente o servidor do painel e do Agente. A exclusão forçada ignora a exclusão do agente, se necessário.',
+        ],
+
+        'fields' => [
+            'server_name' => [
+                'label' => 'Nome do servidor',
+                'helper' => 'Limites de caracteres: a-zA-Z0-9_-, espaços e caracteres imprimíveis padrão.',
+            ],
+            'server_owner' => [
+                'label' => 'Proprietário do servidor',
+                'helper' => 'A alteração da propriedade revoga automaticamente os tokens daemon do proprietário anterior.',
+            ],
+            'server_description' => [
+                'label' => 'Descrição do servidor',
+                'helper' => 'Uma breve descrição deste servidor.',
+            ],
+            'server_uuid' => [
+                'label' => 'UUID do servidor',
+            ],
+            'server_uuid_short' => [
+                'label' => 'UUID do servidor (curto)',
+            ],
+            'external_identifier' => [
+                'label' => 'Identificador Externo',
+                'helper' => 'Deixe em branco para não atribuir um identificador externo. O ID externo deve ser exclusivo para este servidor.',
+            ],
+            'game_port' => [
+                'label' => 'Porta de jogo',
+                'helper' => 'O endereço de conexão padrão que será usado para este servidor de jogo.',
+            ],
+            'additional_ports' => [
+                'label' => 'Portas Adicionais',
+                'helper' => 'Atribua ou remova portas extras. Portas idênticas em IPs diferentes não podem ser atribuídas ao mesmo servidor.',
+            ],
+            'startup_command' => [
+                'label' => 'Comando de inicialização',
+                'helper' => 'Disponível por padrão: {{SERVER_MEMORY}}, {{SERVER_IP}} e {{SERVER_PORT}}.',
+            ],
+            'default_startup_command' => [
+                'label' => 'Comando de inicialização padrão',
+                'error' => 'ERRO: Inicialização não definida!',
+            ],
+            'cpu_limit' => [
+                'label' => 'Limite de CPU',
+                'helper' => 'Cada núcleo virtual é 100%. Defina 0 para tempo de CPU irrestrito.',
+            ],
+            'cpu_pinning' => [
+                'label' => 'Fixação de CPU',
+                'helper' => 'Avançado: deixe em branco para todos os núcleos. Exemplos: 0, 0-1,3 ou 0,1,3,4.',
+            ],
+            'allocated_memory' => [
+                'label' => 'Memória Alocada',
+                'helper' => 'A quantidade máxima de memória permitida para este contêiner. Defina 0 para ilimitado.',
+            ],
+            'allocated_swap' => [
+                'label' => 'Troca Alocada',
+                'helper' => 'Defina 0 para desabilitar a troca ou -1 para permitir troca ilimitada.',
+            ],
+            'disk_space_limit' => [
+                'label' => 'Limite de espaço em disco',
+                'helper' => 'Defina 0 para permitir uso ilimitado do disco.',
+            ],
+            'block_io_proportion' => [
+                'label' => 'Proporção de IO do bloco',
+                'helper' => 'Avançado: desempenho de E/S em relação a outros contêineres em execução. O valor deve ser de 10 a 1000.',
+            ],
+            'disable_oom_killer' => [
+                'label' => 'Desativar assassino OOM',
+                'helper' => 'A ativação do OOM killer pode fazer com que os processos do servidor sejam encerrados inesperadamente.',
+            ],
+            'database_limit' => [
+                'label' => 'Limite de banco de dados',
+                'helper' => 'O número total de bancos de dados que um usuário pode criar para este servidor.',
+            ],
+            'allocation_limit' => [
+                'label' => 'Limite de Alocação',
+                'helper' => 'O número total de alocações que um usuário pode criar para este servidor.',
+            ],
+            'backup_limit' => [
+                'label' => 'Limite de backup',
+                'helper' => 'O número total de backups que podem ser criados para este servidor.',
+            ],
+            'image' => [
+                'label' => 'Imagem',
+                'helper' => 'Selecione uma imagem no menu suspenso ou insira uma imagem personalizada abaixo.',
+            ],
+            'custom_image' => [
+                'label' => 'Imagem personalizada',
+                'placeholder' => 'Ou insira uma imagem personalizada...',
+                'helper' => 'Esta é a imagem Docker que será usada para executar este servidor.',
+            ],
+            'transfer_node' => [
+                'label' => 'Nó',
+                'helper' => 'O nó para o qual este servidor será transferido.',
+            ],
+            'transfer_allocation' => [
+                'label' => 'Alocação padrão',
+                'helper' => 'A alocação principal que será atribuída a este servidor.',
+            ],
+            'transfer_additional_allocations' => [
+                'label' => 'Alocações Adicionais',
+                'helper' => 'Alocações adicionais a serem atribuídas a este servidor na transferência.',
+            ],
+        ],
+
+        'actions' => [
+            'reinstall_server' => 'Reinstale o servidor',
+            'toggle_install_status' => 'Alternar status de instalação',
+            'suspend_server' => 'Suspender Servidor',
+            'unsuspend_server' => 'Cancelar suspensão do servidor',
+            'transfer_server' => 'Servidor de transferência',
+            'confirm' => 'Confirmar',
+            'delete_server' => 'Excluir servidor',
+            'forcibly_delete_server' => 'Excluir servidor à força',
+        ],
+    ],
+
+    'allocations' => [
+        'title' => 'Alocações',
+
+        'table' => [
+            'ip' => 'PI',
+            'port' => 'Porta',
+            'alias' => 'Alias',
+            'primary' => 'Primário',
+            'notes' => 'Notas',
+            'created' => 'Criado',
+        ],
+
+        'placeholder' => [
+            'no_alias_assigned' => 'Nenhum alias atribuído',
+        ],
+
+        'actions' => [
+            'make_primary' => 'Tornar primário',
+        ],
+    ],
+
+    'databases' => [
+        'title' => 'Bancos de dados',
+
+        'table' => [
+            'database' => 'Banco de dados',
+            'username' => 'Nome de usuário',
+            'remote' => 'Remoto',
+            'host' => 'Hospedar',
+            'max_connections' => 'Máximo de conexões',
+            'created' => 'Criado',
+        ],
+
+        'placeholder' => [
+            'unlimited' => 'Ilimitado',
+        ],
+
+        'actions' => [
+            'create_database' => 'Criar banco de dados',
+            'reset_password' => 'Redefinir senha',
+            'delete' => 'Excluir',
+        ],
+
+        'create_modal' => [
+            'database_name' => [
+                'label' => 'Nome do banco de dados',
+                'helper' => 'O painel irá prefixar isso com o ID do servidor, correspondendo ao antigo painel de administração.',
+            ],
+            'database_host' => [
+                'label' => 'Host de banco de dados',
+            ],
+            'remote' => [
+                'label' => 'Remoto',
+            ],
+            'max_connections' => [
+                'label' => 'Máximo de conexões',
+            ],
+        ],
     ],
 ];

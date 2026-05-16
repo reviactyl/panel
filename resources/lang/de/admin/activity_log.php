@@ -3,9 +3,9 @@
 return [
 
     'columns' => [
-        'user' => 'User',
-        'action' => 'Action',
-        'time' => 'Time',
+        'user' => 'Benutzer',
+        'action' => 'Aktion',
+        'time' => 'Zeit',
     ],
 
     'fallback_actor' => 'System',

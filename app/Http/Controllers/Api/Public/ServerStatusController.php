@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\Public;
 
 use App\Http\Controllers\Controller;
 use App\Models\Server;
-use App\Repositories\Wings\DaemonServerRepository;
+use App\Repositories\Agent\DaemonServerRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
@@ -26,7 +26,7 @@ class ServerStatusController extends Controller
                 ->orWhere('uuidShort', $server)
                 ->firstOrFail();
         } catch (ModelNotFoundException $e) {
-            return response()->json(['error' => 'Server not found'], 404);
+            return response()->json(['error' => trans('strings.server-not-found')], 404);
         }
 
         $response = [

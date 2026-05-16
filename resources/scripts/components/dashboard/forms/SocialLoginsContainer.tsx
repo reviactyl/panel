@@ -30,7 +30,7 @@ const Container = styled.div`
 `;
 
 const Item = styled.div`
-    ${tw`flex items-center justify-between p-4 rounded-ui border border-gray-600`}
+    ${tw`flex items-center justify-between p-4 rounded-ui border border-gray-800`}
 `;
 
 export default () => {
@@ -109,7 +109,7 @@ export default () => {
                                                 })}
                                             </span>
                                         ) : (
-                                            <span css={tw`text-gray-500 flex items-center`}>
+                                            <span css={tw`text-gray-600 flex items-center`}>
                                                 <FaTimesCircle css={tw`mr-1`} />
                                                 {t('overview.social.status.not-connected')}
                                             </span>

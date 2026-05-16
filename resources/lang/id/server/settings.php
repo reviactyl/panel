@@ -11,8 +11,9 @@ return [
     ],
     'info' => [
         'title' => 'Informasi Debug',
-        'node' => 'Node',
+        'node' => 'simpul',
         'server' => 'ID Server',
+        'public-status-page' => 'Halaman Status Publik',
     ],
     'rename' => [
         'title' => 'Ubah Detail Server',

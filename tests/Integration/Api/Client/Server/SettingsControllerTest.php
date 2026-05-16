@@ -4,7 +4,7 @@ namespace Tests\Integration\Api\Client\Server;
 
 use App\Models\Permission;
 use App\Models\Server;
-use App\Repositories\Wings\DaemonServerRepository;
+use App\Repositories\Agent\DaemonServerRepository;
 use Illuminate\Http\Response;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Integration\Api\Client\ClientApiIntegrationTestCase;

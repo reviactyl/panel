@@ -1,186 +1,312 @@
 <?php
 
 return [
-    'label' => 'Server',
-    'plural-label' => 'Servers',
+    'label' => 'pelayan',
+    'plural-label' => 'pelayan',
 
     'sections' => [
         'identity' => [
-            'title' => 'Identity',
-            'description' => 'Basic server information and ownership.',
+            'title' => 'Identitas',
+            'description' => 'Informasi dan kepemilikan server dasar.',
         ],
         'allocation' => [
-            'title' => 'Allocation',
-            'description' => 'Select the node and network allocation for this server.',
+            'title' => 'Alokasi',
+            'description' => 'Pilih node dan alokasi jaringan untuk server ini.',
         ],
         'startup' => [
-            'title' => 'Startup',
-            'description' => 'Configure the egg, startup command, and Docker image.',
+            'title' => 'Rintisan',
+            'description' => 'Konfigurasikan telur, perintah startup, dan image Docker.',
         ],
         'resources' => [
-            'title' => 'Resource Limits',
-            'description' => 'Define the server resource limits.',
+            'title' => 'Batasan Sumber Daya',
+            'description' => 'Tentukan batas sumber daya server.',
         ],
         'feature_limits' => [
-            'title' => 'Feature Limits',
-            'description' => 'Limit databases, allocations, and backups.',
+            'title' => 'Batasan Fitur',
+            'description' => 'Batasi database, alokasi, dan cadangan.',
         ],
         'environment' => [
-            'title' => 'Environment Variables',
-            'description' => 'Set environment values for the selected egg.',
+            'title' => 'Variabel Lingkungan',
+            'description' => 'Tetapkan nilai lingkungan untuk telur yang dipilih.',
+        ],
+    ],
+
+    'status' => [
+        'online' => 'On line',
+        'offline' => 'Luring',
+        'starting' => 'Mulai',
+        'stopping' => 'Henti',
+        'crashed' => 'Hancur',
+        'installing' => 'Menginstal',
+        'restoring_backup' => 'Memulihkan Cadangan',
+        'install_failed' => 'Pemasangan Gagal',
+        'reinstall_failed' => 'Instal Ulang Gagal',
+        'suspended' => 'Tergantung',
+    ],
+
+    'create' => [
+        'sections' => [
+            'core_details' => 'Detail Inti',
+            'allocation' => 'Manajemen Alokasi',
+            'feature_limits' => 'Batasan Fitur Aplikasi',
+            'resources' => 'Manajemen Sumber Daya',
+            'nest' => 'Konfigurasi Sarang',
+            'docker' => 'Konfigurasi Docker',
+            'startup' => 'Konfigurasi Permulaan',
+            'variables' => 'Variabel Layanan',
+        ],
+
+        'fields' => [
+            'name' => [
+                'label' => 'Nama Server',
+                'placeholder' => 'Nama Server',
+                'helper' => 'Batasan karakter: a-z A-Z 0-9 _ - . dan spasi.',
+            ],
+            'owner' => [
+                'label' => 'Pemilik Server',
+                'helper' => 'Alamat email Pemilik Server.',
+            ],
+            'description' => [
+                'label' => 'Deskripsi Server',
+                'helper' => 'Penjelasan singkat tentang server ini.',
+            ],
+            'start_on_completion' => [
+                'label' => 'Mulai Server saat Diinstal',
+            ],
+            'node' => [
+                'label' => 'simpul',
+                'helper' => 'Node tempat server ini akan dikerahkan.',
+            ],
+            'allocation' => [
+                'label' => 'Alokasi Default',
+                'helper' => 'Alokasi utama yang akan ditetapkan ke server ini.',
+            ],
+            'additional_allocations' => [
+                'label' => 'Alokasi Tambahan',
+                'helper' => 'Alokasi tambahan untuk ditetapkan ke server ini pada saat pembuatan.',
+            ],
+            'database_limit' => [
+                'label' => 'Batas Basis Data',
+                'helper' => 'Jumlah total database yang boleh dibuat oleh pengguna untuk server ini.',
+            ],
+            'allocation_limit' => [
+                'label' => 'Batas Alokasi',
+                'helper' => 'Jumlah total alokasi yang boleh dibuat oleh pengguna untuk server ini.',
+            ],
+            'backup_limit' => [
+                'label' => 'Batas Cadangan',
+                'helper' => 'Jumlah total cadangan yang dapat dibuat untuk server ini.',
+            ],
+            'cpu' => [
+                'label' => 'Batas CPU',
+                'helper' => 'Tetapkan 0 tanpa batas CPU. Inti virtual penuh adalah 100%.',
+            ],
+            'threads' => [
+                'label' => 'Penyematan CPU',
+                'helper' => 'Lanjutan: gunakan satu angka atau daftar yang dipisahkan koma, misalnya 0, 0-1,3, atau 0,1,3,4.',
+            ],
+            'memory' => [
+                'label' => 'Ingatan',
+                'helper' => 'Jumlah memori maksimum yang diperbolehkan untuk penampung ini. Tetapkan 0 untuk tidak terbatas.',
+            ],
+            'swap' => [
+                'label' => 'Menukar',
+                'helper' => 'Setel 0 untuk menonaktifkan pertukaran, atau -1 untuk mengizinkan pertukaran tanpa batas.',
+            ],
+            'disk' => [
+                'label' => 'Ruang Disk',
+                'helper' => 'Setel 0 untuk mengizinkan penggunaan disk tanpa batas.',
+            ],
+            'io' => [
+                'label' => 'Blokir IO Berat',
+                'helper' => 'Lanjutan: Performa IO relatif terhadap container lain yang sedang berjalan. Nilainya harus 10 hingga 1000.',
+            ],
+            'oom_disabled' => [
+                'label' => 'Aktifkan Pembunuh OOM',
+                'helper' => 'Menghentikan server jika melanggar batas memori.',
+            ],
+            'nest' => [
+                'label' => 'Sarang',
+                'helper' => 'Pilih Nest tempat server ini akan dikelompokkan.',
+            ],
+            'egg' => [
+                'label' => 'Telur',
+                'helper' => 'Pilih Egg yang akan menentukan bagaimana server ini harus beroperasi.',
+            ],
+            'skip_scripts' => [
+                'label' => 'Lewati Skrip Pemasangan Telur',
+                'helper' => 'Jika Egg yang dipilih memiliki skrip instalasi yang terpasang padanya, skrip akan berjalan selama instalasi kecuali ini dicentang.',
+            ],
+            'image' => [
+                'label' => 'Docker Image',
+                'helper' => 'Pilih gambar dari dropdown, atau masukkan gambar khusus di bawah.',
+            ],
+            'custom_image' => [
+                'label' => 'Gambar Docker Kustom',
+                'placeholder' => 'Atau masukkan gambar khusus...',
+                'helper' => 'Ini adalah image Docker default yang akan digunakan untuk menjalankan server ini.',
+            ],
+            'startup' => [
+                'label' => 'Perintah Memulai',
+                'helper' => 'Pengganti yang tersedia: {{SERVER_MEMORY}}, {{SERVER_IP}}, dan {{SERVER_PORT}}.',
+            ],
+            'environment_placeholder' => [
+                'label' => 'Pilih telur untuk mengonfigurasi variabel layanan',
+            ],
         ],
     ],
 
     'fields' => [
         'advanced_mode' => [
-            'label' => 'Advanced Mode',
-            'helper' => 'Toggle to show additional server configuration options. Toggle on only if you understand the implications of the additional settings.',
+            'label' => 'Modus Lanjutan',
+            'helper' => 'Beralih untuk menampilkan opsi konfigurasi server tambahan. Aktifkan hanya jika Anda memahami implikasi dari pengaturan tambahan.',
         ],
         'external_id' => [
-            'label' => 'External ID',
-            'helper' => 'Optional unique identifier for this server.',
+            'label' => 'ID Eksternal',
+            'helper' => 'Pengidentifikasi unik opsional untuk server ini.',
         ],
         'owner' => [
-            'label' => 'Owner',
-            'helper' => 'Select the user that owns this server.',
+            'label' => 'Pemilik',
+            'helper' => 'Pilih pengguna yang memiliki server ini.',
         ],
         'name' => [
-            'label' => 'Name',
-            'placeholder' => 'Server Name',
-            'helper' => 'A short name for this server.',
+            'label' => 'Nama',
+            'placeholder' => 'Nama Server',
+            'helper' => 'Nama pendek untuk server ini.',
         ],
         'description' => [
-            'label' => 'Description',
-            'placeholder' => 'Server description',
-            'helper' => 'Optional description for this server.',
+            'label' => 'Keterangan',
+            'placeholder' => 'Deskripsi server',
+            'helper' => 'Deskripsi opsional untuk server ini.',
         ],
         'node' => [
-            'label' => 'Node',
-            'helper' => 'The node this server will be deployed to.',
+            'label' => 'simpul',
+            'helper' => 'Node tempat server ini akan dikerahkan.',
         ],
         'allocation' => [
-            'label' => 'Primary Allocation',
-            'helper' => 'The default IP/port allocation for this server.',
+            'label' => 'Alokasi Utama',
+            'helper' => 'Alokasi IP/port default untuk server ini.',
         ],
         'additional_allocations' => [
-            'label' => 'Additional Allocations',
-            'helper' => 'Optional extra allocations to assign.',
+            'label' => 'Alokasi Tambahan',
+            'helper' => 'Alokasi tambahan opsional untuk ditetapkan.',
         ],
         'nest' => [
-            'label' => 'Nest',
-            'helper' => 'The service nest for this server.',
+            'label' => 'Sarang',
+            'helper' => 'Sarang layanan untuk server ini.',
         ],
         'egg' => [
-            'label' => 'Egg',
-            'helper' => 'The egg that defines server behavior.',
+            'label' => 'Telur',
+            'helper' => 'Telur yang mendefinisikan perilaku server.',
         ],
         'startup' => [
-            'label' => 'Startup Command',
-            'helper' => 'The startup command for the server.',
+            'label' => 'Perintah Memulai',
+            'helper' => 'Perintah startup untuk server.',
         ],
         'image' => [
             'label' => 'Docker Image',
-            'placeholder' => 'e.g. ghcr.io/reviactyl/images:java_17',
-            'helper' => 'Docker image used to run this server.',
-            'custom' => 'Custom',
+            'helper' => 'Gambar Docker digunakan untuk menjalankan server ini.',
+            'custom' => 'Kebiasaan',
         ],
         'skip_scripts' => [
-            'label' => 'Skip Egg Scripts',
-            'helper' => 'Skip egg install scripts during creation.',
+            'label' => 'Lewati Skrip Telur',
+            'helper' => 'Lewati skrip pemasangan telur selama pembuatan.',
         ],
         'start_on_completion' => [
-            'label' => 'Start on Completion',
-            'helper' => 'Automatically start the server after installation.',
+            'label' => 'Mulai saat Selesai',
+            'helper' => 'Secara otomatis memulai server setelah instalasi.',
         ],
         'memory' => [
-            'label' => 'Memory',
-            'helper' => 'Total memory allocation. Set to 0 for unlimited. (Unlimited Memory doesn\'t work for Minecraft Eggs due to Startup Command)',
+            'label' => 'Ingatan',
+            'helper' => 'Alokasi memori total. Setel ke 0 untuk tidak terbatas. (Memori Tidak Terbatas tidak berfungsi untuk Minecraft Eggs karena Perintah Startup)',
         ],
         'swap' => [
-            'label' => 'Swap',
-            'helper' => 'Swap memory allocation. Set to 0 to disable swap or -1 to allow unlimited swap.',
+            'label' => 'Menukar',
+            'helper' => 'Tukar alokasi memori. Setel ke 0 untuk menonaktifkan swap atau -1 untuk mengizinkan pertukaran tanpa batas.',
         ],
         'disk' => [
             'label' => 'Disk',
-            'helper' => 'Disk space allocation. Set to 0 for unlimited.',
+            'helper' => 'Alokasi ruang disk. Setel ke 0 untuk tidak terbatas.',
         ],
         'io' => [
-            'label' => 'IO Weight',
-            'helper' => 'Relative disk I/O priority (10-1000).',
+            'label' => 'IO Berat',
+            'helper' => 'Prioritas I/O disk relatif (10-1000).',
         ],
         'cpu' => [
             'label' => 'CPU',
-            'helper' => 'CPU limit in percent. 100% means one full core, 200% means two full cores, etc.',
+            'helper' => 'Batas CPU dalam persen. 100% berarti satu inti penuh, 200% berarti dua inti penuh, dan seterusnya.',
         ],
         'enter_size_in_gib' => [
-            'label' => 'Enter size in GiB',
-            'helper' => 'You can enter sizes in GiB by using the "GiB" suffix (e.g. 10GiB = 10240MiB).',
+            'label' => 'Masukkan ukuran dalam GiB',
+            'helper' => 'Anda dapat memasukkan ukuran dalam GiB dengan menggunakan akhiran "GiB" (misalnya 10GiB = 10240MiB).',
         ],
         'threads' => [
-            'label' => 'CPU Threads',
-            'helper' => 'Optional thread pinning. Example: 0-1,3.',
+            'label' => 'Utas CPU',
+            'helper' => 'Penyematan benang opsional. Contoh: 0-1,3.',
         ],
         'oom_disabled' => [
-            'label' => 'Disable OOM Killer',
-            'helper' => 'Prevent the kernel from killing the process when out of memory.',
+            'label' => 'Nonaktifkan Pembunuh OOM',
+            'helper' => 'Cegah kernel menghentikan proses saat kehabisan memori.',
         ],
         'database_limit' => [
-            'label' => 'Database Limit',
-            'helper' => 'Maximum number of databases.',
+            'label' => 'Batas Basis Data',
+            'helper' => 'Jumlah maksimum database.',
         ],
         'allocation_limit' => [
-            'label' => 'Allocation Limit',
-            'helper' => 'Maximum number of allocations.',
+            'label' => 'Batas Alokasi',
+            'helper' => 'Jumlah alokasi maksimum.',
         ],
         'backup_limit' => [
-            'label' => 'Backup Limit',
-            'helper' => 'Maximum number of backups.',
+            'label' => 'Batas Cadangan',
+            'helper' => 'Jumlah maksimum cadangan.',
         ],
         'environment' => [
-            'key' => 'Variable',
-            'value' => 'Value',
-            'helper' => 'Environment variables for this egg.',
+            'key' => 'Variabel',
+            'value' => 'Nilai',
+            'helper' => 'Variabel lingkungan untuk telur ini.',
         ],
         'use_custom_image' => [
-            'label' => 'Use Custom Image',
-            'helper' => 'Toggle to use a custom Docker image instead of one provided by the egg.',
+            'label' => 'Gunakan Gambar Kustom',
+            'helper' => 'Beralih untuk menggunakan gambar Docker khusus alih-alih gambar yang disediakan oleh telur.',
         ],
     ],
 
     'table' => [
         'id' => 'ID',
-        'name' => 'Name',
-        'owner' => 'Owner',
-        'node' => 'Node',
-        'allocation' => 'Allocation',
+        'name' => 'Nama',
+        'owner' => 'Pemilik',
+        'node' => 'simpul',
+        'allocation' => 'Alokasi',
         'status' => 'Status',
-        'egg' => 'Egg',
-        'memory' => 'Memory',
+        'egg' => 'Telur',
+        'memory' => 'Ingatan',
         'disk' => 'Disk',
         'cpu' => 'CPU',
-        'created' => 'Created',
-        'updated' => 'Updated',
-        'installed' => 'Installed',
-        'no_status' => 'No Status',
+        'created' => 'Dibuat',
+        'updated' => 'Diperbarui',
+        'installed' => 'Dipasang',
+        'no_status' => 'Tidak Ada Status',
+        'unlimited' => 'Tak terbatas',
     ],
 
     'messages' => [
-        'created' => 'Server has been successfully created.',
-        'updated' => 'Server has been successfully updated.',
-        'deleted' => 'Server has been successfully deleted.',
+        'created' => 'Server telah berhasil dibuat.',
+        'updated' => 'Server telah berhasil diperbarui.',
+        'deleted' => 'Server telah berhasil dihapus.',
     ],
 
     'actions' => [
-        'edit' => 'Edit',
-        'toggle_install_status' => 'Toggle Install Status',
-        'suspend' => 'Suspend',
-        'unsuspend' => 'Unsuspend',
-        'suspended' => 'Suspended',
-        'unsuspended' => 'Unsuspended',
-        'reinstall' => 'Reinstall',
-        'delete' => 'Delete',
-        'delete_forcibly' => 'Forcibly Delete',
-        'view' => 'View',
+        'edit' => 'Sunting',
+        'random' => 'Acak',
+        'toggle_install_status' => 'Alihkan Status Pemasangan',
+        'suspend' => 'Menskors',
+        'unsuspend' => 'Batalkan penangguhan',
+        'suspended' => 'Tergantung',
+        'unsuspended' => 'Tidak ditangguhkan',
+        'reinstall' => 'Instal ulang',
+        'delete' => 'Menghapus',
+        'delete_forcibly' => 'Hapus Secara Paksa',
+        'view' => 'Melihat',
     ],
 
     'exceptions' => [
@@ -193,10 +319,10 @@ return [
 
     'alerts' => [
         'install_toggled' => 'Status instalasi untuk server ini telah diubah.',
-        'server_suspended' => 'Server has been :action.',
+        'server_suspended' => 'Server telah :action.',
         'server_reinstalled' => 'Server ini telah dimasukkan dalam antrian untuk instalasi ulang mulai sekarang.',
         'server_deleted' => 'Server berhasil dihapus dari sistem.',
-        'server_delete_failed' => 'Failed to delete server.',
+        'server_delete_failed' => 'Gagal menghapus server.',
         'startup_changed' => 'Konfigurasi startup untuk server ini telah diperbarui. Jika nest atau egg server ini diubah, instal ulang akan terjadi sekarang.',
         'server_created' => 'Server berhasil dibuat di panel. Harap tunggu beberapa menit agar daemon sepenuhnya menginstal server ini.',
         'build_updated' => 'Detail build untuk server ini telah diperbarui. Beberapa perubahan mungkin memerlukan restart agar berlaku.',
@@ -208,5 +334,218 @@ return [
         'transfer_nodes_required' => 'Anda harus memiliki setidaknya dua node yang dikonfigurasi sebelum dapat mentransfer server.',
         'transfer_started' => 'Transfer server telah dimulai.',
         'transfer_not_viable' => 'Node yang Anda pilih tidak memiliki ruang disk atau memori yang cukup untuk menampung server ini.',
+        'primary_allocation_updated' => 'Alokasi utama diperbarui.',
+        'database_created' => 'Basis data dibuat.',
+        'database_password_reset' => 'Reset kata sandi basis data.',
+        'database_deleted' => 'Basis data dihapus.',
+    ],
+
+    'edit' => [
+        'tabs' => [
+            'information' => 'Informasi',
+            'build_configuration' => 'Bangun Konfigurasi',
+            'startup' => 'Rintisan',
+            'manage' => 'Mengelola',
+        ],
+
+        'sections' => [
+            'resource_management' => 'Manajemen Sumber Daya',
+            'application_feature_limits' => 'Batasan Fitur Aplikasi',
+            'allocation_management' => 'Manajemen Alokasi',
+            'startup_command_modification' => 'Modifikasi Perintah Startup',
+            'service_configuration' => 'Konfigurasi Layanan',
+            'docker_image_configuration' => 'Konfigurasi Gambar Docker',
+            'service_variables' => 'Variabel Layanan',
+            'reinstall_server' => 'Instal ulang Server',
+            'install_status' => 'Status Pemasangan',
+            'suspend_server' => 'Tangguhkan Server',
+            'unsuspend_server' => 'Batalkan penangguhan Server',
+            'transfer_server' => 'Server Pemindahan',
+            'delete_server' => 'Hapus Server',
+        ],
+
+        'section_descriptions' => [
+            'service_configuration' => 'Mengubah nilai-nilai ini dapat memicu penginstalan ulang. Server akan segera dihentikan untuk operasi itu.',
+            'reinstall_server' => 'Ini akan menginstal ulang server dengan skrip layanan yang ditetapkan. Ini dapat menimpa data server.',
+            'install_status' => 'Ubah status instalasi dari uninstall menjadi install, atau sebaliknya.',
+            'suspend_server' => 'Ini akan menghentikan proses yang berjalan dan memblokir pengguna dari mengelola server melalui panel atau API.',
+            'unsuspend_server' => 'Ini akan membatalkan penangguhan server dan memulihkan akses pengguna normal.',
+            'transfer_server_transferring' => 'Server ini sedang ditransfer ke node lain.',
+            'transfer_server' => 'Transfer server ini ke node lain yang terhubung ke panel ini.',
+            'delete_server' => 'Ini secara permanen menghapus server dari panel dan Agen. Penghapusan paksa melewatkan penghapusan Agen jika perlu.',
+        ],
+
+        'fields' => [
+            'server_name' => [
+                'label' => 'Nama Server',
+                'helper' => 'Batas karakter: a-zA-Z0-9_-, spasi, dan karakter standar yang dapat dicetak.',
+            ],
+            'server_owner' => [
+                'label' => 'Pemilik Server',
+                'helper' => 'Mengubah kepemilikan secara otomatis mencabut token daemon untuk pemilik sebelumnya.',
+            ],
+            'server_description' => [
+                'label' => 'Deskripsi Server',
+                'helper' => 'Penjelasan singkat tentang server ini.',
+            ],
+            'server_uuid' => [
+                'label' => 'UUID server',
+            ],
+            'server_uuid_short' => [
+                'label' => 'UUID Server (Pendek)',
+            ],
+            'external_identifier' => [
+                'label' => 'Pengenal Eksternal',
+                'helper' => 'Biarkan kosong agar tidak menetapkan pengenal eksternal. ID eksternal harus unik untuk server ini.',
+            ],
+            'game_port' => [
+                'label' => 'Pelabuhan Permainan',
+                'helper' => 'Alamat koneksi default yang akan digunakan untuk server game ini.',
+            ],
+            'additional_ports' => [
+                'label' => 'Port Tambahan',
+                'helper' => 'Tetapkan atau hapus port tambahan. Port identik pada IP berbeda tidak dapat ditetapkan ke server yang sama.',
+            ],
+            'startup_command' => [
+                'label' => 'Perintah Memulai',
+                'helper' => 'Tersedia secara default: {{SERVER_MEMORY}}, {{SERVER_IP}}, dan {{SERVER_PORT}}.',
+            ],
+            'default_startup_command' => [
+                'label' => 'Perintah Startup Default',
+                'error' => 'KESALAHAN: Startup Tidak Ditentukan!',
+            ],
+            'cpu_limit' => [
+                'label' => 'Batas CPU',
+                'helper' => 'Setiap inti virtual adalah 100%. Setel 0 untuk waktu CPU yang tidak dibatasi.',
+            ],
+            'cpu_pinning' => [
+                'label' => 'Penyematan CPU',
+                'helper' => 'Lanjutan: biarkan kosong untuk semua inti. Contoh: 0, 0-1,3, atau 0,1,3,4.',
+            ],
+            'allocated_memory' => [
+                'label' => 'Memori yang Dialokasikan',
+                'helper' => 'Jumlah memori maksimum yang diperbolehkan untuk penampung ini. Tetapkan 0 untuk tidak terbatas.',
+            ],
+            'allocated_swap' => [
+                'label' => 'Tukar yang Dialokasikan',
+                'helper' => 'Setel 0 untuk menonaktifkan pertukaran, atau -1 untuk mengizinkan pertukaran tanpa batas.',
+            ],
+            'disk_space_limit' => [
+                'label' => 'Batas Ruang Disk',
+                'helper' => 'Setel 0 untuk mengizinkan penggunaan disk tanpa batas.',
+            ],
+            'block_io_proportion' => [
+                'label' => 'Blokir Proporsi IO',
+                'helper' => 'Lanjutan: Performa IO relatif terhadap container lain yang sedang berjalan. Nilainya harus 10 hingga 1000.',
+            ],
+            'disable_oom_killer' => [
+                'label' => 'Nonaktifkan Pembunuh OOM',
+                'helper' => 'Mengaktifkan OOM killer dapat menyebabkan proses server keluar secara tidak terduga.',
+            ],
+            'database_limit' => [
+                'label' => 'Batas Basis Data',
+                'helper' => 'Jumlah total database yang boleh dibuat oleh pengguna untuk server ini.',
+            ],
+            'allocation_limit' => [
+                'label' => 'Batas Alokasi',
+                'helper' => 'Jumlah total alokasi yang boleh dibuat oleh pengguna untuk server ini.',
+            ],
+            'backup_limit' => [
+                'label' => 'Batas Cadangan',
+                'helper' => 'Jumlah total cadangan yang dapat dibuat untuk server ini.',
+            ],
+            'image' => [
+                'label' => 'Gambar',
+                'helper' => 'Pilih gambar dari dropdown, atau masukkan gambar khusus di bawah.',
+            ],
+            'custom_image' => [
+                'label' => 'Gambar Kustom',
+                'placeholder' => 'Atau masukkan gambar khusus...',
+                'helper' => 'Ini adalah image Docker yang akan digunakan untuk menjalankan server ini.',
+            ],
+            'transfer_node' => [
+                'label' => 'simpul',
+                'helper' => 'Node tempat server ini akan ditransfer.',
+            ],
+            'transfer_allocation' => [
+                'label' => 'Alokasi Default',
+                'helper' => 'Alokasi utama yang akan ditetapkan ke server ini.',
+            ],
+            'transfer_additional_allocations' => [
+                'label' => 'Alokasi Tambahan',
+                'helper' => 'Alokasi tambahan untuk ditetapkan ke server ini pada saat transfer.',
+            ],
+        ],
+
+        'actions' => [
+            'reinstall_server' => 'Instal ulang Server',
+            'toggle_install_status' => 'Alihkan Status Pemasangan',
+            'suspend_server' => 'Tangguhkan Server',
+            'unsuspend_server' => 'Batalkan penangguhan Server',
+            'transfer_server' => 'Server Pemindahan',
+            'confirm' => 'Mengonfirmasi',
+            'delete_server' => 'Hapus Server',
+            'forcibly_delete_server' => 'Hapus Server Secara Paksa',
+        ],
+    ],
+
+    'allocations' => [
+        'title' => 'Alokasi',
+
+        'table' => [
+            'ip' => 'AKU P',
+            'port' => 'Pelabuhan',
+            'alias' => 'Alias',
+            'primary' => 'Utama',
+            'notes' => 'Catatan',
+            'created' => 'Dibuat',
+        ],
+
+        'placeholder' => [
+            'no_alias_assigned' => 'Tidak Ada Alias ​​yang Ditugaskan',
+        ],
+
+        'actions' => [
+            'make_primary' => 'Jadikan Pratama',
+        ],
+    ],
+
+    'databases' => [
+        'title' => 'Basis Data',
+
+        'table' => [
+            'database' => 'Basis data',
+            'username' => 'Nama belakang',
+            'remote' => 'Terpencil',
+            'host' => 'Tuan rumah',
+            'max_connections' => 'Koneksi Maks',
+            'created' => 'Dibuat',
+        ],
+
+        'placeholder' => [
+            'unlimited' => 'Tak terbatas',
+        ],
+
+        'actions' => [
+            'create_database' => 'Buat Basis Data',
+            'reset_password' => 'Atur Ulang Kata Sandi',
+            'delete' => 'Menghapus',
+        ],
+
+        'create_modal' => [
+            'database_name' => [
+                'label' => 'Nama Basis Data',
+                'helper' => 'Panel akan mengawalinya dengan ID server, cocok dengan panel admin lama.',
+            ],
+            'database_host' => [
+                'label' => 'Tuan Rumah Basis Data',
+            ],
+            'remote' => [
+                'label' => 'Terpencil',
+            ],
+            'max_connections' => [
+                'label' => 'Koneksi Maks',
+            ],
+        ],
     ],
 ];

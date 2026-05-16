@@ -25,7 +25,7 @@ class ListExtensions extends ListRecords
                 ->form([
                     FileUpload::make('file')
                         ->label(trans('admin/extensions.columns.file'))
-                        ->helperText('Only .rext extension packages are allowed.')
+                        ->helperText(trans('admin/extensions.alerts.upload_hint'))
                         ->required()
                         ->storeFiles(false),
                 ])

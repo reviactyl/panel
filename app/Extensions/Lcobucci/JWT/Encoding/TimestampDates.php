@@ -9,7 +9,7 @@ final class TimestampDates implements ClaimsFormatter
 {
     /**
      * The default time encoder for JWTs using this library is not supported correctly
-     * by Wings and will cause a flood of errors and panic conditions because the times
+     * by Agent and will cause a flood of errors and panic conditions because the times
      * cannot be parsed correctly. The default is time with microseconds, we just need
      * to use the normal unix timestamp here.
      */

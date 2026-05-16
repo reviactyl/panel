@@ -47,7 +47,7 @@ return [
         'has_nodes' => 'لا يمكن حذف موقع مرتبط به عقد نشطة.',
     ],
     'users' => [
-        'node_revocation_failed' => 'فشل إبطال المفاتيح على <a href=\'link\'>العقدة رقم #:node</a>. :error',
+        'node_revocation_failed' => 'فشل إبطال المفاتيح على <a href=":link">العقدة رقم #:node</a>. :error',
     ],
     'deployment' => [
         'no_viable_nodes' => 'لم يتم العثور على عقد تلبي المتطلبات المحددة للنشر التلقائي.',

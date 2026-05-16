@@ -21,34 +21,36 @@ return $app
     ->withRouting(function () {
 
         Route::middleware('web')->group(function () {
-            Route::middleware(['auth.session', RequireTwoFactorAuthentication::class])
+            Route::middleware('installation')->group(base_path('routes/install.php'));
+
+            Route::middleware(['installation', 'auth.session', RequireTwoFactorAuthentication::class])
                 ->group(base_path('routes/base.php'));
 
-            Route::middleware('guest')
+            Route::middleware(['installation', 'guest'])
                 ->prefix('/auth')
                 ->group(base_path('routes/auth.php'));
         });
 
-        Route::middleware(['api', RequireTwoFactorAuthentication::class])
+        Route::middleware(['api', 'installation', RequireTwoFactorAuthentication::class])
             ->group(function () {
 
-                Route::middleware(['application-api', 'throttle:api.application'])
+                Route::middleware(['installation', 'application-api', 'throttle:api.application'])
                     ->prefix('/api/application')
                     ->scopeBindings()
                     ->group(base_path('routes/api-application.php'));
 
-                Route::middleware(['client-api', 'throttle:api.client'])
+                Route::middleware(['installation', 'client-api', 'throttle:api.client'])
                     ->prefix('/api/client')
                     ->scopeBindings()
                     ->group(base_path('routes/api-client.php'));
             });
 
-        Route::middleware(['throttle:api.client'])
+        Route::middleware(['installation', 'throttle:api.client'])
             ->prefix('/api/public')
             ->scopeBindings()
             ->group(base_path('routes/api-public.php'));
 
-        Route::middleware('daemon')
+        Route::middleware(['installation', 'daemon'])
             ->prefix('/api/remote')
             ->scopeBindings()
             ->group(base_path('routes/api-remote.php'));

@@ -7,7 +7,7 @@ import styled from 'styled-components';
 
 // Quick styled component for the viewer container (might put this into its own file later)
 const ViewerContainer = styled.div`
-    ${tw`flex items-center justify-center bg-gray-900 rounded-lg overflow-hidden`};
+    ${tw`flex items-center justify-center bg-gray-900 rounded-ui overflow-hidden`};
     min-height: 500px;
     max-height: 80vh;
 
@@ -70,7 +70,7 @@ const ImageViewerModal = ({ imageUrl, imageName, ...modalProps }: Props) => {
 
     return (
         <Modal {...modalProps} dismissable>
-            <div css={tw`bg-gray-800 rounded-lg p-6 max-w-5xl w-full`}>
+            <div css={tw`max-w-5xl w-full`}>
                 <div css={tw`mb-4`}>
                     <h2 css={tw`text-xl font-semibold text-gray-100`}>{imageName}</h2>
                 </div>

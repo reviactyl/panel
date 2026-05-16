@@ -21,7 +21,7 @@ return [
     ],
     'service' => [
         'title' => 'إدارة السيرفرات',
-        'extensions' => 'Extensions',
+        'extensions' => 'ملحقات',
         'mounts' => 'التوصيلات',
         'nests' => 'الأعشاش',
     ],

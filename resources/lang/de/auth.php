@@ -62,7 +62,7 @@ return [
         'min-length' => 'Passwort muss mindestens 8 Zeichen lang sein.',
         'confirm-label' => 'Passwort bestätigen',
         'label' => 'Registrieren',
-        'create-account' => 'Create Account',
+        'create-account' => 'Benutzerkonto erstellen',
     ],
 
     'failed' => 'Diese Kombination aus Zugangsdaten wurde nicht in unserer Datenbank gefunden.',

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Server } from '@/api/server/getServer';
 import { ServerCategory } from '@/api/server/types';
-import ServerRow from '@/components/dashboard/ServerRow';
+import { LayoutContainer, ServerLayout } from '@/components/dashboard/ServerLayout';
 import tw from 'twin.macro';
 import styled from 'styled-components';
 import { ChevronDownIcon } from '@heroicons/react/solid';
@@ -44,7 +44,7 @@ export default ({ category, servers, showOnlyAdmin, onCategoryChanged }: Props) 
             <div css={tw`absolute left-0 top-0 h-full w-1`} style={{ backgroundColor: displayColor }} />
 
             {/* HEADER */}
-            <HeaderButton className='hover:bg-gray-600' onClick={() => setOpen(!open)}>
+            <HeaderButton className='hover:bg-gray-700' onClick={() => setOpen(!open)}>
                 <div css={tw`flex items-center gap-3 flex-1 min-w-0`}>
                     <div css={tw`min-w-0`}>
                         <span css={tw`font-medium`} style={{ color: displayColor }}>
@@ -69,10 +69,10 @@ export default ({ category, servers, showOnlyAdmin, onCategoryChanged }: Props) 
 
             {/* CONTENT */}
             {open && (
-                <div css={tw`border-t border-gray-500 p-4`}>
-                    <div css={tw`grid lg:grid-cols-2 gap-4`}>
+                <div css={tw`border-t border-gray-600 p-4`}>
+                    <LayoutContainer>
                         {servers.map((server, index) => (
-                            <ServerRow
+                            <ServerLayout
                                 key={server.uuid}
                                 server={server}
                                 css={index > 0 ? tw`mt-2` : undefined}
@@ -80,7 +80,7 @@ export default ({ category, servers, showOnlyAdmin, onCategoryChanged }: Props) 
                                 showCategory={!showOnlyAdmin}
                             />
                         ))}
-                    </div>
+                    </LayoutContainer>
                 </div>
             )}
         </Card>

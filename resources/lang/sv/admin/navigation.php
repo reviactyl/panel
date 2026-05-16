@@ -7,9 +7,9 @@ return [
         'dashboard' => 'Instrumentpanel',
         'settings' => 'Inställningar',
         'api' => 'Applikations-API',
-        'activity_log' => 'Activity Log',
-        'user_activity_metrics' => 'User Activity Metrics',
-        'no_data' => 'No data available.',
+        'activity_log' => 'Aktivitetslogg',
+        'user_activity_metrics' => 'Användaraktivitetsstatistik',
+        'no_data' => 'Inga data tillgängliga.',
     ],
     'management' => [
         'title' => 'Hantering',
@@ -21,7 +21,7 @@ return [
     ],
     'service' => [
         'title' => 'Servicehantering',
-        'extensions' => 'Extensions',
+        'extensions' => 'Tillägg',
         'mounts' => 'Monteringar',
         'nests' => 'Burar',
     ],
