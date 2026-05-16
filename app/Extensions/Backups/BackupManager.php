@@ -99,9 +99,9 @@ class BackupManager
     }
 
     /**
-     * Creates a new Wings adapter.
+     * Creates a new Agent adapter.
      */
-    public function createWingsAdapter(array $config): FilesystemAdapter
+    public function createAgentAdapter(array $config): FilesystemAdapter
     {
         return new InMemoryFilesystemAdapter();
     }

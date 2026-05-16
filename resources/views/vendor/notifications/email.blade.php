@@ -20,15 +20,15 @@
 $style = [
     /* Layout ------------------------------ */
 
-    'body' => 'margin: 0; padding: 0; width: 100%; background-color: ' . $reviactylConfiguration['color900'] . ';',
-    'email-wrapper' => 'width: 100%; margin: 0; padding: 0; background-color: ' . $reviactylConfiguration['color900'] . ';',
+    'body' => 'margin: 0; padding: 0; width: 100%; background-color: ' . $panelConfiguration['color900'] . ';',
+    'email-wrapper' => 'width: 100%; margin: 0; padding: 0; background-color: ' . $panelConfiguration['color900'] . ';',
 
     /* Masthead ----------------------- */
 
     'email-masthead' => 'padding: 25px 0; text-align: center;',
     'email-masthead_logo' => 'height:3rem;',
 
-    'email-body' => 'width: 100%; margin: 0; padding: 0; border-top: 1px solid ' . $reviactylConfiguration['color700'] . '; border-bottom: 1px solid ' . $reviactylConfiguration['color700'] . '; background-color: ' . $reviactylConfiguration['color800'] . ';',
+    'email-body' => 'width: 100%; margin: 0; padding: 0; border-top: 1px solid ' . $panelConfiguration['color700'] . '; border-bottom: 1px solid ' . $panelConfiguration['color700'] . '; background-color: ' . $panelConfiguration['color800'] . ';',
     'email-body_inner' => 'width: auto; max-width: 570px; margin: 0 auto; padding: 0;',
     'email-body_cell' => 'padding: 35px;',
 
@@ -42,7 +42,7 @@ $style = [
 
     /* Type ------------------------------ */
 
-    'anchor' => 'color: ' . $reviactylConfiguration['colorPrimary'] . ';',
+    'anchor' => 'color: ' . $panelConfiguration['colorPrimary'] . ';',
     'header-1' => 'margin-top: 0; color: #8282A4; font-size: 19px; font-weight: bold; text-align: left;',
     'paragraph' => 'margin-top: 0; color: #8282A4; font-size: 16px; line-height: 1.5em;',
     'paragraph-sub' => 'margin-top: 0; color: #74787E; font-size: 12px; line-height: 1.5em;',
@@ -51,12 +51,12 @@ $style = [
     /* Buttons ------------------------------ */
 
     'button' => 'display: block; display: inline-block; width: 200px; min-height: 20px; padding: 10px;
-                 background-color: ' . $reviactylConfiguration['colorPrimary'] . '; border-radius: ' . $reviactylConfiguration['radius'] . '; color: #ffffff; font-size: 15px; line-height: 25px;
+                 background-color: ' . $panelConfiguration['colorPrimary'] . '; border-radius: ' . $panelConfiguration['radius'] . '; color: #ffffff; font-size: 15px; line-height: 25px;
                  text-align: center; text-decoration: none; -webkit-text-size-adjust: none;',
 
-    'button--green' => 'background-color: ' . $reviactylConfiguration['colorSuccess'] . ';',
-    'button--red' => 'background-color: ' . $reviactylConfiguration['colorDanger'] . ';',
-    'button--blue' => 'background-color: ' . $reviactylConfiguration['colorPrimary'] . ';',
+    'button--green' => 'background-color: ' . $panelConfiguration['colorSuccess'] . ';',
+    'button--red' => 'background-color: ' . $panelConfiguration['colorDanger'] . ';',
+    'button--blue' => 'background-color: ' . $panelConfiguration['colorPrimary'] . ';',
 ];
 ?>
 

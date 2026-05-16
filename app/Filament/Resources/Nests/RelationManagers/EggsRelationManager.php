@@ -22,6 +22,8 @@ class EggsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('name')
             ->columns([
+                Tables\Columns\ImageColumn::make('image')
+                    ->getStateUsing(fn ($record) => $record->image ?: url('/reviactyl/icon.png')),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->sortable(),

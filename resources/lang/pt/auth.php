@@ -69,7 +69,7 @@ return [
         'min-length' => 'As senhas devem ter pelo menos 8 caracteres.',
         'confirm-label' => 'Confirmar Senha',
         'label' => 'Registrar',
-        'create-account' => 'Create Account',
+        'create-account' => 'Criar uma conta',
         'no-account' => 'Don\'t have an account?',
     ],
 

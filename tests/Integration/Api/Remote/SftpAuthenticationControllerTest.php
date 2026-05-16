@@ -96,7 +96,6 @@ class SftpAuthenticationControllerTest extends IntegrationTestCase
      * Test that providing an invalid key and/or invalid username triggers the throttle on
      * the endpoint.
      */
-    #[DataProvider('authorizationTypeDataProvider')]
     public function test_user_is_throttled_if_invalid_credentials_are_provided()
     {
         for ($i = 0; $i <= 10; $i++) {

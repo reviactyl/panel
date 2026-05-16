@@ -5,7 +5,7 @@ namespace Tests\Integration\Api\Client\Server;
 use App\Exceptions\Http\Connection\DaemonConnectionException;
 use App\Models\Permission;
 use App\Models\Server;
-use App\Repositories\Wings\DaemonCommandRepository;
+use App\Repositories\Agent\DaemonCommandRepository;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;

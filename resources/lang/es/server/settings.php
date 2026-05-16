@@ -13,6 +13,7 @@ return [
         'title' => 'Información de depuración',
         'node' => 'Nodo',
         'server' => 'ID del servidor',
+        'public-status-page' => 'Página de estado público',
     ],
     'rename' => [
         'title' => 'Cambiar detalles del servidor',

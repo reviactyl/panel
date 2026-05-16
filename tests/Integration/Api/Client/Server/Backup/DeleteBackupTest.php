@@ -5,7 +5,7 @@ namespace Tests\Integration\Api\Client\Server\Backup;
 use App\Events\ActivityLogged;
 use App\Models\Backup;
 use App\Models\Permission;
-use App\Repositories\Wings\DaemonBackupRepository;
+use App\Repositories\Agent\DaemonBackupRepository;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Event;
 use Mockery\MockInterface;

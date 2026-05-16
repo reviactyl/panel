@@ -4,7 +4,7 @@ return [
     'daemon_connection_failed' => 'Ett undantag uppstod när systemet försökte kommunicera med daemonen vilket resulterade i en HTTP/:code svarskod. Detta undantag har loggats.',
     'node' => [
         'servers_attached' => 'En nod får inte ha några servrar kopplade till sig för att kunna tas bort.',
-        'daemon_off_config_updated' => 'The daemon configuration has been updated, however there was an error encountered while attempting to automatically update the configuration file on the Daemon. You will need to manually update the configuration file (config.yml) for the daemon to apply these changes.',
+        'daemon_off_config_updated' => 'Daemonkonfigurationen har uppdaterats, men det uppstod ett fel vid försök att automatiskt uppdatera konfigurationsfilen på Daemon. Du måste uppdatera konfigurationsfilen (config.yml) manuellt för att demonen ska tillämpa dessa ändringar.',
     ],
     'allocations' => [
         'server_using' => 'En server är för närvarande tilldelad denna allokering. En allokering kan endast tas bort om ingen server för närvarande är tilldelad.',

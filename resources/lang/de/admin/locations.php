@@ -13,13 +13,11 @@ return [
     'fields' => [
         'short' => [
             'label' => 'Kurzkennung',
-            'placeholder' => 'de.berlin.1',
             'helper' => 'Ein Kurze Kennung für diesen Standort.',
         ],
 
         'long' => [
             'label' => 'Beschreibung',
-            'placeholder' => 'Berlin, Deutschland',
             'helper' => 'Eine längere Beschreibung dieses Standortes.',
         ],
     ],
@@ -28,7 +26,7 @@ return [
         'id' => 'ID',
         'short' => 'Kurzkennung',
         'long' => 'Beschreibung',
-        'nodes' => 'Nodes',
+        'nodes' => 'Knoten',
         'servers' => 'Server',
         'created' => 'Erstellt',
     ],

@@ -3,7 +3,6 @@ import { Route, Routes, useParams, useLocation } from 'react-router-dom';
 import Navigate from '@/reviactyl/components/Navigate';
 
 import TransferListener from '@/components/server/TransferListener';
-import Navbar from '@/reviactyl/ui/Navbar';
 import WebsocketHandler from '@/components/server/WebsocketHandler';
 import { ServerContext } from '@/state/server';
 import Can from '@/reviactyl/elements/Can';
@@ -16,19 +15,16 @@ import ErrorBoundary from '@/reviactyl/elements/ErrorBoundary';
 import ConflictStateRenderer from '@/components/server/ConflictStateRenderer';
 import PermissionRoute from '@/reviactyl/elements/PermissionRoute';
 import routes from '@/routers/routes';
-import Sidebar from '@/reviactyl/ui/Sidebar';
+import { Sidebar, Navbar } from '@/reviactyl/components/Layout';
 import { XIcon, MenuIcon, ExternalLinkIcon } from '@heroicons/react/solid';
-import { LogoContainer } from '@/reviactyl/ui/LogoContainer';
-import tw from 'twin.macro';
 import { RouterContainer } from '@/reviactyl/ui/RouterContainer';
 import { ContentContainer } from '@/reviactyl/ui/ContentContainer';
 import TopServerDetails from '@/components/server/TopServerDetails';
-import { ApplicationStore } from '@/state';
 import Announcement from '@/reviactyl/ui/Announcement';
 import MaintenanceAlert from '@/reviactyl/ui/MaintenanceAlert';
 import Maintenance from '@/reviactyl/ui/Maintenance';
 import { useTranslation } from 'react-i18next';
-import { ReviactylSidebarButton } from '@/state/reviactyl';
+import { DesignifySidebarButton } from '@/state/designify';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 import { useExtensionRoutes } from '@/extensions/useExtensionRoutes';
 import { useExtensions } from '@/extensions/useExtensions';
@@ -74,9 +70,9 @@ const ServerNavigation = () => {
     const serverNestId = ServerContext.useStoreState((state) => state.server.data?.nestId);
     const serverEggId = ServerContext.useStoreState((state) => state.server.data?.eggId);
     const { data: extensionData } = useExtensions();
-    const customSidebarButtons = useStoreState((state) => state.reviactyl.data?.sidebarButtons ?? []);
+    const customSidebarButtons = useStoreState((state) => state.designify.data?.sidebarButtons ?? []);
     const normalizedSidebarButtons = (Array.isArray(customSidebarButtons) ? customSidebarButtons : []).filter(
-        (button): button is ReviactylSidebarButton =>
+        (button): button is DesignifySidebarButton =>
             typeof button?.label === 'string' &&
             button.label.trim().length > 0 &&
             typeof button?.url === 'string' &&
@@ -153,7 +149,7 @@ const ServerNavigation = () => {
 
             {serverExtensionRoutes.length > 0 && (
                 <div>
-                    <span className='label'>EXTENSIONS</span>
+                    <span className='label'>{t('sidebar.extensions')}</span>
                     {serverExtensionRoutes.map((route) => {
                         const normalizedPath = route.path.replace(/^\/+/, '');
                         const to = route.path.startsWith('/server/')
@@ -184,7 +180,7 @@ const ServerNavigation = () => {
 
             {normalizedSidebarButtons.length > 0 && (
                 <div>
-                    <span className='label'>MORE</span>
+                    <span className='label'>{t('sidebar.more')}</span>
                     {normalizedSidebarButtons.map((button, index) => (
                         <a
                             key={`${button.url}-${index}`}
@@ -208,7 +204,7 @@ export default function ServerRouter() {
     const params = useParams<{ id: string }>();
     const location = useLocation();
 
-    const isUnderMaintenance = useStoreState((state) => state.reviactyl.data?.isUnderMaintenance);
+    const isUnderMaintenance = useStoreState((state) => state.designify.data?.isUnderMaintenance);
     const rootAdmin = useStoreState((state) => state.user.data?.rootAdmin);
 
     const [error, setError] = useState('');
@@ -223,9 +219,6 @@ export default function ServerRouter() {
 
     const getServer = ServerContext.useStoreActions((actions) => actions.server.getServer);
     const clearServerState = ServerContext.useStoreActions((actions) => actions.clearServerState);
-
-    const logo = useStoreState((state: ApplicationStore) => state.settings.data!.logo);
-    const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
 
     useEffect(() => () => clearServerState(), []);
 
@@ -274,7 +267,7 @@ export default function ServerRouter() {
                                 <div className='lg:hidden'>
                                     <button
                                         onClick={() => setSidebarOpen(!isSidebarOpen)}
-                                        className='text-gray-500 bg-gray-700 p-2 rounded-ui'
+                                        className='text-gray-600 bg-gray-900 p-2 rounded-ui'
                                     >
                                         {isSidebarOpen ? (
                                             <XIcon className='w-6 h-6' />
@@ -283,22 +276,13 @@ export default function ServerRouter() {
                                         )}
                                     </button>
                                 </div>
-
-                                <LogoContainer>
-                                    <img
-                                        src={logo}
-                                        alt={name}
-                                        onClick={() => (window.location.href = '/')}
-                                        css={tw`h-[3rem] mt-5 cursor-pointer`}
-                                    />
-                                </LogoContainer>
                             </Navbar>
 
                             <ContentContainer>
                                 {isSidebarOpen && (
                                     <div
                                         onClick={() => setSidebarOpen(false)}
-                                        className='fixed inset-0 z-30 bg-gray-800/40 backdrop-blur-sm lg:hidden'
+                                        className='fixed inset-0 z-30 bg-gray-900/40 backdrop-blur-sm lg:hidden'
                                     />
                                 )}
 

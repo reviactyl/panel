@@ -8,10 +8,16 @@ return [
         'overview' => [
             'title' => 'Overview',
             'information-label' => 'Node Information',
-            'version-label' => 'Wings Version',
+            'version-label' => 'Agent Version',
             'architecture-label' => 'Architecture',
             'kernel-label' => 'Kernel',
             'cpus-label' => 'CPU Threads',
+            'cpu-usage-label' => 'CPU Usage',
+            'memory-usage-label' => 'Memory Usage',
+            'disk-usage-label' => 'Disk Usage',
+        ],
+        'tabs' => [
+            'title' => 'Node Configuration',
         ],
         'identity' => [
             'title' => 'Identity',
@@ -32,7 +38,7 @@ return [
         'configuration' => [
             'title' => 'Configuration',
             'config_description' => 'Configuration File',
-            'deploy_description' => 'Generate a custom deployment command that can be used to configure Wings on the target server.',
+            'deploy_description' => 'Generate a custom deployment command that can be used to configure Agent on the target server.',
         ],
     ],
 
@@ -98,7 +104,6 @@ return [
         ],
         'daemon_base' => [
             'label' => 'Base Directory',
-            'placeholder' => '/home/daemon-files',
             'helper' => 'Directory where server files are stored.',
         ],
         'daemon_listen' => [
@@ -121,7 +126,6 @@ return [
     'table' => [
         'health' => 'Health',
         'health_http_status' => 'HTTP :status',
-        'health_error' => ':error',
         'health_check_console' => 'check browser console',
         'id' => 'ID',
         'uuid' => 'UUID',
@@ -159,17 +163,27 @@ return [
         'edit' => 'Edit',
         'delete' => 'Delete',
         'view' => 'View',
+        'random' => 'Random',
+        'view_monitoring' => 'View Monitoring',
     ],
 
     'deployment' => [
         'generate_label' => 'Generate Deployment Token',
         'modal_heading' => 'Auto-Deploy Command',
-        'modal_description' => 'Run this command on your node to automatically configure Wings.',
+        'modal_description' => 'Run this command on your node to automatically configure Agent.',
         'modal_close' => 'Close',
         'command_label' => 'Deployment Command',
         'command_helper' => 'Copy and run this command on your node server.',
         'token_success' => 'Token Generated Successfully',
         'token_success_body' => 'Copy and run the command below on your node.',
+        'save_first' => 'Please save the node first.',
+        'auto_generated_key' => 'Automatically generated node deployment key.',
+        'error' => 'Error generating token. Please try again.',
+    ],
+
+    'general' => [
+        'na' => 'N/A',
+        'unavailable' => 'Unavailable',
     ],
 
     'messages' => [

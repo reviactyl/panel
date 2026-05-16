@@ -140,7 +140,7 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
                 onConfirmed={() => doRestorationAction()}
             >
                 <p>{t('restore-message')}</p>
-                <p css={tw`mt-4 -mb-2 bg-gray-700 p-3 rounded`}>
+                <p css={tw`mt-4 -mb-2 bg-gray-900 p-3 rounded`}>
                     <label htmlFor={'restore_truncate'} css={tw`text-base flex items-center cursor-pointer`}>
                         <Input
                             type={'checkbox'}

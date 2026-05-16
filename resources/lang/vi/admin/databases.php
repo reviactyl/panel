@@ -2,59 +2,57 @@
 
 return [
 
-    'label' => 'Database',
-    'plural-label' => 'Databases',
+    'label' => 'Cơ sở dữ liệu',
+    'plural-label' => 'Cơ sở dữ liệu',
 
-    'none' => 'None',
+    'none' => 'Không có',
 
     'sections' => [
         'host_details' => [
-            'title' => 'Host Details',
-            'description' => 'Configure the database host connection settings.',
+            'title' => 'Chi tiết máy chủ',
+            'description' => 'Định cấu hình cài đặt kết nối máy chủ cơ sở dữ liệu.',
         ],
 
         'authentication' => [
-            'title' => 'Authentication',
+            'title' => 'Xác thực',
         ],
 
         'linked_node' => [
-            'title' => 'Linked Node',
+            'title' => 'Nút được liên kết',
         ],
     ],
 
     'placeholders' => [
-        'name' => 'Production MySQL',
-        'host' => '127.0.0.1',
-        'username' => 'reviactyl',
+        'name' => 'MySQL sản xuất',
     ],
 
     'helpers' => [
-        'host' => 'The hostname or IP address of the database server.',
-        'linked_node' => 'Optional. Link this host to a specific node.',
+        'host' => 'Tên máy chủ hoặc địa chỉ IP của máy chủ cơ sở dữ liệu.',
+        'linked_node' => 'Không bắt buộc. Liên kết máy chủ này với một nút cụ thể.',
     ],
 
     'fields' => [
-        'linked_node' => 'Linked Node',
+        'linked_node' => 'Nút được liên kết',
     ],
 
     'columns' => [
         'id' => 'ID',
-        'name' => 'Name',
-        'host' => 'Host',
-        'port' => 'Port',
-        'username' => 'Username',
-        'linked_node' => 'Linked Node',
-        'databases' => 'Databases',
-        'created' => 'Created',
+        'name' => 'Tên',
+        'host' => 'Chủ nhà',
+        'port' => 'Cảng',
+        'username' => 'Tên người dùng',
+        'linked_node' => 'Nút được liên kết',
+        'databases' => 'Cơ sở dữ liệu',
+        'created' => 'Tạo',
     ],
 
     'actions' => [
-        'edit' => 'Edit',
-        'delete' => 'Delete',
+        'edit' => 'Biên tập',
+        'delete' => 'Xóa bỏ',
     ],
 
     'errors' => [
-        'cannot_delete' => 'Cannot delete a database host with associated databases.',
+        'cannot_delete' => 'Không thể xóa máy chủ cơ sở dữ liệu có cơ sở dữ liệu liên quan.',
     ],
 
 ];

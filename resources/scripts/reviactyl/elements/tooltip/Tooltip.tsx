@@ -107,7 +107,7 @@ export default ({ children, ...props }: Props) => {
                         {...getFloatingProps({
                             ref: refs.setFloating,
                             className: classNames(
-                                'bg-gray-800 text-sm text-gray-200 px-3 py-2 rounded-ui border border-gray-600 pointer-events-none max-w-[24rem] z-50',
+                                'bg-gray-900 text-sm text-gray-200 px-3 py-2 rounded-ui border border-gray-800 pointer-events-none max-w-[24rem] z-50',
                                 props.className
                             ),
                             style: {
@@ -128,7 +128,7 @@ export default ({ children, ...props }: Props) => {
                                     top: ay ?? 0,
                                     transform: 'rotate(45deg)',
                                 }}
-                                className={classNames('bg-gray-900 w-3 h-3', 'absolute', side)}
+                                className={classNames('bg-gray-950 w-3 h-3', 'absolute', side)}
                             />
                         )}
                     </motion.div>

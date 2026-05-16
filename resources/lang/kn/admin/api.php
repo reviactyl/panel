@@ -7,7 +7,7 @@ return [
     'memo' => 'ಮೆಮೊ',
     'last-used' => 'ಕೊನೆಯದಾಗಿ ಬಳಸಿದ್ದು',
     'created' => 'ಸೃಷ್ಟಿಸಿದ ದಿನಾಂಕ',
-    'author' => 'Author',
+    'author' => 'ಲೇಖಕ',
     'never-used' => 'ಎಂದಿಗೂ ಬಳಸಿಲ್ಲ',
 
     'revoke' => 'ರದ್ದುಮಾಡಿ',

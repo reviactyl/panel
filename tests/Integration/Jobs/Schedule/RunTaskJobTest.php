@@ -7,7 +7,7 @@ use App\Jobs\Schedule\RunTaskJob;
 use App\Models\Schedule;
 use App\Models\Server;
 use App\Models\Task;
-use App\Repositories\Wings\DaemonPowerRepository;
+use App\Repositories\Agent\DaemonPowerRepository;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use GuzzleHttp\Exception\BadResponseException;

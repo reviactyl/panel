@@ -1,186 +1,312 @@
 <?php
 
 return [
-    'label' => 'Server',
-    'plural-label' => 'Servers',
+    'label' => 'ಸರ್ವರ್',
+    'plural-label' => 'ಸರ್ವರ್‌ಗಳು',
 
     'sections' => [
         'identity' => [
-            'title' => 'Identity',
-            'description' => 'Basic server information and ownership.',
+            'title' => 'ಗುರುತು',
+            'description' => 'ಮೂಲ ಸರ್ವರ್ ಮಾಹಿತಿ ಮತ್ತು ಮಾಲೀಕತ್ವ.',
         ],
         'allocation' => [
-            'title' => 'Allocation',
-            'description' => 'Select the node and network allocation for this server.',
+            'title' => 'ಹಂಚಿಕೆ',
+            'description' => 'ಈ ಸರ್ವರ್‌ಗಾಗಿ ನೋಡ್ ಮತ್ತು ನೆಟ್‌ವರ್ಕ್ ಹಂಚಿಕೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ.',
         ],
         'startup' => [
-            'title' => 'Startup',
-            'description' => 'Configure the egg, startup command, and Docker image.',
+            'title' => 'ಪ್ರಾರಂಭ',
+            'description' => 'ಮೊಟ್ಟೆ, ಆರಂಭಿಕ ಆಜ್ಞೆ ಮತ್ತು ಡಾಕರ್ ಚಿತ್ರವನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಿ.',
         ],
         'resources' => [
-            'title' => 'Resource Limits',
-            'description' => 'Define the server resource limits.',
+            'title' => 'ಸಂಪನ್ಮೂಲ ಮಿತಿಗಳು',
+            'description' => 'ಸರ್ವರ್ ಸಂಪನ್ಮೂಲ ಮಿತಿಗಳನ್ನು ವಿವರಿಸಿ.',
         ],
         'feature_limits' => [
-            'title' => 'Feature Limits',
-            'description' => 'Limit databases, allocations, and backups.',
+            'title' => 'ವೈಶಿಷ್ಟ್ಯದ ಮಿತಿಗಳು',
+            'description' => 'ಡೇಟಾಬೇಸ್‌ಗಳು, ಹಂಚಿಕೆಗಳು ಮತ್ತು ಬ್ಯಾಕ್‌ಅಪ್‌ಗಳನ್ನು ಮಿತಿಗೊಳಿಸಿ.',
         ],
         'environment' => [
-            'title' => 'Environment Variables',
-            'description' => 'Set environment values for the selected egg.',
+            'title' => 'ಪರಿಸರ ವೇರಿಯಬಲ್ಸ್',
+            'description' => 'ಆಯ್ದ ಮೊಟ್ಟೆಗೆ ಪರಿಸರ ಮೌಲ್ಯಗಳನ್ನು ಹೊಂದಿಸಿ.',
+        ],
+    ],
+
+    'status' => [
+        'online' => 'ಆನ್ಲೈನ್',
+        'offline' => 'ಆಫ್‌ಲೈನ್',
+        'starting' => 'ಪ್ರಾರಂಭಿಸಲಾಗುತ್ತಿದೆ',
+        'stopping' => 'ನಿಲ್ಲಿಸಲಾಗುತ್ತಿದೆ',
+        'crashed' => 'ಅಪ್ಪಳಿಸಿತು',
+        'installing' => 'ಸ್ಥಾಪಿಸಲಾಗುತ್ತಿದೆ',
+        'restoring_backup' => 'ಬ್ಯಾಕಪ್ ಅನ್ನು ಮರುಸ್ಥಾಪಿಸಲಾಗುತ್ತಿದೆ',
+        'install_failed' => 'ಸ್ಥಾಪನೆ ವಿಫಲವಾಗಿದೆ',
+        'reinstall_failed' => 'ಮರುಸ್ಥಾಪಿಸಲು ವಿಫಲವಾಗಿದೆ',
+        'suspended' => 'ಅಮಾನತುಗೊಳಿಸಲಾಗಿದೆ',
+    ],
+
+    'create' => [
+        'sections' => [
+            'core_details' => 'ಮುಖ್ಯ ವಿವರಗಳು',
+            'allocation' => 'ಹಂಚಿಕೆ ನಿರ್ವಹಣೆ',
+            'feature_limits' => 'ಅಪ್ಲಿಕೇಶನ್ ವೈಶಿಷ್ಟ್ಯದ ಮಿತಿಗಳು',
+            'resources' => 'ಸಂಪನ್ಮೂಲ ನಿರ್ವಹಣೆ',
+            'nest' => 'ನೆಸ್ಟ್ ಕಾನ್ಫಿಗರೇಶನ್',
+            'docker' => 'ಡಾಕರ್ ಕಾನ್ಫಿಗರೇಶನ್',
+            'startup' => 'ಆರಂಭಿಕ ಕಾನ್ಫಿಗರೇಶನ್',
+            'variables' => 'ಸೇವಾ ಅಸ್ಥಿರ',
+        ],
+
+        'fields' => [
+            'name' => [
+                'label' => 'ಸರ್ವರ್ ಹೆಸರು',
+                'placeholder' => 'ಸರ್ವರ್ ಹೆಸರು',
+                'helper' => 'ಅಕ್ಷರ ಮಿತಿಗಳು: a-z A-Z 0-9 _ - . ಮತ್ತು ಜಾಗಗಳು.',
+            ],
+            'owner' => [
+                'label' => 'ಸರ್ವರ್ ಮಾಲೀಕರು',
+                'helper' => 'ಸರ್ವರ್ ಮಾಲೀಕರ ಇಮೇಲ್ ವಿಳಾಸ.',
+            ],
+            'description' => [
+                'label' => 'ಸರ್ವರ್ ವಿವರಣೆ',
+                'helper' => 'ಈ ಸರ್ವರ್‌ನ ಸಂಕ್ಷಿಪ್ತ ವಿವರಣೆ.',
+            ],
+            'start_on_completion' => [
+                'label' => 'ಸ್ಥಾಪಿಸಿದಾಗ ಸರ್ವರ್ ಅನ್ನು ಪ್ರಾರಂಭಿಸಿ',
+            ],
+            'node' => [
+                'label' => 'ನೋಡ್',
+                'helper' => 'ಈ ಸರ್ವರ್ ಅನ್ನು ನಿಯೋಜಿಸಲಾಗುವ ನೋಡ್.',
+            ],
+            'allocation' => [
+                'label' => 'ಡೀಫಾಲ್ಟ್ ಹಂಚಿಕೆ',
+                'helper' => 'ಈ ಸರ್ವರ್‌ಗೆ ನಿಯೋಜಿಸಲಾಗುವ ಮುಖ್ಯ ಹಂಚಿಕೆ.',
+            ],
+            'additional_allocations' => [
+                'label' => 'ಹೆಚ್ಚುವರಿ ಹಂಚಿಕೆ(ಗಳು)',
+                'helper' => 'ರಚನೆಯಲ್ಲಿ ಈ ಸರ್ವರ್‌ಗೆ ನಿಯೋಜಿಸಲು ಹೆಚ್ಚುವರಿ ಹಂಚಿಕೆಗಳು.',
+            ],
+            'database_limit' => [
+                'label' => 'ಡೇಟಾಬೇಸ್ ಮಿತಿ',
+                'helper' => 'ಈ ಸರ್ವರ್‌ಗಾಗಿ ಬಳಕೆದಾರರು ರಚಿಸಲು ಅನುಮತಿಸಲಾದ ಡೇಟಾಬೇಸ್‌ಗಳ ಒಟ್ಟು ಸಂಖ್ಯೆ.',
+            ],
+            'allocation_limit' => [
+                'label' => 'ಹಂಚಿಕೆ ಮಿತಿ',
+                'helper' => 'ಈ ಸರ್ವರ್‌ಗಾಗಿ ಬಳಕೆದಾರರು ರಚಿಸಲು ಅನುಮತಿಸಲಾದ ಒಟ್ಟು ಹಂಚಿಕೆಗಳ ಸಂಖ್ಯೆ.',
+            ],
+            'backup_limit' => [
+                'label' => 'ಬ್ಯಾಕಪ್ ಮಿತಿ',
+                'helper' => 'ಈ ಸರ್ವರ್‌ಗಾಗಿ ರಚಿಸಬಹುದಾದ ಒಟ್ಟು ಬ್ಯಾಕಪ್‌ಗಳ ಸಂಖ್ಯೆ.',
+            ],
+            'cpu' => [
+                'label' => 'CPU ಮಿತಿ',
+                'helper' => 'ಯಾವುದೇ CPU ಮಿತಿಗೆ 0 ಅನ್ನು ಹೊಂದಿಸಿ. ಪೂರ್ಣ ವರ್ಚುವಲ್ ಕೋರ್ 100% ಆಗಿದೆ.',
+            ],
+            'threads' => [
+                'label' => 'CPU ಪಿನ್ನಿಂಗ್',
+                'helper' => 'ಸುಧಾರಿತ: ಒಂದೇ ಸಂಖ್ಯೆ ಅಥವಾ ಅಲ್ಪವಿರಾಮದಿಂದ ಬೇರ್ಪಡಿಸಿದ ಪಟ್ಟಿಯನ್ನು ಬಳಸಿ, ಉದಾಹರಣೆಗೆ 0, 0-1,3, ಅಥವಾ 0,1,3,4.',
+            ],
+            'memory' => [
+                'label' => 'ಸ್ಮರಣೆ',
+                'helper' => 'ಈ ಕಂಟೇನರ್‌ಗೆ ಗರಿಷ್ಠ ಪ್ರಮಾಣದ ಮೆಮೊರಿಯನ್ನು ಅನುಮತಿಸಲಾಗಿದೆ. ಅನಿಯಮಿತಕ್ಕೆ 0 ಹೊಂದಿಸಿ.',
+            ],
+            'swap' => [
+                'label' => 'ಸ್ವ್ಯಾಪ್ ಮಾಡಿ',
+                'helper' => 'ಸ್ವಾಪ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲು 0 ಅಥವಾ ಅನಿಯಮಿತ ಸ್ವಾಪ್ ಅನ್ನು ಅನುಮತಿಸಲು -1 ಅನ್ನು ಹೊಂದಿಸಿ.',
+            ],
+            'disk' => [
+                'label' => 'ಡಿಸ್ಕ್ ಸ್ಪೇಸ್',
+                'helper' => 'ಅನಿಯಮಿತ ಡಿಸ್ಕ್ ಬಳಕೆಯನ್ನು ಅನುಮತಿಸಲು 0 ಅನ್ನು ಹೊಂದಿಸಿ.',
+            ],
+            'io' => [
+                'label' => 'IO ತೂಕವನ್ನು ನಿರ್ಬಂಧಿಸಿ',
+                'helper' => 'Advanced: IO performance relative to other running containers. ಮೌಲ್ಯವು 10 ರಿಂದ 1000 ಆಗಿರಬೇಕು.',
+            ],
+            'oom_disabled' => [
+                'label' => 'OOM ಕಿಲ್ಲರ್ ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿ',
+                'helper' => 'ಮೆಮೊರಿ ಮಿತಿಗಳನ್ನು ಉಲ್ಲಂಘಿಸಿದರೆ ಸರ್ವರ್ ಅನ್ನು ಕೊನೆಗೊಳಿಸುತ್ತದೆ.',
+            ],
+            'nest' => [
+                'label' => 'ಗೂಡು',
+                'helper' => 'ಈ ಸರ್ವರ್ ಅಡಿಯಲ್ಲಿ ಗುಂಪು ಮಾಡಲಾದ Nest ಅನ್ನು ಆಯ್ಕೆಮಾಡಿ.',
+            ],
+            'egg' => [
+                'label' => 'ಮೊಟ್ಟೆ',
+                'helper' => 'ಈ ಸರ್ವರ್ ಹೇಗೆ ಕಾರ್ಯನಿರ್ವಹಿಸಬೇಕು ಎಂಬುದನ್ನು ವಿವರಿಸುವ ಮೊಟ್ಟೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ.',
+            ],
+            'skip_scripts' => [
+                'label' => 'ಎಗ್ ಇನ್‌ಸ್ಟಾಲ್ ಸ್ಕ್ರಿಪ್ಟ್ ಅನ್ನು ಬಿಟ್ಟುಬಿಡಿ',
+                'helper' => 'ಆಯ್ಕೆಮಾಡಿದ ಎಗ್‌ಗೆ ಇನ್‌ಸ್ಟಾಲ್ ಸ್ಕ್ರಿಪ್ಟ್ ಲಗತ್ತಿಸಿದ್ದರೆ, ಇದನ್ನು ಪರಿಶೀಲಿಸದ ಹೊರತು ಇನ್‌ಸ್ಟಾಲ್ ಸಮಯದಲ್ಲಿ ಸ್ಕ್ರಿಪ್ಟ್ ರನ್ ಆಗುತ್ತದೆ.',
+            ],
+            'image' => [
+                'label' => 'Docker Image',
+                'helper' => 'ಡ್ರಾಪ್‌ಡೌನ್‌ನಿಂದ ಚಿತ್ರವನ್ನು ಆಯ್ಕೆಮಾಡಿ ಅಥವಾ ಕೆಳಗೆ ಕಸ್ಟಮ್ ಚಿತ್ರವನ್ನು ನಮೂದಿಸಿ.',
+            ],
+            'custom_image' => [
+                'label' => 'ಕಸ್ಟಮ್ ಡಾಕರ್ ಚಿತ್ರ',
+                'placeholder' => 'ಅಥವಾ ಕಸ್ಟಮ್ ಚಿತ್ರವನ್ನು ನಮೂದಿಸಿ...',
+                'helper' => 'ಇದು ಈ ಸರ್ವರ್ ಅನ್ನು ಚಲಾಯಿಸಲು ಬಳಸಲಾಗುವ ಡೀಫಾಲ್ಟ್ ಡಾಕರ್ ಚಿತ್ರವಾಗಿದೆ.',
+            ],
+            'startup' => [
+                'label' => 'ಸ್ಟಾರ್ಟ್ಅಪ್ ಕಮಾಂಡ್',
+                'helper' => 'ಲಭ್ಯವಿರುವ ಬದಲಿಗಳು: {{SERVER_MEMORY}}, {{SERVER_IP}}, ಮತ್ತು {{SERVER_PORT}}.',
+            ],
+            'environment_placeholder' => [
+                'label' => 'ಸೇವಾ ವೇರಿಯೇಬಲ್‌ಗಳನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಲು ಮೊಟ್ಟೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ',
+            ],
         ],
     ],
 
     'fields' => [
         'advanced_mode' => [
-            'label' => 'Advanced Mode',
-            'helper' => 'Toggle to show additional server configuration options. Toggle on only if you understand the implications of the additional settings.',
+            'label' => 'ಸುಧಾರಿತ ಮೋಡ್',
+            'helper' => 'ಹೆಚ್ಚುವರಿ ಸರ್ವರ್ ಕಾನ್ಫಿಗರೇಶನ್ ಆಯ್ಕೆಗಳನ್ನು ತೋರಿಸಲು ಟಾಗಲ್ ಮಾಡಿ. ಹೆಚ್ಚುವರಿ ಸೆಟ್ಟಿಂಗ್‌ಗಳ ಪರಿಣಾಮಗಳನ್ನು ನೀವು ಅರ್ಥಮಾಡಿಕೊಂಡರೆ ಮಾತ್ರ ಟಾಗಲ್ ಆನ್ ಮಾಡಿ.',
         ],
         'external_id' => [
-            'label' => 'External ID',
-            'helper' => 'Optional unique identifier for this server.',
+            'label' => 'ಬಾಹ್ಯ ID',
+            'helper' => 'ಈ ಸರ್ವರ್‌ಗಾಗಿ ಐಚ್ಛಿಕ ಅನನ್ಯ ಗುರುತಿಸುವಿಕೆ.',
         ],
         'owner' => [
-            'label' => 'Owner',
-            'helper' => 'Select the user that owns this server.',
+            'label' => 'ಮಾಲೀಕ',
+            'helper' => 'ಈ ಸರ್ವರ್ ಅನ್ನು ಹೊಂದಿರುವ ಬಳಕೆದಾರರನ್ನು ಆಯ್ಕೆಮಾಡಿ.',
         ],
         'name' => [
-            'label' => 'Name',
-            'placeholder' => 'Server Name',
-            'helper' => 'A short name for this server.',
+            'label' => 'ಹೆಸರು',
+            'placeholder' => 'ಸರ್ವರ್ ಹೆಸರು',
+            'helper' => 'ಈ ಸರ್ವರ್‌ಗೆ ಚಿಕ್ಕ ಹೆಸರು.',
         ],
         'description' => [
-            'label' => 'Description',
-            'placeholder' => 'Server description',
-            'helper' => 'Optional description for this server.',
+            'label' => 'ವಿವರಣೆ',
+            'placeholder' => 'ಸರ್ವರ್ ವಿವರಣೆ',
+            'helper' => 'ಈ ಸರ್ವರ್‌ಗೆ ಐಚ್ಛಿಕ ವಿವರಣೆ.',
         ],
         'node' => [
-            'label' => 'Node',
-            'helper' => 'The node this server will be deployed to.',
+            'label' => 'ನೋಡ್',
+            'helper' => 'ನೋಡ್ ಈ ಸರ್ವರ್ ಅನ್ನು ನಿಯೋಜಿಸಲಾಗುವುದು.',
         ],
         'allocation' => [
-            'label' => 'Primary Allocation',
-            'helper' => 'The default IP/port allocation for this server.',
+            'label' => 'ಪ್ರಾಥಮಿಕ ಹಂಚಿಕೆ',
+            'helper' => 'ಈ ಸರ್ವರ್‌ಗಾಗಿ ಡೀಫಾಲ್ಟ್ IP/ಪೋರ್ಟ್ ಹಂಚಿಕೆ.',
         ],
         'additional_allocations' => [
-            'label' => 'Additional Allocations',
-            'helper' => 'Optional extra allocations to assign.',
+            'label' => 'ಹೆಚ್ಚುವರಿ ಹಂಚಿಕೆಗಳು',
+            'helper' => 'ನಿಯೋಜಿಸಲು ಐಚ್ಛಿಕ ಹೆಚ್ಚುವರಿ ಹಂಚಿಕೆಗಳು.',
         ],
         'nest' => [
-            'label' => 'Nest',
-            'helper' => 'The service nest for this server.',
+            'label' => 'ಗೂಡು',
+            'helper' => 'ಈ ಸರ್ವರ್‌ಗಾಗಿ ಸೇವಾ ಗೂಡು.',
         ],
         'egg' => [
-            'label' => 'Egg',
-            'helper' => 'The egg that defines server behavior.',
+            'label' => 'ಮೊಟ್ಟೆ',
+            'helper' => 'ಸರ್ವರ್ ನಡವಳಿಕೆಯನ್ನು ವ್ಯಾಖ್ಯಾನಿಸುವ ಮೊಟ್ಟೆ.',
         ],
         'startup' => [
-            'label' => 'Startup Command',
-            'helper' => 'The startup command for the server.',
+            'label' => 'ಸ್ಟಾರ್ಟ್ಅಪ್ ಕಮಾಂಡ್',
+            'helper' => 'ಸರ್ವರ್‌ಗಾಗಿ ಆರಂಭಿಕ ಆಜ್ಞೆ.',
         ],
         'image' => [
             'label' => 'Docker Image',
-            'placeholder' => 'e.g. ghcr.io/reviactyl/images:java_17',
-            'helper' => 'Docker image used to run this server.',
-            'custom' => 'Custom',
+            'helper' => 'ಈ ಸರ್ವರ್ ಅನ್ನು ರನ್ ಮಾಡಲು ಡಾಕರ್ ಚಿತ್ರವನ್ನು ಬಳಸಲಾಗುತ್ತದೆ.',
+            'custom' => 'ಕಸ್ಟಮ್',
         ],
         'skip_scripts' => [
-            'label' => 'Skip Egg Scripts',
-            'helper' => 'Skip egg install scripts during creation.',
+            'label' => 'ಎಗ್ ಸ್ಕ್ರಿಪ್ಟ್‌ಗಳನ್ನು ಬಿಟ್ಟುಬಿಡಿ',
+            'helper' => 'ರಚನೆಯ ಸಮಯದಲ್ಲಿ ಎಗ್ ಇನ್‌ಸ್ಟಾಲ್ ಸ್ಕ್ರಿಪ್ಟ್‌ಗಳನ್ನು ಬಿಟ್ಟುಬಿಡಿ.',
         ],
         'start_on_completion' => [
-            'label' => 'Start on Completion',
-            'helper' => 'Automatically start the server after installation.',
+            'label' => 'ಪೂರ್ಣಗೊಂಡ ಮೇಲೆ ಪ್ರಾರಂಭಿಸಿ',
+            'helper' => 'ಅನುಸ್ಥಾಪನೆಯ ನಂತರ ಸರ್ವರ್ ಅನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಪ್ರಾರಂಭಿಸಿ.',
         ],
         'memory' => [
-            'label' => 'Memory',
-            'helper' => 'Total memory allocation. Set to 0 for unlimited. (Unlimited Memory doesn\'t work for Minecraft Eggs due to Startup Command)',
+            'label' => 'ಸ್ಮರಣೆ',
+            'helper' => 'ಒಟ್ಟು ಮೆಮೊರಿ ಹಂಚಿಕೆ. ಅನಿಯಮಿತಕ್ಕೆ 0 ಗೆ ಹೊಂದಿಸಿ. (ಸ್ಟಾರ್ಟ್‌ಅಪ್ ಕಮಾಂಡ್‌ನಿಂದಾಗಿ Minecraft ಮೊಟ್ಟೆಗಳಿಗೆ ಅನಿಯಮಿತ ಮೆಮೊರಿ ಕಾರ್ಯನಿರ್ವಹಿಸುವುದಿಲ್ಲ)',
         ],
         'swap' => [
-            'label' => 'Swap',
-            'helper' => 'Swap memory allocation. Set to 0 to disable swap or -1 to allow unlimited swap.',
+            'label' => 'ಸ್ವ್ಯಾಪ್ ಮಾಡಿ',
+            'helper' => 'ಮೆಮೊರಿ ಹಂಚಿಕೆಯನ್ನು ಬದಲಿಸಿ. ಸ್ವಾಪ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲು 0 ಅಥವಾ ಅನಿಯಮಿತ ಸ್ವಾಪ್ ಅನ್ನು ಅನುಮತಿಸಲು -1 ಗೆ ಹೊಂದಿಸಿ.',
         ],
         'disk' => [
-            'label' => 'Disk',
-            'helper' => 'Disk space allocation. Set to 0 for unlimited.',
+            'label' => 'ಡಿಸ್ಕ್',
+            'helper' => 'ಡಿಸ್ಕ್ ಜಾಗದ ಹಂಚಿಕೆ. ಅನಿಯಮಿತಕ್ಕೆ 0 ಗೆ ಹೊಂದಿಸಿ.',
         ],
         'io' => [
-            'label' => 'IO Weight',
-            'helper' => 'Relative disk I/O priority (10-1000).',
+            'label' => 'IO ತೂಕ',
+            'helper' => 'ಸಂಬಂಧಿತ ಡಿಸ್ಕ್ I/O ಆದ್ಯತೆ (10-1000).',
         ],
         'cpu' => [
             'label' => 'CPU',
-            'helper' => 'CPU limit in percent. 100% means one full core, 200% means two full cores, etc.',
+            'helper' => 'ಶೇಕಡಾವಾರು CPU ಮಿತಿ. 100% ಎಂದರೆ ಒಂದು ಪೂರ್ಣ ಕೋರ್, 200% ಎಂದರೆ ಎರಡು ಪೂರ್ಣ ಕೋರ್, ಇತ್ಯಾದಿ.',
         ],
         'enter_size_in_gib' => [
-            'label' => 'Enter size in GiB',
-            'helper' => 'You can enter sizes in GiB by using the "GiB" suffix (e.g. 10GiB = 10240MiB).',
+            'label' => 'GiB ನಲ್ಲಿ ಗಾತ್ರವನ್ನು ನಮೂದಿಸಿ',
+            'helper' => '"GiB" ಪ್ರತ್ಯಯವನ್ನು ಬಳಸಿಕೊಂಡು ನೀವು GiB ನಲ್ಲಿ ಗಾತ್ರಗಳನ್ನು ನಮೂದಿಸಬಹುದು (ಉದಾ. 10GiB = 10240MiB).',
         ],
         'threads' => [
-            'label' => 'CPU Threads',
-            'helper' => 'Optional thread pinning. Example: 0-1,3.',
+            'label' => 'CPU ಎಳೆಗಳು',
+            'helper' => 'ಐಚ್ಛಿಕ ಥ್ರೆಡ್ ಪಿನ್ನಿಂಗ್. ಉದಾಹರಣೆ: 0-1,3.',
         ],
         'oom_disabled' => [
-            'label' => 'Disable OOM Killer',
-            'helper' => 'Prevent the kernel from killing the process when out of memory.',
+            'label' => 'OOM ಕಿಲ್ಲರ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ',
+            'helper' => 'ಮೆಮೊರಿ ಇಲ್ಲದಿರುವಾಗ ಪ್ರಕ್ರಿಯೆಯನ್ನು ಕೊಲ್ಲದಂತೆ ಕರ್ನಲ್ ಅನ್ನು ತಡೆಯಿರಿ.',
         ],
         'database_limit' => [
-            'label' => 'Database Limit',
-            'helper' => 'Maximum number of databases.',
+            'label' => 'ಡೇಟಾಬೇಸ್ ಮಿತಿ',
+            'helper' => 'ಡೇಟಾಬೇಸ್‌ಗಳ ಗರಿಷ್ಠ ಸಂಖ್ಯೆ.',
         ],
         'allocation_limit' => [
-            'label' => 'Allocation Limit',
-            'helper' => 'Maximum number of allocations.',
+            'label' => 'ಹಂಚಿಕೆ ಮಿತಿ',
+            'helper' => 'ಹಂಚಿಕೆಗಳ ಗರಿಷ್ಠ ಸಂಖ್ಯೆ.',
         ],
         'backup_limit' => [
-            'label' => 'Backup Limit',
-            'helper' => 'Maximum number of backups.',
+            'label' => 'ಬ್ಯಾಕಪ್ ಮಿತಿ',
+            'helper' => 'ಗರಿಷ್ಠ ಸಂಖ್ಯೆಯ ಬ್ಯಾಕ್‌ಅಪ್‌ಗಳು.',
         ],
         'environment' => [
-            'key' => 'Variable',
-            'value' => 'Value',
-            'helper' => 'Environment variables for this egg.',
+            'key' => 'ವೇರಿಯಬಲ್',
+            'value' => 'ಮೌಲ್ಯ',
+            'helper' => 'ಈ ಮೊಟ್ಟೆಗೆ ಪರಿಸರ ಅಸ್ಥಿರ.',
         ],
         'use_custom_image' => [
-            'label' => 'Use Custom Image',
-            'helper' => 'Toggle to use a custom Docker image instead of one provided by the egg.',
+            'label' => 'ಕಸ್ಟಮ್ ಚಿತ್ರವನ್ನು ಬಳಸಿ',
+            'helper' => 'ಮೊಟ್ಟೆಯಿಂದ ಒದಗಿಸಲಾದ ಒಂದು ಕಸ್ಟಮ್ ಡಾಕರ್ ಚಿತ್ರವನ್ನು ಬಳಸಲು ಟಾಗಲ್ ಮಾಡಿ.',
         ],
     ],
 
     'table' => [
         'id' => 'ID',
-        'name' => 'Name',
-        'owner' => 'Owner',
-        'node' => 'Node',
-        'allocation' => 'Allocation',
-        'status' => 'Status',
-        'egg' => 'Egg',
-        'memory' => 'Memory',
-        'disk' => 'Disk',
+        'name' => 'ಹೆಸರು',
+        'owner' => 'ಮಾಲೀಕ',
+        'node' => 'ನೋಡ್',
+        'allocation' => 'ಹಂಚಿಕೆ',
+        'status' => 'ಸ್ಥಿತಿ',
+        'egg' => 'ಮೊಟ್ಟೆ',
+        'memory' => 'ಸ್ಮರಣೆ',
+        'disk' => 'ಡಿಸ್ಕ್',
         'cpu' => 'CPU',
-        'created' => 'Created',
-        'updated' => 'Updated',
-        'installed' => 'Installed',
-        'no_status' => 'No Status',
+        'created' => 'ರಚಿಸಲಾಗಿದೆ',
+        'updated' => 'ನವೀಕರಿಸಲಾಗಿದೆ',
+        'installed' => 'ಸ್ಥಾಪಿಸಲಾಗಿದೆ',
+        'no_status' => 'ಸ್ಥಿತಿ ಇಲ್ಲ',
+        'unlimited' => 'ಅನಿಯಮಿತ',
     ],
 
     'messages' => [
-        'created' => 'Server has been successfully created.',
-        'updated' => 'Server has been successfully updated.',
-        'deleted' => 'Server has been successfully deleted.',
+        'created' => 'ಸರ್ವರ್ ಅನ್ನು ಯಶಸ್ವಿಯಾಗಿ ರಚಿಸಲಾಗಿದೆ.',
+        'updated' => 'ಸರ್ವರ್ ಅನ್ನು ಯಶಸ್ವಿಯಾಗಿ ನವೀಕರಿಸಲಾಗಿದೆ.',
+        'deleted' => 'ಸರ್ವರ್ ಅನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಅಳಿಸಲಾಗಿದೆ.',
     ],
 
     'actions' => [
-        'edit' => 'Edit',
-        'toggle_install_status' => 'Toggle Install Status',
-        'suspend' => 'Suspend',
-        'unsuspend' => 'Unsuspend',
-        'suspended' => 'Suspended',
-        'unsuspended' => 'Unsuspended',
-        'reinstall' => 'Reinstall',
-        'delete' => 'Delete',
-        'delete_forcibly' => 'Forcibly Delete',
-        'view' => 'View',
+        'edit' => 'ಸಂಪಾದಿಸು',
+        'random' => 'ಯಾದೃಚ್ಛಿಕ',
+        'toggle_install_status' => 'ಅನುಸ್ಥಾಪನಾ ಸ್ಥಿತಿಯನ್ನು ಟಾಗಲ್ ಮಾಡಿ',
+        'suspend' => 'ಅಮಾನತುಗೊಳಿಸಿ',
+        'unsuspend' => 'ಅಮಾನತುಗೊಳಿಸು',
+        'suspended' => 'ಅಮಾನತುಗೊಳಿಸಲಾಗಿದೆ',
+        'unsuspended' => 'ಅಮಾನತುಗೊಳಿಸಲಾಗಿಲ್ಲ',
+        'reinstall' => 'ಮರುಸ್ಥಾಪಿಸಿ',
+        'delete' => 'ಅಳಿಸಿ',
+        'delete_forcibly' => 'ಬಲವಂತವಾಗಿ ಅಳಿಸಿ',
+        'view' => 'ವೀಕ್ಷಿಸಿ',
     ],
 
     'exceptions' => [
@@ -193,10 +319,10 @@ return [
 
     'alerts' => [
         'install_toggled' => 'ಈ ಸರ್ವರ್‌ನ ಸ್ಥಾಪನಾ ಸ್ಥಿತಿಯನ್ನು ಬದಲಾಯಿಸಲಾಗಿದೆ.',
-        'server_suspended' => 'Server has been :action.',
+        'server_suspended' => 'ಸರ್ವರ್ :action. ಆಗಿದೆ',
         'server_reinstalled' => 'ಈ ಸರ್ವರ್ ಅನ್ನು ಮರುಸ್ಥಾಪನೆಗಾಗಿ ಸಾಲಿನಲ್ಲಿ ಸೇರಿಸಲಾಗಿದೆ ಮತ್ತು ಪ್ರಕ್ರಿಯೆ ಈಗ ಆರಂಭವಾಗುತ್ತದೆ.',
         'server_deleted' => 'ಸರ್ವರ್ ಅನ್ನು ವ್ಯವಸ್ಥೆಯಿಂದ ಯಶಸ್ವಿಯಾಗಿ ಅಳಿಸಲಾಗಿದೆ.',
-        'server_delete_failed' => 'Failed to delete server.',
+        'server_delete_failed' => 'ಸರ್ವರ್ ಅನ್ನು ಅಳಿಸಲು ವಿಫಲವಾಗಿದೆ.',
         'startup_changed' => 'ಈ ಸರ್ವರ್‌ನ ಸ್ಟಾರ್ಟ್‌ಅಪ್ ಸಂರಚನೆಯನ್ನು ನವೀಕರಿಸಲಾಗಿದೆ. ಈ ಸರ್ವರ್‌ನ ನೆಸ್ಟ್ ಅಥವಾ ಎಗ್ ಬದಲಾಗಿದ್ದರೆ, ಈಗ ಮರುಸ್ಥಾಪನೆ ನಡೆಯಲಿದೆ.',
         'server_created' => 'ಸರ್ವರ್ ಅನ್ನು ಪ್ಯಾನೆಲ್‌ನಲ್ಲಿ ಯಶಸ್ವಿಯಾಗಿ ರಚಿಸಲಾಗಿದೆ. ಈ ಸರ್ವರ್ ಅನ್ನು ಸಂಪೂರ್ಣವಾಗಿ ಸ್ಥಾಪಿಸಲು ಡೀಮನ್‌ಗೆ ಕೆಲವು ನಿಮಿಷಗಳ ಸಮಯ ನೀಡಿ.',
         'build_updated' => 'ಈ ಸರ್ವರ್‌ನ ಬಿಲ್ಡ್ ವಿವರಗಳನ್ನು ನವೀಕರಿಸಲಾಗಿದೆ. ಕೆಲವು ಬದಲಾವಣೆಗಳು ಪರಿಣಾಮಕಾರಿಯಾಗಲು ಮರುಪ್ರಾರಂಭ ಅಗತ್ಯವಿರಬಹುದು.',
@@ -208,5 +334,218 @@ return [
         'transfer_nodes_required' => 'ಸರ್ವರ್‌ಗಳನ್ನು ವರ್ಗಾಯಿಸಲು ಕನಿಷ್ಠ ಎರಡು ನೋಡ್‌ಗಳನ್ನು ಸಂರಚಿಸಿರಬೇಕು.',
         'transfer_started' => 'ಸರ್ವರ್ ವರ್ಗಾವಣೆ ಪ್ರಾರಂಭವಾಗಿದೆ.',
         'transfer_not_viable' => 'ನೀವು ಆಯ್ಕೆ ಮಾಡಿದ ನೋಡ್‌ಗೆ ಈ ಸರ್ವರ್‌ಗೆ ಅಗತ್ಯವಿರುವ ಡಿಸ್ಕ್ ಸ್ಥಳ ಅಥವಾ ಮೆಮೊರಿ ಲಭ್ಯವಿಲ್ಲ.',
+        'primary_allocation_updated' => 'ಪ್ರಾಥಮಿಕ ಹಂಚಿಕೆಯನ್ನು ನವೀಕರಿಸಲಾಗಿದೆ.',
+        'database_created' => 'ಡೇಟಾಬೇಸ್ ರಚಿಸಲಾಗಿದೆ.',
+        'database_password_reset' => 'ಡೇಟಾಬೇಸ್ ಪಾಸ್ವರ್ಡ್ ಮರುಹೊಂದಿಸಿ.',
+        'database_deleted' => 'ಡೇಟಾಬೇಸ್ ಅಳಿಸಲಾಗಿದೆ.',
+    ],
+
+    'edit' => [
+        'tabs' => [
+            'information' => 'ಮಾಹಿತಿ',
+            'build_configuration' => 'ಸಂರಚನೆಯನ್ನು ನಿರ್ಮಿಸಿ',
+            'startup' => 'ಪ್ರಾರಂಭ',
+            'manage' => 'ನಿರ್ವಹಿಸಿ',
+        ],
+
+        'sections' => [
+            'resource_management' => 'ಸಂಪನ್ಮೂಲ ನಿರ್ವಹಣೆ',
+            'application_feature_limits' => 'ಅಪ್ಲಿಕೇಶನ್ ವೈಶಿಷ್ಟ್ಯದ ಮಿತಿಗಳು',
+            'allocation_management' => 'ಹಂಚಿಕೆ ನಿರ್ವಹಣೆ',
+            'startup_command_modification' => 'ಆರಂಭಿಕ ಕಮಾಂಡ್ ಮಾರ್ಪಾಡು',
+            'service_configuration' => 'ಸೇವೆಯ ಸಂರಚನೆ',
+            'docker_image_configuration' => 'ಡಾಕರ್ ಇಮೇಜ್ ಕಾನ್ಫಿಗರೇಶನ್',
+            'service_variables' => 'ಸೇವಾ ಅಸ್ಥಿರ',
+            'reinstall_server' => 'ಸರ್ವರ್ ಅನ್ನು ಮರುಸ್ಥಾಪಿಸಿ',
+            'install_status' => 'ಸ್ಥಿತಿಯನ್ನು ಸ್ಥಾಪಿಸಿ',
+            'suspend_server' => 'ಸರ್ವರ್ ಅನ್ನು ಅಮಾನತುಗೊಳಿಸಿ',
+            'unsuspend_server' => 'ಅಮಾನತುಗೊಳಿಸಿದ ಸರ್ವರ್',
+            'transfer_server' => 'ವರ್ಗಾವಣೆ ಸರ್ವರ್',
+            'delete_server' => 'ಸರ್ವರ್ ಅನ್ನು ಅಳಿಸಿ',
+        ],
+
+        'section_descriptions' => [
+            'service_configuration' => 'ಈ ಮೌಲ್ಯಗಳನ್ನು ಬದಲಾಯಿಸುವುದರಿಂದ ಮರುಸ್ಥಾಪನೆಯನ್ನು ಪ್ರಚೋದಿಸಬಹುದು. ಆ ಕಾರ್ಯಾಚರಣೆಗಾಗಿ ಸರ್ವರ್ ಅನ್ನು ತಕ್ಷಣವೇ ನಿಲ್ಲಿಸಲಾಗುತ್ತದೆ.',
+            'reinstall_server' => 'ಇದು ನಿಯೋಜಿಸಲಾದ ಸೇವಾ ಸ್ಕ್ರಿಪ್ಟ್‌ಗಳೊಂದಿಗೆ ಸರ್ವರ್ ಅನ್ನು ಮರುಸ್ಥಾಪಿಸುತ್ತದೆ. ಇದು ಸರ್ವರ್ ಡೇಟಾವನ್ನು ಮೇಲ್ಬರಹ ಮಾಡಬಹುದು.',
+            'install_status' => 'ಸ್ಥಾಪನೆ ಸ್ಥಿತಿಯನ್ನು ಅನ್‌ಇನ್‌ಸ್ಟಾಲ್‌ನಿಂದ ಇನ್‌ಸ್ಟಾಲ್‌ಗೆ ಬದಲಾಯಿಸಿ ಅಥವಾ ಪ್ರತಿಯಾಗಿ.',
+            'suspend_server' => 'ಇದು ಚಾಲನೆಯಲ್ಲಿರುವ ಪ್ರಕ್ರಿಯೆಗಳನ್ನು ನಿಲ್ಲಿಸುತ್ತದೆ ಮತ್ತು ಪ್ಯಾನಲ್ ಅಥವಾ API ಮೂಲಕ ಸರ್ವರ್ ಅನ್ನು ನಿರ್ವಹಿಸುವುದರಿಂದ ಬಳಕೆದಾರರನ್ನು ನಿರ್ಬಂಧಿಸುತ್ತದೆ.',
+            'unsuspend_server' => 'ಇದು ಸರ್ವರ್ ಅನ್ನು ರದ್ದುಗೊಳಿಸುತ್ತದೆ ಮತ್ತು ಸಾಮಾನ್ಯ ಬಳಕೆದಾರ ಪ್ರವೇಶವನ್ನು ಮರುಸ್ಥಾಪಿಸುತ್ತದೆ.',
+            'transfer_server_transferring' => 'ಈ ಸರ್ವರ್ ಅನ್ನು ಪ್ರಸ್ತುತ ಮತ್ತೊಂದು ನೋಡ್‌ಗೆ ವರ್ಗಾಯಿಸಲಾಗುತ್ತಿದೆ.',
+            'transfer_server' => 'ಈ ಪ್ಯಾನೆಲ್‌ಗೆ ಸಂಪರ್ಕಗೊಂಡಿರುವ ಇನ್ನೊಂದು ನೋಡ್‌ಗೆ ಈ ಸರ್ವರ್ ಅನ್ನು ವರ್ಗಾಯಿಸಿ.',
+            'delete_server' => 'ಇದು ಪ್ಯಾನಲ್ ಮತ್ತು ಏಜೆಂಟ್‌ನಿಂದ ಸರ್ವರ್ ಅನ್ನು ಶಾಶ್ವತವಾಗಿ ಅಳಿಸುತ್ತದೆ. ಅಗತ್ಯವಿದ್ದರೆ ಬಲವಂತವಾಗಿ ಅಳಿಸಿ ಸ್ಕಿಪ್ಸ್ ಏಜೆಂಟ್ ಅಳಿಸುವಿಕೆ.',
+        ],
+
+        'fields' => [
+            'server_name' => [
+                'label' => 'ಸರ್ವರ್ ಹೆಸರು',
+                'helper' => 'ಅಕ್ಷರ ಮಿತಿಗಳು: a-zA-Z0-9_-, ಸ್ಪೇಸ್‌ಗಳು ಮತ್ತು ಪ್ರಮಾಣಿತ ಮುದ್ರಿಸಬಹುದಾದ ಅಕ್ಷರಗಳು.',
+            ],
+            'server_owner' => [
+                'label' => 'ಸರ್ವರ್ ಮಾಲೀಕರು',
+                'helper' => 'ಮಾಲೀಕತ್ವವನ್ನು ಬದಲಾಯಿಸುವುದು ಹಿಂದಿನ ಮಾಲೀಕರಿಗೆ ಡೀಮನ್ ಟೋಕನ್‌ಗಳನ್ನು ಸ್ವಯಂಚಾಲಿತವಾಗಿ ಹಿಂತೆಗೆದುಕೊಳ್ಳುತ್ತದೆ.',
+            ],
+            'server_description' => [
+                'label' => 'ಸರ್ವರ್ ವಿವರಣೆ',
+                'helper' => 'ಈ ಸರ್ವರ್‌ನ ಸಂಕ್ಷಿಪ್ತ ವಿವರಣೆ.',
+            ],
+            'server_uuid' => [
+                'label' => 'ಸರ್ವರ್ UUID',
+            ],
+            'server_uuid_short' => [
+                'label' => 'ಸರ್ವರ್ UUID (ಸಣ್ಣ)',
+            ],
+            'external_identifier' => [
+                'label' => 'ಬಾಹ್ಯ ಗುರುತಿಸುವಿಕೆ',
+                'helper' => 'ಬಾಹ್ಯ ಗುರುತಿಸುವಿಕೆಯನ್ನು ನಿಯೋಜಿಸದಿರಲು ಖಾಲಿ ಬಿಡಿ. ಬಾಹ್ಯ ID ಈ ಸರ್ವರ್‌ಗೆ ಅನನ್ಯವಾಗಿರಬೇಕು.',
+            ],
+            'game_port' => [
+                'label' => 'ಗೇಮ್ ಬಂದರು',
+                'helper' => 'ಈ ಆಟದ ಸರ್ವರ್‌ಗಾಗಿ ಬಳಸಲಾಗುವ ಡೀಫಾಲ್ಟ್ ಸಂಪರ್ಕ ವಿಳಾಸ.',
+            ],
+            'additional_ports' => [
+                'label' => 'ಹೆಚ್ಚುವರಿ ಬಂದರುಗಳು',
+                'helper' => 'ಹೆಚ್ಚುವರಿ ಪೋರ್ಟ್‌ಗಳನ್ನು ನಿಯೋಜಿಸಿ ಅಥವಾ ತೆಗೆದುಹಾಕಿ. ವಿಭಿನ್ನ IP ಗಳಲ್ಲಿ ಒಂದೇ ರೀತಿಯ ಪೋರ್ಟ್‌ಗಳನ್ನು ಒಂದೇ ಸರ್ವರ್‌ಗೆ ನಿಯೋಜಿಸಲಾಗುವುದಿಲ್ಲ.',
+            ],
+            'startup_command' => [
+                'label' => 'ಸ್ಟಾರ್ಟ್ಅಪ್ ಕಮಾಂಡ್',
+                'helper' => 'ಪೂರ್ವನಿಯೋಜಿತವಾಗಿ ಲಭ್ಯವಿದೆ: {{SERVER_MEMORY}}, {{SERVER_IP}}, ಮತ್ತು {{SERVER_PORT}}.',
+            ],
+            'default_startup_command' => [
+                'label' => 'ಡೀಫಾಲ್ಟ್ ಸ್ಟಾರ್ಟ್ಅಪ್ ಕಮಾಂಡ್',
+                'error' => 'ದೋಷ: ಪ್ರಾರಂಭವನ್ನು ವಿವರಿಸಲಾಗಿಲ್ಲ!',
+            ],
+            'cpu_limit' => [
+                'label' => 'CPU ಮಿತಿ',
+                'helper' => 'ಪ್ರತಿ ವರ್ಚುವಲ್ ಕೋರ್ 100% ಆಗಿದೆ. ಅನಿರ್ಬಂಧಿತ CPU ಸಮಯಕ್ಕೆ 0 ಅನ್ನು ಹೊಂದಿಸಿ.',
+            ],
+            'cpu_pinning' => [
+                'label' => 'CPU ಪಿನ್ನಿಂಗ್',
+                'helper' => 'ಸುಧಾರಿತ: ಎಲ್ಲಾ ಕೋರ್‌ಗಳಿಗೆ ಖಾಲಿ ಬಿಡಿ. ಉದಾಹರಣೆಗಳು: 0, 0-1,3, ಅಥವಾ 0,1,3,4.',
+            ],
+            'allocated_memory' => [
+                'label' => 'ಮೀಸಲಾದ ಮೆಮೊರಿ',
+                'helper' => 'ಈ ಕಂಟೇನರ್‌ಗೆ ಗರಿಷ್ಠ ಪ್ರಮಾಣದ ಮೆಮೊರಿಯನ್ನು ಅನುಮತಿಸಲಾಗಿದೆ. ಅನಿಯಮಿತಕ್ಕೆ 0 ಹೊಂದಿಸಿ.',
+            ],
+            'allocated_swap' => [
+                'label' => 'ಹಂಚಿಕೆ ಸ್ವಾಪ್',
+                'helper' => 'ಸ್ವಾಪ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲು 0 ಅಥವಾ ಅನಿಯಮಿತ ಸ್ವಾಪ್ ಅನ್ನು ಅನುಮತಿಸಲು -1 ಅನ್ನು ಹೊಂದಿಸಿ.',
+            ],
+            'disk_space_limit' => [
+                'label' => 'ಡಿಸ್ಕ್ ಸ್ಪೇಸ್ ಮಿತಿ',
+                'helper' => 'ಅನಿಯಮಿತ ಡಿಸ್ಕ್ ಬಳಕೆಯನ್ನು ಅನುಮತಿಸಲು 0 ಅನ್ನು ಹೊಂದಿಸಿ.',
+            ],
+            'block_io_proportion' => [
+                'label' => 'IO ಅನುಪಾತವನ್ನು ನಿರ್ಬಂಧಿಸಿ',
+                'helper' => 'Advanced: IO performance relative to other running containers. ಮೌಲ್ಯವು 10 ರಿಂದ 1000 ಆಗಿರಬೇಕು.',
+            ],
+            'disable_oom_killer' => [
+                'label' => 'OOM ಕಿಲ್ಲರ್ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ',
+                'helper' => 'OOM ಕಿಲ್ಲರ್ ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸುವುದರಿಂದ ಸರ್ವರ್ ಪ್ರಕ್ರಿಯೆಗಳು ಅನಿರೀಕ್ಷಿತವಾಗಿ ನಿರ್ಗಮಿಸಲು ಕಾರಣವಾಗಬಹುದು.',
+            ],
+            'database_limit' => [
+                'label' => 'ಡೇಟಾಬೇಸ್ ಮಿತಿ',
+                'helper' => 'ಈ ಸರ್ವರ್‌ಗಾಗಿ ಬಳಕೆದಾರರು ರಚಿಸಲು ಅನುಮತಿಸಲಾದ ಡೇಟಾಬೇಸ್‌ಗಳ ಒಟ್ಟು ಸಂಖ್ಯೆ.',
+            ],
+            'allocation_limit' => [
+                'label' => 'ಹಂಚಿಕೆ ಮಿತಿ',
+                'helper' => 'ಈ ಸರ್ವರ್‌ಗಾಗಿ ಬಳಕೆದಾರರು ರಚಿಸಲು ಅನುಮತಿಸಲಾದ ಒಟ್ಟು ಹಂಚಿಕೆಗಳ ಸಂಖ್ಯೆ.',
+            ],
+            'backup_limit' => [
+                'label' => 'ಬ್ಯಾಕಪ್ ಮಿತಿ',
+                'helper' => 'ಈ ಸರ್ವರ್‌ಗಾಗಿ ರಚಿಸಬಹುದಾದ ಒಟ್ಟು ಬ್ಯಾಕಪ್‌ಗಳ ಸಂಖ್ಯೆ.',
+            ],
+            'image' => [
+                'label' => 'ಚಿತ್ರ',
+                'helper' => 'ಡ್ರಾಪ್‌ಡೌನ್‌ನಿಂದ ಚಿತ್ರವನ್ನು ಆಯ್ಕೆಮಾಡಿ ಅಥವಾ ಕೆಳಗೆ ಕಸ್ಟಮ್ ಚಿತ್ರವನ್ನು ನಮೂದಿಸಿ.',
+            ],
+            'custom_image' => [
+                'label' => 'ಕಸ್ಟಮ್ ಚಿತ್ರ',
+                'placeholder' => 'ಅಥವಾ ಕಸ್ಟಮ್ ಚಿತ್ರವನ್ನು ನಮೂದಿಸಿ...',
+                'helper' => 'ಇದು ಈ ಸರ್ವರ್ ಅನ್ನು ಚಲಾಯಿಸಲು ಬಳಸಲಾಗುವ ಡಾಕರ್ ಚಿತ್ರವಾಗಿದೆ.',
+            ],
+            'transfer_node' => [
+                'label' => 'ನೋಡ್',
+                'helper' => 'ಈ ಸರ್ವರ್ ಅನ್ನು ವರ್ಗಾಯಿಸುವ ನೋಡ್.',
+            ],
+            'transfer_allocation' => [
+                'label' => 'ಡೀಫಾಲ್ಟ್ ಹಂಚಿಕೆ',
+                'helper' => 'ಈ ಸರ್ವರ್‌ಗೆ ನಿಯೋಜಿಸಲಾಗುವ ಮುಖ್ಯ ಹಂಚಿಕೆ.',
+            ],
+            'transfer_additional_allocations' => [
+                'label' => 'ಹೆಚ್ಚುವರಿ ಹಂಚಿಕೆ(ಗಳು)',
+                'helper' => 'ವರ್ಗಾವಣೆಯಲ್ಲಿ ಈ ಸರ್ವರ್‌ಗೆ ನಿಯೋಜಿಸಲು ಹೆಚ್ಚುವರಿ ಹಂಚಿಕೆಗಳು.',
+            ],
+        ],
+
+        'actions' => [
+            'reinstall_server' => 'ಸರ್ವರ್ ಅನ್ನು ಮರುಸ್ಥಾಪಿಸಿ',
+            'toggle_install_status' => 'ಅನುಸ್ಥಾಪನಾ ಸ್ಥಿತಿಯನ್ನು ಟಾಗಲ್ ಮಾಡಿ',
+            'suspend_server' => 'ಸರ್ವರ್ ಅನ್ನು ಅಮಾನತುಗೊಳಿಸಿ',
+            'unsuspend_server' => 'ಅಮಾನತುಗೊಳಿಸಿದ ಸರ್ವರ್',
+            'transfer_server' => 'ವರ್ಗಾವಣೆ ಸರ್ವರ್',
+            'confirm' => 'ದೃಢೀಕರಿಸಿ',
+            'delete_server' => 'ಸರ್ವರ್ ಅನ್ನು ಅಳಿಸಿ',
+            'forcibly_delete_server' => 'ಸರ್ವರ್ ಅನ್ನು ಬಲವಂತವಾಗಿ ಅಳಿಸಿ',
+        ],
+    ],
+
+    'allocations' => [
+        'title' => 'ಹಂಚಿಕೆಗಳು',
+
+        'table' => [
+            'ip' => 'IP',
+            'port' => 'ಬಂದರು',
+            'alias' => 'ಅಲಿಯಾಸ್',
+            'primary' => 'ಪ್ರಾಥಮಿಕ',
+            'notes' => 'ಟಿಪ್ಪಣಿಗಳು',
+            'created' => 'ರಚಿಸಲಾಗಿದೆ',
+        ],
+
+        'placeholder' => [
+            'no_alias_assigned' => 'ಯಾವುದೇ ಅಲಿಯಾಸ್ ನಿಯೋಜಿಸಲಾಗಿಲ್ಲ',
+        ],
+
+        'actions' => [
+            'make_primary' => 'ಪ್ರಾಥಮಿಕ ಮಾಡಿ',
+        ],
+    ],
+
+    'databases' => [
+        'title' => 'ಡೇಟಾಬೇಸ್‌ಗಳು',
+
+        'table' => [
+            'database' => 'ಡೇಟಾಬೇಸ್',
+            'username' => 'ಬಳಕೆದಾರ ಹೆಸರು',
+            'remote' => 'ರಿಮೋಟ್',
+            'host' => 'ಹೋಸ್ಟ್',
+            'max_connections' => 'ಗರಿಷ್ಠ ಸಂಪರ್ಕಗಳು',
+            'created' => 'ರಚಿಸಲಾಗಿದೆ',
+        ],
+
+        'placeholder' => [
+            'unlimited' => 'ಅನಿಯಮಿತ',
+        ],
+
+        'actions' => [
+            'create_database' => 'ಡೇಟಾಬೇಸ್ ರಚಿಸಿ',
+            'reset_password' => 'ಪಾಸ್ವರ್ಡ್ ಮರುಹೊಂದಿಸಿ',
+            'delete' => 'ಅಳಿಸಿ',
+        ],
+
+        'create_modal' => [
+            'database_name' => [
+                'label' => 'ಡೇಟಾಬೇಸ್ ಹೆಸರು',
+                'helper' => 'ಪ್ಯಾನೆಲ್ ಇದನ್ನು ಸರ್ವರ್ ಐಡಿಯೊಂದಿಗೆ ಪೂರ್ವಪ್ರತ್ಯಯ ಮಾಡುತ್ತದೆ, ಹಳೆಯ ನಿರ್ವಾಹಕ ಫಲಕಕ್ಕೆ ಹೊಂದಿಕೆಯಾಗುತ್ತದೆ.',
+            ],
+            'database_host' => [
+                'label' => 'ಡೇಟಾಬೇಸ್ ಹೋಸ್ಟ್',
+            ],
+            'remote' => [
+                'label' => 'ರಿಮೋಟ್',
+            ],
+            'max_connections' => [
+                'label' => 'ಗರಿಷ್ಠ ಸಂಪರ್ಕಗಳು',
+            ],
+        ],
     ],
 ];

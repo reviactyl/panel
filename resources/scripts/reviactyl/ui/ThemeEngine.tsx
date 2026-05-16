@@ -19,6 +19,7 @@ type ThemeData = {
     700: string;
     800: string;
     900: string;
+    950: string;
 };
 
 const getCookie = (name: string): string | null => {
@@ -55,7 +56,7 @@ const hexToRgbString = (hex: string) => {
 };
 
 const getThemeFromConfig = (key: PaletteKey): ThemeData => {
-    const conf = typeof window !== 'undefined' ? window.ReviactylConfiguration || {} : {};
+    const conf = typeof window !== 'undefined' ? window.PanelConfiguration || {} : {};
     const t = conf[key.toLowerCase()] || {};
     return {
         displayName: t.name || key,
@@ -70,6 +71,7 @@ const getThemeFromConfig = (key: PaletteKey): ThemeData => {
         700: t.color700,
         800: t.color800,
         900: t.color900,
+        950: t.color950,
     };
 };
 
@@ -135,7 +137,7 @@ const ThemeSelector = () => {
             <div className='flex flex-wrap gap-3'>
                 <button
                     onClick={() => handleThemeChange('default')}
-                    className={`w-10 h-10 flex items-center justify-center rounded-full border text-sm hover:bg-gray-300 dark:hover:bg-gray-700 ${
+                    className={`w-10 h-10 flex items-center justify-center rounded-full border text-sm hover:bg-gray-300 dark:hover:bg-gray-900 ${
                         selected === 'default' ? 'ring-2 ring-reviactyl' : ''
                     }`}
                     title={t('theme-selector.default')}

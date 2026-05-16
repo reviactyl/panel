@@ -5,6 +5,10 @@ return [
         'dashboard' => 'Painel',
         'logout' => 'Sair',
     ],
+    'sidebar' => [
+        'more' => 'Mais',
+        'extensions' => 'Extensões',
+    ],
     'account' => [
         'overview' => 'Visão Geral da Conta',
         'api' => 'Chaves de API',
@@ -20,7 +24,7 @@ return [
         'metrics' => 'Métricas',
         'databases' => 'Bancos de Dados',
         'schedules' => 'Agendamentos',
-        'backups' => 'Backups',
+        'backups' => 'Cópias de segurança',
         'users' => 'Usuários',
         'settings' => 'Configurações',
         'activity' => 'Atividade',

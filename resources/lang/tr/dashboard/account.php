@@ -6,6 +6,8 @@ return [
         '2fa-required' => '2AD Gerekli',
         '2fa-alert' => 'Devam etmek için hesabınızda iki aşamalı doğrulamanın etkinleştirilmiş olması gerekir.',
         'administrator' => 'Yönetici',
+        'admin' => 'Yönetici',
+        'profile' => 'Profil',
         'logout' => 'Çıkış Yap',
         'user' => 'Kullanıcı',
         'update-email' => 'E-posta Adresini Güncelle',
@@ -44,9 +46,11 @@ return [
         ],
     ],
     'email' => [
+        'label' => 'E-posta',
         'password-required' => 'Mevcut hesap parolanızı sağlamanız gerekmektedir.',
         'updated' => 'Birincil e-posta adresiniz güncellendi.',
         'confirm-password' => 'Parolayı Onayla',
+        'error-title' => 'Hata',
         'update' => 'E-postayı Güncelle',
     ],
     'theme-selector' => [
@@ -59,6 +63,7 @@ return [
         'new' => 'Yeni Parola',
         'description' => 'Yeni parolanız en az 8 karakter uzunluğunda olmalı ve bu web sitesine özel olmalıdır.',
         'confirm-new' => 'Yeni Parolayı Onayla',
+        'error-title' => 'Hata',
         'update' => 'Parolayı Güncelle',
     ],
     '2fa' => [
@@ -70,6 +75,7 @@ return [
         'setup' => [
             'scan' => 'Seçtiğiniz iki adımlı doğrulama uygulamasını kullanarak yukarıdaki QR kodunu tarayın. Ardından, oluşturulan 6 haneli kodu aşağıdaki alana girin.',
             'password' => 'Hesap Parolası',
+            'cancel' => 'İptal etmek',
             'waiting' => 'QR kodu yüklenmesi bekleniyor...',
             'enter' => 'Devam etmek için 6 haneli kodu ve parolanızı girmelisiniz.',
             'enable' => 'Etkinleştir',
@@ -129,6 +135,7 @@ return [
     'ssh' => [
         'title' => 'SSH Anahtarları',
         'add-key' => 'SSH Anahtarı Ekle',
+        'fingerprint' => 'SHA256',
         'not-exist' => 'Bu hesap için mevcut SSH Anahtarı yok.',
         'added-on' => 'Eklendiği Tarih',
         'create' => [

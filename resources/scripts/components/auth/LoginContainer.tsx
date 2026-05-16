@@ -17,6 +17,7 @@ import Label from '@/reviactyl/elements/Label';
 import Spinner from '@/reviactyl/elements/Spinner';
 import { KeyIcon, UserIcon, EyeIcon, EyeOffIcon } from '@heroicons/react/solid';
 import { useTranslation } from 'react-i18next';
+import { FaGithub, FaGoogle, FaPlug } from 'react-icons/fa6';
 
 interface Values {
     username: string;
@@ -37,6 +38,7 @@ function LoginContainer() {
     const passkeyLoginRequiresUsername = useStoreState(
         (state) => state.settings.data?.passkeys?.loginRequiresUsername ?? false
     );
+    const registrationEnabled = useStoreState((state) => state.settings.data?.registrationEnabled ?? true);
 
     const socialSettings = window.SocialLoginConfiguration || { google: false, discord: false, github: false };
 
@@ -192,10 +194,10 @@ function LoginContainer() {
                             />
                             <button
                                 type={'button'}
-                                css={tw`absolute border-l-2 top-[10px] right-[6px] py-2 p-1 border-gray-300 text-gray-300`}
+                                css={tw`absolute top-[10px] right-[6px] py-2 p-1 text-gray-500`}
                                 onClick={() => setShow(!show)}
                             >
-                                {show ? <EyeOffIcon className='h-5 w-5' /> : <EyeIcon className='h-5 w-5' />}
+                                {show ? <EyeIcon className='h-5 w-5' /> : <EyeOffIcon className='h-5 w-5' />}
                             </button>
                         </div>
                     </div>
@@ -227,34 +229,38 @@ function LoginContainer() {
                     {Object.values(socialSettings).some(Boolean) && (
                         <div css={tw`mt-4 grid grid-cols-1 gap-2`}>
                             <div css={tw`relative flex py-2 items-center`}>
-                                <div css={tw`flex-grow border-t border-gray-600`}></div>
+                                <div css={tw`flex-grow border-t border-gray-800`}></div>
                                 <span css={tw`flex-shrink mx-4 text-gray-400 text-xs`}>{t('social.or')}</span>
-                                <div css={tw`flex-grow border-t border-gray-600`}></div>
+                                <div css={tw`flex-grow border-t border-gray-800`}></div>
                             </div>
-                            {socialSettings.google && (
-                                <Button
-                                    onClick={() => (window.location.href = '/auth/login/google')}
-                                    css={tw`w-full !py-3 !bg-green-600`}
-                                >
-                                    {t('social.google')}
-                                </Button>
-                            )}
-                            {socialSettings.discord && (
-                                <Button
-                                    onClick={() => (window.location.href = '/auth/login/discord')}
-                                    css={tw`w-full !py-3 !bg-indigo-600`}
-                                >
-                                    {t('social.discord')}
-                                </Button>
-                            )}
-                            {socialSettings.github && (
-                                <Button
-                                    onClick={() => (window.location.href = '/auth/login/github')}
-                                    css={tw` !py-3 !bg-white !text-black`}
-                                >
-                                    {t('social.github')}
-                                </Button>
-                            )}
+                            <div css={tw`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3`}>
+                                {socialSettings.google && (
+                                    <Button
+                                        onClick={() => (window.location.href = '/auth/login/google')}
+                                        className={`w-full !py-2 !bg-gray-800 !text-white !border !border-gray-700 !hover:bg-gray-700`}
+                                    >
+                                        <FaGoogle className='mr-2' /> {t('social.google')}
+                                    </Button>
+                                )}
+
+                                {socialSettings.discord && (
+                                    <Button
+                                        onClick={() => (window.location.href = '/auth/login/discord')}
+                                        className={`w-full !py-2 !bg-gray-800 !text-white !border !border-gray-700 !hover:bg-gray-700`}
+                                    >
+                                        <FaPlug className='mr-2 h-5' /> {t('social.discord')}
+                                    </Button>
+                                )}
+
+                                {socialSettings.github && (
+                                    <Button
+                                        onClick={() => (window.location.href = '/auth/login/github')}
+                                        className={`w-full !py-2 !bg-gray-800 !text-white !border !border-gray-700 !hover:bg-gray-700`}
+                                    >
+                                        <FaGithub className='mr-2' /> {t('social.github')}
+                                    </Button>
+                                )}
+                            </div>
                         </div>
                     )}
                     {provider === 'recaptcha' && (
@@ -288,15 +294,17 @@ function LoginContainer() {
                         >
                             {t('forgot-password.label')}
                         </Link>
-                        <Link
-                            to={'/auth/register'}
-                            css={tw`text-xs text-gray-400 tracking-wide no-underline hover:text-gray-300`}
-                        >
-                            {t('register.no-account')} {t('register.create-account')}
-                        </Link>
-                        {window.ReviactylConfiguration?.billingCardLink && (
+                        {registrationEnabled && (
+                            <Link
+                                to={'/auth/register'}
+                                css={tw`text-xs text-gray-400 tracking-wide no-underline hover:text-gray-300`}
+                            >
+                                {t('register.no-account')} {t('register.create-account')}
+                            </Link>
+                        )}
+                        {window.PanelConfiguration?.billingCardLink && (
                             <a
-                                href={window.ReviactylConfiguration.billingCardLink}
+                                href={window.PanelConfiguration.billingCardLink}
                                 target={'_blank'}
                                 rel={'noreferrer'}
                                 css={tw`mt-2 flex items-center gap-1 text-xs text-indigo-400 hover:text-indigo-300 no-underline transition-colors duration-200`}

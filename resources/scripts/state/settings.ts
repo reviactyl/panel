@@ -4,6 +4,7 @@ export interface SiteSettings {
     name: string;
     logo: string;
     locale: string;
+    registrationEnabled: boolean;
     captcha: {
         provider: 'none' | 'recaptcha' | 'turnstile';
         recaptcha: {

@@ -6,8 +6,8 @@ use App\Exceptions\Service\Backup\TooManyBackupsException;
 use App\Extensions\Backups\BackupManager;
 use App\Models\Backup;
 use App\Models\Server;
+use App\Repositories\Agent\DaemonBackupRepository;
 use App\Repositories\Eloquent\BackupRepository;
-use App\Repositories\Wings\DaemonBackupRepository;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\ConnectionInterface;
 use Ramsey\Uuid\Uuid;
@@ -66,7 +66,7 @@ class InitiateBackupService
     }
 
     /**
-     * Initiates the backup process for a server on Wings.
+     * Initiates the backup process for a server on Agent.
      *
      * @throws \Throwable
      * @throws TooManyBackupsException

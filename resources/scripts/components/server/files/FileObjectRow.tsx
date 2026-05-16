@@ -1,4 +1,4 @@
-import { FaFileLines, FaFileZipper, FaFileImport, FaFolder, FaFileImage } from 'react-icons/fa6';
+import { FaFileLines, FaFileZipper, FaFileImport, FaFolder, FaFileImage, FaFileVideo } from 'react-icons/fa6';
 import { encodePathSegments } from '@/helpers';
 import { differenceInHours, format, formatDistanceToNow } from 'date-fns';
 import { memo, ReactNode } from 'react';
@@ -14,14 +14,15 @@ import { join } from 'pathe';
 import { bytesToString } from '@/lib/formatters';
 import styles from './style.module.css';
 import { isImageFile } from '@/api/server/files/isImageFile';
+import { isVideoFile } from '@/api/server/files/isVideoFile';
 
 function Clickable({
     file,
-    onImageClick,
+    onMediaClick,
     children,
 }: {
     file: FileObject;
-    onImageClick?: () => void;
+    onMediaClick?: () => void;
     children: ReactNode;
 }) {
     const [canRead] = usePermissions(['file.read']);
@@ -29,15 +30,14 @@ function Clickable({
     const id = ServerContext.useStoreState((state) => state.server.data!.id);
     const directory = ServerContext.useStoreState((state) => state.files.directory);
 
-    // Handle image files with a click handler instead of navigation
-    if (isImageFile(file) && onImageClick && canReadContents) {
+    if ((isImageFile(file) || isVideoFile(file)) && onMediaClick && canReadContents) {
         return (
             <div
                 className={styles.details}
                 css={tw`cursor-pointer`}
                 onClick={(e) => {
                     e.preventDefault();
-                    onImageClick();
+                    onMediaClick();
                 }}
             >
                 {children}
@@ -59,11 +59,11 @@ function Clickable({
 
 interface FileObjectRowProps {
     file: FileObject;
-    onImageClick?: (file: FileObject) => void;
+    onMediaClick?: (file: FileObject) => void;
 }
 
-const FileObjectRow = ({ file, onImageClick }: FileObjectRowProps) => {
-    const handleImageClick = onImageClick ? () => onImageClick(file) : undefined;
+const FileObjectRow = ({ file, onMediaClick }: FileObjectRowProps) => {
+    const handleMediaClick = onMediaClick ? () => onMediaClick(file) : undefined;
     return (
         <div
             className={styles.file_row}
@@ -75,7 +75,7 @@ const FileObjectRow = ({ file, onImageClick }: FileObjectRowProps) => {
             }}
         >
             <SelectFileCheckbox name={file.name} />
-            <Clickable file={file} onImageClick={handleImageClick}>
+            <Clickable file={file} onMediaClick={handleMediaClick}>
                 <div css={tw`flex-none text-gray-400 ml-6 mr-4 text-lg pl-3`}>
                     {file.isFile ? (
                         (() => {
@@ -85,6 +85,8 @@ const FileObjectRow = ({ file, onImageClick }: FileObjectRowProps) => {
                                 ? FaFileZipper
                                 : isImageFile(file)
                                 ? FaFileImage
+                                : isVideoFile(file)
+                                ? FaFileVideo
                                 : FaFileLines;
                             return <FileIcon />;
                         })()

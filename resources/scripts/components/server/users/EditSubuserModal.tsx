@@ -184,7 +184,7 @@ const EditSubuserModal = ({ subuser }: Props) => {
                 <FlashMessageRender byKey={'user:edit'} css={tw`mt-4`} />
                 <div css={tw`mt-6`}>
                     <label css={tw`mb-2 text-gray-300 font-bold block text-sm`}>Select Info</label>
-                    <div css={tw`p-4 bg-gray-600 rounded-lg border border-gray-500`}>
+                    <div css={tw`p-4 bg-gray-700 rounded-lg border border-gray-600`}>
                         <h3 css={tw`text-white font-semibold mb-2`}>Role Presets</h3>
                         <p css={tw`text-gray-300 text-sm mb-4`}>
                             Select a preset to automatically configure permissions for this user. You can still

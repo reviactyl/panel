@@ -30,18 +30,18 @@ return [
     ],
 
     'actions' => [
-        'import' => 'Import Egg',
+        'import' => '进口鸡蛋',
     ],
 
     'import' => [
-        'file_label' => 'Egg File (JSON)',
-        'nest_label' => 'Associated Nest',
-        'file_not_found' => 'File not found',
-        'file_not_found_body' => 'Could not locate uploaded file.',
-        'invalid_format' => 'Invalid file format',
-        'invalid_format_body' => 'Unexpected file format received.',
-        'success' => 'Egg imported successfully',
-        'failed' => 'Failed to import egg',
+        'file_label' => 'Egg 文件 (JSON)',
+        'nest_label' => '联巢',
+        'file_not_found' => '找不到文件',
+        'file_not_found_body' => '无法找到上传的文件。',
+        'invalid_format' => '文件格式无效',
+        'invalid_format_body' => '收到意外的文件格式。',
+        'success' => '鸡蛋导入成功',
+        'failed' => '导入鸡蛋失败',
     ],
 
     'notices' => [

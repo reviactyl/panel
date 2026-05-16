@@ -69,7 +69,7 @@ return [
         'min-length' => 'يجب أن تتكون كلمات المرور من 8 أحرف على الأقل.',
         'confirm-label' => 'تأكيد كلمة المرور',
         'label' => 'تسجيل',
-        'create-account' => 'Create Account',
+        'create-account' => 'إنشاء حساب',
         'no-account' => 'Don\'t have an account?',
     ],
 

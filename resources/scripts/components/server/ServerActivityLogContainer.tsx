@@ -12,10 +12,12 @@ import classNames from 'classnames';
 import { styles as btnStyles } from '@/reviactyl/elements/button/index';
 import { XCircleIcon } from '@heroicons/react/solid';
 import useLocationHash from '@/plugins/useLocationHash';
+import { useTranslation } from 'react-i18next';
 
 export default () => {
     const { hash } = useLocationHash();
     const { clearAndAddHttpError } = useFlashKey('server:activity');
+    const { t } = useTranslation('server/activity');
     const [filters, setFilters] = useState<ActivityLogFilters>({ page: 1, sorts: { timestamp: -1 } });
 
     const { data, isValidating, error } = useActivityLogs(filters, {
@@ -48,9 +50,9 @@ export default () => {
             {!data && isValidating ? (
                 <Spinner centered />
             ) : !data?.items.length ? (
-                <p className={'text-sm text-center text-gray-400'}>No activity logs available for this server.</p>
+                <p className={'text-sm text-center text-gray-400'}>{t('activity.no-logs')}</p>
             ) : (
-                <div className={'bg-gray-700 rounded-ui border border-gray-600'}>
+                <div className={'bg-gray-900 rounded-ui border border-gray-800'}>
                     {data?.items.map((activity) => (
                         <ActivityLogEntry key={activity.id} activity={activity}>
                             <span />

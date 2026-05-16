@@ -70,7 +70,7 @@ class DatabaseHostResource extends Resource
                         TextInput::make('host')
                             ->required()
                             ->maxLength(191)
-                            ->placeholder(trans('admin/databases.placeholders.host'))
+                            ->placeholder('127.0.0.1')
                             ->helperText(trans('admin/databases.helpers.host')),
 
                         TextInput::make('port')
@@ -87,7 +87,7 @@ class DatabaseHostResource extends Resource
                         TextInput::make('username')
                             ->required()
                             ->maxLength(32)
-                            ->placeholder(trans('admin/databases.placeholders.username')),
+                            ->placeholder('reviactyl'),
 
                         TextInput::make('password')
                             ->password()

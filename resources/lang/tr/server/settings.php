@@ -13,6 +13,7 @@ return [
         'title' => 'Hata Ayıklama Bilgisi',
         'node' => 'Düğüm',
         'server' => 'Sunucu Kimliği',
+        'public-status-page' => 'Genel Durum Sayfası',
     ],
     'rename' => [
         'title' => 'Sunucu Detaylarını Değiştir',

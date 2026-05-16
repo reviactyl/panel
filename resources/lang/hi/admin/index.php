@@ -15,10 +15,10 @@ return [
 
     'help-btn' => 'मदद लें',
     'docs-btn' => 'प्रलेखन',
-    'metrics-header' => 'User Activity Metrics',
-    'most-active-country' => 'Most Active Country',
-    'activity-description' => 'Based on recent login activity.',
-    'no_activity' => 'There is no recent activity to display.',
-    'activity-header' => 'Recent Activity',
-    'more-btn' => 'View More',
+    'metrics-header' => 'उपयोगकर्ता गतिविधि मेट्रिक्स',
+    'most-active-country' => 'सर्वाधिक सक्रिय देश',
+    'activity-description' => 'हाल की लॉगिन गतिविधि के आधार पर।',
+    'no_activity' => 'प्रदर्शित करने के लिए कोई हालिया गतिविधि नहीं है.',
+    'activity-header' => 'हाल की गतिविधि',
+    'more-btn' => 'और देखें',
 ];

@@ -26,7 +26,7 @@ class GeoIPServiceTest extends TestCase
     {
         $info = $this->service->getCountryInfo('127.0.0.1');
 
-        $this->assertEquals(__('strings.local_network'), $info['country']);
+        $this->assertEquals('Local Network', $info['country']);
         $this->assertEquals('LOCAL', $info['code']);
     }
 
@@ -34,7 +34,7 @@ class GeoIPServiceTest extends TestCase
     {
         $info = $this->service->getCountryInfo('::1');
 
-        $this->assertEquals(__('strings.local_network'), $info['country']);
+        $this->assertEquals('Local Network', $info['country']);
         $this->assertEquals('LOCAL', $info['code']);
     }
 
@@ -44,7 +44,7 @@ class GeoIPServiceTest extends TestCase
 
         foreach ($privateIps as $ip) {
             $info = $this->service->getCountryInfo($ip);
-            $this->assertEquals(__('strings.local_network'), $info['country'], "Failed for $ip");
+            $this->assertEquals('Local Network', $info['country'], "Failed for $ip");
             $this->assertEquals('LOCAL', $info['code']);
         }
     }
@@ -55,7 +55,7 @@ class GeoIPServiceTest extends TestCase
 
         foreach ($privateIps as $ip) {
             $info = $this->service->getCountryInfo($ip);
-            $this->assertEquals(__('strings.local_network'), $info['country'], "Failed for $ip");
+            $this->assertEquals('Local Network', $info['country'], "Failed for $ip");
             $this->assertEquals('LOCAL', $info['code']);
         }
     }

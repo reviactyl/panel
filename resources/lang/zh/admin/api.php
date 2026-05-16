@@ -7,7 +7,7 @@ return [
     'memo' => '备注',
     'last-used' => '最后使用',
     'created' => '创建于',
-    'author' => 'Author',
+    'author' => '作者',
     'never-used' => '从未使用',
 
     'revoke' => '撤销',

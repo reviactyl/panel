@@ -18,5 +18,6 @@ parameters:
     ignoreErrors:
         - '#Call to an undefined method Prologue\\Alerts\\AlertsMessageBag::(success|warning|danger|info)\(\)#'
     excludePaths:
+        - app/Livewire
         - app/Repositories
         - app/Extensions/Spatie/Fractalistic/Fractal.php

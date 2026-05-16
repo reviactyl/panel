@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'never' => 'Never',
+    'never' => 'Jamais',
     'not-found-title' => '404',
-    'not-found-message' => 'The requested resource was not found.',
-    'server-error-title' => 'Something went wrong',
+    'not-found-message' => 'La ressource demandée n\'a pas été trouvée.',
+    'server-error-title' => 'Quelque chose s\'est mal passé',
 ];

@@ -25,7 +25,7 @@ return [
         'google' => 'Google',
         'discord' => 'Discord',
         'github' => 'GitHub',
-        'not_linked' => 'This account has not been linked to any :provider account. Please log in with your email and password first, then link your :provider account in the Account Settings page.',
+        'not_linked' => 'यह खाता किसी भी :provider खाते से लिंक नहीं किया गया है. कृपया पहले अपने ईमेल और पासवर्ड से लॉग इन करें, फिर खाता सेटिंग पृष्ठ में अपने :provider खाते को लिंक करें।',
     ],
 
     'forgot-password' => [
@@ -60,16 +60,16 @@ return [
     ],
 
     'register' => [
-        'no-match' => 'Your password does not match.',
-        'namefirst-label' => 'First Name',
-        'namelast-label' => 'Last Name',
-        'email-label' => 'Email',
-        'username-label' => 'UserName',
-        'password-label' => 'Password',
-        'min-length' => 'Passwords must be at least 8 characters in length.',
-        'confirm-label' => 'Confirm Password',
-        'label' => 'Register',
-        'create-account' => 'Create Account',
+        'no-match' => 'आपका पासवर्ड मेल नहीं खाता.',
+        'namefirst-label' => 'पहला नाम',
+        'namelast-label' => 'उपनाम',
+        'email-label' => 'ईमेल',
+        'username-label' => 'उपयोक्तानाम',
+        'password-label' => 'पासवर्ड',
+        'min-length' => 'पासवर्ड कम से कम 8 अक्षर का होना चाहिए।',
+        'confirm-label' => 'पासवर्ड की पुष्टि कीजिये',
+        'label' => 'पंजीकरण करवाना',
+        'create-account' => 'खाता बनाएं',
         'no-account' => 'Don\'t have an account?',
     ],
 

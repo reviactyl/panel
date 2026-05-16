@@ -4,9 +4,9 @@
         "version": "RCYL_v26",
         "update_url": null
     },
-    "exported_at": "2026-03-08T09:36:22+00:00",
+    "exported_at": "2026-05-01T13:50:40+00:00",
     "name": "Paper",
-    "banner": "https:\/\/cdn.reviactyl.app\/@reviactyl\/eggs\/minecraft\/day_snowmalayas.webp",
+    "image": "https:\/\/cdn.reviactyl.app\/@reviactyl\/eggs\/minecraft\/papermc.webp",
     "author": "authors@reviactyl.app",
     "description": "High performance Spigot fork that aims to fix gameplay and mechanics inconsistencies.",
     "features": [

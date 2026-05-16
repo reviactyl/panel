@@ -12,7 +12,7 @@ const Container = styled.label`
         ${tw`cursor-pointer`};
 
         &:hover {
-            ${tw`border-gray-500 bg-gray-800`};
+            ${tw`border-gray-600 bg-gray-900`};
         }
     }
 

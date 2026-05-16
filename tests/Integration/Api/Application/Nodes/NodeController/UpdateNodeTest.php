@@ -4,7 +4,7 @@ namespace Tests\Integration\Api\Application\Nodes\NodeController;
 
 use App\Models\Location;
 use App\Models\Node;
-use App\Repositories\Wings\DaemonConfigurationRepository;
+use App\Repositories\Agent\DaemonConfigurationRepository;
 use GuzzleHttp\Psr7\Response;
 use Mockery\MockInterface;
 use Tests\Integration\Api\Application\ApplicationApiIntegrationTestCase;

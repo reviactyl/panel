@@ -25,7 +25,7 @@ return [
         'google' => 'Google',
         'discord' => 'Discord',
         'github' => 'GitHub',
-        'not_linked' => 'This account has not been linked to any :provider account. Please log in with your email and password first, then link your :provider account in the Account Settings page.',
+        'not_linked' => 'Esta cuenta no ha sido vinculada a ninguna cuenta :provider. Primero inicie sesión con su correo electrónico y contraseña, luego vincule su cuenta :provider en la página Configuración de la cuenta.',
     ],
 
     'forgot-password' => [
@@ -60,16 +60,16 @@ return [
     ],
 
     'register' => [
-        'no-match' => 'Your password does not match.',
-        'namefirst-label' => 'First Name',
-        'namelast-label' => 'Last Name',
-        'email-label' => 'Email',
-        'username-label' => 'UserName',
-        'password-label' => 'Password',
-        'min-length' => 'Passwords must be at least 8 characters in length.',
-        'confirm-label' => 'Confirm Password',
-        'label' => 'Register',
-        'create-account' => 'Create Account',
+        'no-match' => 'Tu contraseña no coincide.',
+        'namefirst-label' => 'Nombre de pila',
+        'namelast-label' => 'Apellido',
+        'email-label' => 'Correo electrónico',
+        'username-label' => 'Nombre de usuario',
+        'password-label' => 'Contraseña',
+        'min-length' => 'Las contraseñas deben tener al menos 8 caracteres de longitud.',
+        'confirm-label' => 'confirmar Contraseña',
+        'label' => 'Registro',
+        'create-account' => 'Crear una cuenta',
         'no-account' => 'Don\'t have an account?',
     ],
 

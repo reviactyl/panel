@@ -24,8 +24,6 @@ return [
 
     'placeholders' => [
         'name' => 'Produktions-MySQL',
-        'host' => '127.0.0.1',
-        'username' => 'reviactyl',
     ],
 
     'helpers' => [
@@ -40,8 +38,8 @@ return [
     'columns' => [
         'id' => 'ID',
         'name' => 'Namn',
-        'host' => 'Host',
-        'port' => 'Port',
+        'host' => 'Värd',
+        'port' => 'Hamn',
         'username' => 'Användarnamn',
         'linked_node' => 'Länka noder',
         'databases' => 'Databaser',

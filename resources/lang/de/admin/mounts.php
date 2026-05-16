@@ -2,8 +2,8 @@
 
 return [
 
-    'label' => 'Mount',
-    'plural_label' => 'Mounts',
+    'label' => 'Montieren',
+    'plural_label' => 'Reittiere',
 
     'sections' => [
         'configuration' => 'Mount Konfiguration',
@@ -37,8 +37,8 @@ return [
     ],
 
     'actions' => [
-        'attach_egg' => 'Attach Egg',
-        'attach_node' => 'Attach Node',
+        'attach_egg' => 'Ei anbringen',
+        'attach_node' => 'Knoten anhängen',
     ],
 
 ];

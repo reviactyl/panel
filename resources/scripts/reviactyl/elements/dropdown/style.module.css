@@ -53,6 +53,6 @@
   }
 
   &.disabled {
-    @apply cursor-not-allowed hover:bg-gray-800 opacity-30 focus:bg-transparent focus:hover:bg-gray-800;
+    @apply cursor-not-allowed hover:bg-gray-900 opacity-30 focus:bg-transparent focus:hover:bg-gray-900;
   }
 }

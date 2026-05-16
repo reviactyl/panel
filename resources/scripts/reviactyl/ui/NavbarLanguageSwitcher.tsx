@@ -17,15 +17,15 @@ const Container = styled.div`
 `;
 
 const DropdownButton = styled.button`
-    ${tw`flex items-center gap-2 px-3 py-2 bg-gray-700 border border-gray-600 rounded-ui text-gray-200 text-sm cursor-pointer transition-all`};
+    ${tw`flex items-center gap-2 px-3 py-2 bg-gray-900 border border-gray-800 rounded-ui text-gray-200 text-sm cursor-pointer transition-all`};
 
     &:hover {
-        ${tw`border-gray-500 bg-gray-600`};
+        ${tw`border-gray-600 bg-gray-700`};
     }
 `;
 
 const DropdownMenu = styled.div<{ $isOpen: boolean }>`
-    ${tw`absolute right-0 top-full mt-1 border border-gray-600 rounded-ui shadow-lg z-50 overflow-hidden min-w-[200px]`};
+    ${tw`absolute right-0 top-full mt-1 border border-gray-800 rounded-ui shadow-lg z-50 overflow-hidden min-w-[200px]`};
     display: ${(props) => (props.$isOpen ? 'block' : 'none')};
 
     [dir='rtl'] & {
@@ -119,7 +119,7 @@ const NavbarLanguageSwitcher = () => {
                 {currentLanguage?.flag && <FlagIcon className={`fi fi-${currentLanguage.flag}`} />}
             </DropdownButton>
 
-            <DropdownMenu className='bg-gray-800/90 backdrop-blur-md' $isOpen={isOpen}>
+            <DropdownMenu className='bg-gray-900/90 backdrop-blur-md' $isOpen={isOpen}>
                 {Object.entries(languages).map(([code, info]) => (
                     <MenuItem key={code} $isActive={code === currentLang} onClick={() => handleSelect(code)}>
                         {info.flag && <FlagIcon className={`fi fi-${info.flag}`} />}

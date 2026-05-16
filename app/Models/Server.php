@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Contracts\Models\Identifiable;
 use App\Exceptions\Http\Server\ServerStateConflictException;
 use App\Models\Traits\HasRealtimeIdentifier;
+use App\Repositories\Agent\DaemonServerStatusRepository;
 use Database\Factories\ServerFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -113,6 +114,13 @@ use Znck\Eloquent\Traits\BelongsToThrough;
 #[Attributes\Identifiable('serv')]
 class Server extends Model implements Identifiable
 {
+    /**
+     * Cached daemon state lookups keyed by node ID.
+     *
+     * @var array<int, array<string, array>>
+     */
+    private static array $statusCache = [];
+
     use BelongsToThrough;
 
     /** @use HasFactory<ServerFactory> */
@@ -230,6 +238,78 @@ class Server extends Model implements Identifiable
     public function isSuspended(): bool
     {
         return $this->status === self::STATUS_SUSPENDED;
+    }
+
+    public function getResolvedStatus(): ?string
+    {
+        if (in_array($this->status, [
+            self::STATUS_INSTALLING,
+            self::STATUS_INSTALL_FAILED,
+            self::STATUS_REINSTALL_FAILED,
+            self::STATUS_SUSPENDED,
+            self::STATUS_RESTORING_BACKUP,
+        ], true)) {
+            return $this->status;
+        }
+
+        if (! $this->isInstalled()) {
+            return $this->status ?? 'offline';
+        }
+
+        return $this->getDaemonStatus() ?? $this->status ?? 'offline';
+    }
+
+    public function getStatusBadgeLabel(?string $status = null): string
+    {
+        $status ??= $this->getResolvedStatus();
+
+        return match ($status) {
+            'online', 'running' => trans('admin/server.status.online'),
+            'offline' => trans('admin/server.status.offline'),
+            'starting' => trans('admin/server.status.starting'),
+            'stopping' => trans('admin/server.status.stopping'),
+            'crashed' => trans('admin/server.status.crashed'),
+            self::STATUS_INSTALLING => trans('admin/server.status.installing'),
+            self::STATUS_INSTALL_FAILED => trans('admin/server.status.install_failed'),
+            self::STATUS_REINSTALL_FAILED => trans('admin/server.status.reinstall_failed'),
+            self::STATUS_SUSPENDED => trans('admin/server.status.suspended'),
+            self::STATUS_RESTORING_BACKUP => trans('admin/server.status.restoring_backup'),
+            default => $status ? str($status)->replace(['_', '-'], ' ')->title()->toString() : trans('admin/server.status.no_status'),
+        };
+    }
+
+    public function getStatusBadgeIcon(?string $status = null): string
+    {
+        $status ??= $this->getResolvedStatus();
+
+        return match ($status) {
+            'online', 'running' => 'tabler-heart-check',
+            'offline' => 'tabler-heart-broken',
+            'starting' => 'tabler-heart-cog',
+            'stopping' => 'tabler-heart-x',
+            'crashed' => 'tabler-heart-x',
+            self::STATUS_INSTALLING, self::STATUS_RESTORING_BACKUP => 'tabler-heart-arrow',
+            self::STATUS_INSTALL_FAILED, self::STATUS_REINSTALL_FAILED => 'tabler-heart-x',
+            self::STATUS_SUSPENDED => 'tabler-heart-pause',
+            default => 'tabler-question-mark',
+        };
+    }
+
+    public function getStatusBadgeColor(?string $status = null): string
+    {
+        $status ??= $this->getResolvedStatus();
+
+        return match ($status) {
+            'online', 'running' => 'success',
+            'offline' => 'danger',
+            'starting' => 'warning',
+            'stopping' => 'danger',
+            'crashed' => 'danger',
+            self::STATUS_INSTALLING, self::STATUS_RESTORING_BACKUP => 'info',
+            self::STATUS_INSTALL_FAILED, self::STATUS_REINSTALL_FAILED => 'danger',
+            self::STATUS_SUSPENDED => 'warning',
+            default => 'gray',
+        };
     }
 
     /**
@@ -441,5 +521,41 @@ class Server extends Model implements Identifiable
     public function getRouteKeyName(): string
     {
         return 'id';
+    }
+
+    private function getDaemonStatus(): ?string
+    {
+        $nodeId = $this->node_id;
+
+        if (! array_key_exists($nodeId, self::$statusCache)) {
+            try {
+                $node = Node::find($nodeId);
+
+                if (! $node) {
+                    self::$statusCache[$nodeId] = [];
+
+                    return null;
+                }
+
+                $repository = app(DaemonServerStatusRepository::class);
+                $repository->setNode($node);
+
+                $statuses = [];
+
+                foreach ($repository->getAllServerStatus() as $row) {
+                    $uuid = data_get($row, 'configuration.uuid');
+
+                    if ($uuid) {
+                        $statuses[$uuid] = $row;
+                    }
+                }
+
+                self::$statusCache[$nodeId] = $statuses;
+            } catch (\Throwable) {
+                self::$statusCache[$nodeId] = [];
+            }
+        }
+
+        return data_get(self::$statusCache[$nodeId][$this->uuid] ?? null, 'state');
     }
 }

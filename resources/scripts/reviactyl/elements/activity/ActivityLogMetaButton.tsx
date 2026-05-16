@@ -11,7 +11,7 @@ export default ({ meta }: { meta: Record<string, unknown> }) => {
             <Dialog open={open} onClose={() => setOpen(false)} hideCloseIcon title={'Metadata'}>
                 <pre
                     className={
-                        'bg-gray-900 rounded p-2 font-mono text-sm leading-relaxed overflow-x-scroll whitespace-pre-wrap'
+                        'bg-gray-950 rounded p-2 font-mono text-sm leading-relaxed overflow-x-scroll whitespace-pre-wrap'
                     }
                 >
                     {JSON.stringify(meta, null, 2)}

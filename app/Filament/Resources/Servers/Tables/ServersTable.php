@@ -9,6 +9,8 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 
 class ServersTable
@@ -16,10 +18,28 @@ class ServersTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->defaultGroup('node.name')
+            ->groups([
+                Group::make('node.name')->getDescriptionFromRecordUsing(fn (Server $server): string => str($server->node->description)->limit(150)),
+                Group::make('user.username')->getDescriptionFromRecordUsing(fn (Server $server): string => $server->user->email),
+                Group::make('egg.name')->getDescriptionFromRecordUsing(fn (Server $server): string => str($server->egg->description)->limit(150)),
+            ])
             ->columns([
+
+                TextColumn::make('status')
+                    ->label(trans('admin/server.table.status'))
+                    ->default(trans('admin/server.table.no_status'))
+                    ->badge()
+                    ->getStateUsing(fn (Server $record): ?string => $record->getResolvedStatus())
+                    ->formatStateUsing(fn (?string $state, Server $record): string => $record->getStatusBadgeLabel($state))
+                    ->icon(fn (?string $state, Server $record): string => $record->getStatusBadgeIcon($state))
+                    ->color(fn (?string $state, Server $record): string => $record->getStatusBadgeColor($state))
+                    ->sortable(),
+
                 TextColumn::make('id')
                     ->label(trans('admin/server.table.id'))
                     ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
 
                 TextColumn::make('name')
@@ -31,7 +51,7 @@ class ServersTable
                 TextColumn::make('user')
                     ->label(trans('admin/server.table.owner'))
                     ->html()
-                    // This is hacky as hell but it allows us to display the user's name alongside their Gravatar in a single column.
+                   // This is hacky as hell but it allows us to display the user's name alongside their Gravatar in a single column.
                     ->formatStateUsing(function (Server $record) {
                         $email = strtolower(trim($record->user->email ?? ''));
                         $hash = md5($email);
@@ -56,57 +76,43 @@ class ServersTable
                 TextColumn::make('allocation')
                     ->label(trans('admin/server.table.allocation'))
                     ->formatStateUsing(fn (Server $record) => $record->allocation?->toString())
-                    ->toggleable(),
-
-                TextColumn::make('status')
-                    ->label(trans('admin/server.table.status'))
-                    ->placeholder(trans('admin/server.table.no_status'))
                     ->badge()
-                    ->sortable(),
+                    ->icon('tabler-world')
+                    ->toggleable(),
 
                 TextColumn::make('egg.name')
                     ->label(trans('admin/server.table.egg'))
+                    ->html()
+                    ->formatStateUsing(function (Server $record) {
+                        $image = $record->egg->image;
+                        $name = $record->egg->name;
+
+                        return "
+                            <div style='display:flex;align-items:center;gap:8px'>
+                                <img src='{$image}' width='28' height='28' style='border-radius:50%'>
+                                <span>{$name}</span>
+                            </div>
+                        ";
+                    })
                     ->searchable()
                     ->toggleable(),
 
                 TextColumn::make('memory')
                     ->label(trans('admin/server.table.memory'))
-                    ->numeric()
+                    ->formatStateUsing(fn (int $state): string => self::formatLimit($state, 'MiB'))
                     ->sortable()
-                    // Change to Infinity and remove the MiB suffix if the value is 0 (which indicates no disk limit) and calculate size in GiB for values above or equal to 1024 MiB
-                    ->formatStateUsing(function ($state) {
-                        if ($state === 0) {
-                            return '∞';
-                        } elseif ($state >= 1024) {
-                            return round($state / 1024, 2).' GiB';
-                        } else {
-                            return $state.' MiB';
-                        }
-                    })
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('disk')
                     ->label(trans('admin/server.table.disk'))
-                    ->numeric()
+                    ->formatStateUsing(fn (int $state): string => self::formatLimit($state, 'MiB'))
                     ->sortable()
-                    // Change to Infinity and remove the MiB suffix if the value is 0 (which indicates no disk limit) and calculate size in GiB for values above or equal to 1024 MiB
-                    ->formatStateUsing(function ($state) {
-                        if ($state === 0) {
-                            return '∞';
-                        } elseif ($state >= 1024) {
-                            return round($state / 1024, 2).' GiB';
-                        } else {
-                            return $state.' MiB';
-                        }
-                    })
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('cpu')
                     ->label(trans('admin/server.table.cpu'))
-                    ->numeric()
+                    ->formatStateUsing(fn (int $state): string => $state === 0 ? trans('admin/server.table.unlimited') : $state.'%')
                     ->sortable()
-                    // Change to Infinity and remove the percent suffix if the value is 0 (which indicates no CPU limit)
-                    ->formatStateUsing(fn ($state) => $state === 0 ? '∞' : $state.' %')
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 IconColumn::make('skip_scripts')
@@ -120,12 +126,6 @@ class ServersTable
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('updated_at')
-                    ->label(trans('admin/server.table.updated'))
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-
                 TextColumn::make('installed_at')
                     ->label(trans('admin/server.table.installed'))
                     ->dateTime()
@@ -133,7 +133,11 @@ class ServersTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-
+                SelectFilter::make('node_id')
+                    ->label(trans('admin/server.table.node'))
+                    ->relationship('node', 'name')
+                    ->searchable()
+                    ->preload(),
             ])
             ->recordActions([
                 EditAction::make()
@@ -141,8 +145,7 @@ class ServersTable
                 // Create an Action to open a new tab to the server's panel page
                 ViewAction::make('view')
                     ->label(trans('admin/server.actions.view'))
-                    ->icon('heroicon-o-eye')
-                    ->url(fn (Server $record) => config('app.url').'/server/'.$record->uuidShort)
+                    ->url(fn (Server $record): string => url('/server/'.$record->uuidShort).'/')
                     ->openUrlInNewTab(),
             ])
             ->toolbarActions([
@@ -151,5 +154,18 @@ class ServersTable
                         ->label(trans('admin/server.actions.delete')),
                 ]),
             ]);
+    }
+
+    private static function formatLimit(int $value, string $unit): string
+    {
+        if ($value === 0) {
+            return '∞';
+        }
+
+        if ($value >= 1024) {
+            return round($value / 1024, 2).' GiB';
+        }
+
+        return $value.' '.$unit;
     }
 }

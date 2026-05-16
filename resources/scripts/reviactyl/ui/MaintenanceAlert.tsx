@@ -3,6 +3,7 @@ import { ApplicationStore } from '@/state';
 import { ExclamationIcon } from '@heroicons/react/solid';
 import styled from 'styled-components';
 import tw from 'twin.macro';
+import { useTranslation } from 'react-i18next';
 
 const Container = styled.div`
     ${tw`px-2`}
@@ -13,7 +14,8 @@ const AlertContainer = styled.div`
 `;
 
 const MaintenanceAlert = () => {
-    const isUnderMaintenance = useStoreState((state: ApplicationStore) => state.reviactyl.data!.isUnderMaintenance);
+    const { t } = useTranslation('strings');
+    const isUnderMaintenance = useStoreState((state: ApplicationStore) => state.designify.data!.isUnderMaintenance);
     return (
         <>
             {isUnderMaintenance ? (
@@ -23,8 +25,7 @@ const MaintenanceAlert = () => {
                             <ExclamationIcon className='h-5 w-5 font-bold !text-yellow-500' />
                         </div>
                         <div>
-                            <b>Maintenance Mode!</b> Your clients will be unable to access Reviactyl panel until you
-                            disable Maintenance mode.
+                            <b>{t('under_maintenance')}</b> {t('maintenance-mode-warning')}
                         </div>
                     </AlertContainer>
                 </Container>

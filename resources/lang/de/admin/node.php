@@ -1,17 +1,23 @@
 <?php
 
 return [
-    'label' => 'Node',
-    'plural-label' => 'Nodes',
+    'label' => 'Knoten',
+    'plural-label' => 'Knoten',
 
     'sections' => [
         'overview' => [
-            'title' => 'Overview',
-            'information-label' => 'Node Information',
-            'version-label' => 'Wings Version',
-            'architecture-label' => 'Architecture',
+            'title' => 'Überblick',
+            'information-label' => 'Knoteninformationen',
+            'version-label' => 'Agent-Version',
+            'architecture-label' => 'Architektur',
             'kernel-label' => 'Kernel',
-            'cpus-label' => 'CPU Threads',
+            'cpus-label' => 'CPU-Threads',
+            'cpu-usage-label' => 'CPU-Auslastung',
+            'memory-usage-label' => 'Speichernutzung',
+            'disk-usage-label' => 'Festplattennutzung',
+        ],
+        'tabs' => [
+            'title' => 'Knotenkonfiguration',
         ],
         'identity' => [
             'title' => 'Identität',
@@ -30,9 +36,9 @@ return [
             'description' => 'Konfigurieren Sie daemon-spezifische Einstellungen.',
         ],
         'configuration' => [
-            'title' => 'Configuration',
-            'config_description' => 'Configuration File',
-            'deploy_description' => 'Generate a custom deployment command that can be used to configure Wings on the target server.',
+            'title' => 'Konfiguration',
+            'config_description' => 'Konfigurationsdatei',
+            'deploy_description' => 'Generieren Sie einen benutzerdefinierten Bereitstellungsbefehl, der zum Konfigurieren des Agenten auf dem Zielserver verwendet werden kann.',
         ],
     ],
 
@@ -46,7 +52,7 @@ return [
         ],
         'name' => [
             'label' => 'Name',
-            'placeholder' => 'Node Name',
+            'placeholder' => 'Knotenname',
             'helper' => 'Ein beschreibender Name für diese Node.',
         ],
         'description' => [
@@ -98,19 +104,18 @@ return [
         ],
         'daemon_base' => [
             'label' => 'Basisverzeichnis',
-            'placeholder' => '/home/daemon-files',
             'helper' => 'Verzeichnis, in dem die Serverdateien gespeichert werden.',
         ],
         'daemon_listen' => [
-            'label' => 'Daemon Port',
+            'label' => 'Daemon-Port',
             'helper' => 'Der Port, auf dem der Daemon für die HTTP-Kommunikation lauscht.',
         ],
         'daemon_sftp' => [
-            'label' => 'SFTP Port',
+            'label' => 'SFTP-Port',
             'helper' => 'Der Port, der für SFTP-Verbindungen verwendet wird.',
         ],
         'daemon_token_id' => [
-            'label' => 'Token ID',
+            'label' => 'Token-ID',
         ],
         'container_text' => [
             'label' => 'Container-Präfix',
@@ -119,10 +124,9 @@ return [
     ],
 
     'table' => [
-        'health' => 'Health',
+        'health' => 'Gesundheit',
         'health_http_status' => 'HTTP :status',
-        'health_error' => ':error',
-        'health_check_console' => 'check browser console',
+        'health_check_console' => 'Überprüfen Sie die Browserkonsole',
         'id' => 'ID',
         'uuid' => 'UUID',
         'name' => 'Name',
@@ -137,8 +141,8 @@ return [
         'disk' => 'Festplatte',
         'disk_overallocate' => 'Festplattenüberbelegung',
         'upload_size' => 'Maximale Upload-Größe',
-        'daemon_listen' => 'Daemon Port',
-        'daemon_sftp' => 'SFTP Port',
+        'daemon_listen' => 'Daemon-Port',
+        'daemon_sftp' => 'SFTP-Port',
         'daemon_base' => 'Basisverzeichnis',
         'servers' => 'Server',
         'created' => 'Erstellt',
@@ -146,12 +150,12 @@ return [
     ],
 
     'filters' => [
-        'public' => 'Public',
-        'maintenance' => 'Maintenance',
-        'public_true' => 'Public',
-        'public_false' => 'Private',
-        'maintenance_true' => 'Under Maintenance',
-        'maintenance_false' => 'Active',
+        'public' => 'Öffentlich',
+        'maintenance' => 'Wartung',
+        'public_true' => 'Öffentlich',
+        'public_false' => 'Privat',
+        'maintenance_true' => 'Unter Wartung',
+        'maintenance_false' => 'Aktiv',
     ],
 
     'actions' => [
@@ -159,17 +163,27 @@ return [
         'edit' => 'Bearbeiten',
         'delete' => 'Löschen',
         'view' => 'Ansehen',
+        'random' => 'Zufällig',
+        'view_monitoring' => 'Überwachung anzeigen',
     ],
 
     'deployment' => [
-        'generate_label' => 'Generate Deployment Token',
-        'modal_heading' => 'Auto-Deploy Command',
-        'modal_description' => 'Run this command on your node to automatically configure Wings.',
-        'modal_close' => 'Close',
-        'command_label' => 'Deployment Command',
-        'command_helper' => 'Copy and run this command on your node server.',
-        'token_success' => 'Token Generated Successfully',
-        'token_success_body' => 'Copy and run the command below on your node.',
+        'generate_label' => 'Bereitstellungstoken generieren',
+        'modal_heading' => 'Befehl zur automatischen Bereitstellung',
+        'modal_description' => 'Führen Sie diesen Befehl auf Ihrem Knoten aus, um den Agent automatisch zu konfigurieren.',
+        'modal_close' => 'Schließen',
+        'command_label' => 'Einsatzkommando',
+        'command_helper' => 'Kopieren Sie diesen Befehl und führen Sie ihn auf Ihrem Knotenserver aus.',
+        'token_success' => 'Token erfolgreich generiert',
+        'token_success_body' => 'Kopieren Sie den folgenden Befehl und führen Sie ihn auf Ihrem Knoten aus.',
+        'save_first' => 'Bitte speichern Sie zuerst den Knoten.',
+        'auto_generated_key' => 'Automatisch generierter Knotenbereitstellungsschlüssel.',
+        'error' => 'Fehler beim Generieren des Tokens. Bitte versuchen Sie es erneut.',
+    ],
+
+    'general' => [
+        'na' => 'N / A',
+        'unavailable' => 'Nicht verfügbar',
     ],
 
     'messages' => [
@@ -180,10 +194,10 @@ return [
     ],
 
     'allocations' => [
-        'label' => 'Allocations',
+        'label' => 'Zuteilungen',
         'table' => [
             'ip' => 'IP',
-            'port' => 'Port',
+            'port' => 'Hafen',
             'alias' => 'Alias',
             'server' => 'Server',
             'notes' => 'Notizen',
@@ -196,11 +210,11 @@ return [
                 'helper' => 'Unterstützt einzelne IP oder CIDR (z.B. 192.0.2.1 oder 192.0.2.0/24).',
             ],
             'allocation_ports' => [
-                'label' => 'Ports',
+                'label' => 'Häfen',
                 'helper' => 'Geben Sie Ports oder Bereiche ein (z.B. 25565, 25566, 25570-25580).',
             ],
             'allocation_alias' => [
-                'label' => 'IP Alias',
+                'label' => 'IP-Alias',
                 'helper' => 'Optionaler Alias, der anstelle der IP angezeigt wird.',
             ],
         ],

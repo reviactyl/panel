@@ -5,6 +5,10 @@ return [
         'dashboard' => 'Instrumentpanel',
         'logout' => 'Logga ut',
     ],
+    'sidebar' => [
+        'more' => 'Mer',
+        'extensions' => 'Tillägg',
+    ],
     'account' => [
         'overview' => 'Kontoinformation',
         'api' => 'API-nycklar',

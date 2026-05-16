@@ -117,14 +117,14 @@ const TopServerDetails = () => {
             </Card>
             <div className='w-full sm:hidden flex justify-center mb-2 mt-2'>
                 <button
-                    className='w-full py-2 bg-gray-700 border border-gray-600 text-gray-100 rounded-ui'
+                    className='w-full py-2 bg-gray-900 border border-gray-800 text-gray-100 rounded-ui'
                     onClick={() => setShowStats((prev) => !prev)}
                 >
                     {showStats ? t('hide-stats') : t('show-stats')}
                 </button>
             </div>
             <StatContainer className={`${showStats ? 'flex' : 'hidden'} sm:flex`}>
-                <StatBlock className='bg-gray-700 border-gray-600'>
+                <StatBlock className='bg-gray-900 border-gray-800'>
                     <span className='w-5 text-gray-300'>
                         <FaGlobe />
                     </span>
@@ -133,7 +133,7 @@ const TopServerDetails = () => {
                     </CopyOnClick>
                 </StatBlock>
 
-                <StatBlock className='bg-gray-700 border-gray-600'>
+                <StatBlock className='bg-gray-900 border-gray-800'>
                     <span className='w-5 text-gray-300'>
                         <FaMicrochip />
                     </span>
@@ -146,7 +146,7 @@ const TopServerDetails = () => {
                     </span>
                 </StatBlock>
 
-                <StatBlock className='bg-gray-700 border-gray-600'>
+                <StatBlock className='bg-gray-900 border-gray-800'>
                     <span className='w-5 text-gray-300'>
                         <FaMemory />
                     </span>
@@ -159,7 +159,7 @@ const TopServerDetails = () => {
                     </span>
                 </StatBlock>
 
-                <StatBlock className='bg-gray-700 border-gray-600'>
+                <StatBlock className='bg-gray-900 border-gray-800'>
                     <span className='w-5 text-gray-300'>
                         <FaFloppyDisk />
                     </span>
@@ -168,7 +168,7 @@ const TopServerDetails = () => {
                     </span>
                 </StatBlock>
 
-                <StatBlock className='bg-gray-700 border-gray-600'>
+                <StatBlock className='bg-gray-900 border-gray-800'>
                     <span className='w-5 text-gray-300'>
                         <FaHashtag />
                     </span>

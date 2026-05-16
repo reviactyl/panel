@@ -66,7 +66,7 @@ export default () => {
                         keys.map((key, index) => (
                             <GreyRowBox
                                 key={key.identifier}
-                                css={[tw`bg-gray-600 flex items-center`, index > 0 && tw`mt-2`]}
+                                css={[tw`bg-gray-700 flex items-center`, index > 0 && tw`mt-2`]}
                             >
                                 <FaKey css={tw`text-gray-300`} />
                                 <div css={tw`ml-4 flex-1 overflow-hidden`}>
@@ -79,7 +79,7 @@ export default () => {
                                     </p>
                                 </div>
                                 <p css={tw`text-sm ml-4 hidden md:block`}>
-                                    <code css={tw`font-mono py-1 px-2 bg-gray-900 rounded`}>{key.identifier}</code>
+                                    <code css={tw`font-mono py-1 px-2 bg-gray-950 rounded`}>{key.identifier}</code>
                                 </p>
                                 <button css={tw`ml-4 p-2 text-sm`} onClick={() => setDeleteIdentifier(key.identifier)}>
                                     <FaTrash

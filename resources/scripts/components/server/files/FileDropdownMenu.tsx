@@ -1,4 +1,5 @@
 import React, { memo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     FaBoxOpen,
     FaCopy,
@@ -40,7 +41,7 @@ const StyledRow = styled.div<{ $danger?: boolean }>`
     transition: 150ms all ease;
 
     &:hover {
-        ${(props) => (props.$danger ? tw`text-red-700 bg-red-100` : tw`text-gray-700 bg-gray-100`)};
+        ${(props) => (props.$danger ? tw`text-red-700 bg-red-100` : tw`text-gray-800 bg-gray-100`)};
     }
 `;
 
@@ -62,6 +63,7 @@ const Row = ({ icon, title, ...props }: RowProps) => {
 };
 
 const FileDropdownMenu = ({ file }: { file: FileObject }) => {
+    const { t } = useTranslation('server/files');
     const onClickRef = useRef<DropdownMenu>(null);
     const [showSpinner, setShowSpinner] = useState(false);
     const [modal, setModal] = useState<ModalType | null>(null);
@@ -138,12 +140,13 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
             <Dialog.Confirm
                 open={showConfirmation}
                 onClose={() => setShowConfirmation(false)}
-                title={`Delete ${file.isFile ? 'File' : 'Directory'}`}
-                confirm={'Delete'}
+                title={`${t(file.isFile ? 'dropdown.delete-file' : 'dropdown.delete-directory')}`}
+                confirm={t('dropdown.delete')}
                 onConfirmed={doDeletion}
             >
-                You will not be able to recover the contents of&nbsp;
-                <span className={'font-semibold text-gray-50'}>{file.name}</span> once deleted.
+                {t('dropdown.delete-confirm-message')}&nbsp;
+                <span className={'font-semibold text-gray-50'}>{file.name}</span>{' '}
+                {t('dropdown.delete-confirm-once-deleted')}.
             </Dialog.Confirm>
             {modal === 'chmod' && (
                 <ChmodFileModal
@@ -173,27 +176,32 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
             >
                 <ExtensionSlot name='server:files:dropdown:start' />
                 <Can action={'file.update'}>
-                    <Row onClick={() => setModal('rename')} icon={FaPen} title={'Rename'} />
-                    <Row onClick={() => setModal('move')} icon={FaTurnUp} title={'Move'} />
-                    <Row onClick={() => setModal('chmod')} icon={FaFileCode} title={'Permissions'} />
+                    <Row onClick={() => setModal('rename')} icon={FaPen} title={t('dropdown.rename')} />
+                    <Row onClick={() => setModal('move')} icon={FaTurnUp} title={t('dropdown.move')} />
+                    <Row onClick={() => setModal('chmod')} icon={FaFileCode} title={t('dropdown.permissions')} />
                 </Can>
                 {file.isFile && (
                     <Can action={'file.create'}>
-                        <Row onClick={doCopy} icon={FaCopy} title={'Copy'} />
+                        <Row onClick={doCopy} icon={FaCopy} title={t('dropdown.copy')} />
                     </Can>
                 )}
                 {file.isArchiveType() ? (
                     <Can action={'file.create'}>
-                        <Row onClick={doUnarchive} icon={FaBoxOpen} title={'Unarchive'} />
+                        <Row onClick={doUnarchive} icon={FaBoxOpen} title={t('dropdown.unarchive')} />
                     </Can>
                 ) : (
                     <Can action={'file.archive'}>
-                        <Row onClick={doArchive} icon={FaFileZipper} title={'Archive'} />
+                        <Row onClick={doArchive} icon={FaFileZipper} title={t('dropdown.archive')} />
                     </Can>
                 )}
-                {file.isFile && <Row onClick={doDownload} icon={FaFileArrowDown} title={'Download'} />}
+                {file.isFile && <Row onClick={doDownload} icon={FaFileArrowDown} title={t('dropdown.download')} />}
                 <Can action={'file.delete'}>
-                    <Row onClick={() => setShowConfirmation(true)} icon={FaTrash} title={'Delete'} $danger />
+                    <Row
+                        onClick={() => setShowConfirmation(true)}
+                        icon={FaTrash}
+                        title={t('dropdown.delete')}
+                        $danger
+                    />
                 </Can>
                 <ExtensionSlot name='server:files:dropdown:end' />
             </DropdownMenu>

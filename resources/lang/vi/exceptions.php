@@ -1,62 +1,62 @@
 <?php
 
 return [
-    'daemon_connection_failed' => 'There was an exception while attempting to communicate with the daemon resulting in a HTTP/:code response code. This exception has been logged.',
+    'daemon_connection_failed' => 'Đã xảy ra ngoại lệ khi cố gắng giao tiếp với daemon dẫn đến mã phản hồi HTTP/:code. Ngoại lệ này đã được ghi lại.',
     'node' => [
-        'servers_attached' => 'A node must have no servers linked to it in order to be deleted.',
-        'daemon_off_config_updated' => 'The daemon configuration has been updated, however there was an error encountered while attempting to automatically update the configuration file on the Daemon. You will need to manually update the configuration file (config.yml) for the daemon to apply these changes.',
+        'servers_attached' => 'Một nút phải không có máy chủ nào được liên kết với nó để có thể bị xóa.',
+        'daemon_off_config_updated' => 'Cấu hình daemon đã được cập nhật, tuy nhiên đã xảy ra lỗi khi cố gắng tự động cập nhật tệp cấu hình trên Daemon. Bạn sẽ cần cập nhật thủ công tệp cấu hình (config.yml) để daemon áp dụng những thay đổi này.',
     ],
     'allocations' => [
-        'server_using' => 'A server is currently assigned to this allocation. An allocation can only be deleted if no server is currently assigned.',
-        'too_many_ports' => 'Adding more than 1000 ports in a single range at once is not supported.',
-        'invalid_mapping' => 'The mapping provided for :port was invalid and could not be processed.',
-        'cidr_out_of_range' => 'CIDR notation only allows masks between /25 and /32.',
-        'port_out_of_range' => 'Ports in an allocation must be greater than 1024 and less than or equal to 65535.',
+        'server_using' => 'Một máy chủ hiện được chỉ định cho việc phân bổ này. Việc phân bổ chỉ có thể bị xóa nếu hiện tại không có máy chủ nào được chỉ định.',
+        'too_many_ports' => 'Việc thêm hơn 1000 cổng trong một phạm vi cùng một lúc không được hỗ trợ.',
+        'invalid_mapping' => 'Ánh xạ được cung cấp cho :port không hợp lệ và không thể xử lý được.',
+        'cidr_out_of_range' => 'Ký hiệu CIDR chỉ cho phép mặt nạ nằm trong khoảng từ/25 đến/32.',
+        'port_out_of_range' => 'Các cổng trong phân bổ phải lớn hơn 1024 và nhỏ hơn hoặc bằng 65535.',
     ],
     'nest' => [
-        'delete_has_servers' => 'A Nest with active servers attached to it cannot be deleted from the Panel.',
+        'delete_has_servers' => 'Không thể xóa Nest có máy chủ đang hoạt động được gắn vào nó khỏi Bảng điều khiển.',
         'egg' => [
-            'delete_has_servers' => 'An Egg with active servers attached to it cannot be deleted from the Panel.',
-            'invalid_copy_id' => 'The Egg selected for copying a script from either does not exist, or is copying a script itself.',
-            'must_be_child' => 'The "Copy Settings From" directive for this Egg must be a child option for the selected Nest.',
-            'has_children' => 'This Egg is a parent to one or more other Eggs. Please delete those Eggs before deleting this Egg.',
+            'delete_has_servers' => 'Không thể xóa Trứng có máy chủ đang hoạt động gắn liền với nó khỏi Bảng điều khiển.',
+            'invalid_copy_id' => 'Trứng được chọn để sao chép tập lệnh không tồn tại hoặc đang sao chép chính tập lệnh.',
+            'must_be_child' => 'Lệnh "Sao chép cài đặt từ" cho Trứng này phải là tùy chọn con cho Nest đã chọn.',
+            'has_children' => 'Trứng này là cha mẹ của một hoặc nhiều Trứng khác. Vui lòng xóa những quả trứng đó trước khi xóa quả trứng này.',
         ],
         'variables' => [
-            'env_not_unique' => 'The environment variable :name must be unique to this Egg.',
-            'reserved_name' => 'The environment variable :name is protected and cannot be assigned to a variable.',
-            'bad_validation_rule' => 'The validation rule ":rule" is not a valid rule for this application.',
+            'env_not_unique' => 'Biến môi trường :name phải là duy nhất cho Trứng này.',
+            'reserved_name' => 'Biến môi trường :name được bảo vệ và không thể gán cho một biến.',
+            'bad_validation_rule' => 'Quy tắc xác thực ":rule" không phải là quy tắc hợp lệ cho ứng dụng này.',
         ],
         'importer' => [
-            'json_error' => 'There was an error while attempting to parse the JSON file: :error.',
-            'file_error' => 'The JSON file provided was not valid.',
-            'invalid_json_provided' => 'The JSON file provided is not in a format that can be recognized.',
+            'json_error' => 'Đã xảy ra lỗi khi cố phân tích cú pháp tệp JSON: :error.',
+            'file_error' => 'Tệp JSON được cung cấp không hợp lệ.',
+            'invalid_json_provided' => 'Tệp JSON được cung cấp không ở định dạng có thể nhận dạng được.',
         ],
     ],
     'subusers' => [
-        'editing_self' => 'Editing your own subuser account is not permitted.',
-        'user_is_owner' => 'You cannot add the server owner as a subuser for this server.',
-        'subuser_exists' => 'A user with that email address is already assigned as a subuser for this server.',
+        'editing_self' => 'Không được phép chỉnh sửa tài khoản người dùng phụ của riêng bạn.',
+        'user_is_owner' => 'Bạn không thể thêm chủ sở hữu máy chủ làm người dùng phụ cho máy chủ này.',
+        'subuser_exists' => 'Người dùng có địa chỉ email đó đã được chỉ định làm người dùng phụ cho máy chủ này.',
     ],
     'databases' => [
-        'delete_has_databases' => 'Cannot delete a database host server that has active databases linked to it.',
+        'delete_has_databases' => 'Không thể xóa máy chủ lưu trữ cơ sở dữ liệu có cơ sở dữ liệu đang hoạt động được liên kết với nó.',
     ],
     'tasks' => [
-        'chain_interval_too_long' => 'The maximum interval time for a chained task is 15 minutes.',
+        'chain_interval_too_long' => 'Khoảng thời gian tối đa cho một nhiệm vụ được xâu chuỗi là 15 phút.',
     ],
     'locations' => [
-        'has_nodes' => 'Cannot delete a location that has active nodes attached to it.',
+        'has_nodes' => 'Không thể xóa vị trí có các nút hoạt động gắn liền với nó.',
     ],
     'users' => [
-        'node_revocation_failed' => 'Failed to revoke keys on <a href=":link">Node #:node</a>. :error',
+        'node_revocation_failed' => 'Không thu hồi được khóa trên <a href=":link">Nút #:node</a>. :error',
     ],
     'deployment' => [
-        'no_viable_nodes' => 'No nodes satisfying the requirements specified for automatic deployment could be found.',
-        'no_viable_allocations' => 'No allocations satisfying the requirements for automatic deployment were found.',
+        'no_viable_nodes' => 'Không tìm thấy nút nào đáp ứng các yêu cầu được chỉ định để triển khai tự động.',
+        'no_viable_allocations' => 'Không tìm thấy phân bổ nào đáp ứng yêu cầu triển khai tự động.',
     ],
     'api' => [
-        'resource_not_found' => 'The requested resource does not exist on this server.',
+        'resource_not_found' => 'Tài nguyên được yêu cầu không tồn tại trên máy chủ này.',
     ],
     'social' => [
-        'unlink_only_login' => 'You cannot unlink your only login method without setting a password first.',
+        'unlink_only_login' => 'Bạn không thể hủy liên kết phương thức đăng nhập duy nhất của mình nếu không đặt mật khẩu trước.',
     ],
 ];

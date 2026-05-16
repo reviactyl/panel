@@ -2,44 +2,45 @@
 
 return [
 
-    'label' => 'Extension',
-    'plural-label' => 'Extensions',
+    'label' => 'Förlängning',
+    'plural-label' => 'Tillägg',
 
     'columns' => [
         'id' => 'ID',
-        'name' => 'Name',
+        'name' => 'Namn',
         'version' => 'Version',
-        'author' => 'Author',
-        'enabled' => 'Enabled',
-        'updated' => 'Updated',
+        'author' => 'Författare',
+        'enabled' => 'Aktiverad',
+        'updated' => 'Uppdaterad',
         'manifest_json' => 'Manifest JSON',
     ],
 
     'modals' => [
-        'manifest' => 'Extension Manifest',
+        'manifest' => 'Förlängningsmanifest',
     ],
 
     'actions' => [
-        'edit' => 'Edit',
-        'upload' => 'Upload',
-        'manifest' => 'View Manifest',
-        'disable' => 'Disable',
-        'enable' => 'Enable',
-        'delete' => 'Delete',
-        'close' => 'Close',
+        'edit' => 'Redigera',
+        'upload' => 'Ladda upp',
+        'manifest' => 'Visa manifest',
+        'disable' => 'Inaktivera',
+        'enable' => 'Aktivera',
+        'delete' => 'Radera',
+        'close' => 'Nära',
     ],
 
     'alerts' => [
-        'enabled' => 'Extension enabled.',
-        'enable_failed' => 'Failed to enable extension.',
-        'disabled' => 'Extension disabled.',
-        'disable_failed' => 'Failed to disable extension.',
-        'uninstalled' => 'Extension uninstalled.',
-        'uninstall_failed' => 'Failed to uninstall extension.',
-        'could_not_locate_file' => 'Could not locate uploaded package file.',
-        'invalid_file_type' => 'Only .rext files are allowed.',
-        'install_failed' => 'Extension install failed.',
-        'install_success' => 'Installed :name (:version) successfully.',
+        'enabled' => 'Tillägget är aktiverat.',
+        'enable_failed' => 'Det gick inte att aktivera tillägget.',
+        'disabled' => 'Tillägget inaktiverat.',
+        'disable_failed' => 'Det gick inte att inaktivera tillägget.',
+        'uninstalled' => 'Tillägget avinstallerat.',
+        'uninstall_failed' => 'Det gick inte att avinstallera tillägget.',
+        'could_not_locate_file' => 'Kunde inte hitta uppladdad paketfil.',
+        'invalid_file_type' => 'Endast .rext-filer är tillåtna.',
+        'upload_hint' => 'Endast .rext-tilläggspaket är tillåtna.',
+        'install_failed' => 'Installation av tillägg misslyckades.',
+        'install_success' => ':name (:version) har installerats.',
     ],
 
 ];

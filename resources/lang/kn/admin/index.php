@@ -15,10 +15,10 @@ return [
 
     'help-btn' => 'ಸಹಾಯ ಪಡೆಯಿರಿ',
     'docs-btn' => 'ಡಾಕ್ಯುಮೆಂಟೇಶನ್',
-    'metrics-header' => 'User Activity Metrics',
-    'most-active-country' => 'Most Active Country',
-    'activity-description' => 'Based on recent login activity.',
-    'no_activity' => 'There is no recent activity to display.',
-    'activity-header' => 'Recent Activity',
-    'more-btn' => 'View More',
+    'metrics-header' => 'ಬಳಕೆದಾರರ ಚಟುವಟಿಕೆ ಮೆಟ್ರಿಕ್ಸ್',
+    'most-active-country' => 'ಅತ್ಯಂತ ಸಕ್ರಿಯ ದೇಶ',
+    'activity-description' => 'ಇತ್ತೀಚಿನ ಲಾಗಿನ್ ಚಟುವಟಿಕೆಯನ್ನು ಆಧರಿಸಿದೆ.',
+    'no_activity' => 'ಪ್ರದರ್ಶಿಸಲು ಯಾವುದೇ ಇತ್ತೀಚಿನ ಚಟುವಟಿಕೆ ಇಲ್ಲ.',
+    'activity-header' => 'ಇತ್ತೀಚಿನ ಚಟುವಟಿಕೆ',
+    'more-btn' => 'ಇನ್ನಷ್ಟು ವೀಕ್ಷಿಸಿ',
 ];

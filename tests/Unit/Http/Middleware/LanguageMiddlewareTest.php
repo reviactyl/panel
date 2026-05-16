@@ -7,6 +7,7 @@ use App\Http\Middleware\LanguageMiddleware;
 use App\Models\User;
 use App\Services\Helpers\GeoIPService;
 use App\Services\Helpers\GeoLocaleService;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Application;
 use Mockery as m;
 use Mockery\MockInterface;
@@ -174,6 +175,22 @@ class LanguageMiddlewareTest extends MiddlewareTestCase
         $this->settingsMock->shouldReceive('get')
             ->with('settings::app:locale:geolocate', false)
             ->andReturn(true);
+        $this->appMock->shouldReceive('setLocale')->with('en')->once()->andReturnNull();
+
+        $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
+    }
+
+    /**
+     * Test that the middleware falls back to app locale when settings are unavailable.
+     */
+    public function test_it_falls_back_to_config_locale_when_settings_table_is_missing(): void
+    {
+        config(['app.locale' => 'en']);
+
+        $this->request->shouldReceive('user')->withNoArgs()->andReturnNull();
+        $this->settingsMock->shouldReceive('get')
+            ->with('settings::app:locale', m::any())
+            ->andThrow(new QueryException('sqlite', 'select * from "settings" where "key" = ? limit 1', [], new \Exception('no such table: settings')));
         $this->appMock->shouldReceive('setLocale')->with('en')->once()->andReturnNull();
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());

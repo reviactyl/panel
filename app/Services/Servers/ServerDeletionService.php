@@ -5,7 +5,7 @@ namespace App\Services\Servers;
 use App\Exceptions\DisplayException;
 use App\Exceptions\Http\Connection\DaemonConnectionException;
 use App\Models\Server;
-use App\Repositories\Wings\DaemonServerRepository;
+use App\Repositories\Agent\DaemonServerRepository;
 use App\Services\Databases\DatabaseManagementService;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Http\Response;
@@ -47,7 +47,7 @@ class ServerDeletionService
         } catch (DaemonConnectionException $exception) {
             // If there is an error not caused a 404 error and this isn't a forced delete,
             // go ahead and bail out. We specifically ignore a 404 since that can be assumed
-            // to be a safe error, meaning the server doesn't exist at all on Wings so there
+            // to be a safe error, meaning the server doesn't exist at all on Agent so there
             // is no reason we need to bail out from that.
             if (! $this->force && $exception->getStatusCode() !== Response::HTTP_NOT_FOUND) {
                 throw $exception;

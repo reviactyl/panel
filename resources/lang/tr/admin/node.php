@@ -6,12 +6,18 @@ return [
 
     'sections' => [
         'overview' => [
-            'title' => 'Overview',
-            'information-label' => 'Node Information',
-            'version-label' => 'Wings Version',
-            'architecture-label' => 'Architecture',
-            'kernel-label' => 'Kernel',
-            'cpus-label' => 'CPU Threads',
+            'title' => 'Genel Bakış',
+            'information-label' => 'Düğüm Bilgileri',
+            'version-label' => 'Temsilci Sürümü',
+            'architecture-label' => 'Mimarlık',
+            'kernel-label' => 'Çekirdek',
+            'cpus-label' => 'CPU Konuları',
+            'cpu-usage-label' => 'CPU Kullanımı',
+            'memory-usage-label' => 'Bellek Kullanımı',
+            'disk-usage-label' => 'Disk Kullanımı',
+        ],
+        'tabs' => [
+            'title' => 'Düğüm Yapılandırması',
         ],
         'identity' => [
             'title' => 'Kimlik',
@@ -30,9 +36,9 @@ return [
             'description' => 'Daemon\'a özgü ayarları yapılandırın.',
         ],
         'configuration' => [
-            'title' => 'Configuration',
-            'config_description' => 'Configuration File',
-            'deploy_description' => 'Generate a custom deployment command that can be used to configure Wings on the target server.',
+            'title' => 'Yapılandırma',
+            'config_description' => 'Yapılandırma Dosyası',
+            'deploy_description' => 'Hedef sunucuda Agent\'ı yapılandırmak için kullanılabilecek özel bir dağıtım komutu oluşturun.',
         ],
     ],
 
@@ -60,7 +66,7 @@ return [
         ],
         'fqdn' => [
             'label' => 'FQDN',
-            'placeholder' => 'node.example.com',
+            'placeholder' => 'düğüm.example.com',
             'helper' => 'Tam nitelikli alan adı (FQDN) veya IP adresi.',
         ],
         'ssl' => [
@@ -98,7 +104,6 @@ return [
         ],
         'daemon_base' => [
             'label' => 'Temel Dizin',
-            'placeholder' => '/home/daemon-files',
             'helper' => 'Sunucu dosyalarının depolandığı dizin.',
         ],
         'daemon_listen' => [
@@ -119,10 +124,9 @@ return [
     ],
 
     'table' => [
-        'health' => 'Health',
+        'health' => 'Sağlık',
         'health_http_status' => 'HTTP :status',
-        'health_error' => ':error',
-        'health_check_console' => 'check browser console',
+        'health_check_console' => 'tarayıcı konsolunu kontrol edin',
         'id' => 'KİMLİK',
         'uuid' => 'UUID',
         'name' => 'İsim',
@@ -146,12 +150,12 @@ return [
     ],
 
     'filters' => [
-        'public' => 'Public',
-        'maintenance' => 'Maintenance',
-        'public_true' => 'Public',
-        'public_false' => 'Private',
-        'maintenance_true' => 'Under Maintenance',
-        'maintenance_false' => 'Active',
+        'public' => 'Halk',
+        'maintenance' => 'Bakım',
+        'public_true' => 'Halk',
+        'public_false' => 'Özel',
+        'maintenance_true' => 'Bakımda',
+        'maintenance_false' => 'Aktif',
     ],
 
     'actions' => [
@@ -159,17 +163,27 @@ return [
         'edit' => 'Düzenle',
         'delete' => 'Sil',
         'view' => 'Görüntüle',
+        'random' => 'Rastgele',
+        'view_monitoring' => 'İzlemeyi Görüntüle',
     ],
 
     'deployment' => [
-        'generate_label' => 'Generate Deployment Token',
-        'modal_heading' => 'Auto-Deploy Command',
-        'modal_description' => 'Run this command on your node to automatically configure Wings.',
-        'modal_close' => 'Close',
-        'command_label' => 'Deployment Command',
-        'command_helper' => 'Copy and run this command on your node server.',
-        'token_success' => 'Token Generated Successfully',
-        'token_success_body' => 'Copy and run the command below on your node.',
+        'generate_label' => 'Dağıtım Jetonu Oluştur',
+        'modal_heading' => 'Otomatik Dağıtım Komutu',
+        'modal_description' => 'Agent\'ı otomatik olarak yapılandırmak için bu komutu düğümünüzde çalıştırın.',
+        'modal_close' => 'Kapalı',
+        'command_label' => 'Dağıtım Komutanlığı',
+        'command_helper' => 'Bu komutu düğüm sunucunuza kopyalayıp çalıştırın.',
+        'token_success' => 'Jeton Başarıyla Oluşturuldu',
+        'token_success_body' => 'Aşağıdaki komutu düğümünüze kopyalayıp çalıştırın.',
+        'save_first' => 'Lütfen önce düğümü kaydedin.',
+        'auto_generated_key' => 'Otomatik olarak oluşturulan düğüm dağıtım anahtarı.',
+        'error' => 'Belirteç oluşturulurken hata oluştu. Lütfen tekrar deneyin.',
+    ],
+
+    'general' => [
+        'na' => 'Yok',
+        'unavailable' => 'Kullanılamıyor',
     ],
 
     'messages' => [
@@ -183,7 +197,7 @@ return [
         'label' => 'Tahsisler',
         'table' => [
             'ip' => 'IP',
-            'port' => 'Port',
+            'port' => 'Liman',
             'alias' => 'Takma Ad',
             'server' => 'Sunucu',
             'notes' => 'Notlar',

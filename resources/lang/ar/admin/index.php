@@ -5,7 +5,7 @@ return [
     'uptodate-header' => 'لوحة التحكم لديك محدثة',
     'uptodate-body' => 'أنت تستخدم حاليا الإصدار :version. لوحتك محدثة!',
     'notuptodate-header' => 'لوحة التحكم لديك غير محدثة',
-    'notuptodate-body' => 'الإصدار الحديث متوفر الآن اقرأ الوثائق لتحديث لوحة التحكم.',
+    'notuptodate-body' => ':latest متوفر الآن! اقرأ الوثائق لتحديث لوحة التحكم.',
     'feedback-header' => 'هل لديك أي ملاحظات؟',
     'feedback-body' => 'إذا كنت تستمتع بالميزات وسهولة الاستخدام الذي يوفرها رافي اكتيل أخبرنا بذلك ملاحظاتك تساعدنا على التحسين وإنشاء أدوات أفضل لك.',
     'feedback-btn' => 'إنشاء بلاغ',
@@ -19,6 +19,6 @@ return [
     'most-active-country' => 'الدولة الأكثر نشاطا',
     'activity-description' => 'استنادًا إلى نشاط تسجيل الدخول الأخير.',
     'no_activity' => 'لا توجد أنشطة حديثة لعرضها.',
-    'activity-header' => 'Recent Activity',
-    'more-btn' => 'View More',
+    'activity-header' => 'النشاط الأخير',
+    'more-btn' => 'عرض المزيد',
 ];

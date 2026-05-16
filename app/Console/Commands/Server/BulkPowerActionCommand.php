@@ -4,7 +4,7 @@ namespace App\Console\Commands\Server;
 
 use App\Exceptions\Http\Connection\DaemonConnectionException;
 use App\Models\Server;
-use App\Repositories\Wings\DaemonPowerRepository;
+use App\Repositories\Agent\DaemonPowerRepository;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Validation\Factory as ValidatorFactory;

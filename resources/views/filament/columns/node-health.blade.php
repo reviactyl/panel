@@ -45,7 +45,7 @@
     data-url="{{ $url }}"
     data-token="{{ $token }}"
     data-http-template="{{ trans('admin/node.table.health_http_status', ['status' => '__STATUS__']) }}"
-    data-error-template="{{ trans('admin/node.table.health_error', ['error' => '__ERROR__']) }}"
+    data-error-template="__ERROR__"
     data-check-console="{{ trans('admin/node.table.health_check_console') }}"
     @mouseenter="
         hovered = true;

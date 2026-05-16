@@ -6,7 +6,7 @@ export interface Props {
 }
 
 const checkboxStyle = css<Props>`
-    ${tw`bg-gray-500 cursor-pointer appearance-none inline-block align-middle select-none flex-shrink-0 w-4 h-4 text-primary-400 border border-gray-300 rounded-sm`};
+    ${tw`bg-gray-600 cursor-pointer appearance-none inline-block align-middle select-none flex-shrink-0 w-4 h-4 text-primary-400 border border-gray-300 rounded-sm`};
     color-adjust: exact;
     background-origin: border-box;
     transition: all 75ms linear, box-shadow 25ms linear;
@@ -28,8 +28,8 @@ const inputStyle = css<Props>`
     // Reset to normal styling.
     resize: none;
     ${tw`appearance-none outline-none w-full min-w-0`};
-    ${tw`p-3 border-2 rounded-ui text-sm transition-all duration-150`};
-    ${tw`bg-gray-600 border-gray-500 hover:border-gray-400 text-gray-200 shadow-none focus:ring-0`};
+    ${tw`p-3 border rounded-ui text-sm transition-all duration-150`};
+    ${tw`bg-white bg-opacity-5 border-gray-700 hover:border-gray-400 text-gray-200 shadow-none focus:ring-0`};
 
     & + .input-help {
         ${tw`mt-1 text-xs`};

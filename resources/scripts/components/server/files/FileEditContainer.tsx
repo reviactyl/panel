@@ -48,7 +48,7 @@ export default () => {
 
         setError('');
         const path = hashToPath(hash);
-        // Guard: if path resolves to root (no file hash), redirect rather than asking Wings to read "/" and getting a 200/500 error.
+        // Guard: if path resolves to root (no file hash), redirect rather than asking Agent to read "/" and getting a 200/500 error.
         if (path === '/' || path === '') {
             navigate(`/server/${id}/files`);
             return;
@@ -102,17 +102,17 @@ export default () => {
             </ErrorBoundary>
             {hash.replace(/^#/, '').endsWith('.pteroignore') && (
                 <Card className='!rounded-none mb-1'>
-                    <div css={tw`mb-4 p-4 rounded-ui border border-gray-600`}>
+                    <div css={tw`mb-4 p-4 rounded-ui border border-gray-800`}>
                         <p css={tw`text-gray-300 text-sm`}>
                             You&apos;re editing a{' '}
-                            <code css={tw`font-mono bg-gray-900 rounded-ui border border-gray-600 py-px px-1`}>
+                            <code css={tw`font-mono bg-gray-950 rounded-ui border border-gray-800 py-px px-1`}>
                                 .pteroignore
                             </code>{' '}
                             file. Any files or directories listed in here will be excluded from backups. Wildcards are
                             supported by using an asterisk (
-                            <code css={tw`font-mono bg-gray-900 rounded-ui border border-gray-600 py-px px-1`}>*</code>
+                            <code css={tw`font-mono bg-gray-950 rounded-ui border border-gray-800 py-px px-1`}>*</code>
                             ). You can negate a prior rule by prepending an exclamation point (
-                            <code css={tw`font-mono bg-gray-900 rounded-ui border border-gray-600 py-px px-1`}>!</code>
+                            <code css={tw`font-mono bg-gray-950 rounded-ui border border-gray-800 py-px px-1`}>!</code>
                             ).
                         </p>
                     </div>
@@ -146,7 +146,7 @@ export default () => {
                 />
             </Card>
             <Card css={tw`flex justify-end !rounded-t-none !px-2 !py-3`}>
-                <div css={tw`flex-1 sm:flex-none rounded-ui bg-gray-700 border border-gray-600 mr-4`}>
+                <div css={tw`flex-1 sm:flex-none rounded-ui bg-gray-900 border border-gray-800 mr-4`}>
                     <Select value={mode} onChange={(e) => setMode(e.currentTarget.value)}>
                         {modes.map((mode) => (
                             <option key={`${mode.name}_${mode.mode}`} value={mode.mode}>

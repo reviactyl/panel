@@ -33,7 +33,7 @@ class EggImporterService
                 'uuid' => Uuid::uuid4()->toString(),
                 'nest_id' => $nest->id,
                 'author' => Arr::get($parsed, 'author'),
-                'banner' => Arr::get($parsed, 'banner'),
+                'image' => Arr::get($parsed, 'image'),
                 'copy_script_from' => null,
             ]);
 

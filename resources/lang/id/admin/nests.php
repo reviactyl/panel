@@ -2,46 +2,46 @@
 
 return [
 
-    'label' => 'Nest',
-    'plural_label' => 'Nests',
+    'label' => 'Sarang',
+    'plural_label' => 'Sarang',
 
     'sections' => [
-        'configuration' => 'Nest Configuration',
+        'configuration' => 'Konfigurasi Sarang',
     ],
 
     'fields' => [
-        'name' => 'Name',
-        'author' => 'Author',
-        'description' => 'Description',
+        'name' => 'Nama',
+        'author' => 'Pengarang',
+        'description' => 'Keterangan',
     ],
 
     'helpers' => [
-        'name' => 'A unique name used to identify this nest.',
-        'author' => 'The author of this nest. Must be a valid email.',
-        'description' => 'A description of this nest.',
+        'name' => 'Nama unik yang digunakan untuk mengidentifikasi sarang ini.',
+        'author' => 'Penulis sarang ini. Harus berupa email yang valid.',
+        'description' => 'Deskripsi sarang ini.',
     ],
 
     'columns' => [
         'id' => 'ID',
-        'name' => 'Name',
-        'author' => 'Author',
-        'eggs' => 'Eggs',
-        'servers' => 'Servers',
+        'name' => 'Nama',
+        'author' => 'Pengarang',
+        'eggs' => 'telur',
+        'servers' => 'Server',
     ],
 
     'actions' => [
-        'import' => 'Import Egg',
+        'import' => 'Impor Telur',
     ],
 
     'import' => [
-        'file_label' => 'Egg File (JSON)',
-        'nest_label' => 'Associated Nest',
-        'file_not_found' => 'File not found',
-        'file_not_found_body' => 'Could not locate uploaded file.',
-        'invalid_format' => 'Invalid file format',
-        'invalid_format_body' => 'Unexpected file format received.',
-        'success' => 'Egg imported successfully',
-        'failed' => 'Failed to import egg',
+        'file_label' => 'File Telur (JSON)',
+        'nest_label' => 'Sarang Terkait',
+        'file_not_found' => 'Berkas tidak ditemukan',
+        'file_not_found_body' => 'Tidak dapat menemukan file yang diunggah.',
+        'invalid_format' => 'Format berkas tidak valid',
+        'invalid_format_body' => 'Format file tak terduga diterima.',
+        'success' => 'Telur berhasil diimpor',
+        'failed' => 'Gagal mengimpor telur',
     ],
 
     'notices' => [

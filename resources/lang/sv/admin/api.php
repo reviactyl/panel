@@ -7,7 +7,7 @@ return [
     'memo' => 'Anteckning',
     'last-used' => 'Senast använd',
     'created' => 'Skapad den',
-    'author' => 'Author',
+    'author' => 'Författare',
     'never-used' => 'Aldrig använd',
 
     'revoke' => 'Återkalla',

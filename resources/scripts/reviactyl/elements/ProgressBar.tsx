@@ -6,9 +6,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import tw from 'twin.macro';
 
 const BarFill = styled.div`
-    ${tw`h-full bg-cyan-400`};
+    ${tw`h-full bg-blue-600`};
     transition: 250ms ease-in-out;
-    box-shadow: 0 -2px 10px 2px hsl(178, 78%, 57%);
+    box-shadow: 0 -2px 10px 2px rgb(var(--color-primary) / 0.9);
 `;
 
 type Timer = ReturnType<typeof setTimeout>;
