@@ -20,8 +20,7 @@ abstract class AbstractLoginController extends Controller
 {
     use AuthenticatesUsers;
 
-    protected StatefulGuard $auth;
-
+    
     /**
      * Lockout time for failed login requests.
      */
@@ -77,7 +76,7 @@ abstract class AbstractLoginController extends Controller
 
         $this->clearLoginAttempts($request);
 
-        $guard = $this->auth->guard();
+                $guard = Auth::guard();
 
         if (! $guard instanceof StatefulGuard) {
             throw new \RuntimeException('Configured auth guard does not support stateful login.');
