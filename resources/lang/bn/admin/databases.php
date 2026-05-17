@@ -2,57 +2,57 @@
 
 return [
 
-    'label' => 'Database',
-    'plural-label' => 'Databases',
+    'label' => 'ডেটাবেজ',
+    'plural-label' => 'ডেটাবেজসমূহ',
 
-    'none' => 'None',
+    'none' => 'কোনোটিই নয়',
 
     'sections' => [
         'host_details' => [
-            'title' => 'Host Details',
-            'description' => 'Configure the database host connection settings.',
+            'title' => 'হোস্টের বিবরণ',
+            'description' => 'ডেটাবেজ হোস্ট কানেকশন সেটিংস কনফিগার করুন।.',
         ],
 
         'authentication' => [
-            'title' => 'Authentication',
+            'title' => 'অথেনটিকেশন',
         ],
 
         'linked_node' => [
-            'title' => 'Linked Node',
+            'title' => 'লিঙ্কড নোড',
         ],
     ],
 
     'placeholders' => [
-        'name' => 'Production MySQL',
+        'name' => 'প্রোডাকশন মাইএসকিউএল',
     ],
 
     'helpers' => [
-        'host' => 'The hostname or IP address of the database server.',
-        'linked_node' => 'Optional. Link this host to a specific node.',
+        'host' => 'ডেটাবেজ সার্ভারের হোস্টনেম বা আইপি অ্যাড্রেস।.',
+        'linked_node' => 'ঐচ্ছিক।. এই হোস্টটিকে একটি নির্দিষ্ট নোডের সাথে লিঙ্ক করুন।.',
     ],
 
     'fields' => [
-        'linked_node' => 'Linked Node',
+        'linked_node' => 'লিঙ্কড নোড',
     ],
 
     'columns' => [
-        'id' => 'ID',
-        'name' => 'Name',
-        'host' => 'Host',
-        'port' => 'Port',
-        'username' => 'Username',
-        'linked_node' => 'Linked Node',
-        'databases' => 'Databases',
-        'created' => 'Created',
+        'id' => 'আইডি',
+        'name' => 'নাম',
+        'host' => 'হোস্ট',
+        'port' => 'পোর্ট',
+        'username' => 'ইউজারনেম',
+        'linked_node' => 'লিঙ্কড নোড',
+        'databases' => 'ডেটাবেজসমূহ',
+        'created' => 'তৈরি হয়েছে',
     ],
 
     'actions' => [
-        'edit' => 'Edit',
-        'delete' => 'Delete',
+        'edit' => 'এডিট',
+        'delete' => 'ডিলিট',
     ],
 
     'errors' => [
-        'cannot_delete' => 'Cannot delete a database host with associated databases.',
+        'cannot_delete' => 'যুক্ত থাকা ডেটাবেজসমূহ থাকা অবস্থায় ডেটাবেজ হোস্টটি ডিলিট করা সম্ভব নয়।.',
     ],
 
 ];
