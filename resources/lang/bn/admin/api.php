@@ -1,28 +1,28 @@
 <?php
 
 return [
-    'title' => 'Application API',
-    'list-title' => 'Credentials List',
-    'key' => 'Key',
-    'memo' => 'Memo',
-    'last-used' => 'Last Used',
-    'created' => 'Created On',
-    'author' => 'Author',
-    'never-used' => 'Never Used',
+    'title' => 'অ্যাপ্লিকেশন এপিআই',
+    'list-title' => 'ক্রেডেনশিয়াল তালিকা',
+    'key' => 'কী',
+    'memo' => 'মেমো',
+    'last-used' => 'সর্বশেষ ব্যবহার',
+    'created' => 'তৈরির তারিখ',
+    'author' => 'প্রস্তুতকারক',
+    'never-used' => 'কখনোই ব্যবহার করা হয়নি',
 
-    'revoke' => 'Revoke',
-    'revoke-title' => 'Revoke API Key',
-    'revoke-warning' => 'Once this API key is revoked any applications currently using it will stop working.',
-    'revoked' => 'API Key has been revoked.',
+    'revoke' => 'বাতিল করুন',
+    'revoke-title' => 'এপিআই কী বাতিল করুন',
+    'revoke-warning' => 'এই এপিআই কী-টি একবার বাতিল করা হলে, এটি ব্যবহার করা সমস্ত অ্যাপ্লিকেশন কাজ করা বন্ধ করে দেবে।',
+    'revoked' => 'এপিআই কী বাতিল করা হয়েছে।',
 
-    'permissions' => 'Select Permissions',
-    'read-only' => 'Read',
-    'read-write' => 'Read & Write',
-    'none' => 'None',
+    'permissions' => 'অনুমতি নির্বাচন করুন',
+    'read-only' => 'রিড',
+    'read-write' => 'রিড ও রাইট',
+    'none' => 'কোনোটিই নয়',
 
-    'description' => 'Description',
-    'info' => 'Once you have assigned permissions and created this set of credentials you will be unable to come back and edit it. If you need to make changes down the road you will need to create a new set of credentials.',
+    'description' => 'বিবরণ',
+    'info' => 'একবার পারমিশন দিয়ে এই ক্রেডেনশিয়াল সেটটি তৈরি করে ফেললে, পরবর্তীতে এটি আর এডিট বা পরিবর্তন করতে পারবেন না। ভবিষ্যতে কোনো পরিবর্তনের প্রয়োজন হলে আপনাকে নতুন একটি ক্রেডেনশিয়াল সেট তৈরি করতে হবে।.',
 
-    'create-btn' => 'Create New',
-    'new-btn' => 'Create Credentials',
+    'create-btn' => 'নতুন তৈরি করুন',
+    'new-btn' => 'ক্রেডেনশিয়াল তৈরি করুন',
 ];
