@@ -3,12 +3,12 @@
 return [
 
     'tabs' => [
-        'configuration' => 'Egg Configuration',
+        'configuration' => '',
     ],
 
     'sections' => [
         'configuration' => [
-            'title' => 'Configuration',
+            'title' => '',
         ],
         'identity' => [
             'title' => 'Identity',
