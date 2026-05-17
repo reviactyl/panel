@@ -126,12 +126,12 @@ return [
         ],
         'startup' => [
             'edit' => ':variable ভেরিএবল টি ":old" থেকে ":new" এ পরিবর্তন করা হয়েছে।',
-            'image' => 'Updated the Docker Image for the server from :old to :new',
+            'image' => 'সার্ভারের ডকার ইমেজ :old থেকে :new-এ আপডেট করা হয়েছে।',
         ],
         'subuser' => [
-            'create' => 'Added :email as a subuser',
-            'update' => 'Updated the subuser permissions for :email',
-            'delete' => 'Removed :email as a subuser',
+            'create' => ':email-কে সাব-ইউজার হিসেবে যোগ করা হয়েছে',
+            'update' => ':email-এর জন্য সাব-ইউজার পারমিশন আপডেট করা হয়েছে।',
+            'delete' => 'সাব-ইউজার থেকে :email-কে সরিয়ে দেওয়া হয়েছে।',
         ],
     ],
 ];
