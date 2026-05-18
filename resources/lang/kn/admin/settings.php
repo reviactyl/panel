@@ -31,6 +31,8 @@ return [
         'recaptcha-secret-key' => 'reCAPTCHA ಸೀಕ್ರೆಟ್ ಕೀ',
         'turnstile-site-key' => 'ಟರ್ನ್ಸ್ಟೈಲ್ ಸೈಟ್ ಕೀ',
         'turnstile-secret-key' => 'ಟರ್ನ್ಸ್ಟೈಲ್ ಸೀಕ್ರೆಟ್ ಕೀ',
+        'registration-title' => 'Registration',
+        'registration-enabled' => 'Allow New Registrations',
     ],
     'mail' => [
         'title' => 'ಮೇಲ್',

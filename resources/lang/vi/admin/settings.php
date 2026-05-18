@@ -31,6 +31,8 @@ return [
         'recaptcha-secret-key' => 'Khóa bí mật reCAPTCHA',
         'turnstile-site-key' => 'Khóa trang web quay vòng',
         'turnstile-secret-key' => 'Khóa bí mật cửa quay',
+        'registration-title' => 'Registration',
+        'registration-enabled' => 'Allow New Registrations',
     ],
     'mail' => [
         'title' => 'Thư',

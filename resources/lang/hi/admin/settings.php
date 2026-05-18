@@ -31,6 +31,8 @@ return [
         'recaptcha-secret-key' => 'रीकैप्चा गुप्त कुंजी',
         'turnstile-site-key' => 'टर्नस्टाइल साइट कुंजी',
         'turnstile-secret-key' => 'घूमने वाला दरवाज़ा गुप्त कुंजी',
+        'registration-title' => 'Registration',
+        'registration-enabled' => 'Allow New Registrations',
     ],
     'mail' => [
         'title' => 'मेल',
