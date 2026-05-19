@@ -66,6 +66,7 @@ const NavItem = ({ route }: NavItemProps) => {
 
 const ServerNavigation = () => {
     const { t } = useTranslation('server/index');
+    const { t: tr } = useTranslation('routes');
     const params = useParams<{ id: string }>();
     const serverNestId = ServerContext.useStoreState((state) => state.server.data?.nestId);
     const serverEggId = ServerContext.useStoreState((state) => state.server.data?.eggId);
@@ -149,7 +150,7 @@ const ServerNavigation = () => {
 
             {serverExtensionRoutes.length > 0 && (
                 <div>
-                    <span className='label'>{t('sidebar.extensions')}</span>
+                    <span className='label'>{tr('sidebar.extensions')}</span>
                     {serverExtensionRoutes.map((route) => {
                         const normalizedPath = route.path.replace(/^\/+/, '');
                         const to = route.path.startsWith('/server/')
@@ -180,7 +181,7 @@ const ServerNavigation = () => {
 
             {normalizedSidebarButtons.length > 0 && (
                 <div>
-                    <span className='label'>{t('sidebar.more')}</span>
+                    <span className='label'>{tr('sidebar.more')}</span>
                     {normalizedSidebarButtons.map((button, index) => (
                         <a
                             key={`${button.url}-${index}`}
