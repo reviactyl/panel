@@ -152,6 +152,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'totp_authenticated_at',
         'gravatar',
         'root_admin',
+        'editor',
         'last_seen',
     ];
 
@@ -163,6 +164,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'use_totp' => 'boolean',
         'gravatar' => 'boolean',
         'totp_authenticated_at' => 'datetime',
+        'editor' => 'string',
         'last_seen' => 'datetime',
     ];
 
