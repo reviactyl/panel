@@ -15,6 +15,7 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 
 class NestResource extends Resource
 {
@@ -65,12 +66,20 @@ class NestResource extends Resource
                     TextInput::make('image')
                         ->nullable(),
 
+                    TextInput::make('uuid')
+                        ->label('UUID')
+                        ->default(fn (): string => Str::uuid()->toString())
+                        ->disabled()
+                        ->readOnly(),
+
                     TextInput::make('author')
                         ->label(trans('admin/nests.fields.author'))
                         ->email()
                         ->required()
+                        ->default(fn (): string => config('panel.service.author'))
                         ->helperText(trans('admin/nests.helpers.author'))
-                        ->disabled(fn ($record) => $record !== null),
+                        ->disabled()
+                        ->readOnly(),
 
                     Textarea::make('description')
                         ->label(trans('admin/nests.fields.description'))
