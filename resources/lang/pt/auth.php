@@ -17,7 +17,7 @@ return [
         'or' => 'Ou',
         'google' => 'Google',
         'discord' => 'Discord',
-        'github' => 'GitHub',
+        'github' => 'Github',
         'not_linked' => 'Esta conta não foi vinculada a nenhuma conta :provider. Faça login primeiro com seu e-mail e senha e, em seguida, vincule sua conta :provider na página Configurações da conta.',
     ],
 
