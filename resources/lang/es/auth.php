@@ -14,7 +14,7 @@ return [
     'return' => 'Volver al inicio de sesión',
 
     'social' => [
-        'or' => 'OR',
+        'or' => 'O',
         'google' => 'Google',
         'discord' => 'Discord',
         'github' => 'GitHub',
