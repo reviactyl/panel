@@ -31,8 +31,8 @@ return [
         'recaptcha-secret-key' => 'Chave secreta reCAPTCHA',
         'turnstile-site-key' => 'Chave do site da catraca',
         'turnstile-secret-key' => 'Chave secreta da catraca',
-        'registration-title' => 'Registration',
-        'registration-enabled' => 'Allow New Registrations',
+        'registration-title' => 'Cadastro',
+        'registration-enabled' => 'Habilitar Novos Cadastros',
     ],
     'mail' => [
         'title' => 'E-mail',
