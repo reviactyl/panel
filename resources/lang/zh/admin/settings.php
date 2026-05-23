@@ -86,7 +86,7 @@ return [
         'title' => '设计',
         'general' => '一般的',
         'colors' => '颜色',
-        'look-and-feel' => '外观和感觉',
+        'look-and-feel' => 'Look & Feel',
         'layout' => '布局',
         'alerts' => '警报',
         'meta-options' => '元选项',
