@@ -5,7 +5,7 @@ return [
     'no-schedules' => 'Não existem schedules configurados para este servidor.',
     'create-schedule' => 'Criar Agendamento',
     'last-run-at' => 'Última execução em: :time',
-    'never' => 'never',
+    'never' => 'nunca',
     'active' => 'Ativo',
     'inactive' => 'Inativo',
     'processing' => 'Processamento',
