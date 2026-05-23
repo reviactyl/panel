@@ -25,7 +25,7 @@ export interface ModalProps extends RequiredModalProps {
 }
 
 export const ModalMask = styled.div`
-    ${tw`fixed z-50 overflow-auto flex w-full inset-0`};
+    ${tw`fixed z-[9999] overflow-auto flex w-full inset-0`};
 `;
 
 const ModalContainer = styled.div<{ alignTop?: boolean; size?: 'sm' | 'md' | 'lg' }>`
