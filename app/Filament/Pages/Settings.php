@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Contracts\Repository\SettingsRepositoryInterface;
+use App\Filament\Components\ImageInput;
 use App\Notifications\MailTested;
 use App\Traits\Helpers\AvailableLanguages;
 use Filament\Actions\Action;
@@ -190,13 +191,13 @@ class Settings extends Page implements HasSchemas
                         ->maxLength(191)
                         ->columnSpan(2),
 
-                    TextInput::make('app:logo')
+                    ImageInput::make('app:logo')
                         ->label(trans('admin/settings.overview.app-logo'))
                         ->required()
                         ->maxLength(191)
                         ->columnSpan(1),
 
-                    TextInput::make('app:icon')
+                    ImageInput::make('app:icon')
                         ->label(trans('admin/settings.overview.app-icon'))
                         ->required()
                         ->maxLength(191)

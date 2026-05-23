@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Nests;
 
+use App\Filament\Components\ImageInput;
 use App\Models\Nest;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -63,7 +64,7 @@ class NestResource extends Resource
                         ->maxLength(191)
                         ->helperText(trans('admin/nests.helpers.name')),
 
-                    TextInput::make('image')
+                    ImageInput::make('image')
                         ->nullable(),
 
                     TextInput::make('uuid')

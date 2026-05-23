@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Contracts\Repository\SettingsRepositoryInterface;
+use App\Filament\Components\ImageInput;
 use App\Filament\Widgets\PreviewWidget;
 use App\Traits\Helpers\AvailableLanguages;
 use Filament\Actions\Action;
@@ -588,13 +589,13 @@ class Designify extends Page implements HasSchemas
                         ->required()
                         ->columnSpan(1),
 
-                    TextInput::make('designify:site_image')
+                    ImageInput::make('designify:site_image')
                         ->label(trans('admin/settings.designify.site-image'))
                         ->required()
                         ->maxLength(255)
                         ->columnSpan(1),
 
-                    TextInput::make('designify:site_favicon')
+                    ImageInput::make('designify:site_favicon')
                         ->label(trans('admin/settings.designify.site-favicon'))
                         ->required()
                         ->maxLength(255)
