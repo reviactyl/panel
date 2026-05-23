@@ -35,14 +35,6 @@
 
         & [id] {
             @apply h-full min-w-0;
-
-            &::-webkit-scrollbar-track {
-                @apply w-2;
-            }
-
-            &::-webkit-scrollbar-thumb {
-                @apply bg-gray-900;
-            }
         }
     }
 
@@ -51,10 +43,7 @@
     }
 
     & .command_input {
-        @apply relative px-2 bg-transparent text-gray-100 pl-10 pr-4 py-2 w-full font-mono text-sm rounded-ui;
-        @apply focus:ring-0 outline-none focus-visible:outline-none;
-        @apply border border-gray-600 transition-colors duration-100;
-        @apply active:border-gray-500 focus:border-gray-500;
+        @apply relative px-2 bg-transparent text-gray-100 pl-10 pr-4 py-2 w-full font-mono text-sm font-semibold;
     }
 
     /* Override @xterm/xterm's default background color */
@@ -63,5 +52,37 @@
     & :global(.xterm-screen),
     & :global(.xterm-scrollable-element) {
         background-color: transparent !important;
+    }
+
+    & :global(.xterm-viewport) {
+        overflow-y: scroll !important;
+        -webkit-overflow-scrolling: touch;
+        background-color: transparent !important;
+        pointer-events: none;
+    }
+
+    & :global(.xterm-viewport > *) {
+        pointer-events: none;
+    }
+
+    & :global(.xterm-screen) {
+        position: relative;
+        z-index: 1;
+    }
+
+    & :global(.xterm-scrollable-element > .scrollbar.vertical) {
+        width: 8px !important;
+        background: transparent;
+
+        & :global(.slider) {
+            background: rgba(156, 163, 175, 0.4) !important;
+            border-radius: 9999px;
+            width: 6px !important;
+            left: 1px;
+
+            &:hover {
+                background: rgba(156, 163, 175, 0.7) !important;
+            }
+        }
     }
 }

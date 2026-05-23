@@ -130,6 +130,31 @@ export default () => {
                 }
                 return true;
             });
+
+            if (ref.current) {
+                let lastY = 0;
+
+                ref.current.addEventListener(
+                    'touchstart',
+                    (e) => {
+                        lastY = e.touches[0]?.clientY ?? 0;
+                    },
+                    { passive: true }
+                );
+
+                ref.current.addEventListener(
+                    'touchmove',
+                    (e) => {
+                        const currentY = e.touches[0]?.clientY ?? lastY;
+                        const dy = lastY - currentY;
+                        lastY = currentY;
+                        const lines = Math.round(dy / (terminal.options.fontSize ?? 12));
+                        if (lines !== 0) terminal.scrollLines(lines);
+                        e.preventDefault(); // prvent scroll
+                    },
+                    { passive: false }
+                );
+            }
         }
     }, [terminal, connected]);
 
