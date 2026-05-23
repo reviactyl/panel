@@ -86,7 +86,7 @@ return [
         'title' => 'Designificar',
         'general' => 'Em geral',
         'colors' => 'Cores',
-        'look-and-feel' => 'Veja e sinta',
+        'look-and-feel' => 'Look & Feel',
         'layout' => 'Disposição',
         'alerts' => 'Alertas',
         'meta-options' => 'Metaopções',
