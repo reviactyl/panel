@@ -6,7 +6,7 @@ return [
     'server-installing' => 'Este servidor está executando seu processo de instalação e a maioria das ações está indisponível.',
     'server-transferring' => 'Este servidor está sendo transferido para outro node e todas as ações estão indisponíveis.',
     'run-command' => 'Digite um comando...',
-    'connection-trouble' => 'Estamos com problemas para conectar ao seu servidor, aguarde...',
+    'connection-trouble' => "Estamos com problemas para conectar ao seu servidor, aguarde...",
     'uptime' => 'Tempo de atividade',
     'network-inbound' => 'Rede (entrada)',
     'network-outbound' => 'Rede (Saída)',
