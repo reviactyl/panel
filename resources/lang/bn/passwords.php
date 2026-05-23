@@ -11,9 +11,9 @@ return [
     | has failed, such as for an invalid token or invalid new password.
     |
     */
-    'password' => 'Passwords must be at least six characters and match the confirmation.',
-    'reset' => 'Your password has been reset!',
-    'sent' => 'We have e-mailed your password reset link!',
-    'token' => 'This password reset token is invalid.',
-    'user' => "We can't find a user with that e-mail address.",
+    'password' => 'পাসওয়ার্ড অবশ্যই কমপক্ষে ছয় অক্ষরের হতে হবে এবং নিশ্চিতকরণের সাথে মিলতে হবে।',
+    'reset' => 'আপনার পাসওয়ার্ড রিসেট করা হয়েছে!',
+    'sent' => 'আমরা আপনার পাসওয়ার্ড রিসেট লিংক ইমেইল করেছি!',
+    'token' => 'এই পাসওয়ার্ড রিসেট টোকেনটি সঠিক নয়।',
+    'user' => 'এই ইমেইল ঠিকানার কোনো ব্যবহারকারী খুঁজে পাওয়া যায়নি।',
 ];

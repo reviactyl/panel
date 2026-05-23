@@ -1,11 +1,11 @@
 <?php
 
 return [
-    'title' => 'Startup',
-    'read-only' => 'Read Only',
-    'startup-command' => 'Startup Command',
-    'docker-image' => 'Docker Image',
-    'docker-info' => 'This is an advanced feature allowing you to select a Docker image to use when running this server instance.',
-    'manually-set-docker' => 'This server\'s Docker image has been manually set by an administrator and cannot be changed through this UI.',
-    'variables' => 'Variables',
+    'title' => 'স্টার্টআপ',
+    'read-only' => 'শুধুমাত্র পড়া যাবে',
+    'startup-command' => 'স্টার্টআপ কমান্ড',
+    'docker-image' => 'Docker ইমেজ',
+    'docker-info' => 'এটি একটি উন্নত ফিচার যা আপনাকে এই সার্ভার ইনস্ট্যান্স চালানোর সময় ব্যবহারের জন্য Docker ইমেজ নির্বাচন করতে দেয়।',
+    'manually-set-docker' => 'এই সার্ভারের Docker ইমেজ একজন প্রশাসক ম্যানুয়ালি সেট করেছেন এবং এই UI থেকে এটি পরিবর্তন করা যাবে না।',
+    'variables' => 'ভেরিয়েবলসমূহ',
 ];

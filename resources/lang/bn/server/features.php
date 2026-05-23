@@ -2,6 +2,6 @@
 
 return [
     'pid-limit' => [
-        'message' => 'This server has reached the maximum process or memory limit.',
+        'message' => 'এই সার্ভার সর্বোচ্চ প্রসেস অথবা মেমোরি সীমায় পৌঁছেছে।',
     ],
 ];

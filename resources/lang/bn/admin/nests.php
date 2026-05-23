@@ -6,64 +6,64 @@ return [
     'plural_label' => 'Nests',
 
     'sections' => [
-        'configuration' => 'Nest Configuration',
+        'configuration' => 'Nest কনফিগারেশন',
     ],
 
     'fields' => [
-        'name' => 'Name',
-        'author' => 'Author',
-        'description' => 'Description',
+        'name' => 'নাম',
+        'author' => 'লেখক',
+        'description' => 'বিবরণ',
     ],
 
     'helpers' => [
-        'name' => 'A unique name used to identify this nest.',
-        'author' => 'The author of this nest. Must be a valid email.',
-        'description' => 'A description of this nest.',
+        'name' => 'এই nest শনাক্ত করার জন্য ব্যবহৃত একটি ইউনিক নাম।',
+        'author' => 'এই nest এর লেখক। অবশ্যই একটি বৈধ ইমেইল হতে হবে।',
+        'description' => 'এই nest এর একটি বিবরণ।',
     ],
 
     'columns' => [
-        'id' => 'ID',
-        'name' => 'Name',
-        'author' => 'Author',
+        'id' => 'আইডি',
+        'name' => 'নাম',
+        'author' => 'লেখক',
         'eggs' => 'Eggs',
-        'servers' => 'Servers',
+        'servers' => 'সার্ভারসমূহ',
     ],
 
     'actions' => [
-        'import' => 'Import Egg',
+        'import' => 'Egg ইমপোর্ট করুন',
     ],
 
     'import' => [
-        'file_label' => 'Egg File (JSON)',
-        'nest_label' => 'Associated Nest',
-        'file_not_found' => 'File not found',
-        'file_not_found_body' => 'Could not locate uploaded file.',
-        'invalid_format' => 'Invalid file format',
-        'invalid_format_body' => 'Unexpected file format received.',
-        'success' => 'Egg imported successfully',
-        'failed' => 'Failed to import egg',
+        'file_label' => 'Egg ফাইল (JSON)',
+        'nest_label' => 'সংশ্লিষ্ট Nest',
+        'file_not_found' => 'ফাইল পাওয়া যায়নি',
+        'file_not_found_body' => 'আপলোড করা ফাইল খুঁজে পাওয়া যায়নি।',
+        'invalid_format' => 'অবৈধ ফাইল ফরম্যাট',
+        'invalid_format_body' => 'অপ্রত্যাশিত ফাইল ফরম্যাট পাওয়া গেছে।',
+        'success' => 'Egg সফলভাবে ইমপোর্ট করা হয়েছে',
+        'failed' => 'Egg ইমপোর্ট করতে ব্যর্থ হয়েছে',
     ],
 
     'notices' => [
-        'created' => 'A new nest, :name, has been successfully created.',
-        'deleted' => 'Successfully deleted the requested nest from the Panel.',
-        'updated' => 'Successfully updated the nest configuration options.',
+        'created' => 'নতুন nest :name সফলভাবে তৈরি করা হয়েছে।',
+        'deleted' => 'অনুরোধকৃত nest সফলভাবে প্যানেল থেকে মুছে ফেলা হয়েছে।',
+        'updated' => 'Nest কনফিগারেশন অপশন সফলভাবে আপডেট করা হয়েছে।',
     ],
     'eggs' => [
         'notices' => [
-            'imported' => 'Successfully imported this Egg and its associated variables.',
-            'updated_via_import' => 'This Egg has been updated using the file provided.',
-            'deleted' => 'Successfully deleted the requested egg from the Panel.',
-            'updated' => 'Egg configuration has been updated successfully.',
-            'script_updated' => 'Egg install script has been updated and will run whenever servers are installed.',
-            'egg_created' => 'A new egg was laid successfully. You will need to restart any running daemons to apply this new egg.',
+            'imported' => 'এই Egg এবং এর সংশ্লিষ্ট ভেরিয়েবলসমূহ সফলভাবে ইমপোর্ট করা হয়েছে।',
+            'updated_via_import' => 'প্রদত্ত ফাইল ব্যবহার করে এই Egg আপডেট করা হয়েছে।',
+            'deleted' => 'অনুরোধকৃত egg সফলভাবে প্যানেল থেকে মুছে ফেলা হয়েছে।',
+            'updated' => 'Egg কনফিগারেশন সফলভাবে আপডেট করা হয়েছে।',
+            'script_updated' => 'Egg ইনস্টল স্ক্রিপ্ট আপডেট করা হয়েছে এবং সার্ভার ইনস্টলের সময় এটি চালানো হবে।',
+            'egg_created' => 'নতুন egg সফলভাবে তৈরি করা হয়েছে। এই নতুন egg কার্যকর করতে আপনাকে চলমান daemon গুলো পুনরায় চালু করতে হবে।',
         ],
     ],
     'variables' => [
         'notices' => [
-            'variable_deleted' => 'The variable ":variable" has been deleted and will no longer be available to servers once rebuilt.',
-            'variable_updated' => 'The variable ":variable" has been updated. You will need to rebuild any servers using this variable in order to apply changes.',
-            'variable_created' => 'New variable has successfully been created and assigned to this egg.',
+            'variable_deleted' => '":variable" ভেরিয়েবলটি মুছে ফেলা হয়েছে এবং পুনর্নির্মাণের পর এটি আর সার্ভারগুলোর জন্য উপলব্ধ থাকবে না।',
+            'variable_updated' => '":variable" ভেরিয়েবলটি আপডেট করা হয়েছে। পরিবর্তন কার্যকর করতে এই ভেরিয়েবল ব্যবহারকারী সার্ভারগুলো পুনর্নির্মাণ করতে হবে।',
+            'variable_created' => 'নতুন ভেরিয়েবল সফলভাবে তৈরি করা হয়েছে এবং এই egg এ বরাদ্দ করা হয়েছে।',
         ],
     ],
 ];

@@ -1,62 +1,62 @@
 <?php
 
 return [
-    'daemon_connection_failed' => 'There was an exception while attempting to communicate with the daemon resulting in a HTTP/:code response code. This exception has been logged.',
+    'daemon_connection_failed' => 'ডেমন-এর সাথে যোগাযোগ করার সময় একটি ব্যতিক্রম ঘটেছে যার ফলে HTTP/:code রেসপন্স কোড পাওয়া গেছে। এই ব্যতিক্রমটি লগ করা হয়েছে।',
     'node' => [
-        'servers_attached' => 'A node must have no servers linked to it in order to be deleted.',
-        'daemon_off_config_updated' => 'The daemon configuration has been updated, however there was an error encountered while attempting to automatically update the configuration file on the Daemon. You will need to manually update the configuration file (config.yml) for the daemon to apply these changes.',
+        'servers_attached' => 'একটি নোড মুছে ফেলার জন্য এর সাথে কোনো সার্ভার সংযুক্ত থাকা যাবে না।',
+        'daemon_off_config_updated' => 'ডেমন কনফিগারেশন আপডেট করা হয়েছে, তবে ডেমন-এ স্বয়ংক্রিয়ভাবে কনফিগারেশন ফাইল আপডেট করার সময় একটি ত্রুটি ঘটেছে। এই পরিবর্তনগুলো কার্যকর করতে আপনাকে ডেমন-এর কনফিগারেশন ফাইল (config.yml) ম্যানুয়ালি আপডেট করতে হবে।',
     ],
     'allocations' => [
-        'server_using' => 'A server is currently assigned to this allocation. An allocation can only be deleted if no server is currently assigned.',
-        'too_many_ports' => 'Adding more than 1000 ports in a single range at once is not supported.',
-        'invalid_mapping' => 'The mapping provided for :port was invalid and could not be processed.',
-        'cidr_out_of_range' => 'CIDR notation only allows masks between /25 and /32.',
-        'port_out_of_range' => 'Ports in an allocation must be greater than 1024 and less than or equal to 65535.',
+        'server_using' => 'বর্তমানে একটি সার্ভার এই অ্যালোকেশন ব্যবহার করছে। কোনো সার্ভার সংযুক্ত না থাকলেই কেবল একটি অ্যালোকেশন মুছে ফেলা যাবে।',
+        'too_many_ports' => 'একসাথে একটি রেঞ্জে ১০০০টির বেশি পোর্ট যোগ করা সমর্থিত নয়।',
+        'invalid_mapping' => ':port এর জন্য প্রদত্ত ম্যাপিংটি সঠিক নয় এবং প্রক্রিয়া করা যায়নি।',
+        'cidr_out_of_range' => 'CIDR নোটেশন শুধুমাত্র /25 থেকে /32 পর্যন্ত মাস্ক সমর্থন করে।',
+        'port_out_of_range' => 'একটি অ্যালোকেশনের পোর্ট অবশ্যই 1024 এর বেশি এবং 65535 এর কম বা সমান হতে হবে।',
     ],
     'nest' => [
-        'delete_has_servers' => 'A Nest with active servers attached to it cannot be deleted from the Panel.',
+        'delete_has_servers' => 'সক্রিয় সার্ভার সংযুক্ত থাকা একটি Nest প্যানেল থেকে মুছে ফেলা যাবে না।',
         'egg' => [
-            'delete_has_servers' => 'An Egg with active servers attached to it cannot be deleted from the Panel.',
-            'invalid_copy_id' => 'The Egg selected for copying a script from either does not exist, or is copying a script itself.',
-            'must_be_child' => 'The "Copy Settings From" directive for this Egg must be a child option for the selected Nest.',
-            'has_children' => 'This Egg is a parent to one or more other Eggs. Please delete those Eggs before deleting this Egg.',
+            'delete_has_servers' => 'সক্রিয় সার্ভার সংযুক্ত থাকা একটি Egg প্যানেল থেকে মুছে ফেলা যাবে না।',
+            'invalid_copy_id' => 'স্ক্রিপ্ট কপি করার জন্য নির্বাচিত Egg বিদ্যমান নেই অথবা এটি নিজেই একটি স্ক্রিপ্ট কপি করছে।',
+            'must_be_child' => 'এই Egg-এর জন্য "Copy Settings From" নির্দেশনাটি নির্বাচিত Nest-এর একটি child অপশন হতে হবে।',
+            'has_children' => 'এই Egg একটি বা একাধিক অন্যান্য Egg-এর parent। এই Egg মুছে ফেলার আগে অনুগ্রহ করে সেগুলো মুছে ফেলুন।',
         ],
         'variables' => [
-            'env_not_unique' => 'The environment variable :name must be unique to this Egg.',
-            'reserved_name' => 'The environment variable :name is protected and cannot be assigned to a variable.',
-            'bad_validation_rule' => 'The validation rule ":rule" is not a valid rule for this application.',
+            'env_not_unique' => 'এনভায়রনমেন্ট ভেরিয়েবল :name অবশ্যই এই Egg-এর জন্য ইউনিক হতে হবে।',
+            'reserved_name' => 'এনভায়রনমেন্ট ভেরিয়েবল :name সংরক্ষিত এবং এটি কোনো ভেরিয়েবলে বরাদ্দ করা যাবে না।',
+            'bad_validation_rule' => 'ভ্যালিডেশন রুল ":rule" এই অ্যাপ্লিকেশনের জন্য বৈধ নয়।',
         ],
         'importer' => [
-            'json_error' => 'There was an error while attempting to parse the JSON file: :error.',
-            'file_error' => 'The JSON file provided was not valid.',
-            'invalid_json_provided' => 'The JSON file provided is not in a format that can be recognized.',
+            'json_error' => 'JSON ফাইল পার্স করার সময় একটি ত্রুটি ঘটেছে: :error।',
+            'file_error' => 'প্রদত্ত JSON ফাইলটি বৈধ নয়।',
+            'invalid_json_provided' => 'প্রদত্ত JSON ফাইলটি এমন ফরম্যাটে নেই যা শনাক্ত করা যায়।',
         ],
     ],
     'subusers' => [
-        'editing_self' => 'Editing your own subuser account is not permitted.',
-        'user_is_owner' => 'You cannot add the server owner as a subuser for this server.',
-        'subuser_exists' => 'A user with that email address is already assigned as a subuser for this server.',
+        'editing_self' => 'নিজের সাবইউজার অ্যাকাউন্ট সম্পাদনা করার অনুমতি নেই।',
+        'user_is_owner' => 'আপনি এই সার্ভারের মালিককে সাবইউজার হিসেবে যোগ করতে পারবেন না।',
+        'subuser_exists' => 'এই ইমেইল ঠিকানার একজন ব্যবহারকারী ইতোমধ্যেই এই সার্ভারের সাবইউজার হিসেবে যুক্ত আছেন।',
     ],
     'databases' => [
-        'delete_has_databases' => 'Cannot delete a database host server that has active databases linked to it.',
+        'delete_has_databases' => 'সক্রিয় ডাটাবেস সংযুক্ত থাকা কোনো ডাটাবেস হোস্ট সার্ভার মুছে ফেলা যাবে না।',
     ],
     'tasks' => [
-        'chain_interval_too_long' => 'The maximum interval time for a chained task is 15 minutes.',
+        'chain_interval_too_long' => 'চেইনড টাস্কের সর্বোচ্চ ইন্টারভাল সময় ১৫ মিনিট।',
     ],
     'locations' => [
-        'has_nodes' => 'Cannot delete a location that has active nodes attached to it.',
+        'has_nodes' => 'সক্রিয় নোড সংযুক্ত থাকা কোনো লোকেশন মুছে ফেলা যাবে না।',
     ],
     'users' => [
-        'node_revocation_failed' => 'Failed to revoke keys on <a href=":link">Node #:node</a>. :error',
+        'node_revocation_failed' => '<a href=":link">নোড #:node</a> এ কী বাতিল করতে ব্যর্থ হয়েছে। :error',
     ],
     'deployment' => [
-        'no_viable_nodes' => 'No nodes satisfying the requirements specified for automatic deployment could be found.',
-        'no_viable_allocations' => 'No allocations satisfying the requirements for automatic deployment were found.',
+        'no_viable_nodes' => 'স্বয়ংক্রিয় ডিপ্লয়মেন্টের জন্য নির্ধারিত শর্ত পূরণ করে এমন কোনো নোড পাওয়া যায়নি।',
+        'no_viable_allocations' => 'স্বয়ংক্রিয় ডিপ্লয়মেন্টের জন্য প্রয়োজনীয় শর্ত পূরণ করে এমন কোনো অ্যালোকেশন পাওয়া যায়নি।',
     ],
     'api' => [
-        'resource_not_found' => 'The requested resource does not exist on this server.',
+        'resource_not_found' => 'অনুরোধকৃত রিসোর্সটি এই সার্ভারে বিদ্যমান নয়।',
     ],
     'social' => [
-        'unlink_only_login' => 'You cannot unlink your only login method without setting a password first.',
+        'unlink_only_login' => 'প্রথমে পাসওয়ার্ড সেট না করে আপনি আপনার একমাত্র লগইন পদ্ধতি আনলিংক করতে পারবেন না।',
     ],
 ];

@@ -2,42 +2,42 @@
 
 return [
 
-    'label' => 'Location',
-    'plural-label' => 'Locations',
+    'label' => 'লোকেশন',
+    'plural-label' => 'লোকেশনসমূহ',
 
     'section' => [
-        'title' => 'Location Details',
-        'description' => 'Define a location that nodes can be assigned to.',
+        'title' => 'লোকেশনের বিবরণ',
+        'description' => 'নোড বরাদ্দ করার জন্য একটি লোকেশন নির্ধারণ করুন।',
     ],
 
     'fields' => [
         'short' => [
-            'label' => 'Short Code',
-            'helper' => 'A short identifier for this location.',
+            'label' => 'শর্ট কোড',
+            'helper' => 'এই লোকেশনের জন্য একটি সংক্ষিপ্ত পরিচয়।',
         ],
 
         'long' => [
-            'label' => 'Description',
-            'helper' => 'A longer description of this location.',
+            'label' => 'বিবরণ',
+            'helper' => 'এই লোকেশনের একটি বিস্তারিত বিবরণ।',
         ],
     ],
 
     'table' => [
-        'id' => 'ID',
-        'short' => 'Short Code',
-        'long' => 'Description',
-        'nodes' => 'Nodes',
-        'servers' => 'Servers',
-        'created' => 'Created',
+        'id' => 'আইডি',
+        'short' => 'শর্ট কোড',
+        'long' => 'বিবরণ',
+        'nodes' => 'নোডসমূহ',
+        'servers' => 'সার্ভারসমূহ',
+        'created' => 'তৈরি হয়েছে',
     ],
 
     'actions' => [
-        'edit' => 'Edit',
-        'delete' => 'Delete',
+        'edit' => 'সম্পাদনা',
+        'delete' => 'মুছে ফেলুন',
     ],
 
     'messages' => [
-        'cannot_delete_with_nodes' => 'Cannot delete a location with associated nodes.',
+        'cannot_delete_with_nodes' => 'সংযুক্ত নোড থাকা অবস্থায় কোনো লোকেশন মুছে ফেলা যাবে না।',
     ],
 
 ];

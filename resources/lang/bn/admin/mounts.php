@@ -2,43 +2,43 @@
 
 return [
 
-    'label' => 'Mount',
-    'plural_label' => 'Mounts',
+    'label' => 'মাউন্ট',
+    'plural_label' => 'মাউন্টসমূহ',
 
     'sections' => [
-        'configuration' => 'Mount Configuration',
+        'configuration' => 'মাউন্ট কনফিগারেশন',
     ],
 
     'fields' => [
-        'name' => 'Name',
-        'description' => 'Description',
-        'source' => 'Source Path',
-        'target' => 'Target Path',
-        'read_only' => 'Read Only',
-        'user_mountable' => 'User Mountable',
+        'name' => 'নাম',
+        'description' => 'বিবরণ',
+        'source' => 'সোর্স পাথ',
+        'target' => 'টার্গেট পাথ',
+        'read_only' => 'শুধুমাত্র পড়া যাবে',
+        'user_mountable' => 'ইউজার মাউন্ট করতে পারবে',
     ],
 
     'helpers' => [
-        'name' => 'A unique name used to separate this mount from another.',
-        'description' => 'A longer, human-readable description of this mount.',
-        'source' => 'The file path on the host machine to mount to containers.',
-        'target' => 'The path inside the container to mount this as.',
-        'read_only' => 'If set, the mount will be read-only inside the container.',
-        'user_mountable' => 'If set, users will be able to mount this to their servers.',
+        'name' => 'এই মাউন্টকে অন্য মাউন্ট থেকে আলাদা করতে ব্যবহৃত একটি ইউনিক নাম।',
+        'description' => 'এই মাউন্টের একটি বিস্তারিত, সহজে বোঝার মতো বিবরণ।',
+        'source' => 'হোস্ট মেশিনের ফাইল পাথ যা কনটেইনারে মাউন্ট করা হবে।',
+        'target' => 'কনটেইনারের ভেতরের যে পাথে এটি মাউন্ট করা হবে।',
+        'read_only' => 'সক্রিয় থাকলে কনটেইনারের ভিতরে মাউন্টটি শুধুমাত্র পড়ার জন্য উপলব্ধ থাকবে।',
+        'user_mountable' => 'সক্রিয় থাকলে ইউজাররা এটি তাদের সার্ভারে মাউন্ট করতে পারবে।',
     ],
 
     'columns' => [
-        'id' => 'ID',
-        'name' => 'Name',
-        'source' => 'Source',
-        'target' => 'Target',
-        'read_only' => 'Read Only',
-        'user_mountable' => 'User Mountable',
+        'id' => 'আইডি',
+        'name' => 'নাম',
+        'source' => 'সোর্স',
+        'target' => 'টার্গেট',
+        'read_only' => 'শুধুমাত্র পড়া যাবে',
+        'user_mountable' => 'ইউজার মাউন্ট করতে পারবে',
     ],
 
     'actions' => [
-        'attach_egg' => 'Attach Egg',
-        'attach_node' => 'Attach Node',
+        'attach_egg' => 'Egg সংযুক্ত করুন',
+        'attach_node' => 'নোড সংযুক্ত করুন',
     ],
 
 ];
