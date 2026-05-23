@@ -504,6 +504,10 @@ class Designify extends Page implements HasSchemas
                     ToggleButtons::make('designify:cardType')
                         ->label(trans('admin/settings.designify.server-card-layout'))
                         ->inline()
+                        ->icons([
+                            'grid' => 'tabler-layout-grid',
+                            'row' => 'tabler-layout-row',
+                        ])
                         ->options([
                             'grid' => trans('admin/settings.designify.grid'),
                             'row' => trans('admin/settings.designify.row'),
@@ -513,6 +517,12 @@ class Designify extends Page implements HasSchemas
                     ToggleButtons::make('designify:layoutType')
                         ->label(trans('admin/settings.designify.navbar-sidebar-layout'))
                         ->inline()
+                        ->icons([
+                            'modern' => 'tabler-layout-dashboard',
+                            'classic' => 'tabler-layout-kanban',
+                            'compact' => 'tabler-layout-list',
+                            'accent' => 'tabler-layout-bottombar',
+                        ])
                         ->options([
                             'modern' => trans('admin/settings.designify.modern'),
                             'classic' => trans('admin/settings.designify.classic'),

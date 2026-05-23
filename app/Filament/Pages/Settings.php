@@ -235,6 +235,11 @@ class Settings extends Page implements HasSchemas
                     ToggleButtons::make('panel:auth:2fa_required')
                         ->label(trans('admin/settings.overview.2fa'))
                         ->inline()
+                        ->icons([
+                            0 => 'tabler-lock-off',
+                            1 => 'tabler-user-shield',
+                            2 => 'tabler-users',
+                        ])
                         ->options([
                             0 => trans('admin/settings.overview.not-required'),
                             1 => trans('admin/settings.overview.admin-only'),
