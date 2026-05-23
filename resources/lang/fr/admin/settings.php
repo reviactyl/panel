@@ -86,7 +86,7 @@ return [
         'title' => 'Concevoir',
         'general' => 'Général',
         'colors' => 'Couleurs',
-        'look-and-feel' => 'Regardez et ressentez',
+        'look-and-feel' => 'Look & Feel',
         'layout' => 'Mise en page',
         'alerts' => 'Alertes',
         'meta-options' => 'Méta-options',
