@@ -34,6 +34,7 @@
         "psr/cache": "^3.0.0",
         "s1lentium/iptools": "~1.2.0",
         "secondnetwork/blade-tabler-icons": "^3.36",
+        "socialiteproviders/discord": "^4.2",
         "spatie/laravel-fractal": "^6.3.2",
         "spatie/laravel-query-builder": "^6.3.6",
         "staudenmeir/belongs-to-through": "^2.16.0",
