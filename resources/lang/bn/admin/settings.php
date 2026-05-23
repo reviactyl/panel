@@ -103,7 +103,7 @@ return [
         'success' => 'সফল',
         'danger' => 'বিপদ',
         'secondary' => 'সেকেন্ডারি',
-        'look-and-feel' => 'লুক ও অনুভূতি',
+        'look-and-feel' => 'Look & Feel',
         'theme-selector' => 'থিম নির্বাচনকারী',
         'sidebar-logout-button' => 'সাইডবার লগআউট বাটন',
         'panel-background' => 'প্যানেল ব্যাকগ্রাউন্ড',
