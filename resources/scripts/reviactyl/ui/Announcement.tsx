@@ -2,42 +2,42 @@ import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { DesignifyAlert } from '@/state/designify';
 import Md2React from '@/reviactyl/ui/Md2React';
-import { BellIcon, CheckIcon, ExclamationIcon, InboxInIcon, InformationCircleIcon } from '@heroicons/react/solid';
 import styled from 'styled-components';
 import tw from 'twin.macro';
+import { FaBullhorn, FaCircleXmark, FaCircleInfo, FaTriangleExclamation, FaCircleCheck } from 'react-icons/fa6';
 
 const Container = styled.div`
     ${tw`px-2`}
 `;
 
 const AlertContainer = styled.div`
-    ${tw`mx-auto w-full flex items-center gap-x-3 max-w-[1200px] p-3 mt-2 rounded-ui text-gray-100 !border-t-0 !border-r-0 !border-b-0 !border-l-4`}
+    ${tw`mx-auto w-full flex items-center gap-x-3 max-w-[1200px] p-3 mt-2 rounded-ui text-gray-100 border`}
 `;
 
 const getAlertClass = (type: string): string =>
     type === 'info'
-        ? 'bg-blue-500/10 border-blue-500'
+        ? 'bg-blue-800/10 border-blue-500/60'
         : type === 'announcement'
-        ? 'bg-reviactyl/10 border-reviactyl'
+        ? 'bg-reviactyl/10 border-reviactyl/60'
         : type === 'danger'
-        ? 'bg-danger/10 border-danger'
+        ? 'bg-danger/10 border-danger/60'
         : type === 'success'
-        ? 'bg-success/10 border-success'
+        ? 'bg-success/10 border-success/60'
         : type === 'warning'
-        ? 'bg-yellow-500/10 border-yellow-500'
+        ? 'bg-yellow-800/10 border-yellow-500/60'
         : '';
 
 const getAlertIcon = (type: string) =>
     type === 'info' ? (
-        <InformationCircleIcon className='h-5 w-5 font-bold !text-blue-500' />
+        <FaCircleInfo className='h-5 w-5 font-bold !text-blue-500' />
     ) : type === 'announcement' ? (
-        <BellIcon className='h-5 w-5 font-bold !text-reviactyl' />
+        <FaBullhorn className='h-5 w-5 font-bold !text-reviactyl' />
     ) : type === 'danger' ? (
-        <InboxInIcon className='h-5 w-5 font-bold !text-danger/50' />
+        <FaCircleXmark className='h-5 w-5 font-bold !text-danger/50' />
     ) : type === 'success' ? (
-        <CheckIcon className='h-5 w-5 font-bold !text-success/50' />
+        <FaCircleCheck className='h-5 w-5 font-bold !text-success/50' />
     ) : type === 'warning' ? (
-        <ExclamationIcon className='h-5 w-5 font-bold !text-yellow-500' />
+        <FaTriangleExclamation className='h-5 w-5 font-bold !text-yellow-500' />
     ) : (
         ''
     );
