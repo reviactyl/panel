@@ -86,7 +86,7 @@ return [
         'title' => 'Designifiera',
         'general' => 'Allmän',
         'colors' => 'Färger',
-        'look-and-feel' => 'Titta & Känn',
+        'look-and-feel' => 'Look & Feel',
         'layout' => 'Layout',
         'alerts' => 'Varningar',
         'meta-options' => 'Meta-alternativ',
