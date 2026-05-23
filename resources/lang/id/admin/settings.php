@@ -86,7 +86,7 @@ return [
         'title' => 'Tentukan',
         'general' => 'Umum',
         'colors' => 'Warna',
-        'look-and-feel' => 'Lihat & Rasakan',
+        'look-and-feel' => 'Look & Feel',
         'layout' => 'Tata Letak',
         'alerts' => 'Peringatan',
         'meta-options' => 'Opsi Meta',

@@ -86,7 +86,7 @@ return [
         'title' => 'डिज़ाइन करें',
         'general' => 'सामान्य',
         'colors' => 'रंग',
-        'look-and-feel' => 'देखो और महसूस करो',
+        'look-and-feel' => 'Look & Feel',
         'layout' => 'लेआउट',
         'alerts' => 'अलर्ट',
         'meta-options' => 'मेटा विकल्प',

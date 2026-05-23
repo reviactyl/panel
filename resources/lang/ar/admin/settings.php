@@ -86,7 +86,7 @@ return [
         'title' => 'تصميم',
         'general' => 'عام',
         'colors' => 'الألوان',
-        'look-and-feel' => 'انظر واشعر',
+        'look-and-feel' => 'Look & Feel',
         'layout' => 'تَخطِيط',
         'alerts' => 'التنبيهات',
         'meta-options' => 'خيارات التعريف',

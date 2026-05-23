@@ -86,7 +86,7 @@ return [
         'title' => 'Chỉ định',
         'general' => 'Tổng quan',
         'colors' => 'Màu sắc',
-        'look-and-feel' => 'Nhìn & Cảm nhận',
+        'look-and-feel' => 'Look & Feel',
         'layout' => 'Cách trình bày',
         'alerts' => 'Cảnh báo',
         'meta-options' => 'Tùy chọn Meta',

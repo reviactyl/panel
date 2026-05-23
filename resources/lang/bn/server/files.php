@@ -18,7 +18,7 @@ return [
     'cancel' => 'বাতিল',
     'create' => 'তৈরি করুন',
     'rename' => 'নাম পরিবর্তন',
-    'move' => 'স্থানান্তর',
+    'move' => 'Move',
     'file-mode-label' => 'ফাইল মোড',
     'new-location' => 'নতুন অবস্থান:',
     'cancel-uploads' => 'আপলোড বাতিল করুন',

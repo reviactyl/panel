@@ -86,7 +86,7 @@ return [
         'title' => 'ವಿನ್ಯಾಸಗೊಳಿಸಿ',
         'general' => 'ಸಾಮಾನ್ಯ',
         'colors' => 'ಬಣ್ಣಗಳು',
-        'look-and-feel' => 'ನೋಡಿ ಮತ್ತು ಅನುಭವಿಸಿ',
+        'look-and-feel' => 'Look & Feel',
         'layout' => 'ಲೇಔಟ್',
         'alerts' => 'ಎಚ್ಚರಿಕೆಗಳು',
         'meta-options' => 'ಮೆಟಾ ಆಯ್ಕೆಗಳು',
