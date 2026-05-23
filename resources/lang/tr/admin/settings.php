@@ -86,7 +86,7 @@ return [
         'title' => 'Belirle',
         'general' => 'Genel',
         'colors' => 'Renkler',
-        'look-and-feel' => 'Görünüm ve Hisset',
+        'look-and-feel' => 'Look & Feel',
         'layout' => 'Düzen',
         'alerts' => 'Uyarılar',
         'meta-options' => 'Meta Seçenekleri',
