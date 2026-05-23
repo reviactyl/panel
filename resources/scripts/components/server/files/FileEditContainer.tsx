@@ -49,7 +49,13 @@ export default () => {
     let fetchFileContent: null | (() => Promise<string>) = null;
 
     useEffect(() => {
-        if (isNewFile) return;
+        if (isNewFile) {
+            const path = hashToPath(hash);
+            if (path && path !== '/') {
+                setDirectory(path);
+            }
+            return;
+        }
 
         setError('');
         const path = hashToPath(hash);
