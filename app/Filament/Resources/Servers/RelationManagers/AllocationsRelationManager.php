@@ -10,6 +10,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 
@@ -31,7 +32,7 @@ class AllocationsRelationManager extends RelationManager
                     ->label(trans('admin/server.allocations.table.port'))
                     ->sortable(),
 
-                TextColumn::make('ip_alias')
+                TextInputColumn::make('ip_alias')
                     ->label(trans('admin/server.allocations.table.alias'))
                     ->placeholder(trans('admin/server.allocations.placeholder.no_alias_assigned'))
                     ->toggleable(),
@@ -46,7 +47,7 @@ class AllocationsRelationManager extends RelationManager
                         return $record->id === $owner->allocation_id;
                     }),
 
-                TextColumn::make('notes')
+                TextInputColumn::make('notes')
                     ->label(trans('admin/server.allocations.table.notes'))
                     ->toggleable(),
 
