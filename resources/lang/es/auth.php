@@ -21,7 +21,7 @@ return [
     'passkey-username-required' => 'Enter your username or email before using a passkey.',
 
     'social' => [
-        'or' => 'OR',
+        'or' => 'O',
         'google' => 'Google',
         'discord' => 'Discord',
         'github' => 'GitHub',

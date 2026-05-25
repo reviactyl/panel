@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Nests;
 
+use App\Filament\Components\ImageInput;
 use App\Filament\Resources\Nests\Eggs\Pages;
 use App\Models\Egg;
 use App\Services\Eggs\Sharing\EggExporterService;
@@ -64,7 +65,7 @@ class EggResource extends Resource
                                             ->label(trans('admin/eggs.fields.author'))
                                             ->email()
                                             ->disabled(),
-                                        Forms\Components\TextInput::make('image')
+                                        ImageInput::make('image')
                                             ->label(trans('admin/eggs.fields.image'))
                                             ->maxLength(191),
                                         Forms\Components\Textarea::make('description')
@@ -134,7 +135,7 @@ class EggResource extends Resource
                                             ->required()
                                             ->maxLength(191),
                                         Forms\Components\TextInput::make('description')
-                                            ->maxLength(191),
+                                            ->dehydrateStateUsing(fn ($state) => $state ?? ''),
                                         Forms\Components\TextInput::make('env_variable')
                                             ->label(trans('admin/eggs.fields.env_variable'))
                                             ->required()

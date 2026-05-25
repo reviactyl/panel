@@ -5,7 +5,7 @@ return [
     'no-schedules' => 'No hay programaciones configuradas para este servidor.',
     'create-schedule' => 'Crear programación',
     'last-run-at' => 'Última ejecución en: :time',
-    'never' => 'never',
+    'never' => 'nunca',
     'active' => 'Activo',
     'inactive' => 'Inactivo',
     'processing' => 'Tratamiento',

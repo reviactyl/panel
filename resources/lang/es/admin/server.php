@@ -138,7 +138,7 @@ return [
                 'helper' => 'Si el Egg seleccionado tiene un script de instalación adjunto, el script se ejecutará durante la instalación a menos que esté marcado.',
             ],
             'image' => [
-                'label' => 'Docker Image',
+                'label' => 'Imagen de Docker',
                 'helper' => 'Seleccione una imagen del menú desplegable o ingrese una imagen personalizada a continuación.',
             ],
             'custom_image' => [
@@ -204,7 +204,7 @@ return [
             'helper' => 'El comando de inicio para el servidor.',
         ],
         'image' => [
-            'label' => 'Docker Image',
+            'label' => 'Imagen de Docker',
             'helper' => 'Imagen de Docker utilizada para ejecutar este servidor.',
             'custom' => 'Costumbre',
         ],

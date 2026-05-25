@@ -31,6 +31,8 @@ return [
         'recaptcha-secret-key' => 'reCAPTCHA المفتاح السري',
         'turnstile-site-key' => 'مفتاح موقع الباب الدوار',
         'turnstile-secret-key' => 'المفتاح السري للباب الدوار',
+        'registration-title' => 'Registration',
+        'registration-enabled' => 'Allow New Registrations',
     ],
     'mail' => [
         'title' => 'البريد',
@@ -84,7 +86,7 @@ return [
         'title' => 'تصميم',
         'general' => 'عام',
         'colors' => 'الألوان',
-        'look-and-feel' => 'انظر واشعر',
+        'look-and-feel' => 'Look & Feel',
         'layout' => 'تَخطِيط',
         'alerts' => 'التنبيهات',
         'meta-options' => 'خيارات التعريف',

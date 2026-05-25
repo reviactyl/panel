@@ -266,6 +266,11 @@ export default () => {
                                         <FaFileCirclePlus className='h-5 w-5' />
                                     </Button.Text>
                                 </Tooltip>
+                                {selectedFilesLength > 0 && (
+                                    <>
+                                        <MassActionsBar />
+                                    </>
+                                )}
                                 <ExtensionSlot name={`server:files:actions:end`} />
                             </div>
                         </Can>
@@ -307,7 +312,7 @@ export default () => {
                         </div>
                     </div>
                 </Card>
-                <Card className={'flex items-center mb-1 !rounded-none !px-2 !py-2 !bg-gray-800 hidden md:block'}>
+                <Card className={'items-center mb-1 !rounded-none !px-2 !py-2 !bg-gray-800 hidden md:block'}>
                     <div className='order-4 md:order-none flex items-center gap-1'>
                         <div className='flex-1 ml-[55px]'>
                             <button
@@ -319,7 +324,7 @@ export default () => {
                                         setSortDirection('asc');
                                     }
                                 }}
-                                className={'flex items-center gap-x-1 text-sm text-gray-300 !text-gray-200'}
+                                className={'flex items-center gap-x-1 text-sm text-gray-300'}
                             >
                                 <span css={tw`text-xs font-semibold`}>{t('name')}</span>
                                 {sortType === 'name' ? (
@@ -339,7 +344,7 @@ export default () => {
                                         setSortDirection('asc');
                                     }
                                 }}
-                                className={'flex items-center gap-x-1 text-sm text-gray-300 !text-gray-200'}
+                                className={'flex items-center gap-x-1 text-sm text-gray-300'}
                             >
                                 <span css={tw`text-xs font-semibold`}>{t('size')}</span>
                                 {sortType === 'size' ? (
@@ -359,7 +364,7 @@ export default () => {
                                         setSortDirection('asc');
                                     }
                                 }}
-                                className={'flex items-center gap-x-1 text-sm text-gray-300 !text-gray-200'}
+                                className={'flex items-center gap-x-1 text-sm text-gray-300'}
                             >
                                 <span css={tw`text-xs font-semibold`}>{t('date')}</span>
                                 {sortType === 'date' ? (
@@ -417,7 +422,6 @@ export default () => {
                             {sortFiles(filteredFiles.slice(0, 250), sortType, sortDirection).map((file) => (
                                 <FileObjectRow key={file.key} file={file} onMediaClick={handlePreviewClick} />
                             ))}
-                            <MassActionsBar />
                         </motion.div>
                     )}
                 </Card>

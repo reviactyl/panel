@@ -31,6 +31,8 @@ return [
         'recaptcha-secret-key' => 'रीकैप्चा गुप्त कुंजी',
         'turnstile-site-key' => 'टर्नस्टाइल साइट कुंजी',
         'turnstile-secret-key' => 'घूमने वाला दरवाज़ा गुप्त कुंजी',
+        'registration-title' => 'Registration',
+        'registration-enabled' => 'Allow New Registrations',
     ],
     'mail' => [
         'title' => 'मेल',
@@ -84,7 +86,7 @@ return [
         'title' => 'डिज़ाइन करें',
         'general' => 'सामान्य',
         'colors' => 'रंग',
-        'look-and-feel' => 'देखो और महसूस करो',
+        'look-and-feel' => 'Look & Feel',
         'layout' => 'लेआउट',
         'alerts' => 'अलर्ट',
         'meta-options' => 'मेटा विकल्प',

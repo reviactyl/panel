@@ -27,6 +27,7 @@ class NestCreationService
             'author' => $author ?? $this->config->get('panel.service.author'),
             'name' => array_get($data, 'name'),
             'description' => array_get($data, 'description'),
+            'image' => array_get($data, 'image'),
         ], true, true);
     }
 }

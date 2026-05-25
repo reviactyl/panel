@@ -31,6 +31,8 @@ return [
         'recaptcha-secret-key' => 'Kunci Rahasia reCAPTCHA',
         'turnstile-site-key' => 'Kunci Situs Pintu Putar',
         'turnstile-secret-key' => 'Kunci Rahasia Pintu Putar',
+        'registration-title' => 'Registration',
+        'registration-enabled' => 'Allow New Registrations',
     ],
     'mail' => [
         'title' => 'Surat',
@@ -84,7 +86,7 @@ return [
         'title' => 'Tentukan',
         'general' => 'Umum',
         'colors' => 'Warna',
-        'look-and-feel' => 'Lihat & Rasakan',
+        'look-and-feel' => 'Look & Feel',
         'layout' => 'Tata Letak',
         'alerts' => 'Peringatan',
         'meta-options' => 'Opsi Meta',

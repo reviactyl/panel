@@ -11,6 +11,7 @@ use App\Http\Middleware\Api\Client\SubstituteClientBindings;
 use App\Http\Middleware\Api\Daemon\DaemonAuthenticate;
 use App\Http\Middleware\Api\IsValidJson;
 use App\Http\Middleware\ClearLegacySessionCookies;
+use App\Http\Middleware\EditorMiddleware;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\EnsureInstallationState;
 use App\Http\Middleware\EnsureStatefulRequests;
@@ -73,6 +74,7 @@ class Kernel extends HttpKernel
             PreventRequestForgery::class,
             SubstituteBindings::class,
             LanguageMiddleware::class,
+            EditorMiddleware::class,
             UpdateLastSeen::class,
         ],
         'api' => [

@@ -13,6 +13,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\ViewField;
 use Filament\Infolists\Components\CodeEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Notifications\Notification;
@@ -39,6 +40,8 @@ class EditNodeForm
                         Tab::make(trans('admin/node.sections.overview.title'))
                             ->icon('tabler-layout-dashboard')
                             ->schema([
+                                ViewField::make('health')
+                                    ->view('filament.components.wings-warning'),
                                 Fieldset::make()
                                     ->label(trans('admin/node.sections.overview.information-label'))
                                     ->columns(4)
