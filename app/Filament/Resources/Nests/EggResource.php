@@ -135,7 +135,7 @@ class EggResource extends Resource
                                             ->required()
                                             ->maxLength(191),
                                         Forms\Components\TextInput::make('description')
-                                            ->maxLength(191),
+                                            ->dehydrateStateUsing(fn ($state) => $state ?? ''),
                                         Forms\Components\TextInput::make('env_variable')
                                             ->label(trans('admin/eggs.fields.env_variable'))
                                             ->required()
