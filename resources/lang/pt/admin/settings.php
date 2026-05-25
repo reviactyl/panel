@@ -103,7 +103,7 @@ return [
         'success' => 'Sucesso',
         'danger' => 'Perigo',
         'secondary' => 'Secundário',
-        'look-and-feel' => 'Look & Feel',
+        'look-and-feel' => 'Design do Painel',
         'theme-selector' => 'Seletor de tema',
         'sidebar-logout-button' => 'Botão de logout da barra lateral',
         'panel-background' => 'Fundo do painel',
