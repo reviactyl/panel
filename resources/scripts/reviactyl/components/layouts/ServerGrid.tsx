@@ -94,7 +94,7 @@ export default ({
                     />
                     <div className='flex items-center justify-between pb-5 gap-x-2'>
                         <div className='flex-1 min-w-0'>
-                            <Title className='text-2xl truncate' title={server.name}>
+                            <Title className='block max-w-[10ch] truncate text-2xl sm:max-w-none' title={server.name}>
                                 {server.name}
                             </Title>
                             {showCategory && (

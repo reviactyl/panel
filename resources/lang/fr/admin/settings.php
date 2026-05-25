@@ -31,6 +31,8 @@ return [
         'recaptcha-secret-key' => 'Clé secrète reCAPTCHA',
         'turnstile-site-key' => 'Clé du site des tourniquets',
         'turnstile-secret-key' => 'Clé secrète du tourniquet',
+        'registration-title' => 'Registration',
+        'registration-enabled' => 'Allow New Registrations',
     ],
     'mail' => [
         'title' => 'Mail',
@@ -84,7 +86,7 @@ return [
         'title' => 'Concevoir',
         'general' => 'Général',
         'colors' => 'Couleurs',
-        'look-and-feel' => 'Regardez et ressentez',
+        'look-and-feel' => 'Look & Feel',
         'layout' => 'Mise en page',
         'alerts' => 'Alertes',
         'meta-options' => 'Méta-options',

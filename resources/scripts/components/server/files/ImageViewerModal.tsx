@@ -65,6 +65,7 @@ const ImageViewerModal = ({ imageUrl, imageName, ...modalProps }: Props) => {
         });
 
         viewerRef.current = viewer;
+        modalProps.onDismissed()
         viewer.show();
     };
 

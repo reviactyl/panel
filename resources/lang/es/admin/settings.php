@@ -31,6 +31,8 @@ return [
         'recaptcha-secret-key' => 'Clave secreta reCAPTCHA',
         'turnstile-site-key' => 'Clave del sitio del torniquete',
         'turnstile-secret-key' => 'Llave secreta del torniquete',
+        'registration-title' => 'Registro',
+        'registration-enabled' => 'Permitir nuevos registros',
     ],
     'mail' => [
         'title' => 'Correo',
@@ -101,7 +103,7 @@ return [
         'success' => 'Éxito',
         'danger' => 'Peligro',
         'secondary' => 'Secundario',
-        'look-and-feel' => 'Look & Feel',
+        'look-and-feel' => 'Mira y siente',
         'theme-selector' => 'Selector de temas',
         'sidebar-logout-button' => 'Botón de cierre de sesión de la barra lateral',
         'panel-background' => 'Fondo del panel',

@@ -138,7 +138,7 @@ return [
                 'helper' => 'Se o Egg selecionado tiver um script de instalação anexado, o script será executado durante a instalação, a menos que esta opção esteja marcada.',
             ],
             'image' => [
-                'label' => 'Docker Image',
+                'label' => 'Imagem Docker',
                 'helper' => 'Selecione uma imagem no menu suspenso ou insira uma imagem personalizada abaixo.',
             ],
             'custom_image' => [

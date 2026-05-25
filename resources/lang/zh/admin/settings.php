@@ -31,6 +31,8 @@ return [
         'recaptcha-secret-key' => 'reCAPTCHA 密钥',
         'turnstile-site-key' => '旋转栅门站点密钥',
         'turnstile-secret-key' => '旋转栅门秘密钥匙',
+        'registration-title' => 'Registration',
+        'registration-enabled' => 'Allow New Registrations',
     ],
     'mail' => [
         'title' => '邮件',
@@ -84,7 +86,7 @@ return [
         'title' => '设计',
         'general' => '一般的',
         'colors' => '颜色',
-        'look-and-feel' => '外观和感觉',
+        'look-and-feel' => 'Look & Feel',
         'layout' => '布局',
         'alerts' => '警报',
         'meta-options' => '元选项',

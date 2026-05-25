@@ -31,6 +31,8 @@ return [
         'recaptcha-secret-key' => 'hemlig nyckel för reCAPTCHA',
         'turnstile-site-key' => 'Vändkors platsnyckel',
         'turnstile-secret-key' => 'Vändkors hemlig nyckel',
+        'registration-title' => 'Registration',
+        'registration-enabled' => 'Allow New Registrations',
     ],
     'mail' => [
         'title' => 'E-post',
@@ -84,7 +86,7 @@ return [
         'title' => 'Designifiera',
         'general' => 'Allmän',
         'colors' => 'Färger',
-        'look-and-feel' => 'Titta & Känn',
+        'look-and-feel' => 'Look & Feel',
         'layout' => 'Layout',
         'alerts' => 'Varningar',
         'meta-options' => 'Meta-alternativ',

@@ -31,6 +31,8 @@ return [
         'recaptcha-secret-key' => 'reCAPTCHA ಸೀಕ್ರೆಟ್ ಕೀ',
         'turnstile-site-key' => 'ಟರ್ನ್ಸ್ಟೈಲ್ ಸೈಟ್ ಕೀ',
         'turnstile-secret-key' => 'ಟರ್ನ್ಸ್ಟೈಲ್ ಸೀಕ್ರೆಟ್ ಕೀ',
+        'registration-title' => 'Registration',
+        'registration-enabled' => 'Allow New Registrations',
     ],
     'mail' => [
         'title' => 'ಮೇಲ್',
@@ -84,7 +86,7 @@ return [
         'title' => 'ವಿನ್ಯಾಸಗೊಳಿಸಿ',
         'general' => 'ಸಾಮಾನ್ಯ',
         'colors' => 'ಬಣ್ಣಗಳು',
-        'look-and-feel' => 'ನೋಡಿ ಮತ್ತು ಅನುಭವಿಸಿ',
+        'look-and-feel' => 'Look & Feel',
         'layout' => 'ಲೇಔಟ್',
         'alerts' => 'ಎಚ್ಚರಿಕೆಗಳು',
         'meta-options' => 'ಮೆಟಾ ಆಯ್ಕೆಗಳು',

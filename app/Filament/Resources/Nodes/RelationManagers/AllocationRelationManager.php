@@ -13,6 +13,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Table;
 
 class AllocationRelationManager extends RelationManager
@@ -33,7 +34,7 @@ class AllocationRelationManager extends RelationManager
                     ->label(trans('admin/node.allocations.table.port'))
                     ->sortable(),
 
-                TextColumn::make('ip_alias')
+                TextInputColumn::make('ip_alias')
                     ->label(trans('admin/node.allocations.table.alias'))
                     ->toggleable(),
 
@@ -41,7 +42,7 @@ class AllocationRelationManager extends RelationManager
                     ->label(trans('admin/node.allocations.table.server'))
                     ->formatStateUsing(fn ($state) => $state ?: trans('admin/node.allocations.table.unassigned')),
 
-                TextColumn::make('notes')
+                TextInputColumn::make('notes')
                     ->label(trans('admin/node.allocations.table.notes'))
                     ->toggleable(),
 

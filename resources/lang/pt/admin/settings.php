@@ -31,6 +31,8 @@ return [
         'recaptcha-secret-key' => 'Chave secreta reCAPTCHA',
         'turnstile-site-key' => 'Chave do site da catraca',
         'turnstile-secret-key' => 'Chave secreta da catraca',
+        'registration-title' => 'Cadastro',
+        'registration-enabled' => 'Habilitar Novos Cadastros',
     ],
     'mail' => [
         'title' => 'E-mail',
@@ -84,7 +86,7 @@ return [
         'title' => 'Designificar',
         'general' => 'Em geral',
         'colors' => 'Cores',
-        'look-and-feel' => 'Veja e sinta',
+        'look-and-feel' => 'Look & Feel',
         'layout' => 'Disposição',
         'alerts' => 'Alertas',
         'meta-options' => 'Metaopções',

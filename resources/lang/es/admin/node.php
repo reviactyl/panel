@@ -125,7 +125,7 @@ return [
 
     'table' => [
         'health' => 'Salud',
-        'health_http_status' => 'HTTP :status',
+        'health_http_status' => 'HTTP:status',
         'health_check_console' => 'comprobar la consola del navegador',
         'id' => 'ID',
         'uuid' => 'UUID',
@@ -206,7 +206,7 @@ return [
         ],
         'fields' => [
             'allocation_ip' => [
-                'label' => 'IP Address',
+                'label' => 'Dirección IP',
                 'helper' => 'Admite una única IP o CIDR (por ejemplo, 192.0.2.1 o 192.0.2.0/24).',
             ],
             'allocation_ports' => [
