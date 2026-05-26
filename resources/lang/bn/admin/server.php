@@ -110,7 +110,7 @@ return [
                 'helper' => 'এই কনটেইনারের জন্য অনুমোদিত সর্বোচ্চ মেমোরি। সীমাহীন করতে 0 সেট করুন।',
             ],
             'swap' => [
-                'label' => 'Swap',
+                'label' => 'সোয়াপ',
                 'helper' => 'Swap বন্ধ করতে 0, অথবা সীমাহীন Swap এর জন্য -1 ব্যবহার করুন।',
             ],
             'disk' => [
@@ -118,7 +118,7 @@ return [
                 'helper' => 'সীমাহীন ডিস্ক ব্যবহারের জন্য 0 সেট করুন।',
             ],
             'io' => [
-                'label' => 'Block IO Weight',
+                'label' => 'ব্লক IO ওয়েট',
                 'helper' => 'উন্নত: অন্যান্য চলমান কনটেইনারের তুলনায় IO পারফরম্যান্স। মান 10 থেকে 1000 এর মধ্যে হওয়া উচিত।',
             ],
             'oom_disabled' => [
@@ -126,11 +126,11 @@ return [
                 'helper' => 'মেমোরি সীমা অতিক্রম করলে সার্ভার বন্ধ করে দেয়।',
             ],
             'nest' => [
-                'label' => 'Nest',
+                'label' => 'নেস্ট',
                 'helper' => 'এই সার্ভার যে Nest এর অধীনে থাকবে তা নির্বাচন করুন।',
             ],
             'egg' => [
-                'label' => 'Egg',
+                'label' => 'এগ',
                 'helper' => 'এই সার্ভার কীভাবে কাজ করবে তা নির্ধারণকারী Egg নির্বাচন করুন।',
             ],
             'skip_scripts' => [
@@ -158,59 +158,59 @@ return [
 
     'fields' => [
         'advanced_mode' => [
-            'label' => 'Advanced Mode',
-            'helper' => 'Toggle to show additional server configuration options. Toggle on only if you understand the implications of the additional settings.',
+            'label' => 'এডভান্সড মোড',
+            'helper' => 'অতিরিক্ত সার্ভার কনফিগারেশন অপশন দেখানোর জন্য টগল করুন। শুধুমাত্র যদি আপনি অতিরিক্ত সেটিংসের প্রভাব বুঝেন তাহলে চালু করুন।',
         ],
         'external_id' => [
-            'label' => 'External ID',
-            'helper' => 'Optional unique identifier for this server.',
+            'label' => 'এক্সটার্নাল আইডি',
+            'helper' => 'এই সার্ভারের জন্য ঐচ্ছিক ইউনিক আইডেন্টিফায়ার।',
         ],
         'owner' => [
-            'label' => 'Owner',
-            'helper' => 'Select the user that owns this server.',
+            'label' => 'মালিক',
+            'helper' => 'এই সার্ভারের মালিক ব্যবহারকারী নির্বাচন করুন।',
         ],
         'name' => [
-            'label' => 'Name',
-            'placeholder' => 'Server Name',
-            'helper' => 'A short name for this server.',
+            'label' => 'নাম',
+            'placeholder' => 'সার্ভারের নাম',
+            'helper' => 'এই সার্ভারের জন্য একটি সংক্ষিপ্ত নাম।',
         ],
         'description' => [
-            'label' => 'Description',
-            'placeholder' => 'Server description',
-            'helper' => 'Optional description for this server.',
+            'label' => 'বিবরণ',
+            'placeholder' => 'সার্ভারের বিবরণ',
+            'helper' => 'এই সার্ভারের জন্য ঐচ্ছিক বিবরণ।',
         ],
         'node' => [
-            'label' => 'Node',
-            'helper' => 'The node this server will be deployed to.',
+            'label' => 'নোড',
+            'helper' => 'যে নোডে এই সার্ভার ডিপ্লয় করা হবে।',
         ],
         'allocation' => [
-            'label' => 'Primary Allocation',
-            'helper' => 'The default IP/port allocation for this server.',
+            'label' => 'প্রাথমিক বরাদ্দ',
+            'helper' => 'এই সার্ভারের জন্য ডিফল্ট আইপি/পোর্ট বরাদ্দ।',
         ],
         'additional_allocations' => [
-            'label' => 'Additional Allocations',
-            'helper' => 'Optional extra allocations to assign.',
+            'label' => 'অতিরিক্ত বরাদ্দ',
+            'helper' => 'বরাদ্দ করার জন্য ঐচ্ছিক অতিরিক্ত বরাদ্দ।',
         ],
         'nest' => [
-            'label' => 'Nest',
-            'helper' => 'The service nest for this server.',
+            'label' => 'নেস্ট',
+            'helper' => 'এই সার্ভারের জন্য সার্ভিস নেস্ট।',
         ],
         'egg' => [
-            'label' => 'Egg',
-            'helper' => 'The egg that defines server behavior.',
+            'label' => 'এগ',
+            'helper' => 'এগ যা সার্ভারের আচরণ নির্ধারণ করে।',
         ],
         'startup' => [
-            'label' => 'Startup Command',
-            'helper' => 'The startup command for the server.',
+            'label' => 'স্টার্টআপ কমান্ড',
+            'helper' => 'সার্ভারের জন্য স্টার্টআপ কমান্ড।',
         ],
         'image' => [
-            'label' => 'Docker Image',
-            'helper' => 'Docker image used to run this server.',
-            'custom' => 'Custom',
+            'label' => 'ডকার ইমেজ',
+            'helper' => 'এই সার্ভার চালানোর জন্য ব্যবহৃত ডকার ইমেজ।',
+            'custom' => 'কাস্টম',
         ],
         'skip_scripts' => [
-            'label' => 'Skip Egg Scripts',
-            'helper' => 'Skip egg install scripts during creation.',
+            'label' => 'এগ স্ক্রিপ্ট স্কিপ করুন',
+            'helper' => 'নির্মাণের সময় এগ ইন্সটল স্ক্রিপ্ট স্কিপ করুন।নির্মাণের সময় এগ ইন্সটল স্ক্রিপ্ট স্কিপ করুন।',
         ],
         'start_on_completion' => [
             'label' => 'Start on Completion',
