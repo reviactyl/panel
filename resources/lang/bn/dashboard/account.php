@@ -119,7 +119,7 @@ return [
     'ssh' => [
         'title' => 'SSH কীসমূহ',
         'add-key' => 'SSH কী যোগ করুন',
-        'fingerprint' => 'SHA256',
+        'fingerprint' => 'SHA২৫৬',
         'not-exist' => 'এই অ্যাকাউন্টের জন্য কোনো SSH কী নেই।',
         'added-on' => 'যোগ করা হয়েছে',
         'create' => [
