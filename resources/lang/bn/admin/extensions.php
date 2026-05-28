@@ -12,7 +12,7 @@ return [
         'author' => 'লেখক',
         'enabled' => 'সক্রিয়',
         'updated' => 'আপডেট করা হয়েছে',
-        'manifest_json' => 'Manifest JSON',
+        'manifest_json' => 'ম্যানিফেস্ট JSON',
     ],
 
     'modals' => [

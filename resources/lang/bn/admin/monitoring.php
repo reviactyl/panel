@@ -43,7 +43,7 @@ return [
         'close' => 'বন্ধ করুন',
         'no_data' => 'কোনো ডাটা উপলব্ধ নেই। নিশ্চিত করুন যে নোড অনলাইনে রয়েছে।',
 
-        'cpu_section' => 'CPU',
+        'cpu_section' => 'সিপিইউ',
         'cpu_total' => 'মোট ব্যবহার',
         'cpu_cores' => 'কোরসমূহ',
         'per_core' => 'প্রতি-কোর ব্যবহার',
@@ -54,7 +54,7 @@ return [
         'free_memory' => 'ফাঁকা',
         'available_memory' => 'উপলব্ধ',
 
-        'swap_section' => 'Swap',
+        'swap_section' => 'সোয়াপ',
         'swap_none' => 'এই নোডে কোনো swap কনফিগার করা নেই।',
         'swap_total' => 'মোট',
         'swap_used' => 'ব্যবহৃত',
@@ -70,7 +70,7 @@ return [
         'runtime_section' => 'রানটাইম',
         'go_version' => 'Go ভার্সন',
         'arch' => 'আর্কিটেকচার',
-        'goroutines' => 'Goroutines',
+        'goroutines' => 'গরুটিনস',
         'uptime' => 'চালু থাকার সময়',
     ],
     'servers' => [
@@ -81,7 +81,7 @@ return [
         'col' => [
             'name' => 'সার্ভার',
             'state' => 'অবস্থা',
-            'cpu' => 'CPU',
+            'cpu' => 'সিপিইউ',
             'memory' => 'মেমোরি',
             'disk' => 'ডিস্ক',
             'network' => 'নেটওয়ার্ক',

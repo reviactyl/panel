@@ -2,8 +2,8 @@
 
 return [
 
-    'label' => 'Nest',
-    'plural_label' => 'Nests',
+    'label' => 'নেস্ট',
+    'plural_label' => 'নেস্টসমূহ',
 
     'sections' => [
         'configuration' => 'Nest কনফিগারেশন',
@@ -25,7 +25,7 @@ return [
         'id' => 'আইডি',
         'name' => 'নাম',
         'author' => 'লেখক',
-        'eggs' => 'Eggs',
+        'eggs' => 'এগসমূহ',
         'servers' => 'সার্ভারসমূহ',
     ],
 

@@ -110,7 +110,7 @@ return [
                 'helper' => 'এই কনটেইনারের জন্য অনুমোদিত সর্বোচ্চ মেমোরি। সীমাহীন করতে 0 সেট করুন।',
             ],
             'swap' => [
-                'label' => 'Swap',
+                'label' => 'সোয়াপ',
                 'helper' => 'Swap বন্ধ করতে 0, অথবা সীমাহীন Swap এর জন্য -1 ব্যবহার করুন।',
             ],
             'disk' => [
@@ -118,7 +118,7 @@ return [
                 'helper' => 'সীমাহীন ডিস্ক ব্যবহারের জন্য 0 সেট করুন।',
             ],
             'io' => [
-                'label' => 'Block IO Weight',
+                'label' => 'ব্লক IO ওয়েট',
                 'helper' => 'উন্নত: অন্যান্য চলমান কনটেইনারের তুলনায় IO পারফরম্যান্স। মান 10 থেকে 1000 এর মধ্যে হওয়া উচিত।',
             ],
             'oom_disabled' => [
@@ -126,11 +126,11 @@ return [
                 'helper' => 'মেমোরি সীমা অতিক্রম করলে সার্ভার বন্ধ করে দেয়।',
             ],
             'nest' => [
-                'label' => 'Nest',
+                'label' => 'নেস্ট',
                 'helper' => 'এই সার্ভার যে Nest এর অধীনে থাকবে তা নির্বাচন করুন।',
             ],
             'egg' => [
-                'label' => 'Egg',
+                'label' => 'এগ',
                 'helper' => 'এই সার্ভার কীভাবে কাজ করবে তা নির্ধারণকারী Egg নির্বাচন করুন।',
             ],
             'skip_scripts' => [
@@ -158,135 +158,135 @@ return [
 
     'fields' => [
         'advanced_mode' => [
-            'label' => 'Advanced Mode',
-            'helper' => 'Toggle to show additional server configuration options. Toggle on only if you understand the implications of the additional settings.',
+            'label' => 'এডভান্সড মোড',
+            'helper' => 'অতিরিক্ত সার্ভার কনফিগারেশন অপশন দেখানোর জন্য টগল করুন। শুধুমাত্র যদি আপনি অতিরিক্ত সেটিংসের প্রভাব বুঝেন তাহলে চালু করুন।',
         ],
         'external_id' => [
-            'label' => 'External ID',
-            'helper' => 'Optional unique identifier for this server.',
+            'label' => 'এক্সটার্নাল আইডি',
+            'helper' => 'এই সার্ভারের জন্য ঐচ্ছিক ইউনিক আইডেন্টিফায়ার।',
         ],
         'owner' => [
-            'label' => 'Owner',
-            'helper' => 'Select the user that owns this server.',
+            'label' => 'মালিক',
+            'helper' => 'এই সার্ভারের মালিক ব্যবহারকারী নির্বাচন করুন।',
         ],
         'name' => [
-            'label' => 'Name',
-            'placeholder' => 'Server Name',
-            'helper' => 'A short name for this server.',
+            'label' => 'নাম',
+            'placeholder' => 'সার্ভারের নাম',
+            'helper' => 'এই সার্ভারের জন্য একটি সংক্ষিপ্ত নাম।',
         ],
         'description' => [
-            'label' => 'Description',
-            'placeholder' => 'Server description',
-            'helper' => 'Optional description for this server.',
+            'label' => 'বিবরণ',
+            'placeholder' => 'সার্ভারের বিবরণ',
+            'helper' => 'এই সার্ভারের জন্য ঐচ্ছিক বিবরণ।',
         ],
         'node' => [
-            'label' => 'Node',
-            'helper' => 'The node this server will be deployed to.',
+            'label' => 'নোড',
+            'helper' => 'যে নোডে এই সার্ভার ডিপ্লয় করা হবে।',
         ],
         'allocation' => [
-            'label' => 'Primary Allocation',
-            'helper' => 'The default IP/port allocation for this server.',
+            'label' => 'প্রাথমিক বরাদ্দ',
+            'helper' => 'এই সার্ভারের জন্য ডিফল্ট আইপি/পোর্ট বরাদ্দ।',
         ],
         'additional_allocations' => [
-            'label' => 'Additional Allocations',
-            'helper' => 'Optional extra allocations to assign.',
+            'label' => 'অতিরিক্ত বরাদ্দ',
+            'helper' => 'বরাদ্দ করার জন্য ঐচ্ছিক অতিরিক্ত বরাদ্দ।',
         ],
         'nest' => [
-            'label' => 'Nest',
-            'helper' => 'The service nest for this server.',
+            'label' => 'নেস্ট',
+            'helper' => 'এই সার্ভারের জন্য সার্ভিস নেস্ট।',
         ],
         'egg' => [
-            'label' => 'Egg',
-            'helper' => 'The egg that defines server behavior.',
+            'label' => 'এগ',
+            'helper' => 'এগ যা সার্ভারের আচরণ নির্ধারণ করে।',
         ],
         'startup' => [
-            'label' => 'Startup Command',
-            'helper' => 'The startup command for the server.',
+            'label' => 'স্টার্টআপ কমান্ড',
+            'helper' => 'সার্ভারের জন্য স্টার্টআপ কমান্ড।',
         ],
         'image' => [
-            'label' => 'Docker Image',
-            'helper' => 'Docker image used to run this server.',
-            'custom' => 'Custom',
+            'label' => 'ডকার ইমেজ',
+            'helper' => 'এই সার্ভার চালানোর জন্য ব্যবহৃত ডকার ইমেজ।',
+            'custom' => 'কাস্টম',
         ],
         'skip_scripts' => [
-            'label' => 'Skip Egg Scripts',
-            'helper' => 'Skip egg install scripts during creation.',
+            'label' => 'এগ স্ক্রিপ্ট স্কিপ করুন',
+            'helper' => 'নির্মাণের সময় এগ ইন্সটল স্ক্রিপ্ট স্কিপ করুন।নির্মাণের সময় এগ ইন্সটল স্ক্রিপ্ট স্কিপ করুন।',
         ],
         'start_on_completion' => [
-            'label' => 'Start on Completion',
+            'label' => 'নেস্ট',
             'helper' => 'Automatically start the server after installation.',
         ],
         'memory' => [
-            'label' => 'Memory',
+            'label' => 'মেমোরি',
             'helper' => 'Total memory allocation. Set to 0 for unlimited. (Unlimited Memory doesn\'t work for Minecraft Eggs due to Startup Command)',
         ],
         'swap' => [
-            'label' => 'Swap',
+            'label' => 'সোয়াপ',
             'helper' => 'Swap memory allocation. Set to 0 to disable swap or -1 to allow unlimited swap.',
         ],
         'disk' => [
-            'label' => 'Disk',
+            'label' => 'ডিস্ক',
             'helper' => 'Disk space allocation. Set to 0 for unlimited.',
         ],
         'io' => [
-            'label' => 'IO Weight',
+            'label' => 'ব্লক IO ওয়েট',
             'helper' => 'Relative disk I/O priority (10-1000).',
         ],
         'cpu' => [
-            'label' => 'CPU',
+            'label' => 'সিপিইউ',
             'helper' => 'CPU limit in percent. 100% means one full core, 200% means two full cores, etc.',
         ],
         'enter_size_in_gib' => [
-            'label' => 'Enter size in GiB',
+            'label' => 'GiB-এ সাইজ দিন',
             'helper' => 'You can enter sizes in GiB by using the "GiB" suffix (e.g. 10GiB = 10240MiB).',
         ],
         'threads' => [
-            'label' => 'CPU Threads',
+            'label' => 'সিপিইউ',
             'helper' => 'Optional thread pinning. Example: 0-1,3.',
         ],
         'oom_disabled' => [
-            'label' => 'Disable OOM Killer',
+            'label' => 'OOM কিলার নিষ্ক্রিয় করুন',
             'helper' => 'Prevent the kernel from killing the process when out of memory.',
         ],
         'database_limit' => [
-            'label' => 'Database Limit',
+            'label' => 'ডাটাবেস সীমা',
             'helper' => 'Maximum number of databases.',
         ],
         'allocation_limit' => [
-            'label' => 'Allocation Limit',
+            'label' => 'বরাদ্দ সীমা',
             'helper' => 'Maximum number of allocations.',
         ],
         'backup_limit' => [
-            'label' => 'Backup Limit',
+            'label' => 'ব্যাকআপ সীমা',
             'helper' => 'Maximum number of backups.',
         ],
         'environment' => [
-            'key' => 'Variable',
-            'value' => 'Value',
+            'key' => 'ভেরিয়েবল',
+            'value' => 'মান',
             'helper' => 'Environment variables for this egg.',
         ],
         'use_custom_image' => [
-            'label' => 'Use Custom Image',
+            'label' => 'কাস্টম',
             'helper' => 'Toggle to use a custom Docker image instead of one provided by the egg.',
         ],
     ],
 
     'table' => [
-        'id' => 'ID',
-        'name' => 'Name',
-        'owner' => 'Owner',
-        'node' => 'Node',
-        'allocation' => 'Allocation',
-        'status' => 'Status',
-        'egg' => 'Egg',
-        'memory' => 'Memory',
-        'disk' => 'Disk',
-        'cpu' => 'CPU',
-        'created' => 'Created',
-        'updated' => 'Updated',
-        'installed' => 'Installed',
-        'no_status' => 'No Status',
-        'unlimited' => 'Unlimited',
+        'id' => 'UUID',
+        'name' => 'নাম',
+        'owner' => 'মালিক',
+        'node' => 'নোড',
+        'allocation' => 'প্রাথমিক বরাদ্দ',
+        'status' => 'স্ট্যাটাস',
+        'egg' => 'এগসমূহ',
+        'memory' => 'মেমোরি',
+        'disk' => 'ডিস্ক',
+        'cpu' => 'সিপিইউ',
+        'created' => 'তৈরি করা হয়েছে',
+        'updated' => 'আপডেট করা হয়েছে',
+        'installed' => 'ইনস্টল করা হয়েছে',
+        'no_status' => 'কোনো স্ট্যাটাস নেই',
+        'unlimited' => 'আনলিমিটেড',
     ],
 
     'messages' => [
@@ -296,24 +296,24 @@ return [
     ],
 
     'actions' => [
-        'edit' => 'Edit',
-        'random' => 'Random',
-        'toggle_install_status' => 'Toggle Install Status',
-        'suspend' => 'Suspend',
-        'unsuspend' => 'Unsuspend',
-        'suspended' => 'Suspended',
-        'unsuspended' => 'Unsuspended',
-        'reinstall' => 'Reinstall',
-        'delete' => 'Delete',
-        'delete_forcibly' => 'Forcibly Delete',
-        'view' => 'View',
+        'edit' => 'এডিট',
+        'random' => 'র্যান্ডম',
+        'toggle_install_status' => 'ইনস্টল স্ট্যাটাস টগল করুন',
+        'suspend' => 'সাসপেন্ড',
+        'unsuspend' => 'আনসাসপেন্ড',
+        'suspended' => 'সাসপেন্ডেড',
+        'unsuspended' => 'আনসাসপেন্ডেড',
+        'reinstall' => 'রিইন্সটল',
+        'delete' => 'মুছে ফেলুন',
+        'delete_forcibly' => 'জোর করে মুছে ফেলুন',
+        'view' => 'দেখুন',
     ],
 
     'exceptions' => [
         'no_new_default_allocation' => 'You are attempting to delete the default allocation for this server but there is no fallback allocation to use.',
         'marked_as_failed' => 'This server was marked as having failed a previous installation. Current status cannot be toggled in this state.',
         'bad_variable' => 'There was a validation error with the :name variable.',
-        'daemon_exception' => 'There was an exception while attempting to communicate with the daemon resulting in a HTTP/:code response code. This exception has been logged. (request id: :request_id)',
+        'daemon_exception' => 'ডেমন এর সাথে যোগাযোগের চেষ্টা করার সময় একটি এক্সেপশন হয়েছিল যার ফলে HTTP/ঃcode রেসপন্স কোড এসেছে। এই এক্সেপশন লগ করা হয়েছে। (রিকুয়েস্ট আইডিঃ :request_id)',
         'default_allocation_not_found' => 'The requested default allocation was not found in this server\'s allocations.',
     ],
 
@@ -342,26 +342,26 @@ return [
 
     'edit' => [
         'tabs' => [
-            'information' => 'Information',
-            'build_configuration' => 'Build Configuration',
-            'startup' => 'Startup',
-            'manage' => 'Manage',
+            'information' => 'তথ্য',
+            'build_configuration' => 'বিল্ড কনফিগারেশন',
+            'startup' => 'স্টার্টআপ কমান্ড',
+            'manage' => 'ম্যানেজ',
         ],
 
         'sections' => [
-            'resource_management' => 'Resource Management',
-            'application_feature_limits' => 'Application Feature Limits',
-            'allocation_management' => 'Allocation Management',
-            'startup_command_modification' => 'Startup Command Modification',
-            'service_configuration' => 'Service Configuration',
-            'docker_image_configuration' => 'Docker Image Configuration',
-            'service_variables' => 'Service Variables',
-            'reinstall_server' => 'Reinstall Server',
-            'install_status' => 'Install Status',
-            'suspend_server' => 'Suspend Server',
-            'unsuspend_server' => 'Unsuspend Server',
-            'transfer_server' => 'Transfer Server',
-            'delete_server' => 'Delete Server',
+            'resource_management' => 'রিসোর্স ম্যানেজমেন্ট',
+            'application_feature_limits' => 'অ্যাপ্লিকেশন ফিচার লিমিট',
+            'allocation_management' => 'সব',
+            'startup_command_modification' => 'স্টার্টআপ কমান্ড',
+            'service_configuration' => 'সার্ভিস কনফিগারেশন',
+            'docker_image_configuration' => 'ডকার ইমেজ কনফিগারেশন',
+            'service_variables' => 'সার্ভিস ভেরিয়েবল',
+            'reinstall_server' => 'সার্ভার রিইন্সটল করুন',
+            'install_status' => 'ইনস্টল স্ট্যাটাস',
+            'suspend_server' => 'সার্ভার সাসপেন্ড করুন',
+            'unsuspend_server' => 'আনসাসপেন্ড',
+            'transfer_server' => 'সার্ভার ট্রান্সফার',
+            'delete_server' => 'মুছে ফেলুন',
         ],
 
         'section_descriptions' => [
@@ -377,19 +377,19 @@ return [
 
         'fields' => [
             'server_name' => [
-                'label' => 'Server Name',
+                'label' => 'সার্ভারের নাম',
                 'helper' => 'Character limits: a-zA-Z0-9_-, spaces, and standard printable characters.',
             ],
             'server_owner' => [
-                'label' => 'Server Owner',
+                'label' => 'মালিক',
                 'helper' => 'Changing ownership automatically revokes daemon tokens for the previous owner.',
             ],
             'server_description' => [
-                'label' => 'Server Description',
+                'label' => 'বিবরণ',
                 'helper' => 'A brief description of this server.',
             ],
             'server_uuid' => [
-                'label' => 'Server UUID',
+                'label' => 'UUID',
             ],
             'server_uuid_short' => [
                 'label' => 'Server UUID (Short)',
@@ -407,31 +407,31 @@ return [
                 'helper' => 'Assign or remove extra ports. Identical ports on different IPs cannot be assigned to the same server.',
             ],
             'startup_command' => [
-                'label' => 'Startup Command',
+                'label' => 'স্টার্টআপ কমান্ড',
                 'helper' => 'Available by default: {{SERVER_MEMORY}}, {{SERVER_IP}}, and {{SERVER_PORT}}.',
             ],
             'default_startup_command' => [
-                'label' => 'Default Startup Command',
+                'label' => 'স্টার্টআপ কমান্ড',
                 'error' => 'ERROR: Startup Not Defined!',
             ],
             'cpu_limit' => [
-                'label' => 'CPU Limit',
+                'label' => 'সিপিইউ',
                 'helper' => 'Each virtual core is 100%. Set 0 for unrestricted CPU time.',
             ],
             'cpu_pinning' => [
-                'label' => 'CPU Pinning',
+                'label' => 'সিপিইউ',
                 'helper' => 'Advanced: leave blank for all cores. Examples: 0, 0-1,3, or 0,1,3,4.',
             ],
             'allocated_memory' => [
-                'label' => 'Allocated Memory',
+                'label' => 'মেমোরি',
                 'helper' => 'The maximum amount of memory allowed for this container. Set 0 for unlimited.',
             ],
             'allocated_swap' => [
-                'label' => 'Allocated Swap',
+                'label' => 'সোয়াপ',
                 'helper' => 'Set 0 to disable swap, or -1 to allow unlimited swap.',
             ],
             'disk_space_limit' => [
-                'label' => 'Disk Space Limit',
+                'label' => 'ডিস্ক',
                 'helper' => 'Set 0 to allow unlimited disk usage.',
             ],
             'block_io_proportion' => [
@@ -439,11 +439,11 @@ return [
                 'helper' => 'Advanced: IO performance relative to other running containers. Value should be 10 to 1000.',
             ],
             'disable_oom_killer' => [
-                'label' => 'Disable OOM Killer',
+                'label' => 'OOM কিলার নিষ্ক্রিয় করুন',
                 'helper' => 'Enabling OOM killer may cause server processes to exit unexpectedly.',
             ],
             'database_limit' => [
-                'label' => 'Database Limit',
+                'label' => 'ডাটাবেস সীমা',
                 'helper' => 'The total number of databases a user is allowed to create for this server.',
             ],
             'allocation_limit' => [
@@ -483,26 +483,26 @@ return [
             'suspend_server' => 'Suspend Server',
             'unsuspend_server' => 'Unsuspend Server',
             'transfer_server' => 'Transfer Server',
-            'confirm' => 'Confirm',
-            'delete_server' => 'Delete Server',
-            'forcibly_delete_server' => 'Forcibly Delete Server',
+            'confirm' => 'নিশ্চিত করুন',
+            'delete_server' => 'মুছে ফেলুন',
+            'forcibly_delete_server' => 'মুছে ফেলুন',
         ],
     ],
 
     'allocations' => [
-        'title' => 'Allocations',
+        'title' => 'বরাদ্দ',
 
         'table' => [
-            'ip' => 'IP',
+            'ip' => 'আইপি',
             'port' => 'Port',
             'alias' => 'Alias',
-            'primary' => 'Primary',
-            'notes' => 'Notes',
-            'created' => 'Created',
+            'primary' => 'প্রাথমিক বরাদ্দ',
+            'notes' => 'না',
+            'created' => 'তৈরি করা হয়েছে',
         ],
 
         'placeholder' => [
-            'no_alias_assigned' => 'No Alias Assigned',
+            'no_alias_assigned' => 'না',
         ],
 
         'actions' => [
@@ -514,37 +514,37 @@ return [
         'title' => 'Databases',
 
         'table' => [
-            'database' => 'Database',
+            'database' => 'ডাটাবেস সীমা',
             'username' => 'Username',
             'remote' => 'Remote',
             'host' => 'Host',
             'max_connections' => 'Max Connections',
-            'created' => 'Created',
+            'created' => 'তৈরি করা হয়েছে',
         ],
 
         'placeholder' => [
-            'unlimited' => 'Unlimited',
+            'unlimited' => 'আনলিমিটেড',
         ],
 
         'actions' => [
-            'create_database' => 'Create Database',
+            'create_database' => 'তৈরি করুন',
             'reset_password' => 'Reset Password',
-            'delete' => 'Delete',
+            'delete' => 'মুছে ফেলুন',
         ],
 
         'create_modal' => [
             'database_name' => [
-                'label' => 'Database Name',
+                'label' => 'নাম',
                 'helper' => 'The panel will prefix this with the server ID, matching the old admin panel.',
             ],
             'database_host' => [
-                'label' => 'Database Host',
+                'label' => 'ডাটাবেস হোস্ট',
             ],
             'remote' => [
-                'label' => 'Remote',
+                'label' => 'রিমোট',
             ],
             'max_connections' => [
-                'label' => 'Max Connections',
+                'label' => 'সর্বোচ্চ সংযোগ',
             ],
         ],
     ],
