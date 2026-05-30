@@ -47,10 +47,6 @@ Contributors help the development of Reviactyl panel. To start contributing you 
 
 And much more!
 
-## v2 Branch (LTS / Maintenance Only)
-
-https://github.com/reviactyl/panel/tree/2.0-develop
-
 ## Star History
 
 <a href="https://www.star-history.com/#reviactyl/panel&Date">
