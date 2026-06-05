@@ -12,6 +12,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class ServersTable
 {
@@ -65,8 +66,20 @@ class ServersTable
                             </div>
                         ";
                     })
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHas('user', function (Builder $query) use ($search): void {
+                            $query->where('username', 'like', "%{$search}%")
+                                ->orWhere('email', 'like', "%{$search}%")
+                                ->orWhere('name_first', 'like', "%{$search}%")
+                                ->orWhere('name_last', 'like', "%{$search}%");
+                        });
+                    })
+                    ->sortable(query: function (Builder $query, string $direction): Builder {
+                        return $query
+                            ->leftJoin('users', 'users.id', '=', 'servers.owner_id')
+                            ->orderBy('users.username', $direction)
+                            ->select('servers.*');
+                    }),
 
                 TextColumn::make('node.name')
                     ->label(trans('admin/server.table.node'))
