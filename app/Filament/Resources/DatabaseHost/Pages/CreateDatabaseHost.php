@@ -6,10 +6,18 @@ use App\Filament\Resources\DatabaseHost\DatabaseHostResource;
 use App\Services\Activity\ActivityLogService;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Crypt;
 
 class CreateDatabaseHost extends CreateRecord
 {
     protected static string $resource = DatabaseHostResource::class;
+
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        $data['password'] = Crypt::encrypt($data['password']);
+
+        return $data;
+    }
 
     protected function handleRecordCreation(array $data): Model
     {
