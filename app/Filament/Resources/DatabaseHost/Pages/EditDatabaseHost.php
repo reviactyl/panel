@@ -9,10 +9,22 @@ use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Crypt;
 
 class EditDatabaseHost extends EditRecord
 {
     protected static string $resource = DatabaseHostResource::class;
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        if (filled($data['password'] ?? null)) {
+            $data['password'] = Crypt::encrypt($data['password']);
+        } else {
+            unset($data['password']);
+        }
+
+        return $data;
+    }
 
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
