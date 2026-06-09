@@ -28,7 +28,10 @@ class MakeUserCommand extends Command
      */
     public function handle()
     {
-        $root_admin = $this->option('admin') ?? $this->confirm(trans('command/messages.user.ask_admin'));
+        $admin_option = $this->option('admin');
+        $root_admin = $admin_option !== null
+            ? filter_var($admin_option, FILTER_VALIDATE_BOOLEAN)
+            : $this->confirm(trans('command/messages.user.ask_admin'));
         $email = $this->option('email') ?? $this->ask(trans('command/messages.user.ask_email'));
         $username = $this->option('username') ?? $this->ask(trans('command/messages.user.ask_username'));
         $name_first = $this->option('name-first') ?? $this->ask(trans('command/messages.user.ask_name_first'));

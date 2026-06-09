@@ -139,7 +139,7 @@ class Installer extends Component
                 '--name-first' => $this->user['name_first'],
                 '--name-last' => $this->user['name_last'],
                 '--password' => $this->user['password'],
-                '--admin' => 'Yes',
+                '--admin' => 1,
             ]);
 
             $this->step = 4;
