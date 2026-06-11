@@ -44,7 +44,7 @@ export const ExtensionModule = ({ extensionId, modulePath, exportName }: Props) 
     );
 
     return (
-        <Suspense fallback={null}>
+        <Suspense key={`${extensionId}:${modulePath}`} fallback={null}>
             <LazyComponent />
         </Suspense>
     );
