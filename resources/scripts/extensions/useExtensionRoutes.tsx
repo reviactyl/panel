@@ -68,7 +68,9 @@ export const useExtensionRoutes = (scope: RouteScope, context?: GuardContext): I
             return routes
                 .filter((route) => routeAllowed(route, context))
                 .map((route) => {
-                    const cacheKey = `${extension.id}:${scope}:${route.path}:${route.module ?? ''}:${route.export ?? ''}`;
+                    const cacheKey = `${extension.id}:${scope}:${route.path}:${route.module ?? ''}:${
+                        route.export ?? ''
+                    }`;
                     if (!routeComponentCache.has(cacheKey)) {
                         const extensionId = extension.id;
                         const modulePath = route.module;
