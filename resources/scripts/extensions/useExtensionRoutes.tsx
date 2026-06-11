@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { ReactNode } from 'react';
+import type { FC, ReactNode } from 'react';
 import { ExtensionModule } from '@/extensions/ExtensionModule';
 import { useExtensions } from '@/extensions/useExtensions';
 import type { ExtensionRouteDefinition } from '@/extensions/types';
@@ -17,6 +17,7 @@ export interface InjectedRoute {
     permission?: string | string[];
     icon?: string;
 }
+const routeComponentCache = new Map<string, FC>();
 
 const routeAllowed = (route: ExtensionRouteDefinition, context?: GuardContext): boolean => {
     const eggId = context?.eggId;
@@ -66,18 +67,28 @@ export const useExtensionRoutes = (scope: RouteScope, context?: GuardContext): I
 
             return routes
                 .filter((route) => routeAllowed(route, context))
-                .map((route) => ({
-                    path: route.path,
-                    permission: route.permission,
-                    icon: route.icon,
-                    element: (
-                        <ExtensionModule
-                            extensionId={extension.id}
-                            modulePath={route.module}
-                            exportName={route.export}
-                        />
-                    ),
-                }));
+                .map((route) => {
+                    const cacheKey = `${extension.id}:${scope}:${route.path}:${route.module ?? ''}:${route.export ?? ''}`;
+                    if (!routeComponentCache.has(cacheKey)) {
+                        const extensionId = extension.id;
+                        const modulePath = route.module;
+                        const exportName = route.export;
+                        routeComponentCache.set(cacheKey, () => (
+                            <ExtensionModule
+                                extensionId={extensionId}
+                                modulePath={modulePath}
+                                exportName={exportName}
+                            />
+                        ));
+                    }
+                    const UniqueComponent = routeComponentCache.get(cacheKey)!;
+                    return {
+                        path: route.path,
+                        permission: route.permission,
+                        icon: route.icon,
+                        element: <UniqueComponent />,
+                    };
+                });
         });
     }, [extensions, scope, context?.eggId, context?.nestId]);
 };

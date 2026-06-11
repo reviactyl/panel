@@ -334,7 +334,7 @@ export default function ServerRouter() {
                                                         key={`extension:${path}`}
                                                         path={path}
                                                         element={
-                                                            <PermissionRoute permission={permission}>
+                                                            <PermissionRoute key={path} permission={permission}>
                                                                 {element}
                                                             </PermissionRoute>
                                                         }
