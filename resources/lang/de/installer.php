@@ -2,20 +2,20 @@
 
 return [
     'meta' => [
-        'title' => 'Welcome to Reviactyl',
+        'title' => 'Willkommen bei Reviactyl',
     ],
 
     'language' => [
-        'label' => 'Language',
+        'label' => 'Sprache',
     ],
 
     'migration' => [
-        'title' => 'Migration in progress',
-        'message' => 'Do not refresh or exit this page...',
+        'title' => 'Migration läuft',
+        'message' => 'Aktualisiere oder verlasse diese Seite nicht...',
     ],
 
     'progress' => [
-        'step' => 'Step :step',
+        'step' => 'Schritt :step',
     ],
 
     'brand' => [
@@ -24,60 +24,60 @@ return [
     ],
 
     'welcome' => [
-        'message' => 'To proceed with the installation, click the button below.',
+        'message' => 'Klicke auf die Schaltfläche unten, um mit der Installation fortzufahren.',
     ],
 
     'finish' => [
-        'message' => 'To finish the installation, click the button below.',
+        'message' => 'Klicke auf die Schaltfläche unten, um die Installation abzuschließen.',
     ],
 
     'sections' => [
-        'application' => 'Application Configuration',
-        'database' => 'Database Configuration',
-        'user' => 'User Configuration',
-        'mail' => 'Mail Settings',
+        'application' => 'Anwendungskonfiguration',
+        'database' => 'Datenbankkonfiguration',
+        'user' => 'Benutzerkonfiguration',
+        'mail' => 'E-Mail-Einstellungen',
     ],
 
     'fields' => [
-        'application_url' => 'Application URL',
-        'cache_driver' => 'Cache driver',
-        'database_name' => 'Database name',
-        'driver' => 'Driver',
-        'email' => 'Email',
-        'enable_settings_editor' => 'Enable settings editor',
-        'encryption' => 'Encryption',
-        'endpoint' => 'Endpoint',
-        'first_name' => 'First name',
-        'from_email' => 'From email',
-        'from_name' => 'From name',
+        'application_url' => 'Anwendungs-URL',
+        'cache_driver' => 'Cache-Treiber',
+        'database_name' => 'Datenbankname',
+        'driver' => 'Treiber',
+        'email' => 'E-Mail',
+        'enable_settings_editor' => 'Einstellungseditor aktivieren',
+        'encryption' => 'Verschlüsselung',
+        'endpoint' => 'Endpunkt',
+        'first_name' => 'Vorname',
+        'from_email' => 'Absender-E-Mail',
+        'from_name' => 'Absendername',
         'host' => 'Host',
         'host_domain' => 'Host / Domain',
-        'icon_url' => 'Icon URL',
-        'last_name' => 'Last name',
-        'logo_url' => 'Logo URL',
-        'password' => 'Password',
-        'password_secret' => 'Password / Secret',
+        'icon_url' => 'Icon-URL',
+        'last_name' => 'Nachname',
+        'logo_url' => 'Logo-URL',
+        'password' => 'Passwort',
+        'password_secret' => 'Passwort / Secret',
         'port' => 'Port',
-        'queue_driver' => 'Queue driver',
-        'redis_host' => 'Redis host',
-        'redis_password' => 'Redis password',
-        'redis_port' => 'Redis port',
-        'send_telemetry' => 'Send anonymous telemetry',
-        'service_author_email' => 'Service author email',
-        'session_driver' => 'Session driver',
-        'sqlite_database_path' => 'SQLite database path',
-        'timezone' => 'Timezone',
-        'username' => 'Username',
+        'queue_driver' => 'Queue-Treiber',
+        'redis_host' => 'Redis-Host',
+        'redis_password' => 'Redis-Passwort',
+        'redis_port' => 'Redis-Port',
+        'send_telemetry' => 'Anonyme Telemetrie senden',
+        'service_author_email' => 'E-Mail des Service-Autors',
+        'session_driver' => 'Sitzungstreiber',
+        'sqlite_database_path' => 'SQLite-Datenbankpfad',
+        'timezone' => 'Zeitzone',
+        'username' => 'Benutzername',
     ],
 
     'options' => [
-        'none' => 'None',
+        'none' => 'Keine',
     ],
 
     'actions' => [
-        'continue' => 'Continue',
-        'finish' => 'Finish Installation',
-        'proceed' => 'Proceed...',
-        'skip' => 'Skip...',
+        'continue' => 'Fortfahren',
+        'finish' => 'Installation abschließen',
+        'proceed' => 'Weiter...',
+        'skip' => 'Überspringen...',
     ],
 ];

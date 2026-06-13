@@ -2,82 +2,82 @@
 
 return [
     'meta' => [
-        'title' => 'Welcome to Reviactyl',
+        'title' => 'Selamat datang di Reviactyl',
     ],
 
     'language' => [
-        'label' => 'Language',
+        'label' => 'Bahasa',
     ],
 
     'migration' => [
-        'title' => 'Migration in progress',
-        'message' => 'Do not refresh or exit this page...',
+        'title' => 'Migrasi sedang berjalan',
+        'message' => 'Jangan muat ulang atau keluar dari halaman ini...',
     ],
 
     'progress' => [
-        'step' => 'Step :step',
+        'step' => 'Langkah :step',
     ],
 
     'brand' => [
-        'title' => 'Reviactyl Panel (Fission Falcon)',
-        'art_alt' => 'Fission Falcon Artwork',
+        'title' => 'Panel Reviactyl (Fission Falcon)',
+        'art_alt' => 'Ilustrasi Fission Falcon',
     ],
 
     'welcome' => [
-        'message' => 'To proceed with the installation, click the button below.',
+        'message' => 'Untuk melanjutkan instalasi, klik tombol di bawah.',
     ],
 
     'finish' => [
-        'message' => 'To finish the installation, click the button below.',
+        'message' => 'Untuk menyelesaikan instalasi, klik tombol di bawah.',
     ],
 
     'sections' => [
-        'application' => 'Application Configuration',
-        'database' => 'Database Configuration',
-        'user' => 'User Configuration',
-        'mail' => 'Mail Settings',
+        'application' => 'Konfigurasi Aplikasi',
+        'database' => 'Konfigurasi Database',
+        'user' => 'Konfigurasi Pengguna',
+        'mail' => 'Pengaturan Email',
     ],
 
     'fields' => [
-        'application_url' => 'Application URL',
-        'cache_driver' => 'Cache driver',
-        'database_name' => 'Database name',
+        'application_url' => 'URL aplikasi',
+        'cache_driver' => 'Driver cache',
+        'database_name' => 'Nama database',
         'driver' => 'Driver',
         'email' => 'Email',
-        'enable_settings_editor' => 'Enable settings editor',
-        'encryption' => 'Encryption',
+        'enable_settings_editor' => 'Aktifkan editor pengaturan',
+        'encryption' => 'Enkripsi',
         'endpoint' => 'Endpoint',
-        'first_name' => 'First name',
-        'from_email' => 'From email',
-        'from_name' => 'From name',
+        'first_name' => 'Nama depan',
+        'from_email' => 'Email pengirim',
+        'from_name' => 'Nama pengirim',
         'host' => 'Host',
         'host_domain' => 'Host / Domain',
-        'icon_url' => 'Icon URL',
-        'last_name' => 'Last name',
-        'logo_url' => 'Logo URL',
-        'password' => 'Password',
-        'password_secret' => 'Password / Secret',
+        'icon_url' => 'URL ikon',
+        'last_name' => 'Nama belakang',
+        'logo_url' => 'URL logo',
+        'password' => 'Kata sandi',
+        'password_secret' => 'Kata sandi / Rahasia',
         'port' => 'Port',
-        'queue_driver' => 'Queue driver',
-        'redis_host' => 'Redis host',
-        'redis_password' => 'Redis password',
-        'redis_port' => 'Redis port',
-        'send_telemetry' => 'Send anonymous telemetry',
-        'service_author_email' => 'Service author email',
-        'session_driver' => 'Session driver',
-        'sqlite_database_path' => 'SQLite database path',
-        'timezone' => 'Timezone',
-        'username' => 'Username',
+        'queue_driver' => 'Driver antrean',
+        'redis_host' => 'Host Redis',
+        'redis_password' => 'Kata sandi Redis',
+        'redis_port' => 'Port Redis',
+        'send_telemetry' => 'Kirim telemetri anonim',
+        'service_author_email' => 'Email penulis layanan',
+        'session_driver' => 'Driver sesi',
+        'sqlite_database_path' => 'Path database SQLite',
+        'timezone' => 'Zona waktu',
+        'username' => 'Nama pengguna',
     ],
 
     'options' => [
-        'none' => 'None',
+        'none' => 'Tidak ada',
     ],
 
     'actions' => [
-        'continue' => 'Continue',
-        'finish' => 'Finish Installation',
-        'proceed' => 'Proceed...',
-        'skip' => 'Skip...',
+        'continue' => 'Lanjutkan',
+        'finish' => 'Selesaikan Instalasi',
+        'proceed' => 'Lanjut...',
+        'skip' => 'Lewati...',
     ],
 ];

@@ -2,82 +2,82 @@
 
 return [
     'meta' => [
-        'title' => 'Welcome to Reviactyl',
+        'title' => 'Chào mừng đến với Reviactyl',
     ],
 
     'language' => [
-        'label' => 'Language',
+        'label' => 'Ngôn ngữ',
     ],
 
     'migration' => [
-        'title' => 'Migration in progress',
-        'message' => 'Do not refresh or exit this page...',
+        'title' => 'Đang di chuyển dữ liệu',
+        'message' => 'Không làm mới hoặc rời khỏi trang này...',
     ],
 
     'progress' => [
-        'step' => 'Step :step',
+        'step' => 'Bước :step',
     ],
 
     'brand' => [
-        'title' => 'Reviactyl Panel (Fission Falcon)',
-        'art_alt' => 'Fission Falcon Artwork',
+        'title' => 'Bảng điều khiển Reviactyl (Fission Falcon)',
+        'art_alt' => 'Hình minh họa Fission Falcon',
     ],
 
     'welcome' => [
-        'message' => 'To proceed with the installation, click the button below.',
+        'message' => 'Để tiếp tục cài đặt, hãy nhấp vào nút bên dưới.',
     ],
 
     'finish' => [
-        'message' => 'To finish the installation, click the button below.',
+        'message' => 'Để hoàn tất cài đặt, hãy nhấp vào nút bên dưới.',
     ],
 
     'sections' => [
-        'application' => 'Application Configuration',
-        'database' => 'Database Configuration',
-        'user' => 'User Configuration',
-        'mail' => 'Mail Settings',
+        'application' => 'Cấu hình ứng dụng',
+        'database' => 'Cấu hình cơ sở dữ liệu',
+        'user' => 'Cấu hình người dùng',
+        'mail' => 'Cài đặt email',
     ],
 
     'fields' => [
-        'application_url' => 'Application URL',
-        'cache_driver' => 'Cache driver',
-        'database_name' => 'Database name',
-        'driver' => 'Driver',
+        'application_url' => 'URL ứng dụng',
+        'cache_driver' => 'Trình điều khiển cache',
+        'database_name' => 'Tên cơ sở dữ liệu',
+        'driver' => 'Trình điều khiển',
         'email' => 'Email',
-        'enable_settings_editor' => 'Enable settings editor',
-        'encryption' => 'Encryption',
+        'enable_settings_editor' => 'Bật trình chỉnh sửa cài đặt',
+        'encryption' => 'Mã hóa',
         'endpoint' => 'Endpoint',
-        'first_name' => 'First name',
-        'from_email' => 'From email',
-        'from_name' => 'From name',
-        'host' => 'Host',
-        'host_domain' => 'Host / Domain',
-        'icon_url' => 'Icon URL',
-        'last_name' => 'Last name',
-        'logo_url' => 'Logo URL',
-        'password' => 'Password',
-        'password_secret' => 'Password / Secret',
-        'port' => 'Port',
-        'queue_driver' => 'Queue driver',
-        'redis_host' => 'Redis host',
-        'redis_password' => 'Redis password',
-        'redis_port' => 'Redis port',
-        'send_telemetry' => 'Send anonymous telemetry',
-        'service_author_email' => 'Service author email',
-        'session_driver' => 'Session driver',
-        'sqlite_database_path' => 'SQLite database path',
-        'timezone' => 'Timezone',
-        'username' => 'Username',
+        'first_name' => 'Tên',
+        'from_email' => 'Email gửi đi',
+        'from_name' => 'Tên người gửi',
+        'host' => 'Máy chủ',
+        'host_domain' => 'Máy chủ / Tên miền',
+        'icon_url' => 'URL biểu tượng',
+        'last_name' => 'Họ',
+        'logo_url' => 'URL logo',
+        'password' => 'Mật khẩu',
+        'password_secret' => 'Mật khẩu / Bí mật',
+        'port' => 'Cổng',
+        'queue_driver' => 'Trình điều khiển hàng đợi',
+        'redis_host' => 'Máy chủ Redis',
+        'redis_password' => 'Mật khẩu Redis',
+        'redis_port' => 'Cổng Redis',
+        'send_telemetry' => 'Gửi telemetry ẩn danh',
+        'service_author_email' => 'Email tác giả dịch vụ',
+        'session_driver' => 'Trình điều khiển phiên',
+        'sqlite_database_path' => 'Đường dẫn cơ sở dữ liệu SQLite',
+        'timezone' => 'Múi giờ',
+        'username' => 'Tên người dùng',
     ],
 
     'options' => [
-        'none' => 'None',
+        'none' => 'Không',
     ],
 
     'actions' => [
-        'continue' => 'Continue',
-        'finish' => 'Finish Installation',
-        'proceed' => 'Proceed...',
-        'skip' => 'Skip...',
+        'continue' => 'Tiếp tục',
+        'finish' => 'Hoàn tất cài đặt',
+        'proceed' => 'Tiếp tục...',
+        'skip' => 'Bỏ qua...',
     ],
 ];

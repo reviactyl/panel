@@ -2,82 +2,82 @@
 
 return [
     'meta' => [
-        'title' => 'Welcome to Reviactyl',
+        'title' => '欢迎使用 Reviactyl',
     ],
 
     'language' => [
-        'label' => 'Language',
+        'label' => '语言',
     ],
 
     'migration' => [
-        'title' => 'Migration in progress',
-        'message' => 'Do not refresh or exit this page...',
+        'title' => '正在迁移',
+        'message' => '请勿刷新或离开此页面...',
     ],
 
     'progress' => [
-        'step' => 'Step :step',
+        'step' => '步骤 :step',
     ],
 
     'brand' => [
-        'title' => 'Reviactyl Panel (Fission Falcon)',
-        'art_alt' => 'Fission Falcon Artwork',
+        'title' => 'Reviactyl 面板 (Fission Falcon)',
+        'art_alt' => 'Fission Falcon 插图',
     ],
 
     'welcome' => [
-        'message' => 'To proceed with the installation, click the button below.',
+        'message' => '要继续安装，请点击下方按钮。',
     ],
 
     'finish' => [
-        'message' => 'To finish the installation, click the button below.',
+        'message' => '要完成安装，请点击下方按钮。',
     ],
 
     'sections' => [
-        'application' => 'Application Configuration',
-        'database' => 'Database Configuration',
-        'user' => 'User Configuration',
-        'mail' => 'Mail Settings',
+        'application' => '应用配置',
+        'database' => '数据库配置',
+        'user' => '用户配置',
+        'mail' => '邮件设置',
     ],
 
     'fields' => [
-        'application_url' => 'Application URL',
-        'cache_driver' => 'Cache driver',
-        'database_name' => 'Database name',
-        'driver' => 'Driver',
-        'email' => 'Email',
-        'enable_settings_editor' => 'Enable settings editor',
-        'encryption' => 'Encryption',
-        'endpoint' => 'Endpoint',
-        'first_name' => 'First name',
-        'from_email' => 'From email',
-        'from_name' => 'From name',
-        'host' => 'Host',
-        'host_domain' => 'Host / Domain',
-        'icon_url' => 'Icon URL',
-        'last_name' => 'Last name',
+        'application_url' => '应用 URL',
+        'cache_driver' => '缓存驱动',
+        'database_name' => '数据库名称',
+        'driver' => '驱动',
+        'email' => '邮箱',
+        'enable_settings_editor' => '启用设置编辑器',
+        'encryption' => '加密',
+        'endpoint' => '端点',
+        'first_name' => '名',
+        'from_email' => '发件邮箱',
+        'from_name' => '发件人名称',
+        'host' => '主机',
+        'host_domain' => '主机 / 域名',
+        'icon_url' => '图标 URL',
+        'last_name' => '姓',
         'logo_url' => 'Logo URL',
-        'password' => 'Password',
-        'password_secret' => 'Password / Secret',
-        'port' => 'Port',
-        'queue_driver' => 'Queue driver',
-        'redis_host' => 'Redis host',
-        'redis_password' => 'Redis password',
-        'redis_port' => 'Redis port',
-        'send_telemetry' => 'Send anonymous telemetry',
-        'service_author_email' => 'Service author email',
-        'session_driver' => 'Session driver',
-        'sqlite_database_path' => 'SQLite database path',
-        'timezone' => 'Timezone',
-        'username' => 'Username',
+        'password' => '密码',
+        'password_secret' => '密码 / 密钥',
+        'port' => '端口',
+        'queue_driver' => '队列驱动',
+        'redis_host' => 'Redis 主机',
+        'redis_password' => 'Redis 密码',
+        'redis_port' => 'Redis 端口',
+        'send_telemetry' => '发送匿名遥测',
+        'service_author_email' => '服务作者邮箱',
+        'session_driver' => '会话驱动',
+        'sqlite_database_path' => 'SQLite 数据库路径',
+        'timezone' => '时区',
+        'username' => '用户名',
     ],
 
     'options' => [
-        'none' => 'None',
+        'none' => '无',
     ],
 
     'actions' => [
-        'continue' => 'Continue',
-        'finish' => 'Finish Installation',
-        'proceed' => 'Proceed...',
-        'skip' => 'Skip...',
+        'continue' => '继续',
+        'finish' => '完成安装',
+        'proceed' => '继续...',
+        'skip' => '跳过...',
     ],
 ];

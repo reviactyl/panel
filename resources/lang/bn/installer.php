@@ -2,82 +2,82 @@
 
 return [
     'meta' => [
-        'title' => 'Welcome to Reviactyl',
+        'title' => 'Reviactyl-এ স্বাগতম',
     ],
 
     'language' => [
-        'label' => 'Language',
+        'label' => 'ভাষা',
     ],
 
     'migration' => [
-        'title' => 'Migration in progress',
-        'message' => 'Do not refresh or exit this page...',
+        'title' => 'মাইগ্রেশন চলছে',
+        'message' => 'এই পেজ রিফ্রেশ করবেন না বা বন্ধ করবেন না...',
     ],
 
     'progress' => [
-        'step' => 'Step :step',
+        'step' => 'ধাপ :step',
     ],
 
     'brand' => [
         'title' => 'Reviactyl Panel (Fission Falcon)',
-        'art_alt' => 'Fission Falcon Artwork',
+        'art_alt' => 'Fission Falcon আর্টওয়ার্ক',
     ],
 
     'welcome' => [
-        'message' => 'To proceed with the installation, click the button below.',
+        'message' => 'ইনস্টলেশন চালিয়ে যেতে নিচের বোতামে ক্লিক করুন।',
     ],
 
     'finish' => [
-        'message' => 'To finish the installation, click the button below.',
+        'message' => 'ইনস্টলেশন শেষ করতে নিচের বোতামে ক্লিক করুন।',
     ],
 
     'sections' => [
-        'application' => 'Application Configuration',
-        'database' => 'Database Configuration',
-        'user' => 'User Configuration',
-        'mail' => 'Mail Settings',
+        'application' => 'অ্যাপ্লিকেশন কনফিগারেশন',
+        'database' => 'ডাটাবেস কনফিগারেশন',
+        'user' => 'ইউজার কনফিগারেশন',
+        'mail' => 'মেইল সেটিংস',
     ],
 
     'fields' => [
-        'application_url' => 'Application URL',
-        'cache_driver' => 'Cache driver',
-        'database_name' => 'Database name',
-        'driver' => 'Driver',
-        'email' => 'Email',
-        'enable_settings_editor' => 'Enable settings editor',
-        'encryption' => 'Encryption',
-        'endpoint' => 'Endpoint',
-        'first_name' => 'First name',
-        'from_email' => 'From email',
-        'from_name' => 'From name',
-        'host' => 'Host',
-        'host_domain' => 'Host / Domain',
-        'icon_url' => 'Icon URL',
-        'last_name' => 'Last name',
-        'logo_url' => 'Logo URL',
-        'password' => 'Password',
-        'password_secret' => 'Password / Secret',
-        'port' => 'Port',
-        'queue_driver' => 'Queue driver',
-        'redis_host' => 'Redis host',
-        'redis_password' => 'Redis password',
-        'redis_port' => 'Redis port',
-        'send_telemetry' => 'Send anonymous telemetry',
-        'service_author_email' => 'Service author email',
-        'session_driver' => 'Session driver',
-        'sqlite_database_path' => 'SQLite database path',
-        'timezone' => 'Timezone',
-        'username' => 'Username',
+        'application_url' => 'অ্যাপ্লিকেশন URL',
+        'cache_driver' => 'ক্যাশ ড্রাইভার',
+        'database_name' => 'ডাটাবেসের নাম',
+        'driver' => 'ড্রাইভার',
+        'email' => 'ইমেইল',
+        'enable_settings_editor' => 'সেটিংস এডিটর চালু করুন',
+        'encryption' => 'এনক্রিপশন',
+        'endpoint' => 'এন্ডপয়েন্ট',
+        'first_name' => 'নামের প্রথম অংশ',
+        'from_email' => 'প্রেরকের ইমেইল',
+        'from_name' => 'প্রেরকের নাম',
+        'host' => 'হোস্ট',
+        'host_domain' => 'হোস্ট / ডোমেইন',
+        'icon_url' => 'আইকন URL',
+        'last_name' => 'নামের শেষ অংশ',
+        'logo_url' => 'লোগো URL',
+        'password' => 'পাসওয়ার্ড',
+        'password_secret' => 'পাসওয়ার্ড / সিক্রেট',
+        'port' => 'পোর্ট',
+        'queue_driver' => 'কিউ ড্রাইভার',
+        'redis_host' => 'Redis হোস্ট',
+        'redis_password' => 'Redis পাসওয়ার্ড',
+        'redis_port' => 'Redis পোর্ট',
+        'send_telemetry' => 'বেনামী টেলিমেট্রি পাঠান',
+        'service_author_email' => 'সার্ভিস অথর ইমেইল',
+        'session_driver' => 'সেশন ড্রাইভার',
+        'sqlite_database_path' => 'SQLite ডাটাবেস পাথ',
+        'timezone' => 'টাইমজোন',
+        'username' => 'ইউজারনেম',
     ],
 
     'options' => [
-        'none' => 'None',
+        'none' => 'কোনোটিই নয়',
     ],
 
     'actions' => [
-        'continue' => 'Continue',
-        'finish' => 'Finish Installation',
-        'proceed' => 'Proceed...',
-        'skip' => 'Skip...',
+        'continue' => 'চালিয়ে যান',
+        'finish' => 'ইনস্টলেশন শেষ করুন',
+        'proceed' => 'এগিয়ে যান...',
+        'skip' => 'এড়িয়ে যান...',
     ],
 ];
