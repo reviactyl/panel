@@ -20,9 +20,9 @@ return new class extends Migration
                 try {
                     Crypt::decrypt($host->password);
 
-                    return; 
+                    return;
                 } catch (DecryptException) {
-                    
+
                 }
 
                 DB::table('database_hosts')
