@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Console\Commands\Environment\AppSettingsCommand;
 use App\Traits\Commands\EnvironmentWriterTrait;
+use App\Traits\Helpers\AvailableLanguages;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Str;
@@ -12,6 +13,7 @@ use Livewire\Component;
 
 class Installer extends Component
 {
+    use AvailableLanguages;
     use EnvironmentWriterTrait;
 
     public int $step = 0;
@@ -30,8 +32,16 @@ class Installer extends Component
 
     public string $error = '';
 
+    public string $locale = 'en';
+
+    public array $availableLanguages = [];
+
     public function mount(): void
     {
+        $this->availableLanguages = $this->getAvailableLanguages(true);
+        $this->locale = session('installer.locale', app()->getLocale());
+        $this->setInstallerLocale($this->locale);
+
         $this->app = [
             'author' => config('panel.service.author', 'admin@example.com'),
             'url' => config('app.url', 'https://example.com'),
@@ -76,6 +86,20 @@ class Installer extends Component
             'username' => config('mail.mailers.smtp.username', ''),
             'password' => config('mail.mailers.smtp.password', ''),
         ];
+    }
+
+    public function updatedLocale(string $locale): void
+    {
+        $this->setInstallerLocale($locale);
+    }
+
+    public function hydrate(): void
+    {
+        if ($this->availableLanguages === []) {
+            $this->availableLanguages = $this->getAvailableLanguages(true);
+        }
+
+        $this->setInstallerLocale($this->locale);
     }
 
     public function start(): void
@@ -240,6 +264,45 @@ class Installer extends Component
         ];
     }
 
+    protected function validationAttributes(): array
+    {
+        return [
+            'app.author' => __('installer.fields.service_author_email'),
+            'app.url' => __('installer.fields.application_url'),
+            'app.logo' => __('installer.fields.logo_url'),
+            'app.icon' => __('installer.fields.icon_url'),
+            'app.timezone' => __('installer.fields.timezone'),
+            'app.cache' => __('installer.fields.cache_driver'),
+            'app.session' => __('installer.fields.session_driver'),
+            'app.queue' => __('installer.fields.queue_driver'),
+            'app.settings_ui' => __('installer.fields.enable_settings_editor'),
+            'app.telemetry' => __('installer.fields.send_telemetry'),
+            'app.redis_host' => __('installer.fields.redis_host'),
+            'app.redis_pass' => __('installer.fields.redis_password'),
+            'app.redis_port' => __('installer.fields.redis_port'),
+            'database.driver' => __('installer.fields.driver'),
+            'database.host' => __('installer.fields.host'),
+            'database.port' => __('installer.fields.port'),
+            'database.database' => __('installer.fields.database_name'),
+            'database.username' => __('installer.fields.username'),
+            'database.password' => __('installer.fields.password'),
+            'user.email' => __('installer.fields.email'),
+            'user.username' => __('installer.fields.username'),
+            'user.name_first' => __('installer.fields.first_name'),
+            'user.name_last' => __('installer.fields.last_name'),
+            'user.password' => __('installer.fields.password'),
+            'mail.driver' => __('installer.fields.driver'),
+            'mail.email' => __('installer.fields.from_email'),
+            'mail.from' => __('installer.fields.from_name'),
+            'mail.encryption' => __('installer.fields.encryption'),
+            'mail.host' => __('installer.fields.host_domain'),
+            'mail.port' => __('installer.fields.port'),
+            'mail.endpoint' => __('installer.fields.endpoint'),
+            'mail.username' => __('installer.fields.username'),
+            'mail.password' => __('installer.fields.password_secret'),
+        ];
+    }
+
     protected function buildAppPayload(): array
     {
         $payload = [
@@ -309,6 +372,17 @@ class Installer extends Component
         $this->error = '';
     }
 
+    protected function setInstallerLocale(string $locale): void
+    {
+        if (! array_key_exists($locale, $this->availableLanguages)) {
+            $locale = 'en';
+        }
+
+        $this->locale = $locale;
+        app()->setLocale($locale);
+        session(['installer.locale' => $locale]);
+    }
+
     protected function mailDriverPayload(): array
     {
         return match ($this->mail['driver']) {
@@ -350,6 +424,8 @@ class Installer extends Component
      */
     public function render()
     {
+        $this->setInstallerLocale($this->locale);
+
         return view('livewire.installer');
     }
 }

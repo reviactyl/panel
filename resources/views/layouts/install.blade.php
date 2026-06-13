@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+@php(app()->setLocale(session('installer.locale', app()->getLocale())))
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,7 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="robots" content="noindex">
     <link rel="icon" type="image/x-icon" href="/favicons/favicon.ico">
-    <title>Welcome to Reviactyl</title>
+    <title>{{ __('installer.meta.title') }}</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>

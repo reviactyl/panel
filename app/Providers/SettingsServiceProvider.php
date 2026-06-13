@@ -3,12 +3,12 @@
 namespace App\Providers;
 
 use App\Contracts\Repository\SettingsRepositoryInterface;
+use App\Support\InstallationState;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\ServiceProvider;
-use Psr\Log\LoggerInterface as Log;
 
 class SettingsServiceProvider extends ServiceProvider
 {
@@ -221,10 +221,18 @@ class SettingsServiceProvider extends ServiceProvider
     /**
      * Boot the service provider.
      */
-    public function boot(ConfigRepository $config, Log $log, SettingsRepositoryInterface $settings): void
+    public function boot(ConfigRepository $config, InstallationState $installationState, SettingsRepositoryInterface $settings): void
     {
 
         $this->keys = array_merge($this->keys, $this->designifyKeys);
+
+        try {
+            if (! $installationState->isInstalled()) {
+                return;
+            }
+        } catch (QueryException $exception) {
+            return;
+        }
 
         // Only set the email driver settings from the database if we
         // are configured using SMTP as the driver.
@@ -237,8 +245,6 @@ class SettingsServiceProvider extends ServiceProvider
                 return [$setting->key => $setting->value];
             })->toArray();
         } catch (QueryException $exception) {
-            $log->notice('A query exception was encountered while trying to load settings from the database: '.$exception->getMessage());
-
             return;
         }
 
