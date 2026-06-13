@@ -2,82 +2,82 @@
 
 return [
     'meta' => [
-        'title' => 'Välkommen till Reviactyl',
+        'title' => 'Welcome to Reviactyl',
     ],
 
     'language' => [
-        'label' => 'Språk',
+        'label' => 'Language',
     ],
 
     'migration' => [
-        'title' => 'Migrering pågår',
-        'message' => 'Uppdatera inte och lämna inte sidan...',
+        'title' => 'Migration in progress',
+        'message' => 'Do not refresh or exit this page...',
     ],
 
     'progress' => [
-        'step' => 'Steg :step',
+        'step' => 'Step :step',
     ],
 
     'brand' => [
         'title' => 'Reviactyl Panel (Fission Falcon)',
-        'art_alt' => 'Fission Falcon-bild',
+        'art_alt' => 'Fission Falcon Artwork',
     ],
 
     'welcome' => [
-        'message' => 'Klicka på knappen nedan för att fortsätta installationen.',
+        'message' => 'To proceed with the installation, click the button below.',
     ],
 
     'finish' => [
-        'message' => 'Klicka på knappen nedan för att slutföra installationen.',
+        'message' => 'To finish the installation, click the button below.',
     ],
 
     'sections' => [
-        'application' => 'Applikationskonfiguration',
-        'database' => 'Databaskonfiguration',
-        'user' => 'Användarkonfiguration',
-        'mail' => 'E-postinställningar',
+        'application' => 'Application Configuration',
+        'database' => 'Database Configuration',
+        'user' => 'User Configuration',
+        'mail' => 'Mail Settings',
     ],
 
     'fields' => [
-        'application_url' => 'Applikations-URL',
-        'cache_driver' => 'Cache-drivrutin',
-        'database_name' => 'Databasnamn',
-        'driver' => 'Drivrutin',
-        'email' => 'E-post',
-        'enable_settings_editor' => 'Aktivera inställningsredigerare',
-        'encryption' => 'Kryptering',
+        'application_url' => 'Application URL',
+        'cache_driver' => 'Cache driver',
+        'database_name' => 'Database name',
+        'driver' => 'Driver',
+        'email' => 'Email',
+        'enable_settings_editor' => 'Enable settings editor',
+        'encryption' => 'Encryption',
         'endpoint' => 'Endpoint',
-        'first_name' => 'Förnamn',
-        'from_email' => 'Avsändarens e-post',
-        'from_name' => 'Avsändarnamn',
-        'host' => 'Värd',
-        'host_domain' => 'Värd / Domän',
-        'icon_url' => 'Ikon-URL',
-        'last_name' => 'Efternamn',
-        'logo_url' => 'Logo-URL',
-        'password' => 'Lösenord',
-        'password_secret' => 'Lösenord / Hemlighet',
+        'first_name' => 'First name',
+        'from_email' => 'From email',
+        'from_name' => 'From name',
+        'host' => 'Host',
+        'host_domain' => 'Host / Domain',
+        'icon_url' => 'Icon URL',
+        'last_name' => 'Last name',
+        'logo_url' => 'Logo URL',
+        'password' => 'Password',
+        'password_secret' => 'Password / Secret',
         'port' => 'Port',
-        'queue_driver' => 'Kö-drivrutin',
-        'redis_host' => 'Redis-värd',
-        'redis_password' => 'Redis-lösenord',
-        'redis_port' => 'Redis-port',
-        'send_telemetry' => 'Skicka anonym telemetri',
-        'service_author_email' => 'E-post för tjänstens författare',
-        'session_driver' => 'Sessionsdrivrutin',
-        'sqlite_database_path' => 'SQLite-databassökväg',
-        'timezone' => 'Tidszon',
-        'username' => 'Användarnamn',
+        'queue_driver' => 'Queue driver',
+        'redis_host' => 'Redis host',
+        'redis_password' => 'Redis password',
+        'redis_port' => 'Redis port',
+        'send_telemetry' => 'Send anonymous telemetry',
+        'service_author_email' => 'Service author email',
+        'session_driver' => 'Session driver',
+        'sqlite_database_path' => 'SQLite database path',
+        'timezone' => 'Timezone',
+        'username' => 'Username',
     ],
 
     'options' => [
-        'none' => 'Ingen',
+        'none' => 'None',
     ],
 
     'actions' => [
-        'continue' => 'Fortsätt',
-        'finish' => 'Slutför installationen',
-        'proceed' => 'Fortsätt...',
-        'skip' => 'Hoppa över...',
+        'continue' => 'Continue',
+        'finish' => 'Finish Installation',
+        'proceed' => 'Proceed...',
+        'skip' => 'Skip...',
     ],
 ];
