@@ -2,82 +2,82 @@
 
 return [
     'meta' => [
-        'title' => 'Reviactyl’e Hoş Geldiniz',
+        'title' => 'Welcome to Reviactyl',
     ],
 
     'language' => [
-        'label' => 'Dil',
+        'label' => 'Language',
     ],
 
     'migration' => [
-        'title' => 'Geçiş devam ediyor',
-        'message' => 'Bu sayfayı yenilemeyin veya kapatmayın...',
+        'title' => 'Migration in progress',
+        'message' => 'Do not refresh or exit this page...',
     ],
 
     'progress' => [
-        'step' => 'Adım :step',
+        'step' => 'Step :step',
     ],
 
     'brand' => [
         'title' => 'Reviactyl Panel (Fission Falcon)',
-        'art_alt' => 'Fission Falcon Görseli',
+        'art_alt' => 'Fission Falcon Artwork',
     ],
 
     'welcome' => [
-        'message' => 'Kuruluma devam etmek için aşağıdaki düğmeye tıklayın.',
+        'message' => 'To proceed with the installation, click the button below.',
     ],
 
     'finish' => [
-        'message' => 'Kurulumu tamamlamak için aşağıdaki düğmeye tıklayın.',
+        'message' => 'To finish the installation, click the button below.',
     ],
 
     'sections' => [
-        'application' => 'Uygulama Yapılandırması',
-        'database' => 'Veritabanı Yapılandırması',
-        'user' => 'Kullanıcı Yapılandırması',
-        'mail' => 'Posta Ayarları',
+        'application' => 'Application Configuration',
+        'database' => 'Database Configuration',
+        'user' => 'User Configuration',
+        'mail' => 'Mail Settings',
     ],
 
     'fields' => [
-        'application_url' => 'Uygulama URL’si',
-        'cache_driver' => 'Önbellek sürücüsü',
-        'database_name' => 'Veritabanı adı',
-        'driver' => 'Sürücü',
-        'email' => 'E-posta',
-        'enable_settings_editor' => 'Ayar düzenleyiciyi etkinleştir',
-        'encryption' => 'Şifreleme',
-        'endpoint' => 'Uç nokta',
-        'first_name' => 'Ad',
-        'from_email' => 'Gönderen e-posta',
-        'from_name' => 'Gönderen adı',
-        'host' => 'Sunucu',
-        'host_domain' => 'Sunucu / Alan adı',
-        'icon_url' => 'Simge URL’si',
-        'last_name' => 'Soyad',
-        'logo_url' => 'Logo URL’si',
-        'password' => 'Şifre',
-        'password_secret' => 'Şifre / Gizli anahtar',
+        'application_url' => 'Application URL',
+        'cache_driver' => 'Cache driver',
+        'database_name' => 'Database name',
+        'driver' => 'Driver',
+        'email' => 'Email',
+        'enable_settings_editor' => 'Enable settings editor',
+        'encryption' => 'Encryption',
+        'endpoint' => 'Endpoint',
+        'first_name' => 'First name',
+        'from_email' => 'From email',
+        'from_name' => 'From name',
+        'host' => 'Host',
+        'host_domain' => 'Host / Domain',
+        'icon_url' => 'Icon URL',
+        'last_name' => 'Last name',
+        'logo_url' => 'Logo URL',
+        'password' => 'Password',
+        'password_secret' => 'Password / Secret',
         'port' => 'Port',
-        'queue_driver' => 'Kuyruk sürücüsü',
-        'redis_host' => 'Redis sunucusu',
-        'redis_password' => 'Redis şifresi',
-        'redis_port' => 'Redis portu',
-        'send_telemetry' => 'Anonim telemetri gönder',
-        'service_author_email' => 'Servis sahibi e-postası',
-        'session_driver' => 'Oturum sürücüsü',
-        'sqlite_database_path' => 'SQLite veritabanı yolu',
-        'timezone' => 'Saat dilimi',
-        'username' => 'Kullanıcı adı',
+        'queue_driver' => 'Queue driver',
+        'redis_host' => 'Redis host',
+        'redis_password' => 'Redis password',
+        'redis_port' => 'Redis port',
+        'send_telemetry' => 'Send anonymous telemetry',
+        'service_author_email' => 'Service author email',
+        'session_driver' => 'Session driver',
+        'sqlite_database_path' => 'SQLite database path',
+        'timezone' => 'Timezone',
+        'username' => 'Username',
     ],
 
     'options' => [
-        'none' => 'Yok',
+        'none' => 'None',
     ],
 
     'actions' => [
-        'continue' => 'Devam et',
-        'finish' => 'Kurulumu Tamamla',
-        'proceed' => 'İlerle...',
-        'skip' => 'Atla...',
+        'continue' => 'Continue',
+        'finish' => 'Finish Installation',
+        'proceed' => 'Proceed...',
+        'skip' => 'Skip...',
     ],
 ];
