@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'flag' => 'chúng ta',
+    'flag' => 'vn',
     'title' => 'Trang tổng quan',
     'servers-user' => [
         'title' => 'Máy chủ của bạn',

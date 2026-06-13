@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'flag' => 'bn',
+    'flag' => 'bd',
     'title' => 'ড্যাশবোর্ড',
     'servers-user' => [
         'title' => 'আপনার সার্ভারসমূহ',
