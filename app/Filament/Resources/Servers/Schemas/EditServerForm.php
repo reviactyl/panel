@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Servers\Schemas;
 
 use App\Contracts\Repository\AllocationRepositoryInterface;
+use App\Enum\JwtScope;
 use App\Filament\Resources\Servers\ServerResource;
 use App\Models\Allocation;
 use App\Models\Egg;
@@ -629,7 +630,8 @@ class EditServerForm
                 $token = app(NodeJWTService::class)
                     ->setExpiresAt(CarbonImmutable::now()->addMinutes(15))
                     ->setSubject($server->uuid)
-                    ->handle($transfer->newNode, $server->uuid, 'sha256');
+                    ->setScopes(JwtScope::ServerTransfer)
+                    ->handle($transfer->newNode, $server->uuid);
 
                 assert($token instanceof Plain);
 

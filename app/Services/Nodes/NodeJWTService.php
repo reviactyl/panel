@@ -2,6 +2,7 @@
 
 namespace App\Services\Nodes;
 
+use App\Enum\JwtScope;
 use App\Extensions\Lcobucci\JWT\Encoding\TimestampDates;
 use App\Models\Node;
 use App\Models\User;
@@ -11,10 +12,13 @@ use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\UnencryptedToken;
+use Webmozart\Assert\Assert;
 
 class NodeJWTService
 {
     private array $claims = [];
+
+    private array $scopes;
 
     private ?User $user = null;
 
@@ -28,6 +32,16 @@ class NodeJWTService
     public function setClaims(array $claims): self
     {
         $this->claims = $claims;
+
+        return $this;
+    }
+
+    /**
+     * Set the scopes for JWT.
+     */
+    public function setScopes(JwtScope ...$scopes): self
+    {
+        $this->scopes = $scopes;
 
         return $this;
     }
@@ -60,9 +74,9 @@ class NodeJWTService
     /**
      * Generate a new JWT for a given node.
      */
-    public function handle(Node $node, ?string $identifiedBy, string $algo = 'md5'): UnencryptedToken
+    public function handle(Node $node, ?string $identifiedBy): UnencryptedToken
     {
-        $identifier = hash($algo, $identifiedBy);
+        $identifier = hash('sha256', $identifiedBy);
         $config = Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText($node->getDecryptedKey()));
 
         $builder = $config->builder(new TimestampDates())
@@ -85,15 +99,12 @@ class NodeJWTService
             $builder = $builder->withClaim($key, $value);
         }
 
+        Assert::notEmpty($this->scopes, 'Cannot generate a JWT without providing at least one scope.');
+
+        $builder = $builder->withClaim('scope', implode(' ', array_map(fn ($scope) => $scope->value, $this->scopes)));
+
         if (! is_null($this->user)) {
-            $builder = $builder
-                ->withClaim('user_uuid', $this->user->uuid)
-                // The "user_id" claim is deprecated and should not be referenced — it remains
-                // here solely to ensure older versions of Agent are unaffected when the Panel
-                // is updated.
-                //
-                // This claim will be removed in Panel@1.11 or later.
-                ->withClaim('user_id', $this->user->id);
+            $builder = $builder->withClaim('user_uuid', $this->user->uuid);
         }
 
         return $builder
