@@ -1,0 +1,26 @@
+<?php
+
+return [
+    'control' => 'コントロール',
+    'management' => '管理',
+    'administration' => '管理者',
+    'start' => '起動',
+    'stop' => '停止',
+    'restart' => '再起動',
+    'kill' => '強制終了',
+    'kill-warning' => 'サーバーを強制停止するとデータが破損する可能性があります。',
+    'hide-stats' => '統計を非表示',
+    'show-stats' => '統計を表示',
+    'force-stop-title' => 'プロセスを強制停止',
+    'force-stop-confirm' => '続行',
+    'installer-running-title' => 'インストーラー実行中',
+    'installer-running-message' => 'サーバーはまもなく準備できます。数分後に再試行してください。',
+    'server-suspended-title' => 'サーバー停止中',
+    'server-suspended-message' => 'このサーバーは停止されており、アクセスできません。',
+    'node-maintenance-title' => 'Node メンテナンス中',
+    'node-maintenance-message' => 'このサーバーの Node は現在メンテナンス中です。',
+    'server-transferring-title' => '転送中',
+    'server-transferring-message' => 'サーバーは新しい Node に転送中です。後ほど確認してください。',
+    'server-restoring-title' => 'バックアップから復元中',
+    'server-restoring-message' => 'サーバーはバックアップから復元中です。数分後に確認してください。',
+];
