@@ -4,7 +4,7 @@
         "version": "RCYL_v26",
         "update_url": null
     },
-    "exported_at": "2026-05-01T13:51:34+00:00",
+    "exported_at": "2026-06-14T03:56:50+00:00",
     "name": "Bungeecord",
     "image": "https:\/\/cdn.reviactyl.app\/@reviactyl\/eggs\/minecraft\/bungeecord.webp",
     "author": "authors@reviactyl.app",
@@ -34,7 +34,7 @@
     },
     "scripts": {
         "installation": {
-            "script": "#!\/bin\/ash\r\n# Bungeecord Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\n\r\ncd \/mnt\/server\r\n\r\nif [ -z \"${BUNGEE_VERSION}\" ] || [ \"${BUNGEE_VERSION}\" == \"latest\" ]; then\r\n    BUNGEE_VERSION=\"lastStableBuild\"\r\nfi\r\n\r\ncurl -o ${SERVER_JARFILE} https:\/\/ci.md-5.net\/job\/BungeeCord\/${BUNGEE_VERSION}\/artifact\/bootstrap\/target\/BungeeCord.jar",
+            "script": "#!\/bin\/ash\n# Bungeecord Installation Script\n#\n# Server Files: \/mnt\/server\n\ncd \/mnt\/server\n\nif [ -z \"${BUNGEE_VERSION}\" ] || [ \"${BUNGEE_VERSION}\" == \"latest\" ]; then\n    BUNGEE_VERSION=\"lastStableBuild\"\nfi\n\ncurl -o ${SERVER_JARFILE} https:\/\/hub.spigotmc.org\/jenkins\/job\/BungeeCord\/${BUNGEE_VERSION}\/artifact\/bootstrap\/target\/BungeeCord.jar",
             "container": "ghcr.io\/reviactyl\/installers:alpine",
             "entrypoint": "ash"
         }
