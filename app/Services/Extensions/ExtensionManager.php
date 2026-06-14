@@ -98,6 +98,7 @@ class ExtensionManager
         $record->api_version = $resolvedApiVersion;
         $record->target_version = Arr::get($manifest, 'target_version');
         $record->manifest = $manifest;
+        $record->enabled = true;
         $record->installed_at ??= now();
         $record->extension_updated_at = now();
         $record->save();
@@ -137,6 +138,8 @@ class ExtensionManager
         /** @var Extension $extension */
         $extension = Extension::query()->where('identifier', $identifier)->firstOrFail();
 
+        $this->removeOrphanedFilamentPages($identifier);
+
         if (File::exists($extension->install_path)) {
             File::deleteDirectory($extension->install_path);
         }
@@ -147,6 +150,26 @@ class ExtensionManager
         }
 
         $extension->delete();
+    }
+
+    private function removeOrphanedFilamentPages(string $identifier): void
+    {
+        $pagesPath = app_path('Filament/Pages');
+        if (! File::isDirectory($pagesPath)) {
+            return;
+        }
+
+        $needle = 'extensions/' . $identifier . '/';
+
+        foreach (File::files($pagesPath) as $file) {
+            if ($file->getExtension() !== 'php') {
+                continue;
+            }
+
+            if (str_contains((string) File::get($file->getPathname()), $needle)) {
+                File::delete($file->getPathname());
+            }
+        }
     }
 
     /**
