@@ -1,7 +1,7 @@
 import tw from 'twin.macro';
 import { useTranslation } from 'react-i18next';
 
-// Google logo is served from Google's servers to follow branding guidelines 
+// Google logo is served from Google's servers to follow branding guidelines
 // https://developers.google.com/identity/branding-guidelines
 const GoogleLogo = () => (
     <img
