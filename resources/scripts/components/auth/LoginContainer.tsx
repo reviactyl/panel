@@ -15,7 +15,7 @@ import useFlash from '@/plugins/useFlash';
 import Label from '@/reviactyl/elements/Label';
 import { KeyIcon, UserIcon, EyeIcon, EyeOffIcon } from '@heroicons/react/solid';
 import { useTranslation } from 'react-i18next';
-import { FaGithub, FaGoogle, FaPlug } from 'react-icons/fa6';
+import OAuthButtons from '@/components/auth/OAuthButtons';
 
 interface Values {
     username: string;
@@ -146,43 +146,11 @@ function LoginContainer() {
                         </Button>
                     </div>
 
-                    {Object.values(socialSettings).some(Boolean) && (
-                        <div css={tw`mt-4 grid grid-cols-1 gap-2`}>
-                            <div css={tw`relative flex py-2 items-center`}>
-                                <div css={tw`flex-grow border-t border-gray-800`}></div>
-                                <span css={tw`flex-shrink mx-4 text-gray-400 text-xs`}>{t('social.or')}</span>
-                                <div css={tw`flex-grow border-t border-gray-800`}></div>
-                            </div>
-                            <div css={tw`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3`}>
-                                {socialSettings.google && (
-                                    <Button
-                                        onClick={() => (window.location.href = '/auth/login/google')}
-                                        className={`w-full !py-2 !bg-gray-800 !text-white !border !border-gray-700 !hover:bg-gray-700`}
-                                    >
-                                        <FaGoogle className='mr-2' /> {t('social.google')}
-                                    </Button>
-                                )}
-
-                                {socialSettings.discord && (
-                                    <Button
-                                        onClick={() => (window.location.href = '/auth/login/discord')}
-                                        className={`w-full !py-2 !bg-gray-800 !text-white !border !border-gray-700 !hover:bg-gray-700`}
-                                    >
-                                        <FaPlug className='mr-2 h-5' /> {t('social.discord')}
-                                    </Button>
-                                )}
-
-                                {socialSettings.github && (
-                                    <Button
-                                        onClick={() => (window.location.href = '/auth/login/github')}
-                                        className={`w-full !py-2 !bg-gray-800 !text-white !border !border-gray-700 !hover:bg-gray-700`}
-                                    >
-                                        <FaGithub className='mr-2' /> {t('social.github')}
-                                    </Button>
-                                )}
-                            </div>
-                        </div>
-                    )}
+                    <OAuthButtons
+                        google={socialSettings.google}
+                        discord={socialSettings.discord}
+                        github={socialSettings.github}
+                    />
                     {provider === 'recaptcha' && (
                         <Reaptcha
                             ref={ref}
