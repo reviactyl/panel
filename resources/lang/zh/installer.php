@@ -10,17 +10,17 @@ return [
     ],
 
     'migration' => [
-        'title' => '正在迁移',
-        'message' => '请勿刷新或离开此页面...',
+        'title' => '迁移进行中',
+        'message' => '请勿刷新或离开此页面……',
     ],
 
     'progress' => [
-        'step' => '步骤 :step',
+        'step' => '第 :step 步',
     ],
 
     'brand' => [
-        'title' => 'Reviactyl 面板 (Fission Falcon)',
-        'art_alt' => 'Fission Falcon 插图',
+        'title' => 'Reviactyl 面板（Fission Falcon）',
+        'art_alt' => 'Fission Falcon 艺术作品',
     ],
 
     'welcome' => [
@@ -43,17 +43,17 @@ return [
         'cache_driver' => '缓存驱动',
         'database_name' => '数据库名称',
         'driver' => '驱动',
-        'email' => '邮箱',
+        'email' => '电子邮箱',
         'enable_settings_editor' => '启用设置编辑器',
         'encryption' => '加密',
         'endpoint' => '端点',
-        'first_name' => '名',
-        'from_email' => '发件邮箱',
+        'first_name' => '名字',
+        'from_email' => '发件人邮箱',
         'from_name' => '发件人名称',
         'host' => '主机',
         'host_domain' => '主机 / 域名',
         'icon_url' => '图标 URL',
-        'last_name' => '姓',
+        'last_name' => '姓氏',
         'logo_url' => 'Logo URL',
         'password' => '密码',
         'password_secret' => '密码 / 密钥',
@@ -62,7 +62,7 @@ return [
         'redis_host' => 'Redis 主机',
         'redis_password' => 'Redis 密码',
         'redis_port' => 'Redis 端口',
-        'send_telemetry' => '发送匿名遥测',
+        'send_telemetry' => '发送匿名遥测数据',
         'service_author_email' => '服务作者邮箱',
         'session_driver' => '会话驱动',
         'sqlite_database_path' => 'SQLite 数据库路径',
