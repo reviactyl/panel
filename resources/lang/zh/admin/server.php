@@ -138,7 +138,7 @@ return [
                 'helper' => '如果所选 Egg 附加有安装脚本，则该脚本将在安装期间运行，除非选中此项。',
             ],
             'image' => [
-                'label' => 'Docker Image',
+                'label' => 'Docker 镜像',
                 'helper' => '从下拉列表中选择图像，或在下面输入自定义图像。',
             ],
             'custom_image' => [
