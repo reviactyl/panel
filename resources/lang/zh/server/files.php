@@ -18,7 +18,7 @@ return [
     'cancel' => '取消',
     'create' => '创造',
     'rename' => '重命名',
-    'move' => 'Move',
+    'move' => '移动',
     'file-mode-label' => '文件模式',
     'new-location' => '新地点：',
     'cancel-uploads' => '取消上传',

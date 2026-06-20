@@ -5,7 +5,7 @@ return [
     'no-schedules' => '目前没有为此服务器配置计划。',
     'create-schedule' => '创建计划',
     'last-run-at' => '最后运行于：:time',
-    'never' => 'never',
+    'never' => '从不',
     'active' => '积极的',
     'inactive' => '不活跃',
     'processing' => '加工',
