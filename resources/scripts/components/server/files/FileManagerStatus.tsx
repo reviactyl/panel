@@ -3,7 +3,7 @@ import { ServerContext } from '@/state/server';
 import { XIcon } from '@heroicons/react/solid';
 import asDialog from '@/hoc/asDialog';
 import { Dialog, DialogWrapperContext } from '@/reviactyl/elements/dialog';
-import { Button } from '@/reviactyl/elements/button/index';
+import { Button } from '@/reviactyl/components/button/index';
 import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
 import Code from '@/reviactyl/elements/Code';
 import { useSignal } from '@preact/signals-react';

@@ -7,7 +7,7 @@ import Field from '@/reviactyl/elements/Field';
 import { httpErrorToHuman } from '@/api/http';
 import { ApplicationStore } from '@/state';
 import tw from 'twin.macro';
-import { Button } from '@/reviactyl/elements/button/index';
+import { Button } from '@/reviactyl/components/button/index';
 import { useTranslation } from 'react-i18next';
 
 interface Values {

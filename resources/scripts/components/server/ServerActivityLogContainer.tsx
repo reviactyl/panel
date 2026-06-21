@@ -9,7 +9,7 @@ import PaginationFooter from '@/reviactyl/elements/table/PaginationFooter';
 import { ActivityLogFilters } from '@/api/account/activity';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
-import { styles as btnStyles } from '@/reviactyl/elements/button/index';
+import { styles as btnStyles } from '@/reviactyl/components/button/index';
 import { XCircleIcon } from '@heroicons/react/solid';
 import useLocationHash from '@/plugins/useLocationHash';
 import { useTranslation } from 'react-i18next';

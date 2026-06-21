@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import getSocialLogins, { SocialLogin } from '@/api/account/getSocialLogins';
 import unlinkSocialLogin from '@/api/account/unlinkSocialLogin';
 import TitledGreyBox from '@/reviactyl/elements/TitledGreyBox';
-import { Button } from '@/reviactyl/elements/button';
+import { Button } from '@/reviactyl/components/button';
 import tw from 'twin.macro';
 import { format } from 'date-fns';
 import { FaGoogle, FaDiscord, FaGithub, FaLink, FaUnlink, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';

@@ -5,7 +5,7 @@ import { Formik, FormikHelpers } from 'formik';
 import { object, string, ref as yupRef } from 'yup';
 import Field from '@/reviactyl/elements/Field';
 import tw from 'twin.macro';
-import { Button } from '@/reviactyl/elements/button/index';
+import { Button } from '@/reviactyl/components/button/index';
 import useFlash from '@/plugins/useFlash';
 import Label from '@/reviactyl/elements/Label';
 import { KeyIcon, UserIcon, MailIcon, EyeIcon, EyeOffIcon } from '@heroicons/react/solid';

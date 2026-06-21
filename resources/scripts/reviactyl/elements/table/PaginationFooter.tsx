@@ -1,6 +1,6 @@
 import { PaginationDataSet } from '@/api/http';
 import classNames from 'classnames';
-import { Button } from '@/reviactyl/elements/button/index';
+import { Button } from '@/reviactyl/components/button/index';
 import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon } from '@heroicons/react/solid';
 
 interface Props {

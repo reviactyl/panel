@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
-import { Button } from '@/reviactyl/elements/button/index';
+import { Button } from '@/reviactyl/components/button/index';
 import triggerScheduleExecution from '@/api/server/schedules/triggerScheduleExecution';
 import { ServerContext } from '@/state/server';
 import useFlash from '@/plugins/useFlash';

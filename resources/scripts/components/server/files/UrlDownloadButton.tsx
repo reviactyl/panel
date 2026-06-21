@@ -5,7 +5,7 @@ import Field from '@/reviactyl/elements/Field';
 import { object, string } from 'yup';
 import pullFile from '@/api/server/files/pullFile';
 import tw from 'twin.macro';
-import { Button } from '@/reviactyl/elements/button/index';
+import { Button } from '@/reviactyl/components/button/index';
 import { useFlashKey } from '@/plugins/useFlash';
 import { WithClassname } from '@/components/types';
 import FlashMessageRender from '@/components/FlashMessageRender';

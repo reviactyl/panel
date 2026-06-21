@@ -11,7 +11,7 @@ import Can from '@/reviactyl/elements/Can';
 import useFlash from '@/plugins/useFlash';
 import tw from 'twin.macro';
 import GreyRowBox from '@/reviactyl/elements/GreyRowBox';
-import { Button } from '@/reviactyl/elements/button/index';
+import { Button } from '@/reviactyl/components/button/index';
 import ServerContentBlock from '@/reviactyl/elements/ServerContentBlock';
 import Card from '@/reviactyl/ui/Card';
 import { ClockIcon } from '@heroicons/react/solid';

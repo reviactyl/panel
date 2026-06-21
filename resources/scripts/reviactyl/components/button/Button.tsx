@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
 import classNames from 'classnames';
-import { ButtonProps, Options } from '@/reviactyl/elements/button/types';
+import { ButtonProps, Options } from '@/reviactyl/components/button/types';
 import styles from './style.module.css';
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(

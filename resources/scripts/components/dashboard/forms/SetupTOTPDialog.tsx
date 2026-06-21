@@ -5,7 +5,7 @@ import getTwoFactorTokenData, { TwoFactorTokenData } from '@/api/account/getTwoF
 import { useFlashKey } from '@/plugins/useFlash';
 import tw from 'twin.macro';
 import QRCode from 'qrcode.react';
-import { Button } from '@/reviactyl/elements/button/index';
+import { Button } from '@/reviactyl/components/button/index';
 import Spinner from '@/reviactyl/elements/Spinner';
 import { Input } from '@/reviactyl/elements/inputs';
 import CopyOnClick from '@/reviactyl/elements/CopyOnClick';

@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import * as React from 'react';
 import asDialog from '@/hoc/asDialog';
 import { Dialog, DialogWrapperContext } from '@/reviactyl/elements/dialog';
-import { Button } from '@/reviactyl/elements/button/index';
+import { Button } from '@/reviactyl/components/button/index';
 import { Input } from '@/reviactyl/elements/inputs';
 import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
 import disableAccountTwoFactor from '@/api/account/disableAccountTwoFactor';

@@ -12,7 +12,7 @@ import ServerContentBlock from '@/reviactyl/elements/ServerContentBlock';
 import isEqual from 'react-fast-compare';
 import CopyOnClick from '@/reviactyl/elements/CopyOnClick';
 import { ip } from '@/lib/formatters';
-import { Button } from '@/reviactyl/elements/button/index';
+import { Button } from '@/reviactyl/components/button/index';
 import { useTranslation } from 'react-i18next';
 
 export default () => {

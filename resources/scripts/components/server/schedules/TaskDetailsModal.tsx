@@ -12,7 +12,7 @@ import FormikFieldWrapper from '@/reviactyl/elements/FormikFieldWrapper';
 import tw from 'twin.macro';
 import Label from '@/reviactyl/elements/Label';
 import { Textarea } from '@/reviactyl/elements/Input';
-import { Button } from '@/reviactyl/elements/button/index';
+import { Button } from '@/reviactyl/components/button/index';
 import Select from '@/reviactyl/elements/Select';
 import ModalContext from '@/context/ModalContext';
 import asModal from '@/hoc/asModal';

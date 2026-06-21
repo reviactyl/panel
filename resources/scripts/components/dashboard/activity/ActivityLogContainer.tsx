@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import PaginationFooter from '@/reviactyl/elements/table/PaginationFooter';
 import { DesktopComputerIcon, XCircleIcon } from '@heroicons/react/solid';
 import Spinner from '@/reviactyl/elements/Spinner';
-import { styles as btnStyles } from '@/reviactyl/elements/button/index';
+import { styles as btnStyles } from '@/reviactyl/components/button/index';
 import classNames from 'classnames';
 import ActivityLogEntry from '@/reviactyl/elements/activity/ActivityLogEntry';
 import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';

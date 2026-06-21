@@ -8,7 +8,7 @@ import { object, string } from 'yup';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
-import { Button } from '@/reviactyl/elements/button/index';
+import { Button } from '@/reviactyl/components/button/index';
 import tw from 'twin.macro';
 import Label from '@/reviactyl/elements/Label';
 import FormikFieldWrapper from '@/reviactyl/elements/FormikFieldWrapper';

@@ -1,5 +1,5 @@
 import { Dialog, DialogProps } from '@/reviactyl/elements/dialog';
-import { Button } from '@/reviactyl/elements/button/index';
+import { Button } from '@/reviactyl/components/button/index';
 import CopyOnClick from '@/reviactyl/elements/CopyOnClick';
 import { Alert } from '@/reviactyl/elements/alert';
 import { useTranslation } from 'react-i18next';

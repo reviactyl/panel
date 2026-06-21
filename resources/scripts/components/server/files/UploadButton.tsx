@@ -1,7 +1,7 @@
 import axios, { AxiosProgressEvent } from 'axios';
 import getFileUploadUrl from '@/api/server/files/getFileUploadUrl';
 import tw from 'twin.macro';
-import { Button } from '@/reviactyl/elements/button/index';
+import { Button } from '@/reviactyl/components/button/index';
 import { useEffect, useRef, useState } from 'react';
 import { ModalMask } from '@/reviactyl/elements/Modal';
 import Fade from '@/reviactyl/elements/Fade';

@@ -5,7 +5,7 @@ import { FaNetworkWired } from 'react-icons/fa6';
 import InputSpinner from '@/reviactyl/elements/InputSpinner';
 import { Textarea } from '@/reviactyl/elements/Input';
 import Can from '@/reviactyl/elements/Can';
-import { Button } from '@/reviactyl/elements/button/index';
+import { Button } from '@/reviactyl/components/button/index';
 import GreyRowBox from '@/reviactyl/elements/GreyRowBox';
 import { Allocation } from '@/api/server/getServer';
 import styled from 'styled-components';

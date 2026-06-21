@@ -43,7 +43,7 @@ import {
     FaArrowUpShortWide,
     FaFileCirclePlus,
 } from 'react-icons/fa6';
-import { Button } from '@/reviactyl/elements/button';
+import { Button } from '@/reviactyl/components/button';
 
 type SortType = 'name' | 'size' | 'date';
 type SortDirection = 'asc' | 'desc';

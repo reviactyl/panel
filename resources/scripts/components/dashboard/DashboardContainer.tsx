@@ -22,7 +22,7 @@ import CategorySection from '@/components/dashboard/CategorySection';
 import CategoryManagerModal from '@/components/dashboard/CategoryManagerModal';
 import { LayoutContainer, ServerLayout } from '@/components/dashboard/ServerLayout';
 import Select from '@/reviactyl/elements/Select';
-import { Button } from '@/reviactyl/elements/button';
+import { Button } from '@/reviactyl/components/button';
 import { FaUserGear } from 'react-icons/fa6';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 
