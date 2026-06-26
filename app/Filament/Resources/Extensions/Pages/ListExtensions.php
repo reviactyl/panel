@@ -21,7 +21,6 @@ class ListExtensions extends ListRecords
             Action::make('uploadInstall')
                 ->label(trans('admin/extensions.actions.upload'))
                 ->icon('heroicon-o-arrow-up-tray')
-                ->disabled() // TODO: not finished yet, so disable for now
                 ->form([
                     FileUpload::make('file')
                         ->label(trans('admin/extensions.columns.file'))
@@ -30,7 +29,8 @@ class ListExtensions extends ListRecords
                         ->storeFiles(false),
                 ])
                 ->action(function (array $data): void {
-                    $path = $this->resolveUploadPath(Arr::get($data, 'file'));
+                    $uploaded = Arr::get($data, 'file');
+                    $path = $this->resolveUploadPath($uploaded);
 
                     if ($path === null) {
                         Notification::make()
@@ -41,8 +41,11 @@ class ListExtensions extends ListRecords
                         return;
                     }
 
-                    // check if .rext
-                    if (strtolower(pathinfo($path, PATHINFO_EXTENSION)) !== 'rext') {
+                    $clientName = $uploaded instanceof TemporaryUploadedFile
+                        ? $uploaded->getClientOriginalName()
+                        : basename($path);
+
+                    if (strtolower(pathinfo($clientName, PATHINFO_EXTENSION)) !== 'rext') {
                         Notification::make()
                             ->title(trans('admin/extensions.alerts.invalid_file_type'))
                             ->danger()
@@ -52,35 +55,33 @@ class ListExtensions extends ListRecords
                     }
 
                     // validation
+                    $needsCopy = strtolower(pathinfo($path, PATHINFO_EXTENSION)) !== 'rext';
+                    $archivePath = $path;
+
+                    if ($needsCopy) {
+                        $archivePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('rext_', true) . '.rext';
+                        copy($path, $archivePath);
+                    }
+
                     try {
-                        $zip = new \ZipArchive();
-
-                        if ($zip->open($path) !== true) {
-                            throw new \Exception('Invalid extension archive.');
-                        }
-
-                        if ($zip->locateName('extension.json') === false) {
-                            $zip->close();
-                            throw new \Exception('Invalid .rext package: extension.json missing.');
-                        }
-
-                        $zip->close();
-
                         /** @var ExtensionManager $manager */
                         $manager = app(ExtensionManager::class);
-                        $extension = $manager->installFromArchive($path, basename($path));
+                        $extension = $manager->installFromArchive($archivePath, $clientName);
 
                         Notification::make()
                             ->title(trans('admin/extensions.alerts.install_success', ['name' => $extension->name, 'version' => $extension->version]))
                             ->success()
                             ->send();
-
                     } catch (\Throwable $exception) {
                         Notification::make()
                             ->title(trans('admin/extensions.alerts.install_failed'))
                             ->body($exception->getMessage())
                             ->danger()
                             ->send();
+                    } finally {
+                        if ($needsCopy && is_file($archivePath)) {
+                            @unlink($archivePath);
+                        }
                     }
                 }),
         ];
