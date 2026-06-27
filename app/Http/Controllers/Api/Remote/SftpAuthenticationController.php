@@ -47,9 +47,7 @@ class SftpAuthenticationController extends Controller
 
         if ($request->input('type') !== 'public_key') {
             if (! password_verify($request->input('password'), $user->password)) {
-                Activity::event('auth:sftp.fail')->property('method', 'password')->subject($user)->log();
-
-                $this->reject($request);
+                $this->reject($request, true, $user, 'password');
             }
         } else {
             $key = null;
@@ -67,11 +65,12 @@ class SftpAuthenticationController extends Controller
                 // For now, we'll only log failures due to a bad password as those are not likely
                 // to occur more than once in a session for the user, and are more likely to be of
                 // value to the end user.
-                $this->reject($request, is_null($key));
+                $this->reject($request, is_null($key), $user, 'public_key');
             }
         }
 
-        $this->validateSftpAccess($user, $server);
+        $this->validateSftpAccess($request, $user, $server);
+        $this->clearLoginAttempts($request);
 
         return new JsonResponse([
             'user' => $user->uuid,
@@ -124,8 +123,16 @@ class SftpAuthenticationController extends Controller
     /**
      * Rejects the request and increments the login attempts.
      */
-    protected function reject(Request $request, bool $increment = true): void
+    protected function reject(Request $request, bool $increment = true, ?User $user = null, string $method = 'unknown'): void
     {
+        $activity = Activity::event('auth:sftp.fail')->property('method', $method);
+
+        if ($user !== null) {
+            $activity->subject($user);
+        }
+
+        $activity->log();
+
         if ($increment) {
             $this->incrementLoginAttempts($request);
         }
@@ -136,15 +143,13 @@ class SftpAuthenticationController extends Controller
     /**
      * Validates that a user should have permission to use SFTP for the given server.
      */
-    protected function validateSftpAccess(User $user, Server $server): void
+    protected function validateSftpAccess(Request $request, User $user, Server $server): void
     {
         if (! $user->root_admin && $server->owner_id !== $user->id) {
             $permissions = $this->permissions->handle($server, $user);
 
             if (! in_array(Permission::ACTION_FILE_SFTP, $permissions)) {
-                Activity::event('server:sftp.denied')->actor($user)->subject($server)->log();
-
-                throw new HttpForbiddenException('You do not have permission to access SFTP for this server.');
+                $this->reject($request, false, $user, 'permission');
             }
         }
 
@@ -156,8 +161,11 @@ class SftpAuthenticationController extends Controller
      */
     protected function throttleKey(Request $request): string
     {
-        $username = explode('.', strrev($request->input('username', '')));
+        $connection = $this->parseUsername($request->input('username', ''));
+        $username = $connection['username'] !== ''
+            ? $connection['username']
+            : $request->input('username', '');
 
-        return strtolower(strrev($username[0] ?? '').'|'.$request->ip());
+        return strtolower($username.'|'.$request->ip());
     }
 }
