@@ -16,7 +16,7 @@ import TitledGreyBox from '@/reviactyl/elements/TitledGreyBox';
 import Title from '@/reviactyl/ui/Title';
 import { ExternalLinkIcon } from '@heroicons/react/solid';
 import { LogoutIcon } from '@heroicons/react/outline';
-import http from '@/api/http';
+import logout from '@/api/auth/logout';
 import ThemeSelector from '@/reviactyl/ui/ThemeEngine';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import { useTranslation } from 'react-i18next';
@@ -81,7 +81,7 @@ export default () => {
 
     const onTriggerLogout = () => {
         setIsLoggingOut(true);
-        http.post('/auth/logout').finally(() => {
+        logout().finally(() => {
             window.location.href = '/';
         });
     };

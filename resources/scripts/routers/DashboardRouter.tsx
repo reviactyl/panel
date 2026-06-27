@@ -23,6 +23,7 @@ import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 import { useExtensionRoutes } from '@/extensions/useExtensionRoutes';
 import { useExtensions } from '@/extensions/useExtensions';
 import { resolveExtensionIcon } from '@/extensions/iconResolver';
+import PasskeysContainer from '@/components/dashboard/PasskeysContainer';
 
 interface Props {
     route: any;
@@ -189,6 +190,10 @@ function DashboardRouter() {
                                         path: `/account/${route}`.replace('//', '/'),
                                         element: <Component />,
                                     })),
+                                    {
+                                        path: '/passkey/*',
+                                        element: <PasskeysContainer />,
+                                    },
                                     ...injectedRoutes,
                                     { path: '*', element: <NotFound /> },
                                 ])}

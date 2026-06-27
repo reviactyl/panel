@@ -16,6 +16,7 @@
         "guzzlehttp/guzzle": "^7.9.2",
         "hashids/hashids": "^5.0.2",
         "laracasts/utilities": "~3.2.3",
+        "laragear/webauthn": "^5.0",
         "laravel/framework": "^13.0",
         "laravel/helpers": "^1.8.0",
         "laravel/sanctum": "^4.2.0",

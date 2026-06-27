@@ -12,6 +12,7 @@ return [
     'account' => [
         'overview' => '账户概览',
         'api' => 'API 密钥',
+        'passkeys' => 'Passkeys',
         'ssh' => 'SSH 密钥',
         'activity' => '活动日志',
     ],

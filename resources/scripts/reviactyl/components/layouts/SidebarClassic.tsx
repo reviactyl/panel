@@ -7,7 +7,7 @@ import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { ExternalLinkIcon } from '@heroicons/react/solid';
 import { useTranslation } from 'react-i18next';
-import http from '@/api/http';
+import logout from '@/api/auth/logout';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import SearchContainer from '@/components/dashboard/search/SearchContainer';
 import Logo from '@/reviactyl/ui/Logo';
@@ -93,7 +93,7 @@ export const SidebarClassic = React.forwardRef<HTMLDivElement, SidebarProps>(({ 
 
     const onLogout = () => {
         setIsLoggingOut(true);
-        http.post('/auth/logout').finally(() => {
+        logout().finally(() => {
             window.location.href = '/';
         });
     };

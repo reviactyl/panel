@@ -12,6 +12,7 @@ return [
     'account' => [
         'overview' => 'ಖಾತೆಯ ಅವಲೋಕನ',
         'api' => 'API Keys',
+        'passkeys' => 'Passkeys',
         'ssh' => 'SSH Keys',
         'activity' => 'ಚಟುವಟಿಕೆ',
     ],

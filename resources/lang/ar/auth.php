@@ -11,7 +11,14 @@ return [
     'password-label' => 'كلمة المرور',
 
     'login-button' => 'تسجيل الدخول',
+    'passkey-button' => 'Login with Passkey',
     'return' => 'العودة إلى تسجيل الدخول',
+
+    'passkey-unsupported' => 'Passkeys are not supported by this browser.',
+    'passkey-failed' => 'Unable to complete passkey login. Please try again.',
+    'passkey-no-credentials' => 'No passkey is available for this login. Use your password or register a passkey first.',
+    'passkey-security' => 'Passkey verification could not be completed securely on this device.',
+    'passkey-username-required' => 'Enter your username or email before using a passkey.',
 
     'social' => [
         'or' => 'أو',
@@ -63,6 +70,7 @@ return [
         'confirm-label' => 'تأكيد كلمة المرور',
         'label' => 'تسجيل',
         'create-account' => 'إنشاء حساب',
+        'no-account' => 'Don\'t have an account?',
     ],
 
     'failed' => 'لا يوجد حساب يطابق تلك البيانات.',

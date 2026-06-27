@@ -27,6 +27,8 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\Rules\In;
+use Laragear\WebAuthn\Contracts\WebAuthnAuthenticatable;
+use Laragear\WebAuthn\WebAuthnAuthentication;
 
 /**
  * App\Models\User.
@@ -87,7 +89,7 @@ use Illuminate\Validation\Rules\In;
  * @mixin \Eloquent
  */
 #[Attributes\Identifiable('user')]
-class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract, HasAvatar, Identifiable
+class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract, HasAvatar, Identifiable, WebAuthnAuthenticatable
 {
     use Authenticatable;
     use Authorizable;
@@ -102,6 +104,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     use HasRealtimeIdentifier;
     use Notifiable;
+    use WebAuthnAuthentication;
 
     public const USER_LEVEL_USER = 0;
 

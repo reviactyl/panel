@@ -2369,6 +2369,163 @@
             "time": "2026-02-24T22:12:50+00:00"
         },
         {
+            "name": "laragear/meta-model",
+            "description": "Let other developers customize your package model and migrations",
+            "keywords": [
+                "database",
+                "model",
+                "laravel",
+                "eloquent"
+            ],
+            "homepage": "",
+            "version": "v3.0.0",
+            "version_normalized": "3.0.0.0",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Italo Israel Baeza Cabrera",
+                    "email": "DarkGhostHunter@Gmail.com",
+                    "homepage": "https://github.com/sponsors/DarkGhostHunter",
+                    "role": "Developer"
+                }
+            ],
+            "source": {
+                "url": "https://github.com/Laragear/MetaModel.git",
+                "type": "git",
+                "reference": "5f6f15e390c934cb10068117555242c2d29e9caa"
+            },
+            "dist": {
+                "url": "https://api.github.com/repos/Laragear/MetaModel/zipball/5f6f15e390c934cb10068117555242c2d29e9caa",
+                "type": "zip",
+                "shasum": "",
+                "reference": "5f6f15e390c934cb10068117555242c2d29e9caa"
+            },
+            "type": "library",
+            "support": {
+                "issues": "https://github.com/Laragear/MetaModel/issues",
+                "source": "https://github.com/Laragear/MetaModel"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/DarkGhostHunter",
+                    "type": "Github Sponsorship"
+                },
+                {
+                    "url": "https://paypal.me/darkghosthunter",
+                    "type": "Paypal"
+                }
+            ],
+            "time": "2026-03-04T16:50:11+00:00",
+            "autoload": {
+                "psr-4": {
+                    "Laragear\\MetaModel\\": "src"
+                }
+            },
+            "require": {
+                "illuminate/contracts": "12.*|13.*",
+                "illuminate/container": "12.*|13.*",
+                "illuminate/database": "12.*|13.*",
+                "php": "^8.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "12.*|13.*",
+                "mockery/mockery": "^1.6"
+            }
+        },
+        {
+            "name": "laragear/webauthn",
+            "description": "Authenticate users with Passkeys: fingerprints, patterns and biometric data.",
+            "keywords": [
+                "Authentication",
+                "laravel",
+                "webauthn",
+                "faceid",
+                "touchid",
+                "windows hello",
+                "passkeys"
+            ],
+            "homepage": "https://github.com/laragear/webauthn",
+            "version": "v5.0.2",
+            "version_normalized": "5.0.2.0",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Lukas Buchs",
+                    "role": "Original developer"
+                },
+                {
+                    "name": "Italo Israel Baeza Cabrera",
+                    "email": "DarkGhostHunter@Gmail.com",
+                    "homepage": "https://github.com/sponsors/DarkGhostHunter",
+                    "role": "Developer"
+                }
+            ],
+            "source": {
+                "url": "https://github.com/Laragear/WebAuthn.git",
+                "type": "git",
+                "reference": "719ba978a18c95118e1ac5bba810522d0768ebb8"
+            },
+            "dist": {
+                "url": "https://api.github.com/repos/Laragear/WebAuthn/zipball/719ba978a18c95118e1ac5bba810522d0768ebb8",
+                "type": "zip",
+                "shasum": "",
+                "reference": "719ba978a18c95118e1ac5bba810522d0768ebb8"
+            },
+            "type": "library",
+            "support": {
+                "issues": "https://github.com/Laragear/WebAuthn/issues",
+                "source": "https://github.com/Laragear/WebAuthn"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/DarkGhostHunter",
+                    "type": "Github Sponsorship"
+                },
+                {
+                    "url": "https://paypal.me/darkghosthunter",
+                    "type": "Paypal"
+                }
+            ],
+            "time": "2026-05-08T18:25:42+00:00",
+            "autoload": {
+                "psr-4": {
+                    "Laragear\\WebAuthn\\": "src"
+                }
+            },
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Laragear\\WebAuthn\\WebAuthnServiceProvider"
+                    ]
+                }
+            },
+            "require": {
+                "php": "^8.3",
+                "ext-json": "*",
+                "ext-openssl": "*",
+                "illuminate/auth": "12.*|13.*",
+                "illuminate/config": "12.*|13.*",
+                "illuminate/database": "12.*|13.*",
+                "illuminate/encryption": "12.*|13.*",
+                "illuminate/http": "12.*|13.*",
+                "illuminate/session": "12.*|13.*",
+                "illuminate/support": "12.*|13.*",
+                "laragear/meta-model": "3.*"
+            },
+            "require-dev": {
+                "ext-sodium": "*",
+                "orchestra/testbench": "10.*|11.*"
+            },
+            "suggest": {
+                "paragonie/sodium_compat": "To enable EdDSA 25519 keys from authenticators, if `ext-sodium` is unavailable."
+            },
+            "abandoned": "laravel/passkeys"
+        },
+        {
             "name": "laravel/framework",
             "version": "v13.12.0",
             "source": {

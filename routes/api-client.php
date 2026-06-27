@@ -28,6 +28,11 @@ Route::prefix('/account')->middleware(AccountSubject::class)->group(function () 
         Route::get('/two-factor', [Client\TwoFactorController::class, 'index']);
         Route::post('/two-factor', [Client\TwoFactorController::class, 'store']);
         Route::post('/two-factor/disable', [Client\TwoFactorController::class, 'delete']);
+        Route::get('/passkeys', [Client\PasskeyController::class, 'index']);
+        Route::post('/passkeys/register/options', [Client\PasskeyController::class, 'options']);
+        Route::post('/passkeys/register', [Client\PasskeyController::class, 'store']);
+        Route::post('/passkeys/remove', [Client\PasskeyController::class, 'delete']);
+        Route::delete('/passkeys/{id}', [Client\PasskeyController::class, 'delete']);
     });
 
     Route::put('/email', [Client\AccountController::class, 'updateEmail'])->name('api:client.account.update-email');

@@ -11,7 +11,14 @@ return [
     'password-label' => 'Contraseña',
 
     'login-button' => 'Iniciar sesión',
+    'passkey-button' => 'Login with Passkey',
     'return' => 'Volver al inicio de sesión',
+
+    'passkey-unsupported' => 'Passkeys are not supported by this browser.',
+    'passkey-failed' => 'Unable to complete passkey login. Please try again.',
+    'passkey-no-credentials' => 'No passkey is available for this login. Use your password or register a passkey first.',
+    'passkey-security' => 'Passkey verification could not be completed securely on this device.',
+    'passkey-username-required' => 'Enter your username or email before using a passkey.',
 
     'social' => [
         'or' => 'O',
@@ -63,6 +70,7 @@ return [
         'confirm-label' => 'confirmar Contraseña',
         'label' => 'Registro',
         'create-account' => 'Crear una cuenta',
+        'no-account' => 'Don\'t have an account?',
     ],
 
     'failed' => 'No se pudo encontrar ninguna cuenta que coincida con esas credenciales.',
