@@ -13,6 +13,7 @@ import {
 } from 'react-icons/fa6';
 import { IconType } from 'react-icons';
 import RenameFileModal from '@/components/server/files/RenameFileModal';
+import MoveFileModal from '@/components/server/files/MoveFileModal';
 import { ServerContext } from '@/state/server';
 import { join } from 'pathe';
 import deleteFiles from '@/api/server/files/deleteFiles';
@@ -157,13 +158,20 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                 />
             )}
             {(modal === 'rename' || modal === 'move') && (
-                <RenameFileModal
-                    visible
-                    appear
-                    files={[file.name]}
-                    useMoveTerminology={modal === 'move'}
-                    onDismissed={() => setModal(null)}
-                />
+                <>
+                    {modal === 'rename' && (
+                        <RenameFileModal visible appear files={[file.name]} onDismissed={() => setModal(null)} />
+                    )}
+                    {modal === 'move' && (
+                        <MoveFileModal
+                            visible
+                            appear
+                            files={[file.name]}
+                            directoryNames={file.isFile ? [] : [file.name]}
+                            onDismissed={() => setModal(null)}
+                        />
+                    )}
+                </>
             )}
             <SpinnerOverlay visible={showSpinner} fixed size={'large'} />
             <DropdownMenu

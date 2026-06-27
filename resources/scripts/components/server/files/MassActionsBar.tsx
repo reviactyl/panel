@@ -6,7 +6,7 @@ import useFlash from '@/plugins/useFlash';
 import compressFiles from '@/api/server/files/compressFiles';
 import { ServerContext } from '@/state/server';
 import deleteFiles from '@/api/server/files/deleteFiles';
-import RenameFileModal from '@/components/server/files/RenameFileModal';
+import MoveFileModal from '@/components/server/files/MoveFileModal';
 import { Dialog } from '@/reviactyl/elements/dialog';
 import { useTranslation } from 'react-i18next';
 import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
@@ -18,7 +18,7 @@ const MassActionsBar = () => {
     const { t } = useTranslation('server/files');
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
 
-    const { mutate } = useFileManagerSwr();
+    const { data: currentDirectoryFiles, mutate } = useFileManagerSwr();
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const [loading, setLoading] = useState(false);
     const [loadingMessage, setLoadingMessage] = useState('');
@@ -28,6 +28,10 @@ const MassActionsBar = () => {
 
     const selectedFiles = ServerContext.useStoreState((state) => state.files.selectedFiles);
     const setSelectedFiles = ServerContext.useStoreActions((actions) => actions.files.setSelectedFiles);
+
+    const selectedDirectoryNames = (currentDirectoryFiles ?? [])
+        .filter((file) => !file.isFile && selectedFiles.includes(file.name))
+        .map((file) => file.name);
 
     useEffect(() => {
         if (!loading) setLoadingMessage('');
@@ -85,11 +89,11 @@ const MassActionsBar = () => {
                 </p>
             </Dialog.Confirm>
             {showMove && (
-                <RenameFileModal
+                <MoveFileModal
                     files={selectedFiles}
+                    directoryNames={selectedDirectoryNames}
                     visible
                     appear
-                    useMoveTerminology
                     onDismissed={() => setShowMove(false)}
                 />
             )}
