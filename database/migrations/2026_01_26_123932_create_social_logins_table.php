@@ -17,8 +17,8 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('provider');
             $table->string('provider_user_id');
-            $table->string('provider_token')->nullable();
-            $table->string('provider_refresh_token')->nullable();
+            $table->text('provider_token')->nullable();
+            $table->text('provider_refresh_token')->nullable();
             $table->timestamps();
 
             $table->unique(['provider', 'provider_user_id']);
