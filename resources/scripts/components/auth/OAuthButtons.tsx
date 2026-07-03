@@ -67,6 +67,7 @@ function OAuthButton({ provider }: { provider: Provider }) {
             <a
                 href={href}
                 aria-label={label}
+                css={tw`bg-gray-800 border border-gray-700`}
                 style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -74,9 +75,6 @@ function OAuthButton({ provider }: { provider: Provider }) {
                     flex: 1,
                     height: '44px',
                     borderRadius: '10px',
-                    // Panel's secondary color from Designify (--color-secondary)
-                    backgroundColor: 'rgb(var(--color-secondary))',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
                     textDecoration: 'none',
                     transition: 'filter 0.15s ease',
                     cursor: 'pointer',
