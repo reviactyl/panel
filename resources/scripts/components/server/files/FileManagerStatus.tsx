@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import { XIcon } from '@heroicons/react/solid';
 import asDialog from '@/hoc/asDialog';
@@ -6,7 +6,6 @@ import { Dialog, DialogWrapperContext } from '@/reviactyl/elements/dialog';
 import { Button } from '@/reviactyl/components/button/index';
 import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
 import Code from '@/reviactyl/elements/Code';
-import { useSignal } from '@preact/signals-react';
 import { WithClassname } from '@/components/types';
 import { FaCloudArrowDown } from 'react-icons/fa6';
 import { useTranslation } from 'react-i18next';
@@ -78,7 +77,7 @@ const FileUploadListDialog = asDialog({})(FileUploadList);
 
 export default ({ className }: WithClassname) => {
     const { t } = useTranslation('server/files');
-    const open = useSignal(false);
+    const [open, setOpen] = useState(false);
 
     const count = ServerContext.useStoreState((state) => Object.keys(state.files.uploads).length);
     const progress = ServerContext.useStoreState((state) => ({
@@ -88,7 +87,7 @@ export default ({ className }: WithClassname) => {
 
     useEffect(() => {
         if (count === 0) {
-            open.value = false;
+            setOpen(false);
         }
     }, [count]);
 
@@ -101,14 +100,14 @@ export default ({ className }: WithClassname) => {
                             className ||
                             'flex items-center justify-center w-10 h-10 rounded-ui bg-gray-900 border border-gray-800 text-blue-300 hover:text-blue-100 hover:border-gray-600 transition-colors'
                         }
-                        onClick={() => (open.value = true)}
+                        onClick={() => setOpen(true)}
                     >
                         <Spinner progress={(progress.uploaded / progress.total) * 100} className={'w-8 h-8'} />
                         <FaCloudArrowDown className={'h-3 absolute mx-auto animate-pulse'} />
                     </button>
                 </Tooltip>
             )}
-            <FileUploadListDialog open={open.value} onClose={() => (open.value = false)} />
+            <FileUploadListDialog open={open && count > 0} onClose={() => setOpen(false)} />
         </>
     );
 };

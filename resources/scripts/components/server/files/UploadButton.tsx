@@ -37,7 +37,7 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
 
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const directory = ServerContext.useStoreState((state) => state.files.directory);
-    const { clearFileUploads, removeFileUpload, pushFileUpload, setUploadProgress } = ServerContext.useStoreActions(
+    const { removeFileUpload, pushFileUpload, setUploadProgress } = ServerContext.useStoreActions(
         (actions) => actions.files
     );
 
@@ -115,9 +115,9 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
             });
 
             return () =>
-                getFileUploadUrl(uuid).then((url) =>
-                    axios
-                        .post(
+                getFileUploadUrl(uuid)
+                    .then((url) =>
+                        axios.post(
                             url,
                             { files: file },
                             {
@@ -127,16 +127,24 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
                                 onUploadProgress: (data) => onUploadProgress(data, file.name),
                             }
                         )
-                        .then(() => timeouts.current.push(setTimeout(() => removeFileUpload(file.name), 500)))
-                );
+                    )
+                    .then(() => timeouts.current.push(setTimeout(() => removeFileUpload(file.name), 500)))
+                    .catch((error) => {
+                        removeFileUpload(file.name);
+                        if (!axios.isCancel(error)) {
+                            throw error;
+                        }
+                    });
         });
 
-        Promise.all(uploads.map((fn) => fn()))
-            .then(() => mutate())
-            .catch((error) => {
-                clearFileUploads();
-                clearAndAddHttpError(error);
-            });
+        Promise.allSettled(uploads.map((fn) => fn())).then((results) => {
+            mutate();
+
+            const failure = results.find((result) => result.status === 'rejected');
+            if (failure) {
+                clearAndAddHttpError((failure as PromiseRejectedResult).reason);
+            }
+        });
     };
 
     // Keep ref in sync so the global drop handler can call the latest onFileSubmission
