@@ -2,57 +2,57 @@
 
 return [
 
-    'label' => '数据库',
-    'plural-label' => '数据库',
+    'label' => 'Database',
+    'plural-label' => 'Databases',
 
-    'none' => '无',
+    'none' => 'None',
 
     'sections' => [
         'host_details' => [
-            'title' => '主机信息',
-            'description' => '配置数据库主机连接设置。',
+            'title' => 'Host Details',
+            'description' => 'Configure the database host connection settings.',
         ],
 
         'authentication' => [
-            'title' => '身份验证',
+            'title' => 'Authentication',
         ],
 
         'linked_node' => [
-            'title' => '关联节点',
+            'title' => 'Linked Node',
         ],
     ],
 
     'placeholders' => [
-        'name' => '生产环境 MySQL',
+        'name' => 'Production MySQL',
     ],
 
     'helpers' => [
-        'host' => '数据库服务器的主机名或 IP 地址。',
-        'linked_node' => '可选。将此主机关联到指定节点。',
+        'host' => 'The hostname or IP address of the database server.',
+        'linked_node' => 'Optional. Link this host to a specific node.',
     ],
 
     'fields' => [
-        'linked_node' => '关联节点',
+        'linked_node' => 'Linked Node',
     ],
 
     'columns' => [
         'id' => 'ID',
-        'name' => '名称',
-        'host' => '主机',
-        'port' => '端口',
-        'username' => '用户名',
-        'linked_node' => '关联节点',
-        'databases' => '数据库',
-        'created' => '创建时间',
+        'name' => 'Name',
+        'host' => 'Host',
+        'port' => 'Port',
+        'username' => 'Username',
+        'linked_node' => 'Linked Node',
+        'databases' => 'Databases',
+        'created' => 'Created',
     ],
 
     'actions' => [
-        'edit' => '编辑',
-        'delete' => '删除',
+        'edit' => 'Edit',
+        'delete' => 'Delete',
     ],
 
     'errors' => [
-        'cannot_delete' => '无法删除仍有关联数据库的数据库主机。',
+        'cannot_delete' => 'Cannot delete a database host with associated databases.',
     ],
 
 ];
