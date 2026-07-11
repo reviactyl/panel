@@ -2,82 +2,82 @@
 
 return [
     'meta' => [
-        'title' => 'Bienvenido a Reviactyl',
+        'title' => 'Welcome to Reviactyl',
     ],
 
     'language' => [
-        'label' => 'Idioma',
+        'label' => 'Language',
     ],
 
     'migration' => [
-        'title' => 'Migración en curso',
-        'message' => 'No actualices ni cierres esta página...',
+        'title' => 'Migration in progress',
+        'message' => 'Do not refresh or exit this page...',
     ],
 
     'progress' => [
-        'step' => 'Paso :step',
+        'step' => 'Step :step',
     ],
 
     'brand' => [
-        'title' => 'Panel Reviactyl (Fission Falcon)',
-        'art_alt' => 'Ilustración de Fission Falcon',
+        'title' => 'Reviactyl Panel (Fission Falcon)',
+        'art_alt' => 'Fission Falcon Artwork',
     ],
 
     'welcome' => [
-        'message' => 'Para continuar con la instalación, haz clic en el botón de abajo.',
+        'message' => 'To proceed with the installation, click the button below.',
     ],
 
     'finish' => [
-        'message' => 'Para finalizar la instalación, haz clic en el botón de abajo.',
+        'message' => 'To finish the installation, click the button below.',
     ],
 
     'sections' => [
-        'application' => 'Configuración de la aplicación',
-        'database' => 'Configuración de la base de datos',
-        'user' => 'Configuración del usuario',
-        'mail' => 'Configuración de correo',
+        'application' => 'Application Configuration',
+        'database' => 'Database Configuration',
+        'user' => 'User Configuration',
+        'mail' => 'Mail Settings',
     ],
 
     'fields' => [
-        'application_url' => 'URL de la aplicación',
-        'cache_driver' => 'Controlador de caché',
-        'database_name' => 'Nombre de la base de datos',
-        'driver' => 'Controlador',
-        'email' => 'Correo electrónico',
-        'enable_settings_editor' => 'Activar editor de configuración',
-        'encryption' => 'Cifrado',
+        'application_url' => 'Application URL',
+        'cache_driver' => 'Cache driver',
+        'database_name' => 'Database name',
+        'driver' => 'Driver',
+        'email' => 'Email',
+        'enable_settings_editor' => 'Enable settings editor',
+        'encryption' => 'Encryption',
         'endpoint' => 'Endpoint',
-        'first_name' => 'Nombre',
-        'from_email' => 'Correo del remitente',
-        'from_name' => 'Nombre del remitente',
+        'first_name' => 'First name',
+        'from_email' => 'From email',
+        'from_name' => 'From name',
         'host' => 'Host',
-        'host_domain' => 'Host / Dominio',
-        'icon_url' => 'URL del icono',
-        'last_name' => 'Apellido',
-        'logo_url' => 'URL del logo',
-        'password' => 'Contraseña',
-        'password_secret' => 'Contraseña / Secreto',
-        'port' => 'Puerto',
-        'queue_driver' => 'Controlador de cola',
-        'redis_host' => 'Host de Redis',
-        'redis_password' => 'Contraseña de Redis',
-        'redis_port' => 'Puerto de Redis',
-        'send_telemetry' => 'Enviar telemetría anónima',
-        'service_author_email' => 'Correo del autor del servicio',
-        'session_driver' => 'Controlador de sesión',
-        'sqlite_database_path' => 'Ruta de la base de datos SQLite',
-        'timezone' => 'Zona horaria',
-        'username' => 'Nombre de usuario',
+        'host_domain' => 'Host / Domain',
+        'icon_url' => 'Icon URL',
+        'last_name' => 'Last name',
+        'logo_url' => 'Logo URL',
+        'password' => 'Password',
+        'password_secret' => 'Password / Secret',
+        'port' => 'Port',
+        'queue_driver' => 'Queue driver',
+        'redis_host' => 'Redis host',
+        'redis_password' => 'Redis password',
+        'redis_port' => 'Redis port',
+        'send_telemetry' => 'Send anonymous telemetry',
+        'service_author_email' => 'Service author email',
+        'session_driver' => 'Session driver',
+        'sqlite_database_path' => 'SQLite database path',
+        'timezone' => 'Timezone',
+        'username' => 'Username',
     ],
 
     'options' => [
-        'none' => 'Ninguno',
+        'none' => 'None',
     ],
 
     'actions' => [
-        'continue' => 'Continuar',
-        'finish' => 'Finalizar instalación',
-        'proceed' => 'Continuar...',
-        'skip' => 'Omitir...',
+        'continue' => 'Continue',
+        'finish' => 'Finish Installation',
+        'proceed' => 'Proceed...',
+        'skip' => 'Skip...',
     ],
 ];
