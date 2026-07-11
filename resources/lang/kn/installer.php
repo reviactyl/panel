@@ -2,82 +2,82 @@
 
 return [
     'meta' => [
-        'title' => 'Reviactyl ಗೆ ಸ್ವಾಗತ',
+        'title' => 'Welcome to Reviactyl',
     ],
 
     'language' => [
-        'label' => 'ಭಾಷೆ',
+        'label' => 'Language',
     ],
 
     'migration' => [
-        'title' => 'ಮೈಗ್ರೇಶನ್ ನಡೆಯುತ್ತಿದೆ',
-        'message' => 'ಈ ಪುಟವನ್ನು ರಿಫ್ರೆಶ್ ಮಾಡಬೇಡಿ ಅಥವಾ ಬಿಡಬೇಡಿ...',
+        'title' => 'Migration in progress',
+        'message' => 'Do not refresh or exit this page...',
     ],
 
     'progress' => [
-        'step' => 'ಹಂತ :step',
+        'step' => 'Step :step',
     ],
 
     'brand' => [
         'title' => 'Reviactyl Panel (Fission Falcon)',
-        'art_alt' => 'Fission Falcon ಕಲಾಕೃತಿ',
+        'art_alt' => 'Fission Falcon Artwork',
     ],
 
     'welcome' => [
-        'message' => 'ಇನ್‌ಸ್ಟಾಲೇಶನ್ ಮುಂದುವರಿಸಲು ಕೆಳಗಿನ ಬಟನ್ ಕ್ಲಿಕ್ ಮಾಡಿ.',
+        'message' => 'To proceed with the installation, click the button below.',
     ],
 
     'finish' => [
-        'message' => 'ಇನ್‌ಸ್ಟಾಲೇಶನ್ ಮುಗಿಸಲು ಕೆಳಗಿನ ಬಟನ್ ಕ್ಲಿಕ್ ಮಾಡಿ.',
+        'message' => 'To finish the installation, click the button below.',
     ],
 
     'sections' => [
-        'application' => 'ಅಪ್ಲಿಕೇಶನ್ ಸಂರಚನೆ',
-        'database' => 'ಡೇಟಾಬೇಸ್ ಸಂರಚನೆ',
-        'user' => 'ಬಳಕೆದಾರ ಸಂರಚನೆ',
-        'mail' => 'ಮೇಲ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು',
+        'application' => 'Application Configuration',
+        'database' => 'Database Configuration',
+        'user' => 'User Configuration',
+        'mail' => 'Mail Settings',
     ],
 
     'fields' => [
-        'application_url' => 'ಅಪ್ಲಿಕೇಶನ್ URL',
-        'cache_driver' => 'ಕ್ಯಾಶ್ ಡ್ರೈವರ್',
-        'database_name' => 'ಡೇಟಾಬೇಸ್ ಹೆಸರು',
-        'driver' => 'ಡ್ರೈವರ್',
-        'email' => 'ಇಮೇಲ್',
-        'enable_settings_editor' => 'ಸೆಟ್ಟಿಂಗ್‌ಗಳ ಎಡಿಟರ್ ಸಕ್ರಿಯಗೊಳಿಸಿ',
-        'encryption' => 'ಎನ್ಕ್ರಿಪ್ಷನ್',
-        'endpoint' => 'ಎಂಡ್‌ಪಾಯಿಂಟ್',
-        'first_name' => 'ಮೊದಲ ಹೆಸರು',
-        'from_email' => 'ಕಳುಹಿಸುವ ಇಮೇಲ್',
-        'from_name' => 'ಕಳುಹಿಸುವ ಹೆಸರು',
-        'host' => 'ಹೋಸ್ಟ್',
-        'host_domain' => 'ಹೋಸ್ಟ್ / ಡೊಮೇನ್',
-        'icon_url' => 'ಐಕಾನ್ URL',
-        'last_name' => 'ಕೊನೆಯ ಹೆಸರು',
-        'logo_url' => 'ಲೋಗೋ URL',
-        'password' => 'ಪಾಸ್‌ವರ್ಡ್',
-        'password_secret' => 'ಪಾಸ್‌ವರ್ಡ್ / ಸೀಕ್ರೆಟ್',
-        'port' => 'ಪೋರ್ಟ್',
-        'queue_driver' => 'ಕ್ಯೂ ಡ್ರೈವರ್',
-        'redis_host' => 'Redis ಹೋಸ್ಟ್',
-        'redis_password' => 'Redis ಪಾಸ್‌ವರ್ಡ್',
-        'redis_port' => 'Redis ಪೋರ್ಟ್',
-        'send_telemetry' => 'ಅನಾಮಧೇಯ ಟೆಲಿಮೆಟ್ರಿ ಕಳುಹಿಸಿ',
-        'service_author_email' => 'ಸೇವಾ ಲೇಖಕರ ಇಮೇಲ್',
-        'session_driver' => 'ಸೆಷನ್ ಡ್ರೈವರ್',
-        'sqlite_database_path' => 'SQLite ಡೇಟಾಬೇಸ್ ಪಾಥ್',
-        'timezone' => 'ಸಮಯ ವಲಯ',
-        'username' => 'ಬಳಕೆದಾರ ಹೆಸರು',
+        'application_url' => 'Application URL',
+        'cache_driver' => 'Cache driver',
+        'database_name' => 'Database name',
+        'driver' => 'Driver',
+        'email' => 'Email',
+        'enable_settings_editor' => 'Enable settings editor',
+        'encryption' => 'Encryption',
+        'endpoint' => 'Endpoint',
+        'first_name' => 'First name',
+        'from_email' => 'From email',
+        'from_name' => 'From name',
+        'host' => 'Host',
+        'host_domain' => 'Host / Domain',
+        'icon_url' => 'Icon URL',
+        'last_name' => 'Last name',
+        'logo_url' => 'Logo URL',
+        'password' => 'Password',
+        'password_secret' => 'Password / Secret',
+        'port' => 'Port',
+        'queue_driver' => 'Queue driver',
+        'redis_host' => 'Redis host',
+        'redis_password' => 'Redis password',
+        'redis_port' => 'Redis port',
+        'send_telemetry' => 'Send anonymous telemetry',
+        'service_author_email' => 'Service author email',
+        'session_driver' => 'Session driver',
+        'sqlite_database_path' => 'SQLite database path',
+        'timezone' => 'Timezone',
+        'username' => 'Username',
     ],
 
     'options' => [
-        'none' => 'ಯಾವುದೂ ಇಲ್ಲ',
+        'none' => 'None',
     ],
 
     'actions' => [
-        'continue' => 'ಮುಂದುವರಿಸಿ',
-        'finish' => 'ಇನ್‌ಸ್ಟಾಲೇಶನ್ ಮುಗಿಸಿ',
-        'proceed' => 'ಮುಂದುವರಿಸಿ...',
-        'skip' => 'ಬಿಟ್ಟುಬಿಡಿ...',
+        'continue' => 'Continue',
+        'finish' => 'Finish Installation',
+        'proceed' => 'Proceed...',
+        'skip' => 'Skip...',
     ],
 ];
