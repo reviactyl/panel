@@ -2,82 +2,82 @@
 
 return [
     'meta' => [
-        'title' => 'Reviactyl में आपका स्वागत है',
+        'title' => 'Welcome to Reviactyl',
     ],
 
     'language' => [
-        'label' => 'भाषा',
+        'label' => 'Language',
     ],
 
     'migration' => [
-        'title' => 'माइग्रेशन चल रहा है',
-        'message' => 'इस पेज को रीफ्रेश या बंद न करें...',
+        'title' => 'Migration in progress',
+        'message' => 'Do not refresh or exit this page...',
     ],
 
     'progress' => [
-        'step' => 'चरण :step',
+        'step' => 'Step :step',
     ],
 
     'brand' => [
         'title' => 'Reviactyl Panel (Fission Falcon)',
-        'art_alt' => 'Fission Falcon आर्टवर्क',
+        'art_alt' => 'Fission Falcon Artwork',
     ],
 
     'welcome' => [
-        'message' => 'इंस्टॉलेशन जारी रखने के लिए नीचे दिए गए बटन पर क्लिक करें।',
+        'message' => 'To proceed with the installation, click the button below.',
     ],
 
     'finish' => [
-        'message' => 'इंस्टॉलेशन पूरा करने के लिए नीचे दिए गए बटन पर क्लिक करें।',
+        'message' => 'To finish the installation, click the button below.',
     ],
 
     'sections' => [
-        'application' => 'एप्लिकेशन कॉन्फ़िगरेशन',
-        'database' => 'डेटाबेस कॉन्फ़िगरेशन',
-        'user' => 'यूज़र कॉन्फ़िगरेशन',
-        'mail' => 'मेल सेटिंग्स',
+        'application' => 'Application Configuration',
+        'database' => 'Database Configuration',
+        'user' => 'User Configuration',
+        'mail' => 'Mail Settings',
     ],
 
     'fields' => [
-        'application_url' => 'एप्लिकेशन URL',
-        'cache_driver' => 'कैश ड्राइवर',
-        'database_name' => 'डेटाबेस नाम',
-        'driver' => 'ड्राइवर',
-        'email' => 'ईमेल',
-        'enable_settings_editor' => 'सेटिंग्स एडिटर सक्षम करें',
-        'encryption' => 'एन्क्रिप्शन',
-        'endpoint' => 'एंडपॉइंट',
-        'first_name' => 'पहला नाम',
-        'from_email' => 'प्रेषक ईमेल',
-        'from_name' => 'प्रेषक नाम',
-        'host' => 'होस्ट',
-        'host_domain' => 'होस्ट / डोमेन',
-        'icon_url' => 'आइकन URL',
-        'last_name' => 'अंतिम नाम',
-        'logo_url' => 'लोगो URL',
-        'password' => 'पासवर्ड',
-        'password_secret' => 'पासवर्ड / सीक्रेट',
-        'port' => 'पोर्ट',
-        'queue_driver' => 'क्यू ड्राइवर',
-        'redis_host' => 'Redis होस्ट',
-        'redis_password' => 'Redis पासवर्ड',
-        'redis_port' => 'Redis पोर्ट',
-        'send_telemetry' => 'अनाम टेलीमेट्री भेजें',
-        'service_author_email' => 'सेवा लेखक ईमेल',
-        'session_driver' => 'सेशन ड्राइवर',
-        'sqlite_database_path' => 'SQLite डेटाबेस पथ',
-        'timezone' => 'समय क्षेत्र',
-        'username' => 'यूज़रनेम',
+        'application_url' => 'Application URL',
+        'cache_driver' => 'Cache driver',
+        'database_name' => 'Database name',
+        'driver' => 'Driver',
+        'email' => 'Email',
+        'enable_settings_editor' => 'Enable settings editor',
+        'encryption' => 'Encryption',
+        'endpoint' => 'Endpoint',
+        'first_name' => 'First name',
+        'from_email' => 'From email',
+        'from_name' => 'From name',
+        'host' => 'Host',
+        'host_domain' => 'Host / Domain',
+        'icon_url' => 'Icon URL',
+        'last_name' => 'Last name',
+        'logo_url' => 'Logo URL',
+        'password' => 'Password',
+        'password_secret' => 'Password / Secret',
+        'port' => 'Port',
+        'queue_driver' => 'Queue driver',
+        'redis_host' => 'Redis host',
+        'redis_password' => 'Redis password',
+        'redis_port' => 'Redis port',
+        'send_telemetry' => 'Send anonymous telemetry',
+        'service_author_email' => 'Service author email',
+        'session_driver' => 'Session driver',
+        'sqlite_database_path' => 'SQLite database path',
+        'timezone' => 'Timezone',
+        'username' => 'Username',
     ],
 
     'options' => [
-        'none' => 'कोई नहीं',
+        'none' => 'None',
     ],
 
     'actions' => [
-        'continue' => 'जारी रखें',
-        'finish' => 'इंस्टॉलेशन समाप्त करें',
-        'proceed' => 'आगे बढ़ें...',
-        'skip' => 'छोड़ें...',
+        'continue' => 'Continue',
+        'finish' => 'Finish Installation',
+        'proceed' => 'Proceed...',
+        'skip' => 'Skip...',
     ],
 ];
