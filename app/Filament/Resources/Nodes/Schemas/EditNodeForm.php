@@ -240,6 +240,7 @@ class EditNodeForm
                                             ->label(trans('admin/node.fields.name.label'))
                                             ->required()
                                             ->maxLength(100)
+                                            ->regex('/^([\w .-]{1,100})$/')
                                             ->placeholder(trans('admin/node.fields.name.placeholder'))
                                             ->helperText(trans('admin/node.fields.name.helper'))
                                             ->columnSpanFull(),
