@@ -14,6 +14,7 @@ return [
     'sponsor-btn' => 'Sponsori Proyek',
 
     'help-btn' => 'Dapatkan Bantuan',
+    'update-btn' => 'Update Panel',
     'docs-btn' => 'Dokumentasi',
     'metrics-header' => 'Metrik Aktivitas Pengguna',
     'most-active-country' => 'Negara Paling Aktif',
