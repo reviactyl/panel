@@ -22,6 +22,7 @@ return [
     'file-mode-label' => 'Modo de arquivo',
     'new-location' => 'Nova localização:',
     'cancel-uploads' => 'Cancelar envios',
+    'close' => 'Close',
     'uploads-tooltip' => 'Os arquivos :count estão sendo carregados, clique para visualizar',
     'move-description' => 'Insira o novo nome e diretório deste arquivo ou pasta, relativo ao diretório atual.',
     'update' => 'Atualizar',
