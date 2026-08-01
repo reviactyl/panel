@@ -27,6 +27,9 @@ return [
         ],
     ],
     'user' => [
+        'user' => [
+            'create' => 'Created a new user :email',
+        ],
         'account' => [
             'email-changed' => 'Đã thay đổi email từ :old thành :new',
             'password-changed' => 'Đã thay đổi mật khẩu',
@@ -74,7 +77,7 @@ return [
             'delete' => 'Đã xóa cơ sở dữ liệu :name',
         ],
         'file' => [
-            'compress_one' => 'Đã nén :directory:file',
+            'compress_one' => 'Compressed :directory:files.0',
             'compress_other' => 'Các tệp :count được nén trong :directory',
             'read' => 'Đã xem nội dung của :file',
             'copy' => 'Đã tạo bản sao :file',
