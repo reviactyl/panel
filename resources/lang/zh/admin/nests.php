@@ -2,68 +2,68 @@
 
 return [
 
-    'label' => 'Nest',
-    'plural_label' => 'Nests',
+    'label' => '预设',
+    'plural_label' => '预设',
 
     'sections' => [
-        'configuration' => 'Nest Configuration',
+        'configuration' => '预设配置',
     ],
 
     'fields' => [
-        'name' => 'Name',
-        'author' => 'Author',
-        'description' => 'Description',
+        'name' => '名称',
+        'author' => '作者',
+        'description' => '描述',
     ],
 
     'helpers' => [
-        'name' => 'A unique name used to identify this nest.',
-        'author' => 'The author of this nest. Must be a valid email.',
-        'description' => 'A description of this nest.',
+        'name' => '用于标识该预设的唯一名称。',
+        'author' => '该预设的作者，必须是有效的电子邮箱地址。',
+        'description' => '该预设的描述。',
     ],
 
     'columns' => [
         'id' => 'ID',
-        'name' => 'Name',
-        'author' => 'Author',
-        'eggs' => 'Eggs',
-        'servers' => 'Servers',
+        'name' => '名称',
+        'author' => '作者',
+        'eggs' => '预设',
+        'servers' => '服务器',
     ],
 
     'actions' => [
-        'import' => 'Import Egg',
+        'import' => '进口鸡蛋',
     ],
 
     'import' => [
-        'file_label' => 'Egg File (JSON)',
-        'nest_label' => 'Associated Nest',
-        'file_not_found' => 'File not found',
-        'file_not_found_body' => 'Could not locate uploaded file.',
-        'invalid_format' => 'Invalid file format',
-        'invalid_format_body' => 'Unexpected file format received.',
-        'success' => 'Egg imported successfully',
-        'failed' => 'Failed to import egg',
+        'file_label' => 'Egg 文件 (JSON)',
+        'nest_label' => '联巢',
+        'file_not_found' => '找不到文件',
+        'file_not_found_body' => '无法找到上传的文件。',
+        'invalid_format' => '文件格式无效',
+        'invalid_format_body' => '收到意外的文件格式。',
+        'success' => '鸡蛋导入成功',
+        'failed' => '导入鸡蛋失败',
     ],
 
     'notices' => [
-        'created' => 'A new nest, :name, has been successfully created.',
-        'deleted' => 'Successfully deleted the requested nest from the Panel.',
-        'updated' => 'Successfully updated the nest configuration options.',
+        'created' => '新的巢穴 :name 已成功创建。',
+        'deleted' => '已成功从面板中删除所请求的巢穴。',
+        'updated' => '巢穴配置选项已成功更新。',
     ],
     'eggs' => [
         'notices' => [
-            'imported' => 'Successfully imported this Egg and its associated variables.',
-            'updated_via_import' => 'This Egg has been updated using the file provided.',
-            'deleted' => 'Successfully deleted the requested egg from the Panel.',
-            'updated' => 'Egg configuration has been updated successfully.',
-            'script_updated' => 'Egg install script has been updated and will run whenever servers are installed.',
-            'egg_created' => 'A new egg was laid successfully. You will need to restart any running daemons to apply this new egg.',
+            'imported' => '已成功导入此 Egg 及其相关变量。',
+            'updated_via_import' => '此 Egg 已使用提供的文件进行更新。',
+            'deleted' => '已成功从面板中删除所请求的 egg。',
+            'updated' => 'Egg 配置已成功更新。',
+            'script_updated' => 'Egg 安装脚本已更新，将在服务器安装时运行。',
+            'egg_created' => '新的 egg 已成功创建。您需要重新启动任何正在运行的守护进程才能应用此新 egg。',
         ],
     ],
     'variables' => [
         'notices' => [
-            'variable_deleted' => 'The variable ":variable" has been deleted and will no longer be available to servers once rebuilt.',
-            'variable_updated' => 'The variable ":variable" has been updated. You will need to rebuild any servers using this variable in order to apply changes.',
-            'variable_created' => 'New variable has successfully been created and assigned to this egg.',
+            'variable_deleted' => '变量 ":variable" 已被删除，重建后将不再对服务器可用。',
+            'variable_updated' => '变量 ":variable" 已更新。您需要重建使用此变量的任何服务器才能应用更改。',
+            'variable_created' => '新变量已成功创建并分配给此 egg。',
         ],
     ],
 ];
