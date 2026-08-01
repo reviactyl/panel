@@ -39,6 +39,7 @@ return [
         'restoring-backup' => 'बैकअप बहाल किया जा रहा है',
         'unavailable' => 'अप्राप्य',
         'unlimited' => 'असीमित',
+        'maintenance' => 'Under Maintenance',
     ],
     'status-card' => [
         'title' => 'सर्वर स्थिति',
