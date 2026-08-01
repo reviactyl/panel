@@ -27,6 +27,9 @@ return [
         ],
     ],
     'user' => [
+        'user' => [
+            'create' => 'Created a new user :email',
+        ],
         'account' => [
             'email-changed' => ':old ನಿಂದ :new ಗೆ ಇಮೇಲ್ ಅನ್ನು ಬದಲಾಯಿಸಲಾಗಿದೆ',
             'password-changed' => 'ಪಾಸ್ವರ್ಡ್ ಬದಲಾಯಿಸಲಾಗಿದೆ',
@@ -74,7 +77,7 @@ return [
             'delete' => 'ಅಳಿಸಲಾದ ಡೇಟಾಬೇಸ್ :name',
         ],
         'file' => [
-            'compress_one' => 'ಸಂಕುಚಿತ :directory:file',
+            'compress_one' => 'Compressed :directory:files.0',
             'compress_other' => ':directory ನಲ್ಲಿ :count ಫೈಲ್‌ಗಳನ್ನು ಸಂಕುಚಿತಗೊಳಿಸಲಾಗಿದೆ',
             'read' => ':file ನ ವಿಷಯಗಳನ್ನು ವೀಕ್ಷಿಸಲಾಗಿದೆ',
             'copy' => ':file ನ ನಕಲನ್ನು ರಚಿಸಲಾಗಿದೆ',
