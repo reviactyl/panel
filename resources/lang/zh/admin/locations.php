@@ -2,42 +2,42 @@
 
 return [
 
-    'label' => 'Location',
-    'plural-label' => 'Locations',
+    'label' => '区域',
+    'plural-label' => '区域',
 
     'section' => [
-        'title' => 'Location Details',
-        'description' => 'Define a location that nodes can be assigned to.',
+        'title' => '区域详情',
+        'description' => '定义一个可分配给节点的区域。',
     ],
 
     'fields' => [
         'short' => [
-            'label' => 'Short Code',
-            'helper' => 'A short identifier for this location.',
+            'label' => '标识码',
+            'helper' => '此位置的简短标识符。',
         ],
 
         'long' => [
-            'label' => 'Description',
-            'helper' => 'A longer description of this location.',
+            'label' => '描述',
+            'helper' => '此位置的详细描述。',
         ],
     ],
 
     'table' => [
         'id' => 'ID',
-        'short' => 'Short Code',
-        'long' => 'Description',
-        'nodes' => 'Nodes',
-        'servers' => 'Servers',
-        'created' => 'Created',
+        'short' => '标识码',
+        'long' => '描述',
+        'nodes' => '节点',
+        'servers' => '服务器',
+        'created' => '创建时间',
     ],
 
     'actions' => [
-        'edit' => 'Edit',
-        'delete' => 'Delete',
+        'edit' => '编辑',
+        'delete' => '删除',
     ],
 
     'messages' => [
-        'cannot_delete_with_nodes' => 'Cannot delete a location with associated nodes.',
+        'cannot_delete_with_nodes' => '无法删除仍有关联节点的区域。',
     ],
 
 ];
