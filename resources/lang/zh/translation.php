@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'lang' => 'English',
+    'lang' => '简体中文',
 ];
