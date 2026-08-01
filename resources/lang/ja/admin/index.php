@@ -14,6 +14,7 @@ return [
     'sponsor-btn' => 'Sponsor Project',
 
     'help-btn' => 'Get Help',
+    'update-btn' => 'Update Panel',
     'docs-btn' => 'Documentation',
     'metrics-header' => 'User Activity Metrics',
     'most-active-country' => 'Most Active Country',
