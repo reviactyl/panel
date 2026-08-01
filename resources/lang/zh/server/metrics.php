@@ -1,30 +1,30 @@
 <?php
 
 return [
-    'title' => 'Historical Metrics',
-    'error' => 'Unable to load historical stats.',
+    'title' => '历史指标',
+    'error' => '无法加载历史统计数据。',
     'time_range' => [
-        'last_24_hours' => 'Last 24 Hours',
-        'last_3_days' => 'Last 3 Days',
-        'last_7_days' => 'Last 7 Days',
+        'last_24_hours' => '过去 24 小时',
+        'last_3_days' => '过去 3 天',
+        'last_7_days' => '过去 7 天',
     ],
     'charts' => [
         'cpu' => [
-            'title' => 'CPU History',
-            'label' => 'CPU Usage (%)',
+            'title' => 'CPU 历史',
+            'label' => 'CPU 使用率（%）',
         ],
         'memory' => [
-            'title' => 'Memory History',
-            'label' => 'Memory Usage (MB)',
+            'title' => '内存历史',
+            'label' => '内存使用量(MB)',
         ],
         'disk' => [
-            'title' => 'Disk History',
-            'label' => 'Disk Usage (MB)',
+            'title' => '磁盘历史',
+            'label' => '磁盘使用量(MB)',
         ],
         'network' => [
-            'title' => 'Network History',
-            'rx_label' => 'Network RX (MB)',
-            'tx_label' => 'Network TX (MB)',
+            'title' => '网络历史',
+            'rx_label' => '网络接收量(MB)',
+            'tx_label' => '网络发送量(MB)',
         ],
     ],
 ];
