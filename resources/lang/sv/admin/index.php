@@ -22,4 +22,13 @@ return [
     'no_activity' => 'Det finns ingen ny aktivitet att visa.',
     'activity-header' => 'Senaste aktivitet',
     'more-btn' => 'Visa mer',
+    'dashboard' => [
+        'total_users' => 'Total Users',
+        'new_users' => 'New users: :count',
+        'total_servers' => 'Total Servers',
+        'new_servers' => 'New servers: :count',
+        'developmental_build' => 'Developmental Build',
+        'up_to_date' => 'Up-to-date',
+        'outdated_build' => 'Outdated Build',
+    ],
 ];
