@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'never' => 'Never',
+    'never' => '从不',
     'not-found-title' => '404',
-    'not-found-message' => 'The requested resource was not found.',
-    'server-error-title' => 'Something went wrong',
+    'not-found-message' => '未找到请求的资源。',
+    'server-error-title' => '出了点问题',
 ];
