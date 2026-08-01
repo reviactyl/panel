@@ -86,7 +86,7 @@ return [
         'title' => 'Designify',
         'general' => 'General',
         'colors' => 'Colors',
-        'look-and-feel' => 'Look & Feel',
+        'look-and-feel' => 'Внешний вид',
         'layout' => 'Layout',
         'alerts' => 'Alerts',
         'meta-options' => 'Meta Options',
