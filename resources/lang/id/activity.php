@@ -27,6 +27,9 @@ return [
         ],
     ],
     'user' => [
+        'user' => [
+            'create' => 'Created a new user :email',
+        ],
         'account' => [
             'email-changed' => 'Mengubah email dari :old menjadi :new',
             'password-changed' => 'Mengubah kata sandi',
@@ -74,7 +77,7 @@ return [
             'delete' => 'Menghapus database :name',
         ],
         'file' => [
-            'compress_one' => 'Mengompres :directory:file',
+            'compress_one' => 'Compressed :directory:files.0',
             'compress_other' => 'Mengompres :count file di :directory',
             'read' => 'Melihat isi dari :file',
             'copy' => 'Membuat salinan dari :file',
