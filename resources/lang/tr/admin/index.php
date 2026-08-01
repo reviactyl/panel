@@ -14,6 +14,7 @@ return [
     'sponsor-btn' => 'Projeye Sponsor Ol',
 
     'help-btn' => 'Yardım Al',
+    'update-btn' => 'Update Panel',
     'docs-btn' => 'Dokümantasyon',
     'metrics-header' => 'Kullanıcı Etkinlik Metrikleri',
     'most-active-country' => 'En Aktif Ülke',
