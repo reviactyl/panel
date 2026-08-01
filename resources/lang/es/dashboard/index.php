@@ -39,6 +39,7 @@ return [
         'restoring-backup' => 'Restaurar copia de seguridad',
         'unavailable' => 'No disponible',
         'unlimited' => 'Ilimitado',
+        'maintenance' => 'Under Maintenance',
     ],
     'status-card' => [
         'title' => 'Estado del servidor',
