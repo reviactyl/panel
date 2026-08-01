@@ -1,11 +1,11 @@
 <?php
 
 return [
-    'title' => 'Startup',
-    'read-only' => 'Read Only',
-    'startup-command' => 'Startup Command',
-    'docker-image' => 'Docker Image',
-    'docker-info' => 'This is an advanced feature allowing you to select a Docker image to use when running this server instance.',
-    'manually-set-docker' => 'This server\'s Docker image has been manually set by an administrator and cannot be changed through this UI.',
-    'variables' => 'Variables',
+    'title' => 'Запуск',
+    'read-only' => 'Только для чтения',
+    'startup-command' => 'Команда запуска',
+    'docker-image' => 'Образ Docker',
+    'docker-info' => 'Расширенная настройка, позволяющая выбрать образ Docker для запуска этого сервера.',
+    'manually-set-docker' => 'Образ Docker для этого сервера установлен администратором вручную и не может быть изменён через этот интерфейс.',
+    'variables' => 'Переменные',
 ];
