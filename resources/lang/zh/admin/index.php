@@ -22,4 +22,13 @@ return [
     'no_activity' => '暂无最近活动记录。',
     'activity-header' => '最近活动',
     'more-btn' => '查看更多',
+    'dashboard' => [
+        'total_users' => 'Total Users',
+        'new_users' => 'New users: :count',
+        'total_servers' => 'Total Servers',
+        'new_servers' => 'New servers: :count',
+        'developmental_build' => 'Developmental Build',
+        'up_to_date' => 'Up-to-date',
+        'outdated_build' => 'Outdated Build',
+    ],
 ];
