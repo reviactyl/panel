@@ -22,6 +22,7 @@ return [
     'file-mode-label' => 'Dateimodus',
     'new-location' => 'Neuer Standort:',
     'cancel-uploads' => 'Uploads abbrechen',
+    'close' => 'Close',
     'uploads-tooltip' => ':count-Dateien werden hochgeladen. Zum Anzeigen klicken',
     'move-description' => 'Geben Sie den neuen Namen und das Verzeichnis dieser Datei oder dieses Ordners relativ zum aktuellen Verzeichnis ein.',
     'update' => 'Aktualisieren',
