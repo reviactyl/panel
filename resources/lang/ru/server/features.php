@@ -2,6 +2,6 @@
 
 return [
     'pid-limit' => [
-        'message' => 'This server has reached the maximum process or memory limit.',
+        'message' => 'На этом сервере достигнут максимальный лимит процесса или памяти.',
     ],
 ];
