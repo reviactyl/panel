@@ -39,6 +39,7 @@ return [
         'restoring-backup' => 'ಬ್ಯಾಕಪ್ ಅನ್ನು ಮರುಸ್ಥಾಪಿಸಲಾಗುತ್ತಿದೆ',
         'unavailable' => 'ಲಭ್ಯವಿಲ್ಲ',
         'unlimited' => 'ಅನಿಯಮಿತ',
+        'maintenance' => 'Under Maintenance',
     ],
     'status-card' => [
         'title' => 'ಸರ್ವರ್ ಸ್ಥಿತಿ',
