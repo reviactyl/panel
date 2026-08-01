@@ -27,6 +27,9 @@ return [
         ],
     ],
     'user' => [
+        'user' => [
+            'create' => 'Created a new user :email',
+        ],
         'account' => [
             'email-changed' => ':old ইমেইলটি পরিবর্তন করে :new করা হয়েছে।',
             'password-changed' => 'পাসওয়ার্ড পরিবর্তন করা হয়েছে।',
@@ -74,7 +77,7 @@ return [
             'delete' => ':name ডেটাবেসটি ডিলিট করা হয়েছে।',
         ],
         'file' => [
-            'compress_one' => ':directory ডিরেক্টরির :file ফাইলটি কমপ্রেস করা হয়েছে।',
+            'compress_one' => 'Compressed :directory:files.0',
             'compress_other' => ':directory ডিরেক্টরির :count টি ফাইল কমপ্রেস করা হয়েছে।',
             'read' => ':file ফাইলের ভেতরের বিষয়বস্তু দেখা হয়েছে।',
             'copy' => ':file ফাইলের একটি কপি তৈরি করা হয়েছে।',
