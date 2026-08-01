@@ -27,6 +27,9 @@ return [
         ],
     ],
     'user' => [
+        'user' => [
+            'create' => 'Created a new user :email',
+        ],
         'account' => [
             'email-changed' => 'Correo cambiado de :old a :new',
             'password-changed' => 'Contraseña cambiada',
@@ -74,7 +77,7 @@ return [
             'delete' => 'Base de datos :name eliminada',
         ],
         'file' => [
-            'compress_one' => 'Archivo :directory:file comprimido',
+            'compress_one' => 'Compressed :directory:files.0',
             'compress_other' => 'Comprimidos :count archivos en :directory',
             'read' => 'Visto el contenido de :file',
             'copy' => 'Creada una copia de :file',
