@@ -27,6 +27,9 @@ return [
         ],
     ],
     'user' => [
+        'user' => [
+            'create' => 'Created a new user :email',
+        ],
         'account' => [
             'email-changed' => 'E-posta adresi :old adresinden :new adresine değiştirildi',
             'password-changed' => 'Parola değiştirildi',
@@ -74,7 +77,7 @@ return [
             'delete' => ':name veritabanı silindi',
         ],
         'file' => [
-            'compress_one' => ':directory:file sıkıştırıldı',
+            'compress_one' => 'Compressed :directory:files.0',
             'compress_other' => ':directory dizinindeki :count dosya sıkıştırıldı',
             'read' => ':file içeriği görüntülendi',
             'copy' => ':file kopyası oluşturuldu',
