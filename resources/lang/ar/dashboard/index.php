@@ -39,6 +39,7 @@ return [
         'restoring-backup' => 'استعادة نسخة احتياطية',
         'unavailable' => 'غير متاح',
         'unlimited' => 'غير محدود',
+        'maintenance' => 'Under Maintenance',
     ],
     'status-card' => [
         'title' => 'حالة السرفر',
