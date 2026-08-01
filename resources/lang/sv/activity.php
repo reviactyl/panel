@@ -27,6 +27,9 @@ return [
         ],
     ],
     'user' => [
+        'user' => [
+            'create' => 'Created a new user :email',
+        ],
         'account' => [
             'email-changed' => 'Ändrade e-post från :old till :new',
             'password-changed' => 'Ändrade lösenord',
@@ -74,7 +77,7 @@ return [
             'delete' => 'Raderad databas :name',
         ],
         'file' => [
-            'compress_one' => 'Komprimerad :directory:file',
+            'compress_one' => 'Compressed :directory:files.0',
             'compress_other' => 'Komprimerade :count-filer i :directory',
             'read' => 'Visade innehållet i :file',
             'copy' => 'Skapade en kopia av :file',
