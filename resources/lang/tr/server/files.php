@@ -22,6 +22,7 @@ return [
     'file-mode-label' => 'Dosya Modu',
     'new-location' => 'Yeni konum:',
     'cancel-uploads' => 'Yüklemeleri İptal Et',
+    'close' => 'Close',
     'uploads-tooltip' => ':count dosyaları yükleniyor, görüntülemek için tıklayın',
     'move-description' => 'Bu dosya veya klasörün geçerli dizine göre yeni adını ve dizinini girin.',
     'update' => 'Güncelleme',
