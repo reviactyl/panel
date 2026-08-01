@@ -22,6 +22,7 @@ return [
     'file-mode-label' => 'Chế độ tập tin',
     'new-location' => 'Vị trí mới:',
     'cancel-uploads' => 'Hủy tải lên',
+    'close' => 'Close',
     'uploads-tooltip' => 'File :count đang upload, bấm vào để xem',
     'move-description' => 'Nhập tên và thư mục mới của tệp hoặc thư mục này, tương ứng với thư mục hiện tại.',
     'update' => 'Cập nhật',
