@@ -22,4 +22,13 @@ return [
     'no_activity' => 'ಪ್ರದರ್ಶಿಸಲು ಯಾವುದೇ ಇತ್ತೀಚಿನ ಚಟುವಟಿಕೆ ಇಲ್ಲ.',
     'activity-header' => 'ಇತ್ತೀಚಿನ ಚಟುವಟಿಕೆ',
     'more-btn' => 'ಇನ್ನಷ್ಟು ವೀಕ್ಷಿಸಿ',
+    'dashboard' => [
+        'total_users' => 'Total Users',
+        'new_users' => 'New users: :count',
+        'total_servers' => 'Total Servers',
+        'new_servers' => 'New servers: :count',
+        'developmental_build' => 'Developmental Build',
+        'up_to_date' => 'Up-to-date',
+        'outdated_build' => 'Outdated Build',
+    ],
 ];
