@@ -22,6 +22,7 @@ return [
     'file-mode-label' => 'Modus Berkas',
     'new-location' => 'Lokasi baru:',
     'cancel-uploads' => 'Batalkan Pengunggahan',
+    'close' => 'Close',
     'uploads-tooltip' => 'File :count sedang diunggah, klik untuk melihat',
     'move-description' => 'Masukkan nama dan direktori baru file atau folder ini, sesuai dengan direktori saat ini.',
     'update' => 'Memperbarui',
