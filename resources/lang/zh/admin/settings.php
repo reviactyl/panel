@@ -103,7 +103,7 @@ return [
         'success' => '成功',
         'danger' => '危险',
         'secondary' => '中学',
-        'look-and-feel' => 'Look & Feel',
+        'look-and-feel' => '外观与体验',
         'theme-selector' => '主题选择器',
         'sidebar-logout-button' => '侧边栏注销按钮',
         'panel-background' => '面板背景',
