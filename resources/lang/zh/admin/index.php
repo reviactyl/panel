@@ -14,6 +14,7 @@ return [
     'sponsor-btn' => '赞助项目',
 
     'help-btn' => '获取帮助',
+    'update-btn' => 'Update Panel',
     'docs-btn' => '使用文档',
     'metrics-header' => '用户活动指标',
     'most-active-country' => '最活跃的国家',
