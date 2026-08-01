@@ -14,6 +14,7 @@ return [
     'sponsor-btn' => 'প্রকল্প স্পন্সর করুন',
 
     'help-btn' => 'সহায়তা নিন',
+    'update-btn' => 'Update Panel',
     'docs-btn' => 'ডকুমেন্টেশন',
     'metrics-header' => 'ইউজার কার্যকলাপ মেট্রিক্স',
     'most-active-country' => 'সবচেয়ে সক্রিয় দেশ',
