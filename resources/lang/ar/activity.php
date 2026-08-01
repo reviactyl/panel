@@ -27,6 +27,9 @@ return [
         ],
     ],
     'user' => [
+        'user' => [
+            'create' => 'Created a new user :email',
+        ],
         'account' => [
             'email-changed' => 'تم تغيير البريد الإلكتروني من :old إلى :new',
             'password-changed' => 'تم تغيير كلمة المرور',
@@ -74,7 +77,7 @@ return [
             'delete' => 'تم حذف قاعدة البيانات :name',
         ],
         'file' => [
-            'compress_one' => 'تم ضغط :directory:file',
+            'compress_one' => 'Compressed :directory:files.0',
             'compress_other' => 'تم ضغط :count ملف في :directory',
             'read' => 'تم عرض محتويات :file',
             'copy' => 'تم إنشاء نسخة من :file',
