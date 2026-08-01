@@ -14,6 +14,7 @@ return [
     'sponsor-btn' => 'प्रायोजक परियोजना',
 
     'help-btn' => 'मदद लें',
+    'update-btn' => 'Update Panel',
     'docs-btn' => 'प्रलेखन',
     'metrics-header' => 'उपयोगकर्ता गतिविधि मेट्रिक्स',
     'most-active-country' => 'सर्वाधिक सक्रिय देश',
