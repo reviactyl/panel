@@ -18,7 +18,6 @@ return [
     'cancel' => 'Cancel',
     'create' => 'Create',
     'rename' => 'Rename',
-    'move' => '移动',
     'file-mode-label' => 'File Mode',
     'new-location' => 'New location:',
     'cancel-uploads' => 'Cancel Uploads',
