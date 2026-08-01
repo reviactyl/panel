@@ -2,42 +2,42 @@
 
 return [
 
-    'label' => 'Location',
-    'plural-label' => 'Locations',
+    'label' => 'Локация',
+    'plural-label' => 'Локации',
 
     'section' => [
-        'title' => 'Location Details',
-        'description' => 'Define a location that nodes can be assigned to.',
+        'title' => 'Детали локации',
+        'description' => 'Определите местоположение, которому могут быть назначены узлы.',
     ],
 
     'fields' => [
         'short' => [
-            'label' => 'Short Code',
-            'helper' => 'A short identifier for this location.',
+            'label' => 'Короткий код',
+            'helper' => 'Короткий код для этой локации.',
         ],
 
         'long' => [
-            'label' => 'Description',
-            'helper' => 'A longer description of this location.',
+            'label' => 'Описание',
+            'helper' => 'Более подробное описание этой локации.',
         ],
     ],
 
     'table' => [
         'id' => 'ID',
-        'short' => 'Short Code',
-        'long' => 'Description',
-        'nodes' => 'Nodes',
-        'servers' => 'Servers',
-        'created' => 'Created',
+        'short' => 'Короткий код',
+        'long' => 'Описание',
+        'nodes' => 'Узел',
+        'servers' => 'Сервера',
+        'created' => 'Создан',
     ],
 
     'actions' => [
-        'edit' => 'Edit',
-        'delete' => 'Delete',
+        'edit' => 'Редактировать',
+        'delete' => 'Удалить',
     ],
 
     'messages' => [
-        'cannot_delete_with_nodes' => 'Cannot delete a location with associated nodes.',
+        'cannot_delete_with_nodes' => 'Не удается удалить локацию со связанными узлами.',
     ],
 
 ];
