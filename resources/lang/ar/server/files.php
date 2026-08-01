@@ -22,6 +22,7 @@ return [
     'file-mode-label' => 'وضع الملف',
     'new-location' => 'الموقع الجديد:',
     'cancel-uploads' => 'إلغاء التحميلات',
+    'close' => 'Close',
     'uploads-tooltip' => 'يتم الآن تحميل ملفات :count، انقر للعرض',
     'move-description' => 'أدخل الاسم والدليل الجديد لهذا الملف أو المجلد، نسبة إلى الدليل الحالي.',
     'update' => 'تحديث',
