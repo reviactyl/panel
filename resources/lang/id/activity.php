@@ -27,6 +27,9 @@ return [
         ],
     ],
     'user' => [
+        'user' => [
+            'create' => 'Created a new user :email',
+        ],
         'account' => [
             'email-changed' => 'Mengubah email dari :old menjadi :new',
             'password-changed' => 'Mengubah kata sandi',
