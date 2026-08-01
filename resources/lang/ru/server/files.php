@@ -18,6 +18,7 @@ return [
     'cancel' => 'Отмена',
     'create' => 'Создать',
     'rename' => 'Переименовать',
+    'move' => 'Переместить',
     'file-mode-label' => 'Режим файла',
     'new-location' => 'Новое расположение:',
     'cancel-uploads' => 'Отменить загрузки',
