@@ -2,23 +2,23 @@
 
 return [
 
-    'label' => 'Database',
-    'plural-label' => 'Databases',
+    'label' => 'База данных',
+    'plural-label' => 'База данных',
 
-    'none' => 'None',
+    'none' => 'Ничего',
 
     'sections' => [
         'host_details' => [
-            'title' => 'Host Details',
-            'description' => 'Configure the database host connection settings.',
+            'title' => 'Сведения о хосте',
+            'description' => 'Настройте параметры подключения к хосту базы данных.',
         ],
 
         'authentication' => [
-            'title' => 'Authentication',
+            'title' => 'Идентификация',
         ],
 
         'linked_node' => [
-            'title' => 'Linked Node',
+            'title' => 'Связанный узел',
         ],
     ],
 
@@ -27,32 +27,32 @@ return [
     ],
 
     'helpers' => [
-        'host' => 'The hostname or IP address of the database server.',
-        'linked_node' => 'Optional. Link this host to a specific node.',
+        'host' => 'Имя хоста или IP-адрес сервера базы данных.',
+        'linked_node' => 'Необязательный. Свяжите этот хост с определенным узлом.',
     ],
 
     'fields' => [
-        'linked_node' => 'Linked Node',
+        'linked_node' => 'Подключенный узел',
     ],
 
     'columns' => [
         'id' => 'ID',
-        'name' => 'Name',
-        'host' => 'Host',
-        'port' => 'Port',
-        'username' => 'Username',
-        'linked_node' => 'Linked Node',
-        'databases' => 'Databases',
-        'created' => 'Created',
+        'name' => 'Имя',
+        'host' => 'Хост',
+        'port' => 'Порт',
+        'username' => 'Логин',
+        'linked_node' => 'Подключенный узел',
+        'databases' => 'База данных',
+        'created' => 'Создан',
     ],
 
     'actions' => [
-        'edit' => 'Edit',
-        'delete' => 'Delete',
+        'edit' => 'Редактировать',
+        'delete' => 'Удалить',
     ],
 
     'errors' => [
-        'cannot_delete' => 'Cannot delete a database host with associated databases.',
+        'cannot_delete' => 'Не удается удалить узел базы данных со связанными с ним базами данных.',
     ],
 
 ];
