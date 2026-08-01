@@ -39,6 +39,7 @@ return [
         'restoring-backup' => '正在恢复备份',
         'unavailable' => '不可用',
         'unlimited' => '无限制',
+        'maintenance' => 'Under Maintenance',
     ],
     'status-card' => [
         'title' => '服务器状态',
