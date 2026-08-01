@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'flag' => 'vn',
+    'flag' => 'chúng ta',
     'title' => 'Trang tổng quan',
     'servers-user' => [
         'title' => 'Máy chủ của bạn',
@@ -39,6 +39,7 @@ return [
         'restoring-backup' => 'Khôi phục bản sao lưu',
         'unavailable' => 'Không có sẵn',
         'unlimited' => 'Không giới hạn',
+        'maintenance' => 'Under Maintenance',
     ],
     'status-card' => [
         'title' => 'Trạng thái máy chủ',
