@@ -14,6 +14,7 @@ return [
     'sponsor-btn' => 'Dự án tài trợ',
 
     'help-btn' => 'Nhận trợ giúp',
+    'update-btn' => 'Update Panel',
     'docs-btn' => 'Tài liệu',
     'metrics-header' => 'Số liệu hoạt động của người dùng',
     'most-active-country' => 'Quốc gia năng động nhất',
