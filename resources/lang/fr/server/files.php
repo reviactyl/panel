@@ -22,6 +22,7 @@ return [
     'file-mode-label' => 'Mode fichier',
     'new-location' => 'Nouvel emplacement :',
     'cancel-uploads' => 'Annuler les téléchargements',
+    'close' => 'Close',
     'uploads-tooltip' => 'Les fichiers :count sont en cours de téléchargement, cliquez pour voir',
     'move-description' => 'Entrez le nouveau nom et le répertoire de ce fichier ou dossier, par rapport au répertoire actuel.',
     'update' => 'Mise à jour',
