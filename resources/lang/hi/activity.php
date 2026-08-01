@@ -27,6 +27,9 @@ return [
         ],
     ],
     'user' => [
+        'user' => [
+            'create' => 'Created a new user :email',
+        ],
         'account' => [
             'email-changed' => 'ईमेल :old से :new में बदला गया',
             'password-changed' => 'पासवर्ड बदल दिया गया',
@@ -74,7 +77,7 @@ return [
             'delete' => 'डेटाबेस :name हटा दिया गया',
         ],
         'file' => [
-            'compress_one' => ':directory:file संकुचित किया गया',
+            'compress_one' => 'Compressed :directory:files.0',
             'compress_other' => ':directory में :count फ़ाइलें संकुचित की गईं',
             'read' => ':file की सामग्री देखी गई',
             'copy' => ':file की कॉपी बनाई गई',
