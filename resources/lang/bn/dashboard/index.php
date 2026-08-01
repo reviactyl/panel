@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'flag' => 'bd',
+    'flag' => 'bn',
     'title' => 'ড্যাশবোর্ড',
     'servers-user' => [
         'title' => 'আপনার সার্ভারসমূহ',
@@ -39,6 +39,7 @@ return [
         'restoring-backup' => 'ব্যাকআপ পুনরুদ্ধার হচ্ছে',
         'unavailable' => 'অনুপলব্ধ',
         'unlimited' => 'সীমাহীন',
+        'maintenance' => 'Under Maintenance',
     ],
     'status-card' => [
         'title' => 'সার্ভারের অবস্থা',
