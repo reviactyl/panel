@@ -22,4 +22,13 @@ return [
     'no_activity' => 'Görüntülenecek son etkinlik bulunmuyor.',
     'activity-header' => 'Son Etkinlik',
     'more-btn' => 'Daha Fazlasını Görüntüle',
+    'dashboard' => [
+        'total_users' => 'Total Users',
+        'new_users' => 'New users: :count',
+        'total_servers' => 'Total Servers',
+        'new_servers' => 'New servers: :count',
+        'developmental_build' => 'Developmental Build',
+        'up_to_date' => 'Up-to-date',
+        'outdated_build' => 'Outdated Build',
+    ],
 ];
