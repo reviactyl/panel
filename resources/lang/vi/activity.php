@@ -27,6 +27,9 @@ return [
         ],
     ],
     'user' => [
+        'user' => [
+            'create' => 'Created a new user :email',
+        ],
         'account' => [
             'email-changed' => 'Đã thay đổi email từ :old thành :new',
             'password-changed' => 'Đã thay đổi mật khẩu',
