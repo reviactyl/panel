@@ -2,68 +2,68 @@
 
 return [
 
-    'label' => 'Nest',
-    'plural_label' => 'Nests',
+    'label' => 'Набор',
+    'plural_label' => 'Наборы',
 
     'sections' => [
-        'configuration' => 'Nest Configuration',
+        'configuration' => 'Конфигурация набора',
     ],
 
     'fields' => [
-        'name' => 'Name',
-        'author' => 'Author',
-        'description' => 'Description',
+        'name' => 'Название',
+        'author' => 'Автор',
+        'description' => 'Описание',
     ],
 
     'helpers' => [
-        'name' => 'A unique name used to identify this nest.',
-        'author' => 'The author of this nest. Must be a valid email.',
-        'description' => 'A description of this nest.',
+        'name' => 'Уникальное название для идентификации этого набора.',
+        'author' => 'Автору этого сообщения. Адрес электронной почты должен быть действительным.',
+        'description' => 'Описание данного набора.',
     ],
 
     'columns' => [
         'id' => 'ID',
-        'name' => 'Name',
-        'author' => 'Author',
-        'eggs' => 'Eggs',
-        'servers' => 'Servers',
+        'name' => 'Название',
+        'author' => 'Автор',
+        'eggs' => 'Шаблоны',
+        'servers' => 'Сервера',
     ],
 
     'actions' => [
-        'import' => 'Import Egg',
+        'import' => 'Импорт шаблона',
     ],
 
     'import' => [
-        'file_label' => 'Egg File (JSON)',
-        'nest_label' => 'Associated Nest',
-        'file_not_found' => 'File not found',
-        'file_not_found_body' => 'Could not locate uploaded file.',
-        'invalid_format' => 'Invalid file format',
-        'invalid_format_body' => 'Unexpected file format received.',
-        'success' => 'Egg imported successfully',
-        'failed' => 'Failed to import egg',
+        'file_label' => 'Файл шаблона (JSON)',
+        'nest_label' => 'Связанный набор',
+        'file_not_found' => 'Файл не найден',
+        'file_not_found_body' => 'Не удалось найти загруженный файл.',
+        'invalid_format' => 'Неверный формат файла',
+        'invalid_format_body' => 'Получен файл в непредвиденном формате.',
+        'success' => 'Шаблон успешно импортирован',
+        'failed' => 'Не удалось импортировать шаблон',
     ],
 
     'notices' => [
-        'created' => 'A new nest, :name, has been successfully created.',
-        'deleted' => 'Successfully deleted the requested nest from the Panel.',
-        'updated' => 'Successfully updated the nest configuration options.',
+        'created' => 'Новый набор :name успешно создан.',
+        'deleted' => 'Запрошенный набор успешно удалён из панели.',
+        'updated' => 'Настройки конфигурации набора успешно обновлены.',
     ],
     'eggs' => [
         'notices' => [
-            'imported' => 'Successfully imported this Egg and its associated variables.',
-            'updated_via_import' => 'This Egg has been updated using the file provided.',
-            'deleted' => 'Successfully deleted the requested egg from the Panel.',
-            'updated' => 'Egg configuration has been updated successfully.',
-            'script_updated' => 'Egg install script has been updated and will run whenever servers are installed.',
-            'egg_created' => 'A new egg was laid successfully. You will need to restart any running daemons to apply this new egg.',
+            'imported' => 'Данный шаблон и связанные с ним переменные успешно импортированы.',
+            'updated_via_import' => 'Шаблон обновлён с помощью предоставленного файла.',
+            'deleted' => 'Запрошенный шаблон успешно удалён из панели.',
+            'updated' => 'Конфигурация шаблона успешно обновлена.',
+            'script_updated' => 'Скрипт установки шаблона обновлён и будет запускаться при установке серверов.',
+            'egg_created' => 'Новый шаблон успешно создан. Для его применения необходимо перезапустить все работающие демоны.',
         ],
     ],
     'variables' => [
         'notices' => [
-            'variable_deleted' => 'The variable ":variable" has been deleted and will no longer be available to servers once rebuilt.',
-            'variable_updated' => 'The variable ":variable" has been updated. You will need to rebuild any servers using this variable in order to apply changes.',
-            'variable_created' => 'New variable has successfully been created and assigned to this egg.',
+            'variable_deleted' => 'Переменная ":variable" удалена и больше не будет доступна серверам после пересоздания.',
+            'variable_updated' => 'Переменная ":variable" обновлена. Для применения изменений необходимо пересобрать все серверы, использующие эту переменную.',
+            'variable_created' => 'Новая переменная успешно создана и назначена этому шаблону.',
         ],
     ],
 ];
