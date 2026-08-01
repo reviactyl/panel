@@ -86,7 +86,7 @@ return [
         'title' => 'ডিজাইনিফাই',
         'general' => 'সাধারণ',
         'colors' => 'রংসমূহ',
-        'look-and-feel' => 'লুক ও অনুভূতি',
+        'look-and-feel' => 'লুক অ্যান্ড ফিল',
         'layout' => 'লেআউট',
         'alerts' => 'এলার্ট',
         'meta-options' => 'মেটা অপশন',
