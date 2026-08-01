@@ -22,6 +22,7 @@ return [
     'file-mode-label' => 'ফাইল মোড',
     'new-location' => 'নতুন অবস্থান:',
     'cancel-uploads' => 'আপলোড বাতিল করুন',
+    'close' => 'Close',
     'uploads-tooltip' => ':count টি ফাইল আপলোড হচ্ছে, দেখতে ক্লিক করুন',
     'move-description' => 'বর্তমান ডিরেক্টরির তুলনায় এই ফাইল বা ফোল্ডারের নতুন নাম এবং ডিরেক্টরি লিখুন।',
     'update' => 'আপডেট',
