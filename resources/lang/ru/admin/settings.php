@@ -103,6 +103,7 @@ return [
         'success' => 'Успех',
         'danger' => 'Опасность',
         'secondary' => 'Вторичный',
+        'look-and-feel' => 'Внешний вид',
         'theme-selector' => 'Выбор темы',
         'sidebar-logout-button' => 'Кнопка выхода на боковой панели',
         'panel-background' => 'Фон панели',
