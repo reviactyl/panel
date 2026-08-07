@@ -33,6 +33,26 @@ class EditNodeForm
         $softwareVersionService = app(SoftwareVersionService::class);
         $isLatest = $softwareVersionService->isLatestPanel();
 
+        // Fetch node monitoring data at most once per request instead of once
+        // per TextEntry state/color closure.
+        $monitoring = null;
+        $getMonitoring = function ($record) use (&$monitoring): ?array {
+            if (! $record) {
+                return null;
+            }
+            if ($monitoring === null) {
+                try {
+                    $monitoring = app(DaemonMonitoringRepository::class)
+                        ->setNode($record)
+                        ->getSystemMonitoring();
+                } catch (\Throwable) {
+                    $monitoring = [];
+                }
+            }
+
+            return $monitoring ?: null;
+        };
+
         return $schema
             ->components([
                 Tabs::make(trans('admin/node.sections.tabs.title'))
@@ -118,103 +138,97 @@ class EditNodeForm
                                         TextEntry::make('cpu_usage')
                                             ->label(trans('admin/node.sections.overview.cpu-usage-label'))
                                             ->badge()
-                                            ->color(function ($record) {
-                                                try {
-                                                    $repository = app(DaemonMonitoringRepository::class);
-                                                    $data = $repository->setNode($record)->getSystemMonitoring();
+                                            ->color(function ($record) use ($getMonitoring) {
+                                                $data = $getMonitoring($record);
 
-                                                    $usage = (float) ($data['cpu']['usage_percent'] ?? 0);
-
-                                                    return match (true) {
-                                                        $usage >= 80 => 'danger',
-                                                        $usage >= 50 => 'warning',
-                                                        default => 'success',
-                                                    };
-                                                } catch (\Throwable $e) {
+                                                if (! $data) {
                                                     return 'gray';
                                                 }
+
+                                                $usage = (float) ($data['cpu']['usage_percent'] ?? 0);
+
+                                                return match (true) {
+                                                    $usage >= 80 => 'danger',
+                                                    $usage >= 50 => 'warning',
+                                                    default => 'success',
+                                                };
                                             })
-                                            ->state(function ($record) {
+                                            ->state(function ($record) use ($getMonitoring) {
                                                 if (! $record) {
                                                     return trans('admin/node.general.na');
                                                 }
 
-                                                try {
-                                                    $repository = app(DaemonMonitoringRepository::class);
-                                                    $data = $repository->setNode($record)->getSystemMonitoring();
+                                                $data = $getMonitoring($record);
 
-                                                    return number_format($data['cpu']['usage_percent'] ?? 0, 2).'%';
-                                                } catch (\Throwable $e) {
+                                                if (! $data) {
                                                     return trans('admin/node.general.unavailable');
                                                 }
+
+                                                return number_format($data['cpu']['usage_percent'] ?? 0, 2).'%';
                                             }),
 
                                         TextEntry::make('memory_usage')
                                             ->label(trans('admin/node.sections.overview.memory-usage-label'))
                                             ->badge()
-                                            ->color(function ($record) {
-                                                try {
-                                                    $repository = app(DaemonMonitoringRepository::class);
-                                                    $data = $repository->setNode($record)->getSystemMonitoring();
+                                            ->color(function ($record) use ($getMonitoring) {
+                                                $data = $getMonitoring($record);
 
-                                                    $usage = (float) ($data['memory']['usage_percent'] ?? 0);
-
-                                                    return match (true) {
-                                                        $usage >= 80 => 'danger',
-                                                        $usage >= 50 => 'warning',
-                                                        default => 'success',
-                                                    };
-                                                } catch (\Throwable $e) {
+                                                if (! $data) {
                                                     return 'gray';
                                                 }
+
+                                                $usage = (float) ($data['memory']['usage_percent'] ?? 0);
+
+                                                return match (true) {
+                                                    $usage >= 80 => 'danger',
+                                                    $usage >= 50 => 'warning',
+                                                    default => 'success',
+                                                };
                                             })
-                                            ->state(function ($record) {
+                                            ->state(function ($record) use ($getMonitoring) {
                                                 if (! $record) {
                                                     return trans('admin/node.general.na');
                                                 }
 
-                                                try {
-                                                    $repository = app(DaemonMonitoringRepository::class);
-                                                    $data = $repository->setNode($record)->getSystemMonitoring();
+                                                $data = $getMonitoring($record);
 
-                                                    return number_format($data['memory']['usage_percent'] ?? 0, 2).'%';
-                                                } catch (\Throwable $e) {
+                                                if (! $data) {
                                                     return trans('admin/node.general.unavailable');
                                                 }
+
+                                                return number_format($data['memory']['usage_percent'] ?? 0, 2).'%';
                                             }),
 
                                         TextEntry::make('disk_usage')
                                             ->label(trans('admin/node.sections.overview.disk-usage-label'))
                                             ->badge()
-                                            ->color(function ($record) {
-                                                try {
-                                                    $repository = app(DaemonMonitoringRepository::class);
-                                                    $data = $repository->setNode($record)->getSystemMonitoring();
+                                            ->color(function ($record) use ($getMonitoring) {
+                                                $data = $getMonitoring($record);
 
-                                                    $usage = (float) ($data['disk']['usage_percent'] ?? 0);
-
-                                                    return match (true) {
-                                                        $usage >= 80 => 'danger',
-                                                        $usage >= 50 => 'warning',
-                                                        default => 'success',
-                                                    };
-                                                } catch (\Throwable $e) {
+                                                if (! $data) {
                                                     return 'gray';
                                                 }
+
+                                                $usage = (float) ($data['disk']['usage_percent'] ?? 0);
+
+                                                return match (true) {
+                                                    $usage >= 80 => 'danger',
+                                                    $usage >= 50 => 'warning',
+                                                    default => 'success',
+                                                };
                                             })
-                                            ->state(function ($record) {
+                                            ->state(function ($record) use ($getMonitoring) {
                                                 if (! $record) {
                                                     return trans('admin/node.general.na');
                                                 }
 
-                                                try {
-                                                    $repository = app(DaemonMonitoringRepository::class);
-                                                    $data = $repository->setNode($record)->getSystemMonitoring();
+                                                $data = $getMonitoring($record);
 
-                                                    return number_format($data['disk']['usage_percent'] ?? 0, 2).'%';
-                                                } catch (\Throwable $e) {
+                                                if (! $data) {
                                                     return trans('admin/node.general.unavailable');
                                                 }
+
+                                                return number_format($data['disk']['usage_percent'] ?? 0, 2).'%';
                                             }),
 
                                         Actions::make([
