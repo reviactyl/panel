@@ -61,6 +61,14 @@ return [
         'swap_free' => '空闲',
         'swap_usage' => '使用率',
 
+        'partitions_section' => 'Disk Partitions',
+        'partitions_none' => 'No partition data available.',
+        'partitions_device' => 'Device',
+        'partitions_mountpoint' => 'Mount Point',
+        'partitions_filesystem' => 'Filesystem',
+        'partitions_size' => 'Size',
+        'partitions_usage' => 'Usage',
+
         'network_section' => '网络',
         'bytes_sent' => '发送字节数',
         'bytes_recv' => '接收字节数',
