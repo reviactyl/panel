@@ -29,9 +29,7 @@ class Monitoring extends Page
     #[On('nodeChanged')]
     public function updateSelectedNode(?int $nodeId = null): void
     {
-        if ($nodeId) {
-            $this->selectedNodeId = $nodeId;
-        }
+        $this->selectedNodeId = $nodeId;
     }
 
     public static function getNavigationLabel(): string
@@ -201,6 +199,72 @@ class Monitoring extends Page
                             ->content(number_format((float) ($data['memory']['swap_usage_percent'] ?? 0), 2).'%'),
                     ];
                 }),
+
+            Section::make(trans('admin/monitoring.details.partitions_section'))
+                ->icon('heroicon-o-server-stack')
+                ->schema([
+                    Placeholder::make('partitions')
+                        ->hiddenLabel()
+                        ->content(function () use ($data): HtmlString {
+                            $partitions = $data['disk']['partitions'] ?? [];
+
+                            if (empty($partitions)) {
+                                return new HtmlString('<span class="text-gray-400">'.e(trans('admin/monitoring.details.partitions_none')).'</span>');
+                            }
+
+                            $rows = '';
+                            foreach ($partitions as $partition) {
+                                $device = e((string) ($partition['device'] ?? '—'));
+                                $mount = e((string) ($partition['mountpoint'] ?? '—'));
+                                $filesystem = e((string) ($partition['filesystem'] ?? '—'));
+                                $used = $this->formatBytes((int) ($partition['used_bytes'] ?? 0));
+                                $total = $this->formatBytes((int) ($partition['total_bytes'] ?? 0));
+                                $pct = (float) ($partition['usage_percent'] ?? 0);
+                                $pctLabel = number_format($pct, 1).'%';
+                                $pctColor = $pct >= 80 ? '#ef4444' : ($pct >= 60 ? '#eab308' : '#22c55e');
+                                $pctWidth = min($pct, 100);
+
+                                $rows .= <<<HTML
+                                <tr style="border-bottom:1px solid rgba(255,255,255,0.05)">
+                                    <td style="padding:8px 12px;font-size:12px;color:#f1f5f9;font-family:monospace">{$device}</td>
+                                    <td style="padding:8px 12px;font-size:12px;color:#94a3b8;font-family:monospace">{$mount}</td>
+                                    <td style="padding:8px 12px;font-size:11px;color:#38bdf8;font-family:monospace">{$filesystem}</td>
+                                    <td style="padding:8px 12px;font-size:12px;color:#94a3b8;font-family:monospace">{$used} / {$total}</td>
+                                    <td style="padding:8px 12px;min-width:160px">
+                                        <div style="font-size:11px;color:#94a3b8;font-family:monospace;margin-bottom:4px">{$pctLabel}</div>
+                                        <div style="height:5px;width:100%;background:rgba(255,255,255,0.08);border-radius:9999px;overflow:hidden">
+                                            <div style="height:100%;width:{$pctWidth}%;background:{$pctColor};border-radius:9999px"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                HTML;
+                            }
+
+                            $hDevice = e(trans('admin/monitoring.details.partitions_device'));
+                            $hMount = e(trans('admin/monitoring.details.partitions_mountpoint'));
+                            $hFs = e(trans('admin/monitoring.details.partitions_filesystem'));
+                            $hSize = e(trans('admin/monitoring.details.partitions_size'));
+                            $hUsage = e(trans('admin/monitoring.details.partitions_usage'));
+                            $thStyle = 'padding:8px 12px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:#64748b';
+
+                            return new HtmlString(<<<HTML
+                            <div style="overflow-x:auto;border-radius:8px">
+                                <table style="width:100%;border-collapse:collapse;text-align:left">
+                                    <thead>
+                                        <tr style="border-bottom:1px solid rgba(255,255,255,0.08)">
+                                            <th style="{$thStyle}">{$hDevice}</th>
+                                            <th style="{$thStyle}">{$hMount}</th>
+                                            <th style="{$thStyle}">{$hFs}</th>
+                                            <th style="{$thStyle}">{$hSize}</th>
+                                            <th style="{$thStyle}">{$hUsage}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>{$rows}</tbody>
+                                </table>
+                            </div>
+                            HTML);
+                        }),
+                ]),
 
             Section::make(trans('admin/monitoring.details.network_section'))
                 ->icon('heroicon-o-signal')

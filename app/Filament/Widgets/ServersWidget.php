@@ -28,7 +28,7 @@ class ServersWidget extends BaseWidget
     #[On('nodeChanged')]
     public function updateNodeId(?int $nodeId = null): void
     {
-        if ($nodeId && $nodeId !== $this->selectedNodeId) {
+        if ($nodeId !== $this->selectedNodeId) {
             $this->selectedNodeId = $nodeId;
         }
     }
@@ -226,6 +226,8 @@ class ServersWidget extends BaseWidget
         try {
             $node = Node::find($this->selectedNodeId);
             if (! $node) {
+                $this->dispatch('nodeInvalid');
+
                 return [];
             }
             $repository = app(DaemonServerStatusRepository::class);

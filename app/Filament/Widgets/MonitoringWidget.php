@@ -36,7 +36,7 @@ class MonitoringWidget extends BaseWidget
     #[On('nodeChanged')]
     public function updateNodeId(?int $nodeId = null): void
     {
-        if ($nodeId && $nodeId !== $this->selectedNodeId) {
+        if ($nodeId !== $this->selectedNodeId) {
             $this->selectedNodeId = $nodeId;
             $this->cpuHistory = [];
             $this->memoryHistory = [];
@@ -60,6 +60,7 @@ class MonitoringWidget extends BaseWidget
             $node = Node::findOrFail($this->selectedNodeId);
         } catch (ModelNotFoundException) {
             $this->selectedNodeId = null;
+            $this->dispatch('nodeInvalid');
 
             return $this->getErrorStats(trans('admin/monitoring.stats.error_node_gone'));
         }

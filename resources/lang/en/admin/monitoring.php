@@ -61,6 +61,14 @@ return [
         'swap_free' => 'Free',
         'swap_usage' => 'Usage',
 
+        'partitions_section' => 'Disk Partitions',
+        'partitions_none' => 'No partition data available.',
+        'partitions_device' => 'Device',
+        'partitions_mountpoint' => 'Mount Point',
+        'partitions_filesystem' => 'Filesystem',
+        'partitions_size' => 'Size',
+        'partitions_usage' => 'Usage',
+
         'network_section' => 'Network',
         'bytes_sent' => 'Bytes Sent',
         'bytes_recv' => 'Bytes Received',
