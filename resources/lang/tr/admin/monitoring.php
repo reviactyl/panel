@@ -61,6 +61,14 @@ return [
         'swap_free' => 'Boş',
         'swap_usage' => 'Kullanım',
 
+        'partitions_section' => 'Disk Partitions',
+        'partitions_none' => 'No partition data available.',
+        'partitions_device' => 'Device',
+        'partitions_mountpoint' => 'Mount Point',
+        'partitions_filesystem' => 'Filesystem',
+        'partitions_size' => 'Size',
+        'partitions_usage' => 'Usage',
+
         'network_section' => 'Ağ',
         'bytes_sent' => 'Gönderilen Bayt',
         'bytes_recv' => 'Alınan Bayt',
