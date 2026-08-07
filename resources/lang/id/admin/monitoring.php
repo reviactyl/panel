@@ -61,6 +61,14 @@ return [
         'swap_free' => 'Bebas',
         'swap_usage' => 'Penggunaan',
 
+        'partitions_section' => 'Disk Partitions',
+        'partitions_none' => 'No partition data available.',
+        'partitions_device' => 'Device',
+        'partitions_mountpoint' => 'Mount Point',
+        'partitions_filesystem' => 'Filesystem',
+        'partitions_size' => 'Size',
+        'partitions_usage' => 'Usage',
+
         'network_section' => 'Jaringan',
         'bytes_sent' => 'Byte Terkirim',
         'bytes_recv' => 'Byte Diterima',
