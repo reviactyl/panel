@@ -61,6 +61,14 @@ return [
         'swap_free' => 'Свободно',
         'swap_usage' => 'Использование',
 
+        'partitions_section' => 'Disk Partitions',
+        'partitions_none' => 'No partition data available.',
+        'partitions_device' => 'Device',
+        'partitions_mountpoint' => 'Mount Point',
+        'partitions_filesystem' => 'Filesystem',
+        'partitions_size' => 'Size',
+        'partitions_usage' => 'Usage',
+
         'network_section' => 'Сеть',
         'bytes_sent' => 'Отправлено байт',
         'bytes_recv' => 'Получено байт',

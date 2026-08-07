@@ -61,6 +61,14 @@ return [
         'swap_free' => 'Miễn phí',
         'swap_usage' => 'Cách sử dụng',
 
+        'partitions_section' => 'Disk Partitions',
+        'partitions_none' => 'No partition data available.',
+        'partitions_device' => 'Device',
+        'partitions_mountpoint' => 'Mount Point',
+        'partitions_filesystem' => 'Filesystem',
+        'partitions_size' => 'Size',
+        'partitions_usage' => 'Usage',
+
         'network_section' => 'Mạng',
         'bytes_sent' => 'Byte đã gửi',
         'bytes_recv' => 'Byte đã nhận',

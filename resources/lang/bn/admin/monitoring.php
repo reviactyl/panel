@@ -61,6 +61,14 @@ return [
         'swap_free' => 'ফাঁকা',
         'swap_usage' => 'ব্যবহার',
 
+        'partitions_section' => 'Disk Partitions',
+        'partitions_none' => 'No partition data available.',
+        'partitions_device' => 'Device',
+        'partitions_mountpoint' => 'Mount Point',
+        'partitions_filesystem' => 'Filesystem',
+        'partitions_size' => 'Size',
+        'partitions_usage' => 'Usage',
+
         'network_section' => 'নেটওয়ার্ক',
         'bytes_sent' => 'পাঠানো বাইট',
         'bytes_recv' => 'গৃহীত বাইট',

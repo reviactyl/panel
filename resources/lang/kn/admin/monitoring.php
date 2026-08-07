@@ -61,6 +61,14 @@ return [
         'swap_free' => 'ಉಚಿತ',
         'swap_usage' => 'ಬಳಕೆ',
 
+        'partitions_section' => 'Disk Partitions',
+        'partitions_none' => 'No partition data available.',
+        'partitions_device' => 'Device',
+        'partitions_mountpoint' => 'Mount Point',
+        'partitions_filesystem' => 'Filesystem',
+        'partitions_size' => 'Size',
+        'partitions_usage' => 'Usage',
+
         'network_section' => 'ನೆಟ್ವರ್ಕ್',
         'bytes_sent' => 'ಬೈಟ್‌ಗಳನ್ನು ಕಳುಹಿಸಲಾಗಿದೆ',
         'bytes_recv' => 'ಬೈಟ್‌ಗಳನ್ನು ಸ್ವೀಕರಿಸಲಾಗಿದೆ',

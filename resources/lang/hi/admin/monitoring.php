@@ -61,6 +61,14 @@ return [
         'swap_free' => 'मुक्त',
         'swap_usage' => 'प्रयोग',
 
+        'partitions_section' => 'Disk Partitions',
+        'partitions_none' => 'No partition data available.',
+        'partitions_device' => 'Device',
+        'partitions_mountpoint' => 'Mount Point',
+        'partitions_filesystem' => 'Filesystem',
+        'partitions_size' => 'Size',
+        'partitions_usage' => 'Usage',
+
         'network_section' => 'नेटवर्क',
         'bytes_sent' => 'बाइट्स भेजे गए',
         'bytes_recv' => 'बाइट्स प्राप्त हुए',
