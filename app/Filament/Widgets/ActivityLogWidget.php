@@ -2,7 +2,7 @@
 
 namespace App\Filament\Widgets;
 
-use App\Filament\Resources\ActivityLogResource;
+use App\Filament\Resources\ActivityLog\ActivityLogResource;
 use App\Models\ActivityLog;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
