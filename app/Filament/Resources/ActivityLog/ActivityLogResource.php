@@ -37,7 +37,7 @@ class ActivityLogResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('actor.name')
+                TextColumn::make('actor.username')
                     ->label(trans('admin/activity_log.columns.user'))
                     ->description(fn (ActivityLog $record) => $record->actor instanceof User ? $record->actor->email : null)
                     ->searchable()
