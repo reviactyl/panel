@@ -13,6 +13,7 @@ return [
         'enabled' => '启用',
         'updated' => '已更新',
         'manifest_json' => '清单 JSON',
+        'file' => 'Choose a .rext file to upload',
     ],
 
     'modals' => [
