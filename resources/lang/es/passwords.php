@@ -15,5 +15,5 @@ return [
     'reset' => '¡Tu contraseña ha sido restablecida!',
     'sent' => '¡Te hemos enviado un enlace para restablecer tu contraseña por correo electrónico!',
     'token' => 'Este token de restablecimiento de contraseña es inválido.',
-    'user' => "No podemos encontrar un usuario con esa dirección de correo electrónico.",
+    'user' => 'No podemos encontrar un usuario con esa dirección de correo electrónico.',
 ];

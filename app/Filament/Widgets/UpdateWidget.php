@@ -31,24 +31,24 @@ class UpdateWidget extends BaseWidget
                 ->iconColor('warning')
                 ->visible(! $this->softwareVersionService->isLatestPanel())
                 ->headerActions([
-                Action::make('update')
-                    ->label(trans('admin/index.update-btn'))
-                    ->icon('heroicon-c-cursor-arrow-rays')
-                    ->url('https://reviactyl.app/docs/panel/updating-the-panel', true)
-                    ->color('warning'),
-            ])
+                    Action::make('update')
+                        ->label(trans('admin/index.update-btn'))
+                        ->icon('heroicon-c-cursor-arrow-rays')
+                        ->url('https://reviactyl.app/docs/panel/updating-the-panel', true)
+                        ->color('warning'),
+                ])
                 ->schema([
-                TextEntry::make('info')
-                    ->hiddenLabel()
-                    ->state(
-                        trans(
-                            'admin/index.notuptodate-body',
-                            [
-                                'latest' => $this->softwareVersionService->getPanel(),
-                            ]
-                        )
-                    ),
-            ]),
+                    TextEntry::make('info')
+                        ->hiddenLabel()
+                        ->state(
+                            trans(
+                                'admin/index.notuptodate-body',
+                                [
+                                    'latest' => $this->softwareVersionService->getPanel(),
+                                ]
+                            )
+                        ),
+                ]),
         ]);
     }
 }

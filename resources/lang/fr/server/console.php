@@ -6,7 +6,7 @@ return [
     'server-installing' => 'Ce serveur est actuellement en cours d\'installation et la plupart des actions ne sont pas disponibles.',
     'server-transferring' => 'Ce serveur est actuellement transféré vers un autre nœud et toutes les actions sont indisponibles.',
     'run-command' => 'Tapez une commande...',
-    'connection-trouble' => "Nous rencontrons des difficultés pour nous connecter à votre serveur, veuillez patienter...",
+    'connection-trouble' => 'Nous rencontrons des difficultés pour nous connecter à votre serveur, veuillez patienter...',
     'uptime' => 'Temps de disponibilité',
     'network-inbound' => 'Réseau (entrant)',
     'network-outbound' => 'Réseau (sortant)',

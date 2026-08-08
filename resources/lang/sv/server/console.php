@@ -6,7 +6,7 @@ return [
     'server-installing' => 'Denna server kör för närvarande sin installationsprocess och de flesta åtgärder är otillgängliga.',
     'server-transferring' => 'Denna server överförs för närvarande till en annan nod och alla åtgärder är otillgängliga.',
     'run-command' => 'Skriv ett kommando...',
-    'connection-trouble' => "Vi har problem med att ansluta till din server, vänta...",
+    'connection-trouble' => 'Vi har problem med att ansluta till din server, vänta...',
     'uptime' => 'Upptid',
     'network-inbound' => 'Nätverk (inkommande)',
     'network-outbound' => 'Nätverk (utgående)',
