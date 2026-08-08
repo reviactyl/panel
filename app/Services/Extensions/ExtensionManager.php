@@ -89,6 +89,9 @@ class ExtensionManager
 
         /** @var Extension $record */
         $record = Extension::query()->firstOrNew(['identifier' => $identifier]);
+
+        $isNew = ! $record->exists;
+
         $record->name = (string) $manifest['name'];
         $record->version = (string) $manifest['version'];
         $record->description = Arr::get($manifest, 'description');
@@ -98,7 +101,11 @@ class ExtensionManager
         $record->api_version = $resolvedApiVersion;
         $record->target_version = Arr::get($manifest, 'target_version');
         $record->manifest = $manifest;
-        $record->enabled = true;
+
+        if ($isNew) {
+            $record->enabled = false;
+        }
+
         $record->installed_at ??= now();
         $record->extension_updated_at = now();
         $record->save();
@@ -159,7 +166,7 @@ class ExtensionManager
             return;
         }
 
-        $needle = 'extensions/' . $identifier . '/';
+        $needle = 'extensions/'.$identifier.'/';
 
         foreach (File::files($pagesPath) as $file) {
             if ($file->getExtension() !== 'php') {
