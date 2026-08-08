@@ -16,7 +16,6 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\InteractsWithHeaderActions;
 use Filament\Pages\Page;
-use Filament\Schemas\Components\Actions;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
@@ -54,6 +53,7 @@ class Settings extends Page implements HasSchemas
         'app:debug',
         'app:pwa',
 
+        'mail:default',
         'mail:mailers:smtp:host',
         'mail:mailers:smtp:port',
         'mail:mailers:smtp:encryption',
@@ -172,7 +172,6 @@ class Settings extends Page implements HasSchemas
                     Tab::make('mail')
                         ->label(trans('admin/settings.mail.title'))
                         ->icon('tabler-mail')
-                        ->disabled(fn (): bool => config('mail.default') !== 'smtp')
                         ->schema($this->mailSettings()),
 
                     Tab::make('advanced')
@@ -192,19 +191,6 @@ class Settings extends Page implements HasSchemas
                 ->warning()
                 ->columnSpanFull()
                 ->visible(fn (): bool => config('panel.load_environment_only')),
-
-        ];
-    }
-
-    private function mailNotice(): array
-    {
-        return [
-            Alert::make()
-                ->title('Feature not available with current mail driver')
-                ->description(new HtmlString('This interface is limited to instances using SMTP as the mail driver. Please either use <code>php artisan p:environment:mail</code> command to update your email settings, or set <code>MAIL_DRIVER=smtp</code> in your environment file.'))
-                ->warning()
-                ->columnSpanFull()
-                ->visible(fn (): bool => config('mail.default') !== 'smtp'),
 
         ];
     }
@@ -481,7 +467,23 @@ class Settings extends Page implements HasSchemas
     {
         return [
             ...$this->environmentNotice(),
-            ...$this->mailNotice(),
+
+            Select::make('mail:default')
+                ->label('Mailer')
+                ->options(collect(config('mail.mailers', []))
+                    ->keys()
+                    ->mapWithKeys(fn (string $mailer): array => [$mailer => Str::headline($mailer)])
+                    ->all())
+                ->required()
+                ->hintAction(
+                    Action::make('test_mail')
+                        ->label(trans('admin/settings.mail.test-btn'))
+                        ->icon('tabler-send')
+                        ->action('testMail')
+                        ->color('success')
+                        ->visible(fn ($get): bool => $get('mail:default') === 'smtp'),
+                )
+                ->live(),
 
             Group::make()
                 ->columns(4)
@@ -507,7 +509,8 @@ class Settings extends Page implements HasSchemas
                             'ssl' => 'SSL',
                         ])
                         ->columnSpan(1),
-                ]),
+                ])
+                ->visible(fn ($get): bool => $get('mail:default') === 'smtp'),
 
             Group::make()
                 ->columns(4)
@@ -521,7 +524,8 @@ class Settings extends Page implements HasSchemas
                         ->password()
                         ->revealable()
                         ->columnSpan(2),
-                ]),
+                ])
+                ->visible(fn ($get): bool => $get('mail:default') === 'smtp'),
 
             Group::make()
                 ->columns(4)
@@ -537,14 +541,6 @@ class Settings extends Page implements HasSchemas
                         ->required()
                         ->columnSpan(2),
                 ]),
-
-            Actions::make([
-                Action::make('test_mail')
-                    ->label(trans('admin/settings.mail.test-btn'))
-                    ->icon('tabler-mail')
-                    ->action('testMail')
-                    ->color('success'),
-            ])->fullWidth(),
         ];
     }
 
@@ -648,6 +644,7 @@ class Settings extends Page implements HasSchemas
         $form = $this->getForm('form');
         $data = $form?->getState() ?? [];
 
+        config()->set('mail.default', $data['mail:default'] ?? config('mail.default'));
         config()->set('mail.mailers.smtp.host', $data['mail:mailers:smtp:host'] ?? config('mail.mailers.smtp.host'));
         config()->set('mail.mailers.smtp.port', $data['mail:mailers:smtp:port'] ?? config('mail.mailers.smtp.port'));
         config()->set('mail.mailers.smtp.encryption', $data['mail:mailers:smtp:encryption'] ?? config('mail.mailers.smtp.encryption'));

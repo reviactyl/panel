@@ -23,6 +23,7 @@ class SettingsServiceProvider extends ServiceProvider
         'app:locale',
         'app:debug',
         'app:pwa',
+        'mail:default',
         'panel:guzzle:timeout',
         'panel:guzzle:connect_timeout',
         'panel:console:count',
@@ -242,18 +243,19 @@ class SettingsServiceProvider extends ServiceProvider
             return;
         }
 
-        // Only set the email driver settings from the database if we
-        // are configured using SMTP as the driver.
-        if ($config->get('mail.default') === 'smtp') {
-            $this->keys = array_merge($this->keys, $this->emailKeys);
-        }
-
         try {
             $values = $settings->all()->mapWithKeys(function ($setting) {
                 return [$setting->key => $setting->value];
             })->toArray();
         } catch (QueryException $exception) {
             return;
+        }
+
+        // The selected mailer can itself be stored in the database. Resolve it
+        // before deciding whether the SMTP-specific settings should be loaded.
+        $mailer = array_get($values, 'settings::mail:default', $config->get('mail.default'));
+        if ($mailer === 'smtp') {
+            $this->keys = array_merge($this->keys, $this->emailKeys);
         }
 
         $encrypter = null;
