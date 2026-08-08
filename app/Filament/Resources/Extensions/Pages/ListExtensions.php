@@ -59,7 +59,7 @@ class ListExtensions extends ListRecords
                     $archivePath = $path;
 
                     if ($needsCopy) {
-                        $archivePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('rext_', true) . '.rext';
+                        $archivePath = sys_get_temp_dir().DIRECTORY_SEPARATOR.uniqid('rext_', true).'.rext';
                         copy($path, $archivePath);
                     }
 
