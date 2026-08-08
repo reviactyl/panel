@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Resources\ActivityLog;
 
-use App\Filament\Resources\ActivityLogResource\Pages\ListActivityLogs;
+use App\Filament\Resources\ActivityLog\Pages\ListActivityLogs;
 use App\Models\ActivityLog;
 use App\Models\User;
 use Filament\Resources\Resource;

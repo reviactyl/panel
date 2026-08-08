@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\ActivityLogResource\Pages;
+namespace App\Filament\Resources\ActivityLog\Pages;
 
-use App\Filament\Resources\ActivityLogResource;
+use App\Filament\Resources\ActivityLog\ActivityLogResource;
 use Filament\Resources\Pages\ListRecords;
 
 class ListActivityLogs extends ListRecords
