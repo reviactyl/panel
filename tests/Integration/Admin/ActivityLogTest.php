@@ -2,7 +2,7 @@
 
 namespace Tests\Integration\Admin;
 
-use App\Filament\Resources\ActivityLogResource;
+use App\Filament\Resources\ActivityLog\ActivityLogResource;
 use App\Models\ActivityLog;
 use App\Models\Location;
 use App\Models\Node;
