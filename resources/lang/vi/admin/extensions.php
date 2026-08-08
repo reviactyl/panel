@@ -13,6 +13,7 @@ return [
         'enabled' => 'Đã bật',
         'updated' => 'Đã cập nhật',
         'manifest_json' => 'Tệp kê khai JSON',
+        'file' => 'Choose a .rext file to upload',
     ],
 
     'modals' => [

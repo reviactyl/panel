@@ -13,6 +13,7 @@ return [
         'enabled' => 'সক্রিয়',
         'updated' => 'আপডেট করা হয়েছে',
         'manifest_json' => 'ম্যানিফেস্ট JSON',
+        'file' => 'Choose a .rext file to upload',
     ],
 
     'modals' => [

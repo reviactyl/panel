@@ -13,6 +13,7 @@ return [
         'enabled' => 'Etkinleştirilmiş',
         'updated' => 'Güncellendi',
         'manifest_json' => 'JSON\'u bildir',
+        'file' => 'Choose a .rext file to upload',
     ],
 
     'modals' => [

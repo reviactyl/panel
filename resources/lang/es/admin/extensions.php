@@ -13,6 +13,7 @@ return [
         'enabled' => 'Activado',
         'updated' => 'Actualizado',
         'manifest_json' => 'JSON manifiesto',
+        'file' => 'Choose a .rext file to upload',
     ],
 
     'modals' => [

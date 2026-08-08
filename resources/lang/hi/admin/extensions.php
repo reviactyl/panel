@@ -13,6 +13,7 @@ return [
         'enabled' => 'सक्रिय',
         'updated' => 'अद्यतन',
         'manifest_json' => 'प्रकट JSON',
+        'file' => 'Choose a .rext file to upload',
     ],
 
     'modals' => [
