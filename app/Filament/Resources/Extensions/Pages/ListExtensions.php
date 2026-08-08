@@ -21,6 +21,7 @@ class ListExtensions extends ListRecords
             Action::make('uploadInstall')
                 ->label(trans('admin/extensions.actions.upload'))
                 ->icon('heroicon-o-arrow-up-tray')
+                ->visible(fn (): bool => ! config('extensions.disable_upload', false))
                 ->form([
                     FileUpload::make('file')
                         ->label(trans('admin/extensions.columns.file'))
