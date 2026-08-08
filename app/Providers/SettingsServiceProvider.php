@@ -23,6 +23,7 @@ class SettingsServiceProvider extends ServiceProvider
         'app:locale',
         'app:debug',
         'app:pwa',
+        'trustedproxy:proxies',
         'mail:default',
         'panel:guzzle:timeout',
         'panel:guzzle:connect_timeout',

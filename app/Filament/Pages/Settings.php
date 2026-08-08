@@ -9,6 +9,7 @@ use App\Notifications\MailTested;
 use App\Traits\Helpers\AvailableLanguages;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ToggleButtons;
@@ -20,11 +21,13 @@ use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Contracts\HasSchemas;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Mail\MailManager;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
@@ -48,6 +51,7 @@ class Settings extends Page implements HasSchemas
         'app:icon',
         'app:locale',
         'app:locale:geolocate',
+        'trustedproxy:proxies',
         'panel:auth:2fa_required',
         'panel:auth:registration_enabled',
         'app:debug',
@@ -135,6 +139,10 @@ class Settings extends Page implements HasSchemas
 
             if ($key === 'panel:auth:2fa_required') {
                 $value = (int) $value;
+            }
+
+            if ($key === 'trustedproxy:proxies' && is_array($value)) {
+                $value = implode(',', $value);
             }
 
             $formData[$key] = $value;
@@ -285,6 +293,30 @@ class Settings extends Page implements HasSchemas
                         ->onColor('success')
                         ->offColor('danger')
                         ->columnSpan(1),
+                ]),
+
+            Group::make()
+                ->columns(4)
+                ->schema([
+                    TagsInput::make('trustedproxy:proxies')
+                        ->label(trans('admin/settings.overview.trusted-proxies'))
+                        ->helperText(trans('admin/settings.overview.trusted-proxies-hint'))
+                        ->placeholder(trans('admin/settings.overview.trusted-proxies-placeholder'))
+                        ->separator(',')
+                        ->hintAction(
+                            Action::make('clear_tp')
+                                ->label(trans('admin/settings.overview.trusted-proxies-clear'))
+                                ->icon('tabler-trash')
+                                ->color('danger')
+                                ->action(fn (Set $set) => $set('trustedproxy:proxies', [])),
+                        )
+                        ->hintAction(
+                            Action::make('import_cf_tp')
+                                ->label(trans('admin/settings.overview.trusted-proxies-import-cloudflare'))
+                                ->icon('tabler-brand-cloudflare')
+                                ->action(fn (Set $set) => $this->importCloudflareTrustedProxies($set)),
+                        )
+                        ->columnSpan(2),
                 ]),
         ];
     }
@@ -671,6 +703,42 @@ class Settings extends Page implements HasSchemas
             Notification::make()
                 ->title(trans('admin/settings.mail.test-failed'))
                 ->body($exception->getMessage())
+                ->danger()
+                ->send();
+        }
+    }
+
+    public function importCloudflareTrustedProxies(Set $set): void
+    {
+        try {
+            $response = Http::acceptJson()
+                ->timeout(10)
+                ->get('https://api.cloudflare.com/client/v4/ips');
+
+            if (! $response->successful() || ! $response->json('success')) {
+                throw new \RuntimeException('Cloudflare did not return a successful response.');
+            }
+
+            $ipv4Ranges = $response->json('result.ipv4_cidrs');
+            $ipv6Ranges = $response->json('result.ipv6_cidrs');
+            $proxies = array_values(array_unique(array_filter([
+                ...(is_array($ipv4Ranges) ? $ipv4Ranges : []),
+                ...(is_array($ipv6Ranges) ? $ipv6Ranges : []),
+            ], is_string(...))));
+
+            if ($proxies === []) {
+                throw new \RuntimeException('Cloudflare did not return any proxy ranges.');
+            }
+
+            $set('trustedproxy:proxies', $proxies);
+
+            Notification::make()
+                ->title(trans('admin/settings.overview.trusted-proxies-imported'))
+                ->success()
+                ->send();
+        } catch (\Throwable) {
+            Notification::make()
+                ->title(trans('admin/settings.overview.trusted-proxies-import-failed'))
                 ->danger()
                 ->send();
         }
