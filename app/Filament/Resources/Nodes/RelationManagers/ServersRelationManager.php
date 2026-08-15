@@ -10,6 +10,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
 class ServersRelationManager extends RelationManager
@@ -43,8 +44,20 @@ class ServersRelationManager extends RelationManager
                             </div>
                         ";
                     })
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHas('user', function (Builder $query) use ($search): void {
+                            $query->where('username', 'like', "%{$search}%")
+                                ->orWhere('email', 'like', "%{$search}%")
+                                ->orWhere('name_first', 'like', "%{$search}%")
+                                ->orWhere('name_last', 'like', "%{$search}%");
+                        });
+                    })
+                    ->sortable(query: function (Builder $query, string $direction): Builder {
+                        return $query
+                            ->leftJoin('users', 'users.id', '=', 'servers.owner_id')
+                            ->orderBy('users.username', $direction)
+                            ->select('servers.*');
+                    }),
                 TextColumn::make('allocation')
                     ->label(trans('admin/server.table.allocation'))
                     ->formatStateUsing(fn ($state) => $state?->toString()), // I don't image any server would be without an allocation, unless somebody manually tampered with the database
