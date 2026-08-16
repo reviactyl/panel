@@ -3,6 +3,7 @@
 namespace Tests\Integration\Admin;
 
 use App\Filament\Resources\ActivityLog\ActivityLogResource;
+use App\Filament\Resources\ActivityLog\Pages\ListActivityLogs;
 use App\Models\ActivityLog;
 use App\Models\Location;
 use App\Models\Node;
@@ -10,6 +11,7 @@ use App\Models\User;
 use App\Services\Activity\ActivityLogService;
 use App\Services\Nodes\NodeCreationService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
 use Tests\Integration\IntegrationTestCase;
 
 class ActivityLogTest extends IntegrationTestCase
@@ -82,5 +84,24 @@ class ActivityLogTest extends IntegrationTestCase
         $response = $this->get(ActivityLogResource::getUrl('index'));
         $response->assertStatus(200);
         $response->assertSee('test:event');
+    }
+
+    public function test_admin_can_search_logs_by_actor_email()
+    {
+        $admin = User::factory()->create(['root_admin' => 1]);
+        $this->actingAs($admin);
+
+        $log = new ActivityLog();
+        $log->timestamp = now();
+        $log->event = 'test:email-search';
+        $log->ip = '127.0.0.1';
+        $log->properties = collect();
+        $log->actor()->associate($admin);
+        $log->save();
+
+        Livewire::test(ListActivityLogs::class)
+            ->assertCanSeeTableRecords([$log])
+            ->searchTable($admin->email)
+            ->assertCanSeeTableRecords([$log]);
     }
 }
