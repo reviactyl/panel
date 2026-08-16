@@ -4,14 +4,18 @@ return [
 
     'label' => 'Eklenti',
     'plural-label' => 'Uzantılar',
+    'marketplace_heading' => 'Available Extensions',
 
     'columns' => [
+        'icon' => 'Icon',
         'id' => 'ID',
         'name' => 'İsim',
         'version' => 'Sürüm',
         'author' => 'Yazar',
         'enabled' => 'Etkinleştirilmiş',
         'updated' => 'Güncellendi',
+        'last_updated' => 'Last Updated',
+        'downloads' => 'Downloads',
         'manifest_json' => 'JSON\'u bildir',
         'file' => 'Choose a .rext file to upload',
     ],
@@ -22,6 +26,7 @@ return [
 
     'actions' => [
         'edit' => 'Düzenlemek',
+        'view' => 'Get Extension',
         'upload' => 'Yüklemek',
         'manifest' => 'Manifest\'i Görüntüle',
         'disable' => 'Devre dışı bırakmak',

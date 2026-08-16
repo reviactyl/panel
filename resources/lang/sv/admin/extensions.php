@@ -4,14 +4,18 @@ return [
 
     'label' => 'Förlängning',
     'plural-label' => 'Tillägg',
+    'marketplace_heading' => 'Available Extensions',
 
     'columns' => [
+        'icon' => 'Icon',
         'id' => 'ID',
         'name' => 'Namn',
         'version' => 'Version',
         'author' => 'Författare',
         'enabled' => 'Aktiverad',
         'updated' => 'Uppdaterad',
+        'last_updated' => 'Last Updated',
+        'downloads' => 'Downloads',
         'manifest_json' => 'Manifest JSON',
         'file' => 'Choose a .rext file to upload',
     ],
@@ -22,6 +26,7 @@ return [
 
     'actions' => [
         'edit' => 'Redigera',
+        'view' => 'Get Extension',
         'upload' => 'Ladda upp',
         'manifest' => 'Visa manifest',
         'disable' => 'Inaktivera',

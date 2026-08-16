@@ -4,14 +4,18 @@ return [
 
     'label' => '扩大',
     'plural-label' => '扩展',
+    'marketplace_heading' => 'Available Extensions',
 
     'columns' => [
+        'icon' => 'Icon',
         'id' => 'ID',
         'name' => '姓名',
         'version' => '版本',
         'author' => '作者',
         'enabled' => '启用',
         'updated' => '已更新',
+        'last_updated' => 'Last Updated',
+        'downloads' => 'Downloads',
         'manifest_json' => '清单 JSON',
         'file' => 'Choose a .rext file to upload',
     ],
@@ -22,6 +26,7 @@ return [
 
     'actions' => [
         'edit' => '编辑',
+        'view' => 'Get Extension',
         'upload' => '上传',
         'manifest' => '查看清单',
         'disable' => '禁用',

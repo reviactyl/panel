@@ -4,14 +4,18 @@ return [
 
     'label' => 'Verlängerung',
     'plural-label' => 'Erweiterungen',
+    'marketplace_heading' => 'Available Extensions',
 
     'columns' => [
+        'icon' => 'Icon',
         'id' => 'ID',
         'name' => 'Name',
         'version' => 'Version',
         'author' => 'Autor',
         'enabled' => 'Ermöglicht',
         'updated' => 'Aktualisiert',
+        'last_updated' => 'Last Updated',
+        'downloads' => 'Downloads',
         'manifest_json' => 'JSON manifestieren',
         'file' => 'Choose a .rext file to upload',
     ],
@@ -22,6 +26,7 @@ return [
 
     'actions' => [
         'edit' => 'Bearbeiten',
+        'view' => 'Get Extension',
         'upload' => 'Hochladen',
         'manifest' => 'Manifest anzeigen',
         'disable' => 'Deaktivieren',

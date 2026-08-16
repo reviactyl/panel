@@ -4,14 +4,18 @@ return [
 
     'label' => 'Расширение',
     'plural-label' => 'Расширения',
+    'marketplace_heading' => 'Available Extensions',
 
     'columns' => [
+        'icon' => 'Icon',
         'id' => 'ID',
         'name' => 'Название',
         'version' => 'Версия',
         'author' => 'Автор',
         'enabled' => 'Включено',
         'updated' => 'Обновлено',
+        'last_updated' => 'Last Updated',
+        'downloads' => 'Downloads',
         'manifest_json' => 'Манифест JSON',
         'file' => 'Choose a .rext file to upload',
     ],
@@ -22,6 +26,7 @@ return [
 
     'actions' => [
         'edit' => 'Редактировать',
+        'view' => 'Get Extension',
         'upload' => 'Загрузить',
         'manifest' => 'Просмотреть манифест',
         'disable' => 'Отключить',

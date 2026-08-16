@@ -4,14 +4,18 @@ return [
 
     'label' => 'Extensión',
     'plural-label' => 'Extensiones',
+    'marketplace_heading' => 'Available Extensions',
 
     'columns' => [
+        'icon' => 'Icon',
         'id' => 'ID',
         'name' => 'Nombre',
         'version' => 'Versión',
         'author' => 'Autor',
         'enabled' => 'Activado',
         'updated' => 'Actualizado',
+        'last_updated' => 'Last Updated',
+        'downloads' => 'Downloads',
         'manifest_json' => 'JSON manifiesto',
         'file' => 'Choose a .rext file to upload',
     ],
@@ -22,6 +26,7 @@ return [
 
     'actions' => [
         'edit' => 'Editar',
+        'view' => 'Get Extension',
         'upload' => 'Subir',
         'manifest' => 'Ver manifiesto',
         'disable' => 'Desactivar',

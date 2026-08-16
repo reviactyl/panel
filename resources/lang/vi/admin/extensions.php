@@ -4,14 +4,18 @@ return [
 
     'label' => 'Sự mở rộng',
     'plural-label' => 'Tiện ích mở rộng',
+    'marketplace_heading' => 'Available Extensions',
 
     'columns' => [
+        'icon' => 'Icon',
         'id' => 'ID',
         'name' => 'Tên',
         'version' => 'Phiên bản',
         'author' => 'Tác giả',
         'enabled' => 'Đã bật',
         'updated' => 'Đã cập nhật',
+        'last_updated' => 'Last Updated',
+        'downloads' => 'Downloads',
         'manifest_json' => 'Tệp kê khai JSON',
         'file' => 'Choose a .rext file to upload',
     ],
@@ -22,6 +26,7 @@ return [
 
     'actions' => [
         'edit' => 'Biên tập',
+        'view' => 'Get Extension',
         'upload' => 'Tải lên',
         'manifest' => 'Xem bản kê khai',
         'disable' => 'Vô hiệu hóa',
