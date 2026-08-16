@@ -9,6 +9,7 @@ use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Filament\Panel;
 
 class ActivityLogResource extends Resource
 {
@@ -31,6 +32,11 @@ class ActivityLogResource extends Resource
     public static function getModelLabel(): string
     {
         return trans('admin/navigation.administration.activity_log');
+    }
+
+    public static function getSlug(?Panel $panel = null): string
+    {
+        return 'activity';
     }
 
     public static function table(Table $table): Table
