@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Extensions\Pages;
 
 use App\Filament\Resources\Extensions\ExtensionResource;
+use App\Filament\Widgets\ExtensionsListWidget;
 use App\Services\Extensions\ExtensionManager;
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
@@ -85,6 +86,13 @@ class ListExtensions extends ListRecords
                         }
                     }
                 }),
+        ];
+    }
+
+    protected function getFooterWidgets(): array
+    {
+        return [
+            ExtensionsListWidget::class,
         ];
     }
 
