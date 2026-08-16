@@ -4,14 +4,18 @@ return [
 
     'label' => 'ವಿಸ್ತರಣೆ',
     'plural-label' => 'ವಿಸ್ತರಣೆಗಳು',
+    'marketplace_heading' => 'Available Extensions',
 
     'columns' => [
+        'icon' => 'Icon',
         'id' => 'ID',
         'name' => 'ಹೆಸರು',
         'version' => 'ಆವೃತ್ತಿ',
         'author' => 'ಲೇಖಕ',
         'enabled' => 'ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ',
         'updated' => 'ನವೀಕರಿಸಲಾಗಿದೆ',
+        'last_updated' => 'Last Updated',
+        'downloads' => 'Downloads',
         'manifest_json' => 'ಮ್ಯಾನಿಫೆಸ್ಟ್ JSON',
         'file' => 'Choose a .rext file to upload',
     ],
@@ -22,6 +26,7 @@ return [
 
     'actions' => [
         'edit' => 'ಸಂಪಾದಿಸು',
+        'view' => 'Get Extension',
         'upload' => 'ಅಪ್ಲೋಡ್ ಮಾಡಿ',
         'manifest' => 'ಮ್ಯಾನಿಫೆಸ್ಟ್ ವೀಕ್ಷಿಸಿ',
         'disable' => 'ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಿ',
