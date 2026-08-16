@@ -5,11 +5,11 @@ namespace App\Filament\Resources\ActivityLog;
 use App\Filament\Resources\ActivityLog\Pages\ListActivityLogs;
 use App\Models\ActivityLog;
 use App\Models\User;
+use Filament\Panel;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Filament\Panel;
 
 class ActivityLogResource extends Resource
 {
