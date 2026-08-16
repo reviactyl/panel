@@ -4,14 +4,18 @@ return [
 
     'label' => 'এক্সটেনশন',
     'plural-label' => 'এক্সটেনশনসমূহ',
+    'marketplace_heading' => 'Available Extensions',
 
     'columns' => [
+        'icon' => 'Icon',
         'id' => 'আইডি',
         'name' => 'নাম',
         'version' => 'ভার্সন',
         'author' => 'লেখক',
         'enabled' => 'সক্রিয়',
         'updated' => 'আপডেট করা হয়েছে',
+        'last_updated' => 'Last Updated',
+        'downloads' => 'Downloads',
         'manifest_json' => 'ম্যানিফেস্ট JSON',
         'file' => 'Choose a .rext file to upload',
     ],
@@ -22,6 +26,7 @@ return [
 
     'actions' => [
         'edit' => 'সম্পাদনা',
+        'view' => 'Get Extension',
         'upload' => 'আপলোড',
         'manifest' => 'Manifest দেখুন',
         'disable' => 'নিষ্ক্রিয় করুন',
