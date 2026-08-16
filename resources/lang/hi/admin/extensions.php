@@ -4,14 +4,18 @@ return [
 
     'label' => 'विस्तार',
     'plural-label' => 'एक्सटेंशन',
+    'marketplace_heading' => 'Available Extensions',
 
     'columns' => [
+        'icon' => 'Icon',
         'id' => 'ID',
         'name' => 'नाम',
         'version' => 'संस्करण',
         'author' => 'लेखक',
         'enabled' => 'सक्रिय',
         'updated' => 'अद्यतन',
+        'last_updated' => 'Last Updated',
+        'downloads' => 'Downloads',
         'manifest_json' => 'प्रकट JSON',
         'file' => 'Choose a .rext file to upload',
     ],
@@ -22,6 +26,7 @@ return [
 
     'actions' => [
         'edit' => 'संपादन करना',
+        'view' => 'Get Extension',
         'upload' => 'अपलोड करें',
         'manifest' => 'प्रकट देखें',
         'disable' => 'अक्षम करना',
