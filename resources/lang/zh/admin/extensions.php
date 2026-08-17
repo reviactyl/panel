@@ -4,10 +4,10 @@ return [
 
     'label' => '扩大',
     'plural-label' => '扩展',
-    'marketplace_heading' => 'Available Extensions',
+    'marketplace_heading' => '可用扩展',
 
     'columns' => [
-        'icon' => 'Icon',
+        'icon' => '图标',
         'id' => 'ID',
         'name' => '姓名',
         'version' => '版本',
@@ -15,9 +15,9 @@ return [
         'enabled' => '启用',
         'updated' => '已更新',
         'last_updated' => 'Last Updated',
-        'downloads' => 'Downloads',
+        'downloads' => '下载',
         'manifest_json' => '清单 JSON',
-        'file' => 'Choose a .rext file to upload',
+        'file' => '选择一个 .rext 文件进行上传',
     ],
 
     'modals' => [
@@ -26,7 +26,7 @@ return [
 
     'actions' => [
         'edit' => '编辑',
-        'view' => 'Get Extension',
+        'view' => '获取扩展程序',
         'upload' => '上传',
         'manifest' => '查看清单',
         'disable' => '禁用',
