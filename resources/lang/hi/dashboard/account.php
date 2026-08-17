@@ -119,7 +119,7 @@ return [
     'ssh' => [
         'title' => 'SSH कुंजी',
         'add-key' => 'SSH कुंजी जोड़ें',
-        'fingerprint' => 'SHA256',
+        'fingerprint' => 'एसएचए256',
         'not-exist' => 'इस खाते के लिए कोई SSH कुंजी मौजूद नहीं है।',
         'added-on' => 'जोड़ा गया दिनांक',
         'create' => [
