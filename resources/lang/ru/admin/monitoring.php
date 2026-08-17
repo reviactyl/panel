@@ -66,8 +66,8 @@ return [
         'partitions_device' => 'Device',
         'partitions_mountpoint' => 'Mount Point',
         'partitions_filesystem' => 'Filesystem',
-        'partitions_size' => 'Size',
-        'partitions_usage' => 'Usage',
+        'partitions_size' => 'Размер',
+        'partitions_usage' => 'Использование',
 
         'network_section' => 'Сеть',
         'bytes_sent' => 'Отправлено байт',
