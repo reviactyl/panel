@@ -315,6 +315,7 @@ return [
         'bad_variable' => ':name 变量存在验证错误。',
         'daemon_exception' => '尝试与守护进程通信时发生异常，导致 HTTP/:code 响应代码。此异常已被记录。（请求 ID：:request_id）',
         'default_allocation_not_found' => '在此服务器的分配中找不到所请求的默认分配。',
+        'skipping_install_script' => 'This server is configured to skip its egg\'s install script. Reinstalling is not available until that setting is disabled.',
     ],
 
     'alerts' => [
