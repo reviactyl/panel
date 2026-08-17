@@ -6,7 +6,7 @@ return [
     ],
 
     'language' => [
-        'label' => 'Language',
+        'label' => 'ভাষা',
     ],
 
     'migration' => [
@@ -32,8 +32,8 @@ return [
     ],
 
     'sections' => [
-        'application' => 'Application Configuration',
-        'database' => 'Database Configuration',
+        'application' => 'অ্যাপ্লিকেশন কনফিগারেশন',
+        'database' => 'ডাটাবেস কনফিগারেশন',
         'user' => 'User Configuration',
         'mail' => 'Mail Settings',
     ],
@@ -42,22 +42,22 @@ return [
         'application_url' => 'Application URL',
         'cache_driver' => 'Cache driver',
         'database_name' => 'Database name',
-        'driver' => 'Driver',
-        'email' => 'Email',
+        'driver' => 'ড্রাইভার',
+        'email' => 'ইমেইল',
         'enable_settings_editor' => 'Enable settings editor',
-        'encryption' => 'Encryption',
-        'endpoint' => 'Endpoint',
+        'encryption' => 'এনক্রিপশন',
+        'endpoint' => 'এন্ডপয়েন্ট',
         'first_name' => 'First name',
         'from_email' => 'From email',
         'from_name' => 'From name',
-        'host' => 'Host',
+        'host' => 'হোস্ট',
         'host_domain' => 'Host / Domain',
         'icon_url' => 'Icon URL',
         'last_name' => 'Last name',
         'logo_url' => 'Logo URL',
-        'password' => 'Password',
+        'password' => 'পাসওয়ার্ড',
         'password_secret' => 'Password / Secret',
-        'port' => 'Port',
+        'port' => 'পোর্ট',
         'queue_driver' => 'Queue driver',
         'redis_host' => 'Redis host',
         'redis_password' => 'Redis password',
@@ -66,16 +66,16 @@ return [
         'service_author_email' => 'Service author email',
         'session_driver' => 'Session driver',
         'sqlite_database_path' => 'SQLite database path',
-        'timezone' => 'Timezone',
-        'username' => 'Username',
+        'timezone' => 'টাইমজোন',
+        'username' => 'ইউজারনেম',
     ],
 
     'options' => [
-        'none' => 'None',
+        'none' => 'কোনোটিই নয়',
     ],
 
     'actions' => [
-        'continue' => 'Continue',
+        'continue' => 'চালিয়ে যান',
         'finish' => 'Finish Installation',
         'proceed' => 'Proceed...',
         'skip' => 'Skip...',
