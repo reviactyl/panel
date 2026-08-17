@@ -29,5 +29,6 @@ return [
         'info-1' => 'Việc cài đặt lại máy chủ của bạn sẽ dừng máy chủ, sau đó chạy lại tập lệnh cài đặt đã thiết lập máy chủ ban đầu.',
         'info-2' => 'Một số tệp có thể bị xóa hoặc sửa đổi trong quá trình này, vui lòng sao lưu dữ liệu của bạn trước khi tiếp tục.',
         'button' => 'Cài đặt lại máy chủ',
+        'disabled' => 'Reinstalling is not available because this server is configured to skip its egg\'s install script.',
     ],
 ];

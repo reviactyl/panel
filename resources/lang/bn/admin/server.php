@@ -315,6 +315,7 @@ return [
         'bad_variable' => 'There was a validation error with the :name variable.',
         'daemon_exception' => 'ডেমন এর সাথে যোগাযোগের চেষ্টা করার সময় একটি এক্সেপশন হয়েছিল যার ফলে HTTP/ঃcode রেসপন্স কোড এসেছে। এই এক্সেপশন লগ করা হয়েছে। (রিকুয়েস্ট আইডিঃ :request_id)',
         'default_allocation_not_found' => 'The requested default allocation was not found in this server\'s allocations.',
+        'skipping_install_script' => 'This server is configured to skip its egg\'s install script. Reinstalling is not available until that setting is disabled.',
     ],
 
     'alerts' => [

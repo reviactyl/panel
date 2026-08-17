@@ -29,5 +29,6 @@ return [
         'info-1' => 'Att ominstallera din server kommer att stoppa den och sedan köra installationsskriptet som ursprungligen konfigurerade den igen.',
         'info-2' => 'Vissa filer kan raderas eller ändras under denna process, vänligen säkerhetskopiera dina data innan du fortsätter.',
         'button' => 'Ominstallera server',
+        'disabled' => 'Reinstalling is not available because this server is configured to skip its egg\'s install script.',
     ],
 ];

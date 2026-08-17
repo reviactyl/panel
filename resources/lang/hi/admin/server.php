@@ -315,6 +315,7 @@ return [
         'bad_variable' => ':name वेरिएबल के साथ एक सत्यापन त्रुटि थी।',
         'daemon_exception' => 'डेमन के साथ संवाद करने का प्रयास करते समय एक अपवाद था जिसके परिणामस्वरूप HTTP/:code प्रतिक्रिया कोड मिला। यह अपवाद लॉग किया गया है। (अनुरोध आईडी: :request_id)',
         'default_allocation_not_found' => 'अनुरोधित डिफ़ॉल्ट आवंटन इस सर्वर के आवंटनों में नहीं मिला।',
+        'skipping_install_script' => 'This server is configured to skip its egg\'s install script. Reinstalling is not available until that setting is disabled.',
     ],
 
     'alerts' => [

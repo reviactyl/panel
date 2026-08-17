@@ -315,6 +315,7 @@ return [
         'bad_variable' => 'Une erreur de validation s\'est produite avec la variable :name.',
         'daemon_exception' => 'Une exception s\'est produite lors de la tentative de communication avec le daemon, entraînant un code de réponse HTTP/:code. Cette exception a été consignée. (ID de la requête : :request_id)',
         'default_allocation_not_found' => 'L\'allocation par défaut demandée n\'a pas été trouvée dans les allocations de ce serveur.',
+        'skipping_install_script' => 'This server is configured to skip its egg\'s install script. Reinstalling is not available until that setting is disabled.',
     ],
 
     'alerts' => [

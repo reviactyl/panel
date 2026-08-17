@@ -29,5 +29,6 @@ return [
         'info-1' => 'Sunucunuzu yeniden kurmak onu durduracak ve ardından kurulumu ilk yapan betiği yeniden çalıştıracaktır.',
         'info-2' => 'Bu işlem sırasında bazı dosyalar silinebilir veya değiştirilebilir, lütfen devam etmeden önce verilerinizi yedekleyin.',
         'button' => 'Sunucuyu Yeniden Kur',
+        'disabled' => 'Reinstalling is not available because this server is configured to skip its egg\'s install script.',
     ],
 ];
