@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FaClock, FaCloudArrowDown, FaCloudArrowUp } from 'react-icons/fa6';
-import { bytesToString } from '@/lib/formatters';
+import { bytesToString, ip } from '@/lib/formatters';
 import { ServerContext } from '@/state/server';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
 import UptimeDuration from '@/components/server/UptimeDuration';
@@ -9,6 +8,8 @@ import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import classNames from 'classnames';
 import { capitalize } from '@/lib/strings';
 import { useTranslation } from 'react-i18next';
+import { FaGlobe, FaClock, FaCloudArrowDown, FaCloudArrowUp } from 'react-icons/fa6';
+import Blur from '@/reviactyl/ui/Blur';
 
 type Stats = Record<'memory' | 'cpu' | 'disk' | 'uptime' | 'rx' | 'tx', number>;
 
@@ -17,9 +18,9 @@ const getBackgroundColor = (value: number, max: number | null): string | undefin
 
     if (delta > 0.8) {
         if (delta > 0.9) {
-            return 'bg-red-500';
+            return 'bg-danger';
         }
-        return 'bg-yellow-500';
+        return 'bg-amber-600';
     }
 
     return undefined;
@@ -32,6 +33,12 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
     const status = ServerContext.useStoreState((state) => state.status.value);
     const connected = ServerContext.useStoreState((state) => state.socket.connected);
     const instance = ServerContext.useStoreState((state) => state.socket.instance);
+
+    const allocation = ServerContext.useStoreState((state) => {
+        const match = state.server.data!.allocations.find((allocation) => allocation.isDefault);
+
+        return !match ? 'n/a' : `${match.alias || ip(match.ip)}:${match.port}`;
+    });
 
     useEffect(() => {
         if (!connected || !instance) {
@@ -60,7 +67,10 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
     });
 
     return (
-        <div className={classNames('grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4', className)}>
+        <div className={classNames('grid grid-cols-6 gap-2 md:gap-4', className)}>
+            <StatBlock icon={FaGlobe} title={t('address')} copyOnClick={allocation}>
+                <Blur>{allocation}</Blur>
+            </StatBlock>
             <StatBlock
                 icon={FaClock}
                 title={t('uptime')}
@@ -75,18 +85,10 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
                 )}
             </StatBlock>
             <StatBlock icon={FaCloudArrowDown} title={t('network-inbound')}>
-                {status === 'offline' ? (
-                    <span className={'text-gray-400'}>{t('offline')}</span>
-                ) : (
-                    bytesToString(stats.rx)
-                )}
+                {status === 'offline' ? <span className={'text-gray-400'}>Offline</span> : bytesToString(stats.rx)}
             </StatBlock>
             <StatBlock icon={FaCloudArrowUp} title={t('network-outbound')}>
-                {status === 'offline' ? (
-                    <span className={'text-gray-400'}>{t('offline')}</span>
-                ) : (
-                    bytesToString(stats.tx)
-                )}
+                {status === 'offline' ? <span className={'text-gray-400'}>Offline</span> : bytesToString(stats.tx)}
             </StatBlock>
         </div>
     );
