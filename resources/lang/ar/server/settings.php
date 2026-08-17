@@ -30,5 +30,6 @@ return [
         'info-1' => 'إعادة تثبيت السيرفر ستقوم بإيقافه ثم إعادة تشغيل سكريبت التثبيت الذي قام بإعداده مبدئيًا.',
         'info-2' => 'قد يتم حذف أو تعديل بعض الملفات أثناء هذه العملية، يرجى عمل نسخة احتياطية لبياناتك قبل المتابعة.',
         'button' => 'إعادة تثبيت السيرفر',
+        'disabled' => 'Reinstalling is not available because this server is configured to skip its egg\'s install script.',
     ],
 ];
