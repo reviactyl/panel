@@ -61,11 +61,11 @@ return [
         'swap_free' => 'मुक्त',
         'swap_usage' => 'प्रयोग',
 
-        'partitions_section' => 'Disk Partitions',
-        'partitions_none' => 'No partition data available.',
-        'partitions_device' => 'Device',
-        'partitions_mountpoint' => 'Mount Point',
-        'partitions_filesystem' => 'Filesystem',
+        'partitions_section' => 'डिस्क विभाजन',
+        'partitions_none' => 'कोई विभाजन डेटा उपलब्ध नहीं है।',
+        'partitions_device' => 'यंत्र',
+        'partitions_mountpoint' => 'माउंट पॉइंट',
+        'partitions_filesystem' => 'फ़ाइलप्रणाली',
         'partitions_size' => 'आकार',
         'partitions_usage' => 'प्रयोग',
 
