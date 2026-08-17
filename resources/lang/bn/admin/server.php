@@ -214,60 +214,60 @@ return [
         ],
         'start_on_completion' => [
             'label' => 'নেস্ট',
-            'helper' => 'Automatically start the server after installation.',
+            'helper' => 'ইনস্টলেশনের পর সার্ভার স্বয়ংক্রিয়ভাবে চালু করুন।',
         ],
         'memory' => [
             'label' => 'মেমোরি',
-            'helper' => 'Total memory allocation. Set to 0 for unlimited. (Unlimited Memory doesn\'t work for Minecraft Eggs due to Startup Command)',
+            'helper' => 'মোট মেমরি বরাদ্দ। অসীম করার জন্য ০ এ সেট করুন। (স্টার্টআপ কমান্ডের কারণে মাইনক্রাফট ডিমের জন্য অসীম মেমরি কাজ করে না)',
         ],
         'swap' => [
             'label' => 'সোয়াপ',
-            'helper' => 'Swap memory allocation. Set to 0 to disable swap or -1 to allow unlimited swap.',
+            'helper' => 'স্ব্যাপ মেমোরি বরাদ্দ পরিবর্তন করুন। স্ব্যাপ নিষ্ক্রিয় করতে 0 সেট করুন অথবা অসীম স্ব্যাপের অনুমতি দিতে -1 সেট করুন।',
         ],
         'disk' => [
             'label' => 'ডিস্ক',
-            'helper' => 'Disk space allocation. Set to 0 for unlimited.',
+            'helper' => 'ডিস্ক স্পেস বরাদ্দ। অসীম করার জন্য ০ সেট করুন।',
         ],
         'io' => [
             'label' => 'ব্লক IO ওয়েট',
-            'helper' => 'Relative disk I/O priority (10-1000).',
+            'helper' => 'আপেক্ষিক ডিস্ক I/O অগ্রাধিকার (১০–১০০০)',
         ],
         'cpu' => [
             'label' => 'সিপিইউ',
-            'helper' => 'CPU limit in percent. 100% means one full core, 200% means two full cores, etc.',
+            'helper' => 'শতাংশে সিপিইউ সীমা। 100% মানে একটি সম্পূর্ণ কোর, 200% মানে দুটি সম্পূর্ণ কোর, ইত্যাদি।',
         ],
         'enter_size_in_gib' => [
             'label' => 'GiB-এ সাইজ দিন',
-            'helper' => 'You can enter sizes in GiB by using the "GiB" suffix (e.g. 10GiB = 10240MiB).',
+            'helper' => 'আপনি "GiB" উপসর্গ ব্যবহার করে GiB-এ আকার লিখতে পারেন (যেমন 10GiB = 10240MiB)।',
         ],
         'threads' => [
             'label' => 'সিপিইউ',
-            'helper' => 'Optional thread pinning. Example: 0-1,3.',
+            'helper' => 'ঐচ্ছিক থ্রেড পিনিং। উদাহরণ: 0-1,3।',
         ],
         'oom_disabled' => [
             'label' => 'OOM কিলার নিষ্ক্রিয় করুন',
-            'helper' => 'Prevent the kernel from killing the process when out of memory.',
+            'helper' => 'মেমোরি শেষ হয়ে গেলে কার্নেল যেন প্রসেসটি বন্ধ না করে।',
         ],
         'database_limit' => [
             'label' => 'ডাটাবেস সীমা',
-            'helper' => 'Maximum number of databases.',
+            'helper' => 'সর্বোচ্চ ডাটাবেসের সংখ্যা।',
         ],
         'allocation_limit' => [
             'label' => 'বরাদ্দ সীমা',
-            'helper' => 'Maximum number of allocations.',
+            'helper' => 'বরাদ্দের সর্বোচ্চ সংখ্যা।',
         ],
         'backup_limit' => [
             'label' => 'ব্যাকআপ সীমা',
-            'helper' => 'Maximum number of backups.',
+            'helper' => 'ব্যাকআপের সর্বোচ্চ সংখ্যা।',
         ],
         'environment' => [
             'key' => 'ভেরিয়েবল',
             'value' => 'মান',
-            'helper' => 'Environment variables for this egg.',
+            'helper' => 'এই ডিমের পরিবেশ ভেরিয়েবলসমূহ।',
         ],
         'use_custom_image' => [
             'label' => 'কাস্টম',
-            'helper' => 'Toggle to use a custom Docker image instead of one provided by the egg.',
+            'helper' => 'egg দ্বারা প্রদত্ত ইমেজের পরিবর্তে কাস্টম Docker ইমেজ ব্যবহার করতে টগল করুন।',
         ],
     ],
 
@@ -290,9 +290,9 @@ return [
     ],
 
     'messages' => [
-        'created' => 'Server has been successfully created.',
-        'updated' => 'Server has been successfully updated.',
-        'deleted' => 'Server has been successfully deleted.',
+        'created' => 'সার্ভার সফলভাবে তৈরি হয়েছে।',
+        'updated' => 'সার্ভার সফলভাবে আপডেট হয়েছে।',
+        'deleted' => 'সার্ভার সফলভাবে মুছে ফেলা হয়েছে।',
     ],
 
     'actions' => [
@@ -310,35 +310,35 @@ return [
     ],
 
     'exceptions' => [
-        'no_new_default_allocation' => 'You are attempting to delete the default allocation for this server but there is no fallback allocation to use.',
-        'marked_as_failed' => 'This server was marked as having failed a previous installation. Current status cannot be toggled in this state.',
-        'bad_variable' => 'There was a validation error with the :name variable.',
+        'no_new_default_allocation' => 'আপনি এই সার্ভারের ডিফল্ট বরাদ্দ মুছে ফেলার চেষ্টা করছেন, কিন্তু ব্যবহার করার জন্য কোনো বিকল্প বরাদ্দ নেই।',
+        'marked_as_failed' => 'এই সার্ভারটি পূর্বের ইনস্টলেশনে ব্যর্থ হয়েছে বলে চিহ্নিত করা হয়েছে। এই অবস্থায় বর্তমান স্থিতি টগল করা যাবে না।',
+        'bad_variable' => ':name ভেরিয়েবলে একটি বৈধতা ত্রুটি ছিল।',
         'daemon_exception' => 'ডেমন এর সাথে যোগাযোগের চেষ্টা করার সময় একটি এক্সেপশন হয়েছিল যার ফলে HTTP/ঃcode রেসপন্স কোড এসেছে। এই এক্সেপশন লগ করা হয়েছে। (রিকুয়েস্ট আইডিঃ :request_id)',
-        'default_allocation_not_found' => 'The requested default allocation was not found in this server\'s allocations.',
-        'skipping_install_script' => 'This server is configured to skip its egg\'s install script. Reinstalling is not available until that setting is disabled.',
+        'default_allocation_not_found' => 'এই সার্ভারের বরাদ্দে অনুরোধকৃত ডিফল্ট বরাদ্দ পাওয়া যায়নি।',
+        'skipping_install_script' => 'এই সার্ভারটি তার এগের ইনস্টল স্ক্রিপ্ট এড়িয়ে যেতে কনফিগার করা হয়েছে। সেই সেটিংটি নিষ্ক্রিয় না হওয়া পর্যন্ত পুনরায় ইনস্টল করা যাবে না।',
     ],
 
     'alerts' => [
-        'install_toggled' => 'Server install status has been toggled.',
-        'server_suspended' => 'Server has been :action.',
-        'server_reinstalled' => 'Server reinstall has been initiated.',
-        'server_deleted' => 'Server has been deleted.',
-        'server_delete_failed' => 'Failed to delete server.',
-        'startup_changed' => 'The startup configuration for this server has been updated. If this server\'s nest or egg was changed a reinstall will be occurring now.',
-        'server_created' => 'Server was successfully created on the panel. Please allow the daemon a few minutes to completely install this server.',
-        'build_updated' => 'The build details for this server have been updated. Some changes may require a restart to take effect.',
-        'suspension_toggled' => 'Server suspension status has been changed to :status.',
-        'rebuild_on_boot' => 'This server has been marked as requiring a Docker Container rebuild. This will happen the next time the server is started.',
-        'details_updated' => 'Server details have been successfully updated.',
-        'docker_image_updated' => 'Successfully changed the default Docker image to use for this server. A reboot is required to apply this change.',
-        'node_required' => 'You must have at least one node configured before you can add a server to this panel.',
-        'transfer_nodes_required' => 'You must have at least two nodes configured before you can transfer servers.',
-        'transfer_started' => 'Server transfer has been started.',
-        'transfer_not_viable' => 'The node you selected does not have the required disk space or memory available to accommodate this server.',
-        'primary_allocation_updated' => 'Primary allocation updated.',
-        'database_created' => 'Database created.',
-        'database_password_reset' => 'Database password reset.',
-        'database_deleted' => 'Database deleted.',
+        'install_toggled' => 'সার্ভার ইনস্টলেশনের অবস্থা টগল করা হয়েছে।',
+        'server_suspended' => 'সার্ভারটি :action হয়েছে।',
+        'server_reinstalled' => 'সার্ভার পুনঃইনস্টলেশন শুরু করা হয়েছে।',
+        'server_deleted' => 'সার্ভার মুছে ফেলা হয়েছে।',
+        'server_delete_failed' => 'সার্ভার মুছতে ব্যর্থ হয়েছে।',
+        'startup_changed' => 'এই সার্ভারের স্টার্টআপ কনফিগারেশন আপডেট করা হয়েছে। যদি এই সার্ভারের নেস্ট বা এ্যাগ পরিবর্তন করা হয়ে থাকে, তাহলে এখনই পুনরায় ইনস্টল করা হবে।',
+        'server_created' => 'প্যানেলে সার্ভার সফলভাবে তৈরি হয়েছে। দয়া করে ডিমনকে এই সার্ভার সম্পূর্ণ ইনস্টল করতে কয়েক মিনিট সময় দিন।',
+        'build_updated' => 'এই সার্ভারের বিল্ড বিবরণ আপডেট করা হয়েছে। কিছু পরিবর্তন কার্যকর হতে রিস্টার্ট প্রয়োজন হতে পারে।',
+        'suspension_toggled' => 'সার্ভার সাসপেনশন স্ট্যাটাস পরিবর্তন করা হয়েছে :status এ।',
+        'rebuild_on_boot' => 'এই সার্ভারটিকে ডকার কন্টেইনার পুনর্নির্মাণের প্রয়োজন হিসেবে চিহ্নিত করা হয়েছে। এটি পরবর্তীবার সার্ভার চালু করার সময় ঘটবে।',
+        'details_updated' => 'সার্ভারের বিবরণ সফলভাবে আপডেট করা হয়েছে।',
+        'docker_image_updated' => 'এই সার্ভারে ডিফল্ট ডকার ইমেজ সফলভাবে পরিবর্তন করা হয়েছে। এই পরিবর্তন কার্যকর করতে রিবুট প্রয়োজন।',
+        'node_required' => 'এই প্যানেলে একটি সার্ভার যোগ করার আগে আপনাকে অন্তত একটি নোড কনফিগার করতে হবে।',
+        'transfer_nodes_required' => 'সার্ভার স্থানান্তর করার আগে আপনাকে কমপক্ষে দুটি নোড কনফিগার করতে হবে।',
+        'transfer_started' => 'সার্ভার স্থানান্তর শুরু হয়েছে।',
+        'transfer_not_viable' => 'আপনি যে নোডটি নির্বাচন করেছেন, তাতে এই সার্ভার স্থাপনের জন্য প্রয়োজনীয় ডিস্ক স্পেস বা মেমরি উপলব্ধ নেই।',
+        'primary_allocation_updated' => 'প্রাথমিক বরাদ্দ হালনাগাদ করা হয়েছে।',
+        'database_created' => 'ডেটাবেস তৈরি করা হয়েছে।',
+        'database_password_reset' => 'ডেটাবেস পাসওয়ার্ড রিসেট।',
+        'database_deleted' => 'ডেটাবেস মুছে ফেলা হয়েছে।',
     ],
 
     'edit' => [
@@ -366,24 +366,24 @@ return [
         ],
 
         'section_descriptions' => [
-            'service_configuration' => 'Changing these values can trigger a reinstall. The server will be stopped immediately for that operation.',
-            'reinstall_server' => 'This will reinstall the server with the assigned service scripts. This could overwrite server data.',
-            'install_status' => 'Change install status from uninstalled to installed, or vice versa.',
-            'suspend_server' => 'This will stop running processes and block the user from managing the server through the panel or API.',
-            'unsuspend_server' => 'This will unsuspend the server and restore normal user access.',
-            'transfer_server_transferring' => 'This server is currently being transferred to another node.',
-            'transfer_server' => 'Transfer this server to another node connected to this panel.',
-            'delete_server' => 'This permanently deletes the server from the panel and Agent. Force delete skips Agent deletion if necessary.',
+            'service_configuration' => 'এই মানগুলো পরিবর্তন করলে পুনঃইনস্টলেশন ঘটতে পারে। সেই অপারেশনের জন্য সার্ভারটি অবিলম্বে বন্ধ করা হবে।',
+            'reinstall_server' => 'এটি নির্ধারিত সার্ভিস স্ক্রিপ্টগুলির সাথে সার্ভারটি পুনরায় ইনস্টল করবে। এতে সার্ভারের ডেটা ওভাররাইট হতে পারে।',
+            'install_status' => 'ইনস্টল স্ট্যাটাস আনইনস্টলড থেকে ইনস্টলড-এ পরিবর্তন করুন, অথবা এর বিপরীত।',
+            'suspend_server' => 'এটি চলমান প্রক্রিয়াগুলো বন্ধ করে দেবে এবং ব্যবহারকারীকে প্যানেল বা API-এর মাধ্যমে সার্ভার পরিচালনা করতে বাধা দেবে।',
+            'unsuspend_server' => 'এটি সার্ভারটি পুনরায় সক্রিয় করবে এবং স্বাভাবিক ব্যবহারকারী অ্যাক্সেস পুনরুদ্ধার করবে।',
+            'transfer_server_transferring' => 'এই সার্ভারটি বর্তমানে অন্য নোডে স্থানান্তরিত হচ্ছে।',
+            'transfer_server' => 'এই সার্ভারটিকে প্যানেলের সাথে সংযুক্ত অন্য একটি নোডে স্থানান্তর করুন।',
+            'delete_server' => 'এটি প্যানেল এবং এজেন্ট থেকে সার্ভারটিকে স্থায়ীভাবে মুছে ফেলে। জোরপূর্বক মুছে ফেলা প্রয়োজন হলে এজেন্ট মুছে ফেলা এড়িয়ে যায়।',
         ],
 
         'fields' => [
             'server_name' => [
                 'label' => 'সার্ভারের নাম',
-                'helper' => 'Character limits: a-zA-Z0-9_-, spaces, and standard printable characters.',
+                'helper' => 'অক্ষর সীমা: a-z, A-Z, 0-9, _-, ফাঁকা স্থান এবং স্ট্যান্ডার্ড মুদ্রণযোগ্য অক্ষর।',
             ],
             'server_owner' => [
                 'label' => 'মালিক',
-                'helper' => 'Changing ownership automatically revokes daemon tokens for the previous owner.',
+                'helper' => 'মালিকানা পরিবর্তন স্বয়ংক্রিয়ভাবে পূর্ববর্তী মালিকের ডিমন টোকেন বাতিল করে।',
             ],
             'server_description' => [
                 'label' => 'বিবরণ',
@@ -393,35 +393,35 @@ return [
                 'label' => 'UUID',
             ],
             'server_uuid_short' => [
-                'label' => 'Server UUID (Short)',
+                'label' => 'সার্ভার UUID (সংক্ষিপ্ত)',
             ],
             'external_identifier' => [
-                'label' => 'External Identifier',
-                'helper' => 'Leave empty to not assign an external identifier. The external ID should be unique to this server.',
+                'label' => 'বাহ্যিক সনাক্তকারী',
+                'helper' => 'বাহ্যিক শনাক্তকারী বরাদ্দ না করতে ফাঁকা রাখুন। বাহ্যিক আইডি এই সার্ভারের জন্য অনন্য হওয়া উচিত।',
             ],
             'game_port' => [
-                'label' => 'Game Port',
-                'helper' => 'The default connection address that will be used for this game server.',
+                'label' => 'গেম পোর্ট',
+                'helper' => 'এই গেম সার্ভারের জন্য ব্যবহৃত ডিফল্ট সংযোগ ঠিকানা।',
             ],
             'additional_ports' => [
-                'label' => 'Additional Ports',
-                'helper' => 'Assign or remove extra ports. Identical ports on different IPs cannot be assigned to the same server.',
+                'label' => 'অতিরিক্ত পোর্টসমূহ',
+                'helper' => 'অতিরিক্ত পোর্ট বরাদ্দ বা অপসারণ করুন। বিভিন্ন আইপি-তে একই পোর্ট একই সার্ভারে বরাদ্দ করা যাবে না।',
             ],
             'startup_command' => [
                 'label' => 'স্টার্টআপ কমান্ড',
-                'helper' => 'Available by default: {{SERVER_MEMORY}}, {{SERVER_IP}}, and {{SERVER_PORT}}.',
+                'helper' => 'ডিফল্টভাবে উপলব্ধ: {{SERVER_MEMORY}}, {{SERVER_IP}}এবং {{SERVER_PORT}}।',
             ],
             'default_startup_command' => [
                 'label' => 'স্টার্টআপ কমান্ড',
-                'error' => 'ERROR: Startup Not Defined!',
+                'error' => 'ত্রুটি: স্টার্টআপ সংজ্ঞায়িত নয়!',
             ],
             'cpu_limit' => [
                 'label' => 'সিপিইউ',
-                'helper' => 'Each virtual core is 100%. Set 0 for unrestricted CPU time.',
+                'helper' => 'প্রতিটি ভার্চুয়াল কোর ১০০%। অবাধ CPU সময়ের জন্য ০ সেট করুন।',
             ],
             'cpu_pinning' => [
                 'label' => 'সিপিইউ',
-                'helper' => 'Advanced: leave blank for all cores. Examples: 0, 0-1,3, or 0,1,3,4.',
+                'helper' => 'উন্নত: সব কোরের জন্য ফাঁকা রাখুন। উদাহরণ: 0, 0-1,3, অথবা 0,1,3,4।',
             ],
             'allocated_memory' => [
                 'label' => 'মেমোরি',
@@ -436,12 +436,12 @@ return [
                 'helper' => 'সীমাহীন ডিস্ক ব্যবহারের জন্য 0 সেট করুন।',
             ],
             'block_io_proportion' => [
-                'label' => 'Block IO Proportion',
+                'label' => 'ব্লক আইও অনুপাত',
                 'helper' => 'উন্নত: অন্যান্য চলমান কনটেইনারের তুলনায় IO পারফরম্যান্স। মান 10 থেকে 1000 এর মধ্যে হওয়া উচিত।',
             ],
             'disable_oom_killer' => [
                 'label' => 'OOM কিলার নিষ্ক্রিয় করুন',
-                'helper' => 'Enabling OOM killer may cause server processes to exit unexpectedly.',
+                'helper' => 'OOM কিলার সক্রিয় করলে সার্ভার প্রক্রিয়াগুলো অপ্রত্যাশিতভাবে বন্ধ হয়ে যেতে পারে।',
             ],
             'database_limit' => [
                 'label' => 'ডাটাবেস সীমা',
@@ -460,13 +460,13 @@ return [
                 'helper' => 'ড্রপডাউন থেকে একটি ইমেজ নির্বাচন করুন, অথবা নিচে একটি কাস্টম ইমেজ লিখুন।',
             ],
             'custom_image' => [
-                'label' => 'Custom Image',
+                'label' => 'কাস্টম চিত্র',
                 'placeholder' => 'অথবা একটি কাস্টম ইমেজ লিখুন...',
-                'helper' => 'This is the Docker image that will be used to run this server.',
+                'helper' => 'এটি সেই ডকার ইমেজ যা এই সার্ভার চালানোর জন্য ব্যবহৃত হবে।',
             ],
             'transfer_node' => [
                 'label' => 'নোড',
-                'helper' => 'The node which this server will be transferred to.',
+                'helper' => 'যে নোডে এই সার্ভার স্থানান্তরিত হবে।',
             ],
             'transfer_allocation' => [
                 'label' => 'ডিফল্ট অ্যালোকেশন',
@@ -474,7 +474,7 @@ return [
             ],
             'transfer_additional_allocations' => [
                 'label' => 'অতিরিক্ত অ্যালোকেশন',
-                'helper' => 'Additional allocations to assign to this server on transfer.',
+                'helper' => 'ট্রান্সফারের সময় এই সার্ভারে বরাদ্দ করার অতিরিক্ত বরাদ্দ।',
             ],
         ],
 
@@ -536,7 +536,7 @@ return [
         'create_modal' => [
             'database_name' => [
                 'label' => 'নাম',
-                'helper' => 'The panel will prefix this with the server ID, matching the old admin panel.',
+                'helper' => 'প্যানেলটি এটিকে সার্ভার আইডি দিয়ে প্রিফিক্স করবে, পুরনো অ্যাডমিন প্যানেলের সাথে মিলিয়ে।',
             ],
             'database_host' => [
                 'label' => 'ডাটাবেস হোস্ট',
