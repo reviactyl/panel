@@ -14,7 +14,7 @@ return [
     'sponsor-btn' => 'رعاية المشروع',
 
     'help-btn' => 'الحصول على المساعدة',
-    'update-btn' => 'Update Panel',
+    'update-btn' => 'لوحة التحديث',
     'docs-btn' => 'الدليل',
     'metrics-header' => 'إحصائيات نشاط المستخدمين',
     'most-active-country' => 'الدولة الأكثر نشاطا',
