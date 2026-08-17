@@ -29,5 +29,6 @@ return [
         'info-1' => '重新安装您的服务器将停止它，并运行最初设置它的安装脚本。',
         'info-2' => '在此过程中，某些文件可能会被删除或修改，请在继续前备份您的数据。',
         'button' => '重新安装服务器',
+        'disabled' => 'Reinstalling is not available because this server is configured to skip its egg\'s install script.',
     ],
 ];
