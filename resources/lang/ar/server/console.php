@@ -7,7 +7,7 @@ return [
     'server-transferring' => 'هذا الخادم حالياً يتم نقله إلى عقدة أخرى وجميع الإجراءات غير متاحة.',
     'run-command' => 'اكتب أمرا...',
     'connection-trouble' => "نواجه مشكلة في الاتصال بخادمك، يرجى الانتظار...",
-    'address' => 'Address',
+    'address' => 'العنوان',
     'uptime' => 'الجهوزية',
     'network-inbound' => 'الشبكة (الواردة)',
     'network-outbound' => 'الشبكة (الصادرة)',
