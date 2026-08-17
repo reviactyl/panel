@@ -28,7 +28,7 @@ return [
     ],
     'user' => [
         'user' => [
-            'create' => 'Created a new user :email',
+            'create' => 'Yeni bir kullanıcı oluşturuldu: e-posta',
         ],
         'account' => [
             'email-changed' => 'E-posta adresi :old adresinden :new adresine değiştirildi',
