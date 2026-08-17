@@ -315,6 +315,7 @@ return [
         'bad_variable' => 'Terjadi kesalahan validasi dengan variabel :name.',
         'daemon_exception' => 'Terjadi pengecualian saat mencoba berkomunikasi dengan daemon yang menghasilkan kode respons HTTP/:code. Pengecualian ini telah dicatat. (request id: :request_id)',
         'default_allocation_not_found' => 'Alokasi default yang diminta tidak ditemukan dalam alokasi server ini.',
+        'skipping_install_script' => 'This server is configured to skip its egg\'s install script. Reinstalling is not available until that setting is disabled.',
     ],
 
     'alerts' => [
