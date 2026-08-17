@@ -29,6 +29,6 @@ return [
         'info-1' => 'Die Neuinstallation Ihres Servers stoppt ihn und führt dann das Installationsskript erneut aus, das ihn ursprünglich eingerichtet hat.',
         'info-2' => 'Einige Dateien können während dieses Vorgangs gelöscht oder geändert werden. Bitte sichern Sie Ihre Daten, bevor Sie fortfahren.',
         'button' => 'Server neu installieren',
-        'disabled' => 'Reinstalling is not available because this server is configured to skip its egg\'s install script.',
+        'disabled' => 'Eine Neuinstallation ist nicht möglich, da dieser Server so konfiguriert ist, dass das Installationsskript seines „Eggs“ übersprungen wird.',
     ],
 ];
