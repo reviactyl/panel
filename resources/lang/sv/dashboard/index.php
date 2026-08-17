@@ -39,7 +39,7 @@ return [
         'restoring-backup' => 'Återställer säkerhetskopia',
         'unavailable' => 'Otillgänglig',
         'unlimited' => 'Obegränsat',
-        'maintenance' => 'Under Maintenance',
+        'maintenance' => 'Under Underhåll',
     ],
     'status-card' => [
         'title' => 'Serverstatus',
