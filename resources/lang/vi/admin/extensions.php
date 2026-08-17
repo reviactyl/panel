@@ -4,10 +4,10 @@ return [
 
     'label' => 'Sự mở rộng',
     'plural-label' => 'Tiện ích mở rộng',
-    'marketplace_heading' => 'Available Extensions',
+    'marketplace_heading' => 'Các tiện ích mở rộng có sẵn',
 
     'columns' => [
-        'icon' => 'Icon',
+        'icon' => 'Biểu tượng',
         'id' => 'ID',
         'name' => 'Tên',
         'version' => 'Phiên bản',
@@ -15,9 +15,9 @@ return [
         'enabled' => 'Đã bật',
         'updated' => 'Đã cập nhật',
         'last_updated' => 'Cập nhật lần cuối',
-        'downloads' => 'Downloads',
+        'downloads' => 'Tải xuống',
         'manifest_json' => 'Tệp kê khai JSON',
-        'file' => 'Choose a .rext file to upload',
+        'file' => 'Chọn một tệp .rext để tải lên',
     ],
 
     'modals' => [
@@ -26,7 +26,7 @@ return [
 
     'actions' => [
         'edit' => 'Biên tập',
-        'view' => 'Get Extension',
+        'view' => 'Tải tiện ích mở rộng',
         'upload' => 'Tải lên',
         'manifest' => 'Xem bản kê khai',
         'disable' => 'Vô hiệu hóa',
