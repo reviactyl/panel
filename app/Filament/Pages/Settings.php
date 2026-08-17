@@ -386,7 +386,7 @@ class Settings extends Page implements HasSchemas
         return [
             ...$this->environmentNotice(),
             Section::make('Google') // Untranslated because this is a proper noun, it's the name of a company.
-                ->columns(3)
+                ->columns(11)
                 ->icon('tabler-brand-google')
                 ->collapsible()
                 ->collapsed()
@@ -394,14 +394,24 @@ class Settings extends Page implements HasSchemas
                     Toggle::make('panel:auth:google_enabled')
                         ->label(trans('admin/settings.oauth.enabled'))
                         ->onIcon('tabler-check')
+                        ->columnSpan(1)
                         ->offIcon('tabler-x')
                         ->onColor('success')
                         ->offColor('danger')
                         ->inline(false)
+                        ->hintAction(
+                            Action::make('google_oauth_docs')
+                                ->label('')
+                                ->icon('tabler-info-circle')
+                                ->url('https://reviactyl.app/docs/panel/additional-configuration#google')
+                                ->openUrlInNewTab()
+                                ->color('primary'),
+                        )
                         ->live(),
 
                     TextInput::make('panel:auth:google_client_id')
                         ->label(trans('admin/settings.oauth.id-label'))
+                        ->columnSpan(5)
                         ->required(
                             fn ($get) => $get('panel:auth:google_enabled')
                         )
@@ -412,6 +422,7 @@ class Settings extends Page implements HasSchemas
                     TextInput::make('panel:auth:google_client_secret')
                         ->label(trans('admin/settings.oauth.secret-label'))
                         ->password()
+                        ->columnSpan(5)
                         ->revealable()
                         ->required(
                             fn ($get) => $get('panel:auth:google_enabled')
@@ -422,7 +433,7 @@ class Settings extends Page implements HasSchemas
                 ]),
 
             Section::make('Discord') // Untranslated because this is a proper noun, it's the name of a social platform.
-                ->columns(3)
+                ->columns(11)
                 ->icon('tabler-brand-discord')
                 ->collapsible()
                 ->collapsed()
@@ -433,11 +444,21 @@ class Settings extends Page implements HasSchemas
                         ->offIcon('tabler-x')
                         ->onColor('success')
                         ->offColor('danger')
+                        ->columnSpan(1)
                         ->inline(false)
+                        ->hintAction(
+                            Action::make('discord_oauth_docs')
+                                ->label('')
+                                ->icon('tabler-info-circle')
+                                ->url('https://reviactyl.app/docs/panel/additional-configuration#discord')
+                                ->openUrlInNewTab()
+                                ->color('primary'),
+                        )
                         ->live(),
 
                     TextInput::make('panel:auth:discord_client_id')
                         ->label(trans('admin/settings.oauth.id-label'))
+                        ->columnSpan(5)
                         ->required(
                             fn ($get) => $get('panel:auth:discord_enabled')
                         )
@@ -449,6 +470,7 @@ class Settings extends Page implements HasSchemas
                         ->label(trans('admin/settings.oauth.secret-label'))
                         ->password()
                         ->revealable()
+                        ->columnSpan(5)
                         ->required(
                             fn ($get) => $get('panel:auth:discord_enabled')
                         )
@@ -458,7 +480,7 @@ class Settings extends Page implements HasSchemas
                 ]),
 
             Section::make('GitHub') // Untranslated because this is a proper noun, it's the name of a company.
-                ->columns(3)
+                ->columns(11)
                 ->icon('tabler-brand-github')
                 ->collapsible()
                 ->collapsed()
@@ -470,10 +492,20 @@ class Settings extends Page implements HasSchemas
                         ->onColor('success')
                         ->offColor('danger')
                         ->inline(false)
+                        ->columnSpan(1)
+                        ->hintAction(
+                            Action::make('github_oauth_docs')
+                                ->label('')
+                                ->icon('tabler-info-circle')
+                                ->url('https://reviactyl.app/docs/panel/additional-configuration#github')
+                                ->color('primary')
+                                ->openUrlInNewTab(),
+                        )
                         ->live(),
 
                     TextInput::make('panel:auth:github_client_id')
                         ->label(trans('admin/settings.oauth.id-label'))
+                        ->columnSpan(5)
                         ->required(
                             fn ($get) => $get('panel:auth:github_enabled')
                         )
@@ -483,6 +515,7 @@ class Settings extends Page implements HasSchemas
 
                     TextInput::make('panel:auth:github_client_secret')
                         ->label(trans('admin/settings.oauth.secret-label'))
+                        ->columnSpan(5)
                         ->password()
                         ->revealable()
                         ->required(
