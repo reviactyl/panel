@@ -29,5 +29,6 @@ return [
         'info-1' => 'Reinstalling your server will stop it, and then re-run the installation script that initially set it up.',
         'info-2' => 'Some files may be deleted or modified during this process, please back up your data before continuing.',
         'button' => 'Reinstall Server',
+        'disabled' => 'Reinstalling is not available because this server is configured to skip its egg\'s install script.',
     ],
 ];
