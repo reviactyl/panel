@@ -315,6 +315,7 @@ return [
         'bad_variable' => ':name ವೇರಿಯಬಲ್‌ನಲ್ಲಿ ಮಾನ್ಯತೆ ದೋಷ ಕಂಡುಬಂದಿದೆ.',
         'daemon_exception' => 'ಡೀಮನ್ ಜೊತೆಗೆ ಸಂವಹನ ಮಾಡಲು ಪ್ರಯತ್ನಿಸುವಾಗ ಒಂದು ಎಕ್ಸೆಪ್ಷನ್ ಸಂಭವಿಸಿದೆ, ಇದರಿಂದ HTTP/:code ಪ್ರತಿಕ್ರಿಯಾ ಕೋಡ್ ಬಂದಿದೆ. ಈ ಎಕ್ಸೆಪ್ಷನ್ ಲಾಗ್ ಮಾಡಲಾಗಿದೆ. (ವಿನಂತಿ ಐಡಿ: :request_id)',
         'default_allocation_not_found' => 'ಕೋರಿದ ಡೀಫಾಲ್ಟ್ ಅಲೊಕೆಷನ್ ಈ ಸರ್ವರ್‌ನ ಅಲೊಕೆಷನ್‌ಗಳಲ್ಲಿ ಕಂಡುಬಂದಿಲ್ಲ.',
+        'skipping_install_script' => 'This server is configured to skip its egg\'s install script. Reinstalling is not available until that setting is disabled.',
     ],
 
     'alerts' => [
