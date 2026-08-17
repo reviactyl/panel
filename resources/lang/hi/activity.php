@@ -28,7 +28,7 @@ return [
     ],
     'user' => [
         'user' => [
-            'create' => 'Created a new user :email',
+            'create' => 'एक नया उपयोगकर्ता बनाया :email',
         ],
         'account' => [
             'email-changed' => 'ईमेल :old से :new में बदला गया',
