@@ -245,7 +245,7 @@ class EditServerForm
                                                     Action::make('reinstall_server')
                                                         ->label(trans('admin/server.edit.actions.reinstall_server'))
                                                         ->color('danger')
-                                                        ->disabled(fn (?Server $record): bool => ! $record?->isInstalled())
+                                                        ->disabled(fn (?Server $record): bool => ! $record?->canBeReinstalled())
                                                         ->requiresConfirmation()
                                                         ->action(fn (Server $record) => self::reinstall($record)),
                                                 ]),
