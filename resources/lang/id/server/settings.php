@@ -29,6 +29,6 @@ return [
         'info-1' => 'Menginstal ulang server Anda akan menghentikannya, lalu menjalankan kembali skrip instalasi yang awalnya mengaturnya.',
         'info-2' => 'Beberapa file mungkin dihapus atau dimodifikasi selama proses ini, harap backup data Anda sebelum melanjutkan.',
         'button' => 'Instal Ulang Server',
-        'disabled' => 'Reinstalling is not available because this server is configured to skip its egg\'s install script.',
+        'disabled' => 'Fitur pemasangan ulang tidak tersedia karena server ini dikonfigurasi untuk melewati skrip pemasangan egg-nya.',
     ],
 ];
