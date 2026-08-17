@@ -61,11 +61,11 @@ return [
         'swap_free' => 'Свободно',
         'swap_usage' => 'Использование',
 
-        'partitions_section' => 'Disk Partitions',
-        'partitions_none' => 'No partition data available.',
-        'partitions_device' => 'Device',
-        'partitions_mountpoint' => 'Mount Point',
-        'partitions_filesystem' => 'Filesystem',
+        'partitions_section' => 'Разделы диска',
+        'partitions_none' => 'Данные о разделах отсутствуют.',
+        'partitions_device' => 'Устройство',
+        'partitions_mountpoint' => 'Точка монтирования',
+        'partitions_filesystem' => 'Файловая система',
         'partitions_size' => 'Размер',
         'partitions_usage' => 'Использование',
 
