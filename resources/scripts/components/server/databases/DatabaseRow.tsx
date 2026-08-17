@@ -156,17 +156,17 @@ export default ({ database, className }: Props) => {
                     <CopyOnClick text={database.connectionString}>
                         <p css={tw`text-sm`}>{database.connectionString}</p>
                     </CopyOnClick>
-                    <p css={tw`mt-1 text-2xs text-gray-600 uppercase select-none`}>{t('endpoint')}</p>
+                    <p css={tw`mt-1 text-2xs text-muted uppercase select-none`}>{t('endpoint')}</p>
                 </div>
                 <div css={tw`ml-8 text-center hidden md:block`}>
                     <p css={tw`text-sm`}>{database.allowConnectionsFrom}</p>
-                    <p css={tw`mt-1 text-2xs text-gray-600 uppercase select-none`}>{t('connections-from')}</p>
+                    <p css={tw`mt-1 text-2xs text-muted uppercase select-none`}>{t('connections-from')}</p>
                 </div>
                 <div css={tw`ml-8 text-center hidden md:block`}>
                     <CopyOnClick text={database.username}>
                         <p css={tw`text-sm`}>{database.username}</p>
                     </CopyOnClick>
-                    <p css={tw`mt-1 text-2xs text-gray-600 uppercase select-none`}>{t('username')}</p>
+                    <p css={tw`mt-1 text-2xs text-muted uppercase select-none`}>{t('username')}</p>
                 </div>
                 <div css={tw`ml-8`}>
                     <Button isSecondary css={tw`mr-2`} onClick={() => setConnectionVisible(true)}>

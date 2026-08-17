@@ -135,12 +135,14 @@ class Monitoring extends Page
                         ->content(function () use ($data): HtmlString {
                             $cores = $data['cpu']['per_core'] ?? [];
                             if (empty($cores)) {
-                                return new HtmlString('<span class="text-gray-400">—</span>');
+                                return new HtmlString('<span class="text-gray-600 dark:text-gray-400">—</span>');
                             }
                             $items = array_map(function (int $i, float $pct): string {
-                                $color = $pct >= 80 ? 'text-danger-500' : ($pct >= 50 ? 'text-warning-500' : 'text-success-500');
+                                $color = $pct >= 80
+                                    ? 'monitoring-metric--danger'
+                                    : ($pct >= 50 ? 'monitoring-metric--warning' : 'monitoring-metric--success');
 
-                                return "<div class=\"text-xs\"><span class=\"text-gray-400\">Core {$i}</span> <span class=\"{$color} font-mono\">".number_format($pct, 1).'%</span></div>';
+                                return "<div class=\"text-xs\"><span class=\"text-gray-600 dark:text-gray-400\">Core {$i}</span> <span class=\"{$color} font-mono\">".number_format($pct, 1).'%</span></div>';
                             }, array_keys($cores), $cores);
 
                             return new HtmlString('<div class="grid grid-cols-4 gap-x-4 gap-y-1">'.implode('', $items).'</div>');
@@ -209,7 +211,7 @@ class Monitoring extends Page
                             $partitions = $data['disk']['partitions'] ?? [];
 
                             if (empty($partitions)) {
-                                return new HtmlString('<span class="text-gray-400">'.e(trans('admin/monitoring.details.partitions_none')).'</span>');
+                                return new HtmlString('<span class="text-gray-600 dark:text-gray-400">'.e(trans('admin/monitoring.details.partitions_none')).'</span>');
                             }
 
                             $rows = '';
@@ -225,14 +227,14 @@ class Monitoring extends Page
                                 $pctWidth = min($pct, 100);
 
                                 $rows .= <<<HTML
-                                <tr style="border-bottom:1px solid rgba(255,255,255,0.05)">
-                                    <td style="padding:8px 12px;font-size:12px;color:#f1f5f9;font-family:monospace">{$device}</td>
-                                    <td style="padding:8px 12px;font-size:12px;color:#94a3b8;font-family:monospace">{$mount}</td>
-                                    <td style="padding:8px 12px;font-size:11px;color:#38bdf8;font-family:monospace">{$filesystem}</td>
-                                    <td style="padding:8px 12px;font-size:12px;color:#94a3b8;font-family:monospace">{$used} / {$total}</td>
+                                <tr class="monitoring-table__row">
+                                    <td class="monitoring-table__primary" style="padding:8px 12px;font-size:12px;font-family:monospace">{$device}</td>
+                                    <td class="monitoring-table__muted" style="padding:8px 12px;font-size:12px;font-family:monospace">{$mount}</td>
+                                    <td class="monitoring-table__info" style="padding:8px 12px;font-size:11px;font-family:monospace">{$filesystem}</td>
+                                    <td class="monitoring-table__muted" style="padding:8px 12px;font-size:12px;font-family:monospace">{$used} / {$total}</td>
                                     <td style="padding:8px 12px;min-width:160px">
-                                        <div style="font-size:11px;color:#94a3b8;font-family:monospace;margin-bottom:4px">{$pctLabel}</div>
-                                        <div style="height:5px;width:100%;background:rgba(255,255,255,0.08);border-radius:9999px;overflow:hidden">
+                                        <div class="monitoring-table__muted" style="font-size:11px;font-family:monospace;margin-bottom:4px">{$pctLabel}</div>
+                                        <div class="monitoring-table__track" style="height:5px;width:100%;border-radius:9999px;overflow:hidden">
                                             <div style="height:100%;width:{$pctWidth}%;background:{$pctColor};border-radius:9999px"></div>
                                         </div>
                                     </td>
@@ -245,18 +247,18 @@ class Monitoring extends Page
                             $hFs = e(trans('admin/monitoring.details.partitions_filesystem'));
                             $hSize = e(trans('admin/monitoring.details.partitions_size'));
                             $hUsage = e(trans('admin/monitoring.details.partitions_usage'));
-                            $thStyle = 'padding:8px 12px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:#64748b';
+                            $thStyle = 'padding:8px 12px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em';
 
                             return new HtmlString(<<<HTML
                             <div style="overflow-x:auto;border-radius:8px">
-                                <table style="width:100%;border-collapse:collapse;text-align:left">
+                                <table class="monitoring-table">
                                     <thead>
-                                        <tr style="border-bottom:1px solid rgba(255,255,255,0.08)">
-                                            <th style="{$thStyle}">{$hDevice}</th>
-                                            <th style="{$thStyle}">{$hMount}</th>
-                                            <th style="{$thStyle}">{$hFs}</th>
-                                            <th style="{$thStyle}">{$hSize}</th>
-                                            <th style="{$thStyle}">{$hUsage}</th>
+                                        <tr class="monitoring-table__row">
+                                            <th class="monitoring-table__header" style="{$thStyle}">{$hDevice}</th>
+                                            <th class="monitoring-table__header" style="{$thStyle}">{$hMount}</th>
+                                            <th class="monitoring-table__header" style="{$thStyle}">{$hFs}</th>
+                                            <th class="monitoring-table__header" style="{$thStyle}">{$hSize}</th>
+                                            <th class="monitoring-table__header" style="{$thStyle}">{$hUsage}</th>
                                         </tr>
                                     </thead>
                                     <tbody>{$rows}</tbody>

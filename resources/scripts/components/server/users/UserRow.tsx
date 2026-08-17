@@ -37,13 +37,13 @@ export default ({ subuser }: Props) => {
                     )}
                     &nbsp;
                 </p>
-                <p css={tw`text-2xs text-gray-600 uppercase hidden md:block`}>{t('two-factor-enabled')}</p>
+                <p css={tw`text-2xs text-muted uppercase hidden md:block`}>{t('two-factor-enabled')}</p>
             </div>
             <div css={tw`ml-4 hidden md:block`}>
                 <p css={tw`font-medium text-center`}>
                     {subuser.permissions.filter((permission) => permission !== 'websocket.connect').length}
                 </p>
-                <p css={tw`text-2xs text-gray-600 uppercase`}>{t('permissions-label')}</p>
+                <p css={tw`text-2xs text-muted uppercase`}>{t('permissions-label')}</p>
             </div>
             {subuser.uuid !== uuid && (
                 <>

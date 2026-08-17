@@ -142,7 +142,7 @@ export default () => {
                                                 })}
                                             </span>
                                         ) : (
-                                            <span css={tw`text-gray-600 flex items-center`}>
+                                            <span css={tw`text-muted flex items-center`}>
                                                 <FaTimesCircle css={tw`mr-1`} />
                                                 {t('overview.social.status.not-connected')}
                                             </span>

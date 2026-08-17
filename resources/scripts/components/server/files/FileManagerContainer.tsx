@@ -92,7 +92,7 @@ const RecursiveFileRow = ({ file, serverId }: { file: SearchResult; serverId: st
             <NavLink to={to} className='flex-1 text-sm text-gray-200 truncate hover:text-primary-400 min-w-0'>
                 {file.fullPath}
             </NavLink>
-            {file.isFile && <span className='text-xs text-gray-600 ml-3 flex-none'>{bytesToString(file.size)}</span>}
+            {file.isFile && <span className='text-xs text-muted ml-3 flex-none'>{bytesToString(file.size)}</span>}
         </div>
     );
 };
@@ -385,7 +385,7 @@ export default () => {
                         isSearching && recursiveResults.length === 0 ? (
                             <Spinner size={'base'} centered />
                         ) : recursiveResults.length === 0 ? (
-                            <div className={'flex flex-col items-center justify-center py-10 text-gray-600'}>
+                            <div className={'flex flex-col items-center justify-center py-10 text-muted'}>
                                 <SearchIcon className={'w-10 h-10 mb-2 opacity-40'} />
                                 <p className={'text-sm'}>{t('no-results')}</p>
                             </div>
@@ -395,16 +395,14 @@ export default () => {
                                 animate={{ opacity: 1 }}
                                 transition={{ duration: 0.15, ease: 'easeIn' }}
                             >
-                                {isSearching && (
-                                    <p css={tw`text-xs text-gray-600 text-center mb-2`}>{t('searching')}</p>
-                                )}
+                                {isSearching && <p css={tw`text-xs text-muted text-center mb-2`}>{t('searching')}</p>}
                                 {recursiveResults.map((file) => (
                                     <RecursiveFileRow key={file.fullPath} file={file} serverId={id} />
                                 ))}
                             </motion.div>
                         )
                     ) : !filteredFiles.length ? (
-                        <div className={'flex flex-col items-center justify-center py-10 text-gray-600'}>
+                        <div className={'flex flex-col items-center justify-center py-10 text-muted'}>
                             <FolderOpenIcon className={'w-12 h-12 mb-2 opacity-40'} />
                             <p className={'text-sm'}>{t('empty')}</p>
                         </div>

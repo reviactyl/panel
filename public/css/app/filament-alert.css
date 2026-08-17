@@ -12,7 +12,8 @@
     padding: 1rem;
     border: 1px solid var(--filament-alert-border);
     border-radius: 0.75rem;
-    background: var(--filament-alert-background);
+    /* Keep the semantic foreground palette coupled to its intended surface. */
+    background-color: var(--filament-alert-background) !important;
     color: var(--filament-alert-text);
     font-size: 0.875rem;
     line-height: 1.5;

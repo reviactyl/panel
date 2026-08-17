@@ -55,17 +55,17 @@ class ServersWidget extends BaseWidget
     private function buildTable(): HtmlString
     {
         if (! $this->selectedNodeId) {
-            return $this->emptyState(trans('admin/monitoring.servers.no_node'), '#94a3b8');
+            return $this->emptyState(trans('admin/monitoring.servers.no_node'));
         }
 
         $agentRows = $this->fetchAgentData();
 
         if ($agentRows === null) {
-            return $this->emptyState(trans('admin/monitoring.servers.error_fetch'), '#f87171');
+            return $this->emptyState(trans('admin/monitoring.servers.error_fetch'), true);
         }
 
         if (empty($agentRows)) {
-            return $this->emptyState(trans('admin/monitoring.servers.no_servers'), '#94a3b8');
+            return $this->emptyState(trans('admin/monitoring.servers.no_servers'));
         }
 
         // Index Agent data by UUID for O(1) lookup.
@@ -97,20 +97,20 @@ class ServersWidget extends BaseWidget
         $hNetwork = e(trans('admin/monitoring.servers.col.network'));
         $hUptime = e(trans('admin/monitoring.servers.col.uptime'));
 
-        $thStyle = 'padding:10px 16px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:#64748b';
+        $thStyle = 'padding:10px 16px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em';
 
         return new HtmlString(<<<HTML
         <div style="overflow-x:auto;border-radius:8px">
-            <table style="width:100%;border-collapse:collapse;text-align:left">
+            <table class="monitoring-table">
                 <thead>
-                    <tr style="border-bottom:1px solid rgba(255,255,255,0.08)">
-                        <th style="{$thStyle}">{$hName}</th>
-                        <th style="{$thStyle}">{$hState}</th>
-                        <th style="{$thStyle};min-width:120px">{$hCpu}</th>
-                        <th style="{$thStyle};min-width:180px">{$hMemory}</th>
-                        <th style="{$thStyle}">{$hDisk}</th>
-                        <th style="{$thStyle}">{$hNetwork}</th>
-                        <th style="{$thStyle}">{$hUptime}</th>
+                    <tr class="monitoring-table__row">
+                        <th class="monitoring-table__header" style="{$thStyle}">{$hName}</th>
+                        <th class="monitoring-table__header" style="{$thStyle}">{$hState}</th>
+                        <th class="monitoring-table__header" style="{$thStyle};min-width:120px">{$hCpu}</th>
+                        <th class="monitoring-table__header" style="{$thStyle};min-width:180px">{$hMemory}</th>
+                        <th class="monitoring-table__header" style="{$thStyle}">{$hDisk}</th>
+                        <th class="monitoring-table__header" style="{$thStyle}">{$hNetwork}</th>
+                        <th class="monitoring-table__header" style="{$thStyle}">{$hUptime}</th>
                     </tr>
                 </thead>
                 <tbody>{$rows}</tbody>
@@ -146,77 +146,71 @@ class ServersWidget extends BaseWidget
         $cpuColor = $cpuPct >= 80 ? '#ef4444' : ($cpuPct >= 60 ? '#eab308' : '#22c55e');
         $memColor = $memPct >= 80 ? '#ef4444' : ($memPct >= 60 ? '#eab308' : '#3b82f6');
 
-        [$badgeHtml, $avatarBorder] = $this->stateBadge($state);
+        $badgeHtml = $this->stateBadge($state);
 
         $initial = e(strtoupper(mb_substr($serverName ?? $uuid, 0, 1)));
         $tdStyle = 'padding:12px 16px;vertical-align:middle';
 
         return <<<HTML
-        <tr style="border-bottom:1px solid rgba(255,255,255,0.05)">
+        <tr class="monitoring-table__row">
             <td style="{$tdStyle}">
                 <div style="display:flex;align-items:center;gap:10px">
-                    <div style="flex-shrink:0;width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,0.06);border:1px solid {$avatarBorder};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#f1f5f9">{$initial}</div>
-                    <span style="font-size:13px;font-weight:500;color:#f1f5f9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px" title="{$name}">{$name}</span>
+                    <div class="monitoring-table__avatar" style="flex-shrink:0;width:32px;height:32px;border-radius:8px;border:1px solid var(--gray-300);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700">{$initial}</div>
+                    <span class="monitoring-table__primary" style="font-size:13px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px" title="{$name}">{$name}</span>
                 </div>
             </td>
             <td style="{$tdStyle}">{$badgeHtml}</td>
             <td style="{$tdStyle};min-width:120px">
-                <div style="font-size:11px;color:#94a3b8;font-family:monospace;margin-bottom:5px">{$cpuLabel}</div>
-                <div style="height:5px;width:100%;background:rgba(255,255,255,0.08);border-radius:9999px;overflow:hidden">
+                <div class="monitoring-table__muted" style="font-size:11px;font-family:monospace;margin-bottom:5px">{$cpuLabel}</div>
+                <div class="monitoring-table__track" style="height:5px;width:100%;border-radius:9999px;overflow:hidden">
                     <div style="height:100%;width:{$cpuPct}%;background:{$cpuColor};border-radius:9999px"></div>
                 </div>
             </td>
             <td style="{$tdStyle};min-width:180px">
-                <div style="font-size:11px;color:#94a3b8;font-family:monospace;margin-bottom:5px">{$memLabel}</div>
-                <div style="height:5px;width:100%;background:rgba(255,255,255,0.08);border-radius:9999px;overflow:hidden">
+                <div class="monitoring-table__muted" style="font-size:11px;font-family:monospace;margin-bottom:5px">{$memLabel}</div>
+                <div class="monitoring-table__track" style="height:5px;width:100%;border-radius:9999px;overflow:hidden">
                     <div style="height:100%;width:{$memPct}%;background:{$memColor};border-radius:9999px"></div>
                 </div>
             </td>
-            <td style="{$tdStyle};font-size:12px;color:#94a3b8;font-family:monospace">{$diskLabel}</td>
+            <td class="monitoring-table__muted" style="{$tdStyle};font-size:12px;font-family:monospace">{$diskLabel}</td>
             <td style="{$tdStyle}">
                 <div style="font-family:monospace;font-size:11px;line-height:1.7">
-                    <div style="color:#4ade80">↓ {$netRxLabel}</div>
-                    <div style="color:#60a5fa">↑ {$netTxLabel}</div>
+                    <div class="monitoring-table__network--receive">↓ {$netRxLabel}</div>
+                    <div class="monitoring-table__network--transmit">↑ {$netTxLabel}</div>
                 </div>
             </td>
-            <td style="{$tdStyle};font-size:12px;color:#94a3b8;font-family:monospace">{$uptime}</td>
+            <td class="monitoring-table__muted" style="{$tdStyle};font-size:12px;font-family:monospace">{$uptime}</td>
         </tr>
         HTML;
     }
 
-    private function stateBadge(string $state): array
+    private function stateBadge(string $state): string
     {
-        [$bg, $textColor, $dotColor, $border] = match ($state) {
-            'running' => ['rgba(34,197,94,0.12)',  '#4ade80', '#22c55e', 'rgba(34,197,94,0.5)'],
-            'starting' => ['rgba(234,179,8,0.12)',  '#facc15', '#eab308', 'rgba(234,179,8,0.5)'],
-            'stopping' => ['rgba(249,115,22,0.12)', '#fb923c', '#f97316', 'rgba(249,115,22,0.5)'],
-            'offline' => ['rgba(148,163,184,0.08)', '#94a3b8', '#64748b', 'rgba(148,163,184,0.3)'],
-            'crashed' => ['rgba(239,68,68,0.12)',  '#f87171', '#ef4444', 'rgba(239,68,68,0.5)'],
-            default => ['rgba(148,163,184,0.08)', '#94a3b8', '#64748b', 'rgba(148,163,184,0.3)'],
-        };
+        $state = in_array($state, ['running', 'starting', 'stopping', 'offline', 'crashed'], true) ? $state : 'unknown';
 
         $label = e(trans('admin/monitoring.servers.states.'.$state));
 
         $badge = <<<HTML
-        <span style="display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:9999px;font-size:11px;font-weight:600;background:{$bg};color:{$textColor};border:1px solid {$border}">
-            <span style="width:6px;height:6px;border-radius:50%;background:{$dotColor};flex-shrink:0"></span>
+        <span class="monitoring-state" data-state="{$state}">
+            <span class="monitoring-state__dot"></span>
             {$label}
         </span>
         HTML;
 
-        return [$badge, $border];
+        return $badge;
     }
 
-    private function emptyState(string $message, string $color): HtmlString
+    private function emptyState(string $message, bool $isError = false): HtmlString
     {
         $msg = e($message);
+        $class = $isError ? 'monitoring-empty monitoring-empty--danger' : 'monitoring-empty';
 
         return new HtmlString(<<<HTML
-        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 0;gap:12px">
-            <svg style="width:40px;height:40px" fill="none" viewBox="0 0 24 24" stroke="#4b5563" stroke-width="1.5">
+        <div class="{$class}" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 0;gap:12px">
+            <svg style="width:40px;height:40px" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/>
             </svg>
-            <p style="font-size:13px;color:{$color}">{$msg}</p>
+            <p style="font-size:13px">{$msg}</p>
         </div>
         HTML);
     }
