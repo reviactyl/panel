@@ -7,7 +7,7 @@ return [
     'server-transferring' => 'Server ini sedang ditransfer ke node lain dan semua tindakan tidak tersedia.',
     'run-command' => 'Ketik perintah...',
     'connection-trouble' => "Kami mengalami masalah saat terhubung ke server Anda, harap tunggu...",
-    'address' => 'Address',
+    'address' => 'Alamat',
     'uptime' => 'Waktu aktif',
     'network-inbound' => 'Jaringan (Masuk)',
     'network-outbound' => 'Jaringan (Keluar)',
