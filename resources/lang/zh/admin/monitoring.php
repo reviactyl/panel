@@ -61,11 +61,11 @@ return [
         'swap_free' => '空闲',
         'swap_usage' => '使用率',
 
-        'partitions_section' => 'Disk Partitions',
-        'partitions_none' => 'No partition data available.',
-        'partitions_device' => 'Device',
-        'partitions_mountpoint' => 'Mount Point',
-        'partitions_filesystem' => 'Filesystem',
+        'partitions_section' => '磁盘分区',
+        'partitions_none' => '没有分区数据。',
+        'partitions_device' => '设备',
+        'partitions_mountpoint' => '挂载点',
+        'partitions_filesystem' => '文件系统',
         'partitions_size' => '尺寸',
         'partitions_usage' => 'Usage',
 
