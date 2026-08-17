@@ -7,7 +7,7 @@ return [
     'server-transferring' => 'Bu sunucu şu anda başka bir düğüme transfer ediliyor ve tüm eylemler kullanılamıyor.',
     'run-command' => 'Bir komut yazın...',
     'connection-trouble' => "Sunucunuza bağlanırken sorun yaşıyoruz, lütfen bekleyin...",
-    'address' => 'Address',
+    'address' => 'Adres',
     'uptime' => 'Çalışma süresi',
     'network-inbound' => 'Ağ (Gelen)',
     'network-outbound' => 'Ağ (Giden)',
