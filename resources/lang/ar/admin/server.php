@@ -315,6 +315,7 @@ return [
         'bad_variable' => 'حدث خطأ في التحقق من صحة المتغير :name.',
         'daemon_exception' => 'حدث استثناء أثناء محاولة الاتصال بالدايمون مما أدى إلى الحصول على رمز استجابة HTTP/:code. تم تسجيل هذا الاستثناء. (معرف الطلب: :request_id)',
         'default_allocation_not_found' => 'التخصيص الافتراضي المطلوب غير موجود في تخصيصات هذا الخادم.',
+        'skipping_install_script' => 'This server is configured to skip its egg\'s install script. Reinstalling is not available until that setting is disabled.',
     ],
 
     'alerts' => [
