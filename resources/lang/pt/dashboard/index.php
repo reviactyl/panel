@@ -39,7 +39,7 @@ return [
         'restoring-backup' => 'Restaurando Backup',
         'unavailable' => 'Indisponível',
         'unlimited' => 'Ilimitado',
-        'maintenance' => 'Under Maintenance',
+        'maintenance' => 'Em manutenção',
     ],
     'status-card' => [
         'title' => 'Status do Servidor',
