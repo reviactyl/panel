@@ -42,9 +42,7 @@ export default () => {
     if (skipScripts) {
         return (
             <TitledGreyBox title={'Reinstall Server'}>
-                <p css={tw`text-sm`}>
-                    {t('reinstall.disabled')}
-                </p>
+                <p css={tw`text-sm`}>{t('reinstall.disabled')}</p>
             </TitledGreyBox>
         );
     }
