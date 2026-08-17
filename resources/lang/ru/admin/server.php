@@ -315,6 +315,7 @@ return [
         'bad_variable' => 'Произошла ошибка проверки переменной :name.',
         'daemon_exception' => 'При попытке связаться с демоном возникло исключение, в результате чего был получен код ответа HTTP/:code. Это исключение записано в журнал. (ID запроса: :request_id)',
         'default_allocation_not_found' => 'Запрошенное распределение по умолчанию не найдено среди распределений этого сервера.',
+        'skipping_install_script' => 'This server is configured to skip its egg\'s install script. Reinstalling is not available until that setting is disabled.',
     ],
 
     'alerts' => [
