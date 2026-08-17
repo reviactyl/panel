@@ -12,7 +12,7 @@ return [
     'network-inbound' => 'नेटवर्क (इनबाउंड)',
     'network-outbound' => 'नेटवर्क (आउटबाउंड)',
     'offline' => 'ऑफलाइन',
-    'cpu' => 'CPU',
+    'cpu' => 'सीपीयू',
     'memory' => 'याद',
     'network' => 'नेटवर्क',
     'cpu-load' => 'सीपीयू लोड',
