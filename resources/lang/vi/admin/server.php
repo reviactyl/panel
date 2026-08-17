@@ -315,6 +315,7 @@ return [
         'bad_variable' => 'Đã xảy ra lỗi xác thực với biến :name.',
         'daemon_exception' => 'Đã xảy ra ngoại lệ khi cố gắng giao tiếp với daemon dẫn đến mã phản hồi HTTP/:code. Ngoại lệ này đã được ghi lại. (id yêu cầu: :request_id)',
         'default_allocation_not_found' => 'Không tìm thấy phân bổ mặc định được yêu cầu trong phân bổ của máy chủ này.',
+        'skipping_install_script' => 'This server is configured to skip its egg\'s install script. Reinstalling is not available until that setting is disabled.',
     ],
 
     'alerts' => [
