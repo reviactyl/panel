@@ -14,7 +14,7 @@ return [
         'author' => 'Tác giả',
         'enabled' => 'Đã bật',
         'updated' => 'Đã cập nhật',
-        'last_updated' => 'Last Updated',
+        'last_updated' => 'Cập nhật lần cuối',
         'downloads' => 'Downloads',
         'manifest_json' => 'Tệp kê khai JSON',
         'file' => 'Choose a .rext file to upload',
