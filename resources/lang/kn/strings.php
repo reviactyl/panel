@@ -37,7 +37,7 @@ return [
     'expires' => 'ಅವಧಿ ಮುಗಿಯುತ್ತದೆ',
     'public_key' => 'ಟೋಕನ್',
     'api_access' => 'API ಪ್ರವೇಶ',
-    'never' => 'never',
+    'never' => 'ಎಂದಿಗೂ ಇಲ್ಲ',
     'sign_out' => 'ಸೈನ್ ಔಟ್ ಮಾಡಿ',
     'admin_control' => 'ನಿರ್ವಾಹಕ ನಿಯಂತ್ರಣ',
     'required' => 'ಅಗತ್ಯವಿದೆ',
