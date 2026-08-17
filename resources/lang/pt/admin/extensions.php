@@ -4,10 +4,10 @@ return [
 
     'label' => 'Extensão',
     'plural-label' => 'Extensões',
-    'marketplace_heading' => 'Available Extensions',
+    'marketplace_heading' => 'Extensões disponíveis',
 
     'columns' => [
-        'icon' => 'Icon',
+        'icon' => 'Ícone',
         'id' => 'ID',
         'name' => 'Nome',
         'version' => 'Versão',
@@ -17,7 +17,7 @@ return [
         'last_updated' => 'Última atualização',
         'downloads' => 'Downloads',
         'manifest_json' => 'Manifesto JSON',
-        'file' => 'Choose a .rext file to upload',
+        'file' => 'Escolha um arquivo .rext para enviar',
     ],
 
     'modals' => [
@@ -26,7 +26,7 @@ return [
 
     'actions' => [
         'edit' => 'Editar',
-        'view' => 'Get Extension',
+        'view' => 'Baixe a extensão',
         'upload' => 'Carregar',
         'manifest' => 'Ver manifesto',
         'disable' => 'Desativar',
