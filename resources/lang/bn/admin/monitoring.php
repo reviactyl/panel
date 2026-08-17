@@ -66,8 +66,8 @@ return [
         'partitions_device' => 'Device',
         'partitions_mountpoint' => 'Mount Point',
         'partitions_filesystem' => 'Filesystem',
-        'partitions_size' => 'Size',
-        'partitions_usage' => 'Usage',
+        'partitions_size' => 'আকার',
+        'partitions_usage' => 'ব্যবহার',
 
         'network_section' => 'নেটওয়ার্ক',
         'bytes_sent' => 'পাঠানো বাইট',
