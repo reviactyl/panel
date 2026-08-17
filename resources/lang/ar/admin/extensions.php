@@ -4,10 +4,10 @@ return [
 
     'label' => 'امتداد',
     'plural-label' => 'ملحقات',
-    'marketplace_heading' => 'Available Extensions',
+    'marketplace_heading' => 'الملحقات المتاحة',
 
     'columns' => [
-        'icon' => 'Icon',
+        'icon' => 'أيقونة',
         'id' => 'ID',
         'name' => 'اسم',
         'version' => 'إصدار',
@@ -15,9 +15,9 @@ return [
         'enabled' => 'ممكّن',
         'updated' => 'تم التحديث',
         'last_updated' => 'آخر تحديث',
-        'downloads' => 'Downloads',
+        'downloads' => 'التنزيلات',
         'manifest_json' => 'بيان JSON',
-        'file' => 'Choose a .rext file to upload',
+        'file' => 'اختر ملفًا بصيغة .rext لتحميله',
     ],
 
     'modals' => [
@@ -26,7 +26,7 @@ return [
 
     'actions' => [
         'edit' => 'يحرر',
-        'view' => 'Get Extension',
+        'view' => 'الحصول على الملحق',
         'upload' => 'رفع',
         'manifest' => 'عرض البيان',
         'disable' => 'إبطال',

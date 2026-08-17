@@ -61,11 +61,11 @@ return [
         'swap_free' => 'Bebas',
         'swap_usage' => 'Penggunaan',
 
-        'partitions_section' => 'Disk Partitions',
-        'partitions_none' => 'No partition data available.',
-        'partitions_device' => 'Device',
-        'partitions_mountpoint' => 'Mount Point',
-        'partitions_filesystem' => 'Filesystem',
+        'partitions_section' => 'Partisi Disk',
+        'partitions_none' => 'Tidak ada data partisi yang tersedia.',
+        'partitions_device' => 'Perangkat',
+        'partitions_mountpoint' => 'Titik Pemasangan',
+        'partitions_filesystem' => 'Sistem Berkas',
         'partitions_size' => 'Ukuran',
         'partitions_usage' => 'Penggunaan',
 

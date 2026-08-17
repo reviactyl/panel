@@ -14,7 +14,7 @@ return [
     'sponsor-btn' => 'Sponsra projekt',
 
     'help-btn' => 'Få hjälp',
-    'update-btn' => 'Update Panel',
+    'update-btn' => 'Uppdateringspanel',
     'docs-btn' => 'Dokumentation',
     'metrics-header' => 'Användaraktivitetsstatistik',
     'most-active-country' => 'Mest aktiva landet',

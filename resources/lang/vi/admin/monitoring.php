@@ -61,11 +61,11 @@ return [
         'swap_free' => 'Miễn phí',
         'swap_usage' => 'Cách sử dụng',
 
-        'partitions_section' => 'Disk Partitions',
-        'partitions_none' => 'No partition data available.',
-        'partitions_device' => 'Device',
-        'partitions_mountpoint' => 'Mount Point',
-        'partitions_filesystem' => 'Filesystem',
+        'partitions_section' => 'Các phân vùng đĩa',
+        'partitions_none' => 'Không có dữ liệu phân vùng nào.',
+        'partitions_device' => 'Thiết bị',
+        'partitions_mountpoint' => 'Điểm gắn kết',
+        'partitions_filesystem' => 'Hệ thống tệp',
         'partitions_size' => 'Kích cỡ',
         'partitions_usage' => 'Cách sử dụng',
 

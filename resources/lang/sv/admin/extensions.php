@@ -4,10 +4,10 @@ return [
 
     'label' => 'Förlängning',
     'plural-label' => 'Tillägg',
-    'marketplace_heading' => 'Available Extensions',
+    'marketplace_heading' => 'Tillgängliga tillägg',
 
     'columns' => [
-        'icon' => 'Icon',
+        'icon' => 'Ikon',
         'id' => 'ID',
         'name' => 'Namn',
         'version' => 'Version',
@@ -15,9 +15,9 @@ return [
         'enabled' => 'Aktiverad',
         'updated' => 'Uppdaterad',
         'last_updated' => 'Senast uppdaterad',
-        'downloads' => 'Downloads',
+        'downloads' => 'Nedladdningar',
         'manifest_json' => 'Manifest JSON',
-        'file' => 'Choose a .rext file to upload',
+        'file' => 'Välj en .rext-fil att ladda upp',
     ],
 
     'modals' => [
@@ -26,7 +26,7 @@ return [
 
     'actions' => [
         'edit' => 'Redigera',
-        'view' => 'Get Extension',
+        'view' => 'Hämta tillägget',
         'upload' => 'Ladda upp',
         'manifest' => 'Visa manifest',
         'disable' => 'Inaktivera',

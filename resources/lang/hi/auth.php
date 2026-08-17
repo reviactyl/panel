@@ -14,10 +14,10 @@ return [
     'return' => 'लॉगिन पर लौटें',
 
     'social' => [
-        'or' => 'OR',
-        'google' => 'Google',
-        'discord' => 'Discord',
-        'github' => 'GitHub',
+        'or' => 'या',
+        'google' => 'गूगल',
+        'discord' => 'अनबन',
+        'github' => 'गिटहब',
         'not_linked' => 'यह खाता किसी भी :provider खाते से लिंक नहीं किया गया है. कृपया पहले अपने ईमेल और पासवर्ड से लॉग इन करें, फिर खाता सेटिंग पृष्ठ में अपने :provider खाते को लिंक करें।',
     ],
 

@@ -61,11 +61,11 @@ return [
         'swap_free' => 'ফাঁকা',
         'swap_usage' => 'ব্যবহার',
 
-        'partitions_section' => 'Disk Partitions',
-        'partitions_none' => 'No partition data available.',
-        'partitions_device' => 'Device',
-        'partitions_mountpoint' => 'Mount Point',
-        'partitions_filesystem' => 'Filesystem',
+        'partitions_section' => 'ডিস্ক পার্টিশনসমূহ',
+        'partitions_none' => 'কোনো পার্টিশন ডেটা উপলব্ধ নেই।',
+        'partitions_device' => 'ডিভাইস',
+        'partitions_mountpoint' => 'মাউন্ট পয়েন্ট',
+        'partitions_filesystem' => 'ফাইলসিস্টেম',
         'partitions_size' => 'আকার',
         'partitions_usage' => 'ব্যবহার',
 

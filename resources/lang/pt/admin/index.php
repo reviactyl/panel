@@ -14,7 +14,7 @@ return [
     'sponsor-btn' => 'Virar patrocinador',
 
     'help-btn' => 'Obter ajuda',
-    'update-btn' => 'Update Panel',
+    'update-btn' => 'Painel de Atualização',
     'docs-btn' => 'Documentação',
     'metrics-header' => 'Métricas de atividade do usuário',
     'most-active-country' => 'País mais ativo',
