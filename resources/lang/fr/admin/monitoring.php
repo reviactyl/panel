@@ -66,7 +66,7 @@ return [
         'partitions_device' => 'Device',
         'partitions_mountpoint' => 'Mount Point',
         'partitions_filesystem' => 'Filesystem',
-        'partitions_size' => 'Size',
+        'partitions_size' => 'Taille',
         'partitions_usage' => 'Usage',
 
         'network_section' => 'Réseau',

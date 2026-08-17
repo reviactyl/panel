@@ -66,8 +66,8 @@ return [
         'partitions_device' => 'Device',
         'partitions_mountpoint' => 'Mount Point',
         'partitions_filesystem' => 'Filesystem',
-        'partitions_size' => 'Size',
-        'partitions_usage' => 'Usage',
+        'partitions_size' => 'ಗಾತ್ರ',
+        'partitions_usage' => 'ಬಳಕೆ',
 
         'network_section' => 'ನೆಟ್ವರ್ಕ್',
         'bytes_sent' => 'ಬೈಟ್‌ಗಳನ್ನು ಕಳುಹಿಸಲಾಗಿದೆ',

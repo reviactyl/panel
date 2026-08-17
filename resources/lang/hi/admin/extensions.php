@@ -8,13 +8,13 @@ return [
 
     'columns' => [
         'icon' => 'Icon',
-        'id' => 'ID',
+        'id' => 'आईडी',
         'name' => 'नाम',
         'version' => 'संस्करण',
         'author' => 'लेखक',
         'enabled' => 'सक्रिय',
         'updated' => 'अद्यतन',
-        'last_updated' => 'Last Updated',
+        'last_updated' => 'आखरी अपडेट',
         'downloads' => 'Downloads',
         'manifest_json' => 'प्रकट JSON',
         'file' => 'Choose a .rext file to upload',

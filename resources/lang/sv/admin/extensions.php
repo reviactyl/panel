@@ -14,7 +14,7 @@ return [
         'author' => 'Författare',
         'enabled' => 'Aktiverad',
         'updated' => 'Uppdaterad',
-        'last_updated' => 'Last Updated',
+        'last_updated' => 'Senast uppdaterad',
         'downloads' => 'Downloads',
         'manifest_json' => 'Manifest JSON',
         'file' => 'Choose a .rext file to upload',

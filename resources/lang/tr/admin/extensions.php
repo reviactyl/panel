@@ -14,7 +14,7 @@ return [
         'author' => 'Yazar',
         'enabled' => 'Etkinleştirilmiş',
         'updated' => 'Güncellendi',
-        'last_updated' => 'Last Updated',
+        'last_updated' => 'Son Güncelleme',
         'downloads' => 'Downloads',
         'manifest_json' => 'JSON\'u bildir',
         'file' => 'Choose a .rext file to upload',

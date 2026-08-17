@@ -14,7 +14,7 @@ return [
         'author' => 'Pengarang',
         'enabled' => 'Diaktifkan',
         'updated' => 'Diperbarui',
-        'last_updated' => 'Last Updated',
+        'last_updated' => 'Terakhir Diperbarui',
         'downloads' => 'Downloads',
         'manifest_json' => 'Manifes JSON',
         'file' => 'Choose a .rext file to upload',

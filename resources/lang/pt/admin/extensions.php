@@ -14,7 +14,7 @@ return [
         'author' => 'Autor',
         'enabled' => 'Habilitado',
         'updated' => 'Atualizado',
-        'last_updated' => 'Last Updated',
+        'last_updated' => 'Última atualização',
         'downloads' => 'Downloads',
         'manifest_json' => 'Manifesto JSON',
         'file' => 'Choose a .rext file to upload',

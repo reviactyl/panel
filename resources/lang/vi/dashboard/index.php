@@ -39,7 +39,7 @@ return [
         'restoring-backup' => 'Khôi phục bản sao lưu',
         'unavailable' => 'Không có sẵn',
         'unlimited' => 'Không giới hạn',
-        'maintenance' => 'Under Maintenance',
+        'maintenance' => 'Đang bảo trì',
     ],
     'status-card' => [
         'title' => 'Trạng thái máy chủ',

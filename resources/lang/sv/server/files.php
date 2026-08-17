@@ -22,7 +22,7 @@ return [
     'file-mode-label' => 'Filläge',
     'new-location' => 'Ny plats:',
     'cancel-uploads' => 'Avbryt uppladdningar',
-    'close' => 'Close',
+    'close' => 'Stäng',
     'uploads-tooltip' => ':count-filer laddas upp, klicka för att visa',
     'move-description' => 'Ange det nya namnet och katalogen för denna fil eller mapp, i förhållande till den aktuella katalogen.',
     'update' => 'Uppdatera',

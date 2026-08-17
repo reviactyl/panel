@@ -6,7 +6,7 @@ return [
     ],
 
     'language' => [
-        'label' => 'Language',
+        'label' => 'ಭಾಷೆ',
     ],
 
     'migration' => [
@@ -32,8 +32,8 @@ return [
     ],
 
     'sections' => [
-        'application' => 'Application Configuration',
-        'database' => 'Database Configuration',
+        'application' => 'ಅಪ್ಲಿಕೇಶನ್ ಕಾನ್ಫಿಗರೇಶನ್',
+        'database' => 'ಡೇಟಾಬೇಸ್ ಕಾನ್ಫಿಗರೇಶನ್',
         'user' => 'User Configuration',
         'mail' => 'Mail Settings',
     ],
@@ -42,22 +42,22 @@ return [
         'application_url' => 'Application URL',
         'cache_driver' => 'Cache driver',
         'database_name' => 'Database name',
-        'driver' => 'Driver',
-        'email' => 'Email',
+        'driver' => 'ಚಾಲಕ',
+        'email' => 'ಇಮೇಲ್',
         'enable_settings_editor' => 'Enable settings editor',
-        'encryption' => 'Encryption',
-        'endpoint' => 'Endpoint',
+        'encryption' => 'ಗೂಢಲಿಪೀಕರಣ',
+        'endpoint' => 'ಅಂತ್ಯಬಿಂದು',
         'first_name' => 'First name',
         'from_email' => 'From email',
         'from_name' => 'From name',
-        'host' => 'Host',
+        'host' => 'ಹೋಸ್ಟ್',
         'host_domain' => 'Host / Domain',
         'icon_url' => 'Icon URL',
         'last_name' => 'Last name',
         'logo_url' => 'Logo URL',
-        'password' => 'Password',
+        'password' => 'ಪಾಸ್ವರ್ಡ್',
         'password_secret' => 'Password / Secret',
-        'port' => 'Port',
+        'port' => 'ಬಂದರು',
         'queue_driver' => 'Queue driver',
         'redis_host' => 'Redis host',
         'redis_password' => 'Redis password',
@@ -66,16 +66,16 @@ return [
         'service_author_email' => 'Service author email',
         'session_driver' => 'Session driver',
         'sqlite_database_path' => 'SQLite database path',
-        'timezone' => 'Timezone',
-        'username' => 'Username',
+        'timezone' => 'ಸಮಯವಲಯ',
+        'username' => 'ಬಳಕೆದಾರ ಹೆಸರು',
     ],
 
     'options' => [
-        'none' => 'None',
+        'none' => 'ಯಾವುದೂ ಇಲ್ಲ',
     ],
 
     'actions' => [
-        'continue' => 'Continue',
+        'continue' => 'ಮುಂದುವರಿಸಿ',
         'finish' => 'Finish Installation',
         'proceed' => 'Proceed...',
         'skip' => 'Skip...',

@@ -22,7 +22,7 @@ return [
     ],
 
     'columns' => [
-        'id' => 'ID',
+        'id' => 'आईडी',
         'name' => 'नाम',
         'author' => 'लेखक',
         'eggs' => 'अंडे',

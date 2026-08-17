@@ -14,7 +14,7 @@ return [
         'author' => 'مؤلف',
         'enabled' => 'ممكّن',
         'updated' => 'تم التحديث',
-        'last_updated' => 'Last Updated',
+        'last_updated' => 'آخر تحديث',
         'downloads' => 'Downloads',
         'manifest_json' => 'بيان JSON',
         'file' => 'Choose a .rext file to upload',
