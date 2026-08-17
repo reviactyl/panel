@@ -4,10 +4,10 @@ return [
 
     'label' => 'Perpanjangan',
     'plural-label' => 'Ekstensi',
-    'marketplace_heading' => 'Available Extensions',
+    'marketplace_heading' => 'Ekstensi yang Tersedia',
 
     'columns' => [
-        'icon' => 'Icon',
+        'icon' => 'Ikon',
         'id' => 'ID',
         'name' => 'Nama',
         'version' => 'Versi',
@@ -15,9 +15,9 @@ return [
         'enabled' => 'Diaktifkan',
         'updated' => 'Diperbarui',
         'last_updated' => 'Terakhir Diperbarui',
-        'downloads' => 'Downloads',
+        'downloads' => 'Unduhan',
         'manifest_json' => 'Manifes JSON',
-        'file' => 'Choose a .rext file to upload',
+        'file' => 'Pilih berkas .rext yang akan diunggah',
     ],
 
     'modals' => [
@@ -26,7 +26,7 @@ return [
 
     'actions' => [
         'edit' => 'Sunting',
-        'view' => 'Get Extension',
+        'view' => 'Unduh Ekstensi',
         'upload' => 'Mengunggah',
         'manifest' => 'Lihat Manifes',
         'disable' => 'Cacat',
