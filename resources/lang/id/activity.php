@@ -28,7 +28,7 @@ return [
     ],
     'user' => [
         'user' => [
-            'create' => 'Created a new user :email',
+            'create' => 'Telah membuat pengguna baru :email',
         ],
         'account' => [
             'email-changed' => 'Mengubah email dari :old menjadi :new',
