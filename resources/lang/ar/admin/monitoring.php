@@ -61,11 +61,11 @@ return [
         'swap_free' => 'حر',
         'swap_usage' => 'الاستخدام',
 
-        'partitions_section' => 'Disk Partitions',
-        'partitions_none' => 'No partition data available.',
-        'partitions_device' => 'Device',
-        'partitions_mountpoint' => 'Mount Point',
-        'partitions_filesystem' => 'Filesystem',
+        'partitions_section' => 'أقسام القرص',
+        'partitions_none' => 'لا توجد بيانات متاحة عن الأقسام.',
+        'partitions_device' => 'الجهاز',
+        'partitions_mountpoint' => 'نقطة التثبيت',
+        'partitions_filesystem' => 'نظام الملفات',
         'partitions_size' => 'مقاس',
         'partitions_usage' => 'الاستخدام',
 
