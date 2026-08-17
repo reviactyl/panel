@@ -28,7 +28,7 @@ return [
     ],
     'user' => [
         'user' => [
-            'create' => 'Created a new user :email',
+            'create' => 'Criado um novo usuário: e-mail',
         ],
         'account' => [
             'email-changed' => 'E-mail alterado de :old para :new',
