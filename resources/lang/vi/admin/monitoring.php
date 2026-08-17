@@ -66,8 +66,8 @@ return [
         'partitions_device' => 'Device',
         'partitions_mountpoint' => 'Mount Point',
         'partitions_filesystem' => 'Filesystem',
-        'partitions_size' => 'Size',
-        'partitions_usage' => 'Usage',
+        'partitions_size' => 'Kích cỡ',
+        'partitions_usage' => 'Cách sử dụng',
 
         'network_section' => 'Mạng',
         'bytes_sent' => 'Byte đã gửi',
