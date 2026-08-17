@@ -84,8 +84,8 @@ importers:
         specifier: ^1.2.0
         version: 1.2.1
       deepmerge-ts:
-        specifier: ^4.2.1
-        version: 4.3.0
+        specifier: ^8.0.0
+        version: 8.0.1
       easy-peasy:
         specifier: ^6.1.0
         version: 6.1.0(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react-native@0.86.0(@babel/core@7.29.7(supports-color@8.1.1))(@types/react@19.2.17)(react@19.2.4)(supports-color@8.1.1))(react@19.2.4)
@@ -3195,9 +3195,9 @@ packages:
   deep-is@0.1.4:
     resolution: {integrity: sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==}
 
-  deepmerge-ts@4.3.0:
-    resolution: {integrity: sha512-if3ZYdkD2dClhnXR5reKtG98cwyaRT1NeugQoAPTTfsOpV9kqyeiBF9Qa5RHjemb3KzD5ulqygv6ED3t5j9eJw==}
-    engines: {node: '>=12.4.0'}
+  deepmerge-ts@8.0.1:
+    resolution: {integrity: sha512-szCXE7YLCvLKR9bFPJcvsezOShdalctSvrgN/LM/QGUEPZQajwjmsMObZ6/DuANT5lxzM/wtO8Feubwdkz8myA==}
+    engines: {node: '>=16.0.0'}
 
   deepmerge@2.2.1:
     resolution: {integrity: sha512-R9hc1Xa/NOBi9WRVUWg19rl1UB7Tt4kuPd+thNJgFZoxXsTz7ncaPaeIm+40oSGuP33DfMb4sZt1QIGiJzC4EA==}
@@ -9193,7 +9193,7 @@ snapshots:
 
   deep-is@0.1.4: {}
 
-  deepmerge-ts@4.3.0: {}
+  deepmerge-ts@8.0.1: {}
 
   deepmerge@2.2.1: {}
 
