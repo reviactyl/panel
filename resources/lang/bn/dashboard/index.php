@@ -39,7 +39,7 @@ return [
         'restoring-backup' => 'ব্যাকআপ পুনরুদ্ধার হচ্ছে',
         'unavailable' => 'অনুপলব্ধ',
         'unlimited' => 'সীমাহীন',
-        'maintenance' => 'Under Maintenance',
+        'maintenance' => 'রক্ষণাবেক্ষণে রয়েছে',
     ],
     'status-card' => [
         'title' => 'সার্ভারের অবস্থা',
