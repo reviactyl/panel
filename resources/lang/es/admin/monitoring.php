@@ -61,11 +61,11 @@ return [
         'swap_free' => 'Gratis',
         'swap_usage' => 'Uso',
 
-        'partitions_section' => 'Disk Partitions',
-        'partitions_none' => 'No partition data available.',
-        'partitions_device' => 'Device',
-        'partitions_mountpoint' => 'Mount Point',
-        'partitions_filesystem' => 'Filesystem',
+        'partitions_section' => 'Particiones de disco',
+        'partitions_none' => 'No hay datos de particiones disponibles.',
+        'partitions_device' => 'Dispositivo',
+        'partitions_mountpoint' => 'Punto de montaje',
+        'partitions_filesystem' => 'Sistema de archivos',
         'partitions_size' => 'Tamaño',
         'partitions_usage' => 'Uso',
 
