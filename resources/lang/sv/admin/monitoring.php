@@ -61,11 +61,11 @@ return [
         'swap_free' => 'Gratis',
         'swap_usage' => 'Användande',
 
-        'partitions_section' => 'Disk Partitions',
-        'partitions_none' => 'No partition data available.',
-        'partitions_device' => 'Device',
-        'partitions_mountpoint' => 'Mount Point',
-        'partitions_filesystem' => 'Filesystem',
+        'partitions_section' => 'Diskpartitioner',
+        'partitions_none' => 'Inga uppgifter om partitioner finns tillgängliga.',
+        'partitions_device' => 'Enhet',
+        'partitions_mountpoint' => 'Monteringspunkt',
+        'partitions_filesystem' => 'Filsystem',
         'partitions_size' => 'Storlek',
         'partitions_usage' => 'Användande',
 
