@@ -4,10 +4,10 @@ return [
 
     'label' => 'Extension',
     'plural-label' => 'Rallonges',
-    'marketplace_heading' => 'Available Extensions',
+    'marketplace_heading' => 'Extensions disponibles',
 
     'columns' => [
-        'icon' => 'Icon',
+        'icon' => 'Icône',
         'id' => 'ID',
         'name' => 'Nom',
         'version' => 'Version',
@@ -15,9 +15,9 @@ return [
         'enabled' => 'Activé',
         'updated' => 'Mis à jour',
         'last_updated' => 'Dernière mise à jour',
-        'downloads' => 'Downloads',
+        'downloads' => 'Téléchargements',
         'manifest_json' => 'Manifeste JSON',
-        'file' => 'Choose a .rext file to upload',
+        'file' => 'Sélectionnez un fichier .rext à télécharger',
     ],
 
     'modals' => [
@@ -26,7 +26,7 @@ return [
 
     'actions' => [
         'edit' => 'Modifier',
-        'view' => 'Get Extension',
+        'view' => 'Obtenir l\'extension',
         'upload' => 'Télécharger',
         'manifest' => 'Afficher le manifeste',
         'disable' => 'Désactiver',
