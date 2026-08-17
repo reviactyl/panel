@@ -14,7 +14,7 @@ return [
         'author' => 'লেখক',
         'enabled' => 'সক্রিয়',
         'updated' => 'আপডেট করা হয়েছে',
-        'last_updated' => 'Last Updated',
+        'last_updated' => 'সর্বশেষ আপডেট',
         'downloads' => 'Downloads',
         'manifest_json' => 'ম্যানিফেস্ট JSON',
         'file' => 'Choose a .rext file to upload',
