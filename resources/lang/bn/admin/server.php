@@ -387,7 +387,7 @@ return [
             ],
             'server_description' => [
                 'label' => 'বিবরণ',
-                'helper' => 'A brief description of this server.',
+                'helper' => 'এই সার্ভারের সংক্ষিপ্ত বিবরণ।',
             ],
             'server_uuid' => [
                 'label' => 'UUID',
@@ -425,19 +425,19 @@ return [
             ],
             'allocated_memory' => [
                 'label' => 'মেমোরি',
-                'helper' => 'The maximum amount of memory allowed for this container. Set 0 for unlimited.',
+                'helper' => 'এই কনটেইনারের জন্য অনুমোদিত সর্বোচ্চ মেমোরি। সীমাহীন করতে 0 সেট করুন।',
             ],
             'allocated_swap' => [
                 'label' => 'সোয়াপ',
-                'helper' => 'Set 0 to disable swap, or -1 to allow unlimited swap.',
+                'helper' => 'Swap বন্ধ করতে 0, অথবা সীমাহীন Swap এর জন্য -1 ব্যবহার করুন।',
             ],
             'disk_space_limit' => [
                 'label' => 'ডিস্ক',
-                'helper' => 'Set 0 to allow unlimited disk usage.',
+                'helper' => 'সীমাহীন ডিস্ক ব্যবহারের জন্য 0 সেট করুন।',
             ],
             'block_io_proportion' => [
                 'label' => 'Block IO Proportion',
-                'helper' => 'Advanced: IO performance relative to other running containers. Value should be 10 to 1000.',
+                'helper' => 'উন্নত: অন্যান্য চলমান কনটেইনারের তুলনায় IO পারফরম্যান্স। মান 10 থেকে 1000 এর মধ্যে হওয়া উচিত।',
             ],
             'disable_oom_killer' => [
                 'label' => 'OOM কিলার নিষ্ক্রিয় করুন',
@@ -445,45 +445,45 @@ return [
             ],
             'database_limit' => [
                 'label' => 'ডাটাবেস সীমা',
-                'helper' => 'The total number of databases a user is allowed to create for this server.',
+                'helper' => 'এই সার্ভারের জন্য একজন ইউজার সর্বোচ্চ কতটি ডাটাবেস তৈরি করতে পারবে।',
             ],
             'allocation_limit' => [
-                'label' => 'Allocation Limit',
-                'helper' => 'The total number of allocations a user is allowed to create for this server.',
+                'label' => 'বরাদ্দ সীমা',
+                'helper' => 'এই সার্ভারের জন্য একজন ইউজার সর্বোচ্চ কতটি অ্যালোকেশন তৈরি করতে পারবে।',
             ],
             'backup_limit' => [
-                'label' => 'Backup Limit',
-                'helper' => 'The total number of backups that can be created for this server.',
+                'label' => 'ব্যাকআপ সীমা',
+                'helper' => 'এই সার্ভারের জন্য সর্বোচ্চ কতটি ব্যাকআপ তৈরি করা যাবে।',
             ],
             'image' => [
-                'label' => 'Image',
-                'helper' => 'Select an image from the dropdown, or enter a custom image below.',
+                'label' => 'ইমেজ',
+                'helper' => 'ড্রপডাউন থেকে একটি ইমেজ নির্বাচন করুন, অথবা নিচে একটি কাস্টম ইমেজ লিখুন।',
             ],
             'custom_image' => [
                 'label' => 'Custom Image',
-                'placeholder' => 'Or enter a custom image...',
+                'placeholder' => 'অথবা একটি কাস্টম ইমেজ লিখুন...',
                 'helper' => 'This is the Docker image that will be used to run this server.',
             ],
             'transfer_node' => [
-                'label' => 'Node',
+                'label' => 'নোড',
                 'helper' => 'The node which this server will be transferred to.',
             ],
             'transfer_allocation' => [
-                'label' => 'Default Allocation',
-                'helper' => 'The main allocation that will be assigned to this server.',
+                'label' => 'ডিফল্ট অ্যালোকেশন',
+                'helper' => 'এই সার্ভারের জন্য বরাদ্দকৃত প্রধান অ্যালোকেশন।',
             ],
             'transfer_additional_allocations' => [
-                'label' => 'Additional Allocation(s)',
+                'label' => 'অতিরিক্ত অ্যালোকেশন',
                 'helper' => 'Additional allocations to assign to this server on transfer.',
             ],
         ],
 
         'actions' => [
-            'reinstall_server' => 'Reinstall Server',
-            'toggle_install_status' => 'Toggle Install Status',
-            'suspend_server' => 'Suspend Server',
-            'unsuspend_server' => 'Unsuspend Server',
-            'transfer_server' => 'Transfer Server',
+            'reinstall_server' => 'সার্ভার রিইন্সটল করুন',
+            'toggle_install_status' => 'ইনস্টল স্ট্যাটাস টগল করুন',
+            'suspend_server' => 'সার্ভার সাসপেন্ড করুন',
+            'unsuspend_server' => 'আনসাসপেন্ড',
+            'transfer_server' => 'সার্ভার ট্রান্সফার',
             'confirm' => 'নিশ্চিত করুন',
             'delete_server' => 'মুছে ফেলুন',
             'forcibly_delete_server' => 'মুছে ফেলুন',
@@ -495,8 +495,8 @@ return [
 
         'table' => [
             'ip' => 'আইপি',
-            'port' => 'Port',
-            'alias' => 'Alias',
+            'port' => 'পোর্ট',
+            'alias' => 'অ্যালিয়াস',
             'primary' => 'প্রাথমিক বরাদ্দ',
             'notes' => 'না',
             'created' => 'তৈরি করা হয়েছে',
@@ -507,19 +507,19 @@ return [
         ],
 
         'actions' => [
-            'make_primary' => 'Make Primary',
+            'make_primary' => 'প্রধান করুন',
         ],
     ],
 
     'databases' => [
-        'title' => 'Databases',
+        'title' => 'ডাটাবেসসমূহ',
 
         'table' => [
             'database' => 'ডাটাবেস সীমা',
-            'username' => 'Username',
-            'remote' => 'Remote',
-            'host' => 'Host',
-            'max_connections' => 'Max Connections',
+            'username' => 'ইউজারনেম',
+            'remote' => 'রিমোট',
+            'host' => 'হোস্ট',
+            'max_connections' => 'সর্বোচ্চ সংযোগ',
             'created' => 'তৈরি করা হয়েছে',
         ],
 
@@ -529,7 +529,7 @@ return [
 
         'actions' => [
             'create_database' => 'তৈরি করুন',
-            'reset_password' => 'Reset Password',
+            'reset_password' => 'পাসওয়ার্ড রিসেট',
             'delete' => 'মুছে ফেলুন',
         ],
 
