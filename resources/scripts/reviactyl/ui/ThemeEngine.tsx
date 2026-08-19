@@ -20,6 +20,7 @@ type ThemeData = {
     800: string;
     900: string;
     950: string;
+    'muted-text': string;
 };
 
 const getCookie = (name: string): string | null => {
@@ -72,6 +73,7 @@ const getThemeFromConfig = (key: PaletteKey): ThemeData => {
         800: t.color800,
         900: t.color900,
         950: t.color950,
+        'muted-text': t.colorMutedText,
     };
 };
 

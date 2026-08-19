@@ -38,6 +38,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->assets([
                 Css::make('filament-alert', resource_path('css/filament/alert.css')),
+                Css::make('filament-monitoring', resource_path('css/filament/monitoring.css')),
             ])
             ->breadcrumbs(false)
             ->navigationGroups([
