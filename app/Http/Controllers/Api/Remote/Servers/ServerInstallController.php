@@ -53,6 +53,7 @@ class ServerInstallController extends Controller
     public function store(InstallationDataRequest $request, string $uuid): JsonResponse
     {
         $server = $this->repository->getByUuid($uuid);
+        $successful = $request->boolean('successful');
         $status = null;
 
         if (! $server->node->is($request->attributes->get('node'))) {
@@ -60,7 +61,7 @@ class ServerInstallController extends Controller
         }
 
         // Make sure the type of failure is accurate
-        if (! $request->boolean('successful')) {
+        if (! $successful) {
             $status = Server::STATUS_INSTALL_FAILED;
 
             if ($request->boolean('reinstall')) {
@@ -73,14 +74,19 @@ class ServerInstallController extends Controller
             $status = Server::STATUS_SUSPENDED;
         }
 
-        $this->repository->update($server->id, ['status' => $status, 'installed_at' => CarbonImmutable::now()], true, true);
+        $fields = ['status' => $status];
+        if ($successful) {
+            $fields['installed_at'] = CarbonImmutable::now();
+        }
+
+        $this->repository->update($server->id, $fields, true, true);
 
         // If the server successfully installed, fire installed event.
         // This logic allows individually disabling install and reinstall notifications separately.
         $isInitialInstall = is_null($server->installed_at);
-        if ($isInitialInstall && config()->get('panel.email.send_install_notification', true)) {
+        if ($successful && $isInitialInstall && config()->get('panel.email.send_install_notification', true)) {
             $this->eventDispatcher->dispatch(new ServerInstalled($server));
-        } elseif (! $isInitialInstall && config()->get('panel.email.send_reinstall_notification', true)) {
+        } elseif ($successful && ! $isInitialInstall && config()->get('panel.email.send_reinstall_notification', true)) {
             $this->eventDispatcher->dispatch(new ServerInstalled($server));
         }
 
