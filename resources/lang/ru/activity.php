@@ -13,6 +13,9 @@ return [
         'using-api-key' => 'Использование API-ключа',
         'using-sftp' => 'Использование SFTP',
     ],
+    'event' => [
+        'password-reset' => 'Password reset',
+    ],
     'auth' => [
         'fail' => 'Ошибка входа',
         'success' => 'Выполнен вход',
@@ -34,6 +37,7 @@ return [
             'email-changed' => 'Изменён адрес электронной почты с :old на :new',
             'password-changed' => 'Изменён пароль',
             'language-changed' => 'Язык изменён с :old на :new',
+            'file-editor-changed' => 'Changed file editor from :old to :new',
         ],
         'api-key' => [
             'create' => 'Создан новый API-ключ :identifier',
@@ -126,6 +130,7 @@ return [
         'settings' => [
             'rename' => 'Сервер переименован с :old на :new',
             'description' => 'Описание сервера изменено с :old на :new',
+            'category' => 'Changed server category',
         ],
         'startup' => [
             'edit' => 'Переменная :variable изменена с ":old" на ":new"',
