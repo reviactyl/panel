@@ -17,9 +17,23 @@
 </p>
 
 <p align="center">
-  <img alt="Custom badge" src="https://shieldcn.dev/badge/php-8.5.svg?variant=ghost&amp;theme=purple&amp;logo=php&amp;label=PHP" />
-  <img alt="version" src="https://shieldcn.dev/npm/typescript.svg?variant=ghost&amp;theme=blue&amp;logo=typescript&amp;label=TypeScript" />
-  <a href="https://github.com/reviactyl/panel"><img alt="license" src="https://shieldcn.dev/github/reviactyl/panel/license.svg?variant=ghost&amp;theme=rose" /></a>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://shieldcn.dev/badge/php-8.5.svg?variant=ghost&amp;theme=purple&amp;logo=php&amp;label=PHP&amp;mode=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://shieldcn.dev/badge/php-8.5.svg?variant=ghost&amp;theme=purple&amp;logo=php&amp;label=PHP&amp;mode=light" />
+    <img alt="PHP 8.5" src="https://shieldcn.dev/badge/php-8.5.svg?variant=ghost&amp;theme=purple&amp;logo=php&amp;label=PHP&amp;mode=light" />
+  </picture>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://shieldcn.dev/npm/typescript.svg?variant=ghost&amp;theme=blue&amp;logo=typescript&amp;label=TypeScript&amp;mode=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://shieldcn.dev/npm/typescript.svg?variant=ghost&amp;theme=blue&amp;logo=typescript&amp;label=TypeScript&amp;mode=light" />
+    <img alt="TypeScript version" src="https://shieldcn.dev/npm/typescript.svg?variant=ghost&amp;theme=blue&amp;logo=typescript&amp;label=TypeScript&amp;mode=light" />
+  </picture>
+  <a href="https://github.com/reviactyl/panel">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://shieldcn.dev/github/reviactyl/panel/license.svg?variant=ghost&amp;theme=rose&amp;mode=dark" />
+      <source media="(prefers-color-scheme: light)" srcset="https://shieldcn.dev/github/reviactyl/panel/license.svg?variant=ghost&amp;theme=rose&amp;mode=light" />
+      <img alt="license" src="https://shieldcn.dev/github/reviactyl/panel/license.svg?variant=ghost&amp;theme=rose&amp;mode=light" />
+    </picture>
+  </a>
 </p>
 
 <div align="center">
