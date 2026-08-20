@@ -13,6 +13,9 @@ return [
         'using-api-key' => 'API कुंजी का उपयोग कर रहा है',
         'using-sftp' => 'SFTP का उपयोग कर रहा है',
     ],
+    'event' => [
+        'password-reset' => 'Password reset',
+    ],
     'auth' => [
         'fail' => 'लॉगिन असफल',
         'success' => 'लॉगिन हुआ',
@@ -34,6 +37,7 @@ return [
             'email-changed' => 'ईमेल :old से :new में बदला गया',
             'password-changed' => 'पासवर्ड बदल दिया गया',
             'language-changed' => 'भाषा को :old से :new में बदला गया',
+            'file-editor-changed' => 'Changed file editor from :old to :new',
         ],
         'api-key' => [
             'create' => 'नई API कुंजी :identifier बनाई गई',
@@ -126,6 +130,7 @@ return [
         'settings' => [
             'rename' => 'सर्वर का नाम :old से :new में बदल दिया गया',
             'description' => 'सर्वर विवरण :old से :new में बदल दिया गया',
+            'category' => 'Changed server category',
         ],
         'startup' => [
             'edit' => ':variable वेरिएबल ":old" से ":new" में बदल दिया गया',
