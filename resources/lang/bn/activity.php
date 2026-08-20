@@ -13,6 +13,9 @@ return [
         'using-api-key' => 'এপিআই কি ব্যবহার করে',
         'using-sftp' => 'SFTP ব্যবহার করে',
     ],
+    'event' => [
+        'password-reset' => 'Password reset',
+    ],
     'auth' => [
         'fail' => 'লগইন ব্যর্থ হয়েছে।',
         'success' => 'লগইন হয়েছে।',
@@ -34,6 +37,7 @@ return [
             'email-changed' => ':old ইমেইলটি পরিবর্তন করে :new করা হয়েছে।',
             'password-changed' => 'পাসওয়ার্ড পরিবর্তন করা হয়েছে।',
             'language-changed' => 'ভাষা :old থেকে পরিবর্তন করে :new করা হয়েছে।',
+            'file-editor-changed' => 'Changed file editor from :old to :new',
         ],
         'api-key' => [
             'create' => 'নতুন এপিআই কি :identifier তৈরি করা হয়েছে।',
@@ -126,6 +130,7 @@ return [
         'settings' => [
             'rename' => 'সার্ভার টির নাম :old থেকে নতুনে :new এ পরিবর্তন করা হয়েছে।',
             'description' => 'সার্ভার টির ডেসক্রিপশন :old থেকে :new এ পরিবর্তন করা হয়েছে।',
+            'category' => 'Changed server category',
         ],
         'startup' => [
             'edit' => ':variable ভেরিএবল টি ":old" থেকে ":new" এ পরিবর্তন করা হয়েছে।',
