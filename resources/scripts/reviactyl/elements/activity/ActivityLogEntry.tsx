@@ -64,7 +64,7 @@ export default ({ activity, children }: Props) => {
                             to={`#${pathTo({ event: activity.event })}`}
                             className={'transition-colors duration-75 active:text-cyan-400 hover:text-cyan-400'}
                         >
-                            {activity.event}
+                            <Translate ns={'activity'} values={properties} i18nKey={activity.event.replace(':', '.')} />
                         </Link>
                         <div className={classNames(style.icons, 'group-hover:text-gray-300')}>
                             {activity.isApi && (
@@ -80,9 +80,7 @@ export default ({ activity, children }: Props) => {
                             {children}
                         </div>
                     </div>
-                    <p className={style.description}>
-                        <Translate ns={'activity'} values={properties} i18nKey={activity.event.replace(':', '.')} />
-                    </p>
+                    <p className={style.description}>{activity.event}</p>
                     <div className={'mt-1 flex items-center text-sm'}>
                         {activity.ip && (
                             <span>

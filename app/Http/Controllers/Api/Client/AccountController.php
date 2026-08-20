@@ -14,6 +14,11 @@ use Illuminate\Http\Response;
 
 class AccountController extends ClientApiController
 {
+    private const FILE_EDITOR_NAMES = [
+        'cm' => 'CodeMirror',
+        'mo' => 'Monaco',
+    ];
+
     /**
      * AccountController constructor.
      */
@@ -106,7 +111,10 @@ class AccountController extends ClientApiController
 
         if ($original !== $user->editor) {
             Activity::event('user:account.file-editor-changed')
-                ->property(['old' => $original, 'new' => $user->editor])
+                ->property([
+                    'old' => self::FILE_EDITOR_NAMES[$original] ?? $original,
+                    'new' => self::FILE_EDITOR_NAMES[$user->editor] ?? $user->editor,
+                ])
                 ->log();
         }
 
