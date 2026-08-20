@@ -13,6 +13,9 @@ return [
         'using-api-key' => '使用 API 密钥',
         'using-sftp' => '使用 SFTP',
     ],
+    'event' => [
+        'password-reset' => 'Password reset',
+    ],
     'auth' => [
         'fail' => '登录失败',
         'success' => '登录成功',
@@ -34,6 +37,7 @@ return [
             'email-changed' => '邮箱已从 :old 更改为 :new',
             'password-changed' => '密码已更改',
             'language-changed' => '语言已从 :old 更改为 :new',
+            'file-editor-changed' => 'Changed file editor from :old to :new',
         ],
         'api-key' => [
             'create' => '创建了新的 API 密钥 :identifier',
@@ -126,6 +130,7 @@ return [
         'settings' => [
             'rename' => '将服务器名称从 :old 重命名为 :new',
             'description' => '将服务器描述从 :old 更改为 :new',
+            'category' => 'Changed server category',
         ],
         'startup' => [
             'edit' => '将 :variable 变量从 ":old" 更改为 ":new"',
