@@ -13,6 +13,9 @@ return [
         'using-api-key' => 'Usando clave API',
         'using-sftp' => 'Usando SFTP',
     ],
+    'event' => [
+        'password-reset' => 'Password reset',
+    ],
     'auth' => [
         'fail' => 'Inicio de sesión fallido',
         'success' => 'Sesión iniciada',
@@ -34,6 +37,7 @@ return [
             'email-changed' => 'Correo cambiado de :old a :new',
             'password-changed' => 'Contraseña cambiada',
             'language-changed' => 'Correo cambiado de :old a :new',
+            'file-editor-changed' => 'Changed file editor from :old to :new',
         ],
         'api-key' => [
             'create' => 'Creada nueva clave API :identifier',
@@ -126,6 +130,7 @@ return [
         'settings' => [
             'rename' => 'Servidor renombrado de :old a :new',
             'description' => 'Descripción del servidor cambiada de :old a :new',
+            'category' => 'Changed server category',
         ],
         'startup' => [
             'edit' => 'Variable :variable cambiada de ":old" a ":new"',
