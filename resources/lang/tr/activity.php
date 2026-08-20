@@ -13,6 +13,9 @@ return [
         'using-api-key' => 'API Anahtarı Kullanılıyor',
         'using-sftp' => 'SFTP Kullanılıyor',
     ],
+    'event' => [
+        'password-reset' => 'Password reset',
+    ],
     'auth' => [
         'fail' => 'Giriş başarısız',
         'success' => 'Giriş yapıldı',
@@ -34,6 +37,7 @@ return [
             'email-changed' => 'E-posta adresi :old adresinden :new adresine değiştirildi',
             'password-changed' => 'Parola değiştirildi',
             'language-changed' => 'Dil :old dilinden :new diline değiştirildi',
+            'file-editor-changed' => 'Changed file editor from :old to :new',
         ],
         'api-key' => [
             'create' => 'Yeni API anahtarı :identifier oluşturuldu',
@@ -126,6 +130,7 @@ return [
         'settings' => [
             'rename' => 'Sunucu adı :old iken :new olarak değiştirildi',
             'description' => 'Sunucu açıklaması :old iken :new olarak değiştirildi',
+            'category' => 'Changed server category',
         ],
         'startup' => [
             'edit' => ':variable değişkeni ":old" iken ":new" olarak değiştirildi',
