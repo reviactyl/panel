@@ -55,7 +55,11 @@ export default ({ className }: PowerButtonProps) => {
             </Dialog.Confirm>
             <Can action={'control.start'}>
                 {(!alwaysShowKillButton || status === 'offline') && (
-                    <Button.Success className={'flex-1'} onClick={onButtonClick.bind(this, 'start')}>
+                    <Button.Success
+                        className={'flex-1'}
+                        disabled={status !== 'offline'}
+                        onClick={onButtonClick.bind(this, 'start')}
+                    >
                         {t('start')}
                     </Button.Success>
                 )}
