@@ -16,6 +16,7 @@ use App\Http\Requests\Api\Client\Servers\Files\GetFileContentsRequest;
 use App\Http\Requests\Api\Client\Servers\Files\ListFilesRequest;
 use App\Http\Requests\Api\Client\Servers\Files\PullFileRequest;
 use App\Http\Requests\Api\Client\Servers\Files\RenameFileRequest;
+use App\Http\Requests\Api\Client\Servers\Files\UpdateFileContentRequest;
 use App\Http\Requests\Api\Client\Servers\Files\WriteFileContentRequest;
 use App\Models\Server;
 use App\Repositories\Agent\DaemonFileRepository;
@@ -108,6 +109,21 @@ class FileController extends ClientApiController
      * @throws DaemonConnectionException
      */
     public function write(WriteFileContentRequest $request, Server $server): JsonResponse
+    {
+        return $this->writeContent($request, $server);
+    }
+
+    /**
+     * Updates the contents of the specified file on the server.
+     *
+     * @throws DaemonConnectionException
+     */
+    public function update(UpdateFileContentRequest $request, Server $server): JsonResponse
+    {
+        return $this->writeContent($request, $server);
+    }
+
+    private function writeContent(WriteFileContentRequest $request, Server $server): JsonResponse
     {
         $this->fileRepository->setServer($server)->putContent($request->get('file'), $request->getContent());
 
