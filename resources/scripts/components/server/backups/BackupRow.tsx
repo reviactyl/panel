@@ -42,7 +42,8 @@ export default ({ backup, className }: Props) => {
                             ? b
                             : {
                                   ...b,
-                                  isSuccessful: parsed.is_successful || true,
+                                  // Older Wings versions omit this field from successful completion events.
+                                  isSuccessful: parsed.is_successful ?? true,
                                   checksum: (parsed.checksum_type || '') + ':' + (parsed.checksum || ''),
                                   bytes: parsed.file_size || 0,
                                   completedAt: new Date(),
