@@ -402,10 +402,10 @@ class SubuserPreviewTest extends ClientApiIntegrationTestCase
         $this->withPreviewToken($token)->postJson($this->link($server, 'users'), ['email' => 'invalid'])->assertUnprocessable();
         $this->withPreviewToken($token)->postJson($this->link($server, 'files/create-folder'), ['root' => '/'])->assertUnprocessable();
 
-        $this->assertSame(
-            ['power_status' => null, 'files' => []],
-            SubuserPreviewSession::query()->firstOrFail()->state
-        );
+        $state = SubuserPreviewSession::query()->firstOrFail()->state;
+        $this->assertCount(2, $state);
+        $this->assertNull($state['power_status']);
+        $this->assertSame([], $state['files']);
     }
 
     public function test_schedule_tasks_require_the_underlying_action_permission(): void
