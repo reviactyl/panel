@@ -203,6 +203,9 @@ const ServerNavigation = () => {
     );
 };
 
+/**
+ * Renders the server interface, including navigation, server pages, and route-aware content.
+ */
 export default function ServerRouter() {
     const params = useParams<{ id: string }>();
     const location = useLocation();

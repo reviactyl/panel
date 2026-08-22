@@ -28,6 +28,12 @@ class SubuserPreviewResourceSimulator
         private readonly SubuserPreviewStateService $stateService,
     ) {}
 
+    /**
+     * Applies preview server state to matching global client API resources.
+     *
+     * @param SubuserPreviewContext $context The preview context containing the target server.
+     * @return mixed The original response with simulated server state applied when applicable.
+     */
     public function readGlobal(Request $request, \Closure $next, SubuserPreviewContext $context): mixed
     {
         $response = $next($request);
@@ -49,6 +55,15 @@ class SubuserPreviewResourceSimulator
         return $response;
     }
 
+    /**
+     * Applies simulated preview state to client API read responses for a server.
+     *
+     * @param Request $request The incoming client API request.
+     * @param \Closure $next The handler that produces the original response.
+     * @param SubuserPreviewContext $context The preview session context.
+     * @param string $path The API route path being read.
+     * @return mixed The overlaid response or the original response.
+     */
     public function read(Request $request, \Closure $next, SubuserPreviewContext $context, string $path): mixed
     {
         $path = rtrim($path, '/');
@@ -127,6 +142,14 @@ class SubuserPreviewResourceSimulator
         return $response;
     }
 
+    /**
+     * Routes a write request to the corresponding simulated resource operation.
+     *
+     * @param Request $request The incoming API request.
+     * @param SubuserPreviewContext $context The preview session context.
+     * @param string $path The API path being modified.
+     * @return JsonResponse|null The simulated response, or `null` when the path is unsupported.
+     */
     public function write(Request $request, SubuserPreviewContext $context, string $path): ?JsonResponse
     {
         $path = rtrim($path, '/');
@@ -239,6 +262,13 @@ class SubuserPreviewResourceSimulator
         return null;
     }
 
+    /**
+     * Creates a simulated database resource in the preview session.
+     *
+     * @param Request $request The database name and allowed remote connection pattern.
+     * @param SubuserPreviewContext $context The preview session and authorization context.
+     * @return JsonResponse The created database resource.
+     */
     private function createDatabase(Request $request, SubuserPreviewContext $context): JsonResponse
     {
         $this->authorize($context, Permission::ACTION_DATABASE_CREATE);
@@ -276,6 +306,13 @@ class SubuserPreviewResourceSimulator
         return response()->json($item, 201);
     }
 
+    /**
+     * Rotates a database password and stores the updated database resource in the preview state.
+     *
+     * @param Request $request The request containing the database identifier.
+     * @param SubuserPreviewContext $context The preview context used for authorization and state storage.
+     * @return JsonResponse The updated database resource.
+     */
     private function rotateDatabasePassword(Request $request, SubuserPreviewContext $context): JsonResponse
     {
         $this->authorize($context, Permission::ACTION_DATABASE_UPDATE);
@@ -289,6 +326,13 @@ class SubuserPreviewResourceSimulator
         return response()->json($item);
     }
 
+    /**
+     * Creates a simulated schedule and stores it in the preview state.
+     *
+     * @param Request $request The schedule creation request.
+     * @param SubuserPreviewContext $context The subuser preview context.
+     * @return JsonResponse The created schedule resource.
+     */
     private function createSchedule(Request $request, SubuserPreviewContext $context): JsonResponse
     {
         $this->authorize($context, Permission::ACTION_SCHEDULE_CREATE);
@@ -300,6 +344,13 @@ class SubuserPreviewResourceSimulator
         return response()->json($item, 201);
     }
 
+    /**
+     * Updates a simulated schedule and returns its updated resource.
+     *
+     * @param Request $request The request containing the schedule changes.
+     * @param SubuserPreviewContext $context The preview context used to authorize and store the update.
+     * @return JsonResponse The updated schedule resource.
+     */
     private function updateSchedule(Request $request, SubuserPreviewContext $context): JsonResponse
     {
         $this->authorize($context, Permission::ACTION_SCHEDULE_UPDATE);
@@ -314,6 +365,13 @@ class SubuserPreviewResourceSimulator
         return response()->json($item);
     }
 
+    /**
+     * Executes a schedule and records its latest run time in the preview state.
+     *
+     * @param Request $request The request containing the schedule identifier.
+     * @param SubuserPreviewContext $context The preview context.
+     * @return JsonResponse An empty response with HTTP status 202.
+     */
     private function executeSchedule(Request $request, SubuserPreviewContext $context): JsonResponse
     {
         $this->authorize($context, Permission::ACTION_SCHEDULE_UPDATE);
@@ -325,6 +383,13 @@ class SubuserPreviewResourceSimulator
         return response()->json([], 202);
     }
 
+    /**
+     * Creates a simulated task for a schedule and returns the new task.
+     *
+     * @param Request $request The task data submitted by the client.
+     * @param SubuserPreviewContext $context The preview session context.
+     * @return JsonResponse The created schedule task.
+     */
     private function createScheduleTask(Request $request, SubuserPreviewContext $context): JsonResponse
     {
         $this->authorize($context, Permission::ACTION_SCHEDULE_UPDATE);
@@ -343,6 +408,13 @@ class SubuserPreviewResourceSimulator
         return response()->json($task, 201);
     }
 
+    /**
+     * Updates a task within a schedule and stores the revised schedule in preview state.
+     *
+     * @param Request $request The request containing the schedule task attributes.
+     * @param SubuserPreviewContext $context The preview session context.
+     * @return JsonResponse The updated task resource.
+     */
     private function updateScheduleTask(Request $request, SubuserPreviewContext $context): JsonResponse
     {
         $this->authorize($context, Permission::ACTION_SCHEDULE_UPDATE);
@@ -373,6 +445,13 @@ class SubuserPreviewResourceSimulator
         ));
     }
 
+    /**
+     * Deletes a task from a schedule and renumbers the remaining tasks.
+     *
+     * @param Request $request The request containing the schedule and task identifiers.
+     * @param SubuserPreviewContext $context The preview context used to authorize and store the simulated change.
+     * @return JsonResponse An empty HTTP 204 response.
+     */
     private function deleteScheduleTask(Request $request, SubuserPreviewContext $context): JsonResponse
     {
         $this->authorize($context, Permission::ACTION_SCHEDULE_UPDATE);
@@ -419,6 +498,13 @@ class SubuserPreviewResourceSimulator
         return response()->json($item, 201);
     }
 
+    /**
+     * Updates the notes for an allocation in the preview state.
+     *
+     * @param Request $request The request containing the allocation notes.
+     * @param SubuserPreviewContext $context The preview session context.
+     * @return JsonResponse The updated allocation resource.
+     */
     private function updateAllocation(Request $request, SubuserPreviewContext $context): JsonResponse
     {
         $this->authorize($context, Permission::ACTION_ALLOCATION_UPDATE);
@@ -431,6 +517,13 @@ class SubuserPreviewResourceSimulator
         return response()->json($item);
     }
 
+    /**
+     * Sets the specified allocation as the server's primary allocation.
+     *
+     * @param Request $request The request containing the allocation identifier.
+     * @param SubuserPreviewContext $context The preview context for the server.
+     * @return JsonResponse The updated allocation resource.
+     */
     private function setPrimaryAllocation(Request $request, SubuserPreviewContext $context): JsonResponse
     {
         $this->authorize($context, Permission::ACTION_ALLOCATION_UPDATE);
@@ -477,6 +570,13 @@ class SubuserPreviewResourceSimulator
         return response()->json($target);
     }
 
+    /**
+     * Deletes a non-primary allocation from the preview state.
+     *
+     * @param Request $request The request containing the allocation identifier.
+     * @param SubuserPreviewContext $context The preview session context.
+     * @return JsonResponse An empty response with HTTP status 204.
+     */
     private function deleteAllocation(Request $request, SubuserPreviewContext $context): JsonResponse
     {
         $this->authorize($context, Permission::ACTION_ALLOCATION_DELETE);
@@ -489,6 +589,13 @@ class SubuserPreviewResourceSimulator
         return response()->json([], 204);
     }
 
+    /**
+     * Creates a simulated successful backup for the preview session.
+     *
+     * @param Request $request The backup name, lock status, and ignored files.
+     * @param SubuserPreviewContext $context The preview session context.
+     * @return JsonResponse The created backup resource.
+     */
     private function createBackup(Request $request, SubuserPreviewContext $context): JsonResponse
     {
         $this->authorize($context, Permission::ACTION_BACKUP_CREATE);
@@ -519,6 +626,13 @@ class SubuserPreviewResourceSimulator
         return response()->json($item, 201);
     }
 
+    /**
+     * Toggles the lock state of a backup.
+     *
+     * @param Request $request The request containing the backup identifier.
+     * @param SubuserPreviewContext $context The preview session context.
+     * @return JsonResponse The updated backup resource.
+     */
     private function toggleBackupLock(Request $request, SubuserPreviewContext $context): JsonResponse
     {
         $this->authorize($context, Permission::ACTION_BACKUP_DELETE);
@@ -530,6 +644,13 @@ class SubuserPreviewResourceSimulator
         return response()->json($item);
     }
 
+    /**
+     * Deletes an unlocked backup from the preview state.
+     *
+     * @param Request $request The request containing the backup identifier.
+     * @param SubuserPreviewContext $context The preview context used for authorization and state updates.
+     * @return JsonResponse An empty 204 No Content response.
+     */
     private function deleteBackup(Request $request, SubuserPreviewContext $context): JsonResponse
     {
         $this->authorize($context, Permission::ACTION_BACKUP_DELETE);
@@ -542,6 +663,14 @@ class SubuserPreviewResourceSimulator
         return response()->json([], 204);
     }
 
+    /**
+     * Updates a user-editable startup variable in the preview state.
+     *
+     * @param Request $request The request containing the variable key and value.
+     * @param SubuserPreviewContext $context The preview session context.
+     * @return JsonResponse The updated variable and startup command metadata.
+     * @throws BadRequestHttpException If the variable is unavailable or its value is invalid.
+     */
     private function updateStartupVariable(Request $request, SubuserPreviewContext $context): JsonResponse
     {
         $this->authorize($context, Permission::ACTION_STARTUP_UPDATE);
@@ -577,6 +706,13 @@ class SubuserPreviewResourceSimulator
         ]));
     }
 
+    /**
+     * Updates the preview server's name and, when provided, its description.
+     *
+     * @param Request $request The request containing the new server name and optional description.
+     * @param SubuserPreviewContext $context The preview context used to authorize and store the changes.
+     * @return JsonResponse An empty response with HTTP status 204.
+     */
     private function renameServer(Request $request, SubuserPreviewContext $context): JsonResponse
     {
         $this->authorize($context, Permission::ACTION_SETTINGS_RENAME);
@@ -596,6 +732,13 @@ class SubuserPreviewResourceSimulator
         return response()->json([], 204);
     }
 
+    /**
+     * Sets the server's Docker image in the preview state.
+     *
+     * @param Request $request The request containing the Docker image.
+     * @param SubuserPreviewContext $context The preview session context.
+     * @return JsonResponse An empty response with HTTP status 204.
+     */
     private function setDockerImage(Request $request, SubuserPreviewContext $context): JsonResponse
     {
         $this->authorize($context, Permission::ACTION_STARTUP_DOCKER_IMAGE);
@@ -609,6 +752,13 @@ class SubuserPreviewResourceSimulator
         return response()->json([], 204);
     }
 
+    /**
+     * Creates a simulated subuser and stores it in the preview state.
+     *
+     * @param Request $request The request containing the subuser email and permissions.
+     * @param SubuserPreviewContext $context The preview session context.
+     * @return JsonResponse The created subuser resource.
+     */
     private function createSubuser(Request $request, SubuserPreviewContext $context): JsonResponse
     {
         $this->authorize($context, Permission::ACTION_USER_CREATE);
@@ -631,6 +781,13 @@ class SubuserPreviewResourceSimulator
         return response()->json($item, 201);
     }
 
+    /**
+     * Updates a subuser's permissions in the preview state.
+     *
+     * @param Request $request The request containing the subuser permissions.
+     * @param SubuserPreviewContext $context The preview session context.
+     * @return JsonResponse The updated subuser resource.
+     */
     private function updateSubuser(Request $request, SubuserPreviewContext $context): JsonResponse
     {
         $this->authorize($context, Permission::ACTION_USER_UPDATE);
@@ -654,6 +811,13 @@ class SubuserPreviewResourceSimulator
         return response()->json([], 204);
     }
 
+    /**
+     * Resolves a subuser resource from preview state or the server's current subusers.
+     *
+     * @param SubuserPreviewContext $context The preview session context.
+     * @param string $uuid The subuser's user UUID.
+     * @return array The formatted subuser resource.
+     */
     private function subuserResource(SubuserPreviewContext $context, string $uuid): array
     {
         $overlay = $this->overlay($context, 'subusers', $uuid);
@@ -679,6 +843,14 @@ class SubuserPreviewResourceSimulator
         ]);
     }
 
+    /**
+     * Prevents modifications to the currently previewed user's identity.
+     *
+     * @param SubuserPreviewContext $context The preview context containing the current user.
+     * @param string $uuid The user UUID to check.
+     *
+     * @throws AccessDeniedHttpException If the UUID belongs to the currently previewed user.
+     */
     private function guardPreviewIdentity(SubuserPreviewContext $context, string $uuid): void
     {
         if ($context->session()->subuser->user->uuid === $uuid) {
@@ -686,6 +858,12 @@ class SubuserPreviewResourceSimulator
         }
     }
 
+    /**
+     * Filters requested permissions to recognized values and includes WebSocket connection access.
+     *
+     * @param Request $request The request containing the requested permissions.
+     * @return array The filtered, unique permissions.
+     */
     private function cleanPermissions(Request $request): array
     {
         $allowed = Permission::permissions()->flatMap(
@@ -701,6 +879,13 @@ class SubuserPreviewResourceSimulator
         )));
     }
 
+    /**
+     * Applies simulated startup variables, startup command, and Docker image values to a response.
+     *
+     * @param JsonResponse $response The response to update.
+     * @param SubuserPreviewContext $context The preview context containing simulated server state.
+     * @return JsonResponse The updated response.
+     */
     private function applyStartupState(JsonResponse $response, SubuserPreviewContext $context): JsonResponse
     {
         $payload = $response->getData(true);
@@ -726,6 +911,12 @@ class SubuserPreviewResourceSimulator
         return $response;
     }
 
+    /**
+     * Applies simulated server, startup variable, and allocation state to a server resource.
+     *
+     * @param array<string, mixed> &$item The server resource to update.
+     * @param SubuserPreviewContext $context The preview session context.
+     */
     private function applyServerState(array &$item, SubuserPreviewContext $context): void
     {
         $state = Arr::get($context->session()->state ?? [], 'server', []);
@@ -757,6 +948,12 @@ class SubuserPreviewResourceSimulator
         }
     }
 
+    /**
+     * Builds the server startup command using the current preview variable values.
+     *
+     * @param SubuserPreviewContext $context The preview context containing the server and simulated startup variables.
+     * @return string The startup command with variable placeholders replaced by their values.
+     */
     private function startupCommand(SubuserPreviewContext $context): string
     {
         $server = $context->session()->server;
@@ -766,6 +963,13 @@ class SubuserPreviewResourceSimulator
         return preg_replace_callback('/{{([A-Z0-9_]+)}}/', fn (array $match) => (string) $values->get($match[1], $match[0]), $server->startup) ?? $server->startup;
     }
 
+    /**
+     * Builds API-formatted schedule attributes from the request data.
+     *
+     * @param Request $request The request containing schedule configuration.
+     * @param int $id The preview schedule identifier.
+     * @return array The schedule attributes.
+     */
     private function scheduleAttributes(Request $request, int $id): array
     {
         $now = Carbon::now();
@@ -791,6 +995,14 @@ class SubuserPreviewResourceSimulator
         ];
     }
 
+    /**
+     * Builds the API attributes for a schedule task.
+     *
+     * @param Request $request The request containing the task fields.
+     * @param int $id The task identifier.
+     * @param int $sequence The default task sequence.
+     * @return array The formatted task attributes.
+     */
     private function taskAttributes(Request $request, int $id, int $sequence): array
     {
         $now = Carbon::now()->toAtomString();
@@ -808,6 +1020,13 @@ class SubuserPreviewResourceSimulator
         ];
     }
 
+    /**
+     * Resolves a schedule from preview state or the server and formats it as an API resource.
+     *
+     * @param SubuserPreviewContext $context The preview context used to access session state and server data.
+     * @param string $id The schedule identifier.
+     * @return array The formatted schedule resource.
+     */
     private function scheduleResource(SubuserPreviewContext $context, string $id): array
     {
         $overlay = $this->overlay($context, 'schedules', $id);
@@ -823,6 +1042,12 @@ class SubuserPreviewResourceSimulator
         return $this->scheduleItem($schedule);
     }
 
+    /**
+     * Formats a schedule and its tasks as an API resource item.
+     *
+     * @param Schedule $schedule The schedule to format.
+     * @return array The formatted schedule resource.
+     */
     private function scheduleItem(Schedule $schedule): array
     {
         return $this->item('server_schedule', [
@@ -861,6 +1086,13 @@ class SubuserPreviewResourceSimulator
         ]);
     }
 
+    /**
+     * Resolves a database resource from preview state or the server's databases.
+     *
+     * @param SubuserPreviewContext $context The preview context used to authorize password access.
+     * @param string $id The encoded database identifier.
+     * @return array The formatted database resource.
+     */
     private function databaseResource(SubuserPreviewContext $context, string $id): array
     {
         $overlay = $this->overlay($context, 'databases', $id);
@@ -887,6 +1119,13 @@ class SubuserPreviewResourceSimulator
         ]);
     }
 
+    /**
+     * Resolves an allocation from preview state or the server's allocations.
+     *
+     * @param SubuserPreviewContext $context The preview context containing server and overlay state.
+     * @param string $id The allocation identifier.
+     * @return array The formatted allocation resource.
+     */
     private function allocationResource(SubuserPreviewContext $context, string $id): array
     {
         $overlay = $this->overlay($context, 'allocations', $id);
@@ -902,6 +1141,13 @@ class SubuserPreviewResourceSimulator
         return $this->allocationItem($allocation, $context->session()->server->allocation_id === $allocation->id);
     }
 
+    /**
+     * Formats an allocation as an API resource item.
+     *
+     * @param Allocation $allocation The allocation to format.
+     * @param bool $primary Whether the allocation is the primary allocation.
+     * @return array The formatted allocation resource.
+     */
     private function allocationItem(Allocation $allocation, bool $primary): array
     {
         return $this->item('allocation', [
@@ -914,6 +1160,14 @@ class SubuserPreviewResourceSimulator
         ]);
     }
 
+    /**
+     * Resolves a backup resource from preview state or the server's persisted backups.
+     *
+     * @param SubuserPreviewContext $context The preview session context.
+     * @param string $uuid The backup UUID.
+     * @return array The formatted backup resource.
+     * @throws NotFoundHttpException If the backup does not exist.
+     */
     private function backupResource(SubuserPreviewContext $context, string $uuid): array
     {
         $overlay = $this->overlay($context, 'backups', $uuid);
@@ -939,6 +1193,16 @@ class SubuserPreviewResourceSimulator
         ]);
     }
 
+    /**
+     * Authorizes and records deletion of a supported preview resource.
+     *
+     * @param Request $request The request containing the resource identifier.
+     * @param SubuserPreviewContext $context The preview session context.
+     * @param string $resource The resource collection containing the item.
+     * @param string $parameter The route parameter containing the item identifier.
+     * @param string $permission The permission required for deletion.
+     * @return JsonResponse An empty HTTP 204 response.
+     */
     private function deleteResource(
         Request $request,
         SubuserPreviewContext $context,
@@ -958,6 +1222,15 @@ class SubuserPreviewResourceSimulator
         return response()->json([], 204);
     }
 
+    /**
+     * Applies preview-state overlays to a resource collection response.
+     *
+     * @param JsonResponse $response The collection response to update.
+     * @param SubuserPreviewContext $context The preview session context.
+     * @param string $resource The resource type whose overlays are applied.
+     * @param string $key The attribute used to identify collection items.
+     * @return JsonResponse The response containing the merged collection.
+     */
     private function mergeCollection(
         JsonResponse $response,
         SubuserPreviewContext $context,
@@ -975,6 +1248,15 @@ class SubuserPreviewResourceSimulator
         return $response;
     }
 
+    /**
+     * Replaces a JSON resource response with its preview-state overlay when available.
+     *
+     * @param JsonResponse $response The original resource response.
+     * @param SubuserPreviewContext $context The preview session context.
+     * @param string $resource The resource type.
+     * @param string $id The resource identifier.
+     * @return JsonResponse The overlaid response or the original response when no overlay exists.
+     */
     private function replaceItem(JsonResponse $response, SubuserPreviewContext $context, string $resource, string $id): JsonResponse
     {
         $overlay = $this->overlay($context, $resource, $id);
@@ -985,6 +1267,13 @@ class SubuserPreviewResourceSimulator
         return $this->overlayResponse($overlay['value']);
     }
 
+    /**
+     * Creates a JSON response for an overlaid resource.
+     *
+     * @param array|null $item The resource data to include in the response.
+     * @return JsonResponse The JSON response containing the resource data.
+     * @throws NotFoundHttpException If the resource data is unavailable.
+     */
     private function overlayResponse(?array $item): JsonResponse
     {
         if ($item === null) {
@@ -994,6 +1283,13 @@ class SubuserPreviewResourceSimulator
         return response()->json($item);
     }
 
+    /**
+     * Requires a resource item to be present.
+     *
+     * @param array|null $item The resource item to check.
+     * @return array The provided resource item.
+     * @throws NotFoundHttpException If the resource item is missing.
+     */
     private function requiredResource(?array $item): array
     {
         if ($item === null) {
@@ -1003,16 +1299,38 @@ class SubuserPreviewResourceSimulator
         return $item;
     }
 
+    /**
+     * Creates a resource item with the specified object type and attributes.
+     *
+     * @param string $object The resource object type.
+     * @param array $attributes The resource attributes.
+     * @return array The formatted resource item.
+     */
     private function item(string $object, array $attributes): array
     {
         return ['object' => $object, 'attributes' => $attributes];
     }
 
+    /**
+     * Retrieves preview resources of the specified type from the session state.
+     *
+     * @param SubuserPreviewContext $context The preview context containing session state.
+     * @param string $resource The resource type to retrieve.
+     * @return array The stored preview resources, or an empty array when none exist.
+     */
     private function resources(SubuserPreviewContext $context, string $resource): array
     {
         return Arr::get($context->session()->state ?? [], "resources.$resource", []);
     }
 
+    /**
+     * Retrieves the preview overlay for a resource identifier.
+     *
+     * @param SubuserPreviewContext $context The preview session context.
+     * @param string $resource The resource type.
+     * @param string $id The resource identifier.
+     * @return array{exists: bool, value: mixed} The overlay existence flag and stored value.
+     */
     private function overlay(SubuserPreviewContext $context, string $resource, string $id): array
     {
         $resources = $this->resources($context, $resource);
@@ -1020,6 +1338,14 @@ class SubuserPreviewResourceSimulator
         return ['exists' => array_key_exists($id, $resources), 'value' => $resources[$id] ?? null];
     }
 
+    /**
+     * Stores or removes a simulated resource overlay in the preview state.
+     *
+     * @param SubuserPreviewContext $context The preview session context.
+     * @param string $resource The resource type.
+     * @param string $id The resource identifier.
+     * @param array|null $item The resource data, or null to mark it as removed.
+     */
     private function storeOverlay(SubuserPreviewContext $context, string $resource, string $id, ?array $item): void
     {
         $this->updateState($context, function (array $state) use ($resource, $id, $item) {
@@ -1029,6 +1355,13 @@ class SubuserPreviewResourceSimulator
         });
     }
 
+    /**
+     * Updates a server property in the preview state.
+     *
+     * @param SubuserPreviewContext $context The preview context whose server state is updated.
+     * @param string $key The server property name.
+     * @param mixed $value The property value.
+     */
     private function setServerState(SubuserPreviewContext $context, string $key, mixed $value): void
     {
         $this->updateState($context, function (array $state) use ($key, $value) {
@@ -1038,11 +1371,25 @@ class SubuserPreviewResourceSimulator
         });
     }
 
+    /**
+     * Updates the preview state for the specified context.
+     *
+     * @param SubuserPreviewContext $context The preview context whose state is updated.
+     * @param callable $callback The callback that mutates the preview state.
+     */
     private function updateState(SubuserPreviewContext $context, callable $callback): void
     {
         $this->stateService->update($context, $callback);
     }
 
+    /**
+     * Ensures the preview context grants the specified permission.
+     *
+     * @param SubuserPreviewContext $context The preview context to check.
+     * @param string $permission The required permission.
+     *
+     * @throws AccessDeniedHttpException If the permission is not granted.
+     */
     private function authorize(SubuserPreviewContext $context, string $permission): void
     {
         if (! $context->allows($permission)) {
@@ -1050,6 +1397,11 @@ class SubuserPreviewResourceSimulator
         }
     }
 
+    /**
+     * Validates schedule request fields and their supported formats.
+     *
+     * @param Request $request The request containing schedule attributes.
+     */
     private function validateSchedule(Request $request): void
     {
         validator($request->all(), [
@@ -1063,6 +1415,12 @@ class SubuserPreviewResourceSimulator
         ])->validate();
     }
 
+    /**
+     * Validates schedule task input and authorizes the requested task action.
+     *
+     * @param Request $request The request containing the task attributes.
+     * @param SubuserPreviewContext $context The preview context used for authorization.
+     */
     private function validateScheduleTask(Request $request, SubuserPreviewContext $context): void
     {
         validator($request->all(), [
@@ -1079,6 +1437,12 @@ class SubuserPreviewResourceSimulator
         }
     }
 
+    /**
+     * Validates the permissions and, when creating a subuser, the email address in the request.
+     *
+     * @param Request $request The request containing subuser data.
+     * @param bool $creating Whether the request creates a new subuser and therefore requires an email address.
+     */
     private function validateSubuser(Request $request, bool $creating): void
     {
         $rules = [
@@ -1092,11 +1456,23 @@ class SubuserPreviewResourceSimulator
         validator($request->all(), $rules)->validate();
     }
 
+    /**
+     * Generates a random identifier for a preview resource.
+     *
+     * @return int A random nine-digit preview identifier.
+     */
     private function previewId(): int
     {
         return random_int(900000000, 999999999);
     }
 
+    /**
+     * Determines whether the current resource count has reached the specified limit.
+     *
+     * @param array $liveIds Identifiers for resources currently present in the live state.
+     * @param int|null $limit The maximum number of resources, or `null` for no limit.
+     * @return bool `true` if the resource count is greater than or equal to the limit, `false` otherwise.
+     */
     private function atLimit(
         SubuserPreviewContext $context,
         string $resource,

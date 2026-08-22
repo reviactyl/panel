@@ -18,6 +18,12 @@ use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
 class SubuserPreviewController extends ClientApiController
 {
+    /**
+     * Retrieves the authenticated owner's active subuser preview session status.
+     *
+     * @param Request $request The request containing the authenticated user and preview token.
+     * @return JsonResponse The session status, ownership information, and session details when active.
+     */
     public function status(Request $request): JsonResponse
     {
         $session = $this->activeSession($request->user());
@@ -35,6 +41,14 @@ class SubuserPreviewController extends ClientApiController
         ]);
     }
 
+    /**
+     * Starts a preview session for a server subuser.
+     *
+     * @param Request $request The request containing the preview replacement option.
+     * @param Server $server The server whose subuser is being previewed.
+     * @param User $user The subuser to preview.
+     * @return JsonResponse The created session, or the existing active session when creation is unavailable.
+     */
     public function store(Request $request, Server $server, User $user): JsonResponse
     {
         if ($request->attributes->has(SubuserPreviewContext::class)) {
@@ -94,6 +108,12 @@ class SubuserPreviewController extends ClientApiController
         ], 201);
     }
 
+    /**
+     * Refreshes the active subuser preview session.
+     *
+     * @param Request $request The request containing the preview session context.
+     * @return JsonResponse The active preview session details.
+     */
     public function heartbeat(Request $request): JsonResponse
     {
         $context = $request->attributes->get(SubuserPreviewContext::class);
@@ -107,6 +127,12 @@ class SubuserPreviewController extends ClientApiController
         ]);
     }
 
+    /**
+     * Ends the active subuser preview session.
+     *
+     * @param Request $request The request containing the active preview session context.
+     * @return JsonResponse An empty HTTP 204 response.
+     */
     public function destroy(Request $request): JsonResponse
     {
         $context = $request->attributes->get(SubuserPreviewContext::class);
@@ -119,6 +145,13 @@ class SubuserPreviewController extends ClientApiController
         return response()->json([], 204);
     }
 
+    /**
+     * Retrieves the owner's active subuser preview session.
+     *
+     * @param User $owner The user who owns the preview session.
+     * @param bool $required Whether to throw a conflict exception when no active session exists.
+     * @return ?SubuserPreviewSession The active preview session, or null when none exists.
+     */
     private function activeSession(User $owner, bool $required = false): ?SubuserPreviewSession
     {
         $session = SubuserPreviewSession::query()
@@ -138,6 +171,12 @@ class SubuserPreviewController extends ClientApiController
         return $session;
     }
 
+    /**
+     * Converts a preview session into its API representation.
+     *
+     * @param SubuserPreviewSession $session The preview session to serialize.
+     * @return array The session identifiers, server and subuser details, permission count, file size limit, power status, and expiration time.
+     */
     private function serialize(SubuserPreviewSession $session): array
     {
         return [

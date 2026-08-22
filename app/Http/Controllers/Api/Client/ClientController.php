@@ -23,8 +23,10 @@ class ClientController extends ClientApiController
     }
 
     /**
-     * Return all the servers available to the client making the API
-     * request, including servers the user has access to as a subuser.
+     * Lists servers visible to the authenticated client, including servers accessible through subuser permissions.
+     *
+     * @param GetServersRequest $request The request containing filters, access mode, pagination, and preview context.
+     * @return array The transformed, paginated server collection.
      */
     public function index(GetServersRequest $request): array
     {
@@ -95,9 +97,9 @@ class ClientController extends ClientApiController
     }
 
     /**
-     * Returns eggs for the dashboard egg filter. With default scope, returns eggs from
-     * the user's accessible servers. With ?type=admin (root_admin only), returns eggs
-     * from "other" servers (servers the admin can see but is not owner/subuser of).
+     * Provides the eggs available for the dashboard filter based on the requested server scope.
+     *
+     * @return array A list containing the available eggs and their IDs and names.
      */
     public function eggs(GetServersRequest $request): array
     {

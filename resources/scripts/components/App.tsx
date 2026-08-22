@@ -41,7 +41,11 @@ interface ExtendedWindow extends Window {
     };
 }
 
-// setupInterceptors(history);
+/**
+ * Renders the application shell, global providers, and route tree.
+ *
+ * @returns The configured application interface.
+ */
 
 function App() {
     const { PanelUser, SiteConfiguration, PanelConfiguration } = window as ExtendedWindow;

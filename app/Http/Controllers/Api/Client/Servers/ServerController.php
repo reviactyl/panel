@@ -20,8 +20,9 @@ class ServerController extends ClientApiController
     }
 
     /**
-     * Transform an individual server into a response that can be consumed by a
-     * client using the API.
+     * Transforms an individual server into an API response with ownership and permission metadata.
+     *
+     * @return array The transformed server data and metadata.
      */
     public function index(GetServerRequest $request, Server $server): array
     {
