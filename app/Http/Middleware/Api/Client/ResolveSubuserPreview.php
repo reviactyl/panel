@@ -15,6 +15,16 @@ class ResolveSubuserPreview
 
     public function __construct(private readonly SubuserPreviewSimulator $simulator) {}
 
+    /**
+     * Resolves a subuser preview session for the request and delegates it with preview context.
+     *
+     * Requests without a preview header continue unchanged. Invalid, expired, or restricted preview
+     * requests raise an HTTP exception.
+     *
+     * @return mixed The response from the next handler or preview simulator.
+     * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException If the session is unavailable or the request targets a restricted route.
+     * @throws \Symfony\Component\HttpKernel\Exception\ConflictHttpException If the session has expired or the request attempts to start another preview.
+     */
     public function handle(Request $request, \Closure $next): mixed
     {
         $token = $request->header(self::HEADER);

@@ -135,6 +135,13 @@ const DashboardNavigation = () => {
     );
 };
 
+/**
+ * Renders the dashboard layout and routes.
+ *
+ * Displays the maintenance screen when maintenance is active unless a root administrator is viewing the account normally. Restricts account and extension navigation during subuser preview sessions.
+ *
+ * @returns The dashboard interface or maintenance screen.
+ */
 function DashboardRouter() {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const isUnderMaintenance = useStoreState((state) => state.designify.data?.isUnderMaintenance);

@@ -31,29 +31,50 @@ class SubuserPreviewSession extends Model
         'expires_at' => 'required|date',
     ];
 
-    /** @return BelongsTo<User, $this> */
+    /**
+     * Defines the user who owns this preview session.
+     *
+     * @return BelongsTo<User, $this> The owning user relationship.
+     */
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'owner_id');
     }
 
-    /** @return BelongsTo<Server, $this> */
+    /**
+     * Gets the server associated with the preview session.
+     *
+     * @return BelongsTo<Server, $this> The server relationship.
+     */
     public function server(): BelongsTo
     {
         return $this->belongsTo(Server::class);
     }
 
-    /** @return BelongsTo<Subuser, $this> */
+    /**
+     * Defines the subuser associated with the preview session.
+     *
+     * @return BelongsTo<Subuser, $this> The associated subuser relationship.
+     */
     public function subuser(): BelongsTo
     {
         return $this->belongsTo(Subuser::class);
     }
 
+    /**
+     * Determines whether a token matches the stored session token hash.
+     *
+     * @param string $token The token to verify.
+     * @return bool `true` if the token matches, `false` otherwise.
+     */
     public function tokenMatches(string $token): bool
     {
         return hash_equals($this->token_hash, hash('sha256', $token));
     }
 
+    /**
+     * Renews the session activity timestamp and extends its expiration by 30 minutes.
+     */
     public function renew(): void
     {
         $now = Carbon::now();

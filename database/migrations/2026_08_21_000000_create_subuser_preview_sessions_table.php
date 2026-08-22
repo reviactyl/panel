@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Creates the subuser preview sessions table and its relationships.
+     */
     public function up(): void
     {
         Schema::create('subuser_preview_sessions', function (Blueprint $table) {
@@ -26,6 +29,9 @@ return new class extends Migration
         });
     }
 
+    /**
+     * Removes the subuser preview sessions table if it exists.
+     */
     public function down(): void
     {
         Schema::dropIfExists('subuser_preview_sessions');

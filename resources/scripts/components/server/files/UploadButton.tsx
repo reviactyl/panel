@@ -19,6 +19,12 @@ import http from '@/api/http';
 import i18n from '@/i18n';
 import { bytesToString } from '@/lib/formatters';
 
+/**
+ * Determines whether a drag event contains file data.
+ *
+ * @param event - The drag event to inspect
+ * @returns `true` if the event contains file data, `false` otherwise.
+ */
 function isFileOrDirectory(event: DragEvent): boolean {
     if (!event.dataTransfer?.types) {
         return false;

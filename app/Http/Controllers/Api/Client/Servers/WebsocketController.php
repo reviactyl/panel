@@ -28,10 +28,9 @@ class WebsocketController extends ClientApiController
     }
 
     /**
-     * Generates a one-time token that is sent along in every websocket call to the Daemon.
-     * This is a signed JWT that the Daemon then uses to verify the user's identity, and
-     * allows us to continually renew this token and avoid users maintaining sessions wrongly,
-     * as well as ensure that user's only perform actions they're allowed to.
+     * Generates authenticated websocket connection details for a server.
+     *
+     * @return JsonResponse The websocket token and connection URL.
      */
     public function __invoke(ClientApiRequest $request, Server $server): JsonResponse
     {

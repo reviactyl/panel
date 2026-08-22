@@ -10,9 +10,9 @@ use App\Services\Subusers\SubuserPreviewContext;
 class GetUserPermissionsService
 {
     /**
-     * Returns the server specific permissions that a user has. This checks
-     * if they are an admin or a subuser for the server. If no permissions are
-     * found, an empty array is returned.
+     * Determines the permissions a user has for a server.
+     *
+     * @return array The user's preview, administrative, owner, or subuser permissions, or an empty array when none apply.
      */
     public function handle(Server $server, User $user): array
     {

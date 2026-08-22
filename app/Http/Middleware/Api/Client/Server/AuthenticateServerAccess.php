@@ -25,7 +25,12 @@ class AuthenticateServerAccess
     public function __construct() {}
 
     /**
-     * Authenticate that this server exists and is not suspended or marked as installing.
+     * Authenticates access to a server route and enforces the server's current state.
+     *
+     * @return mixed The response produced by the next middleware.
+     *
+     * @throws NotFoundHttpException If the server is invalid, the preview targets another server, or the user lacks access.
+     * @throws ServerStateConflictException If the server state does not permit the requested route.
      */
     public function handle(Request $request, \Closure $next): mixed
     {

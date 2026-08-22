@@ -25,6 +25,14 @@ class SubuserPreviewSimulator
         private readonly SubuserPreviewStateService $stateService,
     ) {}
 
+    /**
+     * Handles a subuser preview request by validating its server scope and dispatching it to the appropriate read or write operation.
+     *
+     * @param Request $request The incoming API request.
+     * @param \Closure $next The next request handler.
+     * @param SubuserPreviewContext $context The preview context used to validate server access and permissions.
+     * @return mixed The response produced by the request handler.
+     */
     public function handle(Request $request, \Closure $next, SubuserPreviewContext $context): mixed
     {
         $serverParameter = $request->route()?->parameter('server');
@@ -62,6 +70,17 @@ class SubuserPreviewSimulator
         return $this->handleWrite($request, $context, $path);
     }
 
+    /**
+     * Handles read-only preview API operations for files, backups, and delegated resources.
+     *
+     * @param Request $request The incoming API request.
+     * @param \Closure $next The next request handler.
+     * @param SubuserPreviewContext $context The preview session and permission context.
+     * @param string $path The requested API route path.
+     * @return mixed The response generated for the requested read operation.
+     * @throws ConflictHttpException If the request requires an unavailable live connection.
+     * @throws NotFoundHttpException If the requested file or directory does not exist.
+     */
     private function handleRead(Request $request, \Closure $next, SubuserPreviewContext $context, string $path): mixed
     {
         if (str_ends_with($path, '/files/upload')) {
@@ -174,6 +193,14 @@ class SubuserPreviewSimulator
         return $this->resourceSimulator->read($request, $next, $context, $path);
     }
 
+    /**
+     * Handles supported write operations for the subuser preview.
+     *
+     * @param Request $request The request containing the operation and its input data.
+     * @param SubuserPreviewContext $context The preview context used for authorization and state updates.
+     * @param string $path The requested API path.
+     * @return JsonResponse The response representing the completed operation.
+     */
     private function handleWrite(Request $request, SubuserPreviewContext $context, string $path): JsonResponse
     {
         if (str_ends_with($path, '/power')) {
@@ -439,6 +466,14 @@ class SubuserPreviewSimulator
         throw new ConflictHttpException(trans('exceptions.subuser_preview.action_unavailable'));
     }
 
+    /**
+     * Merges preview-state file changes into a live directory listing.
+     *
+     * @param string $directory The directory whose entries are being merged.
+     * @param JsonResponse $response The live directory listing response.
+     * @param SubuserPreviewContext $context The preview context containing simulated file state.
+     * @return JsonResponse The updated directory listing response.
+     */
     private function mergeFileListing(
         string $directory,
         JsonResponse $response,
@@ -482,6 +517,14 @@ class SubuserPreviewSimulator
         return $response;
     }
 
+    /**
+     * Creates or updates a preview file or directory entry.
+     *
+     * @param SubuserPreviewContext $context The preview context whose state is updated.
+     * @param string $path The entry path.
+     * @param bool $isFile Whether the entry is a file rather than a directory.
+     * @param string|null $content The file content to store.
+     */
     private function putFile(SubuserPreviewContext $context, string $path, bool $isFile, ?string $content = null): void
     {
         $this->updateState($context, function (array $state) use ($path, $isFile, $content) {
@@ -501,6 +544,13 @@ class SubuserPreviewSimulator
         });
     }
 
+    /**
+     * Builds API file metadata for a preview entry.
+     *
+     * @param string $path The preview path used to derive the entry name.
+     * @param array $entry The preview entry containing file type, content, permissions, and timestamps.
+     * @return array The file attributes for the preview entry.
+     */
     private function fileAttributes(string $path, array $entry): array
     {
         $isFile = (bool) ($entry['is_file'] ?? true);
@@ -518,11 +568,23 @@ class SubuserPreviewSimulator
         ];
     }
 
+    /**
+     * Applies a state update within the specified preview context.
+     *
+     * @param SubuserPreviewContext $context The preview context whose state is updated.
+     * @param callable $callback The state update operation to execute.
+     */
     private function updateState(SubuserPreviewContext $context, callable $callback): void
     {
         $this->stateService->update($context, $callback);
     }
 
+    /**
+     * Decodes a stored file entry's content when it uses base64 encoding.
+     *
+     * @param array $entry The file entry containing content and optional encoding metadata.
+     * @return string The decoded content, or an empty string for invalid base64 data.
+     */
     private function decodeContent(array $entry): string
     {
         $content = (string) ($entry['content'] ?? '');
@@ -535,11 +597,25 @@ class SubuserPreviewSimulator
         return $decoded === false ? '' : $decoded;
     }
 
+    /**
+     * Calculates the decoded content size of a preview file entry.
+     *
+     * @param array $entry The preview file entry containing encoded content.
+     * @return int The content length in bytes.
+     */
     private function contentSize(array $entry): int
     {
         return strlen($this->decodeContent($entry));
     }
 
+    /**
+     * Resolves a preview path to its stored or live file entry.
+     *
+     * @param SubuserPreviewContext $context The preview context used to access the live server.
+     * @param array $state The current preview state.
+     * @param string $path The preview path to resolve.
+     * @return array The resolved file entry.
+     */
     private function resolveFileEntry(SubuserPreviewContext $context, array $state, string $path): array
     {
         if (array_key_exists($path, $state['files'] ?? [])) {
@@ -571,6 +647,13 @@ class SubuserPreviewSimulator
         ];
     }
 
+    /**
+     * Maps a preview path to its corresponding live server path.
+     *
+     * @param array $state The preview state containing directory mappings.
+     * @param string $path The preview path to map.
+     * @return string The normalized live server path.
+     */
     private function livePathForPreviewPath(array $state, string $path): string
     {
         $path = $this->normalizePath($path);
@@ -597,6 +680,14 @@ class SubuserPreviewSimulator
         return $this->normalizePath($state['files'][$match]['source_path'].substr($path, strlen($match)));
     }
 
+    /**
+     * Ensures the preview context grants the required permission.
+     *
+     * @param SubuserPreviewContext $context The preview context used for authorization.
+     * @param string|null $permission The permission to check.
+     *
+     * @throws AccessDeniedHttpException If the permission is missing or denied.
+     */
     private function authorize(SubuserPreviewContext $context, ?string $permission): void
     {
         if (! $permission || ! $context->allows($permission)) {
@@ -604,11 +695,24 @@ class SubuserPreviewSimulator
         }
     }
 
+    /**
+     * Combines a root path and name into a normalized path.
+     *
+     * @param string $root The root path.
+     * @param string $name The path name to append.
+     * @return string The normalized combined path.
+     */
     private function joinPath(string $root, string $name): string
     {
         return $this->normalizePath(rtrim($root, '/').'/'.ltrim($name, '/'));
     }
 
+    /**
+     * Normalizes a path by standardizing separators and resolving redundant components.
+     *
+     * @param string $path The path to normalize.
+     * @return string The normalized absolute-style path.
+     */
     private function normalizePath(string $path): string
     {
         $parts = [];
@@ -629,6 +733,12 @@ class SubuserPreviewSimulator
         return '/'.implode('/', $parts);
     }
 
+    /**
+     * Returns the parent directory of a path.
+     *
+     * @param string $path The path whose parent directory to return.
+     * @return string The parent directory, using `/` for paths in the root directory.
+     */
     private function parentPath(string $path): string
     {
         $parent = dirname($path);
