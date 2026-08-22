@@ -71,7 +71,8 @@ class SubuserPreviewSimulator
         if (str_ends_with($path, '/files/contents')) {
             $this->authorize($context, Permission::ACTION_FILE_READ_CONTENT);
             $file = $this->normalizePath((string) $request->query('file'));
-            $entry = ($context->session()->state ?? [])['files'][$file] ?? null;
+            $state = $context->session()->state ?? [];
+            $entry = $state['files'][$file] ?? null;
 
             if (is_array($entry)) {
                 if (($entry['deleted'] ?? false) === true || ($entry['is_file'] ?? true) === false) {
@@ -89,7 +90,7 @@ class SubuserPreviewSimulator
 
             $content = $this->fileRepository
                 ->setServer($context->session()->server)
-                ->getContent($file, config('panel.files.max_edit_size'));
+                ->getContent($this->livePathForPreviewPath($state, $file), config('panel.files.max_edit_size'));
 
             return new Response($content, 200, ['Content-Type' => 'text/plain']);
         }
@@ -97,7 +98,8 @@ class SubuserPreviewSimulator
         if (str_ends_with($path, '/files/download')) {
             $this->authorize($context, Permission::ACTION_FILE_READ_CONTENT);
             $file = $this->normalizePath((string) $request->query('file'));
-            $entry = ($context->session()->state ?? [])['files'][$file] ?? null;
+            $state = $context->session()->state ?? [];
+            $entry = $state['files'][$file] ?? null;
             if (is_array($entry)) {
                 if (($entry['deleted'] ?? false) === true || ($entry['is_file'] ?? true) === false) {
                     throw new NotFoundHttpException(trans('exceptions.subuser_preview.file_not_found'));
@@ -108,6 +110,18 @@ class SubuserPreviewSimulator
                     : $this->fileRepository
                         ->setServer($context->session()->server)
                         ->getContent((string) ($entry['source_path'] ?? $file));
+
+                return response()->json([
+                    'object' => 'signed_url',
+                    'attributes' => ['url' => 'data:application/octet-stream;base64,'.base64_encode($content)],
+                ]);
+            }
+
+            $livePath = $this->livePathForPreviewPath($state, $file);
+            if ($livePath !== $file) {
+                $content = $this->fileRepository
+                    ->setServer($context->session()->server)
+                    ->getContent($livePath);
 
                 return response()->json([
                     'object' => 'signed_url',
@@ -131,15 +145,24 @@ class SubuserPreviewSimulator
             $this->authorize($context, Permission::ACTION_FILE_READ);
 
             $directory = $this->normalizePath((string) $request->query('directory', '/'));
-            $transformer = app(FileObjectTransformer::class);
-            $entries = collect($this->fileRepository
-                ->setServer($context->session()->server)
-                ->getDirectory($directory))
-                ->map(fn (array $entry) => [
-                    'object' => 'file_object',
-                    'attributes' => $transformer->transform($entry),
-                ])
-                ->all();
+            $state = $context->session()->state ?? [];
+            $directoryEntry = $state['files'][$directory] ?? null;
+            if (is_array($directoryEntry) && (($directoryEntry['deleted'] ?? false) || ($directoryEntry['is_file'] ?? true))) {
+                throw new NotFoundHttpException(trans('exceptions.subuser_preview.file_not_found'));
+            }
+
+            $entries = [];
+            if (! is_array($directoryEntry) || array_key_exists('source_path', $directoryEntry)) {
+                $transformer = app(FileObjectTransformer::class);
+                $entries = collect($this->fileRepository
+                    ->setServer($context->session()->server)
+                    ->getDirectory($this->livePathForPreviewPath($state, $directory)))
+                    ->map(fn (array $entry) => [
+                        'object' => 'file_object',
+                        'attributes' => $transformer->transform($entry),
+                    ])
+                    ->all();
+            }
 
             return $this->mergeFileListing(
                 $directory,
@@ -241,15 +264,24 @@ class SubuserPreviewSimulator
                 'files.*.from' => 'required|string',
             ])->validate();
             $root = (string) $request->input('root', '/');
+            $files = (array) $request->input('files', []);
+            $state = $context->session()->state ?? [];
+            $resolved = [];
+            foreach ($files as $file) {
+                $from = $this->joinPath($root, (string) Arr::get($file, 'from'));
+                $resolved[$from] = $this->resolveFileEntry($context, $state, $from);
+            }
 
-            $this->updateState($context, function (array $state) use ($root, $request) {
-                foreach ((array) $request->input('files', []) as $file) {
+            $this->updateState($context, function (array $state) use ($files, $resolved, $root) {
+                foreach ($files as $file) {
                     $from = $this->joinPath($root, (string) Arr::get($file, 'from'));
                     $to = $this->joinPath($root, (string) Arr::get($file, 'to'));
-                    $entry = $state['files'][$from] ?? [
-                        'is_file' => true,
-                        'source_path' => $from,
-                    ];
+                    $entry = $state['files'][$from] ?? $resolved[$from];
+                    if (($entry['deleted'] ?? false) === true) {
+                        throw new NotFoundHttpException(trans('exceptions.subuser_preview.file_not_found'));
+                    }
+
+                    $filesBeforeRename = $state['files'] ?? [];
 
                     $state['files'][$from] = ['deleted' => true];
                     $state['files'][$to] = array_replace($entry, [
@@ -257,6 +289,21 @@ class SubuserPreviewSimulator
                         'name' => basename($to),
                         'modified_at' => Carbon::now()->toAtomString(),
                     ]);
+
+                    if (($entry['is_file'] ?? true) === false) {
+                        foreach ($filesBeforeRename as $candidate => $descendant) {
+                            if (! str_starts_with($candidate, $from.'/')) {
+                                continue;
+                            }
+
+                            $target = $to.substr($candidate, strlen($from));
+                            $state['files'][$candidate] = ['deleted' => true];
+                            $state['files'][$target] = array_replace($descendant, [
+                                'deleted' => false,
+                                'name' => basename($target),
+                            ]);
+                        }
+                    }
                 }
 
                 return $state;
@@ -272,15 +319,36 @@ class SubuserPreviewSimulator
             $extension = pathinfo($source, PATHINFO_EXTENSION);
             $name = pathinfo($source, PATHINFO_FILENAME).' copy'.($extension === '' ? '' : ".{$extension}");
             $target = $this->joinPath($this->parentPath($source), $name);
+            $state = $context->session()->state ?? [];
+            $resolved = $this->resolveFileEntry($context, $state, $source);
 
-            $this->updateState($context, function (array $state) use ($source, $target) {
-                $entry = $state['files'][$source] ?? ['is_file' => true, 'source_path' => $source];
+            $this->updateState($context, function (array $state) use ($resolved, $source, $target) {
+                $entry = $state['files'][$source] ?? $resolved;
+                if (($entry['deleted'] ?? false) === true) {
+                    throw new NotFoundHttpException(trans('exceptions.subuser_preview.file_not_found'));
+                }
+
                 $state['files'][$target] = array_replace($entry, [
                     'name' => basename($target),
                     'deleted' => false,
                     'created_at' => Carbon::now()->toAtomString(),
                     'modified_at' => Carbon::now()->toAtomString(),
                 ]);
+
+                if (($entry['is_file'] ?? true) === false) {
+                    $filesBeforeCopy = $state['files'] ?? [];
+                    foreach ($filesBeforeCopy as $candidate => $descendant) {
+                        if (! str_starts_with($candidate, $source.'/')) {
+                            continue;
+                        }
+
+                        $copy = $target.substr($candidate, strlen($source));
+                        $state['files'][$copy] = array_replace($descendant, [
+                            'deleted' => false,
+                            'name' => basename($copy),
+                        ]);
+                    }
+                }
 
                 return $state;
             });
@@ -470,6 +538,63 @@ class SubuserPreviewSimulator
     private function contentSize(array $entry): int
     {
         return strlen($this->decodeContent($entry));
+    }
+
+    private function resolveFileEntry(SubuserPreviewContext $context, array $state, string $path): array
+    {
+        if (array_key_exists($path, $state['files'] ?? [])) {
+            $entry = $state['files'][$path];
+            if (($entry['deleted'] ?? false) === true) {
+                throw new NotFoundHttpException(trans('exceptions.subuser_preview.file_not_found'));
+            }
+
+            return $entry;
+        }
+
+        $livePath = $this->livePathForPreviewPath($state, $path);
+        $entry = collect($this->fileRepository
+            ->setServer($context->session()->server)
+            ->getDirectory($this->parentPath($livePath)))
+            ->first(fn (array $entry) => (string) Arr::get($entry, 'name') === basename($livePath));
+
+        if (! is_array($entry)) {
+            throw new NotFoundHttpException(trans('exceptions.subuser_preview.file_not_found'));
+        }
+
+        return [
+            'name' => basename($path),
+            'is_file' => (bool) Arr::get($entry, 'file', true),
+            'source_path' => $livePath,
+            'mode_bits' => Arr::get($entry, 'mode_bits'),
+            'mimetype' => Arr::get($entry, 'mime'),
+            'deleted' => false,
+        ];
+    }
+
+    private function livePathForPreviewPath(array $state, string $path): string
+    {
+        $path = $this->normalizePath($path);
+        $match = null;
+        foreach ($state['files'] ?? [] as $previewPath => $entry) {
+            if (! is_array($entry)
+                || ($entry['deleted'] ?? false) === true
+                || ($entry['is_file'] ?? true) === true
+                || ! isset($entry['source_path'])
+                || ($path !== $previewPath && ! str_starts_with($path, $previewPath.'/'))
+            ) {
+                continue;
+            }
+
+            if ($match === null || strlen($previewPath) > strlen($match)) {
+                $match = $previewPath;
+            }
+        }
+
+        if ($match === null) {
+            return $path;
+        }
+
+        return $this->normalizePath($state['files'][$match]['source_path'].substr($path, strlen($match)));
     }
 
     private function authorize(SubuserPreviewContext $context, ?string $permission): void

@@ -435,29 +435,40 @@ class SubuserPreviewResourceSimulator
     {
         $this->authorize($context, Permission::ACTION_ALLOCATION_UPDATE);
         $id = (string) $request->route('allocation');
-        $target = $this->allocationResource($context, $id);
-        $updates = [];
-        foreach ($context->session()->server->allocations as $allocation) {
-            $item = $this->allocationResource($context, (string) $allocation->id);
-            $item['attributes']['is_default'] = (string) $allocation->id === $id;
-            $updates[(string) $allocation->id] = $item;
-            if ((string) $allocation->id === $id) {
-                $target = $item;
-            }
-        }
-        foreach ($this->resources($context, 'allocations') as $allocationId => $item) {
-            if ($item === null) {
-                continue;
-            }
-            $item['attributes']['is_default'] = (string) $allocationId === $id;
-            $updates[(string) $allocationId] = $item;
-            if ((string) $allocationId === $id) {
-                $target = $item;
-            }
-        }
-        $this->updateState($context, function (array $state) use ($updates) {
-            foreach ($updates as $allocationId => $item) {
+        $target = null;
+        $allocations = $context->session()->server->allocations()->get()->keyBy(fn (Allocation $allocation) => (string) $allocation->id);
+
+        $this->updateState($context, function (array $state) use ($allocations, $id, &$target) {
+            $overlays = Arr::get($state, 'resources.allocations', []);
+            $allocationIds = $allocations->keys()
+                ->merge(array_map('strval', array_keys($overlays)))
+                ->unique();
+
+            foreach ($allocationIds as $allocationId) {
+                $allocationId = (string) $allocationId;
+                if (array_key_exists($allocationId, $overlays)) {
+                    $item = $overlays[$allocationId];
+                    if ($item === null) {
+                        continue;
+                    }
+                } else {
+                    $allocation = $allocations->get($allocationId);
+                    if (! $allocation) {
+                        continue;
+                    }
+
+                    $item = $this->allocationItem($allocation, false);
+                }
+
+                $item['attributes']['is_default'] = $allocationId === $id;
                 $state['resources']['allocations'][$allocationId] = $item;
+                if ($allocationId === $id) {
+                    $target = $item;
+                }
+            }
+
+            if ($target === null) {
+                throw new NotFoundHttpException();
             }
 
             return $state;

@@ -154,11 +154,22 @@ class SubuserPreviewTest extends ClientApiIntegrationTestCase
         $token = $this->actingAs($owner)
             ->postJson($this->previewEndpoint($server, $target))
             ->json('token');
+        $timestamp = Carbon::now()->toAtomString();
 
         $this->mock(DaemonPowerRepository::class, fn (MockInterface $mock) => $mock->shouldNotReceive('send'));
-        $this->mock(DaemonFileRepository::class, function (MockInterface $mock) use ($server) {
-            $mock->expects('setServer')->twice()->withArgs(fn (Server $value) => $value->id === $server->id)->andReturnSelf();
-            $mock->expects('getDirectory')->with('/')->andReturn([]);
+        $this->mock(DaemonFileRepository::class, function (MockInterface $mock) use ($server, $timestamp) {
+            $mock->expects('setServer')->times(3)->withArgs(fn (Server $value) => $value->id === $server->id)->andReturnSelf();
+            $mock->expects('getDirectory')->twice()->with('/')->andReturn([], [[
+                'name' => 'live.txt',
+                'mode' => '-rw-r--r--',
+                'mode_bits' => '0644',
+                'size' => 9,
+                'file' => true,
+                'symlink' => false,
+                'mime' => 'text/plain',
+                'created' => $timestamp,
+                'modified' => $timestamp,
+            ]]);
             $mock->expects('getContent')->with('/live.txt', config('panel.files.max_edit_size'))->andReturn('live data');
             $mock->shouldNotReceive('putContent');
         });
@@ -302,6 +313,95 @@ class SubuserPreviewTest extends ClientApiIntegrationTestCase
             '/state-limit.txt',
             SubuserPreviewSession::query()->firstOrFail()->state['files']
         );
+    }
+
+    public function test_live_directories_retain_their_type_and_contents_when_renamed_or_copied(): void
+    {
+        [$owner, $server, $target] = $this->models();
+        $token = $this->actingAs($owner)->postJson($this->previewEndpoint($server, $target))->json('token');
+        $timestamp = Carbon::now()->toAtomString();
+        $directory = [
+            'name' => 'live-dir',
+            'mode' => 'drwxr-xr-x',
+            'mode_bits' => '0755',
+            'size' => 0,
+            'file' => false,
+            'symlink' => false,
+            'mime' => 'inode/directory',
+            'created' => $timestamp,
+            'modified' => $timestamp,
+        ];
+        $liveFile = [
+            'name' => 'live.txt',
+            'mode' => '-rw-r--r--',
+            'mode_bits' => '0644',
+            'size' => 9,
+            'file' => true,
+            'symlink' => false,
+            'mime' => 'text/plain',
+            'created' => $timestamp,
+            'modified' => $timestamp,
+        ];
+        $this->mock(DaemonFileRepository::class, function (MockInterface $mock) use ($directory, $liveFile, $server) {
+            $mock->expects('setServer')->times(4)->withArgs(fn (Server $value) => $value->id === $server->id)->andReturnSelf();
+            $mock->expects('getDirectory')->once()->with('/')->andReturn([$directory]);
+            $mock->expects('getDirectory')->twice()->with('/live-dir')->andReturn([$liveFile]);
+            $mock->expects('getContent')->once()->with('/live-dir/live.txt', config('panel.files.max_edit_size'))->andReturn('live data');
+            $mock->shouldNotReceive('putContent');
+        });
+
+        $this->call(
+            'POST',
+            $this->link($server, 'files/write').'?file=/live-dir/session.txt',
+            [],
+            [],
+            [],
+            [
+                'CONTENT_TYPE' => 'text/plain',
+                'HTTP_ACCEPT' => 'application/json',
+                'HTTP_X_SUBUSER_PREVIEW' => $token,
+            ],
+            'preview data'
+        )->assertNoContent();
+
+        $this->withPreviewToken($token)
+            ->putJson($this->link($server, 'files/rename'), [
+                'root' => '/',
+                'files' => [['from' => 'live-dir', 'to' => 'renamed']],
+            ])
+            ->assertNoContent();
+        $this->withPreviewToken($token)
+            ->getJson($this->link($server, 'files/list').'?directory=/renamed')
+            ->assertOk()
+            ->assertJsonFragment(['name' => 'live.txt', 'is_file' => true])
+            ->assertJsonFragment(['name' => 'session.txt', 'is_file' => true]);
+        $this->withPreviewToken($token)
+            ->get($this->link($server, 'files/contents').'?file=/renamed/live.txt')
+            ->assertOk()
+            ->assertContent('live data');
+        $this->withPreviewToken($token)
+            ->get($this->link($server, 'files/contents').'?file=/renamed/session.txt')
+            ->assertOk()
+            ->assertContent('preview data');
+
+        $this->withPreviewToken($token)
+            ->postJson($this->link($server, 'files/copy'), ['location' => '/renamed'])
+            ->assertNoContent();
+        $this->withPreviewToken($token)
+            ->getJson($this->link($server, 'files/list').'?directory=/renamed%20copy')
+            ->assertOk()
+            ->assertJsonFragment(['name' => 'live.txt', 'is_file' => true])
+            ->assertJsonFragment(['name' => 'session.txt', 'is_file' => true]);
+        $this->withPreviewToken($token)
+            ->get($this->link($server, 'files/contents').'?file=/renamed%20copy/session.txt')
+            ->assertOk()
+            ->assertContent('preview data');
+
+        $files = SubuserPreviewSession::query()->firstOrFail()->state['files'];
+        $this->assertFalse($files['/renamed']['is_file']);
+        $this->assertFalse($files['/renamed copy']['is_file']);
+        $this->assertTrue($files['/live-dir']['deleted']);
+        $this->assertTrue($files['/live-dir/session.txt']['deleted']);
     }
 
     public function test_preview_upload_requires_file_create_permission_and_preserves_state(): void
@@ -586,6 +686,44 @@ class SubuserPreviewTest extends ClientApiIntegrationTestCase
         $this->withPreviewToken($token)
             ->deleteJson($this->link($server, 'users/'.$target->uuid))
             ->assertForbidden();
+    }
+
+    public function test_primary_allocation_update_uses_current_overlays_and_skips_deleted_allocations(): void
+    {
+        [$owner, $server, $target] = $this->models();
+        $server->subusers()->where('user_id', $target->id)->update(['permissions' => [
+            Permission::ACTION_ALLOCATION_READ,
+            Permission::ACTION_ALLOCATION_UPDATE,
+            Permission::ACTION_ALLOCATION_DELETE,
+            Permission::ACTION_WEBSOCKET_CONNECT,
+        ]]);
+        $targetAllocation = Allocation::factory()->create([
+            'node_id' => $server->node_id,
+            'server_id' => $server->id,
+        ]);
+        $deletedAllocation = Allocation::factory()->create([
+            'node_id' => $server->node_id,
+            'server_id' => $server->id,
+        ]);
+        $token = $this->actingAs($owner)->postJson($this->previewEndpoint($server, $target))->json('token');
+
+        $this->withPreviewToken($token)
+            ->postJson($this->link($server, 'network/allocations/'.$targetAllocation->id), ['notes' => 'Keep this note'])
+            ->assertOk();
+        $this->withPreviewToken($token)
+            ->deleteJson($this->link($server, 'network/allocations/'.$deletedAllocation->id))
+            ->assertNoContent();
+        $this->withPreviewToken($token)
+            ->postJson($this->link($server, 'network/allocations/'.$targetAllocation->id.'/primary'))
+            ->assertOk()
+            ->assertJsonPath('attributes.notes', 'Keep this note')
+            ->assertJsonPath('attributes.is_default', true);
+
+        $allocations = SubuserPreviewSession::query()->firstOrFail()->state['resources']['allocations'];
+        $this->assertNull($allocations[$deletedAllocation->id]);
+        $this->assertSame('Keep this note', $allocations[$targetAllocation->id]['attributes']['notes']);
+        $this->assertTrue($allocations[$targetAllocation->id]['attributes']['is_default']);
+        $this->assertFalse($allocations[$server->allocation_id]['attributes']['is_default']);
     }
 
     public function test_dashboard_overlays_are_removed_when_the_preview_ends(): void
