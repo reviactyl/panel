@@ -39,6 +39,7 @@ export default () => {
     const { session } = useSubuserPreview();
     const rootAdmin = accountRootAdmin && !session;
     const [showOnlyAdmin, setShowOnlyAdmin] = usePersistedState(`${uuid}:show_all_servers`, false);
+    const showAdminServers = rootAdmin && showOnlyAdmin;
 
     const [isModalVisible, setModalVisible] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -58,19 +59,19 @@ export default () => {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [eggFilterOpen]);
 
-    const eggsKey = showOnlyAdmin && rootAdmin ? ['/api/client/eggs', 'admin'] : '/api/client/eggs';
-    const { data: eggs } = useSWR(eggsKey, () => getClientEggs(showOnlyAdmin && rootAdmin ? 'admin' : undefined));
+    const eggsKey = showAdminServers ? ['/api/client/eggs', 'admin'] : '/api/client/eggs';
+    const { data: eggs } = useSWR(eggsKey, () => getClientEggs(showAdminServers ? 'admin' : undefined));
 
     const {
         data: servers,
         error,
         mutate: mutateServers,
     } = useSWR<PaginatedResult<Server>>(
-        ['/api/client/servers', showOnlyAdmin && rootAdmin, page, selectedCategory, selectedEggId],
+        ['/api/client/servers', showAdminServers, page, selectedCategory, selectedEggId],
         () =>
             getServers({
                 page,
-                type: showOnlyAdmin && rootAdmin ? 'admin' : undefined,
+                type: showAdminServers ? 'admin' : undefined,
                 'filter[category_uuid]':
                     selectedCategory === 'all' ? undefined : selectedCategory === 'primary' ? 'null' : selectedCategory,
                 eggId: selectedEggId ?? undefined,
@@ -155,10 +156,10 @@ export default () => {
             <div className='flex flex-col gap-4 py-4 md:flex-row md:items-center justify-between'>
                 <div className='min-w-0'>
                     <Title className='text-4xl !font-bold'>
-                        {showOnlyAdmin ? t('servers-admin.title') : t('servers-user.title')}
+                        {showAdminServers ? t('servers-admin.title') : t('servers-user.title')}
                     </Title>
                     <p className='text-sm text-gray-200/80 hidden lg:block'>
-                        {showOnlyAdmin ? t('servers-admin.subtitle') : t('servers-user.subtitle')}
+                        {showAdminServers ? t('servers-admin.subtitle') : t('servers-user.subtitle')}
                     </p>
                 </div>
                 {!session && (

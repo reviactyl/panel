@@ -88,10 +88,10 @@ class Kernel extends HttpKernel
         ],
         'client-api' => [
             LanguageMiddleware::class,
-            ResolveSubuserPreview::class,
-            SubstituteClientBindings::class,
             AuthenticateImpersonation::class,
             RequireClientApiKey::class,
+            ResolveSubuserPreview::class,
+            SubstituteClientBindings::class,
         ],
         'daemon' => [
             SubstituteBindings::class,

@@ -37,12 +37,6 @@ class ResolveSubuserPreview
             throw new ConflictHttpException(trans('exceptions.subuser_preview.session_expired'));
         }
 
-        $session->renew();
-        $context = new SubuserPreviewContext($session);
-
-        $request->attributes->set(SubuserPreviewContext::class, $context);
-        app()->instance(SubuserPreviewContext::class, $context);
-
         if ($request->is('api/client/account*')) {
             throw new AccessDeniedHttpException(trans('exceptions.subuser_preview.account_unavailable'));
         }
@@ -50,6 +44,13 @@ class ResolveSubuserPreview
         if ($request->is('api/client/servers/*/users/*/preview')) {
             throw new ConflictHttpException(trans('exceptions.subuser_preview.start_blocked'));
         }
+
+        if ($session->expires_at->lessThanOrEqualTo(now()->addMinutes(25))) {
+            $session->renew();
+        }
+
+        $context = new SubuserPreviewContext($session);
+        $request->attributes->set(SubuserPreviewContext::class, $context);
 
         return $this->simulator->handle($request, $next, $context);
     }

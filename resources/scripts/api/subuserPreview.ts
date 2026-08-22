@@ -11,6 +11,7 @@ export interface SubuserPreviewSession {
     subuserEmail: string;
     subuserUuid: string;
     permissionCount: number;
+    maxFileSize: number;
     powerStatus: string;
     expiresAt: Date;
 }
@@ -27,6 +28,7 @@ interface PreviewResponse {
         subuser_email: string;
         subuser_uuid: string;
         permission_count: number;
+        max_file_size: number;
         power_status: string;
         expires_at: string;
     };
@@ -52,6 +54,7 @@ const transform = (data: PreviewResponse): SubuserPreviewStatus => ({
               subuserEmail: data.session.subuser_email,
               subuserUuid: data.session.subuser_uuid,
               permissionCount: data.session.permission_count,
+              maxFileSize: data.session.max_file_size,
               powerStatus: data.session.power_status,
               expiresAt: new Date(data.session.expires_at),
           }

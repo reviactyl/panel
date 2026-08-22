@@ -150,7 +150,7 @@ const ServerNavigation = () => {
                 </div>
             ))}
 
-            {serverExtensionRoutes.length > 0 && (
+            {!session && serverExtensionRoutes.length > 0 && (
                 <div>
                     <span className='label'>{tr('sidebar.extensions')}</span>
                     {serverExtensionRoutes.map((route) => {
@@ -306,13 +306,15 @@ export default function ServerRouter() {
                                     ) : (
                                         <ErrorBoundary>
                                             <TopServerDetails />
-                                            <ExtensionSlot
-                                                name='server:router:above'
-                                                context={{
-                                                    eggId: serverEggId,
-                                                    nestId: serverNestId,
-                                                }}
-                                            />
+                                            {!session && (
+                                                <ExtensionSlot
+                                                    name='server:router:above'
+                                                    context={{
+                                                        eggId: serverEggId,
+                                                        nestId: serverNestId,
+                                                    }}
+                                                />
+                                            )}
                                             <Announcement />
                                             <MaintenanceAlert />
 
@@ -333,28 +335,31 @@ export default function ServerRouter() {
                                                         />
                                                     ))}
 
-                                                {injectedRoutes.map(({ path, element, permission }) => (
-                                                    <Route
-                                                        key={`extension:${path}`}
-                                                        path={path}
-                                                        element={
-                                                            <PermissionRoute key={path} permission={permission}>
-                                                                {element}
-                                                            </PermissionRoute>
-                                                        }
-                                                    />
-                                                ))}
+                                                {!session &&
+                                                    injectedRoutes.map(({ path, element, permission }) => (
+                                                        <Route
+                                                            key={`extension:${path}`}
+                                                            path={path}
+                                                            element={
+                                                                <PermissionRoute key={path} permission={permission}>
+                                                                    {element}
+                                                                </PermissionRoute>
+                                                            }
+                                                        />
+                                                    ))}
 
                                                 <Route path='*' element={<NotFound />} />
                                             </Routes>
 
-                                            <ExtensionSlot
-                                                name='server:router:below'
-                                                context={{
-                                                    eggId: serverEggId,
-                                                    nestId: serverNestId,
-                                                }}
-                                            />
+                                            {!session && (
+                                                <ExtensionSlot
+                                                    name='server:router:below'
+                                                    context={{
+                                                        eggId: serverEggId,
+                                                        nestId: serverNestId,
+                                                    }}
+                                                />
+                                            )}
                                         </ErrorBoundary>
                                     )}
                                 </div>

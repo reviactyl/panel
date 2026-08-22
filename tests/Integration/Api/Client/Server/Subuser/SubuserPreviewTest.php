@@ -31,6 +31,7 @@ class SubuserPreviewTest extends ClientApiIntegrationTestCase
             ->assertJsonPath('owned_by_tab', true)
             ->assertJsonPath('session.server_identifier', $server->uuidShort)
             ->assertJsonPath('session.subuser_email', $target->email)
+            ->assertJsonPath('session.max_file_size', (int) config('panel.files.max_edit_size'))
             ->assertJsonMissingPath('session.name_first')
             ->assertJsonMissingPath('session.username');
 
@@ -124,11 +125,13 @@ class SubuserPreviewTest extends ClientApiIntegrationTestCase
             ->getJson('/api/client')
             ->assertOk()
             ->assertJsonCount(1, 'data')
-            ->assertJsonPath('data.0.attributes.uuid', $server->uuid);
+            ->assertJsonPath('data.0.attributes.uuid', $server->uuid)
+            ->assertJsonPath('data.0.attributes.server_owner', false);
 
         $this->withPreviewToken($token)
             ->getJson($this->link($server))
             ->assertOk()
+            ->assertJsonPath('attributes.server_owner', false)
             ->assertJsonPath('meta.is_server_owner', false)
             ->assertJsonPath('meta.user_permissions', [
                 Permission::ACTION_CONTROL_START,
@@ -180,13 +183,12 @@ class SubuserPreviewTest extends ClientApiIntegrationTestCase
         )
             ->assertNoContent();
 
-        $this->assertSame(
-            'session data',
-            SubuserPreviewSession::query()->firstOrFail()->state['files']['/preview.txt']['content'] ?? null
-        );
+        $entry = SubuserPreviewSession::query()->firstOrFail()->state['files']['/preview.txt'] ?? [];
+        $this->assertSame('base64', $entry['content_encoding'] ?? null);
+        $this->assertSame('session data', base64_decode($entry['content'] ?? '', true));
 
         $this->withPreviewToken($token)
-            ->getJson($this->link($server, 'files/list').'?directory=/')
+            ->getJson($this->link($server, 'files/list').'?directory=/./')
             ->assertOk()
             ->assertJsonPath('data.0.attributes.name', 'preview.txt');
 
@@ -216,7 +218,116 @@ class SubuserPreviewTest extends ClientApiIntegrationTestCase
         $this->withPreviewToken($token)
             ->getJson($this->link($server, 'files/download').'?file=/renamed.txt')
             ->assertNotFound()
-            ->assertJsonPath('errors.0.detail', 'The requested file does not exist in this preview.');
+            ->assertJsonPath('errors.0.detail', trans('exceptions.subuser_preview.file_not_found'));
+    }
+
+    public function test_binary_preview_uploads_round_trip_and_storage_limits_are_enforced(): void
+    {
+        [$owner, $server, $target] = $this->models();
+        $token = $this->actingAs($owner)->postJson($this->previewEndpoint($server, $target))->json('token');
+        $binary = "\x89PNG\r\n\x1a\n\xff";
+        $this->mock(DaemonFileRepository::class, function (MockInterface $mock) use ($server) {
+            $mock->expects('setServer')->once()->withArgs(fn (Server $value) => $value->id === $server->id)->andReturnSelf();
+            $mock->expects('getDirectory')->with('/')->andReturn([]);
+        });
+
+        $this->call(
+            'POST',
+            $this->link($server, 'files/write').'?file=/image.png',
+            [],
+            [],
+            [],
+            [
+                'CONTENT_TYPE' => 'application/octet-stream',
+                'HTTP_ACCEPT' => 'application/json',
+                'HTTP_X_SUBUSER_PREVIEW' => $token,
+            ],
+            $binary
+        )->assertNoContent();
+
+        $entry = SubuserPreviewSession::query()->firstOrFail()->state['files']['/image.png'];
+        $this->assertSame('base64', $entry['content_encoding']);
+        $this->assertSame($binary, base64_decode($entry['content'], true));
+
+        $this->withPreviewToken($token)
+            ->getJson($this->link($server, 'files/list').'?directory=/')
+            ->assertOk()
+            ->assertJsonPath('data.0.attributes.name', 'image.png')
+            ->assertJsonPath('data.0.attributes.size', strlen($binary));
+        $this->withPreviewToken($token)
+            ->get($this->link($server, 'files/contents').'?file=/image.png')
+            ->assertOk()
+            ->assertContent($binary);
+        $this->withPreviewToken($token)
+            ->getJson($this->link($server, 'files/download').'?file=/image.png')
+            ->assertOk()
+            ->assertJsonPath('attributes.url', 'data:application/octet-stream;base64,'.base64_encode($binary));
+
+        config()->set('panel.files.max_edit_size', strlen($binary) - 1);
+        $this->call(
+            'POST',
+            $this->link($server, 'files/write').'?file=/too-large.bin',
+            [],
+            [],
+            [],
+            [
+                'CONTENT_TYPE' => 'application/octet-stream',
+                'HTTP_ACCEPT' => 'application/json',
+                'HTTP_X_SUBUSER_PREVIEW' => $token,
+            ],
+            $binary
+        )->assertBadRequest();
+        $this->assertArrayNotHasKey(
+            '/too-large.bin',
+            SubuserPreviewSession::query()->firstOrFail()->state['files']
+        );
+
+        config()->set('panel.files.max_edit_size', 1024);
+        $currentState = SubuserPreviewSession::query()->firstOrFail()->state;
+        config()->set('panel.files.max_preview_state_size', strlen(json_encode($currentState, JSON_THROW_ON_ERROR)));
+        $this->call(
+            'POST',
+            $this->link($server, 'files/write').'?file=/state-limit.txt',
+            [],
+            [],
+            [],
+            [
+                'CONTENT_TYPE' => 'text/plain',
+                'HTTP_ACCEPT' => 'application/json',
+                'HTTP_X_SUBUSER_PREVIEW' => $token,
+            ],
+            'x'
+        )->assertBadRequest();
+        $this->assertArrayNotHasKey(
+            '/state-limit.txt',
+            SubuserPreviewSession::query()->firstOrFail()->state['files']
+        );
+    }
+
+    public function test_preview_upload_requires_file_create_permission_and_preserves_state(): void
+    {
+        [$owner, $server, $target] = $this->models();
+        $server->subusers()->where('user_id', $target->id)->update(['permissions' => [
+            Permission::ACTION_FILE_READ,
+            Permission::ACTION_WEBSOCKET_CONNECT,
+        ]]);
+        $token = $this->actingAs($owner)->postJson($this->previewEndpoint($server, $target))->json('token');
+
+        $this->call(
+            'POST',
+            $this->link($server, 'files/write').'?file=/denied.txt',
+            [],
+            [],
+            [],
+            [
+                'CONTENT_TYPE' => 'text/plain',
+                'HTTP_ACCEPT' => 'application/json',
+                'HTTP_X_SUBUSER_PREVIEW' => $token,
+            ],
+            'denied'
+        )->assertForbidden();
+
+        $this->assertSame([], SubuserPreviewSession::query()->firstOrFail()->state['files']);
     }
 
     public function test_preview_websocket_token_is_read_only(): void
@@ -403,9 +514,9 @@ class SubuserPreviewTest extends ClientApiIntegrationTestCase
         $this->withPreviewToken($token)->postJson($this->link($server, 'files/create-folder'), ['root' => '/'])->assertUnprocessable();
 
         $state = SubuserPreviewSession::query()->firstOrFail()->state;
-        $this->assertCount(2, $state);
         $this->assertNull($state['power_status']);
         $this->assertSame([], $state['files']);
+        $this->assertArrayNotHasKey('resources', $state);
     }
 
     public function test_schedule_tasks_require_the_underlying_action_permission(): void

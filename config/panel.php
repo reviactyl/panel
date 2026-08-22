@@ -132,6 +132,7 @@ return [
 
     'files' => [
         'max_edit_size' => env('PANEL_FILES_MAX_EDIT_SIZE', 1024 * 1024 * 4),
+        'max_preview_state_size' => env('PANEL_FILES_MAX_PREVIEW_STATE_SIZE', 1024 * 1024 * 16),
     ],
 
     /*

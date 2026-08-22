@@ -16,6 +16,8 @@ import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
 import { FaUpload } from 'react-icons/fa6';
 import { useSubuserPreview } from '@/context/SubuserPreviewContext';
 import http from '@/api/http';
+import i18n from '@/i18n';
+import { bytesToString } from '@/lib/formatters';
 
 function isFileOrDirectory(event: DragEvent): boolean {
     if (!event.dataTransfer?.types) {
@@ -118,7 +120,16 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
             });
 
             return () =>
-                (session
+                (session && session.maxFileSize > 0 && file.size > session.maxFileSize
+                    ? Promise.reject(
+                          new Error(
+                              i18n.t('preview.file-too-large', {
+                                  ns: 'server/users',
+                                  size: bytesToString(session.maxFileSize),
+                              })
+                          )
+                      )
+                    : session
                     ? file.arrayBuffer().then((content) =>
                           http.post(`/api/client/servers/${uuid}/files/write`, content, {
                               params: { file: `${directory.replace(/\/$/, '')}/${file.name}` },

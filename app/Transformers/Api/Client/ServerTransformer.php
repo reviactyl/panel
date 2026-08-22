@@ -11,6 +11,7 @@ use App\Models\Server;
 use App\Models\ServerCategory;
 use App\Models\Subuser;
 use App\Services\Servers\StartupCommandService;
+use App\Services\Subusers\SubuserPreviewContext;
 use Illuminate\Container\Container;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
@@ -39,7 +40,8 @@ class ServerTransformer extends BaseClientTransformer
         $user = $this->request->user();
 
         return [
-            'server_owner' => $user->id === $server->owner_id,
+            'server_owner' => ! ($this->request->attributes->get(SubuserPreviewContext::class) instanceof SubuserPreviewContext)
+                && $user->id === $server->owner_id,
             'identifier' => config('panel.features.new_server_identifiers')
                 ? $server->identifier
                 : $server->uuidShort,

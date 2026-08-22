@@ -25,6 +25,7 @@ class SubuserPreviewResourceSimulator
     public function __construct(
         private readonly HashidsInterface $hashids,
         private readonly Encrypter $encrypter,
+        private readonly SubuserPreviewStateService $stateService,
     ) {}
 
     public function readGlobal(Request $request, \Closure $next, SubuserPreviewContext $context): mixed
@@ -435,10 +436,11 @@ class SubuserPreviewResourceSimulator
         $this->authorize($context, Permission::ACTION_ALLOCATION_UPDATE);
         $id = (string) $request->route('allocation');
         $target = $this->allocationResource($context, $id);
+        $updates = [];
         foreach ($context->session()->server->allocations as $allocation) {
             $item = $this->allocationResource($context, (string) $allocation->id);
             $item['attributes']['is_default'] = (string) $allocation->id === $id;
-            $this->storeOverlay($context, 'allocations', (string) $allocation->id, $item);
+            $updates[(string) $allocation->id] = $item;
             if ((string) $allocation->id === $id) {
                 $target = $item;
             }
@@ -448,11 +450,18 @@ class SubuserPreviewResourceSimulator
                 continue;
             }
             $item['attributes']['is_default'] = (string) $allocationId === $id;
-            $this->storeOverlay($context, 'allocations', (string) $allocationId, $item);
+            $updates[(string) $allocationId] = $item;
             if ((string) $allocationId === $id) {
                 $target = $item;
             }
         }
+        $this->updateState($context, function (array $state) use ($updates) {
+            foreach ($updates as $allocationId => $item) {
+                $state['resources']['allocations'][$allocationId] = $item;
+            }
+
+            return $state;
+        });
 
         return response()->json($target);
     }
@@ -1020,10 +1029,7 @@ class SubuserPreviewResourceSimulator
 
     private function updateState(SubuserPreviewContext $context, callable $callback): void
     {
-        $session = $context->session()->fresh();
-        $session->state = $callback($session->state ?? ['power_status' => null, 'files' => []]);
-        $session->save();
-        $context->session()->refresh();
+        $this->stateService->update($context, $callback);
     }
 
     private function authorize(SubuserPreviewContext $context, string $permission): void

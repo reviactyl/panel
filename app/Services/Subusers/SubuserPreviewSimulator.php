@@ -22,6 +22,7 @@ class SubuserPreviewSimulator
     public function __construct(
         private readonly DaemonFileRepository $fileRepository,
         private readonly SubuserPreviewResourceSimulator $resourceSimulator,
+        private readonly SubuserPreviewStateService $stateService,
     ) {}
 
     public function handle(Request $request, \Closure $next, SubuserPreviewContext $context): mixed
@@ -78,7 +79,7 @@ class SubuserPreviewSimulator
                 }
 
                 $content = array_key_exists('content', $entry)
-                    ? (string) $entry['content']
+                    ? $this->decodeContent($entry)
                     : $this->fileRepository
                         ->setServer($context->session()->server)
                         ->getContent((string) ($entry['source_path'] ?? $file), config('panel.files.max_edit_size'));
@@ -103,7 +104,7 @@ class SubuserPreviewSimulator
                 }
 
                 $content = array_key_exists('content', $entry)
-                    ? (string) $entry['content']
+                    ? $this->decodeContent($entry)
                     : $this->fileRepository
                         ->setServer($context->session()->server)
                         ->getContent((string) ($entry['source_path'] ?? $file));
@@ -129,10 +130,11 @@ class SubuserPreviewSimulator
         if (str_ends_with($path, '/files/list')) {
             $this->authorize($context, Permission::ACTION_FILE_READ);
 
+            $directory = $this->normalizePath((string) $request->query('directory', '/'));
             $transformer = app(FileObjectTransformer::class);
             $entries = collect($this->fileRepository
                 ->setServer($context->session()->server)
-                ->getDirectory((string) $request->query('directory', '/')))
+                ->getDirectory($directory))
                 ->map(fn (array $entry) => [
                     'object' => 'file_object',
                     'attributes' => $transformer->transform($entry),
@@ -140,7 +142,7 @@ class SubuserPreviewSimulator
                 ->all();
 
             return $this->mergeFileListing(
-                $request,
+                $directory,
                 response()->json(['object' => 'list', 'data' => $entries]),
                 $context
             );
@@ -177,8 +179,14 @@ class SubuserPreviewSimulator
             $this->authorize($context, $permission);
             validator($request->query(), ['file' => 'required|string'])->validate();
             $file = $this->normalizePath((string) $request->query('file'));
+            $content = $request->getContent();
+            $maximum = (int) config('panel.files.max_edit_size');
 
-            $this->putFile($context, $file, true, $request->getContent());
+            if ($maximum > 0 && strlen($content) > $maximum) {
+                throw new BadRequestHttpException(trans('exceptions.subuser_preview.file_too_large'));
+            }
+
+            $this->putFile($context, $file, true, $content);
 
             return response()->json([], 204);
         }
@@ -364,11 +372,10 @@ class SubuserPreviewSimulator
     }
 
     private function mergeFileListing(
-        Request $request,
+        string $directory,
         JsonResponse $response,
         SubuserPreviewContext $context
     ): JsonResponse {
-        $directory = $this->normalizePath((string) $request->query('directory', '/'));
         $payload = $response->getData(true);
         $entries = collect($payload['data'] ?? [])->keyBy(fn (array $entry) => Arr::get($entry, 'attributes.name'));
 
@@ -391,7 +398,7 @@ class SubuserPreviewSimulator
                     'name' => $name,
                     'mode' => $isFile ? '-rw-r--r--' : 'drwxr-xr-x',
                     'mode_bits' => $entry['mode_bits'] ?? ($isFile ? '0644' : '0755'),
-                    'size' => $isFile ? strlen((string) ($entry['content'] ?? '')) : 0,
+                    'size' => $isFile ? $this->contentSize($entry) : 0,
                     'is_file' => $isFile,
                     'is_symlink' => false,
                     'mimetype' => $isFile ? 'text/plain' : 'inode/directory',
@@ -415,7 +422,8 @@ class SubuserPreviewSimulator
             $state['files'][$path] = array_replace($existing, [
                 'name' => basename($path),
                 'is_file' => $isFile,
-                'content' => $isFile ? ($content ?? '') : null,
+                'content' => $isFile ? base64_encode($content ?? '') : null,
+                'content_encoding' => $isFile ? 'base64' : null,
                 'deleted' => false,
                 'created_at' => $existing['created_at'] ?? $now,
                 'modified_at' => $now,
@@ -433,7 +441,7 @@ class SubuserPreviewSimulator
             'name' => basename($path),
             'mode' => $isFile ? '-rw-r--r--' : 'drwxr-xr-x',
             'mode_bits' => $entry['mode_bits'] ?? ($isFile ? '0644' : '0755'),
-            'size' => $isFile ? strlen((string) ($entry['content'] ?? '')) : 0,
+            'size' => $isFile ? $this->contentSize($entry) : 0,
             'is_file' => $isFile,
             'is_symlink' => false,
             'mimetype' => $isFile ? 'application/octet-stream' : 'inode/directory',
@@ -444,10 +452,24 @@ class SubuserPreviewSimulator
 
     private function updateState(SubuserPreviewContext $context, callable $callback): void
     {
-        $session = $context->session()->fresh();
-        $session->state = $callback($session->state ?? ['power_status' => null, 'files' => []]);
-        $session->save();
-        $context->session()->refresh();
+        $this->stateService->update($context, $callback);
+    }
+
+    private function decodeContent(array $entry): string
+    {
+        $content = (string) ($entry['content'] ?? '');
+        if (($entry['content_encoding'] ?? null) !== 'base64') {
+            return $content;
+        }
+
+        $decoded = base64_decode($content, true);
+
+        return $decoded === false ? '' : $decoded;
+    }
+
+    private function contentSize(array $entry): int
+    {
+        return strlen($this->decodeContent($entry));
     }
 
     private function authorize(SubuserPreviewContext $context, ?string $permission): void

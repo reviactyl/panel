@@ -44,6 +44,7 @@ return [
         'exit' => 'Exit Preview',
         'console-status' => '[preview] Server marked as {{status}}.',
         'console-command' => '[preview] > {{command}}',
+        'file-too-large' => 'Preview uploads must be {{size}} or smaller.',
     ],
     'permissions' => [
         'websocket_*' => 'Allows access to the websocket for this server.',

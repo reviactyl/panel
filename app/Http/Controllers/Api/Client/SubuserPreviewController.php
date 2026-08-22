@@ -7,10 +7,11 @@ use App\Models\Server;
 use App\Models\SubuserPreviewSession;
 use App\Models\User;
 use App\Services\Subusers\SubuserPreviewContext;
-use Illuminate\Database\QueryException;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
@@ -56,26 +57,28 @@ class SubuserPreviewController extends ClientApiController
             ], 409);
         }
 
-        $existing?->delete();
-
         $token = Str::random(64);
         $now = Carbon::now();
 
         try {
-            $session = SubuserPreviewSession::query()->create([
-                'uuid' => Str::uuid()->toString(),
-                'owner_id' => $request->user()->id,
-                'server_id' => $server->id,
-                'subuser_id' => $subuser->id,
-                'token_hash' => hash('sha256', $token),
-                'state' => [
-                    'power_status' => null,
-                    'files' => [],
-                ],
-                'last_seen_at' => $now,
-                'expires_at' => $now->clone()->addMinutes(30),
-            ])->load(['subuser.user', 'server']);
-        } catch (QueryException) {
+            $session = DB::transaction(function () use ($existing, $request, $server, $subuser, $token, $now) {
+                $existing?->delete();
+
+                return SubuserPreviewSession::query()->create([
+                    'uuid' => Str::uuid()->toString(),
+                    'owner_id' => $request->user()->id,
+                    'server_id' => $server->id,
+                    'subuser_id' => $subuser->id,
+                    'token_hash' => hash('sha256', $token),
+                    'state' => [
+                        'power_status' => null,
+                        'files' => [],
+                    ],
+                    'last_seen_at' => $now,
+                    'expires_at' => $now->clone()->addMinutes(30),
+                ])->load(['subuser.user', 'server']);
+            });
+        } catch (UniqueConstraintViolationException) {
             return response()->json([
                 'active' => true,
                 'owned_by_tab' => false,
@@ -148,6 +151,7 @@ class SubuserPreviewController extends ClientApiController
                 $session->subuser->permissions ?? [],
                 fn (string $permission) => $permission !== 'websocket.connect'
             )),
+            'max_file_size' => (int) config('panel.files.max_edit_size'),
             'power_status' => $session->state['power_status'] ?? 'running',
             'expires_at' => $session->expires_at->toAtomString(),
         ];

@@ -49,6 +49,8 @@ return [
         'resource_unavailable' => 'This resource is unavailable during subuser preview.',
         'live_connection_unavailable' => 'This live connection is unavailable during subuser preview.',
         'file_not_found' => 'The requested file does not exist in this preview.',
+        'file_too_large' => 'This file is too large to store in the preview.',
+        'state_too_large' => 'This preview has reached its storage limit.',
         'unsafe_pull_url' => 'Only safe HTTPS URLs can be pulled into the preview.',
         'action_unavailable' => 'This action is not available during subuser preview.',
         'database_limit' => 'This server has reached its database limit.',
