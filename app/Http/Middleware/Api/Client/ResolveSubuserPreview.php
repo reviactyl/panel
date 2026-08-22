@@ -28,13 +28,13 @@ class ResolveSubuserPreview
             ->first();
 
         if (! $session || ! $session->tokenMatches($token)) {
-            throw new AccessDeniedHttpException('This preview session is no longer available.');
+            throw new AccessDeniedHttpException(trans('exceptions.subuser_preview.session_unavailable'));
         }
 
         if ($session->expires_at->isPast()) {
             $session->delete();
 
-            throw new ConflictHttpException('This preview session has expired.');
+            throw new ConflictHttpException(trans('exceptions.subuser_preview.session_expired'));
         }
 
         $session->renew();
@@ -44,11 +44,11 @@ class ResolveSubuserPreview
         app()->instance(SubuserPreviewContext::class, $context);
 
         if ($request->is('api/client/account*')) {
-            throw new AccessDeniedHttpException('Account information is unavailable during subuser preview.');
+            throw new AccessDeniedHttpException(trans('exceptions.subuser_preview.account_unavailable'));
         }
 
         if ($request->is('api/client/servers/*/users/*/preview')) {
-            throw new ConflictHttpException('You cannot start another preview while preview mode is active.');
+            throw new ConflictHttpException(trans('exceptions.subuser_preview.start_blocked'));
         }
 
         return $this->simulator->handle($request, $next, $context);

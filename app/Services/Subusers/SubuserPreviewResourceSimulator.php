@@ -222,7 +222,7 @@ class SubuserPreviewResourceSimulator
         }
 
         if (str_ends_with($path, '/settings/category')) {
-            throw new AccessDeniedHttpException('Personal server categories are unavailable during subuser preview.');
+            throw new AccessDeniedHttpException(trans('exceptions.subuser_preview.categories_unavailable'));
         }
 
         if (str_ends_with($path, '/users')) {
@@ -247,13 +247,13 @@ class SubuserPreviewResourceSimulator
         ])->validate();
         $server = $context->session()->server;
         if ($this->atLimit($context, 'databases', $server->databases->pluck('id')->map(fn (int $id) => $this->hashids->encode($id))->all(), $server->database_limit)) {
-            throw new ConflictHttpException('This server has reached its database limit.');
+            throw new ConflictHttpException(trans('exceptions.subuser_preview.database_limit'));
         }
         $database = $server->databases()->with('host')->first();
         $host = $database ? $database->host : DatabaseHost::query()->where('node_id', $server->node_id)->first();
 
         if (! $host) {
-            throw new ConflictHttpException('No database host is available for this server.');
+            throw new ConflictHttpException(trans('exceptions.subuser_preview.database_host_unavailable'));
         }
 
         $id = 'preview_'.Str::lower(Str::random(12));
@@ -332,7 +332,7 @@ class SubuserPreviewResourceSimulator
         $schedule = $this->scheduleResource($context, $scheduleId);
         $tasks = Arr::get($schedule, 'attributes.relationships.tasks.data', []);
         if (count($tasks) >= config('panel.client_features.schedules.per_schedule_task_limit', 10)) {
-            throw new ConflictHttpException('This schedule has reached its task limit.');
+            throw new ConflictHttpException(trans('exceptions.subuser_preview.task_limit'));
         }
         $task = $this->item('schedule_task', $this->taskAttributes($request, $this->previewId(), count($tasks) + 1));
         $tasks[] = $task;
@@ -400,7 +400,7 @@ class SubuserPreviewResourceSimulator
         $this->authorize($context, Permission::ACTION_ALLOCATION_CREATE);
         $server = $context->session()->server;
         if ($this->atLimit($context, 'allocations', $server->allocations->pluck('id')->all(), $server->allocation_limit)) {
-            throw new ConflictHttpException('This server has reached its allocation limit.');
+            throw new ConflictHttpException(trans('exceptions.subuser_preview.allocation_limit'));
         }
         $used = array_keys($this->resources($context, 'allocations'));
         $allocation = Allocation::query()
@@ -409,7 +409,7 @@ class SubuserPreviewResourceSimulator
             ->whereNotIn('id', $used)
             ->first();
         if (! $allocation) {
-            throw new ConflictHttpException('No additional allocation is available for this server.');
+            throw new ConflictHttpException(trans('exceptions.subuser_preview.allocation_unavailable'));
         }
 
         $item = $this->allocationItem($allocation, false);
@@ -462,7 +462,7 @@ class SubuserPreviewResourceSimulator
         $this->authorize($context, Permission::ACTION_ALLOCATION_DELETE);
         $id = (string) $request->route('allocation');
         if ($this->allocationResource($context, $id)['attributes']['is_default']) {
-            throw new ConflictHttpException('The primary allocation cannot be removed.');
+            throw new ConflictHttpException(trans('exceptions.subuser_preview.primary_allocation'));
         }
         $this->storeOverlay($context, 'allocations', $id, null);
 
@@ -479,7 +479,7 @@ class SubuserPreviewResourceSimulator
         ])->validate();
         $server = $context->session()->server;
         if ($this->atLimit($context, 'backups', $server->backups->pluck('uuid')->all(), $server->backup_limit)) {
-            throw new ConflictHttpException('This server has reached its backup limit.');
+            throw new ConflictHttpException(trans('exceptions.subuser_preview.backup_limit'));
         }
         $uuid = Str::uuid()->toString();
         $now = Carbon::now()->toAtomString();
@@ -515,7 +515,7 @@ class SubuserPreviewResourceSimulator
         $this->authorize($context, Permission::ACTION_BACKUP_DELETE);
         $uuid = (string) $request->route('backup');
         if ($this->backupResource($context, $uuid)['attributes']['is_locked']) {
-            throw new ConflictHttpException('A locked backup cannot be deleted.');
+            throw new ConflictHttpException(trans('exceptions.subuser_preview.locked_backup'));
         }
         $this->storeOverlay($context, 'backups', $uuid, null);
 
@@ -529,7 +529,7 @@ class SubuserPreviewResourceSimulator
         $server = $context->session()->server;
         $variable = $server->variables()->where('env_variable', $request->input('key'))->first();
         if (! $variable || ! $variable->user_viewable || ! $variable->user_editable) {
-            throw new BadRequestHttpException('The environment variable is unavailable or read-only.');
+            throw new BadRequestHttpException(trans('exceptions.subuser_preview.variable_unavailable'));
         }
 
         validator(['value' => $request->input('value')], ['value' => $variable->rules])->validate();
@@ -582,7 +582,7 @@ class SubuserPreviewResourceSimulator
         validator($request->all(), ['docker_image' => 'required|string|max:191'])->validate();
         $image = (string) $request->input('docker_image');
         if (! in_array($image, array_values($context->session()->server->egg->docker_images), true)) {
-            throw new BadRequestHttpException('The selected Docker image is unavailable for this server.');
+            throw new BadRequestHttpException(trans('exceptions.subuser_preview.docker_image_unavailable'));
         }
         $this->setServerState($context, 'docker_image', $image);
 
@@ -662,7 +662,7 @@ class SubuserPreviewResourceSimulator
     private function guardPreviewIdentity(SubuserPreviewContext $context, string $uuid): void
     {
         if ($context->session()->subuser->user->uuid === $uuid) {
-            throw new AccessDeniedHttpException('You cannot modify your own subuser account.');
+            throw new AccessDeniedHttpException(trans('exceptions.subusers.editing_self'));
         }
     }
 
@@ -1029,7 +1029,7 @@ class SubuserPreviewResourceSimulator
     private function authorize(SubuserPreviewContext $context, string $permission): void
     {
         if (! $context->allows($permission)) {
-            throw new AccessDeniedHttpException('You do not have permission to perform this action in the preview.');
+            throw new AccessDeniedHttpException(trans('exceptions.subuser_preview.permission_denied'));
         }
     }
 

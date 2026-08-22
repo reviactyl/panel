@@ -147,6 +147,7 @@ class SubuserPreviewTest extends ClientApiIntegrationTestCase
     public function test_power_and_file_changes_are_isolated_and_persist_in_the_preview(): void
     {
         [$owner, $server, $target] = $this->models();
+        $owner->forceFill(['language' => 'de'])->save();
         $token = $this->actingAs($owner)
             ->postJson($this->previewEndpoint($server, $target))
             ->json('token');
@@ -214,7 +215,8 @@ class SubuserPreviewTest extends ClientApiIntegrationTestCase
             ->assertNoContent();
         $this->withPreviewToken($token)
             ->getJson($this->link($server, 'files/download').'?file=/renamed.txt')
-            ->assertNotFound();
+            ->assertNotFound()
+            ->assertJsonPath('errors.0.detail', 'The requested file does not exist in this preview.');
     }
 
     public function test_preview_websocket_token_is_read_only(): void

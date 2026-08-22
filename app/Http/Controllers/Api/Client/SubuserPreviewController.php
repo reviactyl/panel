@@ -37,11 +37,11 @@ class SubuserPreviewController extends ClientApiController
     public function store(Request $request, Server $server, User $user): JsonResponse
     {
         if ($request->attributes->has(SubuserPreviewContext::class)) {
-            throw new ConflictHttpException('You cannot start another preview while preview mode is active.');
+            throw new ConflictHttpException(trans('exceptions.subuser_preview.start_blocked'));
         }
 
         if ($request->user()->id !== $server->owner_id) {
-            throw new AccessDeniedHttpException('Only the server owner can preview a subuser.');
+            throw new AccessDeniedHttpException(trans('exceptions.subuser_preview.owner_only'));
         }
 
         $subuser = $server->subusers()->where('user_id', $user->id)->firstOrFail();
@@ -95,7 +95,7 @@ class SubuserPreviewController extends ClientApiController
     {
         $context = $request->attributes->get(SubuserPreviewContext::class);
         if (! $context instanceof SubuserPreviewContext) {
-            throw new AccessDeniedHttpException('This preview session is no longer available.');
+            throw new AccessDeniedHttpException(trans('exceptions.subuser_preview.session_unavailable'));
         }
 
         return response()->json([
@@ -108,7 +108,7 @@ class SubuserPreviewController extends ClientApiController
     {
         $context = $request->attributes->get(SubuserPreviewContext::class);
         if (! $context instanceof SubuserPreviewContext) {
-            throw new AccessDeniedHttpException('This preview session is no longer available.');
+            throw new AccessDeniedHttpException(trans('exceptions.subuser_preview.session_unavailable'));
         }
 
         $context->session()->delete();
@@ -129,7 +129,7 @@ class SubuserPreviewController extends ClientApiController
         }
 
         if ($required && ! $session) {
-            throw new ConflictHttpException('A preview session is already being started.');
+            throw new ConflictHttpException(trans('exceptions.subuser_preview.concurrent_start'));
         }
 
         return $session;

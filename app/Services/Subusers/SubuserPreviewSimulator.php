@@ -41,7 +41,7 @@ class SubuserPreviewSimulator
                 return $this->resourceSimulator->readGlobal($request, $next, $context);
             }
 
-            throw new AccessDeniedHttpException('This resource is unavailable during subuser preview.');
+            throw new AccessDeniedHttpException(trans('exceptions.subuser_preview.resource_unavailable'));
         }
 
         $isPreviewServer = $serverParameter instanceof Server
@@ -49,7 +49,7 @@ class SubuserPreviewSimulator
             : $context->isServerIdentifier((string) $serverParameter);
 
         if (! $isPreviewServer) {
-            throw new NotFoundHttpException('The requested server could not be found.');
+            throw new NotFoundHttpException(trans('exceptions.api.resource_not_found'));
         }
 
         $path = '/'.ltrim($request->route()?->uri() ?? '', '/');
@@ -64,7 +64,7 @@ class SubuserPreviewSimulator
     private function handleRead(Request $request, \Closure $next, SubuserPreviewContext $context, string $path): mixed
     {
         if (str_ends_with($path, '/files/upload')) {
-            throw new ConflictHttpException('This live connection is unavailable during subuser preview.');
+            throw new ConflictHttpException(trans('exceptions.subuser_preview.live_connection_unavailable'));
         }
 
         if (str_ends_with($path, '/files/contents')) {
@@ -74,7 +74,7 @@ class SubuserPreviewSimulator
 
             if (is_array($entry)) {
                 if (($entry['deleted'] ?? false) === true || ($entry['is_file'] ?? true) === false) {
-                    throw new NotFoundHttpException('The requested file does not exist in this preview.');
+                    throw new NotFoundHttpException(trans('exceptions.subuser_preview.file_not_found'));
                 }
 
                 $content = array_key_exists('content', $entry)
@@ -99,7 +99,7 @@ class SubuserPreviewSimulator
             $entry = ($context->session()->state ?? [])['files'][$file] ?? null;
             if (is_array($entry)) {
                 if (($entry['deleted'] ?? false) === true || ($entry['is_file'] ?? true) === false) {
-                    throw new NotFoundHttpException('The requested file does not exist in this preview.');
+                    throw new NotFoundHttpException(trans('exceptions.subuser_preview.file_not_found'));
                 }
 
                 $content = array_key_exists('content', $entry)
@@ -348,7 +348,7 @@ class SubuserPreviewSimulator
             ])->validate();
             $url = (string) $request->input('url');
             if (! str_starts_with(strtolower($url), 'https://') || preg_match('/\$(\(|\{)|`/', $url)) {
-                throw new BadRequestHttpException('Only safe HTTPS URLs can be pulled into the preview.');
+                throw new BadRequestHttpException(trans('exceptions.subuser_preview.unsafe_pull_url'));
             }
             $filename = (string) ($request->input('filename') ?: basename(parse_url($url, PHP_URL_PATH) ?: 'download'));
             $this->putFile($context, $this->joinPath((string) $request->input('directory', '/'), $filename), true, '');
@@ -360,7 +360,7 @@ class SubuserPreviewSimulator
             return $response;
         }
 
-        throw new ConflictHttpException('This action is not available during subuser preview.');
+        throw new ConflictHttpException(trans('exceptions.subuser_preview.action_unavailable'));
     }
 
     private function mergeFileListing(
@@ -453,7 +453,7 @@ class SubuserPreviewSimulator
     private function authorize(SubuserPreviewContext $context, ?string $permission): void
     {
         if (! $permission || ! $context->allows($permission)) {
-            throw new AccessDeniedHttpException('You do not have permission to perform this action in the preview.');
+            throw new AccessDeniedHttpException(trans('exceptions.subuser_preview.permission_denied'));
         }
     }
 

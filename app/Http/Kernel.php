@@ -87,6 +87,7 @@ class Kernel extends HttpKernel
             AuthenticateApplicationUser::class,
         ],
         'client-api' => [
+            LanguageMiddleware::class,
             ResolveSubuserPreview::class,
             SubstituteClientBindings::class,
             AuthenticateImpersonation::class,
