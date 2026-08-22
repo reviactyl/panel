@@ -41,7 +41,7 @@ export default () => {
     const TERMINAL_PRELUDE = `\u001b[1m\u001b[33m${containerText} \u001b[0m`;
     const ref = useRef<HTMLDivElement>(null);
     const terminal = useMemo(() => new Terminal({ ...terminalProps }), []);
-    const fitAddon = new FitAddon();
+    const fitAddon = useMemo(() => new FitAddon(), []);
     const searchAddon = new SearchAddon();
     const searchBar = new SearchBarAddon(searchAddon);
     const webLinksAddon = new WebLinksAddon();
