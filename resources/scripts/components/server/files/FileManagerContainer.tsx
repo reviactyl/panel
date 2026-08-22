@@ -44,40 +44,7 @@ import {
     FaFileCirclePlus,
 } from 'react-icons/fa6';
 import { Button } from '@/reviactyl/components/button';
-
-type SortType = 'name' | 'size' | 'date';
-type SortDirection = 'asc' | 'desc';
-
-const sortFiles = (
-    files: FileObject[],
-    sortType: SortType = 'name',
-    sortDirection: SortDirection = 'asc'
-): FileObject[] => {
-    const sorted = [...files];
-
-    sorted.sort((a, b) => (a.isFile === b.isFile ? 0 : a.isFile ? 1 : -1));
-
-    const multiplier = sortDirection === 'asc' ? 1 : -1;
-
-    if (sortType === 'name') {
-        sorted.sort((a, b) => a.name.localeCompare(b.name) * multiplier);
-    } else if (sortType === 'size') {
-        sorted.sort((a, b) => {
-            if (a.isFile && b.isFile) {
-                return (a.size - b.size) * multiplier;
-            }
-            return 0;
-        });
-    } else if (sortType === 'date') {
-        sorted.sort((a, b) => {
-            const timeA = a.modifiedAt.getTime();
-            const timeB = b.modifiedAt.getTime();
-            return (timeA - timeB) * multiplier;
-        });
-    }
-
-    return sorted.filter((file, index) => index === 0 || file.name !== sorted[index - 1]?.name);
-};
+import { sortFiles, SortDirection, SortType } from '@/components/server/files/sortFiles';
 
 type SearchResult = FileObject & { fullPath: string };
 
