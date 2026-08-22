@@ -21,6 +21,9 @@ Route::get('/', [Client\ClientController::class, 'index'])->name('api:client.ind
 Route::get('/permissions', [Client\ClientController::class, 'permissions']);
 Route::get('/eggs', [Client\ClientController::class, 'eggs'])->name('api:client.eggs');
 Route::get('/extensions', [Client\ExtensionsController::class, 'index'])->name('api:client.extensions.index');
+Route::get('/subuser-preview', [Client\SubuserPreviewController::class, 'status']);
+Route::post('/subuser-preview/heartbeat', [Client\SubuserPreviewController::class, 'heartbeat']);
+Route::delete('/subuser-preview', [Client\SubuserPreviewController::class, 'destroy']);
 
 Route::prefix('/account')->middleware(AccountSubject::class)->group(function () {
     Route::prefix('/')->withoutMiddleware(RequireTwoFactorAuthentication::class)->group(function () {
@@ -143,6 +146,7 @@ Route::group([
         Route::get('/{user}', [Client\Servers\SubuserController::class, 'view']);
         Route::post('/{user}', [Client\Servers\SubuserController::class, 'update']);
         Route::delete('/{user}', [Client\Servers\SubuserController::class, 'delete']);
+        Route::post('/{user}/preview', [Client\SubuserPreviewController::class, 'store']);
     });
 
     Route::group(['prefix' => '/backups'], function () {

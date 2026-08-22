@@ -8,13 +8,19 @@ import { useStoreState } from 'easy-peasy';
 import tw from 'twin.macro';
 import GreyRowBox from '@/reviactyl/elements/GreyRowBox';
 import { useTranslation } from 'react-i18next';
+import PreviewSubuserButton from '@/components/server/users/PreviewSubuserButton';
+import { ServerContext } from '@/state/server';
+import { useSubuserPreview } from '@/context/SubuserPreviewContext';
 
 interface Props {
     subuser: Subuser;
 }
 
 export default ({ subuser }: Props) => {
-    const uuid = useStoreState((state) => state.user!.data!.uuid);
+    const accountUuid = useStoreState((state) => state.user!.data!.uuid);
+    const { session } = useSubuserPreview();
+    const uuid = session?.subuserUuid ?? accountUuid;
+    const isServerOwner = ServerContext.useStoreState((state) => state.server.data?.isOwner === true);
     const [visible, setVisible] = useState(false);
     const { t } = useTranslation('server/users');
 
@@ -47,6 +53,7 @@ export default ({ subuser }: Props) => {
             </div>
             {subuser.uuid !== uuid && (
                 <>
+                    {isServerOwner && <PreviewSubuserButton subuser={subuser} />}
                     <Can action={'user.update'}>
                         <button
                             type={'button'}

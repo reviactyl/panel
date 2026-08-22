@@ -10,6 +10,7 @@ use App\Models\Permission;
 use App\Models\Server;
 use App\Services\Nodes\NodeJWTService;
 use App\Services\Servers\GetUserPermissionsService;
+use App\Services\Subusers\SubuserPreviewContext;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
@@ -40,6 +41,9 @@ class WebsocketController extends ClientApiController
         }
 
         $permissions = $this->permissionsService->handle($server, $user);
+        if ($request->attributes->has(SubuserPreviewContext::class)) {
+            $permissions = [Permission::ACTION_WEBSOCKET_CONNECT];
+        }
 
         $node = $server->node;
         if (! is_null($server->transfer)) {

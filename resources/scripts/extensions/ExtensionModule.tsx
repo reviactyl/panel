@@ -1,4 +1,5 @@
 import { Suspense, lazy, useMemo } from 'react';
+import ErrorBoundary from '@/reviactyl/elements/ErrorBoundary';
 
 interface Props {
     extensionId: string;
@@ -44,8 +45,10 @@ export const ExtensionModule = ({ extensionId, modulePath, exportName }: Props) 
     );
 
     return (
-        <Suspense key={`${extensionId}:${modulePath}`} fallback={null}>
-            <LazyComponent />
-        </Suspense>
+        <ErrorBoundary>
+            <Suspense key={`${extensionId}:${modulePath}`} fallback={null}>
+                <LazyComponent />
+            </Suspense>
+        </ErrorBoundary>
     );
 };

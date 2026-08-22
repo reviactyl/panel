@@ -5,6 +5,7 @@ namespace App\Services\Servers;
 use App\Models\Server;
 use App\Models\Subuser;
 use App\Models\User;
+use App\Services\Subusers\SubuserPreviewContext;
 
 class GetUserPermissionsService
 {
@@ -15,6 +16,11 @@ class GetUserPermissionsService
      */
     public function handle(Server $server, User $user): array
     {
+        $preview = request()->attributes->get(SubuserPreviewContext::class);
+        if ($preview instanceof SubuserPreviewContext) {
+            return $preview->isServer($server) ? $preview->permissions() : [];
+        }
+
         if ($user->root_admin || $user->id === $server->owner_id) {
             $permissions = ['*'];
 

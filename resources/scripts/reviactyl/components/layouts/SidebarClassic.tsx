@@ -11,8 +11,9 @@ import http from '@/api/http';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import SearchContainer from '@/components/dashboard/search/SearchContainer';
 import Logo from '@/reviactyl/ui/Logo';
-import { FaArrowRightToBracket } from 'react-icons/fa6';
+import { FaArrowRightToBracket, FaEye } from 'react-icons/fa6';
 import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
+import { useSubuserPreview } from '@/context/SubuserPreviewContext';
 
 interface SidebarProps {
     isOpen?: boolean;
@@ -25,6 +26,7 @@ interface NavbarProps {
 
 const NavbarContainer = styled.div`
     ${tw`fixed top-0 left-0 w-full h-16 z-50 transition duration-300`}
+    top: var(--subuser-preview-offset, 0px);
 `;
 
 const SidebarContainer = styled.div<{ $isOpen: boolean }>`
@@ -34,21 +36,21 @@ const SidebarContainer = styled.div<{ $isOpen: boolean }>`
         $isOpen
             ? css`
                   position: fixed;
-                  top: 4rem;
+                  top: calc(4rem + var(--subuser-preview-offset, 0px));
                   inset-inline-start: 0;
               `
             : tw`hidden`}
 
-    height: calc(100dvh - 64px);
+    height: calc(100dvh - 64px - var(--subuser-preview-offset, 0px));
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
 
     @media (min-width: 1024px) {
         position: fixed;
-        top: 64px;
+        top: calc(64px + var(--subuser-preview-offset, 0px));
         inset-inline-start: 0;
         display: flex;
-        height: calc(100dvh - 100px);
+        height: calc(100dvh - 100px - var(--subuser-preview-offset, 0px));
         overflow-y: auto;
     }
 `;
@@ -84,12 +86,14 @@ export const SideNavigation = styled.div`
 
 export const SidebarClassic = React.forwardRef<HTMLDivElement, SidebarProps>(({ children, isOpen = false }, ref) => {
     const { t } = useTranslation('dashboard/account');
+    const { t: tUsers } = useTranslation('server/users');
     const nameFirst = useStoreState((state) => state.user.data?.name_first);
     const nameLast = useStoreState((state) => state.user.data?.name_last);
     const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
     const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
     const sidebarLogout = useStoreState((state) => state.designify.data?.sidebarLogout);
+    const { session } = useSubuserPreview();
 
     const onLogout = () => {
         setIsLoggingOut(true);
@@ -102,36 +106,46 @@ export const SidebarClassic = React.forwardRef<HTMLDivElement, SidebarProps>(({ 
         <SidebarContainer $isOpen={isOpen} ref={ref}>
             <SpinnerOverlay visible={isLoggingOut} />
             <ProfileHeader>
-                <div className='flex items-center gap-3'>
-                    <Link to='/account'>
-                        <Avatar className='w-10' />
-                    </Link>
-                    <div className='flex flex-col'>
-                        <div className='flex items-center gap-x-1'>
-                            <span className='text-xs tracking-widest uppercase text-white/50'>
-                                {rootAdmin ? t('overview.administrator') : `${name} ${t('overview.user')}`}
-                            </span>
-                            {rootAdmin && (
-                                // eslint-disable-next-line react/jsx-no-target-blank
-                                <a href={`/admin`} target={'_blank'} className='h-5 w-5 text-white/70'>
-                                    <ExternalLinkIcon />
-                                </a>
-                            )}
+                {session ? (
+                    <div className='flex min-w-0 items-center gap-3'>
+                        <FaEye className='h-5 w-5 shrink-0 text-amber-400' />
+                        <div className='min-w-0'>
+                            <p className='text-xs font-semibold text-gray-100'>{tUsers('preview.title')}</p>
+                            <p className='truncate text-xs text-gray-400'>{session.subuserEmail}</p>
                         </div>
-                        <Link to='/account'>
-                            <span className='text-sm font-semibold'>
-                                {nameFirst} {nameLast}
-                            </span>
-                        </Link>
                     </div>
-                    {sidebarLogout && (
-                        <div onClick={onLogout}>
-                            <Tooltip content={t('overview.logout')}>
-                                <FaArrowRightToBracket className='h-10 text-gray-600 hover:text-danger/80 cursor-pointer' />
-                            </Tooltip>
+                ) : (
+                    <div className='flex items-center gap-3'>
+                        <Link to='/account'>
+                            <Avatar className='w-10' />
+                        </Link>
+                        <div className='flex flex-col'>
+                            <div className='flex items-center gap-x-1'>
+                                <span className='text-xs tracking-widest uppercase text-white/50'>
+                                    {rootAdmin ? t('overview.administrator') : `${name} ${t('overview.user')}`}
+                                </span>
+                                {rootAdmin && (
+                                    // eslint-disable-next-line react/jsx-no-target-blank
+                                    <a href={`/admin`} target={'_blank'} className='h-5 w-5 text-white/70'>
+                                        <ExternalLinkIcon />
+                                    </a>
+                                )}
+                            </div>
+                            <Link to='/account'>
+                                <span className='text-sm font-semibold'>
+                                    {nameFirst} {nameLast}
+                                </span>
+                            </Link>
                         </div>
-                    )}
-                </div>
+                        {sidebarLogout && (
+                            <div onClick={onLogout}>
+                                <Tooltip content={t('overview.logout')}>
+                                    <FaArrowRightToBracket className='h-10 text-gray-600 hover:text-danger/80 cursor-pointer' />
+                                </Tooltip>
+                            </div>
+                        )}
+                    </div>
+                )}
             </ProfileHeader>
 
             <SidebarContent>{children ? <SideNavigation>{children}</SideNavigation> : null}</SidebarContent>
@@ -141,6 +155,7 @@ export const SidebarClassic = React.forwardRef<HTMLDivElement, SidebarProps>(({ 
 
 export const NavbarClassic = ({ children }: NavbarProps) => {
     const [blurred, setBlurred] = useState(false);
+    const { session } = useSubuserPreview();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -158,7 +173,7 @@ export const NavbarClassic = ({ children }: NavbarProps) => {
                     {children} <Logo />
                 </div>
                 <div className='flex grow-0 shrink-0 items-center gap-3 order-last justify-end'>
-                    <SearchContainer />
+                    {!session && <SearchContainer />}
                 </div>
             </div>
         </NavbarContainer>

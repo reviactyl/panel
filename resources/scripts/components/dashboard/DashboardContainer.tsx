@@ -25,6 +25,7 @@ import Select from '@/reviactyl/elements/Select';
 import { Button } from '@/reviactyl/components/button';
 import { FaUserGear } from 'react-icons/fa6';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
+import { useSubuserPreview } from '@/context/SubuserPreviewContext';
 
 export default () => {
     const { t } = useTranslation('dashboard/index');
@@ -34,7 +35,9 @@ export default () => {
     const [page, setPage] = useState(!isNaN(defaultPage) && defaultPage > 0 ? defaultPage : 1);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const uuid = useStoreState((state) => state.user.data!.uuid);
-    const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
+    const accountRootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
+    const { session } = useSubuserPreview();
+    const rootAdmin = accountRootAdmin && !session;
     const [showOnlyAdmin, setShowOnlyAdmin] = usePersistedState(`${uuid}:show_all_servers`, false);
 
     const [isModalVisible, setModalVisible] = useState(false);
@@ -74,8 +77,9 @@ export default () => {
             })
     );
 
-    const { data: categories, mutate: mutateCategories } = useSWR('/api/client/account/categories', () =>
-        getServerCategories()
+    const { data: categories, mutate: mutateCategories } = useSWR(
+        session ? null : '/api/client/account/categories',
+        getServerCategories
     );
 
     useEffect(() => {
@@ -136,15 +140,17 @@ export default () => {
 
     return (
         <PageContentBlock className='pr-2' title={t('title')} showFlashKey={'dashboard'}>
-            <ExtensionSlot name='dashboard:above' />
-            <CategoryManagerModal
-                visible={isModalVisible}
-                onDismissed={() => setModalVisible(false)}
-                onCategoryChanged={() => {
-                    mutateCategories();
-                    mutateServers();
-                }}
-            />
+            {!session && <ExtensionSlot name='dashboard:above' />}
+            {!session && (
+                <CategoryManagerModal
+                    visible={isModalVisible}
+                    onDismissed={() => setModalVisible(false)}
+                    onCategoryChanged={() => {
+                        mutateCategories();
+                        mutateServers();
+                    }}
+                />
+            )}
 
             <div className='flex flex-col gap-4 py-4 md:flex-row md:items-center justify-between'>
                 <div className='min-w-0'>
@@ -155,114 +161,120 @@ export default () => {
                         {showOnlyAdmin ? t('servers-admin.subtitle') : t('servers-user.subtitle')}
                     </p>
                 </div>
-                <div className='flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full md:w-auto'>
-                    <div className='flex flex-row items-center justify-between sm:justify-start gap-4 sm:gap-0 w-full sm:w-auto sm:space-x-4'>
-                        {rootAdmin && (
-                            <div className={`flex flex-shrink-0 items-center justify-between gap-2`}>
-                                <p className='uppercase text-xs text-gray-300 whitespace-nowrap'>
-                                    {showOnlyAdmin ? t('other-servers') : t('your-servers')}
-                                </p>
-                                <Switch
-                                    name={'show_all_servers'}
-                                    defaultChecked={showOnlyAdmin}
-                                    onChange={() => setShowOnlyAdmin((s) => !s)}
-                                />
-                            </div>
-                        )}
-                        <div className='relative flex flex-shrink-0 items-center sm:border-l sm:border-[#334155] sm:pl-4 gap-x-1'>
-                            <div>
-                                <Button.Text
-                                    type='button'
-                                    onClick={() => setModalVisible(true)}
-                                    className={`!p-2`}
-                                    title={t('categories.manage')}
-                                    aria-label={t('categories.manage')}
-                                >
-                                    <FaUserGear className='w-5 h-5 text-gray-50' />
-                                </Button.Text>
-                            </div>
-                            <div>
-                                {!showOnlyAdmin && (
+                {!session && (
+                    <div className='flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full md:w-auto'>
+                        <div className='flex flex-row items-center justify-between sm:justify-start gap-4 sm:gap-0 w-full sm:w-auto sm:space-x-4'>
+                            {rootAdmin && (
+                                <div className={`flex flex-shrink-0 items-center justify-between gap-2`}>
+                                    <p className='uppercase text-xs text-gray-300 whitespace-nowrap'>
+                                        {showOnlyAdmin ? t('other-servers') : t('your-servers')}
+                                    </p>
+                                    <Switch
+                                        name={'show_all_servers'}
+                                        defaultChecked={showOnlyAdmin}
+                                        onChange={() => setShowOnlyAdmin((s) => !s)}
+                                    />
+                                </div>
+                            )}
+                            <div className='relative flex flex-shrink-0 items-center sm:border-l sm:border-[#334155] sm:pl-4 gap-x-1'>
+                                <div>
                                     <Button.Text
                                         type='button'
-                                        onClick={() => setEggFilterOpen((o) => !o)}
-                                        className={`!p-2 ${
-                                            selectedEggId !== null || selectedCategory !== 'all'
-                                                ? 'bg-blue-700 hover:bg-blue-600'
-                                                : ''
-                                        }`}
-                                        title={t('filter-label')}
-                                        aria-label={t('filter-label')}
-                                        aria-expanded={eggFilterOpen}
+                                        onClick={() => setModalVisible(true)}
+                                        className={`!p-2`}
+                                        title={t('categories.manage')}
+                                        aria-label={t('categories.manage')}
                                     >
-                                        <FilterIcon className='w-5 h-5 text-gray-50' />
+                                        <FaUserGear className='w-5 h-5 text-gray-50' />
                                     </Button.Text>
-                                )}
-                                {eggFilterOpen && (
-                                    <Card
-                                        ref={eggFilterRef}
-                                        className='absolute right-0 sm:left-auto top-full mt-1.5 z-10 min-w-[180px] !py-2 !px-2 shadow-lg'
-                                    >
-                                        {/* Egg filter is global (not user-specific): show for both "your servers" and "others' servers" */}
-                                        {(eggs && eggs.length > 0) ||
-                                        (rootAdmin && showOnlyAdmin && Array.isArray(eggs)) ? (
-                                            <div className='mb-2 border-b border-gray-800 pb-2'>
-                                                <p className='text-xs text-gray-200 uppercase px-2 pb-1.5'>
-                                                    {t('eggs.filter-label')}
-                                                </p>
-                                                <Select
-                                                    className='w-full'
-                                                    value={selectedEggId ?? ''}
-                                                    onChange={(e) => {
-                                                        setSelectedEggId(
-                                                            e.target.value === '' ? null : Number(e.target.value)
-                                                        );
-                                                        setEggFilterOpen(false);
-                                                    }}
-                                                    aria-label={t('eggs.filter-label')}
-                                                >
-                                                    <option value=''>{t('eggs.all')}</option>
-                                                    {eggs.map((egg) => (
-                                                        <option key={egg.id} value={egg.id}>
-                                                            {egg.name}
-                                                        </option>
-                                                    ))}
-                                                </Select>
-                                            </div>
-                                        ) : null}
-                                        {!showOnlyAdmin && (
-                                            <div>
-                                                <p className='text-xs text-gray-200 uppercase px-2 pb-1.5'>
-                                                    {t('categories.filter-label')}
-                                                </p>
-                                                <Select
-                                                    value={selectedCategory}
-                                                    onChange={(e) => setSelectedCategory(e.target.value)}
-                                                    aria-label={t('categories.all-categories')}
-                                                >
-                                                    <option value='all'>{t('categories.all-categories')}</option>
-                                                    {categories?.map((cat) => {
-                                                        const maxLen = 40;
-                                                        const label =
-                                                            cat.name.length <= maxLen
-                                                                ? cat.name
-                                                                : cat.name.slice(0, maxLen - 3) + '...';
-                                                        return (
-                                                            <option key={cat.uuid} value={cat.uuid} title={cat.name}>
-                                                                {label}
+                                </div>
+                                <div>
+                                    {!showOnlyAdmin && (
+                                        <Button.Text
+                                            type='button'
+                                            onClick={() => setEggFilterOpen((o) => !o)}
+                                            className={`!p-2 ${
+                                                selectedEggId !== null || selectedCategory !== 'all'
+                                                    ? 'bg-blue-700 hover:bg-blue-600'
+                                                    : ''
+                                            }`}
+                                            title={t('filter-label')}
+                                            aria-label={t('filter-label')}
+                                            aria-expanded={eggFilterOpen}
+                                        >
+                                            <FilterIcon className='w-5 h-5 text-gray-50' />
+                                        </Button.Text>
+                                    )}
+                                    {eggFilterOpen && (
+                                        <Card
+                                            ref={eggFilterRef}
+                                            className='absolute right-0 sm:left-auto top-full mt-1.5 z-10 min-w-[180px] !py-2 !px-2 shadow-lg'
+                                        >
+                                            {/* Egg filter is global (not user-specific): show for both "your servers" and "others' servers" */}
+                                            {(eggs && eggs.length > 0) ||
+                                            (rootAdmin && showOnlyAdmin && Array.isArray(eggs)) ? (
+                                                <div className='mb-2 border-b border-gray-800 pb-2'>
+                                                    <p className='text-xs text-gray-200 uppercase px-2 pb-1.5'>
+                                                        {t('eggs.filter-label')}
+                                                    </p>
+                                                    <Select
+                                                        className='w-full'
+                                                        value={selectedEggId ?? ''}
+                                                        onChange={(e) => {
+                                                            setSelectedEggId(
+                                                                e.target.value === '' ? null : Number(e.target.value)
+                                                            );
+                                                            setEggFilterOpen(false);
+                                                        }}
+                                                        aria-label={t('eggs.filter-label')}
+                                                    >
+                                                        <option value=''>{t('eggs.all')}</option>
+                                                        {eggs.map((egg) => (
+                                                            <option key={egg.id} value={egg.id}>
+                                                                {egg.name}
                                                             </option>
-                                                        );
-                                                    })}
-                                                    <option value='primary'>{t('categories.primary')}</option>
-                                                </Select>
-                                            </div>
-                                        )}
-                                    </Card>
-                                )}
+                                                        ))}
+                                                    </Select>
+                                                </div>
+                                            ) : null}
+                                            {!showOnlyAdmin && (
+                                                <div>
+                                                    <p className='text-xs text-gray-200 uppercase px-2 pb-1.5'>
+                                                        {t('categories.filter-label')}
+                                                    </p>
+                                                    <Select
+                                                        value={selectedCategory}
+                                                        onChange={(e) => setSelectedCategory(e.target.value)}
+                                                        aria-label={t('categories.all-categories')}
+                                                    >
+                                                        <option value='all'>{t('categories.all-categories')}</option>
+                                                        {categories?.map((cat) => {
+                                                            const maxLen = 40;
+                                                            const label =
+                                                                cat.name.length <= maxLen
+                                                                    ? cat.name
+                                                                    : cat.name.slice(0, maxLen - 3) + '...';
+                                                            return (
+                                                                <option
+                                                                    key={cat.uuid}
+                                                                    value={cat.uuid}
+                                                                    title={cat.name}
+                                                                >
+                                                                    {label}
+                                                                </option>
+                                                            );
+                                                        })}
+                                                        <option value='primary'>{t('categories.primary')}</option>
+                                                    </Select>
+                                                </div>
+                                            )}
+                                        </Card>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                )}
             </div>
 
             {!servers ? (
@@ -307,6 +319,7 @@ export default () => {
                                         category={categories?.find((c) => c.uuid === slug) || null}
                                         servers={groupedServers[slug] || []}
                                         showOnlyAdmin={showOnlyAdmin || false}
+                                        showCategory={!session}
                                         onCategoryChanged={() => mutateServers()}
                                     />
                                 ))

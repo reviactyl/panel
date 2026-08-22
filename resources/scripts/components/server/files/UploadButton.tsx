@@ -14,6 +14,8 @@ import Portal from '@/reviactyl/elements/Portal';
 import Card from '@/reviactyl/ui/Card';
 import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
 import { FaUpload } from 'react-icons/fa6';
+import { useSubuserPreview } from '@/context/SubuserPreviewContext';
+import http from '@/api/http';
 
 function isFileOrDirectory(event: DragEvent): boolean {
     if (!event.dataTransfer?.types) {
@@ -36,6 +38,7 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
     const { addError, clearAndAddHttpError } = useFlashKey('files');
 
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const { session } = useSubuserPreview();
     const directory = ServerContext.useStoreState((state) => state.files.directory);
     const { removeFileUpload, pushFileUpload, setUploadProgress } = ServerContext.useStoreActions(
         (actions) => actions.files
@@ -115,19 +118,28 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
             });
 
             return () =>
-                getFileUploadUrl(uuid)
-                    .then((url) =>
-                        axios.post(
-                            url,
-                            { files: file },
-                            {
-                                signal: controller.signal,
-                                headers: { 'Content-Type': 'multipart/form-data' },
-                                params: { directory },
-                                onUploadProgress: (data) => onUploadProgress(data, file.name),
-                            }
-                        )
-                    )
+                (session
+                    ? file.arrayBuffer().then((content) =>
+                          http.post(`/api/client/servers/${uuid}/files/write`, content, {
+                              params: { file: `${directory.replace(/\/$/, '')}/${file.name}` },
+                              headers: { 'Content-Type': 'application/octet-stream' },
+                              signal: controller.signal,
+                          })
+                      )
+                    : getFileUploadUrl(uuid).then((url) =>
+                          axios.post(
+                              url,
+                              { files: file },
+                              {
+                                  signal: controller.signal,
+                                  headers: { 'Content-Type': 'multipart/form-data' },
+                                  params: { directory },
+                                  onUploadProgress: (data) => onUploadProgress(data, file.name),
+                              }
+                          )
+                      )
+                )
+                    .then(() => setUploadProgress({ name: file.name, loaded: file.size }))
                     .then(() => timeouts.current.push(setTimeout(() => removeFileUpload(file.name), 500)))
                     .catch((error) => {
                         removeFileUpload(file.name);

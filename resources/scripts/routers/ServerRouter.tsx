@@ -29,6 +29,7 @@ import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 import { useExtensionRoutes } from '@/extensions/useExtensionRoutes';
 import { useExtensions } from '@/extensions/useExtensions';
 import { resolveExtensionIcon } from '@/extensions/iconResolver';
+import { useSubuserPreview } from '@/context/SubuserPreviewContext';
 
 interface NavItemProps {
     route: any;
@@ -72,6 +73,7 @@ const ServerNavigation = () => {
     const serverEggId = ServerContext.useStoreState((state) => state.server.data?.eggId);
     const { data: extensionData } = useExtensions();
     const customSidebarButtons = useStoreState((state) => state.designify.data?.sidebarButtons ?? []);
+    const { session } = useSubuserPreview();
     const normalizedSidebarButtons = (Array.isArray(customSidebarButtons) ? customSidebarButtons : []).filter(
         (button): button is DesignifySidebarButton =>
             typeof button?.label === 'string' &&
@@ -179,7 +181,7 @@ const ServerNavigation = () => {
                 </div>
             )}
 
-            {normalizedSidebarButtons.length > 0 && (
+            {!session && normalizedSidebarButtons.length > 0 && (
                 <div>
                     <span className='label'>{tr('sidebar.more')}</span>
                     {normalizedSidebarButtons.map((button, index) => (
@@ -206,7 +208,9 @@ export default function ServerRouter() {
     const location = useLocation();
 
     const isUnderMaintenance = useStoreState((state) => state.designify.data?.isUnderMaintenance);
-    const rootAdmin = useStoreState((state) => state.user.data?.rootAdmin);
+    const accountRootAdmin = useStoreState((state) => state.user.data?.rootAdmin);
+    const { session } = useSubuserPreview();
+    const rootAdmin = accountRootAdmin && !session;
 
     const [error, setError] = useState('');
     const [isSidebarOpen, setSidebarOpen] = useState(false);

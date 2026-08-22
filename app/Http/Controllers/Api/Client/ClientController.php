@@ -7,6 +7,7 @@ use App\Models\Egg;
 use App\Models\Filters\MultiFieldServerFilter;
 use App\Models\Permission;
 use App\Models\Server;
+use App\Services\Subusers\SubuserPreviewContext;
 use App\Transformers\Api\Client\ServerTransformer;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -28,6 +29,7 @@ class ClientController extends ClientApiController
     public function index(GetServersRequest $request): array
     {
         $user = $request->user();
+        $preview = $request->attributes->get(SubuserPreviewContext::class);
         $transformer = $this->getTransformer(ServerTransformer::class);
 
         // Start the query builder and ensure we eager load any requested relationships from the request.
@@ -56,7 +58,9 @@ class ClientController extends ClientApiController
         // just return all the servers the user has access to because they are the owner or a subuser of the
         // server. If ?type=admin-all is passed all servers on the system will be returned to the user, rather
         // than only servers they can see because they are an admin.
-        if (in_array($type, ['admin', 'admin-all'])) {
+        if ($preview instanceof SubuserPreviewContext) {
+            $builder->where('servers.id', $preview->session()->server_id);
+        } elseif (in_array($type, ['admin', 'admin-all'])) {
             // If they aren't an admin but want all the admin servers don't fail the request, just
             // make it a query that will never return any results back.
             if (! $user->root_admin) {
@@ -99,8 +103,11 @@ class ClientController extends ClientApiController
     {
         $user = $request->user();
         $type = $request->input('type');
+        $preview = $request->attributes->get(SubuserPreviewContext::class);
 
-        if ($type === 'admin' && $user->root_admin) {
+        if ($preview instanceof SubuserPreviewContext) {
+            $serverIds = [$preview->session()->server_id];
+        } elseif ($type === 'admin' && $user->root_admin) {
             $serverIds = Server::whereNotIn('id', $user->accessibleServers()->pluck('id')->all())->pluck('id')->all();
         } else {
             $serverIds = $user->accessibleServers()->pluck('id')->all();

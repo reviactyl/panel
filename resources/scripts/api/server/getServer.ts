@@ -66,9 +66,13 @@ export interface Server {
     eggId: number;
     eggImage: string;
     containerText: string;
+    isOwner?: boolean;
 }
 
-export const rawDataToServerObject = ({ attributes: data }: FractalResponseData): Server => ({
+export const rawDataToServerObject = ({
+    attributes: data,
+    meta,
+}: FractalResponseData & { meta?: Record<string, any> }): Server => ({
     id: data.identifier,
     identifier: data.server_identifier,
     internalId: data.internal_id,
@@ -112,6 +116,7 @@ export const rawDataToServerObject = ({ attributes: data }: FractalResponseData)
     eggId: data.egg_id,
     eggImage: data.egg_image,
     containerText: data.containerText,
+    isOwner: meta?.is_server_owner === true,
 });
 
 export default (uuid: string): Promise<[Server, string[]]> => {

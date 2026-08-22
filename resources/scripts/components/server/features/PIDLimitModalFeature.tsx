@@ -7,6 +7,7 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
 import { SocketEvent } from '@/components/server/events';
 import { useStoreState } from 'easy-peasy';
+import { useSubuserPreview } from '@/context/SubuserPreviewContext';
 import { FaTriangleExclamation } from 'react-icons/fa6';
 import { useTranslation } from 'react-i18next';
 
@@ -18,7 +19,9 @@ const PIDLimitModalFeature = () => {
     const status = ServerContext.useStoreState((state) => state.status.value);
     const { clearFlashes } = useFlash();
     const { connected, instance } = ServerContext.useStoreState((state) => state.socket);
-    const isAdmin = useStoreState((state) => state.user.data!.rootAdmin);
+    const accountAdmin = useStoreState((state) => state.user.data!.rootAdmin);
+    const { session } = useSubuserPreview();
+    const isAdmin = accountAdmin && !session;
 
     useEffect(() => {
         if (!connected || !instance || status === 'running') return;

@@ -7,6 +7,7 @@ use App\Http\Middleware\Api\Application\AuthenticateApplicationUser;
 use App\Http\Middleware\Api\AuthenticateIPAccess;
 use App\Http\Middleware\Api\Client\AuthenticateImpersonation;
 use App\Http\Middleware\Api\Client\RequireClientApiKey;
+use App\Http\Middleware\Api\Client\ResolveSubuserPreview;
 use App\Http\Middleware\Api\Client\SubstituteClientBindings;
 use App\Http\Middleware\Api\Daemon\DaemonAuthenticate;
 use App\Http\Middleware\Api\IsValidJson;
@@ -86,6 +87,7 @@ class Kernel extends HttpKernel
             AuthenticateApplicationUser::class,
         ],
         'client-api' => [
+            ResolveSubuserPreview::class,
             SubstituteClientBindings::class,
             AuthenticateImpersonation::class,
             RequireClientApiKey::class,

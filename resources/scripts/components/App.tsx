@@ -15,6 +15,8 @@ import Spinner from '@/reviactyl/elements/Spinner';
 import { ThemeLoader } from '@/reviactyl/ui/ThemeEngine';
 import { Invert } from '@/reviactyl/ui/SmartInvert';
 import { LocaleLoader } from '@/reviactyl/ui/LanguageSwitcher';
+import { SubuserPreviewProvider } from '@/context/SubuserPreviewContext';
+import { SubuserPreviewFrame } from '@/components/subuser-preview/SubuserPreviewFrame';
 
 const DashboardRouter = lazy(() => import('@/routers/DashboardRouter'));
 const ServerRouter = lazy(() => import('@/routers/ServerRouter'));
@@ -81,47 +83,51 @@ function App() {
                             v7_relativeSplatPath: true,
                         }}
                     >
-                        <Routes>
-                            <Route
-                                path='/auth/*'
-                                element={
-                                    <Spinner.Suspense>
-                                        <AuthenticationRouter />
-                                    </Spinner.Suspense>
-                                }
-                            />
-                            <Route
-                                path='/server/:id/*'
-                                element={
-                                    <AuthenticatedRoute>
-                                        <Spinner.Suspense>
-                                            <ServerContext.Provider>
-                                                <ServerRouter />
-                                            </ServerContext.Provider>
-                                        </Spinner.Suspense>
-                                    </AuthenticatedRoute>
-                                }
-                            />
-                            <Route
-                                path='/status/:id/*'
-                                element={
-                                    <Spinner.Suspense>
-                                        <PublicServerStatus />
-                                    </Spinner.Suspense>
-                                }
-                            />
-                            <Route
-                                path='/*'
-                                element={
-                                    <AuthenticatedRoute>
-                                        <Spinner.Suspense>
-                                            <DashboardRouter />
-                                        </Spinner.Suspense>
-                                    </AuthenticatedRoute>
-                                }
-                            />
-                            <Route path='*' element={<NotFound />} />
-                        </Routes>
+                        <SubuserPreviewProvider>
+                            <SubuserPreviewFrame>
+                                <Routes>
+                                    <Route
+                                        path='/auth/*'
+                                        element={
+                                            <Spinner.Suspense>
+                                                <AuthenticationRouter />
+                                            </Spinner.Suspense>
+                                        }
+                                    />
+                                    <Route
+                                        path='/server/:id/*'
+                                        element={
+                                            <AuthenticatedRoute>
+                                                <Spinner.Suspense>
+                                                    <ServerContext.Provider>
+                                                        <ServerRouter />
+                                                    </ServerContext.Provider>
+                                                </Spinner.Suspense>
+                                            </AuthenticatedRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path='/status/:id/*'
+                                        element={
+                                            <Spinner.Suspense>
+                                                <PublicServerStatus />
+                                            </Spinner.Suspense>
+                                        }
+                                    />
+                                    <Route
+                                        path='/*'
+                                        element={
+                                            <AuthenticatedRoute>
+                                                <Spinner.Suspense>
+                                                    <DashboardRouter />
+                                                </Spinner.Suspense>
+                                            </AuthenticatedRoute>
+                                        }
+                                    />
+                                    <Route path='*' element={<NotFound />} />
+                                </Routes>
+                            </SubuserPreviewFrame>
+                        </SubuserPreviewProvider>
                     </BrowserRouter>
                 </div>
             </StoreProvider>

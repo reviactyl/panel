@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Server;
 use App\Models\User;
+use App\Services\Subusers\SubuserPreviewContext;
 
 class ServerPolicy
 {
@@ -25,6 +26,11 @@ class ServerPolicy
      */
     public function before(User $user, string $ability, Server $server): bool
     {
+        $preview = request()->attributes->get(SubuserPreviewContext::class);
+        if ($preview instanceof SubuserPreviewContext) {
+            return $preview->isServer($server) && $preview->allows($ability);
+        }
+
         if ($user->root_admin || $server->owner_id === $user->id) {
             return true;
         }
