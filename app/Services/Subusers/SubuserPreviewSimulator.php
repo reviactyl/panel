@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
@@ -83,6 +84,12 @@ class SubuserPreviewSimulator
      */
     private function handleRead(Request $request, \Closure $next, SubuserPreviewContext $context, string $path): mixed
     {
+        if (str_ends_with($path, '/files/pull')) {
+            $this->authorize($context, Permission::ACTION_FILE_CREATE);
+
+            return response()->json(['downloads' => []]);
+        }
+
         if (str_ends_with($path, '/files/upload')) {
             throw new ConflictHttpException(trans('exceptions.subuser_preview.live_connection_unavailable'));
         }
@@ -456,7 +463,7 @@ class SubuserPreviewSimulator
             $filename = (string) ($request->input('filename') ?: basename(parse_url($url, PHP_URL_PATH) ?: 'download'));
             $this->putFile($context, $this->joinPath((string) $request->input('directory', '/'), $filename), true, '');
 
-            return response()->json([], 204);
+            return response()->json(['identifier' => 'preview_'.Str::lower(Str::random(8))], 202);
         }
 
         if ($response = $this->resourceSimulator->write($request, $context, $path)) {

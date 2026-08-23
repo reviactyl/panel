@@ -430,6 +430,28 @@ class SubuserPreviewTest extends ClientApiIntegrationTestCase
         $this->assertSame([], SubuserPreviewSession::query()->firstOrFail()->state['files']);
     }
 
+    public function test_preview_url_download_returns_identifier_and_updates_file_state(): void
+    {
+        [$owner, $server, $target] = $this->models();
+        $token = $this->actingAs($owner)->postJson($this->previewEndpoint($server, $target))->json('token');
+
+        $this->withPreviewToken($token)
+            ->postJson($this->link($server, 'files/pull'), [
+                'url' => 'https://example.com/archive.tar.gz',
+                'directory' => '/',
+            ])
+            ->assertAccepted()
+            ->assertJsonStructure(['identifier']);
+
+        $this->withPreviewToken($token)
+            ->getJson($this->link($server, 'files/pull'))
+            ->assertOk()
+            ->assertExactJson(['downloads' => []]);
+
+        $file = SubuserPreviewSession::query()->firstOrFail()->state['files']['/archive.tar.gz'];
+        $this->assertTrue($file['is_file']);
+    }
+
     public function test_preview_websocket_token_is_read_only(): void
     {
         [$owner, $server, $target] = $this->models();

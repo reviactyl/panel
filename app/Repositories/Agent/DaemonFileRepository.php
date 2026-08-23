@@ -298,4 +298,22 @@ class DaemonFileRepository extends DaemonRepository
             throw new DaemonConnectionException($exception);
         }
     }
+
+    /**
+     * Returns all remote file downloads currently being processed for a server.
+     *
+     * @throws DaemonConnectionException
+     */
+    public function getPulls(): ResponseInterface
+    {
+        Assert::isInstanceOf($this->server, Server::class);
+
+        try {
+            return $this->getHttpClient()->get(
+                sprintf('/api/servers/%s/files/pull', $this->server->uuid)
+            );
+        } catch (TransferException $exception) {
+            throw new DaemonConnectionException($exception);
+        }
+    }
 }
