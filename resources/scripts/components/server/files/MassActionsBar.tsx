@@ -13,6 +13,7 @@ import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
 import { FaFileArrowUp, FaTrash } from 'react-icons/fa6';
 import Spinner from '@/reviactyl/elements/Spinner';
 import { FaFileArchive } from 'react-icons/fa';
+import Can from '@/reviactyl/elements/Can';
 
 const MassActionsBar = () => {
     const { t } = useTranslation('server/files');
@@ -93,25 +94,33 @@ const MassActionsBar = () => {
                     onDismissed={() => setShowMove(false)}
                 />
             )}
-            <span className='border-l border-gray-600 h-5 mx-2' />
-            <Tooltip content={t('move')}>
-                <Button.Text onClick={() => setShowMove(true)} aria-label={t('move')} disabled={loading}>
-                    <FaFileArrowUp className='h-5 w-5' />
-                </Button.Text>
-            </Tooltip>
-            <Tooltip content={t('archive')}>
-                <Button.Success onClick={onClickCompress} aria-label={t('archive')} disabled={loading}>
-                    <FaFileArchive className='h-5 w-5' />
-                </Button.Success>
-            </Tooltip>
-            <Tooltip content={t('delete')}>
-                <Button.Danger onClick={() => setShowConfirm(true)} aria-label={t('delete')} disabled={loading}>
-                    <FaTrash className='h-5 w-5' />
-                </Button.Danger>
-            </Tooltip>
+            <Can action={['file.update', 'file.archive', 'file.delete']} matchAny>
+                <span className='border-l border-gray-600 h-5 mx-2' />
+            </Can>
+            <Can action={'file.update'}>
+                <Tooltip content={t('move')}>
+                    <Button.Text onClick={() => setShowMove(true)} aria-label={t('move')} disabled={loading}>
+                        <FaFileArrowUp className='h-5 w-5' />
+                    </Button.Text>
+                </Tooltip>
+            </Can>
+            <Can action={'file.archive'}>
+                <Tooltip content={t('archive')}>
+                    <Button.Success onClick={onClickCompress} aria-label={t('archive')} disabled={loading}>
+                        <FaFileArchive className='h-5 w-5' />
+                    </Button.Success>
+                </Tooltip>
+            </Can>
+            <Can action={'file.delete'}>
+                <Tooltip content={t('delete')}>
+                    <Button.Danger onClick={() => setShowConfirm(true)} aria-label={t('delete')} disabled={loading}>
+                        <FaTrash className='h-5 w-5' />
+                    </Button.Danger>
+                </Tooltip>
+            </Can>
             {loading && (
                 <Tooltip content={loadingMessage}>
-                    <Button onClick={onClickCompress} aria-label={loadingMessage} className='cursor-wait'>
+                    <Button disabled aria-label={loadingMessage} className='cursor-wait'>
                         <Spinner css={tw`h-5 w-5`} />
                     </Button>
                 </Tooltip>

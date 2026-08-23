@@ -13,6 +13,8 @@ import tw from 'twin.macro';
 import ConfirmationModal from '@/reviactyl/elements/ConfirmationModal';
 import Icon from '@/reviactyl/elements/Icon';
 import { useTranslation } from 'react-i18next';
+import { usePermissions } from '@/plugins/usePermissions';
+import { taskActionPermissions } from '@/components/server/schedules/taskPermissions';
 
 interface Props {
     schedule: Schedule;
@@ -40,6 +42,7 @@ export default ({ schedule, task }: Props) => {
     const [isEditing, setIsEditing] = useState(false);
     const appendSchedule = ServerContext.useStoreActions((actions) => actions.schedules.appendSchedule);
     const { t } = useTranslation('server/schedules');
+    const canEditTask = usePermissions(taskActionPermissions).some(Boolean);
 
     const onConfirmDeletion = () => {
         setIsLoading(true);
@@ -114,16 +117,18 @@ export default ({ schedule, task }: Props) => {
                         </div>
                     </div>
                 )}
-                <Can action={'schedule.update'}>
-                    <button
-                        type={'button'}
-                        aria-label={t('edit-scheduled-task')}
-                        css={tw`block text-sm p-2 text-gray-600 hover:text-gray-100 transition-colors duration-150 mr-4 ml-auto sm:ml-0`}
-                        onClick={() => setIsEditing(true)}
-                    >
-                        <FaPen />
-                    </button>
-                </Can>
+                {canEditTask && (
+                    <Can action={'schedule.update'}>
+                        <button
+                            type={'button'}
+                            aria-label={t('edit-scheduled-task')}
+                            css={tw`block text-sm p-2 text-gray-600 hover:text-gray-100 transition-colors duration-150 mr-4 ml-auto sm:ml-0`}
+                            onClick={() => setIsEditing(true)}
+                        >
+                            <FaPen />
+                        </button>
+                    </Can>
+                )}
                 <Can action={'schedule.update'}>
                     <button
                         type={'button'}

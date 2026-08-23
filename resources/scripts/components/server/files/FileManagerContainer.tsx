@@ -233,14 +233,10 @@ export default () => {
                                         <FaFileCirclePlus className='h-5 w-5' />
                                     </Button.Text>
                                 </Tooltip>
-                                {selectedFilesLength > 0 && (
-                                    <>
-                                        <MassActionsBar />
-                                    </>
-                                )}
                                 <ExtensionSlot name={`server:files:actions:end`} />
                             </div>
                         </Can>
+                        {selectedFilesLength > 0 && <MassActionsBar />}
                         <div className='order-2 md:order-none md:ml-auto flex items-center gap-1 w-full md:w-auto'>
                             <Input
                                 ref={searchInputRef}
