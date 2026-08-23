@@ -9,6 +9,8 @@ export interface UserData {
     email: string;
     language: string;
     fileEditor: string;
+    avatarStyle: string;
+    avatarAnimated: boolean;
     rootAdmin: boolean;
     useTotp: boolean;
     createdAt: Date;

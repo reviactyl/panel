@@ -36,6 +36,8 @@ interface ExtendedWindow extends Window {
         use_totp: boolean;
         language: string;
         editor: string;
+        avatar_style: string;
+        avatar_animated: boolean;
         updated_at: string;
         created_at: string;
     };
@@ -61,6 +63,8 @@ function App() {
             useTotp: PanelUser.use_totp,
             createdAt: new Date(PanelUser.created_at),
             fileEditor: PanelUser.editor,
+            avatarStyle: PanelUser.avatar_style || 'gravatar',
+            avatarAnimated: PanelUser.avatar_animated ?? true,
             updatedAt: new Date(PanelUser.updated_at),
         });
     }

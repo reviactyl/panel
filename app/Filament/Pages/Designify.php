@@ -361,13 +361,19 @@ class Designify extends Page implements HasSchemas
 
                     Select::make('designify:avatarType')
                         ->label(trans('admin/settings.designify.avatar-type'))
+                        ->helperText(trans('admin/settings.designify.avatar-type-description'))
                         ->options([
-                            'gravatar' => 'Gravatar',
-                            'initials' => 'Initials',
-                            'identicon' => 'Identicon',
-                            'thumbs' => 'Thumbs',
-                            'rings' => 'Rings',
-                        ]),
+                            'gravatar' => trans('admin/settings.designify.avatar-styles.gravatar'),
+                            'initials' => trans('admin/settings.designify.avatar-styles.initials'),
+                            'identicon' => trans('admin/settings.designify.avatar-styles.identicon'),
+                            'loops' => trans('admin/settings.designify.avatar-styles.loops'),
+                            'waves' => trans('admin/settings.designify.avatar-styles.waves'),
+                            'critters' => trans('admin/settings.designify.avatar-styles.critters'),
+                            'pixelbot' => trans('admin/settings.designify.avatar-styles.pixelbot'),
+                            'thumbs' => trans('admin/settings.designify.avatar-styles.thumbs'),
+                        ])
+                        ->required()
+                        ->columnSpan(1),
                 ]),
 
             Group::make()

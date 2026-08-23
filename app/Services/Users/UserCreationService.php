@@ -33,6 +33,11 @@ class UserCreationService
      */
     public function handle(array $data): User
     {
+        $defaultAvatarStyle = config('designify.avatarType', 'gravatar');
+        $data['avatar_style'] ??= is_string($defaultAvatarStyle) && in_array($defaultAvatarStyle, User::AVATAR_STYLES, true)
+            ? $defaultAvatarStyle
+            : 'gravatar';
+
         if (array_key_exists('password', $data) && ! empty($data['password'])) {
             $data['password'] = $this->hasher->make($data['password']);
         }

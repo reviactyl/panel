@@ -37,6 +37,7 @@ Route::prefix('/account')->middleware(AccountSubject::class)->group(function () 
     Route::put('/password', [Client\AccountController::class, 'updatePassword'])->name('api:client.account.update-password');
     Route::put('/language', [Client\AccountController::class, 'updateLanguage'])->name('api:client.account.update-language');
     Route::put('/file-editor', [Client\AccountController::class, 'updateEditor'])->name('api:client.account.update-editor');
+    Route::put('/avatar', [Client\AccountController::class, 'updateAvatar'])->name('api:client.account.update-avatar');
 
     Route::get('/activity', Client\ActivityLogController::class)->name('api:client.account.activity');
 
