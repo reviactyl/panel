@@ -46,6 +46,8 @@ export default () => {
     const [selectedEggId, setSelectedEggId] = useState<number | null>(null);
     const [eggFilterOpen, setEggFilterOpen] = useState(false);
     const eggFilterRef = useRef<HTMLDivElement>(null);
+    const activeCategory = showAdminServers ? 'all' : selectedCategory;
+    const activeEggId = showAdminServers ? null : selectedEggId;
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -67,14 +69,14 @@ export default () => {
         error,
         mutate: mutateServers,
     } = useSWR<PaginatedResult<Server>>(
-        ['/api/client/servers', showAdminServers, page, selectedCategory, selectedEggId],
+        ['/api/client/servers', showAdminServers, page, activeCategory, activeEggId],
         () =>
             getServers({
                 page,
                 type: showAdminServers ? 'admin' : undefined,
                 'filter[category_uuid]':
-                    selectedCategory === 'all' ? undefined : selectedCategory === 'primary' ? 'null' : selectedCategory,
-                eggId: selectedEggId ?? undefined,
+                    activeCategory === 'all' ? undefined : activeCategory === 'primary' ? 'null' : activeCategory,
+                eggId: activeEggId ?? undefined,
             })
     );
 
@@ -153,7 +155,7 @@ export default () => {
                 />
             )}
 
-            <div className='flex flex-col gap-4 py-4 md:flex-row md:items-center justify-between'>
+            <div className='relative z-20 flex flex-col gap-4 py-4 md:flex-row md:items-center justify-between'>
                 <div className='min-w-0'>
                     <Title className='text-4xl !font-bold'>
                         {showAdminServers ? t('servers-admin.title') : t('servers-user.title')}
@@ -173,7 +175,10 @@ export default () => {
                                     <Switch
                                         name={'show_all_servers'}
                                         defaultChecked={showOnlyAdmin}
-                                        onChange={() => setShowOnlyAdmin((s) => !s)}
+                                        onChange={() => {
+                                            setShowOnlyAdmin((s) => !s);
+                                            setEggFilterOpen(false);
+                                        }}
                                     />
                                 </div>
                             )}
@@ -290,7 +295,7 @@ export default () => {
                                     <Card css={tw`col-span-1 lg:col-span-2`}>
                                         <p className='flex justify-center text-center text-sm text-gray-400 py-10'>
                                             <EmojiSadIcon className='w-5 h-5 mr-1' />{' '}
-                                            {selectedEggId !== null
+                                            {activeEggId !== null
                                                 ? t('eggs.no-servers-for-egg')
                                                 : showOnlyAdmin
                                                 ? t('no-other-servers')
