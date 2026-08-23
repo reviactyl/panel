@@ -65,7 +65,7 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
                     (data) => ({
                         ...data,
                         items: data.items.filter((b) => b.uuid !== backup.uuid),
-                        backupCount: data.backupCount - 1,
+                        backupCount: backup.isSuccessful ? data.backupCount - 1 : data.backupCount,
                     }),
                     false
                 )
