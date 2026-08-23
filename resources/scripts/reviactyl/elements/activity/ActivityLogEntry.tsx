@@ -54,6 +54,7 @@ export default ({ activity, children }: Props) => {
                         email={actor?.email || (actor?.uuid === 'system' ? 'system' : undefined)}
                         uuid={actor?.uuid}
                         src={actor?.image}
+                        avatarStyle={actor?.uuid === 'system' ? 'gravatar' : undefined}
                     />
                 </div>
             </div>
