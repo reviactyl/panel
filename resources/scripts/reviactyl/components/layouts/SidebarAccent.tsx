@@ -12,6 +12,7 @@ import Logo from '@/reviactyl/ui/Logo';
 import DropdownMenu, { DropdownButtonRow } from '@/reviactyl/elements/DropdownMenu';
 import { FaArrowRightToBracket, FaGears, FaUser } from 'react-icons/fa6';
 import { useTranslation } from 'react-i18next';
+import { useSubuserPreview } from '@/context/SubuserPreviewContext';
 
 interface SidebarProps {
     isOpen?: boolean;
@@ -24,6 +25,7 @@ interface NavbarProps {
 
 const NavbarContainer = styled.div`
     ${tw`fixed top-0 left-0 w-full h-16 z-50 transition duration-300`}
+    top: var(--subuser-preview-offset, 0px);
 `;
 
 const SidebarContainer = styled.div<{ $isOpen: boolean }>`
@@ -33,20 +35,21 @@ const SidebarContainer = styled.div<{ $isOpen: boolean }>`
         $isOpen
             ? css`
                   position: fixed;
-                  top: 4rem;
+                  top: calc(4rem + var(--subuser-preview-offset, 0px));
                   inset-inline-start: 0;
               `
             : tw`hidden`}
 
-    height: 100dvh;
+    height: calc(100dvh - var(--subuser-preview-offset, 0px));
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
 
     @media (min-width: 1024px) {
         position: fixed;
+        top: var(--subuser-preview-offset, 0px);
         inset-inline-start: 0;
         display: flex;
-        height: 100dvh;
+        height: calc(100dvh - var(--subuser-preview-offset, 0px));
         overflow-y: auto;
     }
 `;
@@ -89,6 +92,7 @@ export const NavbarAccent = ({ children }: NavbarProps) => {
     const [blurred, setBlurred] = useState(false);
     const rootAdmin = useStoreState((state: ApplicationStore) => state.user.data!.rootAdmin);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const { session } = useSubuserPreview();
 
     const onTriggerLogout = () => {
         setIsLoggingOut(true);
@@ -114,30 +118,32 @@ export const NavbarAccent = ({ children }: NavbarProps) => {
                     {children} <Logo />
                 </div>
                 <div className='flex grow-0 shrink-0 items-center gap-3 order-last justify-end'>
-                    <SearchContainer />
-                    <DropdownMenu
-                        renderToggle={(onClick) => (
-                            <button onClick={onClick} className='flex items-center w-[2rem] h-[2rem]'>
-                                <Avatar />
-                            </button>
-                        )}
-                    >
-                        <NavLink to='/account'>
-                            <DropdownButtonRow>
-                                <FaUser className='h-4 w-4 inline-flex mr-2' /> {t('overview.profile')}
-                            </DropdownButtonRow>
-                        </NavLink>
-                        {rootAdmin && (
-                            <a href='/admin' rel='noreferrer'>
+                    {!session && <SearchContainer />}
+                    {!session && (
+                        <DropdownMenu
+                            renderToggle={(onClick) => (
+                                <button onClick={onClick} className='flex items-center w-[2rem] h-[2rem]'>
+                                    <Avatar />
+                                </button>
+                            )}
+                        >
+                            <NavLink to='/account'>
                                 <DropdownButtonRow>
-                                    <FaGears className='h-4 w-4 inline-flex mr-2' /> {t('overview.admin')}
+                                    <FaUser className='h-4 w-4 inline-flex mr-2' /> {t('overview.profile')}
                                 </DropdownButtonRow>
-                            </a>
-                        )}
-                        <DropdownButtonRow onClick={onTriggerLogout} danger>
-                            <FaArrowRightToBracket className='h-4 w-4 inline-flex mr-2' /> {t('overview.logout')}
-                        </DropdownButtonRow>
-                    </DropdownMenu>
+                            </NavLink>
+                            {rootAdmin && (
+                                <a href='/admin' rel='noreferrer'>
+                                    <DropdownButtonRow>
+                                        <FaGears className='h-4 w-4 inline-flex mr-2' /> {t('overview.admin')}
+                                    </DropdownButtonRow>
+                                </a>
+                            )}
+                            <DropdownButtonRow onClick={onTriggerLogout} danger>
+                                <FaArrowRightToBracket className='h-4 w-4 inline-flex mr-2' /> {t('overview.logout')}
+                            </DropdownButtonRow>
+                        </DropdownMenu>
+                    )}
                 </div>
             </div>
         </NavbarContainer>

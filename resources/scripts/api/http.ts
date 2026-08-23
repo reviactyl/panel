@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 import { store } from '@/state';
+import { getPreviewToken } from '@/lib/subuserPreviewStorage';
 
 const http: AxiosInstance = axios.create({
     withCredentials: true,
@@ -11,8 +12,16 @@ const http: AxiosInstance = axios.create({
     },
 });
 
+const isBackgroundRequest = (url?: string): boolean =>
+    url?.endsWith('/resources') === true || url?.endsWith('/subuser-preview/heartbeat') === true;
+
 http.interceptors.request.use((req) => {
-    if (!req.url?.endsWith('/resources')) {
+    const previewToken = getPreviewToken();
+    if (previewToken && req.url?.startsWith('/api/client')) {
+        req.headers.set('X-Subuser-Preview', previewToken);
+    }
+
+    if (!isBackgroundRequest(req.url)) {
         store.getActions().progress.startContinuous();
     }
 
@@ -21,14 +30,16 @@ http.interceptors.request.use((req) => {
 
 http.interceptors.response.use(
     (resp) => {
-        if (!resp.request?.url?.endsWith('/resources')) {
+        if (!isBackgroundRequest(resp.request?.url)) {
             store.getActions().progress.setComplete();
         }
 
         return resp;
     },
     (error) => {
-        store.getActions().progress.setComplete();
+        if (!isBackgroundRequest(error.config?.url ?? error.request?.url)) {
+            store.getActions().progress.setComplete();
+        }
 
         throw error;
     }

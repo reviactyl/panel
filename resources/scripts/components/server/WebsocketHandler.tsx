@@ -8,11 +8,14 @@ import Spinner from '@/reviactyl/elements/Spinner';
 import tw from 'twin.macro';
 import { useTranslation } from 'react-i18next';
 import { FaTriangleExclamation } from 'react-icons/fa6';
+import { useSubuserPreview } from '@/context/SubuserPreviewContext';
+import { PreviewWebsocket } from '@/plugins/PreviewWebsocket';
 
 const reconnectErrors = ['jwt: exp claim is invalid', 'jwt: created too far in past (denylist)'];
 
 export default () => {
     const { t } = useTranslation('server/console');
+    const { session } = useSubuserPreview();
     let updatingToken = false;
     const [error, setError] = useState<'connecting' | string>('');
     const { connected, instance } = ServerContext.useStoreState((state) => state.socket);
@@ -33,7 +36,7 @@ export default () => {
     };
 
     const connect = (uuid: string) => {
-        const socket = new Websocket();
+        const socket = session ? new PreviewWebsocket(uuid) : new Websocket();
 
         socket.on('auth success', () => setConnectionState(true));
         socket.on('SOCKET_CLOSE', () => setConnectionState(false));
@@ -108,7 +111,7 @@ export default () => {
         }
 
         connect(uuid);
-    }, [uuid]);
+    }, [uuid, session?.uuid]);
 
     return error ? (
         <motion.div

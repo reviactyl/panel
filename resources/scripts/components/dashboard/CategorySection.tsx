@@ -12,6 +12,7 @@ interface Props {
     category: ServerCategory | null;
     servers: Server[];
     showOnlyAdmin: boolean;
+    showCategory?: boolean;
     onCategoryChanged?: () => void;
 }
 
@@ -29,7 +30,7 @@ const HeaderButton = styled.button`
     align-items: center;
 `;
 
-export default ({ category, servers, showOnlyAdmin, onCategoryChanged }: Props) => {
+export default ({ category, servers, showOnlyAdmin, showCategory = true, onCategoryChanged }: Props) => {
     const { t } = useTranslation('dashboard/index');
     const [open, setOpen] = useState(true);
 
@@ -77,7 +78,7 @@ export default ({ category, servers, showOnlyAdmin, onCategoryChanged }: Props) 
                                 server={server}
                                 css={index > 0 ? tw`mt-2` : undefined}
                                 onCategoryChanged={onCategoryChanged}
-                                showCategory={!showOnlyAdmin}
+                                showCategory={!showOnlyAdmin && showCategory}
                             />
                         ))}
                     </LayoutContainer>

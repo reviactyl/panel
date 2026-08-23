@@ -18,6 +18,7 @@ import PermissionTitleBox from '@/components/server/users/PermissionTitleBox';
 import asModal from '@/hoc/asModal';
 import PermissionRow from '@/components/server/users/PermissionRow';
 import ModalContext from '@/context/ModalContext';
+import { useSubuserPreview } from '@/context/SubuserPreviewContext';
 
 type Props = {
     subuser?: Subuser;
@@ -36,6 +37,7 @@ const PRESET_PERMISSIONS = {
         'control.restart',
         'file.create',
         'file.read',
+        'file.read-content',
         'file.update',
         'file.delete',
         'file.archive',
@@ -102,7 +104,9 @@ const EditSubuserModal = ({ subuser }: Props) => {
     );
     const { dismiss, setPropOverrides } = useContext(ModalContext);
 
-    const isRootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
+    const accountRootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
+    const { session } = useSubuserPreview();
+    const isRootAdmin = accountRootAdmin && !session;
     const permissions = useStoreState((state) => state.permissions.data);
     // The currently logged in user's permissions. We're going to filter out any permissions
     // that they should not need.
