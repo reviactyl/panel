@@ -19,6 +19,7 @@ import setPrimaryServerAllocation from '@/api/server/network/setPrimaryServerAll
 import getServerAllocations from '@/api/swr/getServerAllocations';
 import { ip } from '@/lib/formatters';
 import Code from '@/reviactyl/elements/Code';
+import { usePermissions } from '@/plugins/usePermissions';
 
 const Label = styled.label`
     ${tw`uppercase text-xs mt-1 text-gray-400 block px-1 select-none transition-colors duration-150`}
@@ -33,6 +34,7 @@ const AllocationRow = ({ allocation }: Props) => {
     const { clearFlashes, clearAndAddHttpError } = useFlashKey('server:network');
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const { mutate } = getServerAllocations();
+    const [canUpdate] = usePermissions(['allocation.update']);
 
     const onNotesChanged = useCallback((id: number, notes: string) => {
         mutate((data) => data?.map((a) => (a.id === id ? { ...a, notes } : a)), false);
@@ -86,6 +88,7 @@ const AllocationRow = ({ allocation }: Props) => {
                     <Textarea
                         placeholder={'Notes'}
                         defaultValue={allocation.notes || undefined}
+                        disabled={!canUpdate}
                         onChange={(e) => setAllocationNotes(e.currentTarget.value)}
                     />
                 </InputSpinner>

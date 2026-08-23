@@ -212,12 +212,14 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
                     <ExtensionSlot name={`server:backups:menu:end`} />
                 </DropdownMenu>
             ) : (
-                <button
-                    onClick={() => setModal('delete')}
-                    css={tw`text-gray-200 transition-colors duration-150 hover:text-gray-100 p-2`}
-                >
-                    <FaTrash />
-                </button>
+                <Can action={'backup.delete'}>
+                    <button
+                        onClick={() => setModal('delete')}
+                        css={tw`text-gray-200 transition-colors duration-150 hover:text-gray-100 p-2`}
+                    >
+                        <FaTrash />
+                    </button>
+                </Can>
             )}
         </>
     );

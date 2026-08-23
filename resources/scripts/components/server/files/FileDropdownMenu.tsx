@@ -194,7 +194,11 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                         <Row onClick={doArchive} icon={FaFileZipper} title={t('dropdown.archive')} />
                     </Can>
                 )}
-                {file.isFile && <Row onClick={doDownload} icon={FaFileArrowDown} title={t('dropdown.download')} />}
+                {file.isFile && (
+                    <Can action={'file.read-content'}>
+                        <Row onClick={doDownload} icon={FaFileArrowDown} title={t('dropdown.download')} />
+                    </Can>
+                )}
                 <Can action={'file.delete'}>
                     <Row
                         onClick={() => setShowConfirmation(true)}
