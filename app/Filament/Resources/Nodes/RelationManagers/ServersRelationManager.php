@@ -35,7 +35,7 @@ class ServersRelationManager extends RelationManager
                         $email = strtolower(trim($state->email ?? ''));
                         $hash = md5($email);
                         $avatar = "https://www.gravatar.com/avatar/{$hash}?s=64&d=mp";
-                        $name = $state->name_first.' '.$state->name_last;
+                        $name = e($state->name_first.' '.$state->name_last);
 
                         return "
                             <div style='display:flex;align-items:center;gap:8px'>

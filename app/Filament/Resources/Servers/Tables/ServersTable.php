@@ -57,7 +57,7 @@ class ServersTable
                         $email = strtolower(trim($record->user->email ?? ''));
                         $hash = md5($email);
                         $avatar = $record->user->getFilamentAvatarUrl();
-                        $name = $record->user->name_first.' '.$record->user->name_last;
+                        $name = e($record->user->name_first.' '.$record->user->name_last);
 
                         return "
                             <div style='display:flex;align-items:center;gap:8px'>
