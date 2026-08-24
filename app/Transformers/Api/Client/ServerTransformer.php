@@ -9,6 +9,7 @@ use App\Models\EggVariable;
 use App\Models\Permission;
 use App\Models\Server;
 use App\Models\ServerCategory;
+use App\Models\ServerCategoryAssignment;
 use App\Models\Subuser;
 use App\Services\Servers\StartupCommandService;
 use App\Services\Subusers\SubuserPreviewContext;
@@ -165,10 +166,18 @@ class ServerTransformer extends BaseClientTransformer
      */
     public function includeCategory(Server $server): Item|NullResource
     {
-        if (! $server->category) {
+        /** @var ServerCategoryAssignment|null $assignment */
+        $assignment = $server->relationLoaded('categoryAssignments')
+            ? $server->categoryAssignments->firstWhere('user_id', $this->request->user()->id)
+            : $server->categoryAssignments()
+                ->where('user_id', $this->request->user()->id)
+                ->with('category')
+                ->first();
+
+        if (! $assignment?->category) {
             return $this->null();
         }
 
-        return $this->item($server->category, $this->makeTransformer(ServerCategoryTransformer::class), ServerCategory::RESOURCE_NAME);
+        return $this->item($assignment->category, $this->makeTransformer(ServerCategoryTransformer::class), ServerCategory::RESOURCE_NAME);
     }
 }

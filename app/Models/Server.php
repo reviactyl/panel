@@ -336,11 +336,11 @@ class Server extends Model implements Identifiable
     }
 
     /**
-     * @return BelongsTo<ServerCategory, $this>
+     * @return HasMany<ServerCategoryAssignment, $this>
      */
-    public function category(): BelongsTo
+    public function categoryAssignments(): HasMany
     {
-        return $this->belongsTo(ServerCategory::class, 'category_id');
+        return $this->hasMany(ServerCategoryAssignment::class);
     }
 
     /**

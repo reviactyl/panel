@@ -33,21 +33,30 @@ class ClientController extends ClientApiController
         $user = $request->user();
         $preview = $request->attributes->get(SubuserPreviewContext::class);
         $transformer = $this->getTransformer(ServerTransformer::class);
+        $includes = $this->getIncludesForTransformer($transformer, ['node']);
+        $includeCategory = in_array('category', $includes, true);
+        $includes = array_values(array_diff($includes, ['category']));
+
+        $query = Server::query()->with($includes);
+        if ($includeCategory) {
+            $query->with(['categoryAssignments' => fn ($query) => $query
+                ->where('user_id', $user->id)
+                ->with('category')]);
+        }
 
         // Start the query builder and ensure we eager load any requested relationships from the request.
-        $builder = QueryBuilder::for(
-            Server::query()->with($this->getIncludesForTransformer($transformer, ['node']))
-        )->allowedFilters([
+        $builder = QueryBuilder::for($query)->allowedFilters([
             'uuid',
             'name',
             'description',
             'external_id',
-            AllowedFilter::callback('category_uuid', function ($query, $value) {
+            AllowedFilter::callback('category_uuid', function ($query, $value) use ($user) {
                 if (is_null($value) || $value === 'null') {
-                    $query->whereNull('category_id');
+                    $query->whereDoesntHave('categoryAssignments', fn ($query) => $query->where('user_id', $user->id));
                 } else {
-                    $query->whereHas('category', function ($q) use ($value) {
-                        $q->where('uuid', $value);
+                    $query->whereHas('categoryAssignments', function ($query) use ($user, $value) {
+                        $query->where('user_id', $user->id)
+                            ->whereHas('category', fn ($query) => $query->where('uuid', $value));
                     });
                 }
             }),

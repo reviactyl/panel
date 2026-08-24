@@ -38,8 +38,8 @@ class ServerCategory extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function servers(): HasMany
+    public function assignments(): HasMany
     {
-        return $this->hasMany(Server::class, 'category_id');
+        return $this->hasMany(ServerCategoryAssignment::class, 'category_id');
     }
 }

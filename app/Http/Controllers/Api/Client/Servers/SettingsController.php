@@ -11,6 +11,7 @@ use App\Http\Requests\Api\Client\Servers\Settings\RenameServerRequest;
 use App\Http\Requests\Api\Client\Servers\Settings\SetCategoryRequest;
 use App\Http\Requests\Api\Client\Servers\Settings\SetDockerImageRequest;
 use App\Models\Server;
+use App\Models\ServerCategoryAssignment;
 use App\Repositories\Eloquent\ServerRepository;
 use App\Services\Servers\ReinstallServerService;
 use Illuminate\Http\JsonResponse;
@@ -104,19 +105,27 @@ class SettingsController extends ClientApiController
     public function setCategory(SetCategoryRequest $request, Server $server): JsonResponse
     {
         $categoryUuid = $request->input('category');
-        $categoryId = null;
+        $user = $request->user();
+        $assignment = ServerCategoryAssignment::query()->firstOrNew([
+            'server_id' => $server->id,
+            'user_id' => $user->id,
+        ]);
+        $original = $assignment->exists ? $assignment->category_id : null;
 
-        if (! empty($categoryUuid)) {
-            $category = $request->user()->categories()->where('uuid', $categoryUuid)->first();
-            if ($category) {
-                $categoryId = $category->id;
+        if (empty($categoryUuid)) {
+            if ($assignment->exists) {
+                $assignment->deleteOrFail();
             }
+
+            $categoryId = null;
+        } else {
+            $category = $user->categories()->where('uuid', $categoryUuid)->firstOrFail();
+            $categoryId = $category->id;
+            $assignment->category_id = $categoryId;
+            $assignment->saveOrFail();
         }
 
-        $original = $server->category_id;
-        $server->forceFill(['category_id' => $categoryId])->saveOrFail();
-
-        if ($original !== $server->category_id) {
+        if ($original !== $categoryId) {
             Activity::event('server:settings.category')
                 ->property(['old' => $original, 'new' => $categoryId])
                 ->log();
