@@ -8,6 +8,7 @@ return [
         'administrator' => 'Quản trị viên',
         'admin' => 'Quản trị viên',
         'profile' => 'Hồ sơ',
+        'profile-picture' => 'Profile Picture',
         'logout' => 'Đăng xuất',
         'user' => 'người dùng',
         'update-email' => 'Cập nhật địa chỉ email',
@@ -42,6 +43,20 @@ return [
                 'unlinked' => 'Đã hủy liên kết tài khoản thành công.',
                 'unlink-failed' => 'Không thể hủy liên kết tài khoản.',
             ],
+        ],
+    ],
+    'avatar' => [
+        'style' => 'Avatar Style',
+        'animation' => 'Animate Avatar',
+        'styles' => [
+            'gravatar' => 'Gravatar',
+            'initials' => 'Initials',
+            'identicon' => 'Identicon',
+            'loops' => 'Loops',
+            'waves' => 'Waves',
+            'critters' => 'Critters',
+            'pixelbot' => 'Pixelbot',
+            'thumbs' => 'Thumbs',
         ],
     ],
     'email' => [
