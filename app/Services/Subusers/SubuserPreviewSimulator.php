@@ -29,9 +29,9 @@ class SubuserPreviewSimulator
     /**
      * Handles a subuser preview request by validating its server scope and dispatching it to the appropriate read or write operation.
      *
-     * @param Request $request The incoming API request.
-     * @param \Closure $next The next request handler.
-     * @param SubuserPreviewContext $context The preview context used to validate server access and permissions.
+     * @param  Request  $request  The incoming API request.
+     * @param  \Closure  $next  The next request handler.
+     * @param  SubuserPreviewContext  $context  The preview context used to validate server access and permissions.
      * @return mixed The response produced by the request handler.
      */
     public function handle(Request $request, \Closure $next, SubuserPreviewContext $context): mixed
@@ -74,11 +74,12 @@ class SubuserPreviewSimulator
     /**
      * Handles read-only preview API operations for files, backups, and delegated resources.
      *
-     * @param Request $request The incoming API request.
-     * @param \Closure $next The next request handler.
-     * @param SubuserPreviewContext $context The preview session and permission context.
-     * @param string $path The requested API route path.
+     * @param  Request  $request  The incoming API request.
+     * @param  \Closure  $next  The next request handler.
+     * @param  SubuserPreviewContext  $context  The preview session and permission context.
+     * @param  string  $path  The requested API route path.
      * @return mixed The response generated for the requested read operation.
+     *
      * @throws ConflictHttpException If the request requires an unavailable live connection.
      * @throws NotFoundHttpException If the requested file or directory does not exist.
      */
@@ -203,9 +204,9 @@ class SubuserPreviewSimulator
     /**
      * Handles supported write operations for the subuser preview.
      *
-     * @param Request $request The request containing the operation and its input data.
-     * @param SubuserPreviewContext $context The preview context used for authorization and state updates.
-     * @param string $path The requested API path.
+     * @param  Request  $request  The request containing the operation and its input data.
+     * @param  SubuserPreviewContext  $context  The preview context used for authorization and state updates.
+     * @param  string  $path  The requested API path.
      * @return JsonResponse The response representing the completed operation.
      */
     private function handleWrite(Request $request, SubuserPreviewContext $context, string $path): JsonResponse
@@ -476,9 +477,9 @@ class SubuserPreviewSimulator
     /**
      * Merges preview-state file changes into a live directory listing.
      *
-     * @param string $directory The directory whose entries are being merged.
-     * @param JsonResponse $response The live directory listing response.
-     * @param SubuserPreviewContext $context The preview context containing simulated file state.
+     * @param  string  $directory  The directory whose entries are being merged.
+     * @param  JsonResponse  $response  The live directory listing response.
+     * @param  SubuserPreviewContext  $context  The preview context containing simulated file state.
      * @return JsonResponse The updated directory listing response.
      */
     private function mergeFileListing(
@@ -527,10 +528,10 @@ class SubuserPreviewSimulator
     /**
      * Creates or updates a preview file or directory entry.
      *
-     * @param SubuserPreviewContext $context The preview context whose state is updated.
-     * @param string $path The entry path.
-     * @param bool $isFile Whether the entry is a file rather than a directory.
-     * @param string|null $content The file content to store.
+     * @param  SubuserPreviewContext  $context  The preview context whose state is updated.
+     * @param  string  $path  The entry path.
+     * @param  bool  $isFile  Whether the entry is a file rather than a directory.
+     * @param  string|null  $content  The file content to store.
      */
     private function putFile(SubuserPreviewContext $context, string $path, bool $isFile, ?string $content = null): void
     {
@@ -554,8 +555,8 @@ class SubuserPreviewSimulator
     /**
      * Builds API file metadata for a preview entry.
      *
-     * @param string $path The preview path used to derive the entry name.
-     * @param array $entry The preview entry containing file type, content, permissions, and timestamps.
+     * @param  string  $path  The preview path used to derive the entry name.
+     * @param  array  $entry  The preview entry containing file type, content, permissions, and timestamps.
      * @return array The file attributes for the preview entry.
      */
     private function fileAttributes(string $path, array $entry): array
@@ -578,8 +579,8 @@ class SubuserPreviewSimulator
     /**
      * Applies a state update within the specified preview context.
      *
-     * @param SubuserPreviewContext $context The preview context whose state is updated.
-     * @param callable $callback The state update operation to execute.
+     * @param  SubuserPreviewContext  $context  The preview context whose state is updated.
+     * @param  callable  $callback  The state update operation to execute.
      */
     private function updateState(SubuserPreviewContext $context, callable $callback): void
     {
@@ -589,7 +590,7 @@ class SubuserPreviewSimulator
     /**
      * Decodes a stored file entry's content when it uses base64 encoding.
      *
-     * @param array $entry The file entry containing content and optional encoding metadata.
+     * @param  array  $entry  The file entry containing content and optional encoding metadata.
      * @return string The decoded content, or an empty string for invalid base64 data.
      */
     private function decodeContent(array $entry): string
@@ -607,7 +608,7 @@ class SubuserPreviewSimulator
     /**
      * Calculates the decoded content size of a preview file entry.
      *
-     * @param array $entry The preview file entry containing encoded content.
+     * @param  array  $entry  The preview file entry containing encoded content.
      * @return int The content length in bytes.
      */
     private function contentSize(array $entry): int
@@ -618,9 +619,9 @@ class SubuserPreviewSimulator
     /**
      * Resolves a preview path to its stored or live file entry.
      *
-     * @param SubuserPreviewContext $context The preview context used to access the live server.
-     * @param array $state The current preview state.
-     * @param string $path The preview path to resolve.
+     * @param  SubuserPreviewContext  $context  The preview context used to access the live server.
+     * @param  array  $state  The current preview state.
+     * @param  string  $path  The preview path to resolve.
      * @return array The resolved file entry.
      */
     private function resolveFileEntry(SubuserPreviewContext $context, array $state, string $path): array
@@ -657,8 +658,8 @@ class SubuserPreviewSimulator
     /**
      * Maps a preview path to its corresponding live server path.
      *
-     * @param array $state The preview state containing directory mappings.
-     * @param string $path The preview path to map.
+     * @param  array  $state  The preview state containing directory mappings.
+     * @param  string  $path  The preview path to map.
      * @return string The normalized live server path.
      */
     private function livePathForPreviewPath(array $state, string $path): string
@@ -690,8 +691,8 @@ class SubuserPreviewSimulator
     /**
      * Ensures the preview context grants the required permission.
      *
-     * @param SubuserPreviewContext $context The preview context used for authorization.
-     * @param string|null $permission The permission to check.
+     * @param  SubuserPreviewContext  $context  The preview context used for authorization.
+     * @param  string|null  $permission  The permission to check.
      *
      * @throws AccessDeniedHttpException If the permission is missing or denied.
      */
@@ -705,8 +706,8 @@ class SubuserPreviewSimulator
     /**
      * Combines a root path and name into a normalized path.
      *
-     * @param string $root The root path.
-     * @param string $name The path name to append.
+     * @param  string  $root  The root path.
+     * @param  string  $name  The path name to append.
      * @return string The normalized combined path.
      */
     private function joinPath(string $root, string $name): string
@@ -717,7 +718,7 @@ class SubuserPreviewSimulator
     /**
      * Normalizes a path by standardizing separators and resolving redundant components.
      *
-     * @param string $path The path to normalize.
+     * @param  string  $path  The path to normalize.
      * @return string The normalized absolute-style path.
      */
     private function normalizePath(string $path): string
@@ -743,7 +744,7 @@ class SubuserPreviewSimulator
     /**
      * Returns the parent directory of a path.
      *
-     * @param string $path The path whose parent directory to return.
+     * @param  string  $path  The path whose parent directory to return.
      * @return string The parent directory, using `/` for paths in the root directory.
      */
     private function parentPath(string $path): string

@@ -22,8 +22,9 @@ class ResolveSubuserPreview
      * requests raise an HTTP exception.
      *
      * @return mixed The response from the next handler or preview simulator.
-     * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException If the session is unavailable or the request targets a restricted route.
-     * @throws \Symfony\Component\HttpKernel\Exception\ConflictHttpException If the session has expired or the request attempts to start another preview.
+     *
+     * @throws AccessDeniedHttpException If the session is unavailable or the request targets a restricted route.
+     * @throws ConflictHttpException If the session has expired or the request attempts to start another preview.
      */
     public function handle(Request $request, \Closure $next): mixed
     {

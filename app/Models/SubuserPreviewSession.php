@@ -64,7 +64,7 @@ class SubuserPreviewSession extends Model
     /**
      * Determines whether a token matches the stored session token hash.
      *
-     * @param string $token The token to verify.
+     * @param  string  $token  The token to verify.
      * @return bool `true` if the token matches, `false` otherwise.
      */
     public function tokenMatches(string $token): bool

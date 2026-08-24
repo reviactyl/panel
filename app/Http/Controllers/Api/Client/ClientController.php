@@ -25,7 +25,7 @@ class ClientController extends ClientApiController
     /**
      * Lists servers visible to the authenticated client, including servers accessible through subuser permissions.
      *
-     * @param GetServersRequest $request The request containing filters, access mode, pagination, and preview context.
+     * @param  GetServersRequest  $request  The request containing filters, access mode, pagination, and preview context.
      * @return array The transformed, paginated server collection.
      */
     public function index(GetServersRequest $request): array

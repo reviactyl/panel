@@ -8,7 +8,7 @@ use App\Models\SubuserPreviewSession;
 class SubuserPreviewContext
 {
     /** Stores the subuser preview session used by this context. */
-public function __construct(private readonly SubuserPreviewSession $session) {}
+    public function __construct(private readonly SubuserPreviewSession $session) {}
 
     /**
      * Retrieves the current subuser preview session.
@@ -23,7 +23,7 @@ public function __construct(private readonly SubuserPreviewSession $session) {}
     /**
      * Determines whether the server belongs to the preview session.
      *
-     * @param Server $server The server to compare with the session.
+     * @param  Server  $server  The server to compare with the session.
      * @return bool `true` if the server ID matches the session server ID, `false` otherwise.
      */
     public function isServer(Server $server): bool
@@ -34,7 +34,7 @@ public function __construct(private readonly SubuserPreviewSession $session) {}
     /**
      * Determines whether an identifier matches the session server.
      *
-     * @param string $identifier The UUID, short UUID, or identifier to compare.
+     * @param  string  $identifier  The UUID, short UUID, or identifier to compare.
      * @return bool `true` if the identifier matches the session server, `false` otherwise.
      */
     public function isServerIdentifier(string $identifier): bool
@@ -57,7 +57,7 @@ public function __construct(private readonly SubuserPreviewSession $session) {}
     /**
      * Determines whether the subuser has a specified permission.
      *
-     * @param string $permission The permission to check.
+     * @param  string  $permission  The permission to check.
      * @return bool `true` if the permission is granted, `false` otherwise.
      */
     public function allows(string $permission): bool
