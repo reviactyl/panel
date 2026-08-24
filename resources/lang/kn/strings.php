@@ -21,6 +21,7 @@ return [
     'search' => 'ಹುಡುಕು',
     'suspended' => 'ಅಮಾನತುಗೊಳಿಸಲಾಗಿದೆ',
     'account' => 'ಖಾತೆ',
+    'avatar' => 'Avatar',
     'security' => 'ಭದ್ರತೆ',
     'ip' => 'IP Address',
     'last_activity' => 'ಕೊನೆಯ ಚಟುವಟಿಕೆ',
