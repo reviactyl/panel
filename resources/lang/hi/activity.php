@@ -38,6 +38,7 @@ return [
             'password-changed' => 'पासवर्ड बदल दिया गया',
             'language-changed' => 'भाषा को :old से :new में बदला गया',
             'file-editor-changed' => 'Changed file editor from :old to :new',
+            'avatar-changed' => 'Changed avatar style from :old to :new',
         ],
         'api-key' => [
             'create' => 'नई API कुंजी :identifier बनाई गई',
