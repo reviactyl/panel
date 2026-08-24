@@ -38,6 +38,7 @@ return [
             'password-changed' => 'Parola değiştirildi',
             'language-changed' => 'Dil :old dilinden :new diline değiştirildi',
             'file-editor-changed' => 'Changed file editor from :old to :new',
+            'avatar-changed' => 'Changed avatar style from :old to :new',
         ],
         'api-key' => [
             'create' => 'Yeni API anahtarı :identifier oluşturuldu',
