@@ -21,6 +21,7 @@ return [
     'search' => 'بحث',
     'suspended' => 'موقوف',
     'account' => 'الحساب',
+    'avatar' => 'Avatar',
     'security' => 'الأمان',
     'ip' => 'عنوان IP',
     'last_activity' => 'آخر نشاط',
