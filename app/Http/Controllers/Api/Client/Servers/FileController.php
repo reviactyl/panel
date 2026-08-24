@@ -13,6 +13,7 @@ use App\Http\Requests\Api\Client\Servers\Files\CreateFolderRequest;
 use App\Http\Requests\Api\Client\Servers\Files\DecompressFilesRequest;
 use App\Http\Requests\Api\Client\Servers\Files\DeleteFileRequest;
 use App\Http\Requests\Api\Client\Servers\Files\GetFileContentsRequest;
+use App\Http\Requests\Api\Client\Servers\Files\ListFileDownloadsRequest;
 use App\Http\Requests\Api\Client\Servers\Files\ListFilesRequest;
 use App\Http\Requests\Api\Client\Servers\Files\PullFileRequest;
 use App\Http\Requests\Api\Client\Servers\Files\RenameFileRequest;
@@ -268,7 +269,7 @@ class FileController extends ClientApiController
      */
     public function pull(PullFileRequest $request, Server $server): JsonResponse
     {
-        $this->fileRepository->setServer($server)->pull(
+        $response = $this->fileRepository->setServer($server)->pull(
             $request->input('url'),
             $request->input('directory'),
             $request->safe(['filename', 'use_header', 'foreground'])
@@ -279,6 +280,24 @@ class FileController extends ClientApiController
             ->property('url', $request->input('url'))
             ->log();
 
-        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        return new JsonResponse(
+            json_decode($response->getBody()->__toString(), true) ?? [],
+            $response->getStatusCode()
+        );
+    }
+
+    /**
+     * Returns all remote file downloads currently being processed by Agent.
+     *
+     * @throws DaemonConnectionException
+     */
+    public function pulls(ListFileDownloadsRequest $request, Server $server): JsonResponse
+    {
+        $response = $this->fileRepository->setServer($server)->getPulls();
+
+        return new JsonResponse(
+            json_decode($response->getBody()->__toString(), true) ?? [],
+            $response->getStatusCode()
+        );
     }
 }
