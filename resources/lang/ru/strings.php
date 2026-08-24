@@ -21,6 +21,7 @@ return [
     'search' => 'Поиск',
     'suspended' => 'Приостановлен',
     'account' => 'Учётная запись',
+    'avatar' => 'Avatar',
     'security' => 'Безопасность',
     'ip' => 'IP-адрес',
     'last_activity' => 'Последняя активность',
