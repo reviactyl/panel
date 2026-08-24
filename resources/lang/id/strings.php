@@ -21,6 +21,7 @@ return [
     'search' => 'Cari',
     'suspended' => 'Ditangguhkan',
     'account' => 'Akun',
+    'avatar' => 'Avatar',
     'security' => 'Keamanan',
     'ip' => 'Alamat IP',
     'last_activity' => 'Aktivitas Terakhir',
