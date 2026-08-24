@@ -8,6 +8,7 @@ return [
         'administrator' => '管理员',
         'admin' => '行政',
         'profile' => '轮廓',
+        'profile-picture' => 'Profile Picture',
         'logout' => '退出登录',
         'user' => '用户',
         'update-email' => '更新电子邮件地址',
@@ -43,6 +44,20 @@ return [
                 'unlinked' => '账户已成功解除关联。',
                 'unlink-failed' => '解除账户关联失败。',
             ],
+        ],
+    ],
+    'avatar' => [
+        'style' => 'Avatar Style',
+        'animation' => 'Animate Avatar',
+        'styles' => [
+            'gravatar' => 'Gravatar',
+            'initials' => 'Initials',
+            'identicon' => 'Identicon',
+            'loops' => 'Loops',
+            'waves' => 'Waves',
+            'critters' => 'Critters',
+            'pixelbot' => 'Pixelbot',
+            'thumbs' => 'Thumbs',
         ],
     ],
     'email' => [
