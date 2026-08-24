@@ -8,6 +8,7 @@ return [
         'administrator' => 'Administrator',
         'admin' => 'Admin',
         'profile' => 'Profil',
+        'profile-picture' => 'Profile Picture',
         'logout' => 'Abmelden',
         'user' => 'Benutzer',
         'update-email' => 'E-Mail-Adresse aktualisieren',
@@ -42,6 +43,20 @@ return [
                 'unlinked' => 'Account erfolgreich getrennt.',
                 'unlink-failed' => 'Beim trennen dieses Accounts ist ein Fehler aufgetreten.',
             ],
+        ],
+    ],
+    'avatar' => [
+        'style' => 'Avatar Style',
+        'animation' => 'Animate Avatar',
+        'styles' => [
+            'gravatar' => 'Gravatar',
+            'initials' => 'Initials',
+            'identicon' => 'Identicon',
+            'loops' => 'Loops',
+            'waves' => 'Waves',
+            'critters' => 'Critters',
+            'pixelbot' => 'Pixelbot',
+            'thumbs' => 'Thumbs',
         ],
     ],
     'email' => [
