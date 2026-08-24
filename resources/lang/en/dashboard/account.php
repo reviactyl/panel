@@ -8,6 +8,7 @@ return [
         'administrator' => 'Administrator',
         'admin' => 'Admin',
         'profile' => 'Profile',
+        'profile-picture' => 'Profile Picture',
         'logout' => 'Logout',
         'user' => 'User',
         'update-email' => 'Update Email Address',
@@ -42,6 +43,20 @@ return [
                 'unlinked' => 'Account unlinked successfully.',
                 'unlink-failed' => 'Failed to unlink account.',
             ],
+        ],
+    ],
+    'avatar' => [
+        'style' => 'Avatar Style',
+        'animation' => 'Animate Avatar',
+        'styles' => [
+            'gravatar' => 'Gravatar',
+            'initials' => 'Initials',
+            'identicon' => 'Identicon',
+            'loops' => 'Loops',
+            'waves' => 'Waves',
+            'critters' => 'Critters',
+            'pixelbot' => 'Pixelbot',
+            'thumbs' => 'Thumbs',
         ],
     ],
     'email' => [

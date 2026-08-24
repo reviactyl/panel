@@ -29,8 +29,63 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
                 'first_name' => $user->name_first,
                 'last_name' => $user->name_last,
                 'language' => $user->language,
+                'avatar_style' => 'gravatar',
+                'avatar_animated' => true,
             ],
         ]);
+    }
+
+    public function test_avatar_preferences_are_updated()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->putJson('/api/client/account/avatar', [
+            'avatar_style' => 'critters',
+            'avatar_animated' => false,
+        ])->assertNoContent();
+
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+            'avatar_style' => 'critters',
+            'avatar_animated' => false,
+        ]);
+        $this->assertActivityLogged('user:account.avatar-changed');
+    }
+
+    public function test_avatar_preferences_reject_an_unknown_style()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->putJson('/api/client/account/avatar', [
+            'avatar_style' => 'unknown',
+            'avatar_animated' => true,
+        ])
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonPath('errors.0.meta.rule', 'in');
+
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+            'avatar_style' => 'gravatar',
+            'avatar_animated' => true,
+        ]);
+    }
+
+    public function test_avatar_url_uses_saved_preferences_and_rejects_invalid_stored_styles()
+    {
+        $user = User::factory()->make([
+            'uuid' => '00000000-0000-4000-8000-000000000001',
+            'avatar_style' => 'critters',
+            'avatar_animated' => true,
+        ]);
+
+        $this->assertSame(
+            'https://api.dicebear.com/10.x/critters/svg?seed=00000000-0000-4000-8000-000000000001&animationVariant=medium',
+            $user->avatar_url
+        );
+
+        $user->avatar_style = 'invalid/style';
+
+        $this->assertSame($user->gravatar_url, $user->avatar_url);
     }
 
     /**
