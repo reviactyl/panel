@@ -8,6 +8,7 @@ return [
         'administrator' => 'مسؤول',
         'admin' => 'مسؤل',
         'profile' => 'حساب تعريفي',
+        'profile-picture' => 'Profile Picture',
         'logout' => 'تسجيل الخروج',
         'user' => 'مستخدم',
         'update-email' => 'تحديث عنوان البريد الإلكتروني',
@@ -42,6 +43,20 @@ return [
                 'unlinked' => 'تم فك ربط الحساب بنجاح.',
                 'unlink-failed' => 'فشل فك ربط الحساب.',
             ],
+        ],
+    ],
+    'avatar' => [
+        'style' => 'Avatar Style',
+        'animation' => 'Animate Avatar',
+        'styles' => [
+            'gravatar' => 'Gravatar',
+            'initials' => 'Initials',
+            'identicon' => 'Identicon',
+            'loops' => 'Loops',
+            'waves' => 'Waves',
+            'critters' => 'Critters',
+            'pixelbot' => 'Pixelbot',
+            'thumbs' => 'Thumbs',
         ],
     ],
     'email' => [
