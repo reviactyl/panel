@@ -8,6 +8,7 @@ return [
         'administrator' => 'Administrator',
         'admin' => 'Admin',
         'profile' => 'Profil',
+        'profile-picture' => 'Profile Picture',
         'logout' => 'Keluar',
         'user' => 'Pengguna',
         'update-email' => 'Perbarui Alamat Email',
@@ -42,6 +43,20 @@ return [
                 'unlinked' => 'Tautan akun berhasil dibatalkan.',
                 'unlink-failed' => 'Gagal membatalkan tautan akun.',
             ],
+        ],
+    ],
+    'avatar' => [
+        'style' => 'Avatar Style',
+        'animation' => 'Animate Avatar',
+        'styles' => [
+            'gravatar' => 'Gravatar',
+            'initials' => 'Initials',
+            'identicon' => 'Identicon',
+            'loops' => 'Loops',
+            'waves' => 'Waves',
+            'critters' => 'Critters',
+            'pixelbot' => 'Pixelbot',
+            'thumbs' => 'Thumbs',
         ],
     ],
     'email' => [

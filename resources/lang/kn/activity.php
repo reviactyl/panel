@@ -38,6 +38,7 @@ return [
             'password-changed' => 'ಪಾಸ್ವರ್ಡ್ ಬದಲಾಯಿಸಲಾಗಿದೆ',
             'language-changed' => ':old ನಿಂದ :new ಗೆ ಭಾಷೆಯನ್ನು ಬದಲಾಯಿಸಲಾಗಿದೆ',
             'file-editor-changed' => 'Changed file editor from :old to :new',
+            'avatar-changed' => 'Changed avatar style from :old to :new',
         ],
         'api-key' => [
             'create' => 'ಹೊಸ API ಕೀ :identifier ಅನ್ನು ರಚಿಸಲಾಗಿದೆ',

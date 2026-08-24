@@ -38,6 +38,7 @@ return [
             'password-changed' => 'পাসওয়ার্ড পরিবর্তন করা হয়েছে।',
             'language-changed' => 'ভাষা :old থেকে পরিবর্তন করে :new করা হয়েছে।',
             'file-editor-changed' => 'Changed file editor from :old to :new',
+            'avatar-changed' => 'Changed avatar style from :old to :new',
         ],
         'api-key' => [
             'create' => 'নতুন এপিআই কি :identifier তৈরি করা হয়েছে।',

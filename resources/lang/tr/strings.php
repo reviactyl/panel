@@ -21,6 +21,7 @@ return [
     'search' => 'Ara',
     'suspended' => 'Askıya Alındı',
     'account' => 'Hesap',
+    'avatar' => 'Avatar',
     'security' => 'Güvenlik',
     'ip' => 'IP Adresi',
     'last_activity' => 'Son Etkinlik',

@@ -8,6 +8,7 @@ return [
         'administrator' => 'Administrateur',
         'admin' => 'Administrateur',
         'profile' => 'Profil',
+        'profile-picture' => 'Profile Picture',
         'logout' => 'Se déconnecter',
         'user' => 'Utilisateur',
         'update-email' => 'Mettre à jour l\'adresse mail',
@@ -42,6 +43,20 @@ return [
                 'unlinked' => 'Compte dissocié avec succès.',
                 'unlink-failed' => 'Échec de la dissociation du compte.',
             ],
+        ],
+    ],
+    'avatar' => [
+        'style' => 'Avatar Style',
+        'animation' => 'Animate Avatar',
+        'styles' => [
+            'gravatar' => 'Gravatar',
+            'initials' => 'Initials',
+            'identicon' => 'Identicon',
+            'loops' => 'Loops',
+            'waves' => 'Waves',
+            'critters' => 'Critters',
+            'pixelbot' => 'Pixelbot',
+            'thumbs' => 'Thumbs',
         ],
     ],
     'email' => [

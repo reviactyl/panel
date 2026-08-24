@@ -8,6 +8,7 @@ return [
         'administrator' => 'ನಿರ್ವಾಹಕ',
         'admin' => 'ನಿರ್ವಾಹಕ',
         'profile' => 'ಪ್ರೊಫೈಲ್',
+        'profile-picture' => 'Profile Picture',
         'logout' => 'ಲಾಗ್‌ಔಟ್',
         'user' => 'ಬಳಕೆದಾರ',
         'update-email' => 'ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ನವೀಕರಿಸಿ',
@@ -42,6 +43,20 @@ return [
                 'unlinked' => 'ಖಾತೆಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಅನ್‌ಲಿಂಕ್ ಮಾಡಲಾಗಿದೆ.',
                 'unlink-failed' => 'ಖಾತೆಯನ್ನು ಅನ್‌ಲಿಂಕ್ ಮಾಡಲು ವಿಫಲವಾಗಿದೆ.',
             ],
+        ],
+    ],
+    'avatar' => [
+        'style' => 'Avatar Style',
+        'animation' => 'Animate Avatar',
+        'styles' => [
+            'gravatar' => 'Gravatar',
+            'initials' => 'Initials',
+            'identicon' => 'Identicon',
+            'loops' => 'Loops',
+            'waves' => 'Waves',
+            'critters' => 'Critters',
+            'pixelbot' => 'Pixelbot',
+            'thumbs' => 'Thumbs',
         ],
     ],
     'email' => [

@@ -8,6 +8,7 @@ return [
         'administrator' => 'Администратор',
         'admin' => 'Админ',
         'profile' => 'Профиль',
+        'profile-picture' => 'Profile Picture',
         'logout' => 'Выйти',
         'user' => 'Пользователь',
         'update-email' => 'Обновить адрес электронной почты',
@@ -42,6 +43,20 @@ return [
                 'unlinked' => 'Учётная запись успешно отвязана.',
                 'unlink-failed' => 'Не удалось отвязать учётную запись.',
             ],
+        ],
+    ],
+    'avatar' => [
+        'style' => 'Avatar Style',
+        'animation' => 'Animate Avatar',
+        'styles' => [
+            'gravatar' => 'Gravatar',
+            'initials' => 'Initials',
+            'identicon' => 'Identicon',
+            'loops' => 'Loops',
+            'waves' => 'Waves',
+            'critters' => 'Critters',
+            'pixelbot' => 'Pixelbot',
+            'thumbs' => 'Thumbs',
         ],
     ],
     'email' => [

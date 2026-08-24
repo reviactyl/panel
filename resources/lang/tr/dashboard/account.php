@@ -8,6 +8,7 @@ return [
         'administrator' => 'Yönetici',
         'admin' => 'Yönetici',
         'profile' => 'Profil',
+        'profile-picture' => 'Profile Picture',
         'logout' => 'Çıkış Yap',
         'user' => 'Kullanıcı',
         'update-email' => 'E-posta Adresini Güncelle',
@@ -42,6 +43,20 @@ return [
                 'unlinked' => 'Hesap bağlantısı başarıyla kesildi.',
                 'unlink-failed' => 'Hesap bağlantısı kesilemedi.',
             ],
+        ],
+    ],
+    'avatar' => [
+        'style' => 'Avatar Style',
+        'animation' => 'Animate Avatar',
+        'styles' => [
+            'gravatar' => 'Gravatar',
+            'initials' => 'Initials',
+            'identicon' => 'Identicon',
+            'loops' => 'Loops',
+            'waves' => 'Waves',
+            'critters' => 'Critters',
+            'pixelbot' => 'Pixelbot',
+            'thumbs' => 'Thumbs',
         ],
     ],
     'email' => [

@@ -21,6 +21,7 @@ return [
     'search' => 'Sök',
     'suspended' => 'Avstängd',
     'account' => 'Konto',
+    'avatar' => 'Avatar',
     'security' => 'Säkerhet',
     'ip' => 'IP-adress',
     'last_activity' => 'Senaste aktivitet',

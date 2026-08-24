@@ -21,6 +21,7 @@ return [
     'search' => 'অনুসন্ধান',
     'suspended' => 'সাসপেন্ডেড',
     'account' => 'অ্যাকাউন্ট',
+    'avatar' => 'Avatar',
     'security' => 'নিরাপত্তা',
     'ip' => 'আইপি ঠিকানা',
     'last_activity' => 'সর্বশেষ কার্যকলাপ',

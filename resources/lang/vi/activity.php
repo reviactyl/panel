@@ -38,6 +38,7 @@ return [
             'password-changed' => 'Đã thay đổi mật khẩu',
             'language-changed' => 'Đã thay đổi ngôn ngữ từ :old thành :new',
             'file-editor-changed' => 'Changed file editor from :old to :new',
+            'avatar-changed' => 'Changed avatar style from :old to :new',
         ],
         'api-key' => [
             'create' => 'Đã tạo khóa API mới :identifier',

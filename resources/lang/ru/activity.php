@@ -38,6 +38,7 @@ return [
             'password-changed' => 'Изменён пароль',
             'language-changed' => 'Язык изменён с :old на :new',
             'file-editor-changed' => 'Changed file editor from :old to :new',
+            'avatar-changed' => 'Changed avatar style from :old to :new',
         ],
         'api-key' => [
             'create' => 'Создан новый API-ключ :identifier',
