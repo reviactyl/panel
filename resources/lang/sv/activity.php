@@ -38,6 +38,7 @@ return [
             'password-changed' => 'Ändrade lösenord',
             'language-changed' => 'Ändrade språk från :old till :new',
             'file-editor-changed' => 'Changed file editor from :old to :new',
+            'avatar-changed' => 'Changed avatar style from :old to :new',
         ],
         'api-key' => [
             'create' => 'Skapade ny API-nyckel :identifier',
