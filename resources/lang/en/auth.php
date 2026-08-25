@@ -57,7 +57,7 @@ return [
         'namefirst-label' => 'First Name',
         'namelast-label' => 'Last Name',
         'email-label' => 'Email',
-        'username-label' => 'UserName',
+        'username-label' => 'Username',
         'password-label' => 'Password',
         'min-length' => 'Passwords must be at least 8 characters in length.',
         'confirm-label' => 'Confirm Password',
