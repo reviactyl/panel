@@ -7,7 +7,6 @@ export default createGlobalStyle`
     #app {
         max-width: 100%;
         overflow-x: clip;
-        overscroll-behavior-x: none;
     }
 
     body {
