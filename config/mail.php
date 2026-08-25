@@ -58,7 +58,7 @@ return [
 
         'resend' => [
             'transport' => 'resend',
-            'key' => env('MAIL_PASSWORD'),
+            'key' => env('RESEND_KEY'),
         ],
 
         'sendmail' => [
