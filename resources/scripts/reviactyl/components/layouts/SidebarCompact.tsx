@@ -133,11 +133,11 @@ export const NavbarCompact = ({ children }: NavbarProps) => {
                                 </DropdownButtonRow>
                             </NavLink>
                             {rootAdmin && (
-                                <NavLink to='/admin'>
-                                    <DropdownButtonRow>
+                                <a href='/admin' target='_blank' rel='noreferrer'>
+                                    <DropdownButtonRow as='span'>
                                         <FaGears className='h-4 w-4 inline-flex mr-2' /> {t('overview.admin')}
                                     </DropdownButtonRow>
-                                </NavLink>
+                                </a>
                             )}
                             <DropdownButtonRow onClick={onTriggerLogout} danger>
                                 <FaArrowRightToBracket className='h-4 w-4 inline-flex mr-2' /> {t('overview.logout')}
