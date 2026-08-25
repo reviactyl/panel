@@ -93,8 +93,9 @@ function LoginContainer() {
             return;
         }
 
-        // For Turnstile, the token is set automatically by the widget
+        // For Turnstile, require captcha completion before allowing submit
         if (provider === 'turnstile' && !token) {
+            addFlash({ type: 'error', title: 'Error', message: t('captcha-required') });
             setSubmitting(false);
             return;
         }
