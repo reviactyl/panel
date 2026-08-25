@@ -53,6 +53,7 @@ return [
         'encryption-label' => 'Encryption',
         'username' => 'Username',
         'password' => 'Password',
+        'api-key' => 'API Key',
         'from-label' => 'Mail From',
         'from-name-label' => 'Mail From Name',
         'test-btn' => 'Test',

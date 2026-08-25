@@ -56,6 +56,11 @@ return [
             'transport' => 'postmark',
         ],
 
+        'resend' => [
+            'transport' => 'resend',
+            'key' => env('MAIL_PASSWORD'),
+        ],
+
         'sendmail' => [
             'transport' => 'sendmail',
             'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -bs -i'),

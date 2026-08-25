@@ -214,12 +214,19 @@ class SettingsServiceProvider extends ServiceProvider
         'mail:from:name',
     ];
 
+    protected array $resendKeys = [
+        'mail:mailers:resend:key',
+        'mail:from:address',
+        'mail:from:name',
+    ];
+
     /**
      * Keys that are encrypted and should be decrypted when set in the
      * configuration array.
      */
     protected static array $encrypted = [
         'mail:mailers:smtp:password',
+        'mail:mailers:resend:key',
         'panel:auth:google_client_secret',
         'panel:auth:discord_client_secret',
         'panel:auth:github_client_secret',
@@ -257,6 +264,8 @@ class SettingsServiceProvider extends ServiceProvider
         $mailer = array_get($values, 'settings::mail:default', $config->get('mail.default'));
         if ($mailer === 'smtp') {
             $this->keys = array_merge($this->keys, $this->emailKeys);
+        } elseif ($mailer === 'resend') {
+            $this->keys = array_merge($this->keys, $this->resendKeys);
         }
 
         $encrypter = null;

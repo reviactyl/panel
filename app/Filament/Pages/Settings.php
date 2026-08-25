@@ -63,6 +63,7 @@ class Settings extends Page implements HasSchemas
         'mail:mailers:smtp:encryption',
         'mail:mailers:smtp:username',
         'mail:mailers:smtp:password',
+        'mail:mailers:resend:key',
         'mail:from:address',
         'mail:from:name',
 
@@ -123,7 +124,7 @@ class Settings extends Page implements HasSchemas
                 $value = $config->get(Str::replace(':', '.', $key));
             }
 
-            if ($key === 'mail:mailers:smtp:password' && ! empty($value)) {
+            if (in_array($key, ['mail:mailers:smtp:password', 'mail:mailers:resend:key'], true) && ! empty($value)) {
                 try {
                     $value = $encrypter->decrypt($value);
                 } catch (\Throwable) {
@@ -546,7 +547,7 @@ class Settings extends Page implements HasSchemas
                         ->icon('tabler-send')
                         ->action('testMail')
                         ->color('success')
-                        ->visible(fn ($get): bool => $get('mail:default') === 'smtp'),
+                        ->visible(fn ($get): bool => in_array($get('mail:default'), ['smtp', 'resend'], true)),
                 )
                 ->live(),
 
@@ -591,6 +592,18 @@ class Settings extends Page implements HasSchemas
                         ->columnSpan(2),
                 ])
                 ->visible(fn ($get): bool => $get('mail:default') === 'smtp'),
+
+            Group::make()
+                ->columns(4)
+                ->schema([
+                    TextInput::make('mail:mailers:resend:key')
+                        ->label(trans('admin/settings.mail.api-key'))
+                        ->password()
+                        ->revealable()
+                        ->required(fn ($get) => $get('mail:default') === 'resend')
+                        ->columnSpan(4),
+                ])
+                ->visible(fn ($get): bool => $get('mail:default') === 'resend'),
 
             Group::make()
                 ->columns(4)
@@ -682,7 +695,7 @@ class Settings extends Page implements HasSchemas
         $data = $form?->getState() ?? [];
 
         foreach ($data as $key => $value) {
-            if ($key === 'mail:mailers:smtp:password' && ! empty($value)) {
+            if (in_array($key, ['mail:mailers:smtp:password', 'mail:mailers:resend:key'], true) && ! empty($value)) {
                 $value = $encrypter->encrypt($value);
             }
             $settings->set(
@@ -715,6 +728,7 @@ class Settings extends Page implements HasSchemas
         config()->set('mail.mailers.smtp.encryption', $data['mail:mailers:smtp:encryption'] ?? config('mail.mailers.smtp.encryption'));
         config()->set('mail.mailers.smtp.username', $data['mail:mailers:smtp:username'] ?? config('mail.mailers.smtp.username'));
         config()->set('mail.mailers.smtp.password', $data['mail:mailers:smtp:password'] ?? config('mail.mailers.smtp.password'));
+        config()->set('mail.mailers.resend.key', $data['mail:mailers:resend:key'] ?? config('mail.mailers.resend.key'));
 
         config()->set('mail.from.address', $data['mail:from:address'] ?? config('mail.from.address'));
         config()->set('mail.from.name', $data['mail:from:name'] ?? config('mail.from.name'));

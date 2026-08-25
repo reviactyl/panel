@@ -32,6 +32,7 @@
         "predis/predis": "^3.3.0",
         "prologue/alerts": "^1.3.0",
         "psr/cache": "^3.0.0",
+        "resend/resend-php": "^1.0",
         "s1lentium/iptools": "~1.2.0",
         "secondnetwork/blade-tabler-icons": "^3.36",
         "socialiteproviders/discord": "^4.2",
