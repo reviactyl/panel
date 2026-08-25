@@ -37,6 +37,7 @@ class AdminPanelProvider extends PanelProvider
                 'primary' => Color::Blue,
             ])
             ->assets([
+                Css::make('filament-layout', resource_path('css/filament/layout.css')),
                 Css::make('filament-alert', resource_path('css/filament/alert.css')),
                 Css::make('filament-monitoring', resource_path('css/filament/monitoring.css')),
             ])
