@@ -57,11 +57,12 @@ return [
         'namefirst-label' => 'Tên',
         'namelast-label' => 'Họ',
         'email-label' => 'E-mail',
-        'username-label' => 'Tên người dùng',
+        'username-label' => 'Username',
         'password-label' => 'Mật khẩu',
         'min-length' => 'Mật khẩu phải có độ dài ít nhất 8 ký tự.',
         'confirm-label' => 'Xác nhận mật khẩu',
         'label' => 'Đăng ký',
+        'create-link' => 'Don\'t have an account? Create one',
         'create-account' => 'Tạo tài khoản',
     ],
 
@@ -76,4 +77,5 @@ return [
     'throttle' => 'Quá nhiều lần thử đăng nhập. Vui lòng thử lại sau :seconds giây.',
     'password_requirements' => 'Mật khẩu phải có độ dài ít nhất 8 ký tự và phải là duy nhất cho trang này.',
     '2fa_must_be_enabled' => 'Quản trị viên đã yêu cầu bật Xác thực 2 yếu tố cho tài khoản của bạn để sử dụng Bảng điều khiển.',
+    'captcha-required' => 'Please complete the captcha challenge to continue.',
 ];
