@@ -57,11 +57,12 @@ return [
         'namefirst-label' => 'Nombre de pila',
         'namelast-label' => 'Apellido',
         'email-label' => 'Correo electrónico',
-        'username-label' => 'Nombre de usuario',
+        'username-label' => 'Username',
         'password-label' => 'Contraseña',
         'min-length' => 'Las contraseñas deben tener al menos 8 caracteres de longitud.',
         'confirm-label' => 'confirmar Contraseña',
         'label' => 'Registro',
+        'create-link' => 'Don\'t have an account? Create one',
         'create-account' => 'Crear una cuenta',
     ],
 
@@ -76,4 +77,5 @@ return [
     'throttle' => 'Demasiados intentos de inicio de sesión. Por favor, intenta de nuevo en :seconds segundos.',
     'password_requirements' => 'La contraseña debe tener al menos 8 caracteres y ser única para este sitio.',
     '2fa_must_be_enabled' => 'El administrador ha requerido que la autenticación de 2 factores esté habilitada para tu cuenta para usar el Panel.',
+    'captcha-required' => 'Please complete the captcha challenge to continue.',
 ];

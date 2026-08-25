@@ -57,11 +57,12 @@ return [
         'namefirst-label' => 'Förnamn',
         'namelast-label' => 'Efternamn',
         'email-label' => 'E-post',
-        'username-label' => 'Användarnamn',
+        'username-label' => 'Username',
         'password-label' => 'Lösenord',
         'min-length' => 'Lösenord måste vara minst 8 tecken långt.',
         'confirm-label' => 'Bekräfta lösenord',
         'label' => 'Registrera',
+        'create-link' => 'Don\'t have an account? Create one',
         'create-account' => 'Skapa konto',
     ],
 
@@ -76,4 +77,5 @@ return [
     'throttle' => 'För många inloggningsförsök. Vänligen försök igen om :seconds sekunder.',
     'password_requirements' => 'Lösenordet måste vara minst 8 tecken långt och bör vara unikt för denna webbplats.',
     '2fa_must_be_enabled' => 'Administratören har krävt att tvåfaktorsautentisering aktiveras för ditt konto för att kunna använda panelen.',
+    'captcha-required' => 'Please complete the captcha challenge to continue.',
 ];
