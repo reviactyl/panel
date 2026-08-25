@@ -57,11 +57,12 @@ return [
         'namefirst-label' => 'Nama depan',
         'namelast-label' => 'Nama Belakang',
         'email-label' => 'E-mail',
-        'username-label' => 'Nama belakang',
+        'username-label' => 'Username',
         'password-label' => 'Kata sandi',
         'min-length' => 'Panjang kata sandi minimal harus 8 karakter.',
         'confirm-label' => 'Konfirmasi Kata Sandi',
         'label' => 'Daftar',
+        'create-link' => 'Don\'t have an account? Create one',
         'create-account' => 'Buat Akun',
     ],
 
@@ -76,4 +77,5 @@ return [
     'throttle' => 'Terlalu banyak percobaan login. Silakan coba lagi dalam :seconds detik.',
     'password_requirements' => 'Kata sandi harus memiliki setidaknya 8 karakter dan harus unik untuk situs ini.',
     '2fa_must_be_enabled' => 'Administrator mengharuskan Otentikasi 2-Faktor diaktifkan pada akun Anda untuk menggunakan Panel.',
+    'captcha-required' => 'Please complete the captcha challenge to continue.',
 ];
