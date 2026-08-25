@@ -57,11 +57,12 @@ return [
         'namefirst-label' => 'Имя',
         'namelast-label' => 'Фамилия',
         'email-label' => 'Адрес электронной почты',
-        'username-label' => 'Логин',
+        'username-label' => 'Username',
         'password-label' => 'Пароль',
         'min-length' => 'Длина пароля должна составлять не менее 8 символов.',
         'confirm-label' => 'Подтвердите пароль',
         'label' => 'Регистрация',
+        'create-link' => 'Don\'t have an account? Create one',
         'create-account' => 'Создать аккаунт',
     ],
 
@@ -76,4 +77,5 @@ return [
     'throttle' => 'Слишком много попыток входа. Попробуйте снова через :seconds сек.',
     'password_requirements' => 'Пароль должен содержать не менее 8 символов и быть уникальным для этого сайта.',
     '2fa_must_be_enabled' => 'Администратор требует обязательного включения 2-факторной аутентификации для использования панели.',
+    'captcha-required' => 'Please complete the captcha challenge to continue.',
 ];
