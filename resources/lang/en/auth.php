@@ -62,6 +62,7 @@ return [
         'min-length' => 'Passwords must be at least 8 characters in length.',
         'confirm-label' => 'Confirm Password',
         'label' => 'Register',
+        'create-link' => 'Don\'t have an account? Create one',
         'create-account' => 'Create Account',
     ],
 

@@ -187,7 +187,7 @@ function LoginContainer() {
                                 to={'/auth/register'}
                                 css={tw`text-xs text-gray-400 tracking-wide no-underline hover:text-gray-300`}
                             >
-                                Don&apos;t have an account? Create one
+                                {t('register.create-link')}
                             </Link>
                         )}
                         {window.PanelConfiguration?.billingCardLink && (
