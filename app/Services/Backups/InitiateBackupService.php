@@ -88,6 +88,7 @@ class InitiateBackupService
         // Check if the server has reached or exceeded its backup limit.
         // completed_at == null will cover any ongoing backups, while is_successful == true will cover any completed backups.
         $successful = $this->repository->getNonFailedBackups($server);
+        $oldest = null;
         if (! $server->backup_limit || $successful->count() >= $server->backup_limit) {
             // Do not allow the user to continue if this server is already at its limit and can't override.
             if (! $override || $server->backup_limit <= 0) {
@@ -95,17 +96,16 @@ class InitiateBackupService
             }
 
             // Get the oldest backup the server has that is not "locked" (indicating a backup that should
-            // never be automatically purged). If we find a backup we will delete it and then continue with
-            // this process. If no backup is found that can be used an exception is thrown.
+            // never be automatically purged). If no backup is found that can be used an exception is thrown.
+            // The backup is deleted only after Agent accepts the replacement request so a failed request
+            // does not leave the server without its existing backup.
             $oldest = $successful->where('is_locked', false)->orderBy('created_at')->first();
             if (! $oldest) {
                 throw new TooManyBackupsException($server->backup_limit);
             }
-
-            $this->deleteBackupService->handle($oldest);
         }
 
-        return $this->connection->transaction(function () use ($server, $name) {
+        $backup = $this->connection->transaction(function () use ($server, $name) {
             /** @var Backup $backup */
             $backup = $this->repository->create([
                 'server_id' => $server->id,
@@ -122,5 +122,11 @@ class InitiateBackupService
 
             return $backup;
         });
+
+        if ($oldest) {
+            $this->deleteBackupService->handle($oldest);
+        }
+
+        return $backup;
     }
 }
