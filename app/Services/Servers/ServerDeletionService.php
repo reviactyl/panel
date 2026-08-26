@@ -42,15 +42,21 @@ class ServerDeletionService
      */
     public function handle(Server $server): void
     {
-        $this->connection->transaction(function () use ($server) {
-            // Prevent databases from being added while the server is being deleted. Without this
-            // lock, a database created after cleanup could cause the final server deletion to fail.
-            $server = $server->newQuery()
-                ->whereKey($server->getKey())
-                ->lockForUpdate()
-                ->firstOrFail();
+        $databaseIds = $this->connection->transaction(function () use ($server) {
+            $server = $this->lockServer($server);
 
-            foreach ($server->databases as $database) {
+            return $server->databases()->pluck('id');
+        });
+
+        foreach ($databaseIds as $databaseId) {
+            $this->connection->transaction(function () use ($server, $databaseId) {
+                $server = $this->lockServer($server);
+                $database = $server->databases()->find($databaseId);
+
+                if (! $database) {
+                    return;
+                }
+
                 try {
                     $this->databaseManagementService->delete($database);
                 } catch (\Exception $exception) {
@@ -68,6 +74,14 @@ class ServerDeletionService
 
                     Log::warning($exception);
                 }
+            });
+        }
+
+        $this->connection->transaction(function () use ($server) {
+            $server = $this->lockServer($server);
+
+            if ($server->databases()->exists()) {
+                throw new DisplayException('A database was added while this server was being deleted. Please try again.');
             }
 
             try {
@@ -85,5 +99,13 @@ class ServerDeletionService
 
             $server->delete();
         });
+    }
+
+    private function lockServer(Server $server): Server
+    {
+        return $server->newQuery()
+            ->whereKey($server->getKey())
+            ->lockForUpdate()
+            ->firstOrFail();
     }
 }
