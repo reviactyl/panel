@@ -2,15 +2,22 @@
 
 namespace Tests\Integration\Api\Remote;
 
+use App\Jobs\Backups\RotateBackupsJob;
 use App\Models\Backup;
 use App\Models\Server;
-use App\Repositories\Agent\DaemonBackupRepository;
 use Carbon\CarbonImmutable;
-use GuzzleHttp\Psr7\Response;
+use Illuminate\Support\Facades\Queue;
 use Tests\Integration\IntegrationTestCase;
 
 class BackupStatusControllerTest extends IntegrationTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Queue::fake();
+    }
+
     public function test_failed_replacement_preserves_existing_backup(): void
     {
         $server = $this->createServerModel(['backup_limit' => 1]);
@@ -25,9 +32,10 @@ class BackupStatusControllerTest extends IntegrationTestCase
         $this->assertNotSoftDeleted($existing);
         $this->assertFalse($replacement->refresh()->is_successful);
         $this->assertNotNull($replacement->completed_at);
+        Queue::assertNotPushed(RotateBackupsJob::class);
     }
 
-    public function test_successful_replacement_deletes_oldest_backup(): void
+    public function test_successful_replacement_queues_backup_rotation(): void
     {
         $server = $this->createServerModel(['backup_limit' => 1]);
         $existing = Backup::factory()->for($server)->create(['created_at' => CarbonImmutable::now()->subHour()]);
@@ -36,41 +44,27 @@ class BackupStatusControllerTest extends IntegrationTestCase
             'completed_at' => null,
         ]);
 
-        $this->expectBackupDeletion($existing);
-
-        $this->sendBackupStatus($server, $replacement, true)->assertNoContent();
-
-        $this->assertSoftDeleted($existing);
-        $this->assertTrue($replacement->refresh()->is_successful);
-    }
-
-    public function test_backup_locked_before_replacement_completes_is_preserved(): void
-    {
-        $server = $this->createServerModel(['backup_limit' => 1]);
-        $existing = Backup::factory()->for($server)->create([
-            'created_at' => CarbonImmutable::now()->subHour(),
-            'is_locked' => true,
-        ]);
-        $replacement = Backup::factory()->for($server)->create([
-            'is_successful' => false,
-            'completed_at' => null,
-        ]);
-
-        $this->expectBackupDeletion($replacement);
-
         $this->sendBackupStatus($server, $replacement, true)->assertNoContent();
 
         $this->assertNotSoftDeleted($existing);
-        $this->assertSoftDeleted($replacement);
+        $this->assertTrue($replacement->refresh()->is_successful);
+        Queue::assertPushed(RotateBackupsJob::class, function (RotateBackupsJob $job) use ($server, $replacement) {
+            return $job->serverId === $server->id
+                && $job->backupId === $replacement->id
+                && $job->tries === 3;
+        });
     }
 
-    private function expectBackupDeletion(Backup $expected): void
+    public function test_successful_status_retry_queues_rotation_again(): void
     {
-        $repository = $this->mock(DaemonBackupRepository::class);
-        $repository->expects('setServer')->andReturnSelf();
-        $repository->expects('delete')->with(\Mockery::on(function ($backup) use ($expected) {
-            return $backup instanceof Backup && $backup->id === $expected->id;
-        }))->andReturn(new Response());
+        $server = $this->createServerModel(['backup_limit' => 1]);
+        $replacement = Backup::factory()->for($server)->create();
+
+        $this->sendBackupStatus($server, $replacement, true)->assertNoContent();
+
+        Queue::assertPushed(RotateBackupsJob::class, function (RotateBackupsJob $job) use ($replacement) {
+            return $job->backupId === $replacement->id;
+        });
     }
 
     private function sendBackupStatus(Server $server, Backup $backup, bool $successful)
