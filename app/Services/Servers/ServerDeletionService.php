@@ -42,21 +42,14 @@ class ServerDeletionService
      */
     public function handle(Server $server): void
     {
-        try {
-            $this->daemonServerRepository->setServer($server)->delete();
-        } catch (DaemonConnectionException $exception) {
-            // If there is an error not caused a 404 error and this isn't a forced delete,
-            // go ahead and bail out. We specifically ignore a 404 since that can be assumed
-            // to be a safe error, meaning the server doesn't exist at all on Agent so there
-            // is no reason we need to bail out from that.
-            if (! $this->force && $exception->getStatusCode() !== Response::HTTP_NOT_FOUND) {
-                throw $exception;
-            }
-
-            Log::warning($exception);
-        }
-
         $this->connection->transaction(function () use ($server) {
+            // Prevent databases from being added while the server is being deleted. Without this
+            // lock, a database created after cleanup could cause the final server deletion to fail.
+            $server = $server->newQuery()
+                ->whereKey($server->getKey())
+                ->lockForUpdate()
+                ->firstOrFail();
+
             foreach ($server->databases as $database) {
                 try {
                     $this->databaseManagementService->delete($database);
@@ -75,6 +68,16 @@ class ServerDeletionService
 
                     Log::warning($exception);
                 }
+            }
+
+            try {
+                $this->daemonServerRepository->setServer($server)->delete();
+            } catch (DaemonConnectionException $exception) {
+                if (! $this->force && $exception->getStatusCode() !== Response::HTTP_NOT_FOUND) {
+                    throw $exception;
+                }
+
+                Log::warning($exception);
             }
 
             // clear any allocation notes for the server
