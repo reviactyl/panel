@@ -12,7 +12,9 @@ use App\Http\Requests\Api\Remote\ReportBackupCompleteRequest;
 use App\Models\Backup;
 use App\Models\Node;
 use App\Models\Server;
+use App\Services\Backups\DeleteBackupService;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\ConnectionInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -22,7 +24,11 @@ class BackupStatusController extends Controller
     /**
      * BackupStatusController constructor.
      */
-    public function __construct(private BackupManager $backupManager) {}
+    public function __construct(
+        private BackupManager $backupManager,
+        private ConnectionInterface $connection,
+        private DeleteBackupService $deleteBackupService,
+    ) {}
 
     /**
      * Handles updating the state of a backup.
@@ -52,12 +58,11 @@ class BackupStatusController extends Controller
             throw new BadRequestHttpException('Cannot update the status of a backup that is already marked as completed.');
         }
 
-        $action = $request->boolean('successful') ? 'server:backup.complete' : 'server:backup.fail';
+        $successful = $request->boolean('successful');
+        $action = $successful ? 'server:backup.complete' : 'server:backup.fail';
         $log = Activity::event($action)->subject($model, $model->server)->property('name', $model->name);
 
-        $log->transaction(function () use ($model, $request) {
-            $successful = $request->boolean('successful');
-
+        $log->transaction(function () use ($model, $request, $successful) {
             $model->fill([
                 'is_successful' => $successful,
                 // Change the lock state to unlocked if this was a failed backup so that it can be
@@ -77,7 +82,46 @@ class BackupStatusController extends Controller
             }
         });
 
+        if ($successful) {
+            $this->rotateBackups($server);
+        }
+
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Removes the oldest unlocked successful backup when a completed replacement exceeds the server limit.
+     */
+    private function rotateBackups(Server $server): void
+    {
+        if ($server->backup_limit <= 0) {
+            return;
+        }
+
+        $this->connection->transaction(function () use ($server) {
+            $backups = $server->backups()
+                ->where(function ($query) {
+                    $query->whereNull('completed_at')
+                        ->orWhere('is_successful', true);
+                })
+                ->lockForUpdate()
+                ->get();
+
+            if ($backups->count() <= $server->backup_limit) {
+                return;
+            }
+
+            $oldest = $backups
+                ->where('is_locked', false)
+                ->where('is_successful', true)
+                ->whereNotNull('completed_at')
+                ->sortBy('created_at')
+                ->first();
+
+            if ($oldest) {
+                $this->deleteBackupService->handle($oldest);
+            }
+        });
     }
 
     /**
