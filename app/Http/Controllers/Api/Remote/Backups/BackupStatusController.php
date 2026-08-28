@@ -9,6 +9,7 @@ use App\Extensions\Filesystem\S3Filesystem;
 use App\Facades\Activity;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Remote\ReportBackupCompleteRequest;
+use App\Jobs\Backups\RotateBackupsJob;
 use App\Models\Backup;
 use App\Models\Node;
 use App\Models\Server;
@@ -49,15 +50,20 @@ class BackupStatusController extends Controller
         }
 
         if ($model->is_successful) {
+            if ($request->boolean('successful')) {
+                $this->dispatchBackupRotation($server, $model);
+
+                return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
+            }
+
             throw new BadRequestHttpException('Cannot update the status of a backup that is already marked as completed.');
         }
 
-        $action = $request->boolean('successful') ? 'server:backup.complete' : 'server:backup.fail';
+        $successful = $request->boolean('successful');
+        $action = $successful ? 'server:backup.complete' : 'server:backup.fail';
         $log = Activity::event($action)->subject($model, $model->server)->property('name', $model->name);
 
-        $log->transaction(function () use ($model, $request) {
-            $successful = $request->boolean('successful');
-
+        $log->transaction(function () use ($model, $request, $successful) {
             $model->fill([
                 'is_successful' => $successful,
                 // Change the lock state to unlocked if this was a failed backup so that it can be
@@ -77,7 +83,19 @@ class BackupStatusController extends Controller
             }
         });
 
+        if ($successful) {
+            $this->dispatchBackupRotation($server, $model);
+        }
+
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Queues retryable rotation independently from the Agent completion acknowledgement.
+     */
+    private function dispatchBackupRotation(Server $server, Backup $backup): void
+    {
+        dispatch(new RotateBackupsJob($server->id, $backup->id));
     }
 
     /**
