@@ -42,22 +42,21 @@ class ServerDeletionService
      */
     public function handle(Server $server): void
     {
-        try {
-            $this->daemonServerRepository->setServer($server)->delete();
-        } catch (DaemonConnectionException $exception) {
-            // If there is an error not caused a 404 error and this isn't a forced delete,
-            // go ahead and bail out. We specifically ignore a 404 since that can be assumed
-            // to be a safe error, meaning the server doesn't exist at all on Agent so there
-            // is no reason we need to bail out from that.
-            if (! $this->force && $exception->getStatusCode() !== Response::HTTP_NOT_FOUND) {
-                throw $exception;
-            }
+        $databaseIds = $this->connection->transaction(function () use ($server) {
+            $server = $this->lockServer($server);
 
-            Log::warning($exception);
-        }
+            return $server->databases()->pluck('id');
+        });
 
-        $this->connection->transaction(function () use ($server) {
-            foreach ($server->databases as $database) {
+        foreach ($databaseIds as $databaseId) {
+            $this->connection->transaction(function () use ($server, $databaseId) {
+                $server = $this->lockServer($server);
+                $database = $server->databases()->find($databaseId);
+
+                if (! $database) {
+                    return;
+                }
+
                 try {
                     $this->databaseManagementService->delete($database);
                 } catch (\Exception $exception) {
@@ -75,6 +74,24 @@ class ServerDeletionService
 
                     Log::warning($exception);
                 }
+            });
+        }
+
+        $this->connection->transaction(function () use ($server) {
+            $server = $this->lockServer($server);
+
+            if ($server->databases()->exists()) {
+                throw new DisplayException('A database was added while this server was being deleted. Please try again.');
+            }
+
+            try {
+                $this->daemonServerRepository->setServer($server)->delete();
+            } catch (DaemonConnectionException $exception) {
+                if (! $this->force && $exception->getStatusCode() !== Response::HTTP_NOT_FOUND) {
+                    throw $exception;
+                }
+
+                Log::warning($exception);
             }
 
             // clear any allocation notes for the server
@@ -82,5 +99,13 @@ class ServerDeletionService
 
             $server->delete();
         });
+    }
+
+    private function lockServer(Server $server): Server
+    {
+        return $server->newQuery()
+            ->whereKey($server->getKey())
+            ->lockForUpdate()
+            ->firstOrFail();
     }
 }
