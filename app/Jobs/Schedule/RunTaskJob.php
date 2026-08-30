@@ -2,7 +2,6 @@
 
 namespace App\Jobs\Schedule;
 
-use App\Exceptions\Http\Connection\DaemonConnectionException;
 use App\Jobs\Job;
 use App\Models\Task;
 use App\Repositories\Agent\DaemonCommandRepository;
@@ -74,9 +73,7 @@ class RunTaskJob extends Job implements ShouldQueue
                     throw new \InvalidArgumentException('Invalid task action provided: '.$this->task->action);
             }
         } catch (Exception $exception) {
-            // If this isn't a DaemonConnectionException on a task that allows for failures
-            // throw the exception back up the chain so that the task is stopped.
-            if (! ($this->task->continue_on_failure && $exception instanceof DaemonConnectionException)) {
+            if (! $this->task->continue_on_failure) {
                 throw $exception;
             }
         }

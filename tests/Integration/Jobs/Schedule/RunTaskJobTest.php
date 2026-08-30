@@ -2,7 +2,6 @@
 
 namespace Tests\Integration\Jobs\Schedule;
 
-use App\Exceptions\Http\Connection\DaemonConnectionException;
 use App\Jobs\Schedule\RunTaskJob;
 use App\Models\Schedule;
 use App\Models\Server;
@@ -10,8 +9,6 @@ use App\Models\Task;
 use App\Repositories\Agent\DaemonPowerRepository;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
-use GuzzleHttp\Exception\BadResponseException;
-use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Facades\Bus;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -122,12 +119,10 @@ class RunTaskJobTest extends IntegrationTestCase
         $mock = \Mockery::mock(DaemonPowerRepository::class);
         $this->instance(DaemonPowerRepository::class, $mock);
 
-        $mock->expects('setServer->send')->andThrow(
-            new DaemonConnectionException(new BadResponseException('Bad request', new Request('GET', '/test'), new Response()))
-        );
+        $mock->expects('setServer->send')->andThrow(new \RuntimeException('Task failed.'));
 
         if (! $continueOnFailure) {
-            $this->expectException(DaemonConnectionException::class);
+            $this->expectException(\RuntimeException::class);
         }
 
         Bus::dispatchSync(new RunTaskJob($task));
