@@ -29,7 +29,7 @@ return [
     'upload-error' => 'Upload Error',
     'upload-empty-folder' => 'This folder does not contain any files to upload.',
     'drop-files-folders' => 'Drag and drop files or folders to upload.',
-    'uploads-tooltip' => ':count uploads are in progress, click to view',
+    'uploads-tooltip' => 'Uploads in progress (:count), click to view',
     'move-description' => 'Enter the new name and directory of this file or folder, relative to the current directory.',
     'update' => 'Update',
     'name' => 'Name',
