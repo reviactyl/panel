@@ -80,12 +80,12 @@ const VariableBox = ({ variable }: Props) => {
                             defaultChecked={
                                 isStringSwitch ? variable.serverValue === 'true' : variable.serverValue === '1'
                             }
-                            onChange={() => {
+                            onChange={(event) => {
                                 if (canEdit && variable.isEditable) {
                                     if (isStringSwitch) {
-                                        setVariableValue(variable.serverValue === 'true' ? 'false' : 'true');
+                                        setVariableValue(event.currentTarget.checked ? 'true' : 'false');
                                     } else {
-                                        setVariableValue(variable.serverValue === '1' ? '0' : '1');
+                                        setVariableValue(event.currentTarget.checked ? '1' : '0');
                                     }
                                 }
                             }}
