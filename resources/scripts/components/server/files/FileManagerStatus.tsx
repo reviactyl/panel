@@ -9,6 +9,7 @@ import Code from '@/reviactyl/elements/Code';
 import { WithClassname } from '@/components/types';
 import { FaCloudArrowDown } from 'react-icons/fa6';
 import { useTranslation } from 'react-i18next';
+import type { FileUploadData } from '@/state/server/files';
 
 const svgProps = {
     cx: 16,
@@ -32,6 +33,42 @@ const Spinner = ({ progress, className }: { progress: number; className?: string
     </svg>
 );
 
+interface UploadGroup {
+    id: string;
+    name: string;
+    keys: string[];
+    loaded: number;
+    total: number;
+}
+
+const uploadProgress = ({ loaded, total }: Pick<UploadGroup, 'loaded' | 'total'>) =>
+    total === 0 ? 100 : Math.min((loaded / total) * 100, 100);
+
+const groupUploads = (uploads: Record<string, FileUploadData>): UploadGroup[] => {
+    const groups = new Map<string, UploadGroup>();
+
+    Object.entries(uploads).forEach(([key, upload]) => {
+        const id = upload.group ? `group:${upload.group}` : `file:${key}`;
+        const existing = groups.get(id);
+
+        if (existing) {
+            existing.keys.push(key);
+            existing.loaded += upload.loaded;
+            existing.total += upload.total;
+        } else {
+            groups.set(id, {
+                id,
+                name: upload.group || key,
+                keys: [key],
+                loaded: upload.loaded,
+                total: upload.total,
+            });
+        }
+    });
+
+    return Array.from(groups.values()).sort((a, b) => a.name.localeCompare(b.name));
+};
+
 const FileUploadList = () => {
     const { t } = useTranslation('server/files');
     const { close, setProps } = useContext(DialogWrapperContext);
@@ -41,22 +78,20 @@ const FileUploadList = () => {
     }, [setProps, t]);
     const cancelFileUpload = ServerContext.useStoreActions((actions) => actions.files.cancelFileUpload);
     const clearFileUploads = ServerContext.useStoreActions((actions) => actions.files.clearFileUploads);
-    const uploads = ServerContext.useStoreState((state) =>
-        Object.entries(state.files.uploads).sort(([a], [b]) => a.localeCompare(b))
-    );
+    const uploads = ServerContext.useStoreState((state) => groupUploads(state.files.uploads));
 
     return (
         <div className={'space-y-2 mt-6'}>
-            {uploads.map(([name, file]) => (
-                <div key={name} className={'flex items-center space-x-3 bg-gray-900 p-3 rounded'}>
-                    <Tooltip content={`${Math.floor((file.loaded / file.total) * 100)}%`} placement={'left'}>
+            {uploads.map((upload) => (
+                <div key={upload.id} className={'flex items-center space-x-3 bg-gray-900 p-3 rounded'}>
+                    <Tooltip content={`${Math.floor(uploadProgress(upload))}%`} placement={'left'}>
                         <div className={'flex-shrink-0'}>
-                            <Spinner progress={(file.loaded / file.total) * 100} className={'w-6 h-6'} />
+                            <Spinner progress={uploadProgress(upload)} className={'w-6 h-6'} />
                         </div>
                     </Tooltip>
-                    <Code>{name}</Code>
+                    <Code>{upload.name}</Code>
                     <button
-                        onClick={cancelFileUpload.bind(this, name)}
+                        onClick={() => upload.keys.forEach((key) => cancelFileUpload(key))}
                         className={'text-gray-600 hover:text-gray-200 transition-colors duration-75'}
                     >
                         <XIcon className={'w-5 h-5'} />
@@ -79,9 +114,9 @@ export default ({ className }: WithClassname) => {
     const { t } = useTranslation('server/files');
     const [open, setOpen] = useState(false);
 
-    const count = ServerContext.useStoreState((state) => Object.keys(state.files.uploads).length);
+    const count = ServerContext.useStoreState((state) => groupUploads(state.files.uploads).length);
     const progress = ServerContext.useStoreState((state) => ({
-        uploaded: Object.values(state.files.uploads).reduce((count, file) => count + file.loaded, 0),
+        loaded: Object.values(state.files.uploads).reduce((count, file) => count + file.loaded, 0),
         total: Object.values(state.files.uploads).reduce((count, file) => count + file.total, 0),
     }));
 
@@ -102,7 +137,7 @@ export default ({ className }: WithClassname) => {
                         }
                         onClick={() => setOpen(true)}
                     >
-                        <Spinner progress={(progress.uploaded / progress.total) * 100} className={'w-8 h-8'} />
+                        <Spinner progress={uploadProgress(progress)} className={'w-8 h-8'} />
                         <FaCloudArrowDown className={'h-3 absolute mx-auto animate-pulse'} />
                     </button>
                 </Tooltip>
