@@ -6,7 +6,7 @@ import Input from '@/reviactyl/elements/Input';
 import Spinner from '@/reviactyl/elements/Spinner';
 import Code from '@/reviactyl/elements/Code';
 import { Dialog } from '@/reviactyl/elements/dialog';
-import { Button } from '@/reviactyl/elements/button';
+import { Button } from '@/reviactyl/components/button';
 import { useFlashKey } from '@/plugins/useFlash';
 import { useTranslation } from 'react-i18next';
 import { deleteAccountPasskey, getAccountPasskeys, registerAccountPasskey } from '@/api/account/passkeys';
