@@ -26,7 +26,7 @@ export default () => {
     });
 
     useEffect(() => {
-        setFilters((value) => ({ ...value, filters: { ip: hash.ip, event: hash.event } }));
+        setFilters((value) => ({ ...value, page: 1, filters: { ip: hash.ip, event: hash.event } }));
     }, [hash]);
 
     useEffect(() => {
@@ -41,7 +41,7 @@ export default () => {
                     <Link
                         to={'#'}
                         className={classNames(btnStyles.button, btnStyles.text, 'w-full sm:w-auto')}
-                        onClick={() => setFilters((value) => ({ ...value, filters: {} }))}
+                        onClick={() => setFilters((value) => ({ ...value, page: 1, filters: {} }))}
                     >
                         Clear Filters <XCircleIcon className={'w-4 h-4 ml-2'} />
                     </Link>
