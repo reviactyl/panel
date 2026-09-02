@@ -12,7 +12,11 @@ export default function Blur({ className = '', children, ...rest }: BlurProps) {
     return (
         <span
             {...rest}
-            className={`${allocationBlur ? 'duration-300 blur-sm hover:blur-none' : 'blur-none'} ${className}`}
+            className={`${
+                allocationBlur
+                    ? 'blur-sm transition-[filter] duration-250 ease-out hover:blur-none motion-reduce:transition-none'
+                    : 'blur-none'
+            } inline-block max-w-full truncate align-bottom ${className}`}
         >
             {children}
         </span>
