@@ -4,8 +4,9 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import Field from '@/reviactyl/elements/Field';
 import { object, string } from 'yup';
 import pullFile from '@/api/server/files/pullFile';
+import getFileDownloads from '@/api/server/files/getFileDownloads';
 import tw from 'twin.macro';
-import { Button } from '@/reviactyl/elements/button/index';
+import { Button } from '@/reviactyl/components/button/index';
 import { useFlashKey } from '@/plugins/useFlash';
 import { WithClassname } from '@/components/types';
 import FlashMessageRender from '@/components/FlashMessageRender';
@@ -66,6 +67,7 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
     const [open, setOpen] = useState(false);
     const [downloading, setDownloading] = useState(false);
     const [downloadingFile, setDownloadingFile] = useState<string | null>(null);
+    const [downloadIdentifier, setDownloadIdentifier] = useState<string | null>(null);
 
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const directory = ServerContext.useStoreState((state) => state.files.directory);
@@ -73,38 +75,44 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
     const { clearAndAddHttpError, clearFlashes } = useFlashKey('files:url-download-modal');
 
     useEffect(() => {
-        if (!downloading || !downloadingFile) return;
+        if (!downloading || !downloadIdentifier) return;
 
         let active = true;
-        const poll = setInterval(async () => {
-            const files = await mutate();
-            if (!active) return;
-            if (files?.some((f) => f.name === downloadingFile)) {
+        let poll: ReturnType<typeof setTimeout>;
+        const checkDownload = async () => {
+            try {
+                const downloads = await getFileDownloads(uuid);
+                if (!active) return;
+                if (downloads.some((download) => download.identifier === downloadIdentifier)) {
+                    poll = setTimeout(checkDownload, 2000);
+                    return;
+                }
+
+                await mutate();
+                if (!active) return;
                 setDownloading(false);
                 setDownloadingFile(null);
+                setDownloadIdentifier(null);
+            } catch {
+                if (active) poll = setTimeout(checkDownload, 2000);
             }
-        }, 2000);
-
-        const giveUp = setTimeout(() => {
-            if (!active) return;
-            setDownloading(false);
-            setDownloadingFile(null);
-        }, 60000);
+        };
+        poll = setTimeout(checkDownload, 2000);
 
         return () => {
             active = false;
-            clearInterval(poll);
-            clearTimeout(giveUp);
+            clearTimeout(poll);
         };
-    }, [downloading, downloadingFile]);
+    }, [downloading, downloadIdentifier, uuid]);
 
     const submit = ({ url }: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes();
         const filename = extractFilename(url.trim());
         pullFile(uuid, url.trim(), directory)
-            .then(() => {
+            .then((identifier) => {
                 setOpen(false);
                 setDownloadingFile(filename);
+                setDownloadIdentifier(identifier);
                 setDownloading(true);
             })
             .catch((error) => {

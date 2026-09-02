@@ -7,6 +7,7 @@ return [
     'server-transferring' => 'Dieser Server wird derzeit auf einen anderen Node übertragen und alle Aktionen sind nicht verfügbar.',
     'run-command' => 'Befehl eingeben...',
     'connection-trouble' => 'Wir haben Probleme, eine Verbindung zu deinem Server herzustellen, bitte warte...',
+    'address' => 'Adresse',
     'uptime' => 'Betriebszeit',
     'network-inbound' => 'Netzwerk (eingehend)',
     'network-outbound' => 'Netzwerk (ausgehend)',

@@ -43,7 +43,7 @@ return [
         'close' => 'बंद करना',
         'no_data' => 'कोई डेटा मौजूद नहीं। सुनिश्चित करें कि नोड ऑनलाइन है.',
 
-        'cpu_section' => 'CPU',
+        'cpu_section' => 'सीपीयू',
         'cpu_total' => 'कुल उपयोग',
         'cpu_cores' => 'कोर',
         'per_core' => 'प्रति-कोर उपयोग',
@@ -60,6 +60,14 @@ return [
         'swap_used' => 'इस्तेमाल किया गया',
         'swap_free' => 'मुक्त',
         'swap_usage' => 'प्रयोग',
+
+        'partitions_section' => 'डिस्क विभाजन',
+        'partitions_none' => 'कोई विभाजन डेटा उपलब्ध नहीं है।',
+        'partitions_device' => 'यंत्र',
+        'partitions_mountpoint' => 'माउंट पॉइंट',
+        'partitions_filesystem' => 'फ़ाइलप्रणाली',
+        'partitions_size' => 'आकार',
+        'partitions_usage' => 'प्रयोग',
 
         'network_section' => 'नेटवर्क',
         'bytes_sent' => 'बाइट्स भेजे गए',
@@ -81,7 +89,7 @@ return [
         'col' => [
             'name' => 'सर्वर',
             'state' => 'राज्य',
-            'cpu' => 'CPU',
+            'cpu' => 'सीपीयू',
             'memory' => 'याद',
             'disk' => 'डिस्क',
             'network' => 'नेटवर्क',

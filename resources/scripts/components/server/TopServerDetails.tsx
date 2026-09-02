@@ -16,6 +16,7 @@ import { useStoreState } from 'easy-peasy';
 import Blur from '@/reviactyl/ui/Blur';
 import { useTranslation } from 'react-i18next';
 import { FaFloppyDisk, FaGlobe, FaHashtag, FaMemory, FaMicrochip } from 'react-icons/fa6';
+import { useSubuserPreview } from '@/context/SubuserPreviewContext';
 
 type Stats = Record<'memory' | 'cpu' | 'disk', number>;
 
@@ -54,7 +55,9 @@ const TopServerDetails = () => {
     const instance = ServerContext.useStoreState((state) => state.socket.instance);
     const limits = ServerContext.useStoreState((state) => state.server.data!.limits);
     const serverId = ServerContext.useStoreState((state) => state.server.data?.internalId);
-    const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
+    const accountRootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
+    const { session } = useSubuserPreview();
+    const rootAdmin = accountRootAdmin && !session;
 
     const textLimits = useMemo(
         () => ({

@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Contracts\Repository\SettingsRepositoryInterface;
+use App\Filament\Components\Alert;
 use App\Filament\Components\ImageInput;
 use App\Filament\Widgets\PreviewWidget;
 use App\Traits\Helpers\AvailableLanguages;
@@ -26,6 +27,7 @@ use Filament\Schemas\Contracts\HasSchemas;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
 class Designify extends Page implements HasSchemas
@@ -255,6 +257,7 @@ class Designify extends Page implements HasSchemas
     {
         return [
             Tabs::make('settings-tabs')
+                ->disabled(fn (): bool => config('panel.load_environment_only'))
                 ->persistTabInQueryString()
                 ->vertical()
                 ->tabs([
@@ -298,6 +301,20 @@ class Designify extends Page implements HasSchemas
                         ->icon('tabler-layout-sidebar')
                         ->schema($this->sidebarSettings()),
                 ]),
+            ...$this->environmentNotice(),
+        ];
+    }
+
+    private function environmentNotice(): array
+    {
+        return [
+            Alert::make()
+                ->title('App Environment Only Mode Enabled')
+                ->description(new HtmlString('Your Panel is currently configured to read settings from the environment only. You will need to set <code>APP_ENVIRONMENT_ONLY=false</code> in your environment file in order to load settings dynamically.'))
+                ->warning()
+                ->columnSpanFull()
+                ->visible(fn (): bool => config('panel.load_environment_only')),
+
         ];
     }
 
@@ -344,13 +361,19 @@ class Designify extends Page implements HasSchemas
 
                     Select::make('designify:avatarType')
                         ->label(trans('admin/settings.designify.avatar-type'))
+                        ->helperText(trans('admin/settings.designify.avatar-type-description'))
                         ->options([
                             'gravatar' => 'Gravatar',
                             'initials' => 'Initials',
                             'identicon' => 'Identicon',
+                            'loops' => 'Loops',
+                            'waves' => 'Waves',
+                            'critters' => 'Critters',
+                            'pixelbot' => 'Pixelbot',
                             'thumbs' => 'Thumbs',
-                            'rings' => 'Rings',
-                        ]),
+                        ])
+                        ->required()
+                        ->columnSpan(1),
                 ]),
 
             Group::make()
@@ -711,6 +734,10 @@ class Designify extends Page implements HasSchemas
 
     public function save(): void
     {
+        if (config('panel.load_environment_only')) {
+            return;
+        }
+
         $settings = app(SettingsRepositoryInterface::class);
         $kernel = app(Kernel::class);
         $form = $this->getForm('form');
@@ -744,6 +771,10 @@ class Designify extends Page implements HasSchemas
 
     public function resetToDefaults(): void
     {
+        if (config('panel.load_environment_only')) {
+            return;
+        }
+
         DB::table('settings')
             ->where('key', 'like', 'settings::designify:%')
             ->delete();
@@ -772,6 +803,7 @@ class Designify extends Page implements HasSchemas
                 ->label(trans('admin/settings.overview.save-btn'))
                 ->icon('tabler-device-floppy')
                 ->action('save')
+                ->disabled(fn (): bool => config('panel.load_environment_only'))
                 ->keyBindings(['mod+s']),
 
             Action::make('reset')
@@ -779,6 +811,7 @@ class Designify extends Page implements HasSchemas
                 ->icon('tabler-restore')
                 ->color('danger')
                 ->requiresConfirmation()
+                ->disabled(fn (): bool => config('panel.load_environment_only'))
                 ->modalHeading(trans('admin/settings.designify.reset-designify'))
                 ->modalDescription(trans('admin/settings.designify.reset-description'))
                 ->action(fn () => $this->resetToDefaults()),

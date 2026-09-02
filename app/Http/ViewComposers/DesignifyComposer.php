@@ -136,6 +136,14 @@ class DesignifyComposer
             'color950' => config('designify.theme7.color950') ?? '#09090b',
         ];
 
+        $this->Theme1['colorMutedText'] = $this->getAccessibleMutedText($this->Theme1);
+        $this->Theme2['colorMutedText'] = $this->getAccessibleMutedText($this->Theme2);
+        $this->Theme3['colorMutedText'] = $this->getAccessibleMutedText($this->Theme3);
+        $this->Theme4['colorMutedText'] = $this->getAccessibleMutedText($this->Theme4);
+        $this->Theme5['colorMutedText'] = $this->getAccessibleMutedText($this->Theme5);
+        $this->Theme6['colorMutedText'] = $this->getAccessibleMutedText($this->Theme6);
+        $this->Theme7['colorMutedText'] = $this->getAccessibleMutedText($this->Theme7);
+
         $this->reviactylDefaults = [
             'customCopyright' => config('designify.customCopyright', true),
             'copyright' => config('designify.copyright') ?? 'Powered by [Reviactyl](https://reviactyl.app/)',
@@ -208,8 +216,69 @@ class DesignifyComposer
             'alwaysShowKillButton' => config('designify.alwaysShowKillButton', false),
             'cardType' => config('designify.cardType') ?? 'grid',
             'layoutType' => config('designify.layoutType') ?? 'modern',
-            'avatarType' => config('designify.avatarType') ?? 'gravatar',
         ];
+
+        $this->reviactylDefaults['colorMutedText'] = $this->getAccessibleMutedText($this->reviactylDefaults);
+    }
+
+    private function getAccessibleMutedText(array $palette): string
+    {
+        $backgrounds = [$palette['color800'], $palette['color900'], $palette['color950']];
+        $candidates = [
+            $palette['color400'],
+            $palette['color300'],
+            $palette['color200'],
+            $palette['color100'],
+            $palette['color50'],
+            '#ffffff',
+            '#000000',
+        ];
+
+        $bestCandidate = $candidates[0];
+        $bestMinimumContrast = 0.0;
+
+        foreach ($candidates as $candidate) {
+            $minimumContrast = min(array_map(
+                fn (string $background): float => $this->contrastRatio($candidate, $background),
+                $backgrounds,
+            ));
+
+            if ($minimumContrast >= 4.5) {
+                return $candidate;
+            }
+
+            if ($minimumContrast > $bestMinimumContrast) {
+                $bestCandidate = $candidate;
+                $bestMinimumContrast = $minimumContrast;
+            }
+        }
+
+        return $bestCandidate;
+    }
+
+    private function contrastRatio(string $foreground, string $background): float
+    {
+        $foregroundLuminance = $this->relativeLuminance($foreground);
+        $backgroundLuminance = $this->relativeLuminance($background);
+
+        return (max($foregroundLuminance, $backgroundLuminance) + 0.05)
+            / (min($foregroundLuminance, $backgroundLuminance) + 0.05);
+    }
+
+    private function relativeLuminance(string $hex): float
+    {
+        $hex = ltrim($hex, '#');
+        if (strlen($hex) === 3) {
+            $hex = implode('', array_map(fn (string $character): string => $character.$character, str_split($hex)));
+        }
+
+        $channels = array_map(function (string $channel): float {
+            $value = hexdec($channel) / 255;
+
+            return $value <= 0.04045 ? $value / 12.92 : (($value + 0.055) / 1.055) ** 2.4;
+        }, str_split($hex, 2));
+
+        return 0.2126 * $channels[0] + 0.7152 * $channels[1] + 0.0722 * $channels[2];
     }
 
     private function getAlertsConfig(): array

@@ -95,11 +95,13 @@ class BulkPowerActionCommand extends Command
     {
         $instance = Server::query()->whereNull('status');
 
-        if (! empty($nodes) && ! empty($servers)) {
-            $instance->whereIn('id', $servers)->orWhereIn('node_id', $nodes);
-        } elseif (empty($nodes) && ! empty($servers)) {
+        if (! empty($servers)) {
             $instance->whereIn('id', $servers);
-        } elseif (! empty($nodes) && empty($servers)) {
+
+            if (! empty($nodes)) {
+                $instance->orWhereIn('node_id', $nodes);
+            }
+        } elseif (! empty($nodes)) {
             $instance->whereIn('node_id', $nodes);
         }
 

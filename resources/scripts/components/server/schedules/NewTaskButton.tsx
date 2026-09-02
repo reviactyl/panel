@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { Schedule } from '@/api/server/schedules/getServerSchedules';
 import TaskDetailsModal from '@/components/server/schedules/TaskDetailsModal';
-import { Button } from '@/reviactyl/elements/button/index';
+import { Button } from '@/reviactyl/components/button/index';
+import { usePermissions } from '@/plugins/usePermissions';
+import { taskActionPermissions } from '@/components/server/schedules/taskPermissions';
 
 interface Props {
     schedule: Schedule;
@@ -9,6 +11,9 @@ interface Props {
 
 export default ({ schedule }: Props) => {
     const [visible, setVisible] = useState(false);
+    const canCreateTask = usePermissions(taskActionPermissions).some(Boolean);
+
+    if (!canCreateTask) return null;
 
     return (
         <>

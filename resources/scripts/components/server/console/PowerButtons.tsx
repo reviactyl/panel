@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button } from '@/reviactyl/elements/button/index';
+import { Button } from '@/reviactyl/components/button/index';
 import Can from '@/reviactyl/elements/Can';
 import { ServerContext } from '@/state/server';
 import { PowerAction } from '@/components/server/console/ServerConsoleContainer';
@@ -55,7 +55,11 @@ export default ({ className }: PowerButtonProps) => {
             </Dialog.Confirm>
             <Can action={'control.start'}>
                 {(!alwaysShowKillButton || status === 'offline') && (
-                    <Button.Success className={'flex-1'} onClick={onButtonClick.bind(this, 'start')}>
+                    <Button.Success
+                        className={'flex-1'}
+                        disabled={status !== 'offline'}
+                        onClick={onButtonClick.bind(this, 'start')}
+                    >
                         {t('start')}
                     </Button.Success>
                 )}

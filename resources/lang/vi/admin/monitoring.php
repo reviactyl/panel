@@ -61,6 +61,14 @@ return [
         'swap_free' => 'Miễn phí',
         'swap_usage' => 'Cách sử dụng',
 
+        'partitions_section' => 'Các phân vùng đĩa',
+        'partitions_none' => 'Không có dữ liệu phân vùng nào.',
+        'partitions_device' => 'Thiết bị',
+        'partitions_mountpoint' => 'Điểm gắn kết',
+        'partitions_filesystem' => 'Hệ thống tệp',
+        'partitions_size' => 'Kích cỡ',
+        'partitions_usage' => 'Cách sử dụng',
+
         'network_section' => 'Mạng',
         'bytes_sent' => 'Byte đã gửi',
         'bytes_recv' => 'Byte đã nhận',

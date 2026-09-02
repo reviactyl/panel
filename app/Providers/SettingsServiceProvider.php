@@ -3,12 +3,12 @@
 namespace App\Providers;
 
 use App\Contracts\Repository\SettingsRepositoryInterface;
+use App\Support\InstallationState;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\ServiceProvider;
-use Psr\Log\LoggerInterface as Log;
 
 class SettingsServiceProvider extends ServiceProvider
 {
@@ -23,6 +23,8 @@ class SettingsServiceProvider extends ServiceProvider
         'app:locale',
         'app:debug',
         'app:pwa',
+        'trustedproxy:proxies',
+        'mail:default',
         'panel:guzzle:timeout',
         'panel:guzzle:connect_timeout',
         'panel:console:count',
@@ -41,6 +43,11 @@ class SettingsServiceProvider extends ServiceProvider
         'panel:auth:github_enabled',
         'panel:auth:github_client_id',
         'panel:auth:github_client_secret',
+        'captcha:provider',
+        'captcha:recaptcha:secret_key',
+        'captcha:recaptcha:website_key',
+        'captcha:turnstile:secret_key',
+        'captcha:turnstile:site_key',
     ];
 
     protected array $designifyKeys = [
@@ -221,15 +228,20 @@ class SettingsServiceProvider extends ServiceProvider
     /**
      * Boot the service provider.
      */
-    public function boot(ConfigRepository $config, Log $log, SettingsRepositoryInterface $settings): void
+    public function boot(ConfigRepository $config, InstallationState $installationState, SettingsRepositoryInterface $settings): void
     {
+        if ($config->get('panel.load_environment_only')) {
+            return;
+        }
 
         $this->keys = array_merge($this->keys, $this->designifyKeys);
 
-        // Only set the email driver settings from the database if we
-        // are configured using SMTP as the driver.
-        if ($config->get('mail.default') === 'smtp') {
-            $this->keys = array_merge($this->keys, $this->emailKeys);
+        try {
+            if (! $installationState->isInstalled()) {
+                return;
+            }
+        } catch (QueryException $exception) {
+            return;
         }
 
         try {
@@ -237,9 +249,14 @@ class SettingsServiceProvider extends ServiceProvider
                 return [$setting->key => $setting->value];
             })->toArray();
         } catch (QueryException $exception) {
-            $log->notice('A query exception was encountered while trying to load settings from the database: '.$exception->getMessage());
-
             return;
+        }
+
+        // The selected mailer can itself be stored in the database. Resolve it
+        // before deciding whether the SMTP-specific settings should be loaded.
+        $mailer = array_get($values, 'settings::mail:default', $config->get('mail.default'));
+        if ($mailer === 'smtp') {
+            $this->keys = array_merge($this->keys, $this->emailKeys);
         }
 
         $encrypter = null;

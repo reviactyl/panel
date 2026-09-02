@@ -43,6 +43,7 @@ module.exports = {
                 success: reviactyl('--color-success'),
                 danger: reviactyl('--color-danger'),
                 secondary: reviactyl('--color-secondary'),
+                muted: reviactyl('--color-muted-text'),
             },
             fontSize: {
                 '2xs': '0.625rem',

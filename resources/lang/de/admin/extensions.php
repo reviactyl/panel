@@ -4,15 +4,20 @@ return [
 
     'label' => 'Verlängerung',
     'plural-label' => 'Erweiterungen',
+    'marketplace_heading' => 'Verfügbare Erweiterungen',
 
     'columns' => [
+        'icon' => 'Symbol',
         'id' => 'ID',
         'name' => 'Name',
         'version' => 'Version',
         'author' => 'Autor',
         'enabled' => 'Ermöglicht',
         'updated' => 'Aktualisiert',
+        'last_updated' => 'Zuletzt aktualisiert',
+        'downloads' => 'Downloads',
         'manifest_json' => 'JSON manifestieren',
+        'file' => 'Wählen Sie eine .rext-Datei zum Hochladen aus',
     ],
 
     'modals' => [
@@ -21,6 +26,7 @@ return [
 
     'actions' => [
         'edit' => 'Bearbeiten',
+        'view' => 'Erweiterung herunterladen',
         'upload' => 'Hochladen',
         'manifest' => 'Manifest anzeigen',
         'disable' => 'Deaktivieren',

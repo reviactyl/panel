@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Client;
 
 use App\Facades\Activity;
+use App\Http\Requests\Api\Client\Account\UpdateAvatarRequest;
 use App\Http\Requests\Api\Client\Account\UpdateEmailRequest;
 use App\Http\Requests\Api\Client\Account\UpdatePasswordRequest;
 use App\Services\Users\UserUpdateService;
@@ -14,6 +15,11 @@ use Illuminate\Http\Response;
 
 class AccountController extends ClientApiController
 {
+    private const FILE_EDITOR_NAMES = [
+        'cm' => 'CodeMirror',
+        'mo' => 'Monaco',
+    ];
+
     /**
      * AccountController constructor.
      */
@@ -106,10 +112,35 @@ class AccountController extends ClientApiController
 
         if ($original !== $user->editor) {
             Activity::event('user:account.file-editor-changed')
-                ->property(['old' => $original, 'new' => $user->editor])
+                ->property([
+                    'old' => self::FILE_EDITOR_NAMES[$original] ?? $original,
+                    'new' => self::FILE_EDITOR_NAMES[$user->editor] ?? $user->editor,
+                ])
                 ->log();
         }
 
         return new JsonResponse([$user], Response::HTTP_OK);
+    }
+
+    public function updateAvatar(UpdateAvatarRequest $request): JsonResponse
+    {
+        $user = $request->user();
+        $originalStyle = $user->avatar_style;
+        $originalAnimated = $user->avatar_animated;
+
+        $user->avatar_style = $request->string('avatar_style')->toString();
+        $user->avatar_animated = $request->boolean('avatar_animated');
+        $user->save();
+
+        if ($originalStyle !== $user->avatar_style || $originalAnimated !== $user->avatar_animated) {
+            Activity::event('user:account.avatar-changed')
+                ->property([
+                    'old' => $originalStyle.($originalAnimated ? ' (animated)' : ' (static)'),
+                    'new' => $user->avatar_style.($user->avatar_animated ? ' (animated)' : ' (static)'),
+                ])
+                ->log();
+        }
+
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 }

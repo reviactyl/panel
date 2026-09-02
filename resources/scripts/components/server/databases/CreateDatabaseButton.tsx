@@ -26,7 +26,10 @@ const schema = object().shape({
             /^[\w\-.]{3,48}$/,
             'Database name should only contain alphanumeric characters, underscores, dashes, and/or periods.'
         ),
-    connectionsFrom: string().matches(/^[\w\-/.%:]+$/, 'A valid host address must be provided.'),
+    connectionsFrom: string().matches(/^[\w\-/.%:]+$/, {
+        message: 'A valid host address must be provided.',
+        excludeEmptyString: true,
+    }),
 });
 
 export default () => {

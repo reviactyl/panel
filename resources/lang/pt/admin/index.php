@@ -14,6 +14,7 @@ return [
     'sponsor-btn' => 'Virar patrocinador',
 
     'help-btn' => 'Obter ajuda',
+    'update-btn' => 'Painel de Atualização',
     'docs-btn' => 'Documentação',
     'metrics-header' => 'Métricas de atividade do usuário',
     'most-active-country' => 'País mais ativo',
@@ -21,4 +22,13 @@ return [
     'no_activity' => 'Não há atividades recentes para exibir.',
     'activity-header' => 'Atividade recente',
     'more-btn' => 'Ver mais',
+    'dashboard' => [
+        'total_users' => 'Total de Utilizadores',
+        'new_users' => 'Novos utilizadores: :count',
+        'total_servers' => 'Total de Servidores',
+        'new_servers' => 'Novos servidores: :count',
+        'developmental_build' => 'Compilação de desenvolvimento',
+        'up_to_date' => 'Atualizado',
+        'outdated_build' => 'Compilação desatualizada',
+    ],
 ];

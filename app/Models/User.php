@@ -48,6 +48,8 @@ use Laragear\WebAuthn\WebAuthnAuthentication;
  * @property string|null $totp_secret
  * @property Carbon|null $totp_authenticated_at
  * @property bool $gravatar
+ * @property string $avatar_style
+ * @property bool $avatar_animated
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property \Illuminate\Database\Eloquent\Collection|ApiKey[] $apiKeys
@@ -91,6 +93,10 @@ use Laragear\WebAuthn\WebAuthnAuthentication;
 #[Attributes\Identifiable('user')]
 class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract, HasAvatar, Identifiable, WebAuthnAuthenticatable
 {
+    public const AVATAR_STYLES = ['gravatar', 'initials', 'identicon', 'loops', 'waves', 'critters', 'pixelbot', 'thumbs'];
+
+    private const ANIMATED_AVATAR_STYLES = ['loops', 'waves', 'critters', 'pixelbot', 'thumbs'];
+
     use Authenticatable;
     use Authorizable;
     use AvailableLanguages;
@@ -154,6 +160,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'totp_secret',
         'totp_authenticated_at',
         'gravatar',
+        'avatar_style',
+        'avatar_animated',
         'root_admin',
         'editor',
         'last_seen',
@@ -166,6 +174,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'root_admin' => 'boolean',
         'use_totp' => 'boolean',
         'gravatar' => 'boolean',
+        'avatar_animated' => 'boolean',
         'totp_authenticated_at' => 'datetime',
         'editor' => 'string',
         'last_seen' => 'datetime',
@@ -185,6 +194,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'language' => 'en',
         'use_totp' => false,
         'totp_secret' => null,
+        'avatar_style' => 'gravatar',
+        'avatar_animated' => true,
     ];
 
     /**
@@ -192,7 +203,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     public static array $validationRules = [
         'uuid' => 'required|string|size:36|unique:users,uuid',
-        'email' => 'required|email|between:1,191|unique:users,email',
+        'email' => 'required|email:strict|between:1,191|unique:users,email',
         'external_id' => 'sometimes|nullable|string|max:191|unique:users,external_id',
         'username' => 'required|between:1,191|unique:users,username',
         'name_first' => 'required|string|between:1,191',
@@ -202,6 +213,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'language' => 'string',
         'use_totp' => 'boolean',
         'totp_secret' => 'nullable|string',
+        'avatar_style' => 'string|in:gravatar,identicon,loops,initials,waves,critters,pixelbot,thumbs',
+        'avatar_animated' => 'boolean',
     ];
 
     /**
@@ -361,9 +374,27 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return "https://www.gravatar.com/avatar/{$hash}?s=200";
     }
 
+    public function getAvatarUrlAttribute(): string
+    {
+        $style = in_array($this->avatar_style, self::AVATAR_STYLES, true) ? $this->avatar_style : 'gravatar';
+
+        if ($style === 'gravatar') {
+            return $this->gravatar_url;
+        }
+
+        $query = http_build_query(array_filter([
+            'seed' => $this->uuid,
+            'animationVariant' => $this->avatar_animated && in_array($style, self::ANIMATED_AVATAR_STYLES, true)
+                ? 'medium'
+                : null,
+        ]));
+
+        return "https://api.dicebear.com/10.x/{$style}/svg?{$query}";
+    }
+
     public function getFilamentAvatarUrl(): ?string
     {
-        return $this->gravatar_url;
+        return $this->avatar_url;
     }
 
     /**

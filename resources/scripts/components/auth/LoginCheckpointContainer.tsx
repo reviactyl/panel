@@ -9,7 +9,7 @@ import useFlash from '@/plugins/useFlash';
 import { FlashStore } from '@/state/flashes';
 import Field from '@/reviactyl/elements/Field';
 import tw from 'twin.macro';
-import { Button } from '@/reviactyl/elements/button/index';
+import { Button } from '@/reviactyl/components/button/index';
 import { DotsHorizontalIcon } from '@heroicons/react/solid';
 import { useTranslation } from 'react-i18next';
 

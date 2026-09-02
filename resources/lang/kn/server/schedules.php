@@ -5,7 +5,7 @@ return [
     'no-schedules' => 'ಈ ಸರ್ವರ್‌ಗಾಗಿ ಯಾವುದೇ ವೇಳಾಪಟ್ಟಿಗಳನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಲಾಗಿಲ್ಲ.',
     'create-schedule' => 'ವೇಳಾಪಟ್ಟಿಯನ್ನು ರಚಿಸಿ',
     'last-run-at' => 'ಕೊನೆಯ ಓಟ: :time',
-    'never' => 'never',
+    'never' => 'ಎಂದಿಗೂ ಇಲ್ಲ',
     'active' => 'ಸಕ್ರಿಯ',
     'inactive' => 'ನಿಷ್ಕ್ರಿಯ',
     'processing' => 'ಸಂಸ್ಕರಣೆ',

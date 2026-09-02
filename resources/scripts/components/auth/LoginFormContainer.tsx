@@ -10,6 +10,7 @@ import { ApplicationStore } from '@/state';
 import { useStoreState } from 'easy-peasy';
 import Footer from '@/reviactyl/ui/Footer';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
+import NavbarLanguageSwitcher from '@/reviactyl/ui/NavbarLanguageSwitcher';
 
 type Props = React.DetailedHTMLProps<React.FormHTMLAttributes<HTMLFormElement>, HTMLFormElement> & {
     title?: string;
@@ -33,6 +34,9 @@ export default forwardRef<HTMLFormElement, Props>(({ title, ...props }, ref) => 
                 <CardContainer>
                     <FlashMessageRender css={tw`mb-2`} />
                     <ExtensionSlot name={'auth:card:before'} />
+                    <div css={tw`mb-3 flex justify-end`}>
+                        <NavbarLanguageSwitcher />
+                    </div>
                     <LogoContainer>
                         <img src={logo} alt={name} css={tw`h-[3rem]`} />
                     </LogoContainer>

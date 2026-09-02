@@ -8,6 +8,7 @@ return [
         'administrator' => 'প্রশাসক',
         'admin' => 'অ্যাডমিন',
         'profile' => 'প্রোফাইল',
+        'profile-picture' => 'Profile Picture',
         'logout' => 'লগআউট',
         'user' => 'ইউজার',
         'update-email' => 'ইমেইল ঠিকানা আপডেট করুন',
@@ -42,6 +43,20 @@ return [
                 'unlinked' => 'অ্যাকাউন্ট সফলভাবে আনলিংক করা হয়েছে।',
                 'unlink-failed' => 'অ্যাকাউন্ট আনলিংক করতে ব্যর্থ হয়েছে।',
             ],
+        ],
+    ],
+    'avatar' => [
+        'style' => 'Avatar Style',
+        'animation' => 'Animate Avatar',
+        'styles' => [
+            'gravatar' => 'Gravatar',
+            'initials' => 'Initials',
+            'identicon' => 'Identicon',
+            'loops' => 'Loops',
+            'waves' => 'Waves',
+            'critters' => 'Critters',
+            'pixelbot' => 'Pixelbot',
+            'thumbs' => 'Thumbs',
         ],
     ],
     'email' => [
@@ -119,7 +134,7 @@ return [
     'ssh' => [
         'title' => 'SSH কীসমূহ',
         'add-key' => 'SSH কী যোগ করুন',
-        'fingerprint' => 'SHA256',
+        'fingerprint' => 'SHA২৫৬',
         'not-exist' => 'এই অ্যাকাউন্টের জন্য কোনো SSH কী নেই।',
         'added-on' => 'যোগ করা হয়েছে',
         'create' => [

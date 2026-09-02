@@ -14,6 +14,7 @@ return [
     'sponsor-btn' => 'ಪ್ರಾಜೆಕ್ಟ್‌ಗೆ ಸ್ಪಾನ್ಸರ್ ಮಾಡಿ',
 
     'help-btn' => 'ಸಹಾಯ ಪಡೆಯಿರಿ',
+    'update-btn' => 'Update Panel',
     'docs-btn' => 'ಡಾಕ್ಯುಮೆಂಟೇಶನ್',
     'metrics-header' => 'ಬಳಕೆದಾರರ ಚಟುವಟಿಕೆ ಮೆಟ್ರಿಕ್ಸ್',
     'most-active-country' => 'ಅತ್ಯಂತ ಸಕ್ರಿಯ ದೇಶ',
@@ -21,4 +22,13 @@ return [
     'no_activity' => 'ಪ್ರದರ್ಶಿಸಲು ಯಾವುದೇ ಇತ್ತೀಚಿನ ಚಟುವಟಿಕೆ ಇಲ್ಲ.',
     'activity-header' => 'ಇತ್ತೀಚಿನ ಚಟುವಟಿಕೆ',
     'more-btn' => 'ಇನ್ನಷ್ಟು ವೀಕ್ಷಿಸಿ',
+    'dashboard' => [
+        'total_users' => 'ಒಟ್ಟು ಬಳಕೆದಾರರು',
+        'new_users' => 'ಹೊಸ ಬಳಕೆದಾರರು: :count',
+        'total_servers' => 'ಒಟ್ಟು ಸರ್ವರ್‌ಗಳು',
+        'new_servers' => 'ಹೊಸ ಸರ್ವರ್‌ಗಳು: :count',
+        'developmental_build' => 'ಅಭಿವೃದ್ಧಿ ಬಿಲ್ಡ್',
+        'up_to_date' => 'ನವೀಕೃತವಾಗಿದೆ',
+        'outdated_build' => 'ಹಳತಾದ ಬಿಲ್ಡ್',
+    ],
 ];

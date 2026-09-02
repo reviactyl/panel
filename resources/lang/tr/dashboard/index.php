@@ -39,6 +39,7 @@ return [
         'restoring-backup' => 'Yedeklemeden Geri Yükleniyor',
         'unavailable' => 'Kullanılamaz',
         'unlimited' => 'Sınırsız',
+        'maintenance' => 'Bakımda',
     ],
     'status-card' => [
         'title' => 'Sunucu Durumu',

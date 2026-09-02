@@ -61,6 +61,14 @@ return [
         'swap_free' => 'حر',
         'swap_usage' => 'الاستخدام',
 
+        'partitions_section' => 'أقسام القرص',
+        'partitions_none' => 'لا توجد بيانات متاحة عن الأقسام.',
+        'partitions_device' => 'الجهاز',
+        'partitions_mountpoint' => 'نقطة التثبيت',
+        'partitions_filesystem' => 'نظام الملفات',
+        'partitions_size' => 'مقاس',
+        'partitions_usage' => 'الاستخدام',
+
         'network_section' => 'شبكة',
         'bytes_sent' => 'البايتات المرسلة',
         'bytes_recv' => 'وحدات البايت المستلمة',

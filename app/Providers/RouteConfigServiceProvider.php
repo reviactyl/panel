@@ -13,7 +13,7 @@ use Illuminate\Support\ServiceProvider;
 
 class RouteConfigServiceProvider extends ServiceProvider
 {
-    protected const FILE_PATH_REGEX = '/^\/api\/client\/servers\/([a-z0-9-]{36})\/files(\/?$|\/(.)*$)/i';
+    protected const FILE_PATH_REGEX = '/^\/api\/client\/servers\/([^\/]+)\/files(\/?$|\/(.)*$)/i';
 
     /**
      * Define your route model bindings, pattern filters, etc.

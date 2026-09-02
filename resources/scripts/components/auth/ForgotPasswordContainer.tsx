@@ -8,7 +8,7 @@ import Field from '@/reviactyl/elements/Field';
 import { Formik, FormikHelpers } from 'formik';
 import { object, string } from 'yup';
 import tw from 'twin.macro';
-import { Button } from '@/reviactyl/elements/button/index';
+import { Button } from '@/reviactyl/components/button/index';
 import Reaptcha from 'reaptcha';
 import Turnstile from '@/reviactyl/elements/Turnstile';
 import useFlash from '@/plugins/useFlash';

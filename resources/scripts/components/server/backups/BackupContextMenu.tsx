@@ -65,7 +65,7 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
                     (data) => ({
                         ...data,
                         items: data.items.filter((b) => b.uuid !== backup.uuid),
-                        backupCount: data.backupCount - 1,
+                        backupCount: backup.isSuccessful ? data.backupCount - 1 : data.backupCount,
                     }),
                     false
                 )
@@ -212,12 +212,14 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
                     <ExtensionSlot name={`server:backups:menu:end`} />
                 </DropdownMenu>
             ) : (
-                <button
-                    onClick={() => setModal('delete')}
-                    css={tw`text-gray-200 transition-colors duration-150 hover:text-gray-100 p-2`}
-                >
-                    <FaTrash />
-                </button>
+                <Can action={'backup.delete'}>
+                    <button
+                        onClick={() => setModal('delete')}
+                        css={tw`text-gray-200 transition-colors duration-150 hover:text-gray-100 p-2`}
+                    >
+                        <FaTrash />
+                    </button>
+                </Can>
             )}
         </>
     );

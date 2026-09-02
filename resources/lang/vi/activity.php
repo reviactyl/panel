@@ -13,6 +13,9 @@ return [
         'using-api-key' => 'Sử dụng khóa API',
         'using-sftp' => 'Sử dụng SFTP',
     ],
+    'event' => [
+        'password-reset' => 'Password reset',
+    ],
     'auth' => [
         'fail' => 'Đăng nhập không thành công',
         'success' => 'Đã đăng nhập',
@@ -27,10 +30,15 @@ return [
         ],
     ],
     'user' => [
+        'user' => [
+            'create' => 'Đã tạo một người dùng mới: email',
+        ],
         'account' => [
             'email-changed' => 'Đã thay đổi email từ :old thành :new',
             'password-changed' => 'Đã thay đổi mật khẩu',
             'language-changed' => 'Đã thay đổi ngôn ngữ từ :old thành :new',
+            'file-editor-changed' => 'Changed file editor from :old to :new',
+            'avatar-changed' => 'Changed avatar style from :old to :new',
         ],
         'api-key' => [
             'create' => 'Đã tạo khóa API mới :identifier',
@@ -123,6 +131,7 @@ return [
         'settings' => [
             'rename' => 'Đã đổi tên máy chủ từ :old thành :new',
             'description' => 'Đã thay đổi mô tả máy chủ từ :old thành :new',
+            'category' => 'Changed server category',
         ],
         'startup' => [
             'edit' => 'Đã thay đổi biến :variable từ ":old" thành ":new"',

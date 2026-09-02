@@ -4,15 +4,20 @@ return [
 
     'label' => 'Eklenti',
     'plural-label' => 'Uzantılar',
+    'marketplace_heading' => 'Kullanılabilir Uzantılar',
 
     'columns' => [
+        'icon' => 'Simge',
         'id' => 'ID',
         'name' => 'İsim',
         'version' => 'Sürüm',
         'author' => 'Yazar',
         'enabled' => 'Etkinleştirilmiş',
         'updated' => 'Güncellendi',
+        'last_updated' => 'Son Güncelleme',
+        'downloads' => 'İndirmeler',
         'manifest_json' => 'JSON\'u bildir',
+        'file' => 'Yüklemek için bir .rext dosyası seçin',
     ],
 
     'modals' => [
@@ -21,6 +26,7 @@ return [
 
     'actions' => [
         'edit' => 'Düzenlemek',
+        'view' => 'Eklentiyi İndir',
         'upload' => 'Yüklemek',
         'manifest' => 'Manifest\'i Görüntüle',
         'disable' => 'Devre dışı bırakmak',

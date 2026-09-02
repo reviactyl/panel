@@ -1,6 +1,7 @@
 .stat_block {
     @apply flex items-center rounded-ui shadow-lg relative;
-    @apply border border-gray-600;
+    @apply border border-gray-800;
+    @apply col-span-3 md:col-span-2 lg:col-span-6;
     @apply px-3 py-2 md:p-3 lg:p-4;
 
     & > .status_bar {
@@ -19,7 +20,7 @@
 }
 
 .terminal {
-    @apply flex flex-col w-full min-w-0;
+    @apply flex flex-col w-full;
 
     & .overflows_container {
         @apply -ml-4 sm:ml-0;
@@ -31,7 +32,7 @@
     }
 
     & > .container {
-        @apply rounded-ui p-1 sm:p-2 !bg-transparent min-h-[16rem] flex-1 font-mono text-sm min-w-0 overflow-hidden;
+        @apply rounded-ui p-1 sm:p-2 !bg-transparent min-h-[16rem] flex-1 font-mono text-sm overflow-hidden;
 
         & [id] {
             @apply h-full min-w-0;

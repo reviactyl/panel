@@ -21,6 +21,7 @@ return [
     'search' => 'Buscar',
     'suspended' => 'Suspendido',
     'account' => 'Cuenta',
+    'avatar' => 'Avatar',
     'security' => 'Seguridad',
     'ip' => 'Dirección IP',
     'last_activity' => 'Última actividad',

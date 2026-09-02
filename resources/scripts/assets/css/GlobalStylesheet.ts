@@ -2,6 +2,13 @@ import tw from 'twin.macro';
 import { createGlobalStyle } from 'styled-components';
 
 export default createGlobalStyle`
+    html,
+    body,
+    #app {
+        max-width: 100%;
+        overflow-x: clip;
+    }
+
     body {
         ${tw`font-sans bg-gray-950 text-gray-200`};
         letter-spacing: 0.015em;

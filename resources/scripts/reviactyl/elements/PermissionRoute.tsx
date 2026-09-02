@@ -6,11 +6,11 @@ import { usePermissions } from '@/plugins/usePermissions';
 interface Props {
     children?: ReactNode;
 
-    permission?: string | string[];
+    permission?: string | string[] | null;
 }
 
 function PermissionRoute({ children, permission }: Props) {
-    if (permission === undefined) {
+    if (permission === undefined || permission === null) {
         return <>{children}</>;
     }
 

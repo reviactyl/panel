@@ -29,5 +29,6 @@ return [
         'info-1' => 'Reinstalar seu servidor irá desligá-lo e então executar novamente o script de instalação que o configurou inicialmente.',
         'info-2' => 'Alguns arquivos podem ser deletados ou modificados durante este processo. Por favor, faça backup dos seus dados antes de continuar.',
         'button' => 'Reinstalar Servidor',
+        'disabled' => 'A reinstalação não está disponível porque este servidor está configurado para ignorar o script de instalação do seu egg.',
     ],
 ];

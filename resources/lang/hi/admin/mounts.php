@@ -28,7 +28,7 @@ return [
     ],
 
     'columns' => [
-        'id' => 'ID',
+        'id' => 'आईडी',
         'name' => 'नाम',
         'source' => 'स्रोत',
         'target' => 'लक्ष्य',

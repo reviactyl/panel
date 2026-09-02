@@ -14,6 +14,7 @@ return [
     'sponsor-btn' => 'Projeye Sponsor Ol',
 
     'help-btn' => 'Yardım Al',
+    'update-btn' => 'Güncelleme Paneli',
     'docs-btn' => 'Dokümantasyon',
     'metrics-header' => 'Kullanıcı Etkinlik Metrikleri',
     'most-active-country' => 'En Aktif Ülke',
@@ -21,4 +22,13 @@ return [
     'no_activity' => 'Görüntülenecek son etkinlik bulunmuyor.',
     'activity-header' => 'Son Etkinlik',
     'more-btn' => 'Daha Fazlasını Görüntüle',
+    'dashboard' => [
+        'total_users' => 'Toplam Kullanıcı',
+        'new_users' => 'Yeni kullanıcılar: :count',
+        'total_servers' => 'Toplam Sunucu',
+        'new_servers' => 'Yeni sunucular: :count',
+        'developmental_build' => 'Geliştirme Derlemesi',
+        'up_to_date' => 'Güncel',
+        'outdated_build' => 'Eski Derleme',
+    ],
 ];

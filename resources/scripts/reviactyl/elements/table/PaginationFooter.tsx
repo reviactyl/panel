@@ -1,6 +1,6 @@
 import { PaginationDataSet } from '@/api/http';
 import classNames from 'classnames';
-import { Button } from '@/reviactyl/elements/button/index';
+import { Button } from '@/reviactyl/components/button/index';
 import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon } from '@heroicons/react/solid';
 
 interface Props {
@@ -38,12 +38,12 @@ const PaginationFooter = ({ pagination, className, onPageSelect }: Props) => {
 
     return (
         <div className={classNames('flex items-center justify-between my-2', className)}>
-            <p className={'text-sm text-gray-600'}>
+            <p className={'text-sm text-muted'}>
                 Showing&nbsp;
-                <span className={'font-semibold text-gray-400'}>{Math.max(start, Math.min(pagination.total, 1))}</span>
+                <span className={'font-semibold'}>{Math.max(start, Math.min(pagination.total, 1))}</span>
                 &nbsp;to&nbsp;
-                <span className={'font-semibold text-gray-400'}>{end}</span> of&nbsp;
-                <span className={'font-semibold text-gray-400'}>{pagination.total}</span> results.
+                <span className={'font-semibold'}>{end}</span> of&nbsp;
+                <span className={'font-semibold'}>{pagination.total}</span> results.
             </p>
             {pagination.totalPages > 1 && (
                 <div className={'flex space-x-1'}>

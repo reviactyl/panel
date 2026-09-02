@@ -12,6 +12,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class ServersTable
 {
@@ -56,7 +57,7 @@ class ServersTable
                         $email = strtolower(trim($record->user->email ?? ''));
                         $hash = md5($email);
                         $avatar = $record->user->getFilamentAvatarUrl();
-                        $name = $record->user->name_first.' '.$record->user->name_last;
+                        $name = e($record->user->name_first.' '.$record->user->name_last);
 
                         return "
                             <div style='display:flex;align-items:center;gap:8px'>
@@ -65,8 +66,20 @@ class ServersTable
                             </div>
                         ";
                     })
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHas('user', function (Builder $query) use ($search): void {
+                            $query->where('username', 'like', "%{$search}%")
+                                ->orWhere('email', 'like', "%{$search}%")
+                                ->orWhere('name_first', 'like', "%{$search}%")
+                                ->orWhere('name_last', 'like', "%{$search}%");
+                        });
+                    })
+                    ->sortable(query: function (Builder $query, string $direction): Builder {
+                        return $query
+                            ->leftJoin('users', 'users.id', '=', 'servers.owner_id')
+                            ->orderBy('users.username', $direction)
+                            ->select('servers.*');
+                    }),
 
                 TextColumn::make('node.name')
                     ->label(trans('admin/server.table.node'))

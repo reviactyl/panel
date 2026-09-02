@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'disable_upload' => env('DISABLE_EXTENSION_UPLOAD', false),
+
     'storage' => [
         'public_path' => public_path('extensions'),
         'public_fs_path' => storage_path('extensions'),

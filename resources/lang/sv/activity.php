@@ -13,6 +13,9 @@ return [
         'using-api-key' => 'Använder API-nyckel',
         'using-sftp' => 'Använder SFTP',
     ],
+    'event' => [
+        'password-reset' => 'Password reset',
+    ],
     'auth' => [
         'fail' => 'Misslyckad inloggning',
         'success' => 'Inloggad',
@@ -27,10 +30,15 @@ return [
         ],
     ],
     'user' => [
+        'user' => [
+            'create' => 'Skapade en ny användare: e-postadress',
+        ],
         'account' => [
             'email-changed' => 'Ändrade e-post från :old till :new',
             'password-changed' => 'Ändrade lösenord',
             'language-changed' => 'Ändrade språk från :old till :new',
+            'file-editor-changed' => 'Changed file editor from :old to :new',
+            'avatar-changed' => 'Changed avatar style from :old to :new',
         ],
         'api-key' => [
             'create' => 'Skapade ny API-nyckel :identifier',
@@ -123,6 +131,7 @@ return [
         'settings' => [
             'rename' => 'Döpte om servern från :old till :new',
             'description' => 'Ändrade serverbeskrivningen från :old till :new',
+            'category' => 'Changed server category',
         ],
         'startup' => [
             'edit' => 'Ändrade variabeln :variable från ":old" till ":new"',

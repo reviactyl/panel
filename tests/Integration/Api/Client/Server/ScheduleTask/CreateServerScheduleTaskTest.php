@@ -113,6 +113,65 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
             ->assertJsonPath('errors.0.detail', 'A backup task cannot be created when the server\'s backup limit is set to 0.');
     }
 
+    #[DataProvider('missingActionPermissionDataProvider')]
+    public function test_task_cannot_be_created_without_action_permission(string $action, ?string $payload)
+    {
+        [$user, $server] = $this->generateTestAccount([Permission::ACTION_SCHEDULE_UPDATE]);
+        $server->forceFill(['backup_limit' => 1])->save();
+
+        /** @var Schedule $schedule */
+        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
+
+        $this->actingAs($user)->postJson($this->link($schedule, '/tasks'), [
+            'action' => $action,
+            'payload' => $payload,
+            'time_offset' => 0,
+        ])->assertForbidden();
+    }
+
+    #[DataProvider('actionPermissionDataProvider')]
+    public function test_task_can_be_created_with_action_permission(string $action, ?string $payload, string $permission)
+    {
+        [$user, $server] = $this->generateTestAccount([Permission::ACTION_SCHEDULE_UPDATE, $permission]);
+        $server->forceFill(['backup_limit' => 1])->save();
+
+        /** @var Schedule $schedule */
+        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
+
+        $response = $this->actingAs($user)->postJson($this->link($schedule, '/tasks'), [
+            'action' => $action,
+            'payload' => $payload,
+            'time_offset' => 0,
+        ]);
+
+        $response->assertOk();
+        $this->assertDatabaseHas('tasks', [
+            'schedule_id' => $schedule->id,
+            'action' => $action,
+            'payload' => $payload ?? '',
+        ]);
+    }
+
+    public function test_power_task_requires_valid_payload()
+    {
+        [$user, $server] = $this->generateTestAccount([
+            Permission::ACTION_SCHEDULE_UPDATE,
+            Permission::ACTION_CONTROL_START,
+        ]);
+
+        /** @var Schedule $schedule */
+        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
+
+        $this->actingAs($user)->postJson($this->link($schedule, '/tasks'), [
+            'action' => 'power',
+            'payload' => 'invalid',
+            'time_offset' => 0,
+        ])
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonPath('errors.0.meta.rule', 'in')
+            ->assertJsonPath('errors.0.meta.source_field', 'payload');
+    }
+
     /**
      * Test that an error is returned if the user attempts to create an additional task that
      * would put the schedule over the task limit.
@@ -172,6 +231,30 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
 
     public static function permissionsDataProvider(): array
     {
-        return [[[]], [[Permission::ACTION_SCHEDULE_UPDATE]]];
+        return [[[]], [[Permission::ACTION_SCHEDULE_UPDATE, Permission::ACTION_CONTROL_CONSOLE]]];
+    }
+
+    public static function missingActionPermissionDataProvider(): array
+    {
+        return [
+            ['command', 'say Test'],
+            ['power', 'start'],
+            ['power', 'stop'],
+            ['power', 'restart'],
+            ['power', 'kill'],
+            ['backup', null],
+        ];
+    }
+
+    public static function actionPermissionDataProvider(): array
+    {
+        return [
+            ['command', 'say Test', Permission::ACTION_CONTROL_CONSOLE],
+            ['power', 'start', Permission::ACTION_CONTROL_START],
+            ['power', 'stop', Permission::ACTION_CONTROL_STOP],
+            ['power', 'restart', Permission::ACTION_CONTROL_RESTART],
+            ['power', 'kill', Permission::ACTION_CONTROL_STOP],
+            ['backup', null, Permission::ACTION_BACKUP_CREATE],
+        ];
     }
 }

@@ -1,57 +1,60 @@
-import { useMemo } from 'react';
 import { useStoreState } from 'easy-peasy';
 import Md5 from 'md5';
-import { createAvatar } from '@dicebear/core';
-import { initials, thumbs, identicon, rings } from '@dicebear/collection';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     email?: string;
+    uuid?: string;
+    src?: string;
+    avatarStyle?: string;
+    avatarAnimated?: boolean;
     className?: string;
 }
 
-const avatarStyles: Record<string, any> = {
-    initials,
-    identicon,
-    thumbs,
-    rings,
-    gravatar: null,
+export const AVATAR_STYLES = ['gravatar', 'initials', 'identicon', 'loops', 'waves', 'critters', 'pixelbot', 'thumbs'];
+export const ANIMATED_AVATAR_STYLES = ['loops', 'waves', 'critters', 'pixelbot', 'thumbs'];
+
+export const avatarUrl = ({
+    email,
+    uuid,
+    avatarStyle = 'gravatar',
+    avatarAnimated = true,
+}: Omit<Props, 'className' | 'src'>): string => {
+    const style = AVATAR_STYLES.includes(avatarStyle) ? avatarStyle : 'gravatar';
+
+    if (style === 'gravatar') {
+        const hash =
+            email === 'system'
+                ? '00000000000000000000000000000000'
+                : Md5(
+                      String(email || 'system@localhost')
+                          .trim()
+                          .toLowerCase()
+                  );
+
+        return `https://www.gravatar.com/avatar/${hash}?s=200`;
+    }
+
+    const params = new URLSearchParams({ seed: uuid || 'system' });
+
+    if (avatarAnimated && ANIMATED_AVATAR_STYLES.includes(style)) {
+        params.set('animationVariant', 'medium');
+    }
+
+    return `https://api.dicebear.com/10.x/${style}/svg?${params.toString()}`;
 };
 
-export default ({ email, className }: Props) => {
-    const useremail = useStoreState((state) => state.user.data?.email);
-    const nameFirst = useStoreState((state) => state.user.data?.name_first);
-    const nameLast = useStoreState((state) => state.user.data?.name_last);
-    const avatarType = useStoreState((state) => state.designify.data?.avatarType) || 'gravatar';
+export default ({ email, uuid, src, avatarStyle, avatarAnimated, className }: Props) => {
+    const { t } = useTranslation('strings');
+    const currentUser = useStoreState((state) => state.user.data);
+    const image =
+        src ||
+        avatarUrl({
+            email: email || currentUser?.email,
+            uuid: uuid || currentUser?.uuid,
+            avatarStyle: avatarStyle || currentUser?.avatarStyle,
+            avatarAnimated: avatarAnimated ?? currentUser?.avatarAnimated,
+        });
 
-    // Use provided email, fallback to current user email, or system default
-    const emailToUse = email || useremail || 'system@localhost';
-
-    // For gravatar users, use a consistent hash
-    const gravatarHash = email === 'system' ? '00000000000000000000000000000000' : Md5(String(emailToUse));
-
-    // For dicebear avatars, use a seed based on the user nameFirst and nameLast
-    const seed = `${nameFirst ?? ''} ${nameLast ?? ''}`;
-
-    const avatarStyle = avatarStyles[avatarType] || initials;
-
-    const avatar = useMemo(() => {
-        return createAvatar(avatarStyle, {
-            seed,
-            size: 128,
-        }).toDataUri();
-    }, [seed]);
-
-    return (
-        <>
-            {avatarType === 'gravatar' ? (
-                <img
-                    src={`https://www.gravatar.com/avatar/${gravatarHash}?s=200`}
-                    className={`${className} rounded-full`}
-                    alt='Avatar'
-                />
-            ) : (
-                <img src={avatar} className={`${className} rounded-full`} alt='Avatar' />
-            )}
-        </>
-    );
+    return <img src={image} className={`${className || ''} rounded-full`} alt={t('avatar')} />;
 };

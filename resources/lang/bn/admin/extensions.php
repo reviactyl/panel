@@ -4,15 +4,20 @@ return [
 
     'label' => 'এক্সটেনশন',
     'plural-label' => 'এক্সটেনশনসমূহ',
+    'marketplace_heading' => 'উপলব্ধ এক্সটেনশনসমূহ',
 
     'columns' => [
+        'icon' => 'আইকন',
         'id' => 'আইডি',
         'name' => 'নাম',
         'version' => 'ভার্সন',
         'author' => 'লেখক',
         'enabled' => 'সক্রিয়',
         'updated' => 'আপডেট করা হয়েছে',
-        'manifest_json' => 'Manifest JSON',
+        'last_updated' => 'সর্বশেষ আপডেট',
+        'downloads' => 'ডাউনলোডসমূহ',
+        'manifest_json' => 'ম্যানিফেস্ট JSON',
+        'file' => 'আপলোড করার জন্য একটি .rext ফাইল নির্বাচন করুন',
     ],
 
     'modals' => [
@@ -21,6 +26,7 @@ return [
 
     'actions' => [
         'edit' => 'সম্পাদনা',
+        'view' => 'এক্সটেনশন পান',
         'upload' => 'আপলোড',
         'manifest' => 'Manifest দেখুন',
         'disable' => 'নিষ্ক্রিয় করুন',

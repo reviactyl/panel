@@ -13,6 +13,9 @@ return [
         'using-api-key' => 'Menggunakan Kunci API',
         'using-sftp' => 'Menggunakan SFTP',
     ],
+    'event' => [
+        'password-reset' => 'Password reset',
+    ],
     'auth' => [
         'fail' => 'Gagal masuk',
         'success' => 'Berhasil masuk',
@@ -27,10 +30,15 @@ return [
         ],
     ],
     'user' => [
+        'user' => [
+            'create' => 'Telah membuat pengguna baru :email',
+        ],
         'account' => [
             'email-changed' => 'Mengubah email dari :old menjadi :new',
             'password-changed' => 'Mengubah kata sandi',
             'language-changed' => 'Mengubah bahasa dari :old menjadi :new',
+            'file-editor-changed' => 'Changed file editor from :old to :new',
+            'avatar-changed' => 'Changed avatar style from :old to :new',
         ],
         'api-key' => [
             'create' => 'Membuat kunci API baru :identifier',
@@ -123,6 +131,7 @@ return [
         'settings' => [
             'rename' => 'Mengubah nama server dari :old menjadi :new',
             'description' => 'Mengubah deskripsi server dari :old menjadi :new',
+            'category' => 'Changed server category',
         ],
         'startup' => [
             'edit' => 'Mengubah variabel :variable dari ":old" menjadi ":new"',

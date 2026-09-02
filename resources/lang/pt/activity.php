@@ -13,6 +13,9 @@ return [
         'using-api-key' => 'Usando Chave de API',
         'using-sftp' => 'Usando SFTP',
     ],
+    'event' => [
+        'password-reset' => 'Password reset',
+    ],
     'auth' => [
         'fail' => 'Falha ao entrar',
         'success' => 'Entrou com sucesso',
@@ -27,10 +30,15 @@ return [
         ],
     ],
     'user' => [
+        'user' => [
+            'create' => 'Criado um novo usuário: e-mail',
+        ],
         'account' => [
             'email-changed' => 'E-mail alterado de :old para :new',
             'password-changed' => 'Senha alterada',
             'language-changed' => 'Alterou o idioma de :old para :new',
+            'file-editor-changed' => 'Changed file editor from :old to :new',
+            'avatar-changed' => 'Changed avatar style from :old to :new',
         ],
         'api-key' => [
             'create' => 'Criada nova chave de API :identifier',
@@ -123,6 +131,7 @@ return [
         'settings' => [
             'rename' => 'Servidor renomeado de :old para :new',
             'description' => 'Descrição do servidor alterada de :old para :new',
+            'category' => 'Changed server category',
         ],
         'startup' => [
             'edit' => 'Variável :variable alterada de ":old" para ":new"',

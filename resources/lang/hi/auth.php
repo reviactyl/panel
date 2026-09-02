@@ -21,10 +21,10 @@ return [
     'passkey-username-required' => 'Enter your username or email before using a passkey.',
 
     'social' => [
-        'or' => 'OR',
-        'google' => 'Google',
-        'discord' => 'Discord',
-        'github' => 'GitHub',
+        'or' => 'या',
+        'google' => 'गूगल',
+        'discord' => 'अनबन',
+        'github' => 'गिटहब',
         'not_linked' => 'यह खाता किसी भी :provider खाते से लिंक नहीं किया गया है. कृपया पहले अपने ईमेल और पासवर्ड से लॉग इन करें, फिर खाता सेटिंग पृष्ठ में अपने :provider खाते को लिंक करें।',
     ],
 
@@ -64,11 +64,12 @@ return [
         'namefirst-label' => 'पहला नाम',
         'namelast-label' => 'उपनाम',
         'email-label' => 'ईमेल',
-        'username-label' => 'उपयोक्तानाम',
+        'username-label' => 'Username',
         'password-label' => 'पासवर्ड',
         'min-length' => 'पासवर्ड कम से कम 8 अक्षर का होना चाहिए।',
         'confirm-label' => 'पासवर्ड की पुष्टि कीजिये',
         'label' => 'पंजीकरण करवाना',
+        'create-link' => 'Don\'t have an account? Create one',
         'create-account' => 'खाता बनाएं',
         'no-account' => 'Don\'t have an account?',
     ],
@@ -84,4 +85,5 @@ return [
     'throttle' => 'लॉगिन प्रयास अधिक हो गए हैं। कृपया :seconds सेकंड में पुनः प्रयास करें।',
     'password_requirements' => 'पासवर्ड कम से कम 8 अक्षरों का होना चाहिए और इस साइट के लिए अद्वितीय होना चाहिए।',
     '2fa_must_be_enabled' => 'प्रशासक ने पैनल का उपयोग करने के लिए आपके खाते पर 2-फैक्टर प्रमाणीकरण सक्षम करना अनिवार्य कर दिया है।',
+    'captcha-required' => 'Please complete the captcha challenge to continue.',
 ];

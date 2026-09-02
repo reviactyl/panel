@@ -39,7 +39,7 @@ class LanguageMiddleware
                 }
             } else {
                 $defaultLocale = $this->settings->get('settings::app:locale', $fallbackLocale);
-                $geolocateEnabled = (bool) $this->settings->get('settings::app:locale:geolocate', false);
+                $geolocateEnabled = filter_var($this->settings->get('settings::app:locale:geolocate', false), FILTER_VALIDATE_BOOLEAN);
 
                 if ($geolocateEnabled) {
                     $locale = $this->resolveGeoLocale($request, $defaultLocale);

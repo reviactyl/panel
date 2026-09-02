@@ -5,7 +5,7 @@ import { FaNetworkWired } from 'react-icons/fa6';
 import InputSpinner from '@/reviactyl/elements/InputSpinner';
 import { Textarea } from '@/reviactyl/elements/Input';
 import Can from '@/reviactyl/elements/Can';
-import { Button } from '@/reviactyl/elements/button/index';
+import { Button } from '@/reviactyl/components/button/index';
 import GreyRowBox from '@/reviactyl/elements/GreyRowBox';
 import { Allocation } from '@/api/server/getServer';
 import styled from 'styled-components';
@@ -19,6 +19,7 @@ import setPrimaryServerAllocation from '@/api/server/network/setPrimaryServerAll
 import getServerAllocations from '@/api/swr/getServerAllocations';
 import { ip } from '@/lib/formatters';
 import Code from '@/reviactyl/elements/Code';
+import { usePermissions } from '@/plugins/usePermissions';
 
 const Label = styled.label`
     ${tw`uppercase text-xs mt-1 text-gray-400 block px-1 select-none transition-colors duration-150`}
@@ -33,6 +34,7 @@ const AllocationRow = ({ allocation }: Props) => {
     const { clearFlashes, clearAndAddHttpError } = useFlashKey('server:network');
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const { mutate } = getServerAllocations();
+    const [canUpdate] = usePermissions(['allocation.update']);
 
     const onNotesChanged = useCallback((id: number, notes: string) => {
         mutate((data) => data?.map((a) => (a.id === id ? { ...a, notes } : a)), false);
@@ -86,6 +88,7 @@ const AllocationRow = ({ allocation }: Props) => {
                     <Textarea
                         placeholder={'Notes'}
                         defaultValue={allocation.notes || undefined}
+                        disabled={!canUpdate}
                         onChange={(e) => setAllocationNotes(e.currentTarget.value)}
                     />
                 </InputSpinner>

@@ -39,6 +39,7 @@ return [
         'restoring-backup' => 'Backup wird wiederhergestellt',
         'unavailable' => 'Nicht verfügbar',
         'unlimited' => 'Unbegrenzt',
+        'maintenance' => 'Unter Wartung',
     ],
     'status-card' => [
         'title' => 'Serverstatus',

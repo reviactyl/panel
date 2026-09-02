@@ -61,6 +61,14 @@ return [
         'swap_free' => 'Frei',
         'swap_usage' => 'Auslastung',
 
+        'partitions_section' => 'Festplattenpartitionen',
+        'partitions_none' => 'Es sind keine Partitionsdaten verfügbar.',
+        'partitions_device' => 'Gerät',
+        'partitions_mountpoint' => 'Einhängepunkt',
+        'partitions_filesystem' => 'Dateisystem',
+        'partitions_size' => 'Größe',
+        'partitions_usage' => 'Auslastung',
+
         'network_section' => 'Netzwerk',
         'bytes_sent' => 'Bytes gesendet',
         'bytes_recv' => 'Bytes empfangen',

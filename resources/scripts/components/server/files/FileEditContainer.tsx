@@ -3,6 +3,7 @@ import getFileContents from '@/api/server/files/getFileContents';
 import { httpErrorToHuman } from '@/api/http';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import saveFileContents from '@/api/server/files/saveFileContents';
+import updateFileContents from '@/api/server/files/updateFileContents';
 import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcrumbs';
 import { useLocation, useNavigate } from 'react-router-dom';
 import FileNameModal from '@/components/server/files/FileNameModal';
@@ -83,7 +84,9 @@ export default () => {
         setLoading(true);
         clearFlashes('files:view');
         fetchFileContent()
-            .then((content) => saveFileContents(uuid, name || hashToPath(hash), content))
+            .then((content) =>
+                name ? saveFileContents(uuid, name, content) : updateFileContents(uuid, hashToPath(hash), content)
+            )
             .then(() => {
                 if (name) {
                     navigate(`/server/${id}/files/edit#/${encodePathSegments(name)}`);

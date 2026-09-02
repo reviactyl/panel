@@ -21,6 +21,7 @@ return [
     'search' => 'Tìm kiếm',
     'suspended' => 'Cấm',
     'account' => 'Tài khoản',
+    'avatar' => 'Avatar',
     'security' => 'Bảo vệ',
     'ip' => 'IP Address',
     'last_activity' => 'Hoạt động cuối cùng',

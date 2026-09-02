@@ -24,6 +24,7 @@ import { useExtensionRoutes } from '@/extensions/useExtensionRoutes';
 import { useExtensions } from '@/extensions/useExtensions';
 import { resolveExtensionIcon } from '@/extensions/iconResolver';
 import PasskeysContainer from '@/components/dashboard/PasskeysContainer';
+import { useSubuserPreview } from '@/context/SubuserPreviewContext';
 
 interface Props {
     route: any;
@@ -48,6 +49,7 @@ const DashboardNavigation = () => {
     const { t } = useTranslation('routes');
     const customSidebarButtons = useStoreState((state) => state.designify.data?.sidebarButtons ?? []);
     const { data: extensionData } = useExtensions();
+    const { session } = useSubuserPreview();
 
     const dashboardExtensionRoutes = (Array.isArray(extensionData) ? extensionData : []).flatMap((extension) =>
         (extension.frontend?.routes?.dashboardRouter ?? [])
@@ -82,17 +84,19 @@ const DashboardNavigation = () => {
                     </Navigate>
                 </div>
 
-                <div className='mt-2'>
-                    <span className='label'>{t('account.overview')}</span>
-                    {routes.account
-                        .filter((route) => !!route.name)
-                        .map((route) => (
-                            <NavItem key={route.name} route={route} />
-                        ))}
-                </div>
+                {!session && (
+                    <div className='mt-2'>
+                        <span className='label'>{t('account.overview')}</span>
+                        {routes.account
+                            .filter((route) => !!route.name)
+                            .map((route) => (
+                                <NavItem key={route.name} route={route} />
+                            ))}
+                    </div>
+                )}
             </div>
 
-            {normalizedSidebarButtons.length > 0 && (
+            {!session && normalizedSidebarButtons.length > 0 && (
                 <div className='mt-2'>
                     <span className='label'>{t('sidebar.more')}</span>
                     {normalizedSidebarButtons.map((button, index) => (
@@ -111,7 +115,7 @@ const DashboardNavigation = () => {
                 </div>
             )}
 
-            {dashboardExtensionRoutes.length > 0 && (
+            {!session && dashboardExtensionRoutes.length > 0 && (
                 <div className='mt-2'>
                     <span className='label'>{t('sidebar.extensions')}</span>
                     {dashboardExtensionRoutes.map((route) => (
@@ -132,11 +136,20 @@ const DashboardNavigation = () => {
     );
 };
 
+/**
+ * Renders the dashboard layout and routes.
+ *
+ * Displays the maintenance screen when maintenance is active unless a root administrator is viewing the account normally. Restricts account, passkey, and extension navigation during subuser preview sessions.
+ *
+ * @returns The dashboard interface or maintenance screen.
+ */
 function DashboardRouter() {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const isUnderMaintenance = useStoreState((state) => state.designify.data?.isUnderMaintenance);
-    const rootAdmin = useStoreState((state) => state.user.data?.rootAdmin);
+    const accountRootAdmin = useStoreState((state) => state.user.data?.rootAdmin);
     const injectedRoutes = useExtensionRoutes('dashboardRouter');
+    const { session } = useSubuserPreview();
+    const rootAdmin = accountRootAdmin && !session;
 
     return (
         <>
@@ -177,24 +190,28 @@ function DashboardRouter() {
                                         path: '',
                                         element: (
                                             <>
-                                                <ExtensionSlot name='dashboard:router:above' />
+                                                {!session && <ExtensionSlot name='dashboard:router:above' />}
                                                 <Announcement />
                                                 <MaintenanceAlert />
-                                                <QuickLinks />
+                                                {!session && <QuickLinks />}
                                                 <DashboardContainer />
-                                                <ExtensionSlot name='dashboard:router:below' />
+                                                {!session && <ExtensionSlot name='dashboard:router:below' />}
                                             </>
                                         ),
                                     },
-                                    ...routes.account.map(({ route, component: Component }) => ({
+                                    ...(!session ? routes.account : []).map(({ route, component: Component }) => ({
                                         path: `/account/${route}`.replace('//', '/'),
                                         element: <Component />,
                                     })),
-                                    {
-                                        path: '/passkey/*',
-                                        element: <PasskeysContainer />,
-                                    },
-                                    ...injectedRoutes,
+                                    ...(!session
+                                        ? [
+                                              {
+                                                  path: '/passkey/*',
+                                                  element: <PasskeysContainer />,
+                                              },
+                                          ]
+                                        : []),
+                                    ...(!session ? injectedRoutes : []),
                                     { path: '*', element: <NotFound /> },
                                 ])}
                             </Suspense>

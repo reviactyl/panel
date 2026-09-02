@@ -313,6 +313,19 @@ class Server extends Model implements Identifiable
     }
 
     /**
+     * A server that skips its egg's install script gains nothing from a reinstall. The one
+     * exception is a server sitting in a failed state, where that report is the way back out.
+     */
+    public function canBeReinstalled(): bool
+    {
+        return ! $this->skip_scripts || in_array($this->status, [
+            self::STATUS_INSTALLING,
+            self::STATUS_INSTALL_FAILED,
+            self::STATUS_REINSTALL_FAILED,
+        ], true);
+    }
+
+    /**
      * Gets the user who owns the server.
      *
      * @return BelongsTo<User, $this>
@@ -323,11 +336,11 @@ class Server extends Model implements Identifiable
     }
 
     /**
-     * @return BelongsTo<ServerCategory, $this>
+     * @return HasMany<ServerCategoryAssignment, $this>
      */
-    public function category(): BelongsTo
+    public function categoryAssignments(): HasMany
     {
-        return $this->belongsTo(ServerCategory::class, 'category_id');
+        return $this->hasMany(ServerCategoryAssignment::class);
     }
 
     /**

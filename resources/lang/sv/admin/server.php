@@ -315,6 +315,7 @@ return [
         'bad_variable' => 'Det uppstod ett valideringsfel med variabeln :name.',
         'daemon_exception' => 'Ett undantag uppstod när systemet försökte kommunicera med daemonen vilket resulterade i en HTTP/:code svarskod. Detta undantag har loggats. (förfrågnings-id: :request_id)',
         'default_allocation_not_found' => 'Den begärda standardallokeringen hittades inte i denna servers allokeringar.',
+        'skipping_install_script' => 'Den här servern är konfigurerad så att installationsskriptet för dess ”egg” hoppas över. Det går inte att göra en ominstallation förrän den inställningen inaktiveras.',
     ],
 
     'alerts' => [

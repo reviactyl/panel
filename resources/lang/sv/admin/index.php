@@ -14,6 +14,7 @@ return [
     'sponsor-btn' => 'Sponsra projekt',
 
     'help-btn' => 'Få hjälp',
+    'update-btn' => 'Uppdateringspanel',
     'docs-btn' => 'Dokumentation',
     'metrics-header' => 'Användaraktivitetsstatistik',
     'most-active-country' => 'Mest aktiva landet',
@@ -21,4 +22,13 @@ return [
     'no_activity' => 'Det finns ingen ny aktivitet att visa.',
     'activity-header' => 'Senaste aktivitet',
     'more-btn' => 'Visa mer',
+    'dashboard' => [
+        'total_users' => 'Totalt antal användare',
+        'new_users' => 'Nya användare: :count',
+        'total_servers' => 'Totalt antal servrar',
+        'new_servers' => 'Nya servrar: :count',
+        'developmental_build' => 'Utvecklingsversion',
+        'up_to_date' => 'Uppdaterad',
+        'outdated_build' => 'Föråldrad version',
+    ],
 ];

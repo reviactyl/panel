@@ -77,7 +77,9 @@ export default ({
     }, [stats?.isSuspended, server.status]);
 
     useEffect(() => {
-        if (isSuspended) return;
+        // Don't waste a HTTP request if there is nothing important to show to the user because
+        // the server is suspended or the node is under maintenance.
+        if (isSuspended || server.isNodeUnderMaintenance) return;
 
         getStats().then(() => {
             interval.current = setInterval(() => getStats(), 30000);
@@ -86,7 +88,7 @@ export default ({
         return () => {
             void (interval.current && clearInterval(interval.current));
         };
-    }, [isSuspended]);
+    }, [isSuspended, server.isNodeUnderMaintenance]);
 
     const alarms = { cpu: false, memory: false, disk: false };
     if (stats) {
@@ -164,18 +166,30 @@ export default ({
                     </div>
                 </div>
                 <div css={tw`hidden col-span-7 lg:col-span-4 sm:flex items-baseline justify-center`}>
-                    {!stats || isSuspended ? (
+                    {!stats || isSuspended || server.isNodeUnderMaintenance ? (
                         isSuspended ? (
                             <div css={tw`flex-1 text-center`}>
-                                <span css={tw`bg-red-500 rounded px-2 py-1 text-red-100 text-xs`}>
+                                <span
+                                    className={`text-danger font-medium bg-danger/20 backdrop-blur-sm border border-danger/80 rounded-ui px-2 py-1 text-xs`}
+                                >
                                     {server.status === 'suspended'
                                         ? t('server.suspended')
                                         : t('server.connection-error')}
                                 </span>
                             </div>
+                        ) : server.isNodeUnderMaintenance ? (
+                            <div css={tw`flex-1 text-center`}>
+                                <span
+                                    className={`text-yellow-400 font-medium backdrop-blur-sm bg-yellow-500/50 border border-yellow-500/70 rounded-ui px-2 py-1 text-xs`}
+                                >
+                                    {t('server.maintenance')}
+                                </span>
+                            </div>
                         ) : server.isTransferring || server.status ? (
                             <div css={tw`flex-1 text-center`}>
-                                <span css={tw`bg-gray-600 rounded-ui px-2 py-1 text-gray-100 text-xs`}>
+                                <span
+                                    className={`text-yellow-400 font-medium backdrop-blur-sm bg-gray-600/50 border border-gray-500/70 rounded-ui px-2 py-1 text-xs`}
+                                >
                                     {server.isTransferring
                                         ? t('server.transferring')
                                         : server.status === 'installing'

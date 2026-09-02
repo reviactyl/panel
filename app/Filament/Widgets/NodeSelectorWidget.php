@@ -5,6 +5,7 @@ namespace App\Filament\Widgets;
 use App\Models\Node;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Schema;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
 
 class NodeSelectorWidget extends BaseWidget
@@ -39,6 +40,12 @@ class NodeSelectorWidget extends BaseWidget
         $this->dispatch('nodeChanged', nodeId: $this->nodeId);
     }
 
+    #[On('nodeInvalid')]
+    public function invalidateNode(): void
+    {
+        $this->nodeId = null;
+    }
+
     public function form(Schema $schema): Schema
     {
         return $schema->components([
@@ -46,8 +53,7 @@ class NodeSelectorWidget extends BaseWidget
                 ->label(trans('admin/monitoring.selector.label'))
                 ->placeholder(trans('admin/monitoring.selector.placeholder'))
                 ->options(Node::query()->orderBy('name')->pluck('name', 'id'))
-                ->live()
-                ->afterStateUpdated(fn ($state) => $this->dispatch('nodeChanged', nodeId: $state)),
+                ->live(),
         ]);
     }
 }

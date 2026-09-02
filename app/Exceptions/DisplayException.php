@@ -52,7 +52,7 @@ class DisplayException extends PanelException implements HttpExceptionInterface
      */
     public function render(Request $request): JsonResponse|RedirectResponse
     {
-        if ($request->expectsJson()) {
+        if ($request->expectsJson() || $request->is('api/*')) {
             return response()->json(Handler::toArray($this), $this->getStatusCode(), $this->getHeaders());
         }
 

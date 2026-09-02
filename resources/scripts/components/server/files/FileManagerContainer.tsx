@@ -43,41 +43,8 @@ import {
     FaArrowUpShortWide,
     FaFileCirclePlus,
 } from 'react-icons/fa6';
-import { Button } from '@/reviactyl/elements/button';
-
-type SortType = 'name' | 'size' | 'date';
-type SortDirection = 'asc' | 'desc';
-
-const sortFiles = (
-    files: FileObject[],
-    sortType: SortType = 'name',
-    sortDirection: SortDirection = 'asc'
-): FileObject[] => {
-    const sorted = [...files];
-
-    sorted.sort((a, b) => (a.isFile === b.isFile ? 0 : a.isFile ? 1 : -1));
-
-    const multiplier = sortDirection === 'asc' ? 1 : -1;
-
-    if (sortType === 'name') {
-        sorted.sort((a, b) => a.name.localeCompare(b.name) * multiplier);
-    } else if (sortType === 'size') {
-        sorted.sort((a, b) => {
-            if (a.isFile && b.isFile) {
-                return (a.size - b.size) * multiplier;
-            }
-            return 0;
-        });
-    } else if (sortType === 'date') {
-        sorted.sort((a, b) => {
-            const timeA = a.modifiedAt.getTime();
-            const timeB = b.modifiedAt.getTime();
-            return (timeA - timeB) * multiplier;
-        });
-    }
-
-    return sorted.filter((file, index) => index === 0 || file.name !== sorted[index - 1]?.name);
-};
+import { Button } from '@/reviactyl/components/button';
+import { sortFiles, SortDirection, SortType } from '@/components/server/files/sortFiles';
 
 type SearchResult = FileObject & { fullPath: string };
 
@@ -92,7 +59,7 @@ const RecursiveFileRow = ({ file, serverId }: { file: SearchResult; serverId: st
             <NavLink to={to} className='flex-1 text-sm text-gray-200 truncate hover:text-primary-400 min-w-0'>
                 {file.fullPath}
             </NavLink>
-            {file.isFile && <span className='text-xs text-gray-600 ml-3 flex-none'>{bytesToString(file.size)}</span>}
+            {file.isFile && <span className='text-xs text-muted ml-3 flex-none'>{bytesToString(file.size)}</span>}
         </div>
     );
 };
@@ -266,14 +233,10 @@ export default () => {
                                         <FaFileCirclePlus className='h-5 w-5' />
                                     </Button.Text>
                                 </Tooltip>
-                                {selectedFilesLength > 0 && (
-                                    <>
-                                        <MassActionsBar />
-                                    </>
-                                )}
                                 <ExtensionSlot name={`server:files:actions:end`} />
                             </div>
                         </Can>
+                        {selectedFilesLength > 0 && <MassActionsBar />}
                         <div className='order-2 md:order-none md:ml-auto flex items-center gap-1 w-full md:w-auto'>
                             <Input
                                 ref={searchInputRef}
@@ -385,7 +348,7 @@ export default () => {
                         isSearching && recursiveResults.length === 0 ? (
                             <Spinner size={'base'} centered />
                         ) : recursiveResults.length === 0 ? (
-                            <div className={'flex flex-col items-center justify-center py-10 text-gray-600'}>
+                            <div className={'flex flex-col items-center justify-center py-10 text-muted'}>
                                 <SearchIcon className={'w-10 h-10 mb-2 opacity-40'} />
                                 <p className={'text-sm'}>{t('no-results')}</p>
                             </div>
@@ -395,16 +358,14 @@ export default () => {
                                 animate={{ opacity: 1 }}
                                 transition={{ duration: 0.15, ease: 'easeIn' }}
                             >
-                                {isSearching && (
-                                    <p css={tw`text-xs text-gray-600 text-center mb-2`}>{t('searching')}</p>
-                                )}
+                                {isSearching && <p css={tw`text-xs text-muted text-center mb-2`}>{t('searching')}</p>}
                                 {recursiveResults.map((file) => (
                                     <RecursiveFileRow key={file.fullPath} file={file} serverId={id} />
                                 ))}
                             </motion.div>
                         )
                     ) : !filteredFiles.length ? (
-                        <div className={'flex flex-col items-center justify-center py-10 text-gray-600'}>
+                        <div className={'flex flex-col items-center justify-center py-10 text-muted'}>
                             <FolderOpenIcon className={'w-12 h-12 mb-2 opacity-40'} />
                             <p className={'text-sm'}>{t('empty')}</p>
                         </div>

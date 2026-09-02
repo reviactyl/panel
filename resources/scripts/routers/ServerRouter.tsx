@@ -29,6 +29,7 @@ import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 import { useExtensionRoutes } from '@/extensions/useExtensionRoutes';
 import { useExtensions } from '@/extensions/useExtensions';
 import { resolveExtensionIcon } from '@/extensions/iconResolver';
+import { useSubuserPreview } from '@/context/SubuserPreviewContext';
 
 interface NavItemProps {
     route: any;
@@ -72,6 +73,7 @@ const ServerNavigation = () => {
     const serverEggId = ServerContext.useStoreState((state) => state.server.data?.eggId);
     const { data: extensionData } = useExtensions();
     const customSidebarButtons = useStoreState((state) => state.designify.data?.sidebarButtons ?? []);
+    const { session } = useSubuserPreview();
     const normalizedSidebarButtons = (Array.isArray(customSidebarButtons) ? customSidebarButtons : []).filter(
         (button): button is DesignifySidebarButton =>
             typeof button?.label === 'string' &&
@@ -148,7 +150,7 @@ const ServerNavigation = () => {
                 </div>
             ))}
 
-            {serverExtensionRoutes.length > 0 && (
+            {!session && serverExtensionRoutes.length > 0 && (
                 <div>
                     <span className='label'>{tr('sidebar.extensions')}</span>
                     {serverExtensionRoutes.map((route) => {
@@ -179,7 +181,7 @@ const ServerNavigation = () => {
                 </div>
             )}
 
-            {normalizedSidebarButtons.length > 0 && (
+            {!session && normalizedSidebarButtons.length > 0 && (
                 <div>
                     <span className='label'>{tr('sidebar.more')}</span>
                     {normalizedSidebarButtons.map((button, index) => (
@@ -201,12 +203,17 @@ const ServerNavigation = () => {
     );
 };
 
+/**
+ * Renders the server interface, including navigation, server pages, and route-aware content.
+ */
 export default function ServerRouter() {
     const params = useParams<{ id: string }>();
     const location = useLocation();
 
     const isUnderMaintenance = useStoreState((state) => state.designify.data?.isUnderMaintenance);
-    const rootAdmin = useStoreState((state) => state.user.data?.rootAdmin);
+    const accountRootAdmin = useStoreState((state) => state.user.data?.rootAdmin);
+    const { session } = useSubuserPreview();
+    const rootAdmin = accountRootAdmin && !session;
 
     const [error, setError] = useState('');
     const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -302,13 +309,15 @@ export default function ServerRouter() {
                                     ) : (
                                         <ErrorBoundary>
                                             <TopServerDetails />
-                                            <ExtensionSlot
-                                                name='server:router:above'
-                                                context={{
-                                                    eggId: serverEggId,
-                                                    nestId: serverNestId,
-                                                }}
-                                            />
+                                            {!session && (
+                                                <ExtensionSlot
+                                                    name='server:router:above'
+                                                    context={{
+                                                        eggId: serverEggId,
+                                                        nestId: serverNestId,
+                                                    }}
+                                                />
+                                            )}
                                             <Announcement />
                                             <MaintenanceAlert />
 
@@ -329,28 +338,31 @@ export default function ServerRouter() {
                                                         />
                                                     ))}
 
-                                                {injectedRoutes.map(({ path, element, permission }) => (
-                                                    <Route
-                                                        key={`extension:${path}`}
-                                                        path={path}
-                                                        element={
-                                                            <PermissionRoute permission={permission}>
-                                                                {element}
-                                                            </PermissionRoute>
-                                                        }
-                                                    />
-                                                ))}
+                                                {!session &&
+                                                    injectedRoutes.map(({ path, element, permission }) => (
+                                                        <Route
+                                                            key={`extension:${path}`}
+                                                            path={path}
+                                                            element={
+                                                                <PermissionRoute key={path} permission={permission}>
+                                                                    {element}
+                                                                </PermissionRoute>
+                                                            }
+                                                        />
+                                                    ))}
 
                                                 <Route path='*' element={<NotFound />} />
                                             </Routes>
 
-                                            <ExtensionSlot
-                                                name='server:router:below'
-                                                context={{
-                                                    eggId: serverEggId,
-                                                    nestId: serverNestId,
-                                                }}
-                                            />
+                                            {!session && (
+                                                <ExtensionSlot
+                                                    name='server:router:below'
+                                                    context={{
+                                                        eggId: serverEggId,
+                                                        nestId: serverNestId,
+                                                    }}
+                                                />
+                                            )}
                                         </ErrorBoundary>
                                     )}
                                 </div>

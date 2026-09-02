@@ -7,7 +7,7 @@ import deleteServerAllocation from '@/api/server/network/deleteServerAllocation'
 import getServerAllocations from '@/api/swr/getServerAllocations';
 import { useFlashKey } from '@/plugins/useFlash';
 import { Dialog } from '@/reviactyl/elements/dialog';
-import { Button } from '@/reviactyl/elements/button/index';
+import { Button } from '@/reviactyl/components/button/index';
 import { useTranslation } from 'react-i18next';
 
 interface Props {

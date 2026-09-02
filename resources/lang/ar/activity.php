@@ -13,6 +13,9 @@ return [
         'using-api-key' => 'باستخدام مفتاح API',
         'using-sftp' => 'باستخدام SFTP',
     ],
+    'event' => [
+        'password-reset' => 'Password reset',
+    ],
     'auth' => [
         'fail' => 'فشل تسجيل الدخول',
         'success' => 'تم تسجيل الدخول',
@@ -27,10 +30,15 @@ return [
         ],
     ],
     'user' => [
+        'user' => [
+            'create' => 'تم إنشاء مستخدم جديد: البريد الإلكتروني',
+        ],
         'account' => [
             'email-changed' => 'تم تغيير البريد الإلكتروني من :old إلى :new',
             'password-changed' => 'تم تغيير كلمة المرور',
             'language-changed' => 'تم تغيير اللغة من :old إلى :new',
+            'file-editor-changed' => 'Changed file editor from :old to :new',
+            'avatar-changed' => 'Changed avatar style from :old to :new',
         ],
         'api-key' => [
             'create' => 'تم إنشاء مفتاح API جديد :identifier',
@@ -123,6 +131,7 @@ return [
         'settings' => [
             'rename' => 'تمت إعادة تسمية الخادم من :old إلى :new',
             'description' => 'تم تغيير وصف الخادم من :old إلى :new',
+            'category' => 'Changed server category',
         ],
         'startup' => [
             'edit' => 'تم تغيير المتغير :variable من `:old` إلى `:new`',

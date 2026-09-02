@@ -11,9 +11,8 @@ return [
     ],
     'account' => [
         'overview' => 'ಖಾತೆಯ ಅವಲೋಕನ',
-        'api' => 'API Keys',
-        'passkeys' => 'Passkeys',
-        'ssh' => 'SSH Keys',
+        'api' => 'API ಕೀಗಳು',
+        'ssh' => 'SSH ಕೀಗಳು',
         'activity' => 'ಚಟುವಟಿಕೆ',
     ],
     'server' => [

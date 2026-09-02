@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import EditSubuserModal from '@/components/server/users/EditSubuserModal';
-import { Button } from '@/reviactyl/elements/button/index';
+import { Button } from '@/reviactyl/components/button/index';
 import { useTranslation } from 'react-i18next';
 
 export default () => {

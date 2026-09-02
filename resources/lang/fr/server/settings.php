@@ -29,5 +29,6 @@ return [
         'info-1' => 'La réinstallation de votre serveur l\'arrêtera, puis relancera le script d\'installation qui l\'a initialement configuré.',
         'info-2' => 'Certains fichiers peuvent être supprimés ou modifiés au cours de ce processus, veuillez sauvegarder vos données avant de continuer.',
         'button' => 'Réinstaller le serveur',
+        'disabled' => 'La réinstallation n\'est pas possible car ce serveur est configuré pour ignorer le script d\'installation de son « egg ».',
     ],
 ];

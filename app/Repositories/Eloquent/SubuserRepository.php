@@ -17,6 +17,17 @@ class SubuserRepository extends EloquentRepository implements SubuserRepositoryI
     }
 
     /**
+     * Create a new subuser.
+     */
+    public function create(array $fields, bool $validate = true, bool $force = false): Subuser
+    {
+        /** @var Subuser $model */
+        $model = parent::create($fields, $validate, $force);
+
+        return $model;
+    }
+
+    /**
      * Return a subuser with the associated server relationship.
      */
     public function loadServerAndUserRelations(Subuser $subuser, bool $refresh = false): Subuser

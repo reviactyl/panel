@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Servers\Schemas;
 
 use App\Contracts\Repository\AllocationRepositoryInterface;
+use App\Enum\JwtScope;
 use App\Filament\Resources\Servers\ServerResource;
 use App\Models\Allocation;
 use App\Models\Egg;
@@ -244,7 +245,7 @@ class EditServerForm
                                                     Action::make('reinstall_server')
                                                         ->label(trans('admin/server.edit.actions.reinstall_server'))
                                                         ->color('danger')
-                                                        ->disabled(fn (?Server $record): bool => ! $record?->isInstalled())
+                                                        ->disabled(fn (?Server $record): bool => ! $record?->canBeReinstalled())
                                                         ->requiresConfirmation()
                                                         ->action(fn (Server $record) => self::reinstall($record)),
                                                 ]),
@@ -629,7 +630,8 @@ class EditServerForm
                 $token = app(NodeJWTService::class)
                     ->setExpiresAt(CarbonImmutable::now()->addMinutes(15))
                     ->setSubject($server->uuid)
-                    ->handle($transfer->newNode, $server->uuid, 'sha256');
+                    ->setScopes(JwtScope::ServerTransfer)
+                    ->handle($transfer->newNode, $server->uuid);
 
                 assert($token instanceof Plain);
 

@@ -15,9 +15,9 @@ return [
 
     'social' => [
         'or' => 'অথবা',
-        'google' => 'Google',
-        'discord' => 'Discord',
-        'github' => 'GitHub',
+        'google' => 'গুগল',
+        'discord' => 'ডিসকর্ড',
+        'github' => 'গিটহাব',
         'not_linked' => 'এই অ্যাকাউন্টটি কোনো :provider অ্যাকাউন্টের সাথে সংযুক্ত নয়। অনুগ্রহ করে প্রথমে আপনার ইমেইল এবং পাসওয়ার্ড দিয়ে লগইন করুন, তারপর অ্যাকাউন্ট সেটিংস পেজ থেকে আপনার :provider অ্যাকাউন্ট সংযুক্ত করুন।',
     ],
 
@@ -57,11 +57,12 @@ return [
         'namefirst-label' => 'নামের প্রথম অংশ',
         'namelast-label' => 'নামের শেষ অংশ',
         'email-label' => 'ইমেইল',
-        'username-label' => 'ইউজারনেম',
+        'username-label' => 'Username',
         'password-label' => 'পাসওয়ার্ড',
         'min-length' => 'পাসওয়ার্ড অবশ্যই কমপক্ষে ৮ অক্ষরের হতে হবে।',
         'confirm-label' => 'পাসওয়ার্ড নিশ্চিত করুন',
         'label' => 'রেজিস্টার',
+        'create-link' => 'Don\'t have an account? Create one',
         'create-account' => 'অ্যাকাউন্ট তৈরি করুন',
     ],
 
@@ -76,4 +77,5 @@ return [
     'throttle' => 'অতিরিক্ত লগইন চেষ্টা করা হয়েছে। অনুগ্রহ করে :seconds সেকেন্ড পরে আবার চেষ্টা করুন।',
     'password_requirements' => 'পাসওয়ার্ড অবশ্যই কমপক্ষে ৮ অক্ষরের হতে হবে এবং এই সাইটের জন্য ইউনিক হওয়া উচিত।',
     '2fa_must_be_enabled' => 'প্যানেল ব্যবহার করার জন্য প্রশাসক আপনার অ্যাকাউন্টে 2-Factor Authentication সক্রিয় করা বাধ্যতামূলক করেছেন।',
+    'captcha-required' => 'Please complete the captcha challenge to continue.',
 ];

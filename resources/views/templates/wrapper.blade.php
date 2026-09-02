@@ -122,6 +122,7 @@ SOFTWARE.
             --color-800: {{ reviactyl($panelConfiguration['color800']) }};
             --color-900: {{ reviactyl($panelConfiguration['color900']) }};
             --color-950: {{ reviactyl($panelConfiguration['color950']) }};
+            --color-muted-text: {{ reviactyl($panelConfiguration['colorMutedText']) }};
         }
     </style>
 

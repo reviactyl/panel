@@ -42,7 +42,8 @@ export default ({ backup, className }: Props) => {
                             ? b
                             : {
                                   ...b,
-                                  isSuccessful: parsed.is_successful || true,
+                                  // Older Wings versions omit this field from successful completion events.
+                                  isSuccessful: parsed.is_successful ?? true,
                                   checksum: (parsed.checksum_type || '') + ':' + (parsed.checksum || ''),
                                   bytes: parsed.file_size || 0,
                                   completedAt: new Date(),
@@ -97,9 +98,12 @@ export default ({ backup, className }: Props) => {
                 <p title={format(backup.createdAt, 'ddd, MMMM do, yyyy HH:mm:ss')} css={tw`text-sm`}>
                     {formatDistanceToNow(backup.createdAt, { includeSeconds: true, addSuffix: true })}
                 </p>
-                <p css={tw`text-2xs text-gray-600 uppercase mt-1`}>{t('created')}</p>
+                <p css={tw`text-2xs text-muted uppercase mt-1`}>{t('created')}</p>
             </div>
-            <Can action={['backup.download', 'backup.restore', 'backup.delete']} matchAny>
+            <Can
+                action={backup.isSuccessful ? ['backup.download', 'backup.restore', 'backup.delete'] : 'backup.delete'}
+                matchAny={backup.isSuccessful}
+            >
                 <div css={tw`mt-4 md:mt-0 ml-6`} style={{ marginRight: '-0.5rem' }}>
                     {!backup.completedAt ? (
                         <div css={tw`p-2 invisible`}>

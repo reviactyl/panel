@@ -21,6 +21,7 @@ return [
     'search' => '搜索',
     'suspended' => '已暂停',
     'account' => '账户',
+    'avatar' => 'Avatar',
     'security' => '安全',
     'ip' => 'IP 地址',
     'last_activity' => '最后活动',

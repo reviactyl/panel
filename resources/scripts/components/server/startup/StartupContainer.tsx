@@ -16,6 +16,7 @@ import setSelectedDockerImage from '@/api/server/setSelectedDockerImage';
 import InputSpinner from '@/reviactyl/elements/InputSpinner';
 import useFlash from '@/plugins/useFlash';
 import { useTranslation } from 'react-i18next';
+import { usePermissions } from '@/plugins/usePermissions';
 
 const StartupContainer = () => {
     const { t } = useTranslation('server/startup');
@@ -23,6 +24,7 @@ const StartupContainer = () => {
     const { clearFlashes, clearAndAddHttpError } = useFlash();
 
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const [canUpdateDockerImage] = usePermissions(['startup.docker-image']);
     const variables = ServerContext.useStoreState(
         ({ server }) => ({
             variables: server.data!.variables,
@@ -99,9 +101,9 @@ const StartupContainer = () => {
                         <>
                             <InputSpinner visible={loading}>
                                 <Select
-                                    disabled={Object.keys(data.dockerImages).length < 2}
+                                    disabled={!canUpdateDockerImage || Object.keys(data.dockerImages).length < 2}
                                     onChange={updateSelectedDockerImage}
-                                    defaultValue={variables.dockerImage}
+                                    value={variables.dockerImage}
                                 >
                                     {Object.keys(data.dockerImages).map((key) => (
                                         <option key={data.dockerImages[key]} value={data.dockerImages[key]}>

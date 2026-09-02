@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Client\Servers;
 
+use App\Enum\JwtScope;
 use App\Exceptions\Http\HttpForbiddenException;
 use App\Http\Controllers\Api\Client\ClientApiController;
 use App\Http\Requests\Api\Client\ClientApiRequest;
@@ -9,6 +10,7 @@ use App\Models\Permission;
 use App\Models\Server;
 use App\Services\Nodes\NodeJWTService;
 use App\Services\Servers\GetUserPermissionsService;
+use App\Services\Subusers\SubuserPreviewContext;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
@@ -26,10 +28,9 @@ class WebsocketController extends ClientApiController
     }
 
     /**
-     * Generates a one-time token that is sent along in every websocket call to the Daemon.
-     * This is a signed JWT that the Daemon then uses to verify the user's identity, and
-     * allows us to continually renew this token and avoid users maintaining sessions wrongly,
-     * as well as ensure that user's only perform actions they're allowed to.
+     * Generates authenticated websocket connection details for a server.
+     *
+     * @return JsonResponse The websocket token and connection URL.
      */
     public function __invoke(ClientApiRequest $request, Server $server): JsonResponse
     {
@@ -39,6 +40,9 @@ class WebsocketController extends ClientApiController
         }
 
         $permissions = $this->permissionsService->handle($server, $user);
+        if ($request->attributes->has(SubuserPreviewContext::class)) {
+            $permissions = [Permission::ACTION_WEBSOCKET_CONNECT];
+        }
 
         $node = $server->node;
         if (! is_null($server->transfer)) {
@@ -60,6 +64,7 @@ class WebsocketController extends ClientApiController
                 'server_uuid' => $server->uuid,
                 'permissions' => $permissions,
             ])
+            ->setScopes(JwtScope::Websocket)
             ->handle($node, $user->id.$server->uuid);
 
         $socket = Str::replace(['https://', 'http://'], ['wss://', 'ws://'], $node->getConnectionAddress());

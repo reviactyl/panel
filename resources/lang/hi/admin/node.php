@@ -66,7 +66,7 @@ return [
         ],
         'fqdn' => [
             'label' => 'एफक्यूडीएन',
-            'placeholder' => 'node.example.com',
+            'placeholder' => 'नोड.उदाहरण.कॉम',
             'helper' => 'पूर्णतः योग्य डोमेन नाम या आईपी पता।',
         ],
         'ssl' => [
@@ -125,9 +125,9 @@ return [
 
     'table' => [
         'health' => 'स्वास्थ्य',
-        'health_http_status' => 'HTTP :status',
+        'health_http_status' => 'HTTP :स्थिति',
         'health_check_console' => 'ब्राउज़र कंसोल की जाँच करें',
-        'id' => 'ID',
+        'id' => 'आईडी',
         'uuid' => 'यूयूआईडी',
         'name' => 'नाम',
         'location' => 'जगह',
@@ -206,7 +206,7 @@ return [
         ],
         'fields' => [
             'allocation_ip' => [
-                'label' => 'IP Address',
+                'label' => 'आईपी पता',
                 'helper' => 'एकल आईपी या सीआईडीआर (जैसे 192.0.2.1 या 192.0.2.0/24) का समर्थन करता है।',
             ],
             'allocation_ports' => [

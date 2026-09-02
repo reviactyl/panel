@@ -8,6 +8,7 @@ return [
         'administrator' => 'प्रशासक',
         'admin' => 'व्यवस्थापक',
         'profile' => 'प्रोफ़ाइल',
+        'profile-picture' => 'Profile Picture',
         'logout' => 'लॉग आउट',
         'user' => 'उपयोगकर्ता',
         'update-email' => 'ईमेल पता अपडेट करें',
@@ -43,6 +44,20 @@ return [
                 'unlinked' => 'खाता सफलतापूर्वक अनलिंक किया गया.',
                 'unlink-failed' => 'खाता अनलिंक करने में विफल.',
             ],
+        ],
+    ],
+    'avatar' => [
+        'style' => 'Avatar Style',
+        'animation' => 'Animate Avatar',
+        'styles' => [
+            'gravatar' => 'Gravatar',
+            'initials' => 'Initials',
+            'identicon' => 'Identicon',
+            'loops' => 'Loops',
+            'waves' => 'Waves',
+            'critters' => 'Critters',
+            'pixelbot' => 'Pixelbot',
+            'thumbs' => 'Thumbs',
         ],
     ],
     'email' => [
@@ -135,7 +150,7 @@ return [
     'ssh' => [
         'title' => 'SSH कुंजी',
         'add-key' => 'SSH कुंजी जोड़ें',
-        'fingerprint' => 'SHA256',
+        'fingerprint' => 'एसएचए256',
         'not-exist' => 'इस खाते के लिए कोई SSH कुंजी मौजूद नहीं है।',
         'added-on' => 'जोड़ा गया दिनांक',
         'create' => [

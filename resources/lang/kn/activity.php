@@ -13,6 +13,9 @@ return [
         'using-api-key' => 'API ಕೀಯನ್ನು ಬಳಸುವುದು',
         'using-sftp' => 'SFTP ಬಳಸುವುದು',
     ],
+    'event' => [
+        'password-reset' => 'Password reset',
+    ],
     'auth' => [
         'fail' => 'ಲಾಗಿನ್ ವಿಫಲವಾಗಿದೆ',
         'success' => 'ಲಾಗಿನ್ ಮಾಡಲಾಗಿದೆ',
@@ -27,10 +30,15 @@ return [
         ],
     ],
     'user' => [
+        'user' => [
+            'create' => 'Created a new user :email',
+        ],
         'account' => [
             'email-changed' => ':old ನಿಂದ :new ಗೆ ಇಮೇಲ್ ಅನ್ನು ಬದಲಾಯಿಸಲಾಗಿದೆ',
             'password-changed' => 'ಪಾಸ್ವರ್ಡ್ ಬದಲಾಯಿಸಲಾಗಿದೆ',
             'language-changed' => ':old ನಿಂದ :new ಗೆ ಭಾಷೆಯನ್ನು ಬದಲಾಯಿಸಲಾಗಿದೆ',
+            'file-editor-changed' => 'Changed file editor from :old to :new',
+            'avatar-changed' => 'Changed avatar style from :old to :new',
         ],
         'api-key' => [
             'create' => 'ಹೊಸ API ಕೀ :identifier ಅನ್ನು ರಚಿಸಲಾಗಿದೆ',
@@ -123,6 +131,7 @@ return [
         'settings' => [
             'rename' => 'ಸರ್ವರ್ ಅನ್ನು :old ನಿಂದ :new ಗೆ ಮರುಹೆಸರಿಸಲಾಗಿದೆ',
             'description' => 'ಸರ್ವರ್ ವಿವರಣೆಯನ್ನು :old ನಿಂದ :new ಗೆ ಬದಲಾಯಿಸಲಾಗಿದೆ',
+            'category' => 'Changed server category',
         ],
         'startup' => [
             'edit' => ':variable ವೇರಿಯೇಬಲ್ ಅನ್ನು ":old" ನಿಂದ ":new" ಗೆ ಬದಲಾಯಿಸಲಾಗಿದೆ',

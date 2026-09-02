@@ -61,6 +61,14 @@ return [
         'swap_free' => 'Bebas',
         'swap_usage' => 'Penggunaan',
 
+        'partitions_section' => 'Partisi Disk',
+        'partitions_none' => 'Tidak ada data partisi yang tersedia.',
+        'partitions_device' => 'Perangkat',
+        'partitions_mountpoint' => 'Titik Pemasangan',
+        'partitions_filesystem' => 'Sistem Berkas',
+        'partitions_size' => 'Ukuran',
+        'partitions_usage' => 'Penggunaan',
+
         'network_section' => 'Jaringan',
         'bytes_sent' => 'Byte Terkirim',
         'bytes_recv' => 'Byte Diterima',

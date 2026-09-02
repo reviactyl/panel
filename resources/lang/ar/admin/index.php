@@ -14,6 +14,7 @@ return [
     'sponsor-btn' => 'رعاية المشروع',
 
     'help-btn' => 'الحصول على المساعدة',
+    'update-btn' => 'لوحة التحديث',
     'docs-btn' => 'الدليل',
     'metrics-header' => 'إحصائيات نشاط المستخدمين',
     'most-active-country' => 'الدولة الأكثر نشاطا',
@@ -21,4 +22,13 @@ return [
     'no_activity' => 'لا توجد أنشطة حديثة لعرضها.',
     'activity-header' => 'النشاط الأخير',
     'more-btn' => 'عرض المزيد',
+    'dashboard' => [
+        'total_users' => 'إجمالي المستخدمين',
+        'new_users' => 'مستخدمون جدد: :count',
+        'total_servers' => 'إجمالي الخوادم',
+        'new_servers' => 'خوادم جديدة: :count',
+        'developmental_build' => 'إصدار تطويري',
+        'up_to_date' => 'محدّث',
+        'outdated_build' => 'إصدار قديم',
+    ],
 ];

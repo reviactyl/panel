@@ -8,13 +8,19 @@ import { useStoreState } from 'easy-peasy';
 import tw from 'twin.macro';
 import GreyRowBox from '@/reviactyl/elements/GreyRowBox';
 import { useTranslation } from 'react-i18next';
+import PreviewSubuserButton from '@/components/server/users/PreviewSubuserButton';
+import { ServerContext } from '@/state/server';
+import { useSubuserPreview } from '@/context/SubuserPreviewContext';
 
 interface Props {
     subuser: Subuser;
 }
 
 export default ({ subuser }: Props) => {
-    const uuid = useStoreState((state) => state.user!.data!.uuid);
+    const accountUuid = useStoreState((state) => state.user!.data!.uuid);
+    const { session } = useSubuserPreview();
+    const uuid = session?.subuserUuid ?? accountUuid;
+    const isServerOwner = ServerContext.useStoreState((state) => state.server.data?.isOwner === true);
     const [visible, setVisible] = useState(false);
     const { t } = useTranslation('server/users');
 
@@ -37,16 +43,17 @@ export default ({ subuser }: Props) => {
                     )}
                     &nbsp;
                 </p>
-                <p css={tw`text-2xs text-gray-600 uppercase hidden md:block`}>{t('two-factor-enabled')}</p>
+                <p css={tw`text-2xs text-muted uppercase hidden md:block`}>{t('two-factor-enabled')}</p>
             </div>
             <div css={tw`ml-4 hidden md:block`}>
                 <p css={tw`font-medium text-center`}>
                     {subuser.permissions.filter((permission) => permission !== 'websocket.connect').length}
                 </p>
-                <p css={tw`text-2xs text-gray-600 uppercase`}>{t('permissions-label')}</p>
+                <p css={tw`text-2xs text-muted uppercase`}>{t('permissions-label')}</p>
             </div>
             {subuser.uuid !== uuid && (
                 <>
+                    {isServerOwner && <PreviewSubuserButton subuser={subuser} />}
                     <Can action={'user.update'}>
                         <button
                             type={'button'}

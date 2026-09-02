@@ -20,32 +20,32 @@
 $style = [
     /* Layout ------------------------------ */
 
-    'body' => 'margin: 0; padding: 0; width: 100%; background-color: ' . $panelConfiguration['color900'] . ';',
-    'email-wrapper' => 'width: 100%; margin: 0; padding: 0; background-color: ' . $panelConfiguration['color900'] . ';',
+    'body' => 'margin: 0; padding: 0; width: 100%; background-color: ' . $panelConfiguration['color950'] . ';',
+    'email-wrapper' => 'width: 100%; margin: 0; padding: 0; background-color: ' . $panelConfiguration['color950'] . ';',
 
     /* Masthead ----------------------- */
 
     'email-masthead' => 'padding: 25px 0; text-align: center;',
     'email-masthead_logo' => 'height:3rem;',
 
-    'email-body' => 'width: 100%; margin: 0; padding: 0; border-top: 1px solid ' . $panelConfiguration['color700'] . '; border-bottom: 1px solid ' . $panelConfiguration['color700'] . '; background-color: ' . $panelConfiguration['color800'] . ';',
+    'email-body' => 'width: 100%; margin: 0; padding: 0; border-top: 1px solid ' . $panelConfiguration['color800'] . '; border-bottom: 1px solid ' . $panelConfiguration['color800'] . '; background-color: ' . $panelConfiguration['color900'] . ';',
     'email-body_inner' => 'width: auto; max-width: 570px; margin: 0 auto; padding: 0;',
     'email-body_cell' => 'padding: 35px;',
 
     'email-footer' => 'width: auto; max-width: 570px; margin: 0 auto; padding: 0; text-align: center;',
-    'email-footer_cell' => 'color: #AEAEAE; padding: 35px; text-align: center;',
+    'email-footer_cell' => 'color: ' . $panelConfiguration['color300'] . '; padding: 35px; text-align: center;',
 
     /* Body ------------------------------ */
 
     'body_action' => 'width: 100%; margin: 30px auto; padding: 0; text-align: center;',
-    'body_sub' => 'margin-top: 25px; padding-top: 25px; border-top: 1px solid #141416;',
+    'body_sub' => 'margin-top: 25px; padding-top: 25px; border-top: 1px solid ' . $panelConfiguration['color800'] . ';',
 
     /* Type ------------------------------ */
 
     'anchor' => 'color: ' . $panelConfiguration['colorPrimary'] . ';',
-    'header-1' => 'margin-top: 0; color: #8282A4; font-size: 19px; font-weight: bold; text-align: left;',
-    'paragraph' => 'margin-top: 0; color: #8282A4; font-size: 16px; line-height: 1.5em;',
-    'paragraph-sub' => 'margin-top: 0; color: #74787E; font-size: 12px; line-height: 1.5em;',
+    'header-1' => 'margin-top: 0; color: ' . $panelConfiguration['color300'] . '; font-size: 19px; font-weight: bold; text-align: left;',
+    'paragraph' => 'margin-top: 0; color: ' . $panelConfiguration['color300'] . '; font-size: 16px; line-height: 1.5em;',
+    'paragraph-sub' => 'margin-top: 0; color: ' . $panelConfiguration['color500'] . '; font-size: 12px; line-height: 1.5em;',
     'paragraph-center' => 'text-align: center;',
 
     /* Buttons ------------------------------ */

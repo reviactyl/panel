@@ -39,6 +39,7 @@ return [
         'restoring-backup' => 'Memulihkan Cadangan',
         'unavailable' => 'Tidak Tersedia',
         'unlimited' => 'Tak terbatas',
+        'maintenance' => 'Sedang dalam Pemeliharaan',
     ],
     'status-card' => [
         'title' => 'Status Server',

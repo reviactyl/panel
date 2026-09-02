@@ -25,6 +25,7 @@ import { InvertToggle } from '@/reviactyl/ui/SmartInvert';
 import useFlash from '@/plugins/useFlash';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import FileEditorSwitcher from '@/reviactyl/ui/FileEditorSwitcher';
+import AvatarSelector from '@/components/dashboard/AvatarSelector';
 
 import SocialLoginsContainer from '@/components/dashboard/forms/SocialLoginsContainer';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
@@ -99,9 +100,9 @@ export default () => {
             <Container css={[tw`grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4`]}>
                 <div className={'flex flex-col gap-4'}>
                     <ExtensionSlot name='account:overview:column1:start' />
-                    <Card className='overflow-hidden'>
+                    <Card className='overflow-hidden !p-0'>
                         <SpinnerOverlay visible={isLoggingOut} />
-                        <div className='flex flex-col items-center py-8'>
+                        <div className='flex flex-col items-center px-5 py-8'>
                             <Gravatar className='w-24 h-24 mb-3 shadow-lg' />
                             <Title className='mb-1 text-2xl'>
                                 {nameFirst} {nameLast}
@@ -124,6 +125,14 @@ export default () => {
                                 </button>
                             </div>
                         </div>
+                        <div className='border-t border-gray-800'>
+                            <div className='p-3'>
+                                <Title className='text-sm'>{t('overview.profile-picture')}</Title>
+                            </div>
+                            <div className='px-3 pb-3'>
+                                <AvatarSelector />
+                            </div>
+                        </div>
                     </Card>
                     <ExtensionSlot name='account:overview:column1:middle' />
                     <TitledGreyBox title={t('overview.update-email')} showFlashes={'account:email'}>
@@ -136,6 +145,11 @@ export default () => {
                     ) : (
                         ''
                     )}
+                    <TitledGreyBox title={t('overview.customization')}>
+                        <LanguageSwitcher />
+                        <InvertToggle />
+                        <FileEditorSwitcher />
+                    </TitledGreyBox>
                     <ExtensionSlot name='account:overview:column1:end' />
                 </div>
                 <div className={'flex flex-col gap-4'}>
@@ -145,11 +159,6 @@ export default () => {
                         <UpdatePasswordForm />
                     </TitledGreyBox>
                     <ExtensionSlot name='account:overview:column2:middle' />
-                    <TitledGreyBox title={t('overview.customization')}>
-                        <LanguageSwitcher />
-                        <InvertToggle />
-                        <FileEditorSwitcher />
-                    </TitledGreyBox>
                     <TitledGreyBox title={t('overview.2fa-verification')}>
                         <ConfigureTwoFactorForm />
                     </TitledGreyBox>

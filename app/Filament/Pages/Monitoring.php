@@ -29,9 +29,7 @@ class Monitoring extends Page
     #[On('nodeChanged')]
     public function updateSelectedNode(?int $nodeId = null): void
     {
-        if ($nodeId) {
-            $this->selectedNodeId = $nodeId;
-        }
+        $this->selectedNodeId = $nodeId;
     }
 
     public static function getNavigationLabel(): string
@@ -137,12 +135,14 @@ class Monitoring extends Page
                         ->content(function () use ($data): HtmlString {
                             $cores = $data['cpu']['per_core'] ?? [];
                             if (empty($cores)) {
-                                return new HtmlString('<span class="text-gray-400">—</span>');
+                                return new HtmlString('<span class="text-gray-600 dark:text-gray-400">—</span>');
                             }
                             $items = array_map(function (int $i, float $pct): string {
-                                $color = $pct >= 80 ? 'text-danger-500' : ($pct >= 50 ? 'text-warning-500' : 'text-success-500');
+                                $color = $pct >= 80
+                                    ? 'monitoring-metric--danger'
+                                    : ($pct >= 50 ? 'monitoring-metric--warning' : 'monitoring-metric--success');
 
-                                return "<div class=\"text-xs\"><span class=\"text-gray-400\">Core {$i}</span> <span class=\"{$color} font-mono\">".number_format($pct, 1).'%</span></div>';
+                                return "<div class=\"text-xs\"><span class=\"text-gray-600 dark:text-gray-400\">Core {$i}</span> <span class=\"{$color} font-mono\">".number_format($pct, 1).'%</span></div>';
                             }, array_keys($cores), $cores);
 
                             return new HtmlString('<div class="grid grid-cols-4 gap-x-4 gap-y-1">'.implode('', $items).'</div>');
@@ -201,6 +201,72 @@ class Monitoring extends Page
                             ->content(number_format((float) ($data['memory']['swap_usage_percent'] ?? 0), 2).'%'),
                     ];
                 }),
+
+            Section::make(trans('admin/monitoring.details.partitions_section'))
+                ->icon('heroicon-o-server-stack')
+                ->schema([
+                    Placeholder::make('partitions')
+                        ->hiddenLabel()
+                        ->content(function () use ($data): HtmlString {
+                            $partitions = $data['disk']['partitions'] ?? [];
+
+                            if (empty($partitions)) {
+                                return new HtmlString('<span class="text-gray-600 dark:text-gray-400">'.e(trans('admin/monitoring.details.partitions_none')).'</span>');
+                            }
+
+                            $rows = '';
+                            foreach ($partitions as $partition) {
+                                $device = e((string) ($partition['device'] ?? '—'));
+                                $mount = e((string) ($partition['mountpoint'] ?? '—'));
+                                $filesystem = e((string) ($partition['filesystem'] ?? '—'));
+                                $used = $this->formatBytes((int) ($partition['used_bytes'] ?? 0));
+                                $total = $this->formatBytes((int) ($partition['total_bytes'] ?? 0));
+                                $pct = (float) ($partition['usage_percent'] ?? 0);
+                                $pctLabel = number_format($pct, 1).'%';
+                                $pctColor = $pct >= 80 ? '#ef4444' : ($pct >= 60 ? '#eab308' : '#22c55e');
+                                $pctWidth = min($pct, 100);
+
+                                $rows .= <<<HTML
+                                <tr class="monitoring-table__row">
+                                    <td class="monitoring-table__primary" style="padding:8px 12px;font-size:12px;font-family:monospace">{$device}</td>
+                                    <td class="monitoring-table__muted" style="padding:8px 12px;font-size:12px;font-family:monospace">{$mount}</td>
+                                    <td class="monitoring-table__info" style="padding:8px 12px;font-size:11px;font-family:monospace">{$filesystem}</td>
+                                    <td class="monitoring-table__muted" style="padding:8px 12px;font-size:12px;font-family:monospace">{$used} / {$total}</td>
+                                    <td style="padding:8px 12px;min-width:160px">
+                                        <div class="monitoring-table__muted" style="font-size:11px;font-family:monospace;margin-bottom:4px">{$pctLabel}</div>
+                                        <div class="monitoring-table__track" style="height:5px;width:100%;border-radius:9999px;overflow:hidden">
+                                            <div style="height:100%;width:{$pctWidth}%;background:{$pctColor};border-radius:9999px"></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                HTML;
+                            }
+
+                            $hDevice = e(trans('admin/monitoring.details.partitions_device'));
+                            $hMount = e(trans('admin/monitoring.details.partitions_mountpoint'));
+                            $hFs = e(trans('admin/monitoring.details.partitions_filesystem'));
+                            $hSize = e(trans('admin/monitoring.details.partitions_size'));
+                            $hUsage = e(trans('admin/monitoring.details.partitions_usage'));
+                            $thStyle = 'padding:8px 12px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em';
+
+                            return new HtmlString(<<<HTML
+                            <div style="overflow-x:auto;border-radius:8px">
+                                <table class="monitoring-table">
+                                    <thead>
+                                        <tr class="monitoring-table__row">
+                                            <th class="monitoring-table__header" style="{$thStyle}">{$hDevice}</th>
+                                            <th class="monitoring-table__header" style="{$thStyle}">{$hMount}</th>
+                                            <th class="monitoring-table__header" style="{$thStyle}">{$hFs}</th>
+                                            <th class="monitoring-table__header" style="{$thStyle}">{$hSize}</th>
+                                            <th class="monitoring-table__header" style="{$thStyle}">{$hUsage}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>{$rows}</tbody>
+                                </table>
+                            </div>
+                            HTML);
+                        }),
+                ]),
 
             Section::make(trans('admin/monitoring.details.network_section'))
                 ->icon('heroicon-o-signal')

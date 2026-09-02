@@ -61,6 +61,14 @@ return [
         'swap_free' => 'Livre',
         'swap_usage' => 'Uso',
 
+        'partitions_section' => 'Partições do disco',
+        'partitions_none' => 'Não há dados de partição disponíveis.',
+        'partitions_device' => 'Dispositivo',
+        'partitions_mountpoint' => 'Ponto de montagem',
+        'partitions_filesystem' => 'Sistema de arquivos',
+        'partitions_size' => 'Tamanho',
+        'partitions_usage' => 'Uso',
+
         'network_section' => 'Rede',
         'bytes_sent' => 'Bytes Enviados',
         'bytes_recv' => 'Bytes Recepidos',

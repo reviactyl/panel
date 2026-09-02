@@ -50,7 +50,12 @@ export default ({ activity, children }: Props) => {
         <div className={'grid grid-cols-10 py-4 border-b-2 border-gray-900 last:rounded-b last:border-0 group'}>
             <div className={'hidden sm:flex sm:col-span-1 items-center justify-center select-none'}>
                 <div className={'flex items-center w-10 h-10 rounded-full bg-gray-700 overflow-hidden'}>
-                    <Avatar email={actor?.email || (actor?.uuid === 'system' ? 'system' : undefined)} />
+                    <Avatar
+                        email={actor?.email || (actor?.uuid === 'system' ? 'system' : undefined)}
+                        uuid={actor?.uuid}
+                        src={actor?.image}
+                        avatarStyle={actor?.uuid === 'system' ? 'gravatar' : undefined}
+                    />
                 </div>
             </div>
             <div className={'col-span-10 sm:col-span-9 flex'}>
@@ -64,7 +69,7 @@ export default ({ activity, children }: Props) => {
                             to={`#${pathTo({ event: activity.event })}`}
                             className={'transition-colors duration-75 active:text-cyan-400 hover:text-cyan-400'}
                         >
-                            {activity.event}
+                            <Translate ns={'activity'} values={properties} i18nKey={activity.event.replace(':', '.')} />
                         </Link>
                         <div className={classNames(style.icons, 'group-hover:text-gray-300')}>
                             {activity.isApi && (
@@ -80,9 +85,7 @@ export default ({ activity, children }: Props) => {
                             {children}
                         </div>
                     </div>
-                    <p className={style.description}>
-                        <Translate ns={'activity'} values={properties} i18nKey={activity.event.replace(':', '.')} />
-                    </p>
+                    <p className={style.description}>{activity.event}</p>
                     <div className={'mt-1 flex items-center text-sm'}>
                         {activity.ip && (
                             <span>

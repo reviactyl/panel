@@ -6,13 +6,14 @@ import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
 import tw from 'twin.macro';
-import { Button } from '@/reviactyl/elements/button/index';
+import { Button } from '@/reviactyl/components/button/index';
 import { Dialog } from '@/reviactyl/elements/dialog';
 import { useTranslation } from 'react-i18next';
 
 export default () => {
     const { t } = useTranslation('server/settings');
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const skipScripts = ServerContext.useStoreState((state) => state.server.data!.skipScripts);
     const [modalVisible, setModalVisible] = useState(false);
     const { addFlash, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
@@ -37,6 +38,14 @@ export default () => {
     useEffect(() => {
         clearFlashes();
     }, []);
+
+    if (skipScripts) {
+        return (
+            <TitledGreyBox title={'Reinstall Server'}>
+                <p css={tw`text-sm`}>{t('reinstall.disabled')}</p>
+            </TitledGreyBox>
+        );
+    }
 
     return (
         <TitledGreyBox title={t('reinstall.title')} css={tw`relative`}>

@@ -14,6 +14,7 @@ return [
     'sponsor-btn' => 'Dự án tài trợ',
 
     'help-btn' => 'Nhận trợ giúp',
+    'update-btn' => 'Bảng cập nhật',
     'docs-btn' => 'Tài liệu',
     'metrics-header' => 'Số liệu hoạt động của người dùng',
     'most-active-country' => 'Quốc gia năng động nhất',
@@ -21,4 +22,13 @@ return [
     'no_activity' => 'Không có hoạt động gần đây để hiển thị.',
     'activity-header' => 'Hoạt động gần đây',
     'more-btn' => 'Xem thêm',
+    'dashboard' => [
+        'total_users' => 'Tổng số người dùng',
+        'new_users' => 'Người dùng mới: :count',
+        'total_servers' => 'Tổng số máy chủ',
+        'new_servers' => 'Máy chủ mới: :count',
+        'developmental_build' => 'Bản dựng phát triển',
+        'up_to_date' => 'Đã cập nhật',
+        'outdated_build' => 'Bản dựng lỗi thời',
+    ],
 ];

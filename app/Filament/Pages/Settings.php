@@ -3,11 +3,13 @@
 namespace App\Filament\Pages;
 
 use App\Contracts\Repository\SettingsRepositoryInterface;
+use App\Filament\Components\Alert;
 use App\Filament\Components\ImageInput;
 use App\Notifications\MailTested;
 use App\Traits\Helpers\AvailableLanguages;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ToggleButtons;
@@ -15,16 +17,18 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\InteractsWithHeaderActions;
 use Filament\Pages\Page;
-use Filament\Schemas\Components\Actions;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Contracts\HasSchemas;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Mail\MailManager;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
 class Settings extends Page implements HasSchemas
@@ -47,11 +51,13 @@ class Settings extends Page implements HasSchemas
         'app:icon',
         'app:locale',
         'app:locale:geolocate',
+        'trustedproxy:proxies',
         'panel:auth:2fa_required',
         'panel:auth:registration_enabled',
         'app:debug',
         'app:pwa',
 
+        'mail:default',
         'mail:mailers:smtp:host',
         'mail:mailers:smtp:port',
         'mail:mailers:smtp:encryption',
@@ -136,6 +142,10 @@ class Settings extends Page implements HasSchemas
                 $value = (int) $value;
             }
 
+            if ($key === 'trustedproxy:proxies' && is_array($value)) {
+                $value = implode(',', $value);
+            }
+
             $formData[$key] = $value;
         }
 
@@ -150,6 +160,7 @@ class Settings extends Page implements HasSchemas
     {
         return [
             Tabs::make('settings-tabs')
+                ->disabled(fn (): bool => config('panel.load_environment_only'))
                 ->persistTabInQueryString()
                 ->tabs([
                     Tab::make('general')
@@ -180,12 +191,28 @@ class Settings extends Page implements HasSchemas
         ];
     }
 
+    private function environmentNotice(): array
+    {
+        return [
+            Alert::make()
+                ->title('App Environment Only Mode Enabled')
+                ->description(new HtmlString('Your Panel is currently configured to read settings from the environment only. You will need to set <code>APP_ENVIRONMENT_ONLY=false</code> in your environment file in order to load settings dynamically.'))
+                ->warning()
+                ->columnSpanFull()
+                ->visible(fn (): bool => config('panel.load_environment_only')),
+
+        ];
+    }
+
     private function generalSettings(): array
     {
         return [
             Group::make()
                 ->columns(4)
                 ->schema([
+
+                    ...$this->environmentNotice(),
+
                     TextInput::make('app:name')
                         ->label(trans('admin/settings.overview.app-name'))
                         ->required()
@@ -278,12 +305,37 @@ class Settings extends Page implements HasSchemas
                         ->offColor('danger')
                         ->columnSpan(1),
                 ]),
+
+            Group::make()
+                ->columns(4)
+                ->schema([
+                    TagsInput::make('trustedproxy:proxies')
+                        ->label(trans('admin/settings.overview.trusted-proxies'))
+                        ->helperText(trans('admin/settings.overview.trusted-proxies-hint'))
+                        ->placeholder(trans('admin/settings.overview.trusted-proxies-placeholder'))
+                        ->separator(',')
+                        ->hintAction(
+                            Action::make('clear_tp')
+                                ->label(trans('admin/settings.overview.trusted-proxies-clear'))
+                                ->icon('tabler-trash')
+                                ->color('danger')
+                                ->action(fn (Set $set) => $set('trustedproxy:proxies', [])),
+                        )
+                        ->hintAction(
+                            Action::make('import_cf_tp')
+                                ->label(trans('admin/settings.overview.trusted-proxies-import-cloudflare'))
+                                ->icon('tabler-brand-cloudflare')
+                                ->action(fn (Set $set) => $this->importCloudflareTrustedProxies($set)),
+                        )
+                        ->columnSpan(2),
+                ]),
         ];
     }
 
     private function securitySettings(): array
     {
         return [
+            ...$this->environmentNotice(),
             Section::make('CAPTCHA') // Untranslated because this is a common term, it's acronym stands for "Completely Automated Public Turing test to tell Computers and Humans Apart" and is widely recognized as is.
                 ->columns(2)
                 ->schema([
@@ -343,8 +395,9 @@ class Settings extends Page implements HasSchemas
     private function oauthSettings(): array
     {
         return [
+            ...$this->environmentNotice(),
             Section::make('Google') // Untranslated because this is a proper noun, it's the name of a company.
-                ->columns(3)
+                ->columns(11)
                 ->icon('tabler-brand-google')
                 ->collapsible()
                 ->collapsed()
@@ -352,14 +405,24 @@ class Settings extends Page implements HasSchemas
                     Toggle::make('panel:auth:google_enabled')
                         ->label(trans('admin/settings.oauth.enabled'))
                         ->onIcon('tabler-check')
+                        ->columnSpan(1)
                         ->offIcon('tabler-x')
                         ->onColor('success')
                         ->offColor('danger')
                         ->inline(false)
+                        ->hintAction(
+                            Action::make('google_oauth_docs')
+                                ->label('')
+                                ->icon('tabler-info-circle')
+                                ->url('https://reviactyl.app/docs/panel/additional-configuration#google')
+                                ->openUrlInNewTab()
+                                ->color('primary'),
+                        )
                         ->live(),
 
                     TextInput::make('panel:auth:google_client_id')
                         ->label(trans('admin/settings.oauth.id-label'))
+                        ->columnSpan(5)
                         ->required(
                             fn ($get) => $get('panel:auth:google_enabled')
                         )
@@ -370,6 +433,7 @@ class Settings extends Page implements HasSchemas
                     TextInput::make('panel:auth:google_client_secret')
                         ->label(trans('admin/settings.oauth.secret-label'))
                         ->password()
+                        ->columnSpan(5)
                         ->revealable()
                         ->required(
                             fn ($get) => $get('panel:auth:google_enabled')
@@ -380,7 +444,7 @@ class Settings extends Page implements HasSchemas
                 ]),
 
             Section::make('Discord') // Untranslated because this is a proper noun, it's the name of a social platform.
-                ->columns(3)
+                ->columns(11)
                 ->icon('tabler-brand-discord')
                 ->collapsible()
                 ->collapsed()
@@ -391,11 +455,21 @@ class Settings extends Page implements HasSchemas
                         ->offIcon('tabler-x')
                         ->onColor('success')
                         ->offColor('danger')
+                        ->columnSpan(1)
                         ->inline(false)
+                        ->hintAction(
+                            Action::make('discord_oauth_docs')
+                                ->label('')
+                                ->icon('tabler-info-circle')
+                                ->url('https://reviactyl.app/docs/panel/additional-configuration#discord')
+                                ->openUrlInNewTab()
+                                ->color('primary'),
+                        )
                         ->live(),
 
                     TextInput::make('panel:auth:discord_client_id')
                         ->label(trans('admin/settings.oauth.id-label'))
+                        ->columnSpan(5)
                         ->required(
                             fn ($get) => $get('panel:auth:discord_enabled')
                         )
@@ -407,6 +481,7 @@ class Settings extends Page implements HasSchemas
                         ->label(trans('admin/settings.oauth.secret-label'))
                         ->password()
                         ->revealable()
+                        ->columnSpan(5)
                         ->required(
                             fn ($get) => $get('panel:auth:discord_enabled')
                         )
@@ -416,7 +491,7 @@ class Settings extends Page implements HasSchemas
                 ]),
 
             Section::make('GitHub') // Untranslated because this is a proper noun, it's the name of a company.
-                ->columns(3)
+                ->columns(11)
                 ->icon('tabler-brand-github')
                 ->collapsible()
                 ->collapsed()
@@ -428,10 +503,20 @@ class Settings extends Page implements HasSchemas
                         ->onColor('success')
                         ->offColor('danger')
                         ->inline(false)
+                        ->columnSpan(1)
+                        ->hintAction(
+                            Action::make('github_oauth_docs')
+                                ->label('')
+                                ->icon('tabler-info-circle')
+                                ->url('https://reviactyl.app/docs/panel/additional-configuration#github')
+                                ->color('primary')
+                                ->openUrlInNewTab(),
+                        )
                         ->live(),
 
                     TextInput::make('panel:auth:github_client_id')
                         ->label(trans('admin/settings.oauth.id-label'))
+                        ->columnSpan(5)
                         ->required(
                             fn ($get) => $get('panel:auth:github_enabled')
                         )
@@ -441,6 +526,7 @@ class Settings extends Page implements HasSchemas
 
                     TextInput::make('panel:auth:github_client_secret')
                         ->label(trans('admin/settings.oauth.secret-label'))
+                        ->columnSpan(5)
                         ->password()
                         ->revealable()
                         ->required(
@@ -456,6 +542,25 @@ class Settings extends Page implements HasSchemas
     private function mailSettings(): array
     {
         return [
+            ...$this->environmentNotice(),
+
+            Select::make('mail:default')
+                ->label('Mailer')
+                ->options(collect(config('mail.mailers', []))
+                    ->keys()
+                    ->mapWithKeys(fn (string $mailer): array => [$mailer => Str::headline($mailer)])
+                    ->all())
+                ->required()
+                ->hintAction(
+                    Action::make('test_mail')
+                        ->label(trans('admin/settings.mail.test-btn'))
+                        ->icon('tabler-send')
+                        ->action('testMail')
+                        ->color('success')
+                        ->visible(fn ($get): bool => $get('mail:default') === 'smtp'),
+                )
+                ->live(),
+
             Group::make()
                 ->columns(4)
                 ->schema([
@@ -480,7 +585,8 @@ class Settings extends Page implements HasSchemas
                             'ssl' => 'SSL',
                         ])
                         ->columnSpan(1),
-                ]),
+                ])
+                ->visible(fn ($get): bool => $get('mail:default') === 'smtp'),
 
             Group::make()
                 ->columns(4)
@@ -494,7 +600,8 @@ class Settings extends Page implements HasSchemas
                         ->password()
                         ->revealable()
                         ->columnSpan(2),
-                ]),
+                ])
+                ->visible(fn ($get): bool => $get('mail:default') === 'smtp'),
 
             Group::make()
                 ->columns(4)
@@ -510,20 +617,13 @@ class Settings extends Page implements HasSchemas
                         ->required()
                         ->columnSpan(2),
                 ]),
-
-            Actions::make([
-                Action::make('test_mail')
-                    ->label(trans('admin/settings.mail.test-btn'))
-                    ->icon('tabler-mail')
-                    ->action('testMail')
-                    ->color('success'),
-            ])->fullWidth(),
         ];
     }
 
     private function advancedSettings(): array
     {
         return [
+            ...$this->environmentNotice(),
             Section::make(trans('admin/settings.advanced.http-label'))
                 ->columns(4)
                 ->schema([
@@ -582,6 +682,10 @@ class Settings extends Page implements HasSchemas
 
     public function save(): void
     {
+        if (config('panel.load_environment_only')) {
+            return;
+        }
+
         $settings = app(SettingsRepositoryInterface::class);
         $kernel = app(Kernel::class);
         $encrypter = app(Encrypter::class);
@@ -616,14 +720,15 @@ class Settings extends Page implements HasSchemas
         $form = $this->getForm('form');
         $data = $form?->getState() ?? [];
 
-        config()->set('mail.mailers.smtp.host', $data['mail:mailers:smtp:host']);
-        config()->set('mail.mailers.smtp.port', $data['mail:mailers:smtp:port']);
-        config()->set('mail.mailers.smtp.encryption', $data['mail:mailers:smtp:encryption']);
-        config()->set('mail.mailers.smtp.username', $data['mail:mailers:smtp:username']);
-        config()->set('mail.mailers.smtp.password', $data['mail:mailers:smtp:password']);
+        config()->set('mail.default', $data['mail:default'] ?? config('mail.default'));
+        config()->set('mail.mailers.smtp.host', $data['mail:mailers:smtp:host'] ?? config('mail.mailers.smtp.host'));
+        config()->set('mail.mailers.smtp.port', $data['mail:mailers:smtp:port'] ?? config('mail.mailers.smtp.port'));
+        config()->set('mail.mailers.smtp.encryption', $data['mail:mailers:smtp:encryption'] ?? config('mail.mailers.smtp.encryption'));
+        config()->set('mail.mailers.smtp.username', $data['mail:mailers:smtp:username'] ?? config('mail.mailers.smtp.username'));
+        config()->set('mail.mailers.smtp.password', $data['mail:mailers:smtp:password'] ?? config('mail.mailers.smtp.password'));
 
-        config()->set('mail.from.address', $data['mail:from:address']);
-        config()->set('mail.from.name', $data['mail:from:name']);
+        config()->set('mail.from.address', $data['mail:from:address'] ?? config('mail.from.address'));
+        config()->set('mail.from.name', $data['mail:from:name'] ?? config('mail.from.name'));
 
         try {
             app(MailManager::class)->forgetMailers();
@@ -647,6 +752,42 @@ class Settings extends Page implements HasSchemas
         }
     }
 
+    public function importCloudflareTrustedProxies(Set $set): void
+    {
+        try {
+            $response = Http::acceptJson()
+                ->timeout(10)
+                ->get('https://api.cloudflare.com/client/v4/ips');
+
+            if (! $response->successful() || ! $response->json('success')) {
+                throw new \RuntimeException('Cloudflare did not return a successful response.');
+            }
+
+            $ipv4Ranges = $response->json('result.ipv4_cidrs');
+            $ipv6Ranges = $response->json('result.ipv6_cidrs');
+            $proxies = array_values(array_unique(array_filter([
+                ...(is_array($ipv4Ranges) ? $ipv4Ranges : []),
+                ...(is_array($ipv6Ranges) ? $ipv6Ranges : []),
+            ], is_string(...))));
+
+            if ($proxies === []) {
+                throw new \RuntimeException('Cloudflare did not return any proxy ranges.');
+            }
+
+            $set('trustedproxy:proxies', $proxies);
+
+            Notification::make()
+                ->title(trans('admin/settings.overview.trusted-proxies-imported'))
+                ->success()
+                ->send();
+        } catch (\Throwable) {
+            Notification::make()
+                ->title(trans('admin/settings.overview.trusted-proxies-import-failed'))
+                ->danger()
+                ->send();
+        }
+    }
+
     protected function getHeaderActions(): array
     {
         return [
@@ -654,6 +795,7 @@ class Settings extends Page implements HasSchemas
                 ->label(trans('admin/settings.overview.save-btn'))
                 ->icon('tabler-device-floppy')
                 ->action('save')
+                ->disabled(fn (): bool => config('panel.load_environment_only'))
                 ->keyBindings(['mod+s']),
         ];
     }

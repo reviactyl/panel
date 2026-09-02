@@ -15,6 +15,7 @@ use App\Http\Requests\Api\Client\Servers\Schedules\UpdateScheduleRequest;
 use App\Http\Requests\Api\Client\Servers\Schedules\ViewScheduleRequest;
 use App\Models\Schedule;
 use App\Models\Server;
+use App\Models\Task;
 use App\Repositories\Eloquent\ScheduleRepository;
 use App\Services\Schedules\ProcessScheduleService;
 use App\Transformers\Api\Client\ScheduleTransformer;
@@ -145,6 +146,7 @@ class ScheduleController extends ClientApiController
      */
     public function execute(TriggerScheduleRequest $request, Server $server, Schedule $schedule): JsonResponse
     {
+
         $this->service->handle($schedule, true);
 
         Activity::event('server:schedule.execute')->subject($schedule)->property('name', $schedule->name)->log();

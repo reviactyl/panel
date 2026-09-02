@@ -315,6 +315,7 @@ return [
         'bad_variable' => ':name değişkeni ile ilgili bir doğrulama hatası oluştu.',
         'daemon_exception' => 'Daemon ile iletişim kurulurken bir istisna oluştu ve HTTP/:code yanıt kodu alındı. Bu istisna günlüğe kaydedildi. (istek kimliği: :request_id)',
         'default_allocation_not_found' => 'İstenen varsayılan tahsis bu sunucunun tahsisleri arasında bulunamadı.',
+        'skipping_install_script' => 'Bu sunucu, egg dosyasının kurulum komut dosyasını atlayacak şekilde yapılandırılmıştır. Bu ayar devre dışı bırakılana kadar yeniden yükleme işlemi yapılamaz.',
     ],
 
     'alerts' => [

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ClipboardListIcon } from '@heroicons/react/outline';
 import { Dialog } from '@/reviactyl/elements/dialog';
-import { Button } from '@/reviactyl/elements/button/index';
+import { Button } from '@/reviactyl/components/button/index';
 
 export default ({ meta }: { meta: Record<string, unknown> }) => {
     const [open, setOpen] = useState(false);

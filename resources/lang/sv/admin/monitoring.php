@@ -61,6 +61,14 @@ return [
         'swap_free' => 'Gratis',
         'swap_usage' => 'Användande',
 
+        'partitions_section' => 'Diskpartitioner',
+        'partitions_none' => 'Inga uppgifter om partitioner finns tillgängliga.',
+        'partitions_device' => 'Enhet',
+        'partitions_mountpoint' => 'Monteringspunkt',
+        'partitions_filesystem' => 'Filsystem',
+        'partitions_size' => 'Storlek',
+        'partitions_usage' => 'Användande',
+
         'network_section' => 'Nätverk',
         'bytes_sent' => 'Bytes skickade',
         'bytes_recv' => 'Byte mottagna',

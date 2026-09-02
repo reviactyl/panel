@@ -4,15 +4,20 @@ return [
 
     'label' => 'Förlängning',
     'plural-label' => 'Tillägg',
+    'marketplace_heading' => 'Tillgängliga tillägg',
 
     'columns' => [
+        'icon' => 'Ikon',
         'id' => 'ID',
         'name' => 'Namn',
         'version' => 'Version',
         'author' => 'Författare',
         'enabled' => 'Aktiverad',
         'updated' => 'Uppdaterad',
+        'last_updated' => 'Senast uppdaterad',
+        'downloads' => 'Nedladdningar',
         'manifest_json' => 'Manifest JSON',
+        'file' => 'Välj en .rext-fil att ladda upp',
     ],
 
     'modals' => [
@@ -21,6 +26,7 @@ return [
 
     'actions' => [
         'edit' => 'Redigera',
+        'view' => 'Hämta tillägget',
         'upload' => 'Ladda upp',
         'manifest' => 'Visa manifest',
         'disable' => 'Inaktivera',

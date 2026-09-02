@@ -95,6 +95,10 @@ class NestResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('id')
+                    ->label('ID')
+                    ->toggleable(),
+
                 ImageColumn::make('image')
                     ->getStateUsing(fn ($record) => $record->image ?: url('/reviactyl/icon.png')),
 

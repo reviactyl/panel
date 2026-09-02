@@ -8,6 +8,7 @@ return [
         'administrator' => 'Administratör',
         'admin' => 'Administration',
         'profile' => 'Profil',
+        'profile-picture' => 'Profile Picture',
         'logout' => 'Logga ut',
         'user' => 'Användare',
         'update-email' => 'Uppdatera E-post adress',
@@ -43,6 +44,20 @@ return [
                 'unlinked' => 'Kontot har kopplats bort framgångsrikt.',
                 'unlink-failed' => 'Misslyckades med att koppla bort kontot.',
             ],
+        ],
+    ],
+    'avatar' => [
+        'style' => 'Avatar Style',
+        'animation' => 'Animate Avatar',
+        'styles' => [
+            'gravatar' => 'Gravatar',
+            'initials' => 'Initials',
+            'identicon' => 'Identicon',
+            'loops' => 'Loops',
+            'waves' => 'Waves',
+            'critters' => 'Critters',
+            'pixelbot' => 'Pixelbot',
+            'thumbs' => 'Thumbs',
         ],
     ],
     'email' => [

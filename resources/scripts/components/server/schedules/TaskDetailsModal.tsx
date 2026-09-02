@@ -12,11 +12,13 @@ import FormikFieldWrapper from '@/reviactyl/elements/FormikFieldWrapper';
 import tw from 'twin.macro';
 import Label from '@/reviactyl/elements/Label';
 import { Textarea } from '@/reviactyl/elements/Input';
-import { Button } from '@/reviactyl/elements/button/index';
+import { Button } from '@/reviactyl/components/button/index';
 import Select from '@/reviactyl/elements/Select';
 import ModalContext from '@/context/ModalContext';
 import asModal from '@/hoc/asModal';
 import FormikSwitch from '@/reviactyl/elements/FormikSwitch';
+import { usePermissions } from '@/plugins/usePermissions';
+import { getTaskActionPermission, taskActionPermissions } from '@/components/server/schedules/taskPermissions';
 
 interface Props {
     schedule: Schedule;
@@ -47,13 +49,13 @@ const schema = object().shape({
         .max(900, 'The time offset must be less than 900 seconds.'),
 });
 
-const ActionListener = () => {
+const ActionListener = ({ defaultPowerAction }: { defaultPowerAction: string }) => {
     const [{ value }, { initialValue: initialAction }] = useField<string>('action');
     const [, { initialValue: initialPayload }, { setValue, setTouched }] = useField<string>('payload');
 
     useEffect(() => {
         if (value !== initialAction) {
-            setValue(value === 'power' ? 'start' : '');
+            setValue(value === 'power' ? defaultPowerAction : '');
             setTouched(false);
         } else {
             setValue(initialPayload || '');
@@ -71,6 +73,25 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const appendSchedule = ServerContext.useStoreActions((actions) => actions.schedules.appendSchedule);
     const backupLimit = ServerContext.useStoreState((state) => state.server.data!.featureLimits.backups);
+    const [canSendCommand, canStart, canStop, canRestart, canCreateBackup] = usePermissions(taskActionPermissions);
+    const defaultPowerAction = canStart ? 'start' : canRestart ? 'restart' : canStop ? 'stop' : '';
+    const defaultAction = canSendCommand ? 'command' : defaultPowerAction ? 'power' : 'backup';
+    const taskPermission = task ? getTaskActionPermission(task.action, task.payload) : null;
+    const canEditExistingAction =
+        taskPermission === 'control.console'
+            ? canSendCommand
+            : taskPermission === 'control.start'
+            ? canStart
+            : taskPermission === 'control.stop'
+            ? canStop
+            : taskPermission === 'control.restart'
+            ? canRestart
+            : taskPermission === 'backup.create'
+            ? canCreateBackup
+            : false;
+    const initialAction = task && canEditExistingAction ? task.action : defaultAction;
+    const initialPayload =
+        task && canEditExistingAction ? task.payload : initialAction === 'power' ? defaultPowerAction : '';
 
     useEffect(() => {
         return () => {
@@ -110,8 +131,8 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
             onSubmit={submit}
             validationSchema={schema}
             initialValues={{
-                action: task?.action || 'command',
-                payload: task?.payload || '',
+                action: initialAction,
+                payload: initialPayload,
                 timeOffset: task?.timeOffset.toString() || '0',
                 continueOnFailure: task?.continueOnFailure || false,
             }}
@@ -123,12 +144,12 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
                     <div css={tw`flex`}>
                         <div css={tw`mr-2 w-1/3`}>
                             <Label>Action</Label>
-                            <ActionListener />
+                            <ActionListener defaultPowerAction={defaultPowerAction} />
                             <FormikFieldWrapper name={'action'}>
                                 <FormikField as={Select} name={'action'}>
-                                    <option value={'command'}>Send command</option>
-                                    <option value={'power'}>Send power action</option>
-                                    <option value={'backup'}>Create backup</option>
+                                    {canSendCommand && <option value={'command'}>Send command</option>}
+                                    {defaultPowerAction && <option value={'power'}>Send power action</option>}
+                                    {canCreateBackup && <option value={'backup'}>Create backup</option>}
                                 </FormikField>
                             </FormikFieldWrapper>
                         </div>
@@ -155,10 +176,10 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
                                 <Label>Payload</Label>
                                 <FormikFieldWrapper name={'payload'}>
                                     <FormikField as={Select} name={'payload'}>
-                                        <option value={'start'}>Start the server</option>
-                                        <option value={'restart'}>Restart the server</option>
-                                        <option value={'stop'}>Stop the server</option>
-                                        <option value={'kill'}>Terminate the server</option>
+                                        {canStart && <option value={'start'}>Start the server</option>}
+                                        {canRestart && <option value={'restart'}>Restart the server</option>}
+                                        {canStop && <option value={'stop'}>Stop the server</option>}
+                                        {canStop && <option value={'kill'}>Terminate the server</option>}
                                     </FormikField>
                                 </FormikFieldWrapper>
                             </div>

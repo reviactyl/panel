@@ -61,6 +61,14 @@ return [
         'swap_free' => 'Gratuit',
         'swap_usage' => 'Usage',
 
+        'partitions_section' => 'Partitions de disque',
+        'partitions_none' => 'Aucune donnée de partition n\'est disponible.',
+        'partitions_device' => 'Appareil',
+        'partitions_mountpoint' => 'Point de montage',
+        'partitions_filesystem' => 'Système de fichiers',
+        'partitions_size' => 'Taille',
+        'partitions_usage' => 'Usage',
+
         'network_section' => 'Réseau',
         'bytes_sent' => 'Octets envoyés',
         'bytes_recv' => 'Octets reçus',

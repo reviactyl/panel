@@ -39,7 +39,7 @@ class DataValidationException extends PanelException implements HttpExceptionInt
      */
     public function getStatusCode(): int
     {
-        return 500;
+        return 422;
     }
 
     public function getHeaders(): array

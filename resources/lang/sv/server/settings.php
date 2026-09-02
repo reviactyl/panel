@@ -29,5 +29,6 @@ return [
         'info-1' => 'Att ominstallera din server kommer att stoppa den och sedan köra installationsskriptet som ursprungligen konfigurerade den igen.',
         'info-2' => 'Vissa filer kan raderas eller ändras under denna process, vänligen säkerhetskopiera dina data innan du fortsätter.',
         'button' => 'Ominstallera server',
+        'disabled' => 'Det går inte att installera om eftersom den här servern är konfigurerad att hoppa över installationsskriptet för dess egg.',
     ],
 ];

@@ -4,15 +4,20 @@ return [
 
     'label' => '扩大',
     'plural-label' => '扩展',
+    'marketplace_heading' => '可用扩展',
 
     'columns' => [
+        'icon' => '图标',
         'id' => 'ID',
         'name' => '姓名',
         'version' => '版本',
         'author' => '作者',
         'enabled' => '启用',
         'updated' => '已更新',
+        'last_updated' => 'Last Updated',
+        'downloads' => '下载',
         'manifest_json' => '清单 JSON',
+        'file' => '选择一个 .rext 文件进行上传',
     ],
 
     'modals' => [
@@ -21,6 +26,7 @@ return [
 
     'actions' => [
         'edit' => '编辑',
+        'view' => '获取扩展程序',
         'upload' => '上传',
         'manifest' => '查看清单',
         'disable' => '禁用',

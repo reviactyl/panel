@@ -9,6 +9,7 @@ use App\Http\Requests\Api\Remote\SftpAuthenticationFormRequest;
 use App\Models\Permission;
 use App\Models\Server;
 use App\Models\User;
+use App\Models\UserSSHKey;
 use App\Services\Servers\GetUserPermissionsService;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Http\JsonResponse;
@@ -53,10 +54,14 @@ class SftpAuthenticationController extends Controller
             }
         } else {
             $key = null;
-            try {
-                $key = PublicKeyLoader::loadPublicKey(trim($request->input('password')));
-            } catch (NoKeyLoadedException) {
-                // do nothing
+            $publicKey = trim($request->input('password'));
+
+            if (UserSSHKey::isSupportedPublicKeyMaterial($publicKey)) {
+                try {
+                    $key = PublicKeyLoader::loadPublicKey($publicKey);
+                } catch (NoKeyLoadedException) {
+                    // do nothing
+                }
             }
 
             if (! $key || ! $user->sshKeys()->where('fingerprint', $key->getFingerprint('sha256'))->exists()) {

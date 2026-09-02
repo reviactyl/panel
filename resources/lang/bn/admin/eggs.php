@@ -29,7 +29,7 @@ return [
     ],
 
     'fields' => [
-        'nest' => 'Nest',
+        'nest' => 'নেস্ট',
         'uuid' => 'UUID',
         'name' => 'নাম',
         'author' => 'লেখক',

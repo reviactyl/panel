@@ -1,0 +1,128 @@
+.filament-alert {
+    --filament-alert-background: #eff6ff;
+    --filament-alert-border: #93c5fd;
+    --filament-alert-icon: #2563eb;
+    --filament-alert-title: #1e3a8a;
+    --filament-alert-text: #1e40af;
+    --filament-alert-link: #1d4ed8;
+
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    padding: 1rem;
+    border: 1px solid var(--filament-alert-border);
+    border-radius: 0.75rem;
+    /* Keep the semantic foreground palette coupled to its intended surface. */
+    background-color: var(--filament-alert-background) !important;
+    color: var(--filament-alert-text);
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+.filament-alert[data-alert-type='success'] {
+    --filament-alert-background: #ecfdf5;
+    --filament-alert-border: #86efac;
+    --filament-alert-icon: #16a34a;
+    --filament-alert-title: #14532d;
+    --filament-alert-text: #166534;
+    --filament-alert-link: #15803d;
+}
+
+.filament-alert[data-alert-type='warning'] {
+    --filament-alert-background: #fffbeb;
+    --filament-alert-border: #fcd34d;
+    --filament-alert-icon: #d97706;
+    --filament-alert-title: #78350f;
+    --filament-alert-text: #92400e;
+    --filament-alert-link: #b45309;
+}
+
+.filament-alert[data-alert-type='danger'] {
+    --filament-alert-background: #fef2f2;
+    --filament-alert-border: #fca5a5;
+    --filament-alert-icon: #dc2626;
+    --filament-alert-title: #7f1d1d;
+    --filament-alert-text: #991b1b;
+    --filament-alert-link: #b91c1c;
+}
+
+.dark .filament-alert,
+.filament-alert.dark {
+    --filament-alert-background: #172554;
+    --filament-alert-border: #1d4ed8;
+    --filament-alert-icon: #60a5fa;
+    --filament-alert-title: #dbeafe;
+    --filament-alert-text: #bfdbfe;
+    --filament-alert-link: #93c5fd;
+}
+
+.dark .filament-alert[data-alert-type='success'],
+.filament-alert.dark[data-alert-type='success'] {
+    --filament-alert-background: #052e16;
+    --filament-alert-border: #15803d;
+    --filament-alert-icon: #4ade80;
+    --filament-alert-title: #dcfce7;
+    --filament-alert-text: #bbf7d0;
+    --filament-alert-link: #86efac;
+}
+
+.dark .filament-alert[data-alert-type='warning'],
+.filament-alert.dark[data-alert-type='warning'] {
+    --filament-alert-background: #451a03;
+    --filament-alert-border: #b45309;
+    --filament-alert-icon: #fbbf24;
+    --filament-alert-title: #fef3c7;
+    --filament-alert-text: #fde68a;
+    --filament-alert-link: #fcd34d;
+}
+
+.dark .filament-alert[data-alert-type='danger'],
+.filament-alert.dark[data-alert-type='danger'] {
+    --filament-alert-background: #450a0a;
+    --filament-alert-border: #b91c1c;
+    --filament-alert-icon: #f87171;
+    --filament-alert-title: #fee2e2;
+    --filament-alert-text: #fecaca;
+    --filament-alert-link: #fca5a5;
+}
+
+.filament-alert__icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex: none;
+    margin-top: 0.125rem;
+    color: var(--filament-alert-icon);
+}
+
+.filament-alert__content {
+    min-width: 0;
+    flex: 1;
+}
+
+.filament-alert__title {
+    margin: 0;
+    color: var(--filament-alert-title);
+    font-weight: 600;
+}
+
+.filament-alert__message {
+    color: var(--filament-alert-text);
+}
+
+.filament-alert__title + .filament-alert__message {
+    margin-top: 0.25rem;
+}
+
+.filament-alert__actions {
+    margin-top: 0.5rem;
+}
+
+.filament-alert__actions a {
+    color: var(--filament-alert-link);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.filament-alert__actions a:hover {
+    text-decoration: underline;
+}

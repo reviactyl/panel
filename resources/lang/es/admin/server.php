@@ -315,6 +315,7 @@ return [
         'bad_variable' => 'Hubo un error de validación con la variable :name.',
         'daemon_exception' => 'Hubo una excepción al intentar comunicarse con el daemon resultando en un código de respuesta HTTP/:code. Esta excepción ha sido registrada. (id de solicitud: :request_id)',
         'default_allocation_not_found' => 'La asignación predeterminada solicitada no se encontró en las asignaciones de este servidor.',
+        'skipping_install_script' => 'Este servidor está configurado para omitir el script de instalación de su «egg». No se podrá volver a instalar hasta que se desactive esa configuración.',
     ],
 
     'alerts' => [

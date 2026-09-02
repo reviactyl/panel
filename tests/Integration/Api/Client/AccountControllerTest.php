@@ -29,8 +29,63 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
                 'first_name' => $user->name_first,
                 'last_name' => $user->name_last,
                 'language' => $user->language,
+                'avatar_style' => 'gravatar',
+                'avatar_animated' => true,
             ],
         ]);
+    }
+
+    public function test_avatar_preferences_are_updated()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->putJson('/api/client/account/avatar', [
+            'avatar_style' => 'critters',
+            'avatar_animated' => false,
+        ])->assertNoContent();
+
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+            'avatar_style' => 'critters',
+            'avatar_animated' => false,
+        ]);
+        $this->assertActivityLogged('user:account.avatar-changed');
+    }
+
+    public function test_avatar_preferences_reject_an_unknown_style()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->putJson('/api/client/account/avatar', [
+            'avatar_style' => 'unknown',
+            'avatar_animated' => true,
+        ])
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonPath('errors.0.meta.rule', 'in');
+
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+            'avatar_style' => 'gravatar',
+            'avatar_animated' => true,
+        ]);
+    }
+
+    public function test_avatar_url_uses_saved_preferences_and_rejects_invalid_stored_styles()
+    {
+        $user = User::factory()->make([
+            'uuid' => '00000000-0000-4000-8000-000000000001',
+            'avatar_style' => 'critters',
+            'avatar_animated' => true,
+        ]);
+
+        $this->assertSame(
+            'https://api.dicebear.com/10.x/critters/svg?seed=00000000-0000-4000-8000-000000000001&animationVariant=medium',
+            $user->avatar_url
+        );
+
+        $user->avatar_style = 'invalid/style';
+
+        $this->assertSame($user->gravatar_url, $user->avatar_url);
     }
 
     /**
@@ -96,6 +151,31 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonPath('errors.0.meta.rule', 'email');
         $response->assertJsonPath('errors.0.detail', 'The email must be a valid email address.');
+
+        /*
+        * RFCs limit certain parts of an email to certain character limits.
+        * A limit of <= 64 for the local, then <= 63 for each domain label.
+        */
+        $local = str_repeat(Str::random(10), 6).'1234';
+        $label = str_repeat(Str::random(10), 6).'1';
+
+        $response = $this->actingAs($user)->putJson('/api/client/account/email', [
+            'email' => "1$local@$label.$label", // exceed RFC limit for local part
+            'password' => 'password',
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonPath('errors.0.detail', 'The email must be a valid email address.');
+        $response->assertJsonPath('errors.0.meta.source_field', 'email');
+
+        $response = $this->actingAs($user)->putJson('/api/client/account/email', [
+            'email' => "$local@1234$label.$label", // exceed RFC limit for label part
+            'password' => 'password',
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonPath('errors.0.detail', 'The email must be a valid email address.');
+        $response->assertJsonPath('errors.0.meta.source_field', 'email');
     }
 
     /**

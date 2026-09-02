@@ -4,15 +4,20 @@ return [
 
     'label' => 'امتداد',
     'plural-label' => 'ملحقات',
+    'marketplace_heading' => 'الملحقات المتاحة',
 
     'columns' => [
+        'icon' => 'أيقونة',
         'id' => 'ID',
         'name' => 'اسم',
         'version' => 'إصدار',
         'author' => 'مؤلف',
         'enabled' => 'ممكّن',
         'updated' => 'تم التحديث',
+        'last_updated' => 'آخر تحديث',
+        'downloads' => 'التنزيلات',
         'manifest_json' => 'بيان JSON',
+        'file' => 'اختر ملفًا بصيغة .rext لتحميله',
     ],
 
     'modals' => [
@@ -21,6 +26,7 @@ return [
 
     'actions' => [
         'edit' => 'يحرر',
+        'view' => 'الحصول على الملحق',
         'upload' => 'رفع',
         'manifest' => 'عرض البيان',
         'disable' => 'إبطال',

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Client\Servers;
 
+use App\Enum\JwtScope;
 use App\Exceptions\Http\Connection\DaemonConnectionException;
 use App\Facades\Activity;
 use App\Http\Controllers\Api\Client\ClientApiController;
@@ -12,9 +13,11 @@ use App\Http\Requests\Api\Client\Servers\Files\CreateFolderRequest;
 use App\Http\Requests\Api\Client\Servers\Files\DecompressFilesRequest;
 use App\Http\Requests\Api\Client\Servers\Files\DeleteFileRequest;
 use App\Http\Requests\Api\Client\Servers\Files\GetFileContentsRequest;
+use App\Http\Requests\Api\Client\Servers\Files\ListFileDownloadsRequest;
 use App\Http\Requests\Api\Client\Servers\Files\ListFilesRequest;
 use App\Http\Requests\Api\Client\Servers\Files\PullFileRequest;
 use App\Http\Requests\Api\Client\Servers\Files\RenameFileRequest;
+use App\Http\Requests\Api\Client\Servers\Files\UpdateFileContentRequest;
 use App\Http\Requests\Api\Client\Servers\Files\WriteFileContentRequest;
 use App\Models\Server;
 use App\Repositories\Agent\DaemonFileRepository;
@@ -81,9 +84,10 @@ class FileController extends ClientApiController
             ->setExpiresAt(CarbonImmutable::now()->addMinutes(15))
             ->setUser($request->user())
             ->setClaims([
-                'file_path' => rawurldecode($request->get('file')),
+                'file_path' => $request->get('file'),
                 'server_uuid' => $server->uuid,
             ])
+            ->setScopes(JwtScope::FileDownload)
             ->handle($server->node, $request->user()->id.$server->uuid);
 
         Activity::event('server:file.download')->property('file', $request->get('file'))->log();
@@ -106,6 +110,21 @@ class FileController extends ClientApiController
      * @throws DaemonConnectionException
      */
     public function write(WriteFileContentRequest $request, Server $server): JsonResponse
+    {
+        return $this->writeContent($request, $server);
+    }
+
+    /**
+     * Updates the contents of the specified file on the server.
+     *
+     * @throws DaemonConnectionException
+     */
+    public function update(UpdateFileContentRequest $request, Server $server): JsonResponse
+    {
+        return $this->writeContent($request, $server);
+    }
+
+    private function writeContent(WriteFileContentRequest $request, Server $server): JsonResponse
     {
         $this->fileRepository->setServer($server)->putContent($request->get('file'), $request->getContent());
 
@@ -250,7 +269,7 @@ class FileController extends ClientApiController
      */
     public function pull(PullFileRequest $request, Server $server): JsonResponse
     {
-        $this->fileRepository->setServer($server)->pull(
+        $response = $this->fileRepository->setServer($server)->pull(
             $request->input('url'),
             $request->input('directory'),
             $request->safe(['filename', 'use_header', 'foreground'])
@@ -261,6 +280,24 @@ class FileController extends ClientApiController
             ->property('url', $request->input('url'))
             ->log();
 
-        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        return new JsonResponse(
+            json_decode($response->getBody()->__toString(), true) ?? [],
+            $response->getStatusCode()
+        );
+    }
+
+    /**
+     * Returns all remote file downloads currently being processed by Agent.
+     *
+     * @throws DaemonConnectionException
+     */
+    public function pulls(ListFileDownloadsRequest $request, Server $server): JsonResponse
+    {
+        $response = $this->fileRepository->setServer($server)->getPulls();
+
+        return new JsonResponse(
+            json_decode($response->getBody()->__toString(), true) ?? [],
+            $response->getStatusCode()
+        );
     }
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { FaExclamation, FaFloppyDisk, FaGlobe, FaMemory, FaMicrochip } from 'react-icons/fa6';
+import { FaFloppyDisk, FaGlobe, FaMemory, FaMicrochip, FaTriangleExclamation } from 'react-icons/fa6';
 import { Link } from 'react-router-dom';
 import { Server } from '@/api/server/getServer';
 import getServerResourceUsage, { ServerStats } from '@/api/server/getServerResourceUsage';
@@ -47,8 +47,8 @@ export default ({
 
     useEffect(() => {
         // Don't waste a HTTP request if there is nothing important to show to the user because
-        // the server is suspended.
-        if (isSuspended) return;
+        // the server is suspended or the node is under maintenance.
+        if (isSuspended || server.isNodeUnderMaintenance) return;
 
         getStats().then(() => {
             interval.current = setInterval(() => getStats(), 30000);
@@ -57,7 +57,7 @@ export default ({
         return () => {
             void (interval.current && clearInterval(interval.current));
         };
-    }, [isSuspended]);
+    }, [isSuspended, server.isNodeUnderMaintenance]);
 
     const alarms = { cpu: false, memory: false, disk: false };
     if (stats) {
@@ -72,7 +72,8 @@ export default ({
     const cpuLimit = server.limits.cpu !== 0 ? server.limits.cpu + ' %' : t('server.unlimited');
 
     // Check if server is in a other state (suspended, transferring, etc.)
-    const isSpecialState = isSuspended || server.isTransferring || (server.status && !stats);
+    const isSpecialState =
+        isSuspended || server.isNodeUnderMaintenance || server.isTransferring || (server.status && !stats);
 
     return (
         <React.Fragment>
@@ -158,24 +159,33 @@ export default ({
                                 : 'grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4'
                         } mt-4`}
                     >
-                        {!stats || isSuspended ? (
+                        {!stats || isSuspended || server.isNodeUnderMaintenance ? (
                             isSuspended ? (
                                 <React.Fragment>
-                                    <StatBlock className='bg-danger/50 backdrop-blur-sm border border-danger/80'>
-                                        <p>
+                                    <StatBlock className='bg-danger/20 backdrop-blur-sm border border-danger/80'>
+                                        <p className='text-danger font-medium'>
                                             {server.status === 'suspended'
                                                 ? t('server.suspended')
                                                 : t('server.connection-error')}
                                         </p>
                                     </StatBlock>
                                 </React.Fragment>
+                            ) : server.isNodeUnderMaintenance ? (
+                                <React.Fragment>
+                                    <StatBlock className='backdrop-blur-sm bg-yellow-500/50 border border-yellow-500/70'>
+                                        <span className='w-4 sm:w-5 text-yellow-400'>
+                                            <FaTriangleExclamation />
+                                        </span>
+                                        <p className='text-yellow-400 font-medium'> {t('server.maintenance')}</p>
+                                    </StatBlock>
+                                </React.Fragment>
                             ) : server.isTransferring || server.status ? (
                                 <React.Fragment>
                                     <StatBlock className='backdrop-blur-sm bg-yellow-500/50 border border-yellow-500/70'>
-                                        <span className='w-4 sm:w-5 text-yellow-500'>
-                                            <FaExclamation />
+                                        <span className='w-4 sm:w-5 text-yellow-400'>
+                                            <FaTriangleExclamation />
                                         </span>
-                                        <p>
+                                        <p className='text-yellow-400 font-medium'>
                                             {' '}
                                             {server.isTransferring
                                                 ? t('server.transferring')
