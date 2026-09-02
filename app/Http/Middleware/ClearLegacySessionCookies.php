@@ -51,6 +51,7 @@ class ClearLegacySessionCookies
         $parts = explode('.', $host);
 
         if (count($parts) >= 2) {
+            $domains[] = '.'.$host;
             $domains[] = '.'.implode('.', array_slice($parts, -2));
         }
 

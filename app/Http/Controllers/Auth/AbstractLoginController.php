@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\Events\Auth\DirectLogin;
 use App\Exceptions\DisplayException;
+use App\Facades\Activity;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\StatefulGuard;
@@ -86,6 +88,24 @@ abstract class AbstractLoginController extends Controller
                 'complete' => true,
                 'intended' => $this->redirectPath(),
                 'user' => $user->toVueObject(),
+            ],
+        ]);
+    }
+
+    protected function sendLoginCheckpointResponse(User $user, Request $request): JsonResponse
+    {
+        Activity::event('auth:checkpoint')->withRequestMetadata()->subject($user)->log();
+
+        $request->session()->put('auth_confirmation_token', [
+            'user_id' => $user->id,
+            'token_value' => $token = Str::random(64),
+            'expires_at' => CarbonImmutable::now()->addMinutes(5),
+        ]);
+
+        return new JsonResponse([
+            'data' => [
+                'complete' => false,
+                'confirmation_token' => $token,
             ],
         ]);
     }

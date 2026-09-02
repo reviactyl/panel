@@ -86,7 +86,7 @@ class PasskeyLoginController extends AbstractLoginController
             'type' => 'required|string|in:public-key',
         ]);
 
-        if (! $this->auth->attempt($credentials, true)) {
+        if (! $this->auth->once($credentials)) {
             $this->sendFailedLoginResponse($request);
         }
 
@@ -98,6 +98,10 @@ class PasskeyLoginController extends AbstractLoginController
         }
 
         Activity::event('auth:passkey')->withRequestMetadata()->subject($user)->log();
+
+        if ($user->use_totp) {
+            return $this->sendLoginCheckpointResponse($user, $request);
+        }
 
         return $this->sendLoginResponse($user, $request);
     }

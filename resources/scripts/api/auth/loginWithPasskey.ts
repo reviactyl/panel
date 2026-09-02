@@ -57,7 +57,7 @@ const mapPasskeyAssertionError = (error: unknown): Error => {
 
 export default async (username?: string): Promise<LoginResponse> => {
     if (!isPasskeySupported()) {
-        throw new Error('Passkeys are not supported by this browser.');
+        throw new Error('PASSKEY_UNSUPPORTED');
     }
 
     const xsrfToken = await resolveXsrfToken();

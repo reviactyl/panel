@@ -57,6 +57,10 @@ function LoginContainer() {
             return new Error(t('passkey-no-credentials'));
         }
 
+        if (error.message === 'PASSKEY_UNSUPPORTED') {
+            return new Error(t('passkey-unsupported'));
+        }
+
         if (error.message === 'PASSKEY_SECURITY_ERROR') {
             return new Error(t('passkey-security'));
         }
@@ -130,8 +134,7 @@ function LoginContainer() {
                     return;
                 }
 
-                setIsPasskeySubmitting(false);
-                setSubmitting(false);
+                navigate('/auth/login/checkpoint', { state: { token: response.confirmationToken } });
             })
             .catch((error) => {
                 console.error(error);
