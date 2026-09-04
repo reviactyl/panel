@@ -34,6 +34,8 @@ return [
         'title' => 'Sécurité',
         'provider' => 'Fournisseur de captcha',
         'disabled' => 'Désactivé',
+        'passkey-require-username' => 'Require Username for Passkey Login',
+        'passkey-require-username-hint' => 'When enabled, users must enter username/email before using passkey login. When disabled, discoverable (username-less) passkeys are allowed.',
         'recaptcha-site-key' => 'Clé du site reCAPTCHA',
         'recaptcha-secret-key' => 'Clé secrète reCAPTCHA',
         'turnstile-site-key' => 'Clé du site des tourniquets',
