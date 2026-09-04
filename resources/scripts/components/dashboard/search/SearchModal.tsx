@@ -128,7 +128,7 @@ export default ({ ...props }: Props) => {
 
     return (
         <Formik
-            onSubmit={() => undefined}
+            onSubmit={() => Promise.resolve()}
             validationSchema={object().shape({
                 term: string().min(3, t('search.string-min')),
             })}
