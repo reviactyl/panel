@@ -19,6 +19,7 @@ return [
     'auth' => [
         'fail' => 'Ошибка входа',
         'success' => 'Выполнен вход',
+        'passkey' => 'Logged in with passkey',
         'password-reset' => 'Сброс пароля',
         'reset-password' => 'Запрос сброса пароля',
         'checkpoint' => 'Запрошена двухфакторная аутентификация',
@@ -51,6 +52,10 @@ return [
         'two-factor' => [
             'create' => 'Включена двухфакторная аутентификация',
             'delete' => 'Отключена двухфакторная аутентификация',
+        ],
+        'passkey' => [
+            'create' => 'Registered a new passkey',
+            'delete' => 'Removed passkey :id',
         ],
     ],
     'server' => [
