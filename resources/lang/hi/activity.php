@@ -19,6 +19,7 @@ return [
     'auth' => [
         'fail' => 'लॉगिन असफल',
         'success' => 'लॉगिन हुआ',
+        'passkey' => 'Logged in with passkey',
         'password-reset' => 'पासवर्ड रीसेट किया गया',
         'reset-password' => 'पासवर्ड रीसेट का अनुरोध किया गया',
         'checkpoint' => 'दो-फैक्टर प्रमाणीकरण का अनुरोध किया गया',
@@ -51,6 +52,10 @@ return [
         'two-factor' => [
             'create' => 'दो-फैक्टर प्रमाणीकरण सक्षम किया गया',
             'delete' => 'दो-फैक्टर प्रमाणीकरण अक्षम किया गया',
+        ],
+        'passkey' => [
+            'create' => 'Registered a new passkey',
+            'delete' => 'Removed passkey :id',
         ],
     ],
     'server' => [
