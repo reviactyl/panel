@@ -19,6 +19,7 @@ return [
     'auth' => [
         'fail' => 'فشل تسجيل الدخول',
         'success' => 'تم تسجيل الدخول',
+        'passkey' => 'Logged in with passkey',
         'password-reset' => 'إعادة تعيين كلمة المرور',
         'reset-password' => 'طلب إعادة تعيين كلمة المرور',
         'checkpoint' => 'طلب المصادقة الثنائية',
@@ -51,6 +52,10 @@ return [
         'two-factor' => [
             'create' => 'تم تفعيل المصادقة الثنائية',
             'delete' => 'تم تعطيل المصادقة الثنائية',
+        ],
+        'passkey' => [
+            'create' => 'Registered a new passkey',
+            'delete' => 'Removed passkey :id',
         ],
     ],
     'server' => [
