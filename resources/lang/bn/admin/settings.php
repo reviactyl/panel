@@ -34,6 +34,8 @@ return [
         'title' => 'নিরাপত্তা',
         'provider' => 'ক্যাপচা প্রোভাইডার',
         'disabled' => 'নিষ্ক্রিয়',
+        'passkey-require-username' => 'Require Username for Passkey Login',
+        'passkey-require-username-hint' => 'When enabled, users must enter username/email before using passkey login. When disabled, discoverable (username-less) passkeys are allowed.',
         'recaptcha-site-key' => 'reCAPTCHA সাইট কী',
         'recaptcha-secret-key' => 'reCAPTCHA সিক্রেট কী',
         'turnstile-site-key' => 'Turnstile সাইট কী',
