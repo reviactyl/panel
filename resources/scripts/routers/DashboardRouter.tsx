@@ -23,6 +23,7 @@ import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 import { useExtensionRoutes } from '@/extensions/useExtensionRoutes';
 import { useExtensions } from '@/extensions/useExtensions';
 import { resolveExtensionIcon } from '@/extensions/iconResolver';
+import PasskeysContainer from '@/components/dashboard/PasskeysContainer';
 import { useSubuserPreview } from '@/context/SubuserPreviewContext';
 
 interface Props {
@@ -138,7 +139,7 @@ const DashboardNavigation = () => {
 /**
  * Renders the dashboard layout and routes.
  *
- * Displays the maintenance screen when maintenance is active unless a root administrator is viewing the account normally. Restricts account and extension navigation during subuser preview sessions.
+ * Displays the maintenance screen when maintenance is active unless a root administrator is viewing the account normally. Restricts account, passkey, and extension navigation during subuser preview sessions.
  *
  * @returns The dashboard interface or maintenance screen.
  */
@@ -202,6 +203,14 @@ function DashboardRouter() {
                                         path: `/account/${route}`.replace('//', '/'),
                                         element: <Component />,
                                     })),
+                                    ...(!session
+                                        ? [
+                                              {
+                                                  path: '/passkey/*',
+                                                  element: <PasskeysContainer />,
+                                              },
+                                          ]
+                                        : []),
                                     ...(!session ? injectedRoutes : []),
                                     { path: '*', element: <NotFound /> },
                                 ])}

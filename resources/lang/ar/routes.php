@@ -12,6 +12,7 @@ return [
     'account' => [
         'overview' => 'النظرة على الحساب',
         'api' => 'مفتاح واجهة برمجة التطبيقات',
+        'passkeys' => 'Passkeys',
         'ssh' => 'مفتاح SSH',
         'activity' => 'نشاط',
     ],

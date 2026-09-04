@@ -11,7 +11,14 @@ return [
     'password-label' => 'ಪಾಸ್ವರ್ಡ್',
 
     'login-button' => 'ಲಾಗಿನ್ ಮಾಡಿ',
+    'passkey-button' => 'Login with Passkey',
     'return' => 'ಲಾಗಿನ್‌ಗೆ ಹಿಂತಿರುಗಿ',
+
+    'passkey-unsupported' => 'Passkeys are not supported by this browser.',
+    'passkey-failed' => 'Unable to complete passkey login. Please try again.',
+    'passkey-no-credentials' => 'No passkey is available for this login. Use your password or register a passkey first.',
+    'passkey-security' => 'Passkey verification could not be completed securely on this device.',
+    'passkey-username-required' => 'Enter your username or email before using a passkey.',
 
     'social' => [
         'or' => 'OR',
@@ -64,6 +71,7 @@ return [
         'label' => 'ನೋಂದಾಯಿಸಿ',
         'create-link' => 'Don\'t have an account? Create one',
         'create-account' => 'ಖಾತೆಯನ್ನು ರಚಿಸಿ',
+        'no-account' => 'Don\'t have an account?',
     ],
 
     'failed' => 'ಆ ರುಜುವಾತುಗಳಿಗೆ ಹೊಂದಿಕೆಯಾಗುವ ಯಾವುದೇ ಖಾತೆ ಕಂಡುಬಂದಿಲ್ಲ.',

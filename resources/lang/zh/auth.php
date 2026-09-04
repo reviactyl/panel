@@ -11,7 +11,14 @@ return [
     'password-label' => '密码',
 
     'login-button' => '登录',
+    'passkey-button' => 'Login with Passkey',
     'return' => '返回登录',
+
+    'passkey-unsupported' => 'Passkeys are not supported by this browser.',
+    'passkey-failed' => 'Unable to complete passkey login. Please try again.',
+    'passkey-no-credentials' => 'No passkey is available for this login. Use your password or register a passkey first.',
+    'passkey-security' => 'Passkey verification could not be completed securely on this device.',
+    'passkey-username-required' => 'Enter your username or email before using a passkey.',
 
     'social' => [
         'or' => '或',
@@ -64,6 +71,7 @@ return [
         'label' => '注册',
         'create-link' => 'Don\'t have an account? Create one',
         'create-account' => '创建账户',
+        'no-account' => 'Don\'t have an account?',
     ],
 
     'failed' => '未找到与这些凭证匹配的账户。',

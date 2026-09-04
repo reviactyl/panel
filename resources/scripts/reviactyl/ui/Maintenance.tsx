@@ -7,7 +7,7 @@ import Title from '@/reviactyl/ui/Title';
 import tw from 'twin.macro';
 import styled from 'styled-components';
 import { LogoContainer } from '@/reviactyl/ui/LogoContainer';
-import http from '@/api/http';
+import logout from '@/api/auth/logout';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import { LogoutIcon } from '@heroicons/react/solid';
 import { useTranslation } from 'react-i18next';
@@ -28,7 +28,7 @@ export default () => {
     const [isLoggingOut, setIsLoggingOut] = useState(false);
     const onTriggerLogout = () => {
         setIsLoggingOut(true);
-        http.post('/auth/logout').finally(() => {
+        logout().finally(() => {
             window.location.href = '/';
         });
     };

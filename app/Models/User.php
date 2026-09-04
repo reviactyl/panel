@@ -27,6 +27,8 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\Rules\In;
+use Laravel\Passkeys\Contracts\PasskeyUser;
+use Laravel\Passkeys\PasskeyAuthenticatable;
 
 /**
  * App\Models\User.
@@ -89,7 +91,7 @@ use Illuminate\Validation\Rules\In;
  * @mixin \Eloquent
  */
 #[Attributes\Identifiable('user')]
-class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract, HasAvatar, Identifiable
+class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract, HasAvatar, Identifiable, PasskeyUser
 {
     public const AVATAR_STYLES = ['gravatar', 'initials', 'identicon', 'loops', 'waves', 'critters', 'pixelbot', 'thumbs'];
 
@@ -108,6 +110,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     use HasRealtimeIdentifier;
     use Notifiable;
+    use PasskeyAuthenticatable;
 
     public const USER_LEVEL_USER = 0;
 

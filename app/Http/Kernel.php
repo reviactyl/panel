@@ -11,12 +11,14 @@ use App\Http\Middleware\Api\Client\ResolveSubuserPreview;
 use App\Http\Middleware\Api\Client\SubstituteClientBindings;
 use App\Http\Middleware\Api\Daemon\DaemonAuthenticate;
 use App\Http\Middleware\Api\IsValidJson;
+use App\Http\Middleware\ClearLegacySessionCookies;
 use App\Http\Middleware\EditorMiddleware;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\EnsureInstallationState;
 use App\Http\Middleware\EnsureStatefulRequests;
 use App\Http\Middleware\LanguageMiddleware;
 use App\Http\Middleware\MaintenanceMiddleware;
+use App\Http\Middleware\NormalizeDuplicateCookies;
 use App\Http\Middleware\PreventRequestForgery;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\RequireTwoFactorAuthentication;
@@ -47,6 +49,7 @@ class Kernel extends HttpKernel
      */
     protected $middleware = [
         TrustProxies::class,
+        NormalizeDuplicateCookies::class,
         HandleCors::class,
         PreventRequestsDuringMaintenance::class,
         ValidatePostSize::class,
@@ -67,6 +70,7 @@ class Kernel extends HttpKernel
             EncryptCookies::class,
             AddQueuedCookiesToResponse::class,
             StartSession::class,
+            ClearLegacySessionCookies::class,
             ShareErrorsFromSession::class,
             PreventRequestForgery::class,
             SubstituteBindings::class,

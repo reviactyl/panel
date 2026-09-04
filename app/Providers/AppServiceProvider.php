@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Laravel\Passkeys\Passkeys;
 use Laravel\Sanctum\Sanctum;
 
 class AppServiceProvider extends ServiceProvider
@@ -31,12 +32,16 @@ class AppServiceProvider extends ServiceProvider
 
         Paginator::useBootstrap();
 
-        // If the APP_URL value is set with https:// make sure we force it here. Theoretically
-        // this should just work with the proxy logic, but there are a lot of cases where it
-        // doesn't, and it triggers a lot of support requests, so lets just head it off here.
+        // Force URL generation to APP_URL to avoid proxy/localhost host leakage
+        // in generated links and Livewire script/update endpoints.
         //
         // @see https://github.com/pterodactyl/panel/issues/3623
-        if (Str::startsWith(config('app.url') ?? '', 'https://')) {
+        $appUrl = config('app.url') ?? '';
+        if ($appUrl !== '') {
+            URL::forceRootUrl($appUrl);
+        }
+
+        if (Str::startsWith($appUrl, 'https://')) {
             URL::forceScheme('https');
         }
 
@@ -63,6 +68,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        Passkeys::ignoreRoutes();
+
         $this->app->register(SettingsServiceProvider::class);
         $this->app->bind(LogoutResponseContract::class, AdminLogoutResponse::class);
     }
@@ -72,7 +79,7 @@ class AppServiceProvider extends ServiceProvider
      */
     protected function versionData(): array
     {
-        return Cache::remember('git-version', 5, function () {
+        return Cache::store('file')->remember('git-version', 5, function () {
             $headPath = base_path('.git/HEAD');
 
             if (is_file($headPath)) {
