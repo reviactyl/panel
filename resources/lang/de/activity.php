@@ -19,6 +19,7 @@ return [
     'auth' => [
         'fail' => 'Anmeldung fehlgeschlagen',
         'success' => 'Angemeldet',
+        'passkey' => 'Logged in with passkey',
         'password-reset' => 'Passwort zurückgesetzt',
         'reset-password' => 'Passwort zurücksetzen angefordert',
         'checkpoint' => 'Zwei-Faktor-Authentifizierung angefordert',
@@ -51,6 +52,10 @@ return [
         'two-factor' => [
             'create' => 'Zwei-Faktor-Authentifizierung aktiviert',
             'delete' => 'Zwei-Faktor-Authentifizierung deaktiviert',
+        ],
+        'passkey' => [
+            'create' => 'Registered a new passkey',
+            'delete' => 'Removed passkey :id',
         ],
     ],
     'server' => [

@@ -19,6 +19,7 @@ return [
     'auth' => [
         'fail' => '登录失败',
         'success' => '登录成功',
+        'passkey' => 'Logged in with passkey',
         'password-reset' => '密码已重置',
         'reset-password' => '请求重置密码',
         'checkpoint' => '请求双重认证',
@@ -51,6 +52,10 @@ return [
         'two-factor' => [
             'create' => '启用了双重认证',
             'delete' => '禁用了双重认证',
+        ],
+        'passkey' => [
+            'create' => 'Registered a new passkey',
+            'delete' => 'Removed passkey :id',
         ],
     ],
     'server' => [

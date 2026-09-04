@@ -19,6 +19,7 @@ return [
     'auth' => [
         'fail' => 'ಲಾಗಿನ್ ವಿಫಲವಾಗಿದೆ',
         'success' => 'ಲಾಗಿನ್ ಮಾಡಲಾಗಿದೆ',
+        'passkey' => 'Logged in with passkey',
         'password-reset' => 'ಪಾಸ್ವರ್ಡ್ ಮರುಹೊಂದಿಸಿ',
         'reset-password' => 'ಪಾಸ್‌ವರ್ಡ್ ಮರುಹೊಂದಿಸಲು ವಿನಂತಿಸಲಾಗಿದೆ',
         'checkpoint' => 'ಎರಡು ಅಂಶದ ದೃಢೀಕರಣವನ್ನು ವಿನಂತಿಸಲಾಗಿದೆ',
@@ -51,6 +52,10 @@ return [
         'two-factor' => [
             'create' => 'ಎರಡು ಅಂಶದ ದೃಢೀಕರಣವನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ',
             'delete' => 'ಎರಡು ಅಂಶದ ದೃಢೀಕರಣವನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ',
+        ],
+        'passkey' => [
+            'create' => 'Registered a new passkey',
+            'delete' => 'Removed passkey :id',
         ],
     ],
     'server' => [

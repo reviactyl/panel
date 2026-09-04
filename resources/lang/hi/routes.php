@@ -11,8 +11,8 @@ return [
     ],
     'account' => [
         'overview' => 'खाता अवलोकन',
-        'api' => 'API कुंजियाँ',
         'passkeys' => 'Passkeys',
+        'api' => 'API कुंजियाँ',
         'ssh' => 'SSH कुंजियाँ',
         'activity' => 'गतिविधि',
     ],

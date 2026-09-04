@@ -11,7 +11,14 @@ return [
     'password-label' => 'পাসওয়ার্ড',
 
     'login-button' => 'লগইন',
+    'passkey-button' => 'Login with Passkey',
     'return' => 'লগইনে ফিরে যান',
+
+    'passkey-unsupported' => 'Passkeys are not supported by this browser.',
+    'passkey-failed' => 'Unable to complete passkey login. Please try again.',
+    'passkey-no-credentials' => 'No passkey is available for this login. Use your password or register a passkey first.',
+    'passkey-security' => 'Passkey verification could not be completed securely on this device.',
+    'passkey-username-required' => 'Enter your username or email before using a passkey.',
 
     'social' => [
         'or' => 'অথবা',
@@ -64,6 +71,7 @@ return [
         'label' => 'রেজিস্টার',
         'create-link' => 'Don\'t have an account? Create one',
         'create-account' => 'অ্যাকাউন্ট তৈরি করুন',
+        'no-account' => 'Don\'t have an account?',
     ],
 
     'failed' => 'এই তথ্যের সাথে মিলে এমন কোনো অ্যাকাউন্ট পাওয়া যায়নি।',

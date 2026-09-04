@@ -19,6 +19,7 @@ return [
     'auth' => [
         'fail' => 'Đăng nhập không thành công',
         'success' => 'Đã đăng nhập',
+        'passkey' => 'Logged in with passkey',
         'password-reset' => 'Đặt lại mật khẩu',
         'reset-password' => 'Yêu cầu đặt lại mật khẩu',
         'checkpoint' => 'Đã yêu cầu xác thực hai yếu tố',
@@ -51,6 +52,10 @@ return [
         'two-factor' => [
             'create' => 'Đã bật xác thực hai yếu tố',
             'delete' => 'Xác thực hai yếu tố bị vô hiệu hóa',
+        ],
+        'passkey' => [
+            'create' => 'Registered a new passkey',
+            'delete' => 'Removed passkey :id',
         ],
     ],
     'server' => [

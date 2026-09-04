@@ -19,6 +19,7 @@ return [
     'auth' => [
         'fail' => 'Gagal masuk',
         'success' => 'Berhasil masuk',
+        'passkey' => 'Logged in with passkey',
         'password-reset' => 'Kata sandi diatur ulang',
         'reset-password' => 'Meminta pengaturan ulang kata sandi',
         'checkpoint' => 'Otentikasi dua faktor diminta',
@@ -51,6 +52,10 @@ return [
         'two-factor' => [
             'create' => 'Mengaktifkan otentikasi dua faktor',
             'delete' => 'Menonaktifkan otentikasi dua faktor',
+        ],
+        'passkey' => [
+            'create' => 'Registered a new passkey',
+            'delete' => 'Removed passkey :id',
         ],
     ],
     'server' => [

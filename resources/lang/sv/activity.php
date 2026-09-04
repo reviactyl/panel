@@ -19,6 +19,7 @@ return [
     'auth' => [
         'fail' => 'Misslyckad inloggning',
         'success' => 'Inloggad',
+        'passkey' => 'Logged in with passkey',
         'password-reset' => 'Lösenordsåterställning',
         'reset-password' => 'Begärd lösenordsåterställning',
         'checkpoint' => 'Tvåfaktorsautentisering begärd',
@@ -51,6 +52,10 @@ return [
         'two-factor' => [
             'create' => 'Aktiverade tvåfaktorsautentisering',
             'delete' => 'Inaktiverade tvåfaktorsautentisering',
+        ],
+        'passkey' => [
+            'create' => 'Registered a new passkey',
+            'delete' => 'Removed passkey :id',
         ],
     ],
     'server' => [

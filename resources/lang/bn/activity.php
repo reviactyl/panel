@@ -19,6 +19,7 @@ return [
     'auth' => [
         'fail' => 'লগইন ব্যর্থ হয়েছে।',
         'success' => 'লগইন হয়েছে।',
+        'passkey' => 'Logged in with passkey',
         'password-reset' => 'পাসওয়ার্ড রিসেট।',
         'reset-password' => 'পাসওয়ার্ড রিসেট অনুরোধ করা হয়েছে।',
         'checkpoint' => 'টু-ফ্যাক্টর অথেন্টিকেশন অনুরোধ করা হয়েছে।',
@@ -51,6 +52,10 @@ return [
         'two-factor' => [
             'create' => 'টু-ফ্যাক্টর অথেন্টিকেশন চালু করা হয়েছে।',
             'delete' => 'টু-ফ্যাক্টর অথেন্টিকেশন বন্ধ করা হয়েছে।',
+        ],
+        'passkey' => [
+            'create' => 'Registered a new passkey',
+            'delete' => 'Removed passkey :id',
         ],
     ],
     'server' => [
