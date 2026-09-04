@@ -34,6 +34,8 @@ return [
         'title' => 'Bảo vệ',
         'provider' => 'Nhà cung cấp hình ảnh xác thực',
         'disabled' => 'Tàn tật',
+        'passkey-require-username' => 'Require Username for Passkey Login',
+        'passkey-require-username-hint' => 'When enabled, users must enter username/email before using passkey login. When disabled, discoverable (username-less) passkeys are allowed.',
         'recaptcha-site-key' => 'Khóa trang web reCAPTCHA',
         'recaptcha-secret-key' => 'Khóa bí mật reCAPTCHA',
         'turnstile-site-key' => 'Khóa trang web quay vòng',
