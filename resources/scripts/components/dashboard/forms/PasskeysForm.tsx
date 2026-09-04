@@ -10,13 +10,11 @@ import { Button } from '@/reviactyl/components/button';
 import { useFlashKey } from '@/plugins/useFlash';
 import { useTranslation } from 'react-i18next';
 import { deleteAccountPasskey, getAccountPasskeys, registerAccountPasskey } from '@/api/account/passkeys';
+import GreyRowBox from '@/reviactyl/elements/GreyRowBox';
+import { FaFingerprint, FaGoogle, FaTrash } from 'react-icons/fa6';
 
-export default () => {
+export const ListPasskeysForm = () => {
     const { t } = useTranslation('dashboard/account');
-    const [name, setName] = useState('');
-    const [password, setPassword] = useState('');
-    const [isRegistering, setIsRegistering] = useState(false);
-    const [deletingId, setDeletingId] = useState<string | null>(null);
     const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string | null } | null>(null);
     const [deletePassword, setDeletePassword] = useState('');
     const { clearAndAddHttpError, clearFlashes } = useFlashKey('account:passkeys');
@@ -30,23 +28,6 @@ export default () => {
             clearAndAddHttpError(error);
         }
     }, [error]);
-
-    const onRegister = async (event: FormEvent) => {
-        event.preventDefault();
-        clearFlashes();
-        setIsRegistering(true);
-
-        try {
-            await registerAccountPasskey(password, name);
-            setName('');
-            setPassword('');
-            await mutate();
-        } catch (registerError) {
-            clearAndAddHttpError(registerError as Error);
-        } finally {
-            setIsRegistering(false);
-        }
-    };
 
     const onDelete = async () => {
         if (!deleteTarget) {
@@ -65,15 +46,11 @@ export default () => {
         setDeleteTarget(null);
         setDeletePassword('');
 
-        setDeletingId(deleteTarget.id);
-
         try {
             await deleteAccountPasskey(deleteTarget.id, passwordConfirmation);
             await mutate();
         } catch (deleteError) {
             clearAndAddHttpError(deleteError as Error);
-        } finally {
-            setDeletingId(null);
         }
     };
 
@@ -107,21 +84,21 @@ export default () => {
                 </div>
             </Dialog.Confirm>
 
-            <p css={tw`text-sm text-gray-200`}>{t('passkeys.description')}</p>
-
-            <div css={tw`mt-4 space-y-3`}>
+            <div css={tw`space-y-3`}>
                 {isLoading && <Spinner size={'small'} />}
 
                 {!isLoading && (!passkeys || passkeys.length === 0) && (
-                    <p css={tw`text-sm text-gray-300`}>{t('passkeys.empty')}</p>
+                    <p css={tw`text-center text-sm`}>{t('passkeys.empty')}</p>
                 )}
 
                 {(passkeys || []).map((passkey) => (
-                    <div
-                        key={passkey.id}
-                        css={tw`flex flex-col gap-2 rounded-ui border border-gray-500 bg-gray-600 p-3 sm:flex-row sm:items-center sm:justify-between`}
-                    >
-                        <div css={tw`min-w-0`}>
+                    <GreyRowBox key={passkey.id} css={tw`bg-gray-800 flex space-x-4 items-center`}>
+                        {passkey.authenticator === 'Google Password Manager' ? (
+                            <FaGoogle css={tw`text-gray-300`} />
+                        ) : (
+                            <FaFingerprint css={tw`text-gray-300`} />
+                        )}
+                        <div css={tw`flex-1 min-w-0`}>
                             <p css={tw`truncate text-sm font-medium text-gray-100`}>{passkey.name || passkey.id}</p>
                             {passkey.authenticator && (
                                 <p css={tw`truncate text-xs text-gray-300`}>{passkey.authenticator}</p>
@@ -134,23 +111,57 @@ export default () => {
                             </p>
                         </div>
                         <div>
-                            <Button.Danger
-                                type={'button'}
-                                disabled={deletingId !== null || isRegistering}
+                            <button
+                                css={tw`ml-4 p-2 text-sm`}
                                 onClick={() => setDeleteTarget({ id: passkey.id, name: passkey.name })}
                             >
-                                {deletingId === passkey.id ? (
-                                    <span css={tw`flex justify-center items-center`}>
-                                        <Spinner size={'small'} />
-                                    </span>
-                                ) : (
-                                    t('passkeys.remove')
-                                )}
-                            </Button.Danger>
+                                <FaTrash
+                                    className={'text-gray-400 hover:text-red-400 transition-colors duration-150'}
+                                />
+                            </button>
                         </div>
-                    </div>
+                    </GreyRowBox>
                 ))}
             </div>
+        </div>
+    );
+};
+
+export const CreatePasskeysForm = () => {
+    const { t } = useTranslation('dashboard/account');
+    const [name, setName] = useState('');
+    const [password, setPassword] = useState('');
+    const [isRegistering, setIsRegistering] = useState(false);
+    const { clearAndAddHttpError, clearFlashes } = useFlashKey('account:passkeys');
+
+    const { error, mutate } = useSWR('/api/client/account/passkeys', () => getAccountPasskeys());
+
+    useEffect(() => {
+        if (error) {
+            clearAndAddHttpError(error);
+        }
+    }, [error]);
+
+    const onRegister = async (event: FormEvent) => {
+        event.preventDefault();
+        clearFlashes();
+        setIsRegistering(true);
+
+        try {
+            await registerAccountPasskey(password, name);
+            setName('');
+            setPassword('');
+            await mutate();
+        } catch (registerError) {
+            clearAndAddHttpError(registerError as Error);
+        } finally {
+            setIsRegistering(false);
+        }
+    };
+
+    return (
+        <div>
+            <p css={tw`text-sm text-gray-200`}>{t('passkeys.description')}</p>
 
             <form css={tw`mt-6`} onSubmit={onRegister}>
                 <div css={tw`space-y-3`}>
@@ -159,7 +170,7 @@ export default () => {
                         <Input
                             value={name}
                             maxLength={191}
-                            disabled={isRegistering || deletingId !== null}
+                            disabled={isRegistering}
                             onChange={(event: ChangeEvent<HTMLInputElement>) => setName(event.currentTarget.value)}
                             placeholder={t('passkeys.name-placeholder')}
                         />
@@ -170,14 +181,14 @@ export default () => {
                             type={'password'}
                             value={password}
                             required
-                            disabled={isRegistering || deletingId !== null}
+                            disabled={isRegistering}
                             onChange={(event: ChangeEvent<HTMLInputElement>) => setPassword(event.currentTarget.value)}
                         />
                     </div>
                 </div>
 
                 <div css={tw`mt-4`}>
-                    <Button type={'submit'} disabled={isRegistering || deletingId !== null || password.length < 1}>
+                    <Button type={'submit'} disabled={isRegistering || password.length < 1}>
                         {isRegistering ? (
                             <span css={tw`flex justify-center items-center`}>
                                 <Spinner size={'small'} />
