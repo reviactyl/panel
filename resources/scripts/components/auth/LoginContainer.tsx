@@ -27,7 +27,6 @@ interface Values {
 function LoginContainer() {
     const { t } = useTranslation('auth');
     const primaryButtonClass = tw`w-full !py-3`;
-    const passkeyButtonClass = tw`w-full !h-10 !min-h-[2.5rem] !max-h-[2.5rem] !py-0 active:!translate-y-0 active:!scale-100`;
     const ref = useRef<Reaptcha>(null);
     const [token, setToken] = useState('');
     const [show, setShow] = useState(false);
@@ -211,8 +210,8 @@ function LoginContainer() {
                         </Button>
                     </div>
                     <div css={tw`mt-3`}>
-                        <Button
-                            css={passkeyButtonClass}
+                        <Button.Text
+                            css={primaryButtonClass}
                             type={'button'}
                             disabled={isSubmitting}
                             onClick={() => performPasskeyLogin(values.username, setSubmitting)}
@@ -227,7 +226,7 @@ function LoginContainer() {
                                     </span>
                                 )}
                             </span>
-                        </Button>
+                        </Button.Text>
                     </div>
 
                     <OAuthButtons
