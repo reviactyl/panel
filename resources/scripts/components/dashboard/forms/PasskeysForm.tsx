@@ -18,6 +18,7 @@ export default () => {
     const [isRegistering, setIsRegistering] = useState(false);
     const [deletingId, setDeletingId] = useState<string | null>(null);
     const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string | null } | null>(null);
+    const [deletePassword, setDeletePassword] = useState('');
     const { clearAndAddHttpError, clearFlashes } = useFlashKey('account:passkeys');
 
     const { data: passkeys, error, mutate } = useSWR('/api/client/account/passkeys', () => getAccountPasskeys());
@@ -53,12 +54,21 @@ export default () => {
         }
 
         clearFlashes();
+
+        if (!deletePassword) {
+            clearAndAddHttpError(new Error(t('passkeys.password-required')));
+            return;
+        }
+
+        const passwordConfirmation = deletePassword;
+
         setDeleteTarget(null);
+        setDeletePassword('');
 
         setDeletingId(deleteTarget.id);
 
         try {
-            await deleteAccountPasskey(deleteTarget.id);
+            await deleteAccountPasskey(deleteTarget.id, passwordConfirmation);
             await mutate();
         } catch (deleteError) {
             clearAndAddHttpError(deleteError as Error);
@@ -73,11 +83,28 @@ export default () => {
                 open={deleteTarget !== null}
                 title={t('passkeys.remove')}
                 confirm={t('passkeys.remove')}
-                onClose={() => setDeleteTarget(null)}
+                onClose={() => {
+                    setDeleteTarget(null);
+                    setDeletePassword('');
+                }}
                 onConfirmed={onDelete}
             >
-                {t('passkeys.delete-confirm')}
-                {deleteTarget && <Code>{deleteTarget.name || deleteTarget.id}</Code>}
+                <div css={tw`space-y-3`}>
+                    <p>{t('passkeys.delete-confirm')}</p>
+                    {deleteTarget && <Code>{deleteTarget.name || deleteTarget.id}</Code>}
+                    <div>
+                        <Label>{t('passkeys.password')}</Label>
+                        <Input
+                            type={'password'}
+                            value={deletePassword}
+                            autoComplete={'current-password'}
+                            onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                                setDeletePassword(event.currentTarget.value)
+                            }
+                        />
+                        <p css={tw`mt-1 text-xs text-gray-300`}>{t('passkeys.delete-password-prompt')}</p>
+                    </div>
+                </div>
             </Dialog.Confirm>
 
             <p css={tw`text-sm text-gray-200`}>{t('passkeys.description')}</p>

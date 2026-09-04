@@ -64,6 +64,7 @@ class PasskeyControllerTest extends ClientApiIntegrationTestCase
         $this->actingAs($user)
             ->postJson('/api/client/account/passkeys/remove', [
                 'id' => (string) $passkey->id,
+                'password' => 'password',
             ])
             ->assertStatus(Response::HTTP_NO_CONTENT);
 
@@ -72,7 +73,7 @@ class PasskeyControllerTest extends ClientApiIntegrationTestCase
         ]);
     }
 
-    public function test_passkey_can_be_deleted_without_password(): void
+    public function test_passkey_cannot_be_deleted_without_password(): void
     {
         $user = User::factory()->create();
 
@@ -84,9 +85,54 @@ class PasskeyControllerTest extends ClientApiIntegrationTestCase
 
         $this->actingAs($user)
             ->deleteJson('/api/client/account/passkeys/'.$passkey->id)
+            ->assertUnprocessable()
+            ->assertJsonPath('errors.0.meta.source_field', 'password');
+
+        $this->assertDatabaseHas('passkeys', [
+            'id' => $passkey->id,
+        ]);
+    }
+
+    public function test_passkey_can_be_deleted_from_rest_endpoint_with_valid_password(): void
+    {
+        $user = User::factory()->create();
+
+        $passkey = $user->passkeys()->create([
+            'name' => 'Protected Key',
+            'credential_id' => 'Y3JlZF9yZXN0X2RlbGV0ZQ',
+            'credential' => [],
+        ]);
+
+        $this->actingAs($user)
+            ->deleteJson('/api/client/account/passkeys/'.$passkey->id, [
+                'password' => 'password',
+            ])
             ->assertStatus(Response::HTTP_NO_CONTENT);
 
         $this->assertDatabaseMissing('passkeys', [
+            'id' => $passkey->id,
+        ]);
+    }
+
+    public function test_passkey_cannot_be_deleted_with_invalid_password(): void
+    {
+        $user = User::factory()->create();
+
+        $passkey = $user->passkeys()->create([
+            'name' => 'Protected Key',
+            'credential_id' => 'Y3JlZF9pbnZhbGlkX3Bhc3N3b3Jk',
+            'credential' => [],
+        ]);
+
+        $this->actingAs($user)
+            ->postJson('/api/client/account/passkeys/remove', [
+                'id' => (string) $passkey->id,
+                'password' => 'invalid',
+            ])
+            ->assertStatus(Response::HTTP_BAD_REQUEST)
+            ->assertJsonPath('errors.0.detail', 'The password provided was not valid.');
+
+        $this->assertDatabaseHas('passkeys', [
             'id' => $passkey->id,
         ]);
     }
@@ -96,7 +142,9 @@ class PasskeyControllerTest extends ClientApiIntegrationTestCase
         $user = User::factory()->create();
 
         $this->actingAs($user)
-            ->postJson('/api/client/account/passkeys/remove')
+            ->postJson('/api/client/account/passkeys/remove', [
+                'password' => 'password',
+            ])
             ->assertStatus(Response::HTTP_BAD_REQUEST)
             ->assertJsonPath('errors.0.detail', 'A passkey id must be provided.');
     }

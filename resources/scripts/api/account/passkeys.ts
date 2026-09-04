@@ -106,13 +106,14 @@ export const registerAccountPasskey = async (password: string, name?: string): P
     );
 };
 
-export const deleteAccountPasskey = async (id: string): Promise<void> => {
+export const deleteAccountPasskey = async (id: string, password: string): Promise<void> => {
     const { token, config } = await csrfRequestConfig();
 
     await http.post(
         '/api/client/account/passkeys/remove',
         {
             id,
+            password,
             _token: token,
         },
         config
