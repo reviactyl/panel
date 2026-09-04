@@ -4,13 +4,15 @@ namespace App\Http\Controllers\Api\Client;
 
 use App\Facades\Activity;
 use App\Models\User;
-use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
-use Laragear\WebAuthn\Http\Requests\AttestationRequest;
-use Laragear\WebAuthn\Http\Requests\AttestedRequest;
+use Laravel\Passkeys\Actions\DeletePasskey;
+use Laravel\Passkeys\Actions\GenerateRegistrationOptions;
+use Laravel\Passkeys\Actions\StorePasskey;
+use Laravel\Passkeys\Http\Requests\PasskeyRegistrationRequest;
+use Laravel\Passkeys\Support\WebAuthn;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class PasskeyController extends ClientApiController
@@ -21,16 +23,15 @@ class PasskeyController extends ClientApiController
     public function index(Request $request): JsonResponse
     {
         $credentials = $request->user()
-            ->webAuthnCredentials()
+            ->passkeys()
             ->latest('created_at')
             ->get()
             ->map(fn ($credential) => [
-                'id' => $credential->id,
-                'name' => $credential->alias,
-                'origin' => $credential->origin,
+                'id' => (string) $credential->id,
+                'name' => $credential->name,
+                'authenticator' => $credential->authenticator,
                 'created_at' => $credential->created_at,
                 'updated_at' => $credential->updated_at,
-                'disabled_at' => $credential->disabled_at,
             ]);
 
         return new JsonResponse([
@@ -41,7 +42,7 @@ class PasskeyController extends ClientApiController
     /**
      * Build registration options for a new passkey.
      */
-    public function options(AttestationRequest $request): Responsable
+    public function options(Request $request, GenerateRegistrationOptions $generate): JsonResponse
     {
         $data = $request->validate([
             'password' => ['required', 'string'],
@@ -57,24 +58,26 @@ class PasskeyController extends ClientApiController
             throw new BadRequestHttpException('The password provided was not valid.');
         }
 
-        // Secure + userless allows account selection directly from the authenticator.
-        return $request->secureRegistration()->userless()->toCreate();
+        $options = $generate($user);
+
+        $request->session()->put('passkey.registration_options', WebAuthn::toJson($options));
+
+        return new JsonResponse(WebAuthn::toBrowserArray($options));
     }
 
     /**
      * Save a newly registered passkey.
      */
-    public function store(AttestedRequest $request): JsonResponse
+    public function store(PasskeyRegistrationRequest $request, StorePasskey $storePasskey): JsonResponse
     {
-        $data = $request->validate([
-            'name' => ['nullable', 'string', 'max:191'],
-        ]);
+        $passkey = $storePasskey(
+            $request->user(),
+            $request->string('name')->toString(),
+            $request->credential(),
+            $request->registrationOptions()
+        );
 
-        $id = $request->save([
-            'alias' => $data['name'] ?? null,
-        ]);
-
-        Activity::event('user:passkey.create')->property('id', $id)->log();
+        Activity::event('user:passkey.create')->property('id', $passkey->id)->log();
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
@@ -82,7 +85,7 @@ class PasskeyController extends ClientApiController
     /**
      * Delete a passkey from the current account.
      */
-    public function delete(Request $request, ?string $id = null): JsonResponse
+    public function delete(Request $request, DeletePasskey $deletePasskey, ?string $id = null): JsonResponse
     {
         $credentialId = $id ?? $request->input('id');
 
@@ -90,9 +93,9 @@ class PasskeyController extends ClientApiController
             throw new BadRequestHttpException('A passkey id must be provided.');
         }
 
-        $credential = $request->user()->webAuthnCredentials()->whereKey($credentialId)->firstOrFail();
+        $credential = $request->user()->passkeys()->whereKey($credentialId)->firstOrFail();
 
-        $credential->delete();
+        $deletePasskey($request->user(), $credential);
 
         Activity::event('user:passkey.delete')->property('id', $credentialId)->log();
 

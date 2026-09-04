@@ -12,18 +12,10 @@ class PasskeyLoginControllerTest extends HttpTestCase
     {
         $user = User::factory()->create();
 
-        $user->webAuthnCredentials()->forceCreate([
-            'id' => 'cred_login_1',
-            'user_id' => $user->uuid,
-            'alias' => 'Phone',
-            'counter' => 1,
-            'rp_id' => 'panel.test',
-            'origin' => 'https://panel.test',
-            'transports' => ['internal'],
-            'aaguid' => null,
-            'public_key' => 'public-key',
-            'attestation_format' => 'none',
-            'certificates' => [],
+        $user->passkeys()->create([
+            'name' => 'Phone',
+            'credential_id' => 'Y3JlZF9sb2dpbl8x',
+            'credential' => [],
         ]);
 
         $this->postJson(route('auth.passkey-options'), [
@@ -32,14 +24,16 @@ class PasskeyLoginControllerTest extends HttpTestCase
             ->assertOk()
             ->assertJsonStructure([
                 'challenge',
-            ]);
+            ])
+            ->assertSessionHas('passkey.verification_options')
+            ->assertSessionHas('passkey.login_user_id', $user->id);
     }
 
     public function test_login_endpoint_requires_assertion_payload(): void
     {
         $this->postJson(route('auth.passkey-login'))
             ->assertUnprocessable()
-            ->assertJsonPath('errors.0.meta.source_field', 'id');
+            ->assertJsonPath('errors.0.meta.source_field', 'credential');
     }
 
     public function test_options_endpoint_returns_generic_error_when_user_has_no_passkeys(): void

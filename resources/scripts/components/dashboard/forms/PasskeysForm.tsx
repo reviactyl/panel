@@ -96,7 +96,9 @@ export default () => {
                     >
                         <div css={tw`min-w-0`}>
                             <p css={tw`truncate text-sm font-medium text-gray-100`}>{passkey.name || passkey.id}</p>
-                            <p css={tw`truncate text-xs text-gray-300`}>{passkey.origin}</p>
+                            {passkey.authenticator && (
+                                <p css={tw`truncate text-xs text-gray-300`}>{passkey.authenticator}</p>
+                            )}
                             <p css={tw`mt-1 text-xs text-gray-300`}>
                                 {t('passkeys.created')}: {passkey.createdAt.toLocaleString()}
                             </p>

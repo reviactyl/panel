@@ -11,6 +11,8 @@ class PasskeyControllerTest extends ClientApiIntegrationTestCase
     {
         $user = User::factory()->create();
 
+        $this->withHeader('Origin', config('app.url'));
+
         $this->actingAs($user)
             ->postJson('/api/client/account/passkeys/register/options', [
                 'password' => 'invalid',
@@ -27,61 +29,46 @@ class PasskeyControllerTest extends ClientApiIntegrationTestCase
             ->assertJsonStructure([
                 'challenge',
                 'rp',
-            ]);
+            ])
+            ->assertSessionHas('passkey.registration_options');
     }
 
     public function test_passkeys_are_listed_for_authenticated_user(): void
     {
         $user = User::factory()->create();
 
-        $user->webAuthnCredentials()->forceCreate([
-            'id' => 'cred_1',
-            'user_id' => $user->uuid,
-            'alias' => 'Workstation',
-            'counter' => 1,
-            'rp_id' => 'panel.test',
-            'origin' => 'https://panel.test',
-            'transports' => ['internal'],
-            'aaguid' => null,
-            'public_key' => 'public-key',
-            'attestation_format' => 'none',
-            'certificates' => [],
+        $passkey = $user->passkeys()->create([
+            'name' => 'Workstation',
+            'credential_id' => 'Y3JlZF8x',
+            'credential' => [],
         ]);
 
         $this->actingAs($user)
             ->getJson('/api/client/account/passkeys')
             ->assertOk()
-            ->assertJsonPath('data.0.id', 'cred_1')
+            ->assertJsonPath('data.0.id', (string) $passkey->id)
             ->assertJsonPath('data.0.name', 'Workstation')
-            ->assertJsonPath('data.0.origin', 'https://panel.test');
+            ->assertJsonPath('data.0.authenticator', null);
     }
 
     public function test_passkey_can_be_deleted(): void
     {
         $user = User::factory()->create();
 
-        $user->webAuthnCredentials()->forceCreate([
-            'id' => 'cred_delete_me',
-            'user_id' => $user->uuid,
-            'alias' => 'Temporary Key',
-            'counter' => 1,
-            'rp_id' => 'panel.test',
-            'origin' => 'https://panel.test',
-            'transports' => ['internal'],
-            'aaguid' => null,
-            'public_key' => 'public-key',
-            'attestation_format' => 'none',
-            'certificates' => [],
+        $passkey = $user->passkeys()->create([
+            'name' => 'Temporary Key',
+            'credential_id' => 'Y3JlZF9kZWxldGVfbWU',
+            'credential' => [],
         ]);
 
         $this->actingAs($user)
             ->postJson('/api/client/account/passkeys/remove', [
-                'id' => 'cred_delete_me',
+                'id' => (string) $passkey->id,
             ])
             ->assertStatus(Response::HTTP_NO_CONTENT);
 
-        $this->assertDatabaseMissing('webauthn_credentials', [
-            'id' => 'cred_delete_me',
+        $this->assertDatabaseMissing('passkeys', [
+            'id' => $passkey->id,
         ]);
     }
 
@@ -89,26 +76,18 @@ class PasskeyControllerTest extends ClientApiIntegrationTestCase
     {
         $user = User::factory()->create();
 
-        $user->webAuthnCredentials()->forceCreate([
-            'id' => 'cred_cannot_delete',
-            'user_id' => $user->uuid,
-            'alias' => 'Protected Key',
-            'counter' => 1,
-            'rp_id' => 'panel.test',
-            'origin' => 'https://panel.test',
-            'transports' => ['internal'],
-            'aaguid' => null,
-            'public_key' => 'public-key',
-            'attestation_format' => 'none',
-            'certificates' => [],
+        $passkey = $user->passkeys()->create([
+            'name' => 'Protected Key',
+            'credential_id' => 'Y3JlZF9jYW5ub3RfZGVsZXRl',
+            'credential' => [],
         ]);
 
         $this->actingAs($user)
-            ->deleteJson('/api/client/account/passkeys/cred_cannot_delete')
+            ->deleteJson('/api/client/account/passkeys/'.$passkey->id)
             ->assertStatus(Response::HTTP_NO_CONTENT);
 
-        $this->assertDatabaseMissing('webauthn_credentials', [
-            'id' => 'cred_cannot_delete',
+        $this->assertDatabaseMissing('passkeys', [
+            'id' => $passkey->id,
         ]);
     }
 

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Laravel\Passkeys\Passkeys;
 use Laravel\Sanctum\Sanctum;
 
 class AppServiceProvider extends ServiceProvider
@@ -65,6 +66,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        Passkeys::ignoreRoutes();
+
         $this->app->register(SettingsServiceProvider::class);
     }
 

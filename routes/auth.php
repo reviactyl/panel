@@ -35,7 +35,7 @@ Route::middleware(['throttle:authentication'])->group(function () {
     // Login endpoints.
     Route::post('/login', [Auth\LoginController::class, 'login'])->middleware('captcha');
     Route::post('/login/passkey/options', [Auth\PasskeyLoginController::class, 'options'])->name('auth.passkey-options');
-    Route::post('/login/passkey', [Auth\PasskeyLoginController::class, 'login'])->name('auth.passkey-login');
+    Route::post('/login/passkey', [Auth\PasskeyLoginController::class, 'store'])->name('auth.passkey-login');
     Route::post('/register', [Auth\RegisterController::class, 'register'])->middleware('captcha');
     Route::post('/login/checkpoint', Auth\LoginCheckpointController::class)->name('auth.login-checkpoint');
 

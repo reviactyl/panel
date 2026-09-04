@@ -59,23 +59,21 @@ const csrfRequestConfig = async () => {
 
 export interface AccountPasskey {
     id: string;
-    name: string | null;
-    origin: string;
+    name: string;
+    authenticator: string | null;
     createdAt: Date;
     updatedAt: Date;
-    disabledAt: Date | null;
 }
 
 export const getAccountPasskeys = async (): Promise<AccountPasskey[]> => {
     const { data } = await http.get('/api/client/account/passkeys');
 
     return (data.data || []).map((item: any) => ({
-        id: item.id,
+        id: String(item.id),
         name: item.name,
-        origin: item.origin,
+        authenticator: item.authenticator || null,
         createdAt: new Date(item.created_at),
         updatedAt: new Date(item.updated_at),
-        disabledAt: item.disabled_at ? new Date(item.disabled_at) : null,
     }));
 };
 
@@ -100,8 +98,8 @@ export const registerAccountPasskey = async (password: string, name?: string): P
     await http.post(
         '/api/client/account/passkeys/register',
         {
-            ...attestation,
-            name: name && name.length > 0 ? name : undefined,
+            credential: attestation,
+            name: name?.trim() || 'Passkey',
             _token: token,
         },
         config

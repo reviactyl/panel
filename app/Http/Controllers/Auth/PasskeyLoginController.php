@@ -6,25 +6,21 @@ use App\Contracts\Repository\SettingsRepositoryInterface;
 use App\Exceptions\DisplayException;
 use App\Facades\Activity;
 use App\Models\User;
-use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Laragear\WebAuthn\Http\Requests\AssertionRequest;
+use Laravel\Passkeys\Actions\GenerateVerificationOptions;
+use Laravel\Passkeys\Actions\VerifyPasskey;
+use Laravel\Passkeys\Exceptions\InvalidPasskeyException;
+use Laravel\Passkeys\Http\Requests\PasskeyVerificationRequest;
+use Laravel\Passkeys\Support\WebAuthn;
 
 class PasskeyLoginController extends AbstractLoginController
 {
-    public function __construct()
-    {
-        parent::__construct();
-        $this->auth = Auth::guard();
-    }
-
     /**
      * Return a WebAuthn assertion challenge for passkey login.
      */
-    public function options(AssertionRequest $request): Responsable
+    public function options(Request $request, GenerateVerificationOptions $generate): JsonResponse
     {
         $data = $request->validate([
             'user' => 'nullable|string|min:1|max:191',
@@ -46,22 +42,24 @@ class PasskeyLoginController extends AbstractLoginController
             throw new DisplayException(trans('auth.passkey-username-required'));
         }
 
+        $user = null;
+
         if (! empty($data['user'])) {
             $field = $this->getField($data['user']);
             $user = User::query()->where($field, $data['user'])->first();
 
             // Return a generic message for unknown users and users without passkeys.
-            if (! $user || ! $user->webAuthnCredentials()->whereNull('disabled_at')->exists()) {
+            if (! $user || ! $user->hasPasskeysEnabled()) {
                 throw new DisplayException(trans('auth.passkey-no-credentials'));
             }
-
-            return $request->secureLogin()->toVerify([
-                $field => $data['user'],
-            ]);
         }
 
-        // Empty credentials enables discoverable credentials (username-less sign in).
-        return $request->secureLogin()->toVerify(null);
+        $options = $generate($user);
+
+        $request->session()->put('passkey.verification_options', WebAuthn::toJson($options));
+        $request->session()->put('passkey.login_user_id', $user?->id);
+
+        return new JsonResponse(WebAuthn::toBrowserArray($options));
     }
 
     /**
@@ -69,31 +67,29 @@ class PasskeyLoginController extends AbstractLoginController
      *
      * @throws DisplayException
      */
-    public function login(Request $request): JsonResponse
+    public function store(PasskeyVerificationRequest $request, VerifyPasskey $verify): JsonResponse
     {
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->fireLockoutEvent($request);
             $this->sendLockoutResponse($request);
         }
 
-        $credentials = $request->validate([
-            'id' => 'required|string',
-            'rawId' => 'required|string',
-            'response.authenticatorData' => 'required|string',
-            'response.clientDataJSON' => 'required|string',
-            'response.signature' => 'required|string',
-            'response.userHandle' => 'sometimes|nullable|string',
-            'type' => 'required|string|in:public-key',
-        ]);
+        $expectedUserId = $request->session()->pull('passkey.login_user_id');
+        $expectedUser = is_numeric($expectedUserId) ? User::query()->find($expectedUserId) : null;
 
-        if (! $this->auth->once($credentials)) {
+        try {
+            $passkey = $verify(
+                $request->credential(),
+                $request->verificationOptions(),
+                $expectedUser
+            );
+        } catch (InvalidPasskeyException) {
             $this->sendFailedLoginResponse($request);
         }
 
-        /** @var User $user */
-        $user = $this->auth->user();
+        $user = $passkey->user;
 
-        if (! $user) {
+        if (! $user instanceof User) {
             $this->sendFailedLoginResponse($request);
         }
 

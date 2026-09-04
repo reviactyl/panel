@@ -84,12 +84,16 @@ export default async (username?: string): Promise<LoginResponse> => {
         throw mapPasskeyAssertionError(error);
     }
 
-    const loginResponse = await http.post('/auth/login/passkey', assertion, {
-        headers: {
-            'X-XSRF-TOKEN': xsrfToken,
-        },
-        xsrfCookieName: '__reviactyl_ignore_xsrf_cookie__',
-    });
+    const loginResponse = await http.post(
+        '/auth/login/passkey',
+        { credential: assertion },
+        {
+            headers: {
+                'X-XSRF-TOKEN': xsrfToken,
+            },
+            xsrfCookieName: '__reviactyl_ignore_xsrf_cookie__',
+        }
+    );
 
     return {
         complete: loginResponse.data.data.complete,

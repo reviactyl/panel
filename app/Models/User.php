@@ -27,8 +27,8 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\Rules\In;
-use Laragear\WebAuthn\Contracts\WebAuthnAuthenticatable;
-use Laragear\WebAuthn\WebAuthnAuthentication;
+use Laravel\Passkeys\Contracts\PasskeyUser;
+use Laravel\Passkeys\PasskeyAuthenticatable;
 
 /**
  * App\Models\User.
@@ -91,7 +91,7 @@ use Laragear\WebAuthn\WebAuthnAuthentication;
  * @mixin \Eloquent
  */
 #[Attributes\Identifiable('user')]
-class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract, HasAvatar, Identifiable, WebAuthnAuthenticatable
+class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract, HasAvatar, Identifiable, PasskeyUser
 {
     public const AVATAR_STYLES = ['gravatar', 'initials', 'identicon', 'loops', 'waves', 'critters', 'pixelbot', 'thumbs'];
 
@@ -110,7 +110,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     use HasRealtimeIdentifier;
     use Notifiable;
-    use WebAuthnAuthentication;
+    use PasskeyAuthenticatable;
 
     public const USER_LEVEL_USER = 0;
 
