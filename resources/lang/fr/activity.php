@@ -19,6 +19,7 @@ return [
     'auth' => [
         'fail' => 'Échec de connexion',
         'success' => 'Connexion',
+        'passkey' => 'Logged in with passkey',
         'password-reset' => 'Réinitialiser le mot de passe',
         'reset-password' => 'Réinitialisation du mot de passe demandée',
         'checkpoint' => 'Authentification à deux facteurs requise',
@@ -51,6 +52,10 @@ return [
         'two-factor' => [
             'create' => 'Authentification à deux facteurs activée',
             'delete' => 'Authentification à deux facteurs désactivée',
+        ],
+        'passkey' => [
+            'create' => 'Registered a new passkey',
+            'delete' => 'Removed passkey :id',
         ],
     ],
     'server' => [
