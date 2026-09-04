@@ -19,6 +19,7 @@ return [
     'auth' => [
         'fail' => 'Giriş başarısız',
         'success' => 'Giriş yapıldı',
+        'passkey' => 'Logged in with passkey',
         'password-reset' => 'Parola sıfırlandı',
         'reset-password' => 'Parola sıfırlama isteği gönderildi',
         'checkpoint' => 'İki aşamalı doğrulama istendi',
@@ -51,6 +52,10 @@ return [
         'two-factor' => [
             'create' => 'İki aşamalı doğrulama etkinleştirildi',
             'delete' => 'İki aşamalı doğrulama devre dışı bırakıldı',
+        ],
+        'passkey' => [
+            'create' => 'Registered a new passkey',
+            'delete' => 'Removed passkey :id',
         ],
     ],
     'server' => [
