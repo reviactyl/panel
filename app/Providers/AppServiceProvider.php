@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Http\Responses\AdminLogoutResponse;
 use App\Models;
+use Filament\Auth\Http\Responses\Contracts\LogoutResponse as LogoutResponseContract;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Cache;
@@ -62,6 +64,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->register(SettingsServiceProvider::class);
+        $this->app->bind(LogoutResponseContract::class, AdminLogoutResponse::class);
     }
 
     /**
