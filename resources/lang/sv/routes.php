@@ -11,8 +11,8 @@ return [
     ],
     'account' => [
         'overview' => 'Kontoinformation',
-        'api' => 'API-nycklar',
         'passkeys' => 'Passkeys',
+        'api' => 'API-nycklar',
         'ssh' => 'SSH-nycklar',
         'activity' => 'Aktivitet',
     ],
