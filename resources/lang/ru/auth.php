@@ -11,7 +11,14 @@ return [
     'password-label' => 'Пароль',
 
     'login-button' => 'Логин',
+    'passkey-button' => 'Login with Passkey',
     'return' => 'Вернуться на страницу входа',
+
+    'passkey-unsupported' => 'Passkeys are not supported by this browser.',
+    'passkey-failed' => 'Unable to complete passkey login. Please try again.',
+    'passkey-no-credentials' => 'No passkey is available for this login. Use your password or register a passkey first.',
+    'passkey-security' => 'Passkey verification could not be completed securely on this device.',
+    'passkey-username-required' => 'Enter your username or email before using a passkey.',
 
     'social' => [
         'or' => 'OR',
@@ -64,6 +71,7 @@ return [
         'label' => 'Регистрация',
         'create-link' => 'Don\'t have an account? Create one',
         'create-account' => 'Создать аккаунт',
+        'no-account' => 'Don\'t have an account?',
     ],
 
     'failed' => 'Не удалось найти учётную запись с указанными данными.',
