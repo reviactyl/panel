@@ -34,6 +34,8 @@ return [
         'title' => 'ಭದ್ರತೆ',
         'provider' => 'ಕ್ಯಾಪ್ಚಾ ಪ್ರೊವೈಡರ್',
         'disabled' => 'ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ',
+        'passkey-require-username' => 'Require Username for Passkey Login',
+        'passkey-require-username-hint' => 'When enabled, users must enter username/email before using passkey login. When disabled, discoverable (username-less) passkeys are allowed.',
         'recaptcha-site-key' => 'reCAPTCHA ಸೈಟ್ ಕೀ',
         'recaptcha-secret-key' => 'reCAPTCHA ಸೀಕ್ರೆಟ್ ಕೀ',
         'turnstile-site-key' => 'ಟರ್ನ್ಸ್ಟೈಲ್ ಸೈಟ್ ಕೀ',
