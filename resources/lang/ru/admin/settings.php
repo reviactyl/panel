@@ -34,6 +34,8 @@ return [
         'title' => 'Безопасность',
         'provider' => 'Поставщик Captcha',
         'disabled' => 'Отключено',
+        'passkey-require-username' => 'Require Username for Passkey Login',
+        'passkey-require-username-hint' => 'When enabled, users must enter username/email before using passkey login. When disabled, discoverable (username-less) passkeys are allowed.',
         'recaptcha-site-key' => 'Ключ сайта reCAPTCHA',
         'recaptcha-secret-key' => 'Секретный ключ reCAPTCHA',
         'turnstile-site-key' => 'Ключ сайта Turnstile',
