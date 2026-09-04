@@ -19,6 +19,7 @@ return [
     'auth' => [
         'fail' => 'Inicio de sesión fallido',
         'success' => 'Sesión iniciada',
+        'passkey' => 'Logged in with passkey',
         'password-reset' => 'Contraseña restablecida',
         'reset-password' => 'Solicitado restablecimiento de contraseña',
         'checkpoint' => 'Se solicitó autenticación de doble factor',
@@ -51,6 +52,10 @@ return [
         'two-factor' => [
             'create' => 'Autenticación de doble factor habilitada',
             'delete' => 'Autenticación de doble factor deshabilitada',
+        ],
+        'passkey' => [
+            'create' => 'Registered a new passkey',
+            'delete' => 'Removed passkey :id',
         ],
     ],
     'server' => [
