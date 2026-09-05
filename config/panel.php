@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'installation_type' => env('PANEL_INSTALLATION_TYPE', 'native'),
+
     /*
     |--------------------------------------------------------------------------
     | Restricted Environment
