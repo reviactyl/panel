@@ -8,19 +8,22 @@ use App\Repositories\Agent\DaemonConfigurationRepository;
 use App\Services\Helpers\SoftwareVersionService;
 use App\Services\Updates\InstallationTypeService;
 use App\Services\Updates\SoftwareUpdateStatusService;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Throwable;
 
-class UpdateAgentJob extends Job implements ShouldQueue
+class UpdateAgentJob extends Job implements ShouldBeUnique, ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
     use SerializesModels;
 
     public int $timeout = 180;
+
+    public int $uniqueFor = 300;
 
     public function __construct(public int $nodeId, public string $version)
     {
@@ -52,6 +55,11 @@ class UpdateAgentJob extends Job implements ShouldQueue
 
         $repository->setNode($node)->updateSystem($this->version);
         $statuses->set($key, 'restarting', trans('admin/updates.status.agent_restarting'), $this->version);
+    }
+
+    public function uniqueId(): string
+    {
+        return (string) $this->nodeId;
     }
 
     public function failed(?Throwable $exception): void

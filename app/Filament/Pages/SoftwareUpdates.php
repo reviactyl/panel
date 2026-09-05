@@ -11,6 +11,8 @@ use App\Services\Updates\InstallationTypeService;
 use App\Services\Updates\SoftwareUpdateStatusService;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Illuminate\Bus\UniqueLock;
+use Illuminate\Contracts\Cache\Repository as CacheRepository;
 
 class SoftwareUpdates extends Page
 {
@@ -142,7 +144,16 @@ class SoftwareUpdates extends Page
         $version = (string) $this->panel['latest'];
         $statuses = app(SoftwareUpdateStatusService::class);
         $statuses->set($statuses->panelKey(), 'queued', trans('admin/updates.status.queued'), $version);
-        UpdatePanelJob::dispatch($version);
+        try {
+            UpdatePanelJob::dispatch($version);
+        } catch (\Throwable $exception) {
+            $statuses->set($statuses->panelKey(), 'failed', trans('admin/updates.status.panel_failed'), $version);
+            report($exception);
+            Notification::make()->danger()->title(trans('admin/updates.status.panel_failed'))->send();
+            $this->panel['status'] = $statuses->get($statuses->panelKey());
+
+            return;
+        }
         Notification::make()->success()->title(trans('admin/updates.panel_queued'))->send();
         $this->refreshUpdates();
     }
@@ -179,8 +190,18 @@ class SoftwareUpdates extends Page
 
             return;
         }
-        $statuses->set($statuses->agentKey($nodeId), 'queued', trans('admin/updates.status.queued'), $version);
-        UpdateAgentJob::dispatch($nodeId, $version);
+        if (! $this->dispatchAgentUpdate($statuses, $nodeId, $version)) {
+            Notification::make()->danger()->title(trans('admin/updates.status.agent_failed'))->send();
+            foreach ($this->agents as &$agent) {
+                if ($agent['id'] === $nodeId) {
+                    $agent['status'] = $statuses->get($statuses->agentKey($nodeId));
+                    break;
+                }
+            }
+            unset($agent);
+
+            return;
+        }
         Notification::make()->success()->title(trans('admin/updates.agent_queued', ['name' => $node->name]))->send();
         $this->refreshUpdates();
     }
@@ -198,9 +219,9 @@ class SoftwareUpdates extends Page
                 continue;
             }
 
-            $statuses->set($statuses->agentKey($agent['id']), 'queued', trans('admin/updates.status.queued'), $agent['latest']);
-            UpdateAgentJob::dispatch($agent['id'], $agent['latest']);
-            $queued++;
+            if ($this->dispatchAgentUpdate($statuses, $agent['id'], $agent['latest'])) {
+                $queued++;
+            }
         }
 
         Notification::make()
@@ -213,5 +234,28 @@ class SoftwareUpdates extends Page
     private function updateInProgress(?array $status): bool
     {
         return in_array($status['state'] ?? null, self::BUSY_STATES, true);
+    }
+
+    private function dispatchAgentUpdate(SoftwareUpdateStatusService $statuses, int $nodeId, string $version): bool
+    {
+        $key = $statuses->agentKey($nodeId);
+        $statuses->set($key, 'queued', trans('admin/updates.status.queued'), $version);
+        $job = new UpdateAgentJob($nodeId, $version);
+
+        try {
+            dispatch($job);
+
+            return true;
+        } catch (\Throwable $exception) {
+            $statuses->set($key, 'failed', trans('admin/updates.status.agent_failed'), $version);
+            report($exception);
+            try {
+                (new UniqueLock(app(CacheRepository::class)))->release($job);
+            } catch (\Throwable $lockException) {
+                report($lockException);
+            }
+
+            return false;
+        }
     }
 }

@@ -3,6 +3,10 @@
 return [
     'installation_type' => env('PANEL_INSTALLATION_TYPE', 'native'),
 
+    'updates' => [
+        'backups_to_keep' => 3,
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Restricted Environment

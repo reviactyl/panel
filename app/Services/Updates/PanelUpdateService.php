@@ -11,6 +11,8 @@ use Throwable;
 
 class PanelUpdateService
 {
+    private const COMPLETED_BACKUP_MARKER = '.completed.json';
+
     private const RELEASE_URL = 'https://github.com/reviactyl/panel/releases/download/v%s/panel.tar.gz';
 
     private const RELEASE_METADATA_URL = 'https://api.github.com/repos/reviactyl/panel/releases/tags/v%s';
@@ -143,6 +145,7 @@ class PanelUpdateService
 
             $this->files->deleteDirectory($runPath);
             $this->statuses->set($statusKey, 'complete', trans('admin/updates.status.panel_complete'), $version);
+            $this->markBackupCompletedAndPrune($backupPath, $workingRoot.'/backups', $version);
         } catch (Throwable $exception) {
             $rollbackErrors = [];
             if ($changesStarted && is_file($manifestPath)) {
@@ -342,6 +345,30 @@ class PanelUpdateService
             if ($mode !== false) {
                 chmod($destination, $mode & 0777);
             }
+        }
+    }
+
+    protected function markBackupCompletedAndPrune(string $backupPath, string $backupsPath, string $version): void
+    {
+        try {
+            $marker = $backupPath.'/'.self::COMPLETED_BACKUP_MARKER;
+            $this->files->put($marker, json_encode([
+                'version' => $version,
+                'completed_at' => now()->toIso8601String(),
+            ], JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR));
+            chmod($marker, 0600);
+
+            $completed = array_values(array_filter(
+                $this->files->directories($backupsPath),
+                fn (string $path): bool => $path !== $backupPath && is_file($path.'/'.self::COMPLETED_BACKUP_MARKER),
+            ));
+            rsort($completed, SORT_STRING);
+            $backupsToKeep = max(1, (int) config('panel.updates.backups_to_keep', 3));
+            foreach (array_slice($completed, $backupsToKeep - 1) as $expiredBackup) {
+                $this->files->deleteDirectory($expiredBackup);
+            }
+        } catch (Throwable $exception) {
+            report($exception);
         }
     }
 

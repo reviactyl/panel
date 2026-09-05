@@ -135,7 +135,39 @@ class PanelUpdateServiceTest extends TestCase
         $this->assertSame(0700, fileperms($backups[0]) & 0777);
         $this->assertSame(0600, fileperms($backups[0].'/database.sql') & 0777);
         $this->assertSame(0600, fileperms($backups[0].'/manifest.json') & 0777);
+        $this->assertFileExists($backups[0].'/.completed.json');
         $this->assertSame('new artisan', $files->get($base.'/artisan'));
+    }
+
+    public function test_prunes_only_old_completed_update_backups(): void
+    {
+        config()->set('panel.updates.backups_to_keep', 3);
+        $base = $this->baseDirectory();
+        $backupsPath = $base.'/storage/app/software-updates/backups';
+        $files = new Filesystem();
+
+        foreach (['20260901_000001_oldest', '20260902_000001_old', '20260903_000001_recent', '20260904_000001_newer'] as $backup) {
+            $files->ensureDirectoryExists($backupsPath.'/'.$backup);
+            $files->put($backupsPath.'/'.$backup.'/.completed.json', '{}');
+        }
+        $files->ensureDirectoryExists($backupsPath.'/failed-or-active');
+        $files->put($backupsPath.'/failed-or-active/database.sql', 'recovery data');
+        $current = $backupsPath.'/20260905_000001_current';
+        $files->ensureDirectoryExists($current);
+
+        $service = $this->makeInspectableUpdater($base);
+        $service->completeBackupForTest($current, $backupsPath, '26.09.1');
+
+        $remaining = array_map('basename', $files->directories($backupsPath));
+        sort($remaining);
+        $this->assertSame([
+            '20260903_000001_recent',
+            '20260904_000001_newer',
+            '20260905_000001_current',
+            'failed-or-active',
+        ], $remaining);
+        $this->assertFileExists($current.'/.completed.json');
+        $this->assertFileExists($backupsPath.'/failed-or-active/database.sql');
     }
 
     public function test_failed_dependency_install_restores_files_database_and_vendor(): void
@@ -300,6 +332,11 @@ class PanelUpdateServiceTest extends TestCase
             public function assertReleaseDigestMatches(string $path, string $expectedDigest): void
             {
                 $this->validateReleaseDigest($path, $expectedDigest);
+            }
+
+            public function completeBackupForTest(string $backupPath, string $backupsPath, string $version): void
+            {
+                $this->markBackupCompletedAndPrune($backupPath, $backupsPath, $version);
             }
 
             protected function downloadRelease(string $version, string $archivePath): void
