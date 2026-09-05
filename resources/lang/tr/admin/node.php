@@ -126,6 +126,7 @@ return [
     'table' => [
         'health' => 'Sağlık',
         'health_http_status' => 'HTTP :status',
+        'health_agent_outdated' => 'Agent outdated. v:version is available. Click here to update Agent.',
         'health_check_console' => 'tarayıcı konsolunu kontrol edin',
         'id' => 'KİMLİK',
         'uuid' => 'UUID',
