@@ -32,6 +32,11 @@ class UpgradeCommand extends Command
 
             return self::FAILURE;
         }
+        if ($versions->isLatestPanel()) {
+            $this->info('The Panel is already up to date.');
+
+            return self::SUCCESS;
+        }
 
         if ($this->input->isInteractive() && ! $this->confirm("Back up and update this Panel to v{$version}?")) {
             return self::SUCCESS;
