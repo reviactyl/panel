@@ -29,12 +29,15 @@ class UpdatePanelJob extends Job implements ShouldQueue
         $this->queue = 'standard';
         $connection = (string) config('queue.default');
         $driver = (string) config("queue.connections.{$connection}.driver");
+        if ($driver === 'sync') {
+            throw new RuntimeException('Automatic Panel updates are unavailable when sync is the queue connection.');
+        }
         if ($driver === 'sqs') {
             throw new RuntimeException('Automatic Panel updates are unavailable when SQS is the queue connection.');
         }
 
         $retryAfter = config("queue.connections.{$connection}.retry_after");
-        if ($connection !== 'sync' && (! is_numeric($retryAfter) || (int) $retryAfter <= $this->timeout)) {
+        if (! is_numeric($retryAfter) || (int) $retryAfter <= $this->timeout) {
             throw new RuntimeException('The queue retry_after setting must exceed the Panel update job timeout.');
         }
     }
