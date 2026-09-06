@@ -6,11 +6,7 @@ import { defineConfig } from 'vitest/config';
 import tailwindcss from '@tailwindcss/vite'
 
 const plugins = [
-    react({
-        babel: {
-            plugins: ['babel-plugin-macros', 'babel-plugin-styled-components'],
-        },
-    }),
+    react(),
     tailwindcss(),
 ];
 
