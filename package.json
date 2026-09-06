@@ -3,6 +3,7 @@
     "version": "26.0.0-dev",
     "private": true,
     "description": "Reviactyl is a modern and open-source game server management panel built using Laravel, React, FilamentPHP, Vite, and Go.",
+    "type": "module",
     "engines": {
         "node": ">=22"
     },
@@ -15,7 +16,6 @@
         "@preact/signals-react": "^3.9.0",
         "@redux-devtools/extension": "^4.0.0",
         "@revicons/react": "^1.0.0",
-        "@tailwindcss/forms": "^0.5.2",
         "@xterm/addon-fit": "^0.11.0",
         "@xterm/addon-search": "^0.16.0",
         "@xterm/addon-unicode11": "^0.9.0",
@@ -68,6 +68,7 @@
         "@eslint/compat": "^2.0.3",
         "@eslint/js": "^10.0.1",
         "@fontsource-variable/ibm-plex-sans": "^5.2.8",
+        "@tailwindcss/forms": "^0.5.11",
         "@tailwindcss/vite": "^4.3.3",
         "@testing-library/dom": "^8.14.0",
         "@testing-library/jest-dom": "^5.16.4",

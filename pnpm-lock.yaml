@@ -35,9 +35,6 @@ importers:
       '@revicons/react':
         specifier: ^1.0.0
         version: 1.0.0(react@19.2.4)
-      '@tailwindcss/forms':
-        specifier: ^0.5.2
-        version: 0.5.11(tailwindcss@4.3.3)
       '@xterm/addon-fit':
         specifier: ^0.11.0
         version: 0.11.0
@@ -189,6 +186,9 @@ importers:
       '@fontsource-variable/ibm-plex-sans':
         specifier: ^5.2.8
         version: 5.2.8
+      '@tailwindcss/forms':
+        specifier: ^0.5.11
+        version: 0.5.11(tailwindcss@4.3.3)
       '@tailwindcss/vite':
         specifier: ^4.3.3
         version: 4.3.3(vite@8.2.2(@types/node@22.19.11)(esbuild@0.27.7)(jiti@2.7.0)(terser@5.48.0)(yaml@2.9.0))
