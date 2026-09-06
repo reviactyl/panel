@@ -25,7 +25,7 @@ interface Values {
 
 function LoginContainer() {
     const { t } = useTranslation('auth');
-    const primaryButtonClass = 'w-full py-3!';
+    const primaryButtonClass = 'w-full !py-3';
     const ref = useRef<Reaptcha>(null);
     const [token, setToken] = useState('');
     const [show, setShow] = useState(false);
