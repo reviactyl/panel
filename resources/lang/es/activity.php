@@ -14,12 +14,12 @@ return [
         'using-sftp' => 'Usando SFTP',
     ],
     'event' => [
-        'password-reset' => 'Password reset',
+        'password-reset' => 'Restablecimiento de contraseña',
     ],
     'auth' => [
         'fail' => 'Inicio de sesión fallido',
         'success' => 'Sesión iniciada',
-        'passkey' => 'Logged in with passkey',
+        'passkey' => 'He iniciado sesión con una clave de acceso',
         'password-reset' => 'Contraseña restablecida',
         'reset-password' => 'Solicitado restablecimiento de contraseña',
         'checkpoint' => 'Se solicitó autenticación de doble factor',
@@ -38,8 +38,8 @@ return [
             'email-changed' => 'Correo cambiado de :old a :new',
             'password-changed' => 'Contraseña cambiada',
             'language-changed' => 'Correo cambiado de :old a :new',
-            'file-editor-changed' => 'Changed file editor from :old to :new',
-            'avatar-changed' => 'Changed avatar style from :old to :new',
+            'file-editor-changed' => 'Se ha cambiado el editor de archivos de :old a :new',
+            'avatar-changed' => 'He cambiado el estilo del avatar de :old a :new',
         ],
         'api-key' => [
             'create' => 'Creada nueva clave API :identifier',
@@ -54,8 +54,8 @@ return [
             'delete' => 'Autenticación de doble factor deshabilitada',
         ],
         'passkey' => [
-            'create' => 'Registered a new passkey',
-            'delete' => 'Removed passkey :id',
+            'create' => 'Se ha registrado una nueva clave de acceso',
+            'delete' => 'Se ha eliminado la clave de acceso :id',
         ],
     ],
     'server' => [
@@ -136,7 +136,7 @@ return [
         'settings' => [
             'rename' => 'Servidor renombrado de :old a :new',
             'description' => 'Descripción del servidor cambiada de :old a :new',
-            'category' => 'Changed server category',
+            'category' => 'Se ha cambiado la categoría del servidor',
         ],
         'startup' => [
             'edit' => 'Variable :variable cambiada de ":old" a ":new"',
