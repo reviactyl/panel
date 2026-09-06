@@ -19,7 +19,7 @@ const ContentBox = ({ title, borderColor, showFlashes, showLoadingOverlay, child
         {showFlashes && (
             <FlashMessageRender byKey={typeof showFlashes === 'string' ? showFlashes : undefined} className='mb-4' />
         )}
-        <Card className={`relative p-4! ${borderColor ? 'border-t-4!' : ''}`}>
+        <Card className={`relative !p-4 ${borderColor ? '!border-t-4' : ''}`}>
             <SpinnerOverlay visible={showLoadingOverlay || false} />
             {children}
         </Card>
