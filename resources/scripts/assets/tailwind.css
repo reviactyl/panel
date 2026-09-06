@@ -5,7 +5,7 @@
 }
 
 @theme inline {
-    --font-header: '"IBM Plex Sans"', '"Roboto"', system-ui, sans-serif;
+    --font-header: "IBM Plex Sans", "Roboto", system-ui, sans-serif;
     --font-sans: var(--font-family);
 
     --radius-ui: var(--radius);
