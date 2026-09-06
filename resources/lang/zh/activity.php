@@ -14,12 +14,12 @@ return [
         'using-sftp' => '使用 SFTP',
     ],
     'event' => [
-        'password-reset' => 'Password reset',
+        'password-reset' => '密码重置',
     ],
     'auth' => [
         'fail' => '登录失败',
         'success' => '登录成功',
-        'passkey' => 'Logged in with passkey',
+        'passkey' => '使用密码密钥登录',
         'password-reset' => '密码已重置',
         'reset-password' => '请求重置密码',
         'checkpoint' => '请求双重认证',
@@ -38,8 +38,8 @@ return [
             'email-changed' => '邮箱已从 :old 更改为 :new',
             'password-changed' => '密码已更改',
             'language-changed' => '语言已从 :old 更改为 :new',
-            'file-editor-changed' => 'Changed file editor from :old to :new',
-            'avatar-changed' => 'Changed avatar style from :old to :new',
+            'file-editor-changed' => '将文件编辑器从 :old 更改为 :new',
+            'avatar-changed' => '将头像样式从 :old 更改为 :new',
         ],
         'api-key' => [
             'create' => '创建了新的 API 密钥 :identifier',
@@ -54,8 +54,8 @@ return [
             'delete' => '禁用了双重认证',
         ],
         'passkey' => [
-            'create' => 'Registered a new passkey',
-            'delete' => 'Removed passkey :id',
+            'create' => '已注册新的密钥',
+            'delete' => '已删除密钥 :id',
         ],
     ],
     'server' => [
@@ -136,7 +136,7 @@ return [
         'settings' => [
             'rename' => '将服务器名称从 :old 重命名为 :new',
             'description' => '将服务器描述从 :old 更改为 :new',
-            'category' => 'Changed server category',
+            'category' => '更改了服务器类别',
         ],
         'startup' => [
             'edit' => '将 :variable 变量从 ":old" 更改为 ":new"',
