@@ -11,7 +11,7 @@ return [
     ],
     'account' => [
         'overview' => 'Aperçu du compte',
-        'passkeys' => 'Passkeys',
+        'passkeys' => 'Mots de passe',
         'api' => 'Clés API',
         'ssh' => 'Clés SSH',
         'activity' => 'Activités',
