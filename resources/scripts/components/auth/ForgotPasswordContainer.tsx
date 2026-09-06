@@ -84,7 +84,7 @@ export default () => {
                         type={'email'}
                     />
                     <div className='mt-6'>
-                        <Button className='w-full py-3!' type='submit' disabled={isSubmitting}>
+                        <Button className='w-full !py-3' type='submit' disabled={isSubmitting}>
                             {t('forgot-password.send-email')}
                         </Button>
                     </div>
