@@ -66,7 +66,6 @@ class Designify extends Page implements HasSchemas
         'designify:color800',
         'designify:color900',
         'designify:color950',
-        'designify:themeSelector',
         'designify:sidebarLogout',
         'designify:sidebarButtons',
         'designify:background',
@@ -88,97 +87,6 @@ class Designify extends Page implements HasSchemas
         'designify:cardType',
         'designify:layoutType',
         'designify:avatarType',
-        'designify:theme1:name',
-        'designify:theme1:colorPrimary',
-        'designify:theme1:color50',
-        'designify:theme1:color100',
-        'designify:theme1:color200',
-        'designify:theme1:color300',
-        'designify:theme1:color400',
-        'designify:theme1:color500',
-        'designify:theme1:color600',
-        'designify:theme1:color700',
-        'designify:theme1:color800',
-        'designify:theme1:color900',
-        'designify:theme1:color950',
-        'designify:theme2:name',
-        'designify:theme2:colorPrimary',
-        'designify:theme2:color50',
-        'designify:theme2:color100',
-        'designify:theme2:color200',
-        'designify:theme2:color300',
-        'designify:theme2:color400',
-        'designify:theme2:color500',
-        'designify:theme2:color600',
-        'designify:theme2:color700',
-        'designify:theme2:color800',
-        'designify:theme2:color900',
-        'designify:theme2:color950',
-        'designify:theme3:name',
-        'designify:theme3:colorPrimary',
-        'designify:theme3:color50',
-        'designify:theme3:color100',
-        'designify:theme3:color200',
-        'designify:theme3:color300',
-        'designify:theme3:color400',
-        'designify:theme3:color500',
-        'designify:theme3:color600',
-        'designify:theme3:color700',
-        'designify:theme3:color800',
-        'designify:theme3:color900',
-        'designify:theme3:color950',
-        'designify:theme4:name',
-        'designify:theme4:colorPrimary',
-        'designify:theme4:color50',
-        'designify:theme4:color100',
-        'designify:theme4:color200',
-        'designify:theme4:color300',
-        'designify:theme4:color400',
-        'designify:theme4:color500',
-        'designify:theme4:color600',
-        'designify:theme4:color700',
-        'designify:theme4:color800',
-        'designify:theme4:color900',
-        'designify:theme4:color950',
-        'designify:theme5:name',
-        'designify:theme5:colorPrimary',
-        'designify:theme5:color50',
-        'designify:theme5:color100',
-        'designify:theme5:color200',
-        'designify:theme5:color300',
-        'designify:theme5:color400',
-        'designify:theme5:color500',
-        'designify:theme5:color600',
-        'designify:theme5:color700',
-        'designify:theme5:color800',
-        'designify:theme5:color900',
-        'designify:theme5:color950',
-        'designify:theme6:name',
-        'designify:theme6:colorPrimary',
-        'designify:theme6:color50',
-        'designify:theme6:color100',
-        'designify:theme6:color200',
-        'designify:theme6:color300',
-        'designify:theme6:color400',
-        'designify:theme6:color500',
-        'designify:theme6:color600',
-        'designify:theme6:color700',
-        'designify:theme6:color800',
-        'designify:theme6:color900',
-        'designify:theme6:color950',
-        'designify:theme7:name',
-        'designify:theme7:colorPrimary',
-        'designify:theme7:color50',
-        'designify:theme7:color100',
-        'designify:theme7:color200',
-        'designify:theme7:color300',
-        'designify:theme7:color400',
-        'designify:theme7:color500',
-        'designify:theme7:color600',
-        'designify:theme7:color700',
-        'designify:theme7:color800',
-        'designify:theme7:color900',
-        'designify:theme7:color950',
         'designify:errors:403:title',
         'designify:errors:403:message',
         'designify:errors:403:button',
@@ -426,43 +334,7 @@ class Designify extends Page implements HasSchemas
                     ColorPicker::make('designify:color900')->label('900'),
                     ColorPicker::make('designify:color950')->label('950'),
                 ]),
-
-            $this->themeSection(1),
-            $this->themeSection(2),
-            $this->themeSection(3),
-            $this->themeSection(4),
-            $this->themeSection(5),
-            $this->themeSection(6),
-            $this->themeSection(7),
         ];
-    }
-
-    private function themeSection(int $index): Section
-    {
-        return Section::make(trans('admin/settings.designify.theme-section', ['index' => $index]))
-            ->columns(5)
-            ->schema([
-                TextInput::make("designify:theme{$index}:name")
-                    ->label(trans('admin/settings.designify.theme-name'))
-                    ->columnSpanFull(),
-
-                ColorPicker::make("designify:theme{$index}:colorPrimary")->label(trans('admin/settings.designify.primary')),
-
-                ColorPicker::make("designify:theme{$index}:color50")->label('50'),
-                ColorPicker::make("designify:theme{$index}:color100")->label('100'),
-                ColorPicker::make("designify:theme{$index}:color200")->label('200'),
-                ColorPicker::make("designify:theme{$index}:color300")->label('300'),
-                ColorPicker::make("designify:theme{$index}:color400")->label('400'),
-                ColorPicker::make("designify:theme{$index}:color500")->label('500'),
-                ColorPicker::make("designify:theme{$index}:color600")->label('600'),
-                ColorPicker::make("designify:theme{$index}:color700")->label('700'),
-                ColorPicker::make("designify:theme{$index}:color800")->label('800'),
-                ColorPicker::make("designify:theme{$index}:color900")->label('900'),
-                ColorPicker::make("designify:theme{$index}:color950")->label('950'),
-            ])
-            ->collapsed()
-            ->icon('tabler-color-swatch')
-            ->collapsible();
     }
 
     private function lookAndFeelSettings(): array
@@ -471,10 +343,6 @@ class Designify extends Page implements HasSchemas
             Group::make()
                 ->columns(4)
                 ->schema([
-                    Toggle::make('designify:themeSelector')
-                        ->label(trans('admin/settings.designify.theme-selector'))
-                        ->inline(false)
-                        ->columnSpan(1),
 
                     Toggle::make('designify:sidebarLogout')
                         ->label(trans('admin/settings.designify.sidebar-logout-button'))

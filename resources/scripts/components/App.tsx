@@ -10,7 +10,6 @@ import AuthenticatedRoute from '@/reviactyl/elements/AuthenticatedRoute';
 import { ServerContext } from '@/state/server';
 import '@/assets/tailwind.css';
 import Spinner from '@/reviactyl/elements/Spinner';
-import { ThemeLoader } from '@/reviactyl/ui/ThemeEngine';
 import { Invert } from '@/reviactyl/ui/SmartInvert';
 import { LocaleLoader } from '@/reviactyl/ui/LanguageSwitcher';
 import { SubuserPreviewProvider } from '@/context/SubuserPreviewContext';
@@ -78,7 +77,6 @@ function App() {
     return (
         <Invert>
             <StoreProvider store={store}>
-                <ThemeLoader />
                 <LocaleLoader />
                 <ProgressBar />
                 <div className='mx-auto w-auto'>
