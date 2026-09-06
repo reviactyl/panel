@@ -89,7 +89,7 @@ const RenameFileModal = ({ files, useMoveTerminology, ...props }: OwnProps) => {
                         {useMoveTerminology && (
                             <p className='text-xs mt-2 text-gray-400'>
                                 <strong className='text-gray-200'>{t('new-location')}</strong>
-                                &nbsp;/home/container/{join(directory, values.name).replace(/^(..\/|\/)+/, '')}
+                                &nbsp;/home/container/{join(directory, values.name).replace(/^(\.\.\/|\/)+/, '')}
                             </p>
                         )}
                     </Form>
