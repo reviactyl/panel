@@ -3,6 +3,7 @@ import laravel from 'laravel-vite-plugin';
 import { dirname, resolve } from 'pathe';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
+import tailwindcss from '@tailwindcss/vite'
 
 const plugins = [
     react({
@@ -10,6 +11,7 @@ const plugins = [
             plugins: ['babel-plugin-macros', 'babel-plugin-styled-components'],
         },
     }),
+    tailwindcss(),
 ];
 
 if (process.env.VITEST === undefined) {
