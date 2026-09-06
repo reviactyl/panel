@@ -11,14 +11,14 @@ return [
     'password-label' => 'পাসওয়ার্ড',
 
     'login-button' => 'লগইন',
-    'passkey-button' => 'Login with Passkey',
+    'passkey-button' => 'পাসকী দিয়ে লগইন করুন',
     'return' => 'লগইনে ফিরে যান',
 
-    'passkey-unsupported' => 'Passkeys are not supported by this browser.',
-    'passkey-failed' => 'Unable to complete passkey login. Please try again.',
-    'passkey-no-credentials' => 'No passkey is available for this login. Use your password or register a passkey first.',
-    'passkey-security' => 'Passkey verification could not be completed securely on this device.',
-    'passkey-username-required' => 'Enter your username or email before using a passkey.',
+    'passkey-unsupported' => 'এই ব্রাউজারে পাসকি সমর্থিত নয়।',
+    'passkey-failed' => 'পাসকি লগইন সম্পন্ন করা যাচ্ছে না। অনুগ্রহ করে আবার চেষ্টা করুন।',
+    'passkey-no-credentials' => 'এই লগইনের জন্য কোনো পাসকি উপলব্ধ নেই। আপনার পাসওয়ার্ড ব্যবহার করুন অথবা প্রথমে একটি পাসকি নিবন্ধন করুন।',
+    'passkey-security' => 'এই ডিভাইসে পাসকি যাচাইকরণ নিরাপদে সম্পন্ন করা যায়নি।',
+    'passkey-username-required' => 'পাসকি ব্যবহার করার আগে আপনার ব্যবহারকারীর নাম বা ইমেইল লিখুন।',
 
     'social' => [
         'or' => 'অথবা',
@@ -64,14 +64,14 @@ return [
         'namefirst-label' => 'নামের প্রথম অংশ',
         'namelast-label' => 'নামের শেষ অংশ',
         'email-label' => 'ইমেইল',
-        'username-label' => 'Username',
+        'username-label' => 'ব্যবহারকারীর নাম',
         'password-label' => 'পাসওয়ার্ড',
         'min-length' => 'পাসওয়ার্ড অবশ্যই কমপক্ষে ৮ অক্ষরের হতে হবে।',
         'confirm-label' => 'পাসওয়ার্ড নিশ্চিত করুন',
         'label' => 'রেজিস্টার',
-        'create-link' => 'Don\'t have an account? Create one',
+        'create-link' => 'অ্যাকাউন্ট নেই? একটি তৈরি করুন',
         'create-account' => 'অ্যাকাউন্ট তৈরি করুন',
-        'no-account' => 'Don\'t have an account?',
+        'no-account' => 'অ্যাকাউন্ট নেই?',
     ],
 
     'failed' => 'এই তথ্যের সাথে মিলে এমন কোনো অ্যাকাউন্ট পাওয়া যায়নি।',
@@ -85,5 +85,5 @@ return [
     'throttle' => 'অতিরিক্ত লগইন চেষ্টা করা হয়েছে। অনুগ্রহ করে :seconds সেকেন্ড পরে আবার চেষ্টা করুন।',
     'password_requirements' => 'পাসওয়ার্ড অবশ্যই কমপক্ষে ৮ অক্ষরের হতে হবে এবং এই সাইটের জন্য ইউনিক হওয়া উচিত।',
     '2fa_must_be_enabled' => 'প্যানেল ব্যবহার করার জন্য প্রশাসক আপনার অ্যাকাউন্টে 2-Factor Authentication সক্রিয় করা বাধ্যতামূলক করেছেন।',
-    'captcha-required' => 'Please complete the captcha challenge to continue.',
+    'captcha-required' => 'অনুগ্রহ করে চালিয়ে যেতে ক্যাপচা চ্যালেঞ্জটি সম্পূর্ণ করুন।',
 ];
