@@ -49,7 +49,7 @@ const MessageBox = ({ title, children, type }: Props) => (
         {title && (
             <span
                 className={classNames(
-                    'title mr-3 flex rounded-full px-2 py-1 text-xs font-bold leading-none uppercase backdrop-blur-sm-md',
+                    'title mr-3 flex rounded-full px-2 py-1 text-xs font-bold leading-none uppercase backdrop-blur-md',
                     getBackground(type)
                 )}
             >

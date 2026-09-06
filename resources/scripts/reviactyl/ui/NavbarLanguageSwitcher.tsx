@@ -73,7 +73,7 @@ const NavbarLanguageSwitcher = () => {
             </button>
 
             <div
-                className={`absolute right-0 top-full z-50 mt-1 min-w-[200px] overflow-hidden rounded-ui border border-gray-800 bg-gray-900/90 shadow-lg backdrop-blur-sm-md rtl:left-0 rtl:right-auto ${
+                className={`absolute right-0 top-full z-50 mt-1 min-w-[200px] overflow-hidden rounded-ui border border-gray-800 bg-gray-900/90 shadow-lg backdrop-blur-md rtl:left-0 rtl:right-auto ${
                     isOpen ? 'block' : 'hidden'
                 }`}
             >
