@@ -11,14 +11,14 @@ return [
     'password-label' => 'Kata Sandi',
 
     'login-button' => 'Masuk',
-    'passkey-button' => 'Login with Passkey',
+    'passkey-button' => 'Masuk dengan Passkey',
     'return' => 'Kembali ke Login',
 
-    'passkey-unsupported' => 'Passkeys are not supported by this browser.',
-    'passkey-failed' => 'Unable to complete passkey login. Please try again.',
-    'passkey-no-credentials' => 'No passkey is available for this login. Use your password or register a passkey first.',
-    'passkey-security' => 'Passkey verification could not be completed securely on this device.',
-    'passkey-username-required' => 'Enter your username or email before using a passkey.',
+    'passkey-unsupported' => 'Passkey tidak didukung oleh browser ini.',
+    'passkey-failed' => 'Tidak dapat menyelesaikan proses masuk dengan kode sandi. Silakan coba lagi.',
+    'passkey-no-credentials' => 'Tidak ada passkey yang tersedia untuk login ini. Silakan gunakan kata sandi Anda atau daftarkan passkey terlebih dahulu.',
+    'passkey-security' => 'Verifikasi kode sandi tidak dapat diselesaikan dengan aman di perangkat ini.',
+    'passkey-username-required' => 'Masukkan nama pengguna atau alamat email Anda sebelum menggunakan passkey.',
 
     'social' => [
         'or' => 'OR',
@@ -64,14 +64,14 @@ return [
         'namefirst-label' => 'Nama depan',
         'namelast-label' => 'Nama Belakang',
         'email-label' => 'E-mail',
-        'username-label' => 'Username',
+        'username-label' => 'Nama Pengguna',
         'password-label' => 'Kata sandi',
         'min-length' => 'Panjang kata sandi minimal harus 8 karakter.',
         'confirm-label' => 'Konfirmasi Kata Sandi',
         'label' => 'Daftar',
-        'create-link' => 'Don\'t have an account? Create one',
+        'create-link' => 'Belum punya akun? Buat akun',
         'create-account' => 'Buat Akun',
-        'no-account' => 'Don\'t have an account?',
+        'no-account' => 'Belum punya akun?',
     ],
 
     'failed' => 'Tidak ada akun yang cocok dengan kredensial tersebut.',
@@ -85,5 +85,5 @@ return [
     'throttle' => 'Terlalu banyak percobaan login. Silakan coba lagi dalam :seconds detik.',
     'password_requirements' => 'Kata sandi harus memiliki setidaknya 8 karakter dan harus unik untuk situs ini.',
     '2fa_must_be_enabled' => 'Administrator mengharuskan Otentikasi 2-Faktor diaktifkan pada akun Anda untuk menggunakan Panel.',
-    'captcha-required' => 'Please complete the captcha challenge to continue.',
+    'captcha-required' => 'Silakan selesaikan tantangan captcha untuk melanjutkan.',
 ];

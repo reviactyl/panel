@@ -11,7 +11,7 @@ return [
     ],
     'account' => [
         'overview' => 'অ্যাকাউন্ট ওভারভিউ',
-        'passkeys' => 'Passkeys',
+        'passkeys' => 'পাসকি',
         'api' => 'API কীসমূহ',
         'ssh' => 'SSH কীসমূহ',
         'activity' => 'কার্যকলাপ',

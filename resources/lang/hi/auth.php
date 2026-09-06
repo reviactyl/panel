@@ -11,14 +11,14 @@ return [
     'password-label' => 'पासवर्ड',
 
     'login-button' => 'लॉगिन',
-    'passkey-button' => 'Login with Passkey',
+    'passkey-button' => 'पासकी से लॉगिन करें',
     'return' => 'लॉगिन पर लौटें',
 
-    'passkey-unsupported' => 'Passkeys are not supported by this browser.',
-    'passkey-failed' => 'Unable to complete passkey login. Please try again.',
-    'passkey-no-credentials' => 'No passkey is available for this login. Use your password or register a passkey first.',
-    'passkey-security' => 'Passkey verification could not be completed securely on this device.',
-    'passkey-username-required' => 'Enter your username or email before using a passkey.',
+    'passkey-unsupported' => 'इस ब्राउज़र में पासकीज़ समर्थित नहीं हैं।',
+    'passkey-failed' => 'पासकी लॉगिन पूरा नहीं हो सका। कृपया फिर से प्रयास करें।',
+    'passkey-no-credentials' => 'इस लॉगिन के लिए कोई पासकी उपलब्ध नहीं है। अपना पासवर्ड का उपयोग करें या पहले एक पासकी पंजीकृत करें।',
+    'passkey-security' => 'इस डिवाइस पर पासकी सत्यापन सुरक्षित रूप से पूरा नहीं किया जा सका।',
+    'passkey-username-required' => 'पासकी का उपयोग करने से पहले अपना उपयोगकर्ता नाम या ईमेल दर्ज करें।',
 
     'social' => [
         'or' => 'या',
@@ -64,14 +64,14 @@ return [
         'namefirst-label' => 'पहला नाम',
         'namelast-label' => 'उपनाम',
         'email-label' => 'ईमेल',
-        'username-label' => 'Username',
+        'username-label' => 'उपयोगकर्ता नाम',
         'password-label' => 'पासवर्ड',
         'min-length' => 'पासवर्ड कम से कम 8 अक्षर का होना चाहिए।',
         'confirm-label' => 'पासवर्ड की पुष्टि कीजिये',
         'label' => 'पंजीकरण करवाना',
-        'create-link' => 'Don\'t have an account? Create one',
+        'create-link' => 'खाता नहीं है? एक बनाएँ',
         'create-account' => 'खाता बनाएं',
-        'no-account' => 'Don\'t have an account?',
+        'no-account' => 'खाता नहीं है?',
     ],
 
     'failed' => 'इन क्रेडेंशियल्स से मेल खाने वाला कोई खाता नहीं मिला।',
@@ -85,5 +85,5 @@ return [
     'throttle' => 'लॉगिन प्रयास अधिक हो गए हैं। कृपया :seconds सेकंड में पुनः प्रयास करें।',
     'password_requirements' => 'पासवर्ड कम से कम 8 अक्षरों का होना चाहिए और इस साइट के लिए अद्वितीय होना चाहिए।',
     '2fa_must_be_enabled' => 'प्रशासक ने पैनल का उपयोग करने के लिए आपके खाते पर 2-फैक्टर प्रमाणीकरण सक्षम करना अनिवार्य कर दिया है।',
-    'captcha-required' => 'Please complete the captcha challenge to continue.',
+    'captcha-required' => 'कृपया जारी रखने के लिए कैप्चा चुनौती पूरी करें।',
 ];

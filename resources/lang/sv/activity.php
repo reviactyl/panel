@@ -14,12 +14,12 @@ return [
         'using-sftp' => 'Använder SFTP',
     ],
     'event' => [
-        'password-reset' => 'Password reset',
+        'password-reset' => 'Återställning av lösenord',
     ],
     'auth' => [
         'fail' => 'Misslyckad inloggning',
         'success' => 'Inloggad',
-        'passkey' => 'Logged in with passkey',
+        'passkey' => 'Inloggad med lösenord',
         'password-reset' => 'Lösenordsåterställning',
         'reset-password' => 'Begärd lösenordsåterställning',
         'checkpoint' => 'Tvåfaktorsautentisering begärd',
@@ -38,8 +38,8 @@ return [
             'email-changed' => 'Ändrade e-post från :old till :new',
             'password-changed' => 'Ändrade lösenord',
             'language-changed' => 'Ändrade språk från :old till :new',
-            'file-editor-changed' => 'Changed file editor from :old to :new',
-            'avatar-changed' => 'Changed avatar style from :old to :new',
+            'file-editor-changed' => 'Bytt filredigerare från :old till :new',
+            'avatar-changed' => 'Ändrade avataren från :old till :new',
         ],
         'api-key' => [
             'create' => 'Skapade ny API-nyckel :identifier',
@@ -54,8 +54,8 @@ return [
             'delete' => 'Inaktiverade tvåfaktorsautentisering',
         ],
         'passkey' => [
-            'create' => 'Registered a new passkey',
-            'delete' => 'Removed passkey :id',
+            'create' => 'Registrerade en ny lösenkod',
+            'delete' => 'Borttagen åtkomstnyckel :id',
         ],
     ],
     'server' => [
@@ -136,7 +136,7 @@ return [
         'settings' => [
             'rename' => 'Döpte om servern från :old till :new',
             'description' => 'Ändrade serverbeskrivningen från :old till :new',
-            'category' => 'Changed server category',
+            'category' => 'Ändrad serverkategori',
         ],
         'startup' => [
             'edit' => 'Ändrade variabeln :variable från ":old" till ":new"',

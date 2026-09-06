@@ -14,12 +14,12 @@ return [
         'using-sftp' => 'SFTP ব্যবহার করে',
     ],
     'event' => [
-        'password-reset' => 'Password reset',
+        'password-reset' => 'পাসওয়ার্ড রিসেট',
     ],
     'auth' => [
         'fail' => 'লগইন ব্যর্থ হয়েছে।',
         'success' => 'লগইন হয়েছে।',
-        'passkey' => 'Logged in with passkey',
+        'passkey' => 'পাসকি দিয়ে লগইন করা হয়েছে',
         'password-reset' => 'পাসওয়ার্ড রিসেট।',
         'reset-password' => 'পাসওয়ার্ড রিসেট অনুরোধ করা হয়েছে।',
         'checkpoint' => 'টু-ফ্যাক্টর অথেন্টিকেশন অনুরোধ করা হয়েছে।',
@@ -38,8 +38,8 @@ return [
             'email-changed' => ':old ইমেইলটি পরিবর্তন করে :new করা হয়েছে।',
             'password-changed' => 'পাসওয়ার্ড পরিবর্তন করা হয়েছে।',
             'language-changed' => 'ভাষা :old থেকে পরিবর্তন করে :new করা হয়েছে।',
-            'file-editor-changed' => 'Changed file editor from :old to :new',
-            'avatar-changed' => 'Changed avatar style from :old to :new',
+            'file-editor-changed' => 'ফাইল এডিটরকে :old থেকে :new এ পরিবর্তন করা হয়েছে।',
+            'avatar-changed' => 'অ্যাভাটারের স্টাইল :old থেকে :new এ পরিবর্তন করা হয়েছে।',
         ],
         'api-key' => [
             'create' => 'নতুন এপিআই কি :identifier তৈরি করা হয়েছে।',
@@ -54,8 +54,8 @@ return [
             'delete' => 'টু-ফ্যাক্টর অথেন্টিকেশন বন্ধ করা হয়েছে।',
         ],
         'passkey' => [
-            'create' => 'Registered a new passkey',
-            'delete' => 'Removed passkey :id',
+            'create' => 'নতুন পাসকি নিবন্ধিত হয়েছে',
+            'delete' => 'পাসকি :id সরানো হয়েছে',
         ],
     ],
     'server' => [
@@ -136,7 +136,7 @@ return [
         'settings' => [
             'rename' => 'সার্ভার টির নাম :old থেকে নতুনে :new এ পরিবর্তন করা হয়েছে।',
             'description' => 'সার্ভার টির ডেসক্রিপশন :old থেকে :new এ পরিবর্তন করা হয়েছে।',
-            'category' => 'Changed server category',
+            'category' => 'সার্ভার ক্যাটাগরি পরিবর্তন করা হয়েছে',
         ],
         'startup' => [
             'edit' => ':variable ভেরিএবল টি ":old" থেকে ":new" এ পরিবর্তন করা হয়েছে।',
