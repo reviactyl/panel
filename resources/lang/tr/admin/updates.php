@@ -23,7 +23,7 @@ return [
     'update_all' => 'Update all eligible Agents',
     'documentation' => 'View documentation',
     'docker_help' => 'Container installations use the legacy image-based update process.',
-    'unsupported_panel_help' => 'Automatic Panel updates require a released native installation using MySQL, MariaDB, or PostgreSQL. You can still update Agents here.',
+    'unsupported_panel_help' => 'Automatic Panel updates require a released native installation using MySQL, MariaDB, PostgreSQL, or SQLite. You can still update Agents here.',
     'unknown_help' => 'This Agent does not report a supported installation type. Update it manually before using the updater.',
     'confirm_panel' => 'Back up and update the Panel now?',
     'confirm_agent' => 'Update this Agent now? Running gameservers will not be affected.',

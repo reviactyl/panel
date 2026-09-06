@@ -24,7 +24,7 @@ class InstallationTypeService
         $connection = config('database.default');
         $driver = config("database.connections.{$connection}.driver");
 
-        return in_array($driver, ['mysql', 'mariadb', 'pgsql'], true);
+        return in_array($driver, ['mysql', 'mariadb', 'pgsql', 'sqlite'], true);
     }
 
     public function panelSupportsSoftwareUpdatesPage(): bool

@@ -5,15 +5,18 @@ namespace App\Services\Updates;
 use App\Services\Helpers\SoftwareVersionService;
 use GuzzleHttp\Client;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\DB;
 use RuntimeException;
+use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
 use Throwable;
+use ZipArchive;
 
 class PanelUpdateService
 {
     private const COMPLETED_BACKUP_MARKER = '.completed.json';
 
-    private const RELEASE_URL = 'https://github.com/reviactyl/panel/releases/download/v%s/panel.tar.gz';
+    private const RELEASE_ASSET_URL = 'https://github.com/reviactyl/panel/releases/download/v%s/%s';
 
     private const RELEASE_METADATA_URL = 'https://api.github.com/repos/reviactyl/panel/releases/tags/v%s';
 
@@ -35,7 +38,7 @@ class PanelUpdateService
     public function update(string $version): void
     {
         if (! $this->installationTypes->panelSupportsAutomaticUpdates()) {
-            throw new RuntimeException('Automatic Panel updates require a released native installation using MySQL, MariaDB, or PostgreSQL.');
+            throw new RuntimeException('Automatic Panel updates require a released native installation using MySQL, MariaDB, PostgreSQL, or SQLite.');
         }
         if (! preg_match(self::VERSION_PATTERN, $version)) {
             throw new RuntimeException('The requested Panel version is invalid.');
@@ -71,9 +74,9 @@ class PanelUpdateService
         $runId = now()->format('Ymd_His').'_'.bin2hex(random_bytes(4));
         $runPath = $workingRoot.'/runs/'.$runId;
         $stagingPath = $runPath.'/staging';
-        $archivePath = $runPath.'/panel.tar.gz';
+        $archivePath = $runPath.'/update.zip';
         $backupPath = $workingRoot.'/backups/'.$runId;
-        $databaseBackup = $backupPath.'/database.sql';
+        $databaseBackup = $backupPath.($this->databaseDriver() === 'sqlite' ? '/database.sqlite' : '/database.sql');
         $manifestPath = $backupPath.'/manifest.json';
         $vendorBackup = $backupPath.'/vendor';
         $maintenanceEnabled = false;
@@ -85,25 +88,38 @@ class PanelUpdateService
 
         try {
             $this->statuses->set($statusKey, 'downloading', trans('admin/updates.status.panel_downloading'), $version);
-            $this->downloadRelease($version, $archivePath);
+            $usesUpdatePackage = $this->downloadUpdatePackage($version, $archivePath);
 
             $this->statuses->set($statusKey, 'validating', trans('admin/updates.status.panel_validating'), $version);
-            $entries = preg_split('/\r?\n/', trim($this->runProcess(['tar', '-tzf', $archivePath]))) ?: [];
-            $this->validateArchiveEntries($entries);
-            $archiveTypes = preg_split('/\r?\n/', trim($this->runProcess(['tar', '-tvzf', $archivePath]))) ?: [];
-            $this->validateArchiveTypes($archiveTypes);
-            $this->runProcess(['tar', '-xzf', $archivePath, '-C', $stagingPath]);
-            $releaseFiles = $this->releaseFiles($stagingPath);
-            if (! in_array('artisan', $releaseFiles, true) || ! in_array('composer.json', $releaseFiles, true)) {
-                throw new RuntimeException('The Panel release archive is missing required application files.');
+            $deletedFiles = [];
+            $usesFullRelease = ! $usesUpdatePackage;
+            if ($usesUpdatePackage) {
+                $packageDeletedFiles = $this->extractUpdatePackage($archivePath, $stagingPath, (string) config('app.version'), $version);
+                if ($packageDeletedFiles === null) {
+                    $this->files->deleteDirectory($stagingPath);
+                    $this->files->ensureDirectoryExists($stagingPath);
+                    $archivePath = $runPath.'/panel.tar.gz';
+                    $this->downloadRelease($version, $archivePath);
+                    $this->extractFullRelease($archivePath, $stagingPath);
+                    $usesFullRelease = true;
+                } else {
+                    $deletedFiles = $packageDeletedFiles;
+                }
+            } else {
+                $archivePath = $runPath.'/panel.tar.gz';
+                $this->downloadRelease($version, $archivePath);
+                $this->extractFullRelease($archivePath, $stagingPath);
             }
+            $releaseFiles = $this->releaseFiles($stagingPath);
+            $this->validateReleaseFileSet($releaseFiles, $deletedFiles, $usesFullRelease);
+            $this->assertDatabaseUtilitiesAvailable();
 
             $this->runProcess([PHP_BINARY, 'artisan', 'down', '--retry=15']);
             $maintenanceEnabled = true;
 
             $this->statuses->set($statusKey, 'backing_up', trans('admin/updates.status.panel_backing_up'), $version);
             $this->dumpDatabase($databaseBackup);
-            $manifest = $this->backUpReleaseFiles($releaseFiles, $stagingPath, $backupPath.'/files');
+            $manifest = $this->backUpReleaseFiles($releaseFiles, $deletedFiles, $backupPath.'/files');
             $this->files->put($manifestPath, json_encode($manifest, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR));
             chmod($manifestPath, 0600);
 
@@ -118,6 +134,7 @@ class PanelUpdateService
 
             $this->statuses->set($statusKey, 'installing', trans('admin/updates.status.panel_installing'), $version);
             $this->installReleaseFiles($releaseFiles, $stagingPath);
+            $this->deleteReleaseFiles($deletedFiles);
             $this->runProcess(
                 ['composer', 'install', '--no-dev', '--optimize-autoloader', '--no-interaction'],
                 ['COMPOSER_ALLOW_SUPERUSER' => '1'],
@@ -200,8 +217,27 @@ class PanelUpdateService
 
     protected function downloadRelease(string $version, string $archivePath): void
     {
-        $expectedDigest = $this->releaseDigest($version);
-        $response = $this->client->request('GET', sprintf(self::RELEASE_URL, $version), [
+        $expectedDigest = $this->releaseDigest($version, 'panel.tar.gz');
+        if ($expectedDigest === null) {
+            throw new RuntimeException('The official Panel release does not include the full release archive.');
+        }
+        $this->downloadAsset($version, 'panel.tar.gz', $archivePath, $expectedDigest);
+    }
+
+    protected function downloadUpdatePackage(string $version, string $archivePath): bool
+    {
+        $expectedDigest = $this->releaseDigest($version, 'update.zip');
+        if ($expectedDigest === null) {
+            return false;
+        }
+        $this->downloadAsset($version, 'update.zip', $archivePath, $expectedDigest);
+
+        return true;
+    }
+
+    private function downloadAsset(string $version, string $asset, string $archivePath, string $expectedDigest): void
+    {
+        $response = $this->client->request('GET', sprintf(self::RELEASE_ASSET_URL, $version, $asset), [
             'allow_redirects' => true,
             'connect_timeout' => 15,
             'sink' => $archivePath,
@@ -214,7 +250,7 @@ class PanelUpdateService
         $this->validateReleaseDigest($archivePath, $expectedDigest);
     }
 
-    protected function releaseDigest(string $version): string
+    protected function releaseDigest(string $version, string $assetName): ?string
     {
         $response = $this->client->request('GET', sprintf(self::RELEASE_METADATA_URL, $version), [
             'connect_timeout' => 15,
@@ -231,15 +267,17 @@ class PanelUpdateService
         }
 
         foreach ($metadata['assets'] ?? [] as $asset) {
-            if (($asset['name'] ?? null) !== 'panel.tar.gz') {
+            if (($asset['name'] ?? null) !== $assetName) {
                 continue;
             }
             if (preg_match('/^sha256:([a-f0-9]{64})$/i', (string) ($asset['digest'] ?? ''), $matches)) {
                 return strtolower($matches[1]);
             }
+
+            throw new RuntimeException("The official Panel release asset [{$assetName}] does not include a SHA-256 digest.");
         }
 
-        throw new RuntimeException('The official Panel release metadata does not include a SHA-256 digest.');
+        return null;
     }
 
     protected function validateReleaseDigest(string $archivePath, string $expectedDigest): void
@@ -248,6 +286,86 @@ class PanelUpdateService
         if ($actualDigest === false || ! hash_equals($expectedDigest, $actualDigest)) {
             throw new RuntimeException('The Panel release download did not match its official SHA-256 digest.');
         }
+    }
+
+    private function extractFullRelease(string $archivePath, string $stagingPath): void
+    {
+        $entries = preg_split('/\r?\n/', trim($this->runProcess(['tar', '-tzf', $archivePath]))) ?: [];
+        $this->validateArchiveEntries($entries);
+        $archiveTypes = preg_split('/\r?\n/', trim($this->runProcess(['tar', '-tvzf', $archivePath]))) ?: [];
+        $this->validateArchiveTypes($archiveTypes);
+        $this->runProcess(['tar', '-xzf', $archivePath, '-C', $stagingPath]);
+    }
+
+    private function extractUpdatePackage(string $archivePath, string $stagingPath, string $fromVersion, string $toVersion): ?array
+    {
+        $archive = new ZipArchive();
+        if ($archive->open($archivePath) !== true || $archive->numFiles < 1 || $archive->numFiles > 50000) {
+            throw new RuntimeException('The Panel update package is invalid.');
+        }
+
+        try {
+            $entries = [];
+            $entryModes = [];
+            $uncompressedSize = 0;
+            for ($index = 0; $index < $archive->numFiles; $index++) {
+                $entry = $archive->getNameIndex($index);
+                $statistics = $archive->statIndex($index);
+                if ($entry === false || $statistics === false || isset($entries[$entry])) {
+                    throw new RuntimeException('The Panel update package contains an invalid or duplicate entry.');
+                }
+                $entries[$entry] = true;
+                $uncompressedSize += (int) ($statistics['size'] ?? 0);
+                if ($uncompressedSize > 512 * 1024 * 1024) {
+                    throw new RuntimeException('The Panel update package is oversized.');
+                }
+
+                $this->validateArchiveEntries([$entry]);
+                if ($archive->getExternalAttributesIndex($index, $operatingSystem, $attributes) && $operatingSystem === ZipArchive::OPSYS_UNIX) {
+                    $type = ($attributes >> 16) & 0170000;
+                    if ($type !== 0 && $type !== 0040000 && $type !== 0100000) {
+                        throw new RuntimeException('The Panel update package contains an unsupported link or special file.');
+                    }
+                    $entryModes[$entry] = ($attributes >> 16) & 0777;
+                }
+            }
+
+            $manifestContents = $archive->getFromName('manifest.json');
+            if ($manifestContents === false) {
+                throw new RuntimeException('The Panel update package is missing manifest.json.');
+            }
+            $manifest = json_decode($manifestContents, true, flags: JSON_THROW_ON_ERROR);
+            if (! is_array($manifest) || ($manifest['to'] ?? null) !== $toVersion) {
+                throw new RuntimeException('The Panel update package does not target the requested version.');
+            }
+            if (($manifest['from'] ?? null) !== $fromVersion) {
+                return null;
+            }
+
+            $deletedFiles = $manifest['deleted'] ?? null;
+            if (! is_array($deletedFiles) || ! array_is_list($deletedFiles)) {
+                throw new RuntimeException('The Panel update package contains an invalid deleted-files manifest.');
+            }
+            $this->validateManagedPaths($deletedFiles);
+            if (count($deletedFiles) !== count(array_unique($deletedFiles))) {
+                throw new RuntimeException('The Panel update package contains duplicate deleted files.');
+            }
+
+            if (! $archive->extractTo($stagingPath)) {
+                throw new RuntimeException('Unable to extract the Panel update package.');
+            }
+            foreach ($entryModes as $entry => $mode) {
+                if ($mode !== 0 && ! chmod($stagingPath.'/'.$entry, $mode)) {
+                    throw new RuntimeException('Unable to preserve permissions from the Panel update package.');
+                }
+            }
+        } finally {
+            $archive->close();
+        }
+
+        $this->files->delete($stagingPath.'/manifest.json');
+
+        return $deletedFiles;
     }
 
     /**
@@ -307,13 +425,42 @@ class PanelUpdateService
         return $files;
     }
 
-    private function backUpReleaseFiles(array $releaseFiles, string $stagingPath, string $backupFilesPath): array
+    private function validateReleaseFileSet(array $releaseFiles, array $deletedFiles, bool $usesFullRelease): void
+    {
+        $this->validateManagedPaths($releaseFiles);
+        if (array_intersect($releaseFiles, $deletedFiles) !== []) {
+            throw new RuntimeException('The Panel update package cannot install and delete the same file.');
+        }
+        if ($usesFullRelease && (! in_array('artisan', $releaseFiles, true) || ! in_array('composer.json', $releaseFiles, true))) {
+            throw new RuntimeException('The Panel release archive is missing required application files.');
+        }
+        if (! is_file($this->basePath.'/artisan') || ! is_file($this->basePath.'/composer.json')) {
+            throw new RuntimeException('The current Panel installation is missing required application files.');
+        }
+    }
+
+    private function validateManagedPaths(array $paths): void
+    {
+        foreach ($paths as $path) {
+            if (! is_string($path) || $path === '' || str_ends_with($path, '/')) {
+                throw new RuntimeException('The Panel update package contains an invalid managed file path.');
+            }
+            $this->validateArchiveEntries([$path]);
+            if ($path === '.env' || $path === 'manifest.json' || str_starts_with($path, 'storage/') || str_starts_with($path, 'vendor/')) {
+                throw new RuntimeException('The Panel update package attempts to modify a protected path.');
+            }
+        }
+    }
+
+    private function backUpReleaseFiles(array $releaseFiles, array $deletedFiles, string $backupFilesPath): array
     {
         $manifest = ['existing' => [], 'created' => []];
-        foreach ($releaseFiles as $relative) {
+        foreach (array_values(array_unique([...$releaseFiles, ...$deletedFiles])) as $relative) {
             $destination = $this->basePath.'/'.$relative;
             if (! is_file($destination)) {
-                $manifest['created'][] = $relative;
+                if (in_array($relative, $releaseFiles, true)) {
+                    $manifest['created'][] = $relative;
+                }
 
                 continue;
             }
@@ -345,6 +492,13 @@ class PanelUpdateService
             if ($mode !== false) {
                 chmod($destination, $mode & 0777);
             }
+        }
+    }
+
+    private function deleteReleaseFiles(array $deletedFiles): void
+    {
+        foreach ($deletedFiles as $relative) {
+            $this->files->delete($this->basePath.'/'.$relative);
         }
     }
 
@@ -393,12 +547,48 @@ class PanelUpdateService
     private function dumpDatabase(string $path): void
     {
         $this->files->ensureDirectoryExists(dirname($path), 0700);
+        if ($this->databaseDriver() === 'sqlite') {
+            $connection = (string) config('database.default');
+            $pdo = DB::connection($connection)->getPdo();
+            $quotedPath = $pdo->quote($path);
+            if ($quotedPath === false || $pdo->exec("VACUUM INTO {$quotedPath}") === false) {
+                throw new RuntimeException('Unable to back up the SQLite database.');
+            }
+            chmod($path, 0600);
+
+            return;
+        }
+
         $this->runProcess($this->databaseCommand('mysqldump'), $this->databaseEnvironment(), 300, outputPath: $path);
         chmod($path, 0600);
     }
 
     private function restoreDatabase(string $path): void
     {
+        if ($this->databaseDriver() === 'sqlite') {
+            $connection = (string) config('database.default');
+            $databasePath = $this->sqliteDatabasePath();
+            $temporaryPath = $databasePath.'.update-restore';
+            $mode = is_file($databasePath) ? fileperms($databasePath) : false;
+
+            DB::purge($connection);
+            try {
+                $this->files->delete([$temporaryPath, $databasePath.'-wal', $databasePath.'-shm']);
+                if (! $this->files->copy($path, $temporaryPath)) {
+                    throw new RuntimeException('Unable to restore the SQLite database backup.');
+                }
+                chmod($temporaryPath, $mode === false ? 0600 : ($mode & 0777));
+                if (! rename($temporaryPath, $databasePath)) {
+                    throw new RuntimeException('Unable to replace the SQLite database during rollback.');
+                }
+            } finally {
+                $this->files->delete($temporaryPath);
+                DB::reconnect($connection);
+            }
+
+            return;
+        }
+
         $input = fopen($path, 'r');
         if ($input === false) {
             throw new RuntimeException('Unable to read the Panel database backup.');
@@ -416,7 +606,7 @@ class PanelUpdateService
         $connection = config('database.default');
         $database = config("database.connections.{$connection}");
         if (! is_array($database) || ! in_array($database['driver'] ?? null, ['mysql', 'mariadb', 'pgsql'], true)) {
-            throw new RuntimeException('Automatic Panel updates require a MySQL, MariaDB, or PostgreSQL database.');
+            throw new RuntimeException('Automatic Panel updates require a MySQL, MariaDB, PostgreSQL, or SQLite database.');
         }
 
         $driver = $database['driver'];
@@ -485,6 +675,52 @@ class PanelUpdateService
         }
 
         return ['MYSQL_PWD' => (string) config("database.connections.{$connection}.password")];
+    }
+
+    private function assertDatabaseUtilitiesAvailable(): void
+    {
+        $required = match ($this->databaseDriver()) {
+            'mysql', 'mariadb' => ['mysqldump', 'mysql'],
+            'pgsql' => ['pg_dump', 'psql'],
+            'sqlite' => [],
+            default => throw new RuntimeException('Automatic Panel updates require a MySQL, MariaDB, PostgreSQL, or SQLite database.'),
+        };
+
+        foreach ($required as $executable) {
+            if ($this->findExecutable($executable) === null) {
+                throw new RuntimeException("The required database utility [{$executable}] is not available.");
+            }
+        }
+
+        if ($this->databaseDriver() === 'sqlite') {
+            $databasePath = $this->sqliteDatabasePath();
+            if (! is_file($databasePath) || ! is_readable($databasePath) || ! is_writable($databasePath)) {
+                throw new RuntimeException('The SQLite database must be a readable and writable file before updating.');
+            }
+        }
+    }
+
+    private function databaseDriver(): string
+    {
+        $connection = (string) config('database.default');
+
+        return (string) config("database.connections.{$connection}.driver");
+    }
+
+    private function sqliteDatabasePath(): string
+    {
+        $connection = (string) config('database.default');
+        $database = (string) config("database.connections.{$connection}.database");
+        if ($database === '' || $database === ':memory:') {
+            throw new RuntimeException('Automatic Panel updates require a file-backed SQLite database.');
+        }
+
+        return realpath($database) ?: $database;
+    }
+
+    protected function findExecutable(string $name): ?string
+    {
+        return (new ExecutableFinder())->find($name);
     }
 
     /**

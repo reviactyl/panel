@@ -8,6 +8,7 @@ use App\Services\Updates\PanelUpdateService;
 use App\Services\Updates\SoftwareUpdateStatusService;
 use GuzzleHttp\Client;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\DB;
 use Mockery;
 use Phar;
 use PharData;
@@ -49,8 +50,8 @@ class PanelUpdateServiceTest extends TestCase
     {
         config()->set('panel.installation_type', 'native');
         config()->set('app.version', '26.09.0');
-        config()->set('database.default', 'sqlite');
-        config()->set('database.connections.sqlite.driver', 'sqlite');
+        config()->set('database.default', 'sqlsrv');
+        config()->set('database.connections.sqlsrv.driver', 'sqlsrv');
         $service = $this->makeInspectableUpdater($this->baseDirectory());
 
         $this->expectException(RuntimeException::class);
@@ -222,6 +223,191 @@ class PanelUpdateServiceTest extends TestCase
         $this->assertSame('failed', $status['state']);
     }
 
+    public function test_delta_update_installs_changed_files_and_removes_manifest_deletions(): void
+    {
+        $this->configureMysql();
+        $base = $this->baseDirectory();
+        $files = new Filesystem();
+        $files->ensureDirectoryExists($base.'/storage/app');
+        $files->ensureDirectoryExists($base.'/vendor');
+        $files->put($base.'/artisan', 'old artisan');
+        $files->put($base.'/composer.json', 'old composer');
+        $files->put($base.'/changed.php', 'old changed file');
+        $files->put($base.'/deleted.php', 'deleted in the new release');
+
+        $service = $this->makeInspectableUpdater($base);
+        $service->updateFixture = $this->updateArchive([
+            'changed.php' => 'new changed file',
+            'added.php' => 'new file',
+            'executable' => '#!/bin/sh',
+        ], ['deleted.php'], modes: ['executable' => 0755]);
+        $service->update('26.09.1');
+
+        $this->assertSame('new changed file', $files->get($base.'/changed.php'));
+        $this->assertSame('new file', $files->get($base.'/added.php'));
+        $this->assertSame(0755, fileperms($base.'/executable') & 0777);
+        $this->assertFileDoesNotExist($base.'/deleted.php');
+        $this->assertSame(0, $service->fullReleaseDownloads);
+    }
+
+    public function test_delta_update_rollback_restores_modified_and_deleted_files(): void
+    {
+        $this->configureMysql();
+        $base = $this->baseDirectory();
+        $files = new Filesystem();
+        $files->ensureDirectoryExists($base.'/storage/app');
+        $files->ensureDirectoryExists($base.'/vendor');
+        $files->put($base.'/artisan', 'old artisan');
+        $files->put($base.'/composer.json', 'old composer');
+        $files->put($base.'/changed.php', 'old changed file');
+        $files->put($base.'/deleted.php', 'deleted in the new release');
+
+        $service = $this->makeInspectableUpdater($base);
+        $service->updateFixture = $this->updateArchive([
+            'changed.php' => 'new changed file',
+            'added.php' => 'new file',
+        ], ['deleted.php']);
+        $service->failComposer = true;
+
+        try {
+            $service->update('26.09.1');
+            $this->fail('Expected the Composer installation to fail.');
+        } catch (RuntimeException $exception) {
+            $this->assertStringContainsString('The previous installation was restored.', $exception->getMessage());
+        }
+
+        $this->assertSame('old changed file', $files->get($base.'/changed.php'));
+        $this->assertSame('deleted in the new release', $files->get($base.'/deleted.php'));
+        $this->assertFileDoesNotExist($base.'/added.php');
+    }
+
+    public function test_delta_update_rejects_unsafe_deleted_paths_before_maintenance_mode(): void
+    {
+        $this->configureMysql();
+        $base = $this->baseDirectory();
+        $files = new Filesystem();
+        $files->ensureDirectoryExists($base.'/storage/app');
+        $files->ensureDirectoryExists($base.'/vendor');
+        $files->put($base.'/artisan', 'old artisan');
+        $files->put($base.'/composer.json', 'old composer');
+        $outside = dirname($base).'/outside.php';
+        $files->put($outside, 'must remain untouched');
+        $this->beforeApplicationDestroyed(fn () => $files->delete($outside));
+
+        $service = $this->makeInspectableUpdater($base);
+        $service->updateFixture = $this->updateArchive([], ['../outside.php']);
+
+        try {
+            $service->update('26.09.1');
+            $this->fail('Expected the unsafe deletion manifest to be rejected.');
+        } catch (RuntimeException $exception) {
+            $this->assertStringContainsString('unsafe path', $exception->getMessage());
+        }
+
+        $commands = array_map(fn (array $command): string => implode(' ', $command), $service->commands);
+        $this->assertNotContains(PHP_BINARY.' artisan down --retry=15', $commands);
+        $this->assertSame('must remain untouched', $files->get($outside));
+    }
+
+    public function test_delta_for_another_starting_version_falls_back_to_the_full_release(): void
+    {
+        $this->configureMysql();
+        $base = $this->baseDirectory();
+        $files = new Filesystem();
+        $files->ensureDirectoryExists($base.'/storage/app');
+        $files->ensureDirectoryExists($base.'/vendor');
+        $files->put($base.'/artisan', 'old artisan');
+        $files->put($base.'/composer.json', 'old composer');
+
+        $service = $this->makeInspectableUpdater($base);
+        $service->updateFixture = $this->updateArchive(['changed.php' => 'wrong delta'], [], '26.08.0');
+        $service->fixture = $this->releaseArchive([
+            'artisan' => 'new artisan',
+            'composer.json' => 'new composer',
+        ]);
+        $service->update('26.09.1');
+
+        $this->assertSame(1, $service->fullReleaseDownloads);
+        $this->assertSame('new artisan', $files->get($base.'/artisan'));
+        $this->assertFileDoesNotExist($base.'/changed.php');
+    }
+
+    public function test_missing_database_utility_fails_before_maintenance_mode(): void
+    {
+        $this->configureMysql();
+        $base = $this->baseDirectory();
+        $files = new Filesystem();
+        $files->ensureDirectoryExists($base.'/storage/app');
+        $files->ensureDirectoryExists($base.'/vendor');
+        $files->put($base.'/artisan', 'old artisan');
+        $files->put($base.'/composer.json', 'old composer');
+
+        $service = $this->makeInspectableUpdater($base);
+        $service->fixture = $this->releaseArchive([
+            'artisan' => 'new artisan',
+            'composer.json' => 'new composer',
+        ]);
+        $service->missingExecutable = 'mysqldump';
+
+        try {
+            $service->update('26.09.1');
+            $this->fail('Expected the missing backup utility to abort the update.');
+        } catch (RuntimeException $exception) {
+            $this->assertStringContainsString('[mysqldump] is not available', $exception->getMessage());
+        }
+
+        $commands = array_map(fn (array $command): string => implode(' ', $command), $service->commands);
+        $this->assertNotContains(PHP_BINARY.' artisan down --retry=15', $commands);
+        $this->assertSame('old artisan', $files->get($base.'/artisan'));
+    }
+
+    public function test_sqlite_update_uses_an_internal_snapshot_and_restores_it_on_failure(): void
+    {
+        config()->set('panel.installation_type', 'native');
+        config()->set('app.version', '26.09.0');
+        $base = $this->baseDirectory();
+        $database = $base.'/panel.sqlite';
+        $pdo = new \PDO('sqlite:'.$database);
+        $pdo->exec('CREATE TABLE settings (value TEXT NOT NULL)');
+        $pdo->exec("INSERT INTO settings VALUES ('before update')");
+        unset($pdo);
+        config()->set('database.default', 'sqlite-update-test');
+        config()->set('database.connections.sqlite-update-test', [
+            'driver' => 'sqlite',
+            'database' => $database,
+            'prefix' => '',
+            'foreign_key_constraints' => true,
+        ]);
+        DB::purge('sqlite-update-test');
+
+        $files = new Filesystem();
+        $files->ensureDirectoryExists($base.'/storage/app');
+        $files->ensureDirectoryExists($base.'/vendor');
+        $files->put($base.'/artisan', 'old artisan');
+        $files->put($base.'/composer.json', 'old composer');
+
+        $service = $this->makeInspectableUpdater($base);
+        $service->fixture = $this->releaseArchive([
+            'artisan' => 'new artisan',
+            'composer.json' => 'new composer',
+        ]);
+        $service->failComposer = true;
+        $service->mutateSqliteBeforeComposerFailure = true;
+
+        try {
+            $service->update('26.09.1');
+            $this->fail('Expected the Composer installation to fail.');
+        } catch (RuntimeException $exception) {
+            $this->assertStringContainsString('The previous installation was restored.', $exception->getMessage());
+        }
+
+        DB::purge('sqlite-update-test');
+        $restored = new \PDO('sqlite:'.$database);
+        $this->assertSame('before update', $restored->query('SELECT value FROM settings')->fetchColumn());
+        $backups = $files->directories($base.'/storage/app/software-updates/backups');
+        $this->assertFileExists($backups[0].'/database.sqlite');
+    }
+
     public function test_postgresql_rollback_recreates_public_schema_in_one_transaction(): void
     {
         config()->set('panel.installation_type', 'native');
@@ -301,6 +487,47 @@ class PanelUpdateServiceTest extends TestCase
         return $tarPath.'.gz';
     }
 
+    private function updateArchive(
+        array $files,
+        array $deleted,
+        string $from = '26.09.0',
+        string $to = '26.09.1',
+        array $modes = [],
+    ): string {
+        $path = $this->baseDirectory().'/update.zip';
+        $archive = new \ZipArchive();
+        $this->assertTrue($archive->open($path, \ZipArchive::CREATE | \ZipArchive::OVERWRITE));
+        foreach ($files as $file => $contents) {
+            $archive->addFromString($file, $contents);
+            if (isset($modes[$file])) {
+                $archive->setExternalAttributesName($file, \ZipArchive::OPSYS_UNIX, (0100000 | $modes[$file]) << 16);
+            }
+        }
+        $archive->addFromString('manifest.json', json_encode([
+            'from' => $from,
+            'to' => $to,
+            'deleted' => $deleted,
+        ], JSON_THROW_ON_ERROR));
+        $archive->close();
+
+        return $path;
+    }
+
+    private function configureMysql(): void
+    {
+        config()->set('panel.installation_type', 'native');
+        config()->set('app.version', '26.09.0');
+        config()->set('database.default', 'mysql');
+        config()->set('database.connections.mysql', [
+            'driver' => 'mysql',
+            'host' => '127.0.0.1',
+            'port' => 3306,
+            'database' => 'panel',
+            'username' => 'panel',
+            'password' => 'secret',
+        ]);
+    }
+
     private function makeInspectableUpdater(string $basePath): PanelUpdateService
     {
         $versions = Mockery::mock(SoftwareVersionService::class);
@@ -310,7 +537,15 @@ class PanelUpdateServiceTest extends TestCase
         {
             public ?string $fixture = null;
 
+            public ?string $updateFixture = null;
+
             public bool $failComposer = false;
+
+            public bool $mutateSqliteBeforeComposerFailure = false;
+
+            public ?string $missingExecutable = null;
+
+            public int $fullReleaseDownloads = 0;
 
             public array $commands = [];
 
@@ -341,9 +576,20 @@ class PanelUpdateServiceTest extends TestCase
 
             protected function downloadRelease(string $version, string $archivePath): void
             {
+                $this->fullReleaseDownloads++;
                 if ($this->fixture === null || ! copy($this->fixture, $archivePath)) {
                     throw new RuntimeException('Missing test release fixture.');
                 }
+            }
+
+            protected function downloadUpdatePackage(string $version, string $archivePath): bool
+            {
+                return $this->updateFixture !== null && copy($this->updateFixture, $archivePath);
+            }
+
+            protected function findExecutable(string $name): ?string
+            {
+                return $name === $this->missingExecutable ? null : '/usr/bin/'.$name;
             }
 
             protected function runProcess(
@@ -364,6 +610,12 @@ class PanelUpdateServiceTest extends TestCase
                 }
                 if ($command[0] === 'composer') {
                     if ($this->failComposer) {
+                        if ($this->mutateSqliteBeforeComposerFailure) {
+                            $connection = (string) config('database.default');
+                            DB::purge($connection);
+                            DB::connection($connection)->update("UPDATE settings SET value = 'during update'");
+                            DB::purge($connection);
+                        }
                         throw new RuntimeException('Composer failed for testing.');
                     }
 

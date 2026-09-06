@@ -44,6 +44,9 @@ class InstallationTypeServiceTest extends TestCase
         $this->assertTrue($service->panelSupportsAutomaticUpdates());
 
         config()->set('database.connections.database.driver', 'sqlite');
+        $this->assertTrue($service->panelSupportsAutomaticUpdates());
+
+        config()->set('database.connections.database.driver', 'sqlsrv');
         $this->assertFalse($service->panelSupportsAutomaticUpdates());
     }
 
