@@ -290,7 +290,7 @@ export default function ServerRouter() {
                                 {isSidebarOpen && (
                                     <div
                                         onClick={() => setSidebarOpen(false)}
-                                        className='fixed inset-0 z-30 bg-gray-900/40 backdrop-blur-sm-xs lg:hidden'
+                                        className='fixed inset-0 z-30 bg-gray-900/40 backdrop-blur-xs lg:hidden'
                                     />
                                 )}
 
