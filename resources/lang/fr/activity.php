@@ -14,12 +14,12 @@ return [
         'using-sftp' => 'Utilisation du SFTP',
     ],
     'event' => [
-        'password-reset' => 'Password reset',
+        'password-reset' => 'Réinitialisation du mot de passe',
     ],
     'auth' => [
         'fail' => 'Échec de connexion',
         'success' => 'Connexion',
-        'passkey' => 'Logged in with passkey',
+        'passkey' => 'Connexion avec un mot de passe',
         'password-reset' => 'Réinitialiser le mot de passe',
         'reset-password' => 'Réinitialisation du mot de passe demandée',
         'checkpoint' => 'Authentification à deux facteurs requise',
@@ -38,8 +38,8 @@ return [
             'email-changed' => 'Modification de l\'adresse mail de :old à :new',
             'password-changed' => 'Mot de passe modifié',
             'language-changed' => 'Changement de langue de :old à :new',
-            'file-editor-changed' => 'Changed file editor from :old to :new',
-            'avatar-changed' => 'Changed avatar style from :old to :new',
+            'file-editor-changed' => 'L\'éditeur de fichiers est passé de :old à :new',
+            'avatar-changed' => 'J\'ai changé le style de l\'avatar, passant de :old à :new',
         ],
         'api-key' => [
             'create' => 'Création d\'une nouvelle clé API :identifier',
@@ -54,8 +54,8 @@ return [
             'delete' => 'Authentification à deux facteurs désactivée',
         ],
         'passkey' => [
-            'create' => 'Registered a new passkey',
-            'delete' => 'Removed passkey :id',
+            'create' => 'Enregistrement d\'un nouveau mot de passe',
+            'delete' => 'Clé d\'accès supprimée : id',
         ],
     ],
     'server' => [
@@ -136,7 +136,7 @@ return [
         'settings' => [
             'rename' => 'Renommage du serveur de :old à :new',
             'description' => 'Modification de la description de :old à :new',
-            'category' => 'Changed server category',
+            'category' => 'Modification de la catégorie du serveur',
         ],
         'startup' => [
             'edit' => 'Modification de la variable :variable de \':old\' à \':new\'',
