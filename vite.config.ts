@@ -37,6 +37,10 @@ export default defineConfig({
             ignored: ['**/vendor/**', '**/storage/**', '**/bootstrap/**', '**/resources/views/**', '**/database/**'],
         },
     },
+
+    build: {
+        chunkSizeWarningLimit: 2000,
+    },
     
     resolve: {
         alias: {
