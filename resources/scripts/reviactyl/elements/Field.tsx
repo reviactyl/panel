@@ -31,7 +31,7 @@ const Field = forwardRef<HTMLInputElement, Props>(
                             </div>
                         )}
                         <Input
-                            className={Icon ? 'rounded-l-none!' : undefined}
+                            className={Icon ? '!rounded-l-none' : undefined}
                             id={id}
                             {...field}
                             {...props}
