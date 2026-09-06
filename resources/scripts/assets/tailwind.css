@@ -1,27 +1,82 @@
 @import "tailwindcss";
 
+@plugin "@tailwindcss/forms" {
+    strategy: "class";
+}
+
 @theme inline {
     --font-header: '"IBM Plex Sans"', '"Roboto"', system-ui, sans-serif;
     --font-sans: var(--font-family);
 
     --radius-ui: var(--radius);
     
-    --color-reviactyl: var(--color-primary);
-    --color-secondary: var(--color-secondary);
-    --color-muted: var(--color-muted-text);
-    --color-success: var(--color-success);
-    --color-warning: var(--color-warning);
-    --color-danger: var(--color-danger);
+    --color-reviactyl: rgb(var(--color-primary));
+    --color-secondary: rgb(var(--color-secondary));
+    --color-muted: rgb(var(--color-muted-text));
+    --color-success: rgb(var(--color-success));
+    --color-warning: rgb(var(--color-warning));
+    --color-danger: rgb(var(--color-danger));
 
-    --color-gray-50: var(--color-50);
-    --color-gray-100: var(--color-100);
-    --color-gray-200: var(--color-200);
-    --color-gray-300: var(--color-300);
-    --color-gray-400: var(--color-400);
-    --color-gray-500: var(--color-500);
-    --color-gray-600: var(--color-600);
-    --color-gray-700: var(--color-700);
-    --color-gray-800: var(--color-800);
-    --color-gray-900: var(--color-900);
-    --color-gray-950: var(--color-950);
+    --color-gray-50: rgb(var(--color-50));
+    --color-gray-100: rgb(var(--color-100));
+    --color-gray-200: rgb(var(--color-200));
+    --color-gray-300: rgb(var(--color-300));
+    --color-gray-400: rgb(var(--color-400));
+    --color-gray-500: rgb(var(--color-500));
+    --color-gray-600: rgb(var(--color-600));
+    --color-gray-700: rgb(var(--color-700));
+    --color-gray-800: rgb(var(--color-800));
+    --color-gray-900: rgb(var(--color-900));
+    --color-gray-950: rgb(var(--color-950));
+
+    --color-primary-50: var(--color-blue-50);
+    --color-primary-100: var(--color-blue-100);
+    --color-primary-200: var(--color-blue-200);
+    --color-primary-300: var(--color-blue-300);
+    --color-primary-400: var(--color-blue-400);
+    --color-primary-500: var(--color-blue-500);
+    --color-primary-600: var(--color-blue-600);
+    --color-primary-700: var(--color-blue-700);
+    --color-primary-800: var(--color-blue-800);
+    --color-primary-900: var(--color-blue-900);
+    --color-primary-950: var(--color-blue-950);
+
+    --text-2xs: 0.625rem;
+    --duration-250: 250ms;
+}
+
+@layer base {
+    *, ::after, ::before, ::backdrop, ::file-selector-button {
+        border-color: var(--color-gray-400, currentColor);
+    }
+
+    html, body, #app {
+        max-width: 100%;
+        overflow-x: clip;
+    }
+
+    body {
+        @apply font-sans bg-gray-950 text-gray-200;
+        letter-spacing: 0.015em;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        @apply font-medium tracking-normal font-header;
+    }
+
+    p {
+        @apply text-gray-200 leading-snug font-sans;
+    }
+
+    form {
+        @apply m-0;
+    }
+
+    textarea, select, input, button, button:focus, button:focus-visible {
+        @apply outline-hidden;
+    }
+
+    button:not(:disabled), [role="button"]:not(:disabled) {
+        cursor: pointer;
+    }
 }
