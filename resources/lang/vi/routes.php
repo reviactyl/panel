@@ -11,7 +11,7 @@ return [
     ],
     'account' => [
         'overview' => 'Tổng quan về tài khoản',
-        'passkeys' => 'Passkeys',
+        'passkeys' => 'Mã truy cập',
         'api' => 'API Keys',
         'ssh' => 'SSH Keys',
         'activity' => 'Hoạt động',
