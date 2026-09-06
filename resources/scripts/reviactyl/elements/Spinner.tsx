@@ -7,14 +7,23 @@ interface Props {
     size?: SpinnerSize;
     centered?: boolean;
     isBlue?: boolean;
+    className?: string;
     children?: React.ReactNode;
 }
 
-const SpinnerElement = ({ size = 'base', isBlue }: Pick<Props, 'size' | 'isBlue'>) => (
+const SpinnerElement = ({ size = 'base', isBlue, className }: Pick<Props, 'size' | 'isBlue' | 'className'>) => (
     <div
-        className={`animate-spin rounded-full ${
-            size === 'small' ? 'h-4 w-4 border-2' : size === 'large' ? 'h-16 w-16 border-[6px]' : 'h-8 w-8 border-[3px]'
-        }`}
+        className={[
+            'animate-spin rounded-full',
+            size === 'small'
+                ? 'h-4 w-4 border-2'
+                : size === 'large'
+                ? 'h-16 w-16 border-[6px]'
+                : 'h-8 w-8 border-[3px]',
+            className,
+        ]
+            .filter(Boolean)
+            .join(' ')}
         style={{
             borderColor: isBlue ? 'hsla(212, 92%, 43%, 0.2)' : 'rgba(255, 255, 255, 0.2)',
             borderTopColor: isBlue ? 'hsl(212, 92%, 43%)' : 'rgb(255, 255, 255)',
@@ -23,13 +32,13 @@ const SpinnerElement = ({ size = 'base', isBlue }: Pick<Props, 'size' | 'isBlue'
     />
 );
 
-const SpinnerFunc = ({ centered, ...props }: Props) =>
+const SpinnerFunc = ({ centered, className, ...props }: Props) =>
     centered ? (
         <div className={`flex items-center justify-center ${props.size === 'large' ? 'm-20' : 'm-6'}`}>
-            <SpinnerElement {...props} />
+            <SpinnerElement {...props} className={className} />
         </div>
     ) : (
-        <SpinnerElement {...props} />
+        <SpinnerElement {...props} className={className} />
     );
 
 const SuspenseSpinner = ({ children, centered = true, size, ...props }: Props) => (
@@ -37,6 +46,7 @@ const SuspenseSpinner = ({ children, centered = true, size, ...props }: Props) =
         <ErrorBoundary>{children}</ErrorBoundary>
     </Suspense>
 );
+
 SuspenseSpinner.displayName = 'Spinner.Suspense';
 
 const Spinner = Object.assign(SpinnerFunc, {
