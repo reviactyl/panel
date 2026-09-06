@@ -26,6 +26,7 @@
         "boring-avatars": "^1.7.0",
         "chart.js": "^3.8.0",
         "classnames": "^2.3.1",
+        "clsx": "^2.1.1",
         "codemirror": "^5.58.2",
         "copy-to-clipboard": "^3.3.1",
         "date-fns": "^2.28.0",
