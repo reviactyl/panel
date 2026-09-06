@@ -4,7 +4,6 @@ import LoginFormContainer from '@/components/auth/LoginFormContainer';
 import { Formik, FormikHelpers } from 'formik';
 import { object, string, ref as yupRef } from 'yup';
 import Field from '@/reviactyl/elements/Field';
-import tw from 'twin.macro';
 import { Button } from '@/reviactyl/components/button/index';
 import useFlash from '@/plugins/useFlash';
 import Label from '@/reviactyl/elements/Label';
@@ -123,8 +122,8 @@ const RegisterContainer = () => {
             })}
         >
             {({ isSubmitting, setSubmitting, submitForm }) => (
-                <LoginFormContainer title={'Create Account'} css={tw`w-full flex`}>
-                    <div css={tw`grid grid-cols-2 gap-4`}>
+                <LoginFormContainer title={'Create Account'} className='flex w-full'>
+                    <div className='grid grid-cols-2 gap-4'>
                         <Field
                             label={t('register.namefirst-label')}
                             placeholder={'John'}
@@ -138,7 +137,7 @@ const RegisterContainer = () => {
                             disabled={isSubmitting}
                         />
                     </div>
-                    <div css={tw`mt-3`}>
+                    <div className='mt-3'>
                         <Field
                             icon={MailIcon}
                             type={'email'}
@@ -148,7 +147,7 @@ const RegisterContainer = () => {
                             disabled={isSubmitting}
                         />
                     </div>
-                    <div css={tw`mt-3`}>
+                    <div className='mt-3'>
                         <Field
                             icon={UserIcon}
                             label={t('register.username-label')}
@@ -157,7 +156,7 @@ const RegisterContainer = () => {
                             disabled={isSubmitting}
                         />
                     </div>
-                    <div css={tw`mt-3 relative`}>
+                    <div className='relative mt-3'>
                         <Label>{t('register.password-label')}</Label>
                         <Field
                             icon={KeyIcon}
@@ -169,13 +168,13 @@ const RegisterContainer = () => {
                         />
                         <button
                             type={'button'}
-                            css={tw`absolute top-[36px] right-[6px] py-2 p-1 text-gray-500`}
+                            className='absolute top-[36px] right-[6px] p-1 py-2 text-gray-500'
                             onClick={() => setShow(!show)}
                         >
                             {show ? <EyeOffIcon className='h-5 w-5' /> : <EyeIcon className='h-5 w-5' />}
                         </button>
                     </div>
-                    <div css={tw`mt-3 relative`}>
+                    <div className='relative mt-3'>
                         <Label>{t('register.confirm-label')}</Label>
                         <Field
                             icon={KeyIcon}
@@ -185,8 +184,8 @@ const RegisterContainer = () => {
                             disabled={isSubmitting}
                         />
                     </div>
-                    <div css={tw`mt-6`}>
-                        <Button css={tw`w-full !py-3`} type={'submit'} disabled={isSubmitting}>
+                    <div className='mt-6'>
+                        <Button className='w-full !py-3' type={'submit'} disabled={isSubmitting}>
                             {t('register.label')}
                         </Button>
                     </div>
@@ -206,7 +205,7 @@ const RegisterContainer = () => {
                         />
                     )}
                     {provider === 'turnstile' && (
-                        <div css={tw`mt-4 flex justify-center`}>
+                        <div className='mt-4 flex justify-center'>
                             <Turnstile
                                 siteKey={turnstile.siteKey}
                                 onVerify={(response) => setToken(response)}
@@ -214,10 +213,10 @@ const RegisterContainer = () => {
                             />
                         </div>
                     )}
-                    <div css={tw`mt-4 text-center`}>
+                    <div className='mt-4 text-center'>
                         <Link
                             to={'/auth/login'}
-                            css={tw`text-sm text-reviactyl/80 tracking-wide no-underline hover:text-reviactyl/50`}
+                            className='text-sm tracking-wide text-reviactyl/80 no-underline hover:text-reviactyl/50'
                         >
                             Already have an account? Login
                         </Link>

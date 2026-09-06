@@ -1,18 +1,11 @@
 import React, { useEffect, useRef, useState, lazy, Suspense } from 'react';
 import type { Monaco } from '@monaco-editor/react';
 import type { editor } from 'monaco-editor';
-import styled from 'styled-components';
-import tw from 'twin.macro';
 import modes from '@/modes';
 import Spinner from './Spinner';
+import styles from '@/reviactyl/elements/style.module.css';
 
 const Editor = lazy(() => import('@monaco-editor/react'));
-
-const EditorContainer = styled.div`
-    min-height: 16rem;
-    height: calc(100vh - 20rem);
-    ${tw`relative rounded`};
-`;
 
 export interface Props {
     style?: React.CSSProperties;
@@ -131,7 +124,7 @@ export default ({ style, initialContent, filename, mode, fetchContent, onContent
     }, [fetchContent]);
 
     return (
-        <EditorContainer style={style}>
+        <div className={styles.monacoEditor} style={style}>
             <Suspense fallback={<Spinner centered size={Spinner.Size.LARGE} />}>
                 <Editor
                     height='100%'
@@ -163,6 +156,6 @@ export default ({ style, initialContent, filename, mode, fetchContent, onContent
                     }}
                 />
             </Suspense>
-        </EditorContainer>
+        </div>
     );
 };

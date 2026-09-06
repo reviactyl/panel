@@ -5,7 +5,6 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import Field from '@/reviactyl/elements/Field';
 import chmodFiles from '@/api/server/files/chmodFiles';
 import { ServerContext } from '@/state/server';
-import tw from 'twin.macro';
 import Button from '@/reviactyl/elements/Button';
 import useFlash from '@/plugins/useFlash';
 import { useTranslation } from 'react-i18next';
@@ -57,9 +56,9 @@ const ChmodFileModal = ({ files, ...props }: OwnProps) => {
         <Formik onSubmit={submit} initialValues={{ mode: files.length > 1 ? '' : files[0]?.mode ?? '' }}>
             {({ isSubmitting }) => (
                 <Modal {...props} dismissable={!isSubmitting} showSpinnerOverlay={isSubmitting}>
-                    <Form css={tw`m-0`}>
-                        <div css={tw`flex flex-wrap items-end`}>
-                            <div css={tw`w-full sm:flex-1 sm:mr-4`}>
+                    <Form className='m-0'>
+                        <div className='flex flex-wrap items-end'>
+                            <div className='w-full sm:flex-1 sm:mr-4'>
                                 <Field
                                     type={'string'}
                                     id={'file_mode'}
@@ -68,8 +67,8 @@ const ChmodFileModal = ({ files, ...props }: OwnProps) => {
                                     autoFocus
                                 />
                             </div>
-                            <div css={tw`w-full sm:w-auto mt-4 sm:mt-0`}>
-                                <Button css={tw`w-full`}>{t('update')}</Button>
+                            <div className='w-full sm:w-auto mt-4 sm:mt-0'>
+                                <Button className='w-full'>{t('update')}</Button>
                             </div>
                         </div>
                     </Form>

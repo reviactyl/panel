@@ -3,13 +3,11 @@ import laravel from 'laravel-vite-plugin';
 import { dirname, resolve } from 'pathe';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
+import tailwindcss from '@tailwindcss/vite'
 
 const plugins = [
-    react({
-        babel: {
-            plugins: ['babel-plugin-macros', 'babel-plugin-styled-components'],
-        },
-    }),
+    react(),
+    tailwindcss(),
 ];
 
 if (process.env.VITEST === undefined) {
@@ -38,6 +36,10 @@ export default defineConfig({
         watch: {
             ignored: ['**/vendor/**', '**/storage/**', '**/bootstrap/**', '**/resources/views/**', '**/database/**'],
         },
+    },
+
+    build: {
+        chunkSizeWarningLimit: 2000,
     },
     
     resolve: {

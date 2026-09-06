@@ -4,21 +4,11 @@ import { ApplicationStore } from '@/state';
 import { useStoreState } from 'easy-peasy';
 import Card from '@/reviactyl/ui/Card';
 import Title from '@/reviactyl/ui/Title';
-import tw from 'twin.macro';
-import styled from 'styled-components';
 import { LogoContainer } from '@/reviactyl/ui/LogoContainer';
 import logout from '@/api/auth/logout';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import { LogoutIcon } from '@heroicons/react/solid';
 import { useTranslation } from 'react-i18next';
-
-const Container = styled.div`
-    ${tw`my-auto mx-auto`}
-`;
-
-const CardContainer = styled.div`
-    ${tw`max-w-[28.125rem] w-screen pt-10`}
-`;
 
 export default () => {
     const { t } = useTranslation('strings');
@@ -34,10 +24,10 @@ export default () => {
     };
     return (
         <PageContentBlock className='flex flex-col h-full' title={t('under_maintenance')} showFlashKey={'dashboard'}>
-            <Container>
-                <CardContainer>
+            <div className='mx-auto my-auto'>
+                <div className='w-screen max-w-[28.125rem] pt-10'>
                     <LogoContainer>
-                        <img src={logo} alt={name} css={tw`h-[3rem]`} />
+                        <img src={logo} alt={name} className='h-[3rem]' />
                     </LogoContainer>
                     <Card>
                         <SpinnerOverlay visible={isLoggingOut} />
@@ -48,8 +38,8 @@ export default () => {
                         <span className='text-danger/80'>{t('logout')}</span>{' '}
                         <LogoutIcon className='w-5 h-5 text-danger/80' />
                     </button>
-                </CardContainer>
-            </Container>
+                </div>
+            </div>
         </PageContentBlock>
     );
 };

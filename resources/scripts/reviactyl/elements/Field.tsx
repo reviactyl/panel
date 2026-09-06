@@ -2,8 +2,6 @@ import React, { forwardRef } from 'react';
 import { Field as FormikField, FieldProps } from 'formik';
 import Input from '@/reviactyl/elements/Input';
 import Label from '@/reviactyl/elements/Label';
-import tw from 'twin.macro';
-import styled from 'styled-components';
 
 interface OwnProps {
     name: string;
@@ -12,10 +10,6 @@ interface OwnProps {
     description?: string;
     validate?: (value: any) => undefined | string | Promise<any>;
 }
-const IconWrapper = styled.div`
-    ${tw`bg-gray-800 border !border-r-0 rounded-l-ui p-3`}
-`;
-
 type Props = OwnProps & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'name'>;
 
 const Field = forwardRef<HTMLInputElement, Props>(
@@ -26,18 +20,18 @@ const Field = forwardRef<HTMLInputElement, Props>(
                     {label && <Label htmlFor={id}>{label}</Label>}
                     <div className='flex items-center'>
                         {Icon && (
-                            <IconWrapper
-                                className={
+                            <div
+                                className={`rounded-l-ui border border-r-0 bg-gray-800 p-3 ${
                                     touched[field.name] && errors[field.name]
                                         ? 'border-red-400 text-red-400'
                                         : 'border-gray-600 text-gray-600'
-                                }
+                                }`}
                             >
                                 <Icon className='w-5 h-5' />
-                            </IconWrapper>
+                            </div>
                         )}
                         <Input
-                            css={[Icon && tw`!rounded-l-none`]}
+                            className={Icon ? '!rounded-l-none' : undefined}
                             id={id}
                             {...field}
                             {...props}

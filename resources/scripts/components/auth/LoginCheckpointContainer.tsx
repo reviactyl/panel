@@ -8,7 +8,6 @@ import { useFormikContext, withFormik } from 'formik';
 import useFlash from '@/plugins/useFlash';
 import { FlashStore } from '@/state/flashes';
 import Field from '@/reviactyl/elements/Field';
-import tw from 'twin.macro';
 import { Button } from '@/reviactyl/components/button/index';
 import { DotsHorizontalIcon } from '@heroicons/react/solid';
 import { useTranslation } from 'react-i18next';
@@ -30,8 +29,8 @@ function LoginCheckpointContainer() {
     const [isMissingDevice, setIsMissingDevice] = useState(false);
 
     return (
-        <LoginFormContainer title={t('checkpoint.title')} css={tw`w-full flex`}>
-            <div css={tw`mt-3`}>
+        <LoginFormContainer title={t('checkpoint.title')} className='flex w-full'>
+            <div className='mt-3'>
                 <Field
                     icon={DotsHorizontalIcon}
                     name={isMissingDevice ? 'recoveryCode' : 'code'}
@@ -42,27 +41,27 @@ function LoginCheckpointContainer() {
                     autoFocus
                 />
             </div>
-            <div css={tw`mt-3`}>
-                <Button css={tw`w-full !py-3`} type={'submit'} disabled={isSubmitting}>
+            <div className='mt-3'>
+                <Button className='w-full !py-3' type='submit' disabled={isSubmitting}>
                     {t('checkpoint.button')}
                 </Button>
             </div>
-            <div css={tw`mt-3 text-center`}>
+            <div className='mt-3 text-center'>
                 <span
                     onClick={() => {
                         setFieldValue('code', '');
                         setFieldValue('recoveryCode', '');
                         setIsMissingDevice((s) => !s);
                     }}
-                    css={tw`cursor-pointer text-sm text-reviactyl/80 tracking-wide no-underline hover:text-reviactyl/50`}
+                    className='cursor-pointer text-sm tracking-wide text-reviactyl/80 no-underline hover:text-reviactyl/50'
                 >
                     {!isMissingDevice ? t('checkpoint.lost-device') : t('checkpoint.not-lost-device')}
                 </span>
             </div>
-            <div css={tw`mt-3 text-center`}>
+            <div className='mt-3 text-center'>
                 <Link
                     to={'/auth/login'}
-                    css={tw`text-sm text-reviactyl/80 tracking-wide no-underline hover:text-reviactyl/50`}
+                    className='text-sm tracking-wide text-reviactyl/80 no-underline hover:text-reviactyl/50'
                 >
                     {t('return')}
                 </Link>

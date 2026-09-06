@@ -2,21 +2,6 @@ import { useRef } from 'react';
 import Modal, { RequiredModalProps } from '@/reviactyl/elements/Modal';
 import Viewer from 'viewerjs';
 import 'viewerjs/dist/viewer.css';
-import tw from 'twin.macro';
-import styled from 'styled-components';
-
-// Quick styled component for the viewer container (might put this into its own file later)
-const ViewerContainer = styled.div`
-    ${tw`flex items-center justify-center bg-gray-900 rounded-ui overflow-hidden`};
-    min-height: 500px;
-    max-height: 80vh;
-
-    img {
-        ${tw`max-w-full max-h-full object-contain`};
-        display: block;
-        margin: auto;
-    }
-`;
 
 interface Props extends RequiredModalProps {
     imageUrl: string;
@@ -71,16 +56,16 @@ const ImageViewerModal = ({ imageUrl, imageName, ...modalProps }: Props) => {
 
     return (
         <Modal {...modalProps} dismissable>
-            <div css={tw`max-w-5xl w-full`}>
-                <div css={tw`mb-4`}>
-                    <h2 css={tw`text-xl font-semibold text-gray-100`}>{imageName}</h2>
+            <div className='w-full max-w-5xl'>
+                <div className='mb-4'>
+                    <h2 className='text-xl font-semibold text-gray-100'>{imageName}</h2>
                 </div>
-                <ViewerContainer>
+                <div className='flex max-h-[80vh] min-h-[500px] items-center justify-center overflow-hidden rounded-ui bg-gray-900'>
                     <img
                         ref={imageRef}
                         src={imageUrl}
                         alt={imageName}
-                        css={tw`cursor-pointer`}
+                        className='m-auto max-h-full max-w-full cursor-pointer object-contain'
                         onClick={handleImageClick}
                         onError={(e) => {
                             // Welp, time to use hacky fallback
@@ -88,8 +73,8 @@ const ImageViewerModal = ({ imageUrl, imageName, ...modalProps }: Props) => {
                                 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200"%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" fill="%23999" font-size="16"%3EImage failed to load%3C/text%3E%3C/svg%3E';
                         }}
                     />
-                </ViewerContainer>
-                <div css={tw`mt-4 text-sm text-gray-400 text-center`}>
+                </div>
+                <div className='mt-4 text-center text-sm text-gray-400'>
                     Click on the image to zoom, rotate, and use other viewer controls
                 </div>
             </div>

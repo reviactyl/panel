@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import tw from 'twin.macro';
 import { Button } from '@/reviactyl/components/button/index';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import useFlash from '@/plugins/useFlash';
@@ -121,7 +120,7 @@ const MassActionsBar = () => {
             {loading && (
                 <Tooltip content={loadingMessage}>
                     <Button disabled aria-label={loadingMessage} className='cursor-wait'>
-                        <Spinner css={tw`h-5 w-5`} />
+                        <Spinner className='h-5 w-5' />
                     </Button>
                 </Tooltip>
             )}

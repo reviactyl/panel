@@ -7,7 +7,6 @@ import { useChart, useChartTickLabel } from '@/components/server/console/chart';
 import { hexToRgba } from '@/lib/helpers';
 import { bytesToString } from '@/lib/formatters';
 import { CloudDownloadIcon, CloudUploadIcon } from '@heroicons/react/solid';
-import { theme } from 'twin.macro';
 import ChartBlock from '@/components/server/console/ChartBlock';
 import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
 import { useTranslation } from 'react-i18next';
@@ -45,8 +44,8 @@ export default () => {
             return {
                 ...opts,
                 label: !index ? t('network-in') : t('network-out'),
-                borderColor: !index ? theme('colors.blue.400') : theme('colors.amber.400'),
-                backgroundColor: hexToRgba(!index ? theme('colors.blue.700') : theme('colors.amber.700'), 0.5),
+                borderColor: !index ? '#60a5fa' : '#fbbf24',
+                backgroundColor: hexToRgba(!index ? '#1d4ed8' : '#b45309', 0.5),
             };
         },
     });

@@ -4,30 +4,39 @@ import Field from '@/reviactyl/elements/Field';
 import { join } from 'pathe';
 import renameFiles from '@/api/server/files/renameFiles';
 import { ServerContext } from '@/state/server';
-import tw from 'twin.macro';
 import Button from '@/reviactyl/elements/Button';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import useFlash from '@/plugins/useFlash';
 import { useTranslation } from 'react-i18next';
+import clsx from 'clsx';
 
 interface FormikValues {
     name: string;
 }
 
-type OwnProps = RequiredModalProps & { files: string[]; useMoveTerminology?: boolean };
+type OwnProps = RequiredModalProps & {
+    files: string[];
+    useMoveTerminology?: boolean;
+};
 
 const RenameFileModal = ({ files, useMoveTerminology, ...props }: OwnProps) => {
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+
     const { t } = useTranslation('server/files');
+
     const { mutate } = useFileManagerSwr();
+
     const { clearFlashes, clearAndAddHttpError } = useFlash();
+
     const directory = ServerContext.useStoreState((state) => state.files.directory);
+
     const setSelectedFiles = ServerContext.useStoreActions((actions) => actions.files.setSelectedFiles);
 
     const submit = ({ name }: FormikValues, { setSubmitting }: FormikHelpers<FormikValues>) => {
         clearFlashes('files');
 
         const len = name.split('/').length;
+
         if (files.length === 1) {
             if (!useMoveTerminology && len === 1) {
                 // Rename the file within this directory.
@@ -39,6 +48,7 @@ const RenameFileModal = ({ files, useMoveTerminology, ...props }: OwnProps) => {
         }
 
         let data;
+
         if (useMoveTerminology && files.length > 1) {
             data = files.map((f) => ({ from: f, to: join(name, f) }));
         } else {
@@ -60,25 +70,25 @@ const RenameFileModal = ({ files, useMoveTerminology, ...props }: OwnProps) => {
         <Formik onSubmit={submit} initialValues={{ name: files.length > 1 ? '' : files[0] || '' }}>
             {({ isSubmitting, values }) => (
                 <Modal {...props} dismissable={!isSubmitting} showSpinnerOverlay={isSubmitting}>
-                    <Form css={tw`m-0`}>
-                        <div css={[tw`flex flex-wrap`, useMoveTerminology ? tw`items-center` : tw`items-end`]}>
-                            <div css={tw`w-full sm:flex-1 sm:mr-4`}>
+                    <Form className='m-0'>
+                        <div className={clsx('flex flex-wrap', useMoveTerminology ? 'items-center' : 'items-end')}>
+                            <div className='w-full sm:flex-1 sm:mr-4'>
                                 <Field
-                                    type={'string'}
-                                    id={'file_name'}
-                                    name={'name'}
+                                    type='string'
+                                    id='file_name'
+                                    name='name'
                                     label={t('file-name-label')}
                                     description={useMoveTerminology ? t('move-description') : undefined}
                                     autoFocus
                                 />
                             </div>
-                            <div css={tw`w-full sm:w-auto mt-4 sm:mt-0`}>
-                                <Button css={tw`w-full`}>{useMoveTerminology ? t('move') : t('rename')}</Button>
+                            <div className='w-full sm:w-auto mt-4 sm:mt-0'>
+                                <Button className='w-full'>{useMoveTerminology ? t('move') : t('rename')}</Button>
                             </div>
                         </div>
                         {useMoveTerminology && (
-                            <p css={tw`text-xs mt-2 text-gray-400`}>
-                                <strong css={tw`text-gray-200`}>{t('new-location')}</strong>
+                            <p className='text-xs mt-2 text-gray-400'>
+                                <strong className='text-gray-200'>{t('new-location')}</strong>
                                 &nbsp;/home/container/{join(directory, values.name).replace(/^(\.\.\/|\/)+/, '')}
                             </p>
                         )}

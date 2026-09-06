@@ -1,6 +1,5 @@
 import { memo, useCallback, useState } from 'react';
 import isEqual from 'react-fast-compare';
-import tw from 'twin.macro';
 import { FaNetworkWired } from 'react-icons/fa6';
 import InputSpinner from '@/reviactyl/elements/InputSpinner';
 import { Textarea } from '@/reviactyl/elements/Input';
@@ -8,7 +7,6 @@ import Can from '@/reviactyl/elements/Can';
 import { Button } from '@/reviactyl/components/button/index';
 import GreyRowBox from '@/reviactyl/elements/GreyRowBox';
 import { Allocation } from '@/api/server/getServer';
-import styled from 'styled-components';
 import { debounce } from 'debounce';
 import setServerAllocationNotes from '@/api/server/network/setServerAllocationNotes';
 import { useFlashKey } from '@/plugins/useFlash';
@@ -20,10 +18,6 @@ import getServerAllocations from '@/api/swr/getServerAllocations';
 import { ip } from '@/lib/formatters';
 import Code from '@/reviactyl/elements/Code';
 import { usePermissions } from '@/plugins/usePermissions';
-
-const Label = styled.label`
-    ${tw`uppercase text-xs mt-1 text-gray-400 block px-1 select-none transition-colors duration-150`}
-`;
 
 interface Props {
     allocation: Allocation;
@@ -76,11 +70,23 @@ const AllocationRow = ({ allocation }: Props) => {
                             <Code>{ip(allocation.ip)}</Code>
                         </CopyOnClick>
                     )}
-                    <Label>{allocation.alias ? 'Hostname' : 'IP Address'}</Label>
+                    <label
+                        className={
+                            'uppercase text-xs mt-1 text-gray-400 block px-1 select-none transition-colors duration-150'
+                        }
+                    >
+                        {allocation.alias ? 'Hostname' : 'IP Address'}
+                    </label>
                 </div>
                 <div className={'w-16 md:w-24 overflow-hidden'}>
                     <Code>{allocation.port}</Code>
-                    <Label>Port</Label>
+                    <label
+                        className={
+                            'uppercase text-xs mt-1 text-gray-400 block px-1 select-none transition-colors duration-150'
+                        }
+                    >
+                        Port
+                    </label>
                 </div>
             </div>
             <div className={'mt-4 w-full md:mt-0 md:flex-1 md:w-auto'}>

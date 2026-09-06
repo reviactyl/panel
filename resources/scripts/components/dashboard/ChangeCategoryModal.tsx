@@ -7,7 +7,6 @@ import getServerCategories from '@/api/account/getServerCategories';
 import useSWR from 'swr';
 import Button from '@/reviactyl/elements/Button';
 import Spinner from '@/reviactyl/elements/Spinner';
-import tw from 'twin.macro';
 import Select from '@/reviactyl/elements/Select';
 import updateServerCategory from '@/api/server/updateServerCategory';
 import { useTranslation } from 'react-i18next';
@@ -38,7 +37,7 @@ export default ({ server, visible, onDismissed }: Props) => {
 
     return (
         <Modal visible={visible} onDismissed={onDismissed} showSpinnerOverlay={false}>
-            <h2 css={tw`text-2xl mb-4 font-bold`}>{t('categories.assign-category')}</h2>
+            <h2 className='text-2xl mb-4 font-bold'>{t('categories.assign-category')}</h2>
             <Formik
                 onSubmit={submit}
                 initialValues={{ category: server.category?.uuid || '' }}
@@ -51,8 +50,8 @@ export default ({ server, visible, onDismissed }: Props) => {
                         {!categories ? (
                             <Spinner centered />
                         ) : (
-                            <div css={tw`mt-6`}>
-                                <label css={tw`block text-sm mb-2 text-gray-300`}>
+                            <div className='mt-6'>
+                                <label className='block text-sm mb-2 text-gray-300'>
                                     {t('categories.select-category')}
                                 </label>
                                 <Field name={'category'} as={Select}>
@@ -65,7 +64,7 @@ export default ({ server, visible, onDismissed }: Props) => {
                                 </Field>
                             </div>
                         )}
-                        <div css={tw`flex flex-wrap justify-end mt-6`}>
+                        <div className='flex flex-wrap justify-end mt-6'>
                             <Button type={'submit'} disabled={isSubmitting} isLoading={isSubmitting}>
                                 {t('categories.save-changes')}
                             </Button>

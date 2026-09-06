@@ -155,7 +155,7 @@ const ThemeSelector = () => {
                         <button
                             key={name}
                             onClick={() => handleThemeChange(name)}
-                            className={`w-10 h-10 rounded-full border shadow-sm transition ${
+                            className={`w-10 h-10 rounded-full border shadow-xs transition ${
                                 selected === name ? 'ring-2 ring-reviactyl' : ''
                             }`}
                             style={{ background: gradient }}

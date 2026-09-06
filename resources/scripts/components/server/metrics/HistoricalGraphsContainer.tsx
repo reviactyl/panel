@@ -18,7 +18,6 @@ import { format } from 'date-fns';
 import http from '@/api/http';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { ServerError } from '@/reviactyl/elements/ScreenBlock';
-import tw from 'twin.macro';
 import { useTranslation } from 'react-i18next';
 import Select from '@/reviactyl/elements/Select';
 
@@ -163,7 +162,7 @@ export default () => {
     return (
         <ServerContentBlock title={t('title')}>
             <FlashMessageRender byKey={'server:metrics'} />
-            <div css={tw`mb-4 flex justify-end space-x-2`}>
+            <div className='mb-4 flex justify-end space-x-2'>
                 <Select value={days} onChange={(e) => setDays(e.target.value as TimeRange)} className={'!w-auto'}>
                     <option value={1}>{t('time_range.last_24_hours')}</option>
                     <option value={3}>{t('time_range.last_3_days')}</option>
@@ -171,28 +170,28 @@ export default () => {
                 </Select>
             </div>
 
-            <div css={tw`grid grid-cols-1 md:grid-cols-2 gap-4`}>
-                <div css={tw`bg-gray-900 p-4 rounded-ui border border-gray-800`}>
-                    <h3 css={tw`text-gray-200 mb-2 font-semibold`}>{t('charts.cpu.title')}</h3>
-                    <div css={tw`h-64`}>
+            <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+                <div className='rounded-ui border border-gray-800 bg-gray-900 p-4'>
+                    <h3 className='mb-2 font-semibold text-gray-200'>{t('charts.cpu.title')}</h3>
+                    <div className='h-64'>
                         <Line options={{ ...chartOptions, maintainAspectRatio: false }} data={cpuData} />
                     </div>
                 </div>
-                <div css={tw`bg-gray-900 p-4 rounded-ui border border-gray-800`}>
-                    <h3 css={tw`text-gray-200 mb-2 font-semibold`}>{t('charts.memory.title')}</h3>
-                    <div css={tw`h-64`}>
+                <div className='rounded-ui border border-gray-800 bg-gray-900 p-4'>
+                    <h3 className='mb-2 font-semibold text-gray-200'>{t('charts.memory.title')}</h3>
+                    <div className='h-64'>
                         <Line options={{ ...chartOptions, maintainAspectRatio: false }} data={memoryData} />
                     </div>
                 </div>
-                <div css={tw`bg-gray-900 p-4 rounded-ui border border-gray-800`}>
-                    <h3 css={tw`text-gray-200 mb-2 font-semibold`}>{t('charts.disk.title')}</h3>
-                    <div css={tw`h-64`}>
+                <div className='rounded-ui border border-gray-800 bg-gray-900 p-4'>
+                    <h3 className='mb-2 font-semibold text-gray-200'>{t('charts.disk.title')}</h3>
+                    <div className='h-64'>
                         <Line options={{ ...chartOptions, maintainAspectRatio: false }} data={diskData} />
                     </div>
                 </div>
-                <div css={tw`bg-gray-900 p-4 rounded-ui border border-gray-800`}>
-                    <h3 css={tw`text-gray-200 mb-2 font-semibold`}>{t('charts.network.title')}</h3>
-                    <div css={tw`h-64`}>
+                <div className='rounded-ui border border-gray-800 bg-gray-900 p-4'>
+                    <h3 className='mb-2 font-semibold text-gray-200'>{t('charts.network.title')}</h3>
+                    <div className='h-64'>
                         <Line options={{ ...chartOptions, maintainAspectRatio: false }} data={networkData} />
                     </div>
                 </div>

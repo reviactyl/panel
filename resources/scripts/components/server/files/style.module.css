@@ -1,3 +1,5 @@
+@reference "#reviactyl";
+
 .manager_actions {
     @apply flex items-center justify-end gap-1;
 
@@ -14,7 +16,7 @@
         @apply text-gray-100 border-gray-500 bg-gray-600;
     }
 
-    @screen md {
+    @media (width >= 48rem) {
         @apply flex;
     }
 }

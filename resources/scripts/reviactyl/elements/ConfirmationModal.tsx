@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import tw from 'twin.macro';
 import Button from '@/reviactyl/elements/Button';
 import asModal from '@/hoc/asModal';
 import ModalContext from '@/context/ModalContext';
@@ -17,13 +16,13 @@ const ConfirmationModal = ({ title, children, buttonText, onConfirmed }: Props) 
 
     return (
         <>
-            <h2 css={tw`text-2xl mb-6`}>{title}</h2>
-            <div css={tw`text-gray-300`}>{children}</div>
-            <div css={tw`flex flex-wrap items-center justify-end mt-8`}>
-                <Button isSecondary onClick={() => dismiss()} css={tw`w-full sm:w-auto border-transparent`}>
+            <h2 className='mb-6 text-2xl'>{title}</h2>
+            <div className='text-gray-300'>{children}</div>
+            <div className='mt-8 flex flex-wrap items-center justify-end'>
+                <Button isSecondary onClick={() => dismiss()} className='w-full border-transparent sm:w-auto'>
                     Cancel
                 </Button>
-                <Button color={'red'} css={tw`w-full sm:w-auto mt-4 sm:mt-0 sm:ml-4`} onClick={() => onConfirmed()}>
+                <Button color={'red'} className='mt-4 w-full sm:mt-0 sm:ml-4 sm:w-auto' onClick={() => onConfirmed()}>
                     {buttonText}
                 </Button>
             </div>

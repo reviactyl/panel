@@ -1,6 +1,5 @@
 import React, { createRef } from 'react';
-import styled from 'styled-components';
-import tw from 'twin.macro';
+import classNames from 'classnames';
 import Fade from '@/reviactyl/elements/Fade';
 
 interface Props {
@@ -8,14 +7,20 @@ interface Props {
     renderToggle: (onClick: (e: React.MouseEvent<any, MouseEvent>) => void) => React.ReactNode;
 }
 
-export const DropdownButtonRow = styled.button<{ danger?: boolean }>`
-    ${tw`p-2 flex items-center rounded-ui w-full text-gray-400`};
-    transition: 150ms all ease;
-
-    &:hover {
-        ${(props) => (props.danger ? tw`text-red-300 bg-gray-700` : tw`text-gray-300 bg-gray-700`)};
-    }
-`;
+export const DropdownButtonRow = ({
+    danger,
+    className,
+    ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & { danger?: boolean }) => (
+    <button
+        className={classNames(
+            'flex w-full items-center rounded-ui p-2 text-gray-400 transition-all duration-150 hover:bg-gray-700',
+            danger ? 'hover:text-red-300' : 'hover:text-gray-300',
+            className
+        )}
+        {...props}
+    />
+);
 
 interface State {
     posX: number;
@@ -118,7 +123,7 @@ class DropdownMenu extends React.PureComponent<Props, State> {
                             this.setState({ visible: false });
                         }}
                         style={{ width: '12rem' }}
-                        css={tw`absolute bg-gray-800 p-2 rounded-ui border border-gray-800 shadow-lg text-gray-100 z-50`}
+                        className='absolute z-50 rounded-ui border border-gray-800 bg-gray-800 p-2 text-gray-100 shadow-lg'
                     >
                         {this.props.children}
                     </div>

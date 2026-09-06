@@ -2,17 +2,7 @@ import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { DesignifyAlert } from '@/state/designify';
 import Md2React from '@/reviactyl/ui/Md2React';
-import styled from 'styled-components';
-import tw from 'twin.macro';
 import { FaBullhorn, FaCircleXmark, FaCircleInfo, FaTriangleExclamation, FaCircleCheck } from 'react-icons/fa6';
-
-const Container = styled.div`
-    ${tw`px-2`}
-`;
-
-const AlertContainer = styled.div`
-    ${tw`mx-auto w-full flex items-center gap-x-3 max-w-[1200px] p-3 mt-2 rounded-ui text-gray-100 border`}
-`;
 
 const getAlertClass = (type: string): string =>
     type === 'info'
@@ -55,21 +45,23 @@ const Announcement = () => {
             : [];
 
     return (
-        <Container>
+        <div className='px-2'>
             {alerts
                 .filter((alert) => alert.type !== 'disabled')
                 .map((alert, index) => (
-                    <AlertContainer
+                    <div
                         key={`${index}-${alert.type}-${alert.message.slice(0, 20)}`}
-                        className={getAlertClass(alert.type)}
+                        className={`mx-auto mt-2 flex w-full max-w-[1200px] items-center gap-x-3 rounded-ui border p-3 text-gray-100 ${getAlertClass(
+                            alert.type
+                        )}`}
                     >
                         <div>{getAlertIcon(alert.type)}</div>
                         <div>
                             <Md2React markdown={alert.message} />
                         </div>
-                    </AlertContainer>
+                    </div>
                 ))}
-        </Container>
+        </div>
     );
 };
 

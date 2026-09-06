@@ -6,8 +6,6 @@ import { SiteSettings } from '@/state/settings';
 import { DesignifySettings } from '@/state/designify';
 import ProgressBar from '@/reviactyl/elements/ProgressBar';
 import { NotFound } from '@/reviactyl/elements/ScreenBlock';
-import tw from 'twin.macro';
-import GlobalStylesheet from '@/assets/css/GlobalStylesheet';
 import AuthenticatedRoute from '@/reviactyl/elements/AuthenticatedRoute';
 import { ServerContext } from '@/state/server';
 import '@/assets/tailwind.css';
@@ -79,12 +77,11 @@ function App() {
 
     return (
         <Invert>
-            <GlobalStylesheet />
             <StoreProvider store={store}>
                 <ThemeLoader />
                 <LocaleLoader />
                 <ProgressBar />
-                <div css={tw`mx-auto w-auto`}>
+                <div className='mx-auto w-auto'>
                     <BrowserRouter
                         future={{
                             v7_startTransition: true,

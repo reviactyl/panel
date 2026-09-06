@@ -1,13 +1,9 @@
 import React, { memo, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Server } from '@/api/server/getServer';
-import getServerResourceUsage, { ServerPowerState, ServerStats } from '@/api/server/getServerResourceUsage';
+import getServerResourceUsage, { ServerStats } from '@/api/server/getServerResourceUsage';
 import { bytesToString, ip, mbToBytes } from '@/lib/formatters';
-import tw from 'twin.macro';
-import GreyRowBox from '@/reviactyl/elements/GreyRowBox';
 import Spinner from '@/reviactyl/elements/Spinner';
-import styled from 'styled-components';
-import isEqual from 'react-fast-compare';
 import { FaFloppyDisk, FaMemory, FaMicrochip } from 'react-icons/fa6';
 import { useTranslation } from 'react-i18next';
 import ChangeCategoryModal from '@/components/dashboard/ChangeCategoryModal';
@@ -16,37 +12,13 @@ import Title from '@/reviactyl/ui/Title';
 
 const isAlarmState = (current: number, limit: number): boolean => limit > 0 && current / (limit * 1024 * 1024) >= 0.9;
 
-const Icon = memo(
-    styled.div<{ $alarm: boolean }>`
-        ${(props) => (props.$alarm ? tw`text-danger` : tw`text-gray-200`)};
-    `,
-    isEqual
+const Icon = memo(({ alarm, children }: { alarm: boolean; children: React.ReactNode }) => (
+    <div className={alarm ? 'text-danger' : 'text-gray-200'}>{children}</div>
+));
+
+const IconDescription = ({ alarm, children }: { alarm: boolean; children: React.ReactNode }) => (
+    <p className={`ml-2 text-xs ${alarm ? 'text-white' : 'text-gray-400'}`}>{children}</p>
 );
-
-const IconDescription = styled.p<{ $alarm: boolean }>`
-    ${tw`text-xs ml-2`};
-    ${(props) => (props.$alarm ? tw`text-white` : tw`text-gray-400`)};
-`;
-
-const StatusIndicatorBox = styled(GreyRowBox)<{ $status: ServerPowerState | undefined }>`
-    ${tw`grid grid-cols-12 gap-4 relative overflow-hidden bg-gray-900 border border-gray-800 rounded-ui`};
-
-    & .status-bar {
-        ${tw`w-2 absolute right-0 z-20 rounded-full m-1 opacity-50 transition-all duration-150`};
-        height: calc(100% - 0.5rem);
-
-        ${({ $status }) =>
-            !$status || $status === 'offline'
-                ? tw`bg-danger`
-                : $status === 'running'
-                ? tw`bg-success`
-                : tw`bg-yellow-500`};
-    }
-
-    &:hover .status-bar {
-        ${tw`opacity-75`};
-    }
-`;
 
 type Timer = ReturnType<typeof setInterval>;
 
@@ -114,12 +86,17 @@ export default ({
                     }}
                 />
             )}
-            <StatusIndicatorBox as={Link} to={`/server/${server.id}`} className={className} $status={stats?.status}>
-                <div css={tw`flex items-center col-span-12 sm:col-span-5 lg:col-span-6`}>
+            <Link
+                to={`/server/${server.id}`}
+                className={`group relative grid grid-cols-12 gap-4 overflow-hidden rounded-ui border border-gray-800 bg-gray-900 p-4 text-gray-200 no-underline ${
+                    className || ''
+                }`}
+            >
+                <div className='col-span-12 flex items-center sm:col-span-5 lg:col-span-6'>
                     <img src={server.eggImage ? server.eggImage : '/reviactyl/icon.png'} className='h-10 w-10 mr-4' />
                     <div>
-                        <Title css={tw`text-lg break-words`}>{server.name}</Title>
-                        <div css={tw`flex items-center gap-2 flex-wrap`}>
+                        <Title className='text-lg break-words'>{server.name}</Title>
+                        <div className='flex flex-wrap items-center gap-2'>
                             {showCategory && (
                                 <div
                                     onClick={(e) => {
@@ -147,12 +124,12 @@ export default ({
                             )}
 
                             {!!server.description && (
-                                <p css={tw`text-sm text-gray-300 break-words m-0 truncate`}>{server.description}</p>
+                                <p className='m-0 truncate break-words text-sm text-gray-300'>{server.description}</p>
                             )}
                         </div>
                     </div>
                 </div>
-                <div css={tw`flex-1 ml-4 lg:block lg:col-span-2 hidden`}>
+                <div className='ml-4 hidden flex-1 lg:col-span-2 lg:block'>
                     <div className={'flex justify-center items-center gap-1 text-center'}>
                         <Blur className={`text-sm font-semibold text-gray-400`}>
                             {server.allocations
@@ -165,12 +142,12 @@ export default ({
                         </Blur>
                     </div>
                 </div>
-                <div css={tw`hidden col-span-7 lg:col-span-4 sm:flex items-baseline justify-center`}>
+                <div className='col-span-7 hidden items-baseline justify-center sm:flex lg:col-span-4'>
                     {!stats || isSuspended || server.isNodeUnderMaintenance ? (
                         isSuspended ? (
-                            <div css={tw`flex-1 text-center`}>
+                            <div className='flex-1 text-center'>
                                 <span
-                                    className={`text-danger font-medium bg-danger/20 backdrop-blur-sm border border-danger/80 rounded-ui px-2 py-1 text-xs`}
+                                    className={`text-danger font-medium bg-danger/20 backdrop-blur-sm-xs border border-danger/80 rounded-ui px-2 py-1 text-xs`}
                                 >
                                     {server.status === 'suspended'
                                         ? t('server.suspended')
@@ -178,17 +155,17 @@ export default ({
                                 </span>
                             </div>
                         ) : server.isNodeUnderMaintenance ? (
-                            <div css={tw`flex-1 text-center`}>
+                            <div className='flex-1 text-center'>
                                 <span
-                                    className={`text-yellow-400 font-medium backdrop-blur-sm bg-yellow-500/50 border border-yellow-500/70 rounded-ui px-2 py-1 text-xs`}
+                                    className={`text-yellow-400 font-medium backdrop-blur-sm-xs bg-yellow-500/50 border border-yellow-500/70 rounded-ui px-2 py-1 text-xs`}
                                 >
                                     {t('server.maintenance')}
                                 </span>
                             </div>
                         ) : server.isTransferring || server.status ? (
-                            <div css={tw`flex-1 text-center`}>
+                            <div className='flex-1 text-center'>
                                 <span
-                                    className={`text-yellow-400 font-medium backdrop-blur-sm bg-gray-600/50 border border-gray-500/70 rounded-ui px-2 py-1 text-xs`}
+                                    className={`text-yellow-400 font-medium backdrop-blur-sm-xs bg-gray-600/50 border border-gray-500/70 rounded-ui px-2 py-1 text-xs`}
                                 >
                                     {server.isTransferring
                                         ? t('server.transferring')
@@ -204,44 +181,52 @@ export default ({
                         )
                     ) : (
                         <React.Fragment>
-                            <div css={tw`flex-1 ml-4 sm:block hidden`}>
-                                <div css={tw`flex justify-center`}>
-                                    <Icon $alarm={alarms.cpu}>
+                            <div className='ml-4 hidden flex-1 sm:block'>
+                                <div className='flex justify-center'>
+                                    <Icon alarm={alarms.cpu}>
                                         <FaMicrochip />
                                     </Icon>
-                                    <IconDescription $alarm={alarms.cpu}>
+                                    <IconDescription alarm={alarms.cpu}>
                                         {stats.cpuUsagePercent.toFixed(2)} %
                                     </IconDescription>
                                 </div>
-                                <p css={tw`text-xs text-gray-400 font-semibold text-center mt-1`}>of {cpuLimit}</p>
+                                <p className='mt-1 text-center text-xs font-semibold text-gray-400'>of {cpuLimit}</p>
                             </div>
-                            <div css={tw`flex-1 ml-4 sm:block hidden`}>
-                                <div css={tw`flex justify-center`}>
-                                    <Icon $alarm={alarms.memory}>
+                            <div className='ml-4 hidden flex-1 sm:block'>
+                                <div className='flex justify-center'>
+                                    <Icon alarm={alarms.memory}>
                                         <FaMemory />
                                     </Icon>
-                                    <IconDescription $alarm={alarms.memory}>
+                                    <IconDescription alarm={alarms.memory}>
                                         {bytesToString(stats.memoryUsageInBytes)}
                                     </IconDescription>
                                 </div>
-                                <p css={tw`text-xs text-gray-400 font-semibold text-center mt-1`}>of {memoryLimit}</p>
+                                <p className='mt-1 text-center text-xs font-semibold text-gray-400'>of {memoryLimit}</p>
                             </div>
-                            <div css={tw`flex-1 ml-4 sm:block hidden`}>
-                                <div css={tw`flex justify-center`}>
-                                    <Icon $alarm={alarms.disk}>
+                            <div className='ml-4 hidden flex-1 sm:block'>
+                                <div className='flex justify-center'>
+                                    <Icon alarm={alarms.disk}>
                                         <FaFloppyDisk />
                                     </Icon>
-                                    <IconDescription $alarm={alarms.disk}>
+                                    <IconDescription alarm={alarms.disk}>
                                         {bytesToString(stats.diskUsageInBytes)}
                                     </IconDescription>
                                 </div>
-                                <p css={tw`text-xs text-gray-400 font-semibold text-center mt-1`}>of {diskLimit}</p>
+                                <p className='mt-1 text-center text-xs font-semibold text-gray-400'>of {diskLimit}</p>
                             </div>
                         </React.Fragment>
                     )}
                 </div>
-                <div className={'status-bar'} />
-            </StatusIndicatorBox>
+                <div
+                    className={`absolute right-0 z-20 m-1 h-[calc(100%-0.5rem)] w-2 rounded-full opacity-50 transition-all duration-150 group-hover:opacity-75 ${
+                        !stats?.status || stats.status === 'offline'
+                            ? 'bg-danger'
+                            : stats.status === 'running'
+                            ? 'bg-success'
+                            : 'bg-yellow-500'
+                    }`}
+                />
+            </Link>
         </React.Fragment>
     );
 };

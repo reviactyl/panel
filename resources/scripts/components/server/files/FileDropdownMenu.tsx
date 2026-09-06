@@ -21,11 +21,9 @@ import copyFile from '@/api/server/files/copyFile';
 import Can from '@/reviactyl/elements/Can';
 import getFileDownloadUrl from '@/api/server/files/getFileDownloadUrl';
 import useFlash from '@/plugins/useFlash';
-import tw from 'twin.macro';
 import { FileObject } from '@/api/server/files/loadDirectory';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import DropdownMenu from '@/reviactyl/elements/DropdownMenu';
-import styled from 'styled-components';
 import useEventListener from '@/plugins/useEventListener';
 import compressFiles from '@/api/server/files/compressFiles';
 import decompressFiles from '@/api/server/files/decompressFiles';
@@ -36,29 +34,25 @@ import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 
 type ModalType = 'rename' | 'move' | 'chmod';
 
-const StyledRow = styled.div<{ $danger?: boolean }>`
-    ${tw`p-2 flex items-center rounded-ui w-full cursor-pointer`};
-    transition: 150ms all ease;
-
-    &:hover {
-        ${(props) => (props.$danger ? tw`text-red-700 bg-red-100` : tw`text-gray-800 bg-gray-100`)};
-    }
-`;
-
 interface RowProps extends React.HTMLAttributes<HTMLDivElement> {
     icon: IconType;
     title: string;
-    $danger?: boolean;
+    danger?: boolean;
 }
 
-const Row = ({ icon, title, ...props }: RowProps) => {
+const Row = ({ icon, title, danger, className, ...props }: RowProps) => {
     const ItemIcon = icon;
 
     return (
-        <StyledRow {...props}>
+        <div
+            className={`flex w-full cursor-pointer items-center rounded-ui p-2 transition-all duration-150 ${
+                danger ? 'hover:bg-red-100 hover:text-red-700' : 'hover:bg-gray-100 hover:text-gray-800'
+            } ${className || ''}`}
+            {...props}
+        >
             <ItemIcon className={'text-xs inline-block w-[1.25em]'} />
-            <span css={tw`ml-2`}>{title}</span>
-        </StyledRow>
+            <span className='ml-2'>{title}</span>
+        </div>
     );
 };
 
@@ -169,7 +163,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
             <DropdownMenu
                 ref={onClickRef}
                 renderToggle={(onClick) => (
-                    <div css={tw`px-4 py-2 hover:text-white`} onClick={onClick}>
+                    <div className='px-4 py-2 hover:text-white' onClick={onClick}>
                         <FaEllipsis />
                     </div>
                 )}
@@ -200,12 +194,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                     </Can>
                 )}
                 <Can action={'file.delete'}>
-                    <Row
-                        onClick={() => setShowConfirmation(true)}
-                        icon={FaTrash}
-                        title={t('dropdown.delete')}
-                        $danger
-                    />
+                    <Row onClick={() => setShowConfirmation(true)} icon={FaTrash} title={t('dropdown.delete')} danger />
                 </Can>
                 <ExtensionSlot name='server:files:dropdown:end' />
             </DropdownMenu>

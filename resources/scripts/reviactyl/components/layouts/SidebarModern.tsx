@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import styled, { css } from 'styled-components';
-import tw from 'twin.macro';
 import { Link } from 'react-router-dom';
 import Avatar from '@/reviactyl/ui/Avatar';
 import { useStoreState } from 'easy-peasy';
@@ -23,69 +21,21 @@ interface NavbarProps {
     children: React.ReactNode;
 }
 
-const NavbarContainer = styled.div`
-    ${tw`fixed top-0 left-0 w-full h-16 z-50 transition duration-300`}
-    top: var(--subuser-preview-offset, 0px);
-`;
+const NavbarContainer = ({ children, className = '' }: React.HTMLAttributes<HTMLDivElement>) => (
+    <div
+        className={`fixed top-[var(--subuser-preview-offset,0px)] left-0 z-50 h-16 w-full transition duration-300 ${className}`}
+    >
+        {children}
+    </div>
+);
 
-const SidebarContainer = styled.div<{ $isOpen: boolean }>`
-    ${tw`w-[225px] 2xl:w-64 self-start m-2 border border-gray-800 rounded-ui bg-gray-900 text-white flex flex-col z-40 transition-transform duration-300 ease-in-out`};
-
-    ${({ $isOpen }) =>
-        $isOpen
-            ? css`
-                  position: fixed;
-                  top: calc(1rem + var(--subuser-preview-offset, 0px));
-                  inset-inline-start: 0;
-              `
-            : tw`hidden`}
-
-    height: calc(100dvh - 64px - var(--subuser-preview-offset, 0px));
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-
-    @media (min-width: 1024px) {
-        position: fixed;
-        top: var(--subuser-preview-offset, 0px);
-        inset-inline-start: 0;
-        display: flex;
-        height: calc(100dvh - 15px - var(--subuser-preview-offset, 0px));
-        overflow-y: auto;
-    }
-`;
-
-const SidebarHeader = styled.div`
-    ${tw`sticky top-0 z-10 bg-gray-900 border-b border-gray-800`}
-`;
-
-const SidebarContent = styled.div`
-    ${tw`flex flex-col flex-1 overflow-y-auto`}
-`;
-
-const SidebarFooter = styled.div`
-    ${tw`sticky bottom-0 z-10 bg-gray-900 p-3 border-t border-gray-800`}
-`;
-
-export const SideNavigation = styled.div`
-    ${tw`flex flex-col gap-1 pb-4 -mt-1`};
-
-    & .label {
-        ${tw`flex items-center ml-2 mr-2 px-3 pt-2 pb-1 text-sm font-semibold text-gray-400 transition-all duration-300`};
-    }
-    a {
-        ${tw`flex items-center ml-2 mr-2 px-5 py-2 text-sm font-medium text-gray-200 rounded-ui transition-all duration-300`};
-
-        &:hover {
-            background-color: rgb(var(--color-700) / 0.2);
-        }
-
-        &:focus,
-        &.active {
-            ${tw`text-reviactyl`};
-            background-color: rgb(var(--color-700) / 0.2);
-        }
-    }
-`;
+export const SideNavigation = ({ children, className = '' }: React.HTMLAttributes<HTMLDivElement>) => (
+    <div
+        className={`-mt-1 flex flex-col gap-1 pb-4 [&_.label]:mx-2 [&_.label]:flex [&_.label]:items-center [&_.label]:px-3 [&_.label]:pt-2 [&_.label]:pb-1 [&_.label]:text-sm [&_.label]:font-semibold [&_.label]:text-gray-400 [&_a]:mx-2 [&_a]:flex [&_a]:items-center [&_a]:rounded-ui [&_a]:px-5 [&_a]:py-2 [&_a]:text-sm [&_a]:font-medium [&_a]:text-gray-200 [&_a:hover]:bg-gray-700/20 [&_a:focus]:bg-gray-700/20 [&_a:focus]:text-reviactyl [&_a.active]:bg-gray-700/20 [&_a.active]:text-reviactyl ${className}`}
+    >
+        {children}
+    </div>
+);
 
 export const SidebarModern = React.forwardRef<HTMLDivElement, SidebarProps>(({ children, isOpen = false }, ref) => {
     const { t } = useTranslation('dashboard/account');
@@ -106,17 +56,26 @@ export const SidebarModern = React.forwardRef<HTMLDivElement, SidebarProps>(({ c
     };
 
     return (
-        <SidebarContainer $isOpen={isOpen} ref={ref}>
+        <div
+            ref={ref}
+            className={`m-2 w-[225px] self-start flex-col rounded-ui border border-gray-800 bg-gray-900 text-white 2xl:w-64 lg:fixed lg:top-[var(--subuser-preview-offset,0px)] lg:left-0 lg:z-40 lg:flex lg:h-[calc(100dvh-15px-var(--subuser-preview-offset,0px))] lg:overflow-y-auto ${
+                isOpen
+                    ? 'fixed top-[calc(1rem+var(--subuser-preview-offset,0px))] left-0 z-40 flex h-[calc(100dvh-64px-var(--subuser-preview-offset,0px))] overflow-y-auto'
+                    : 'hidden'
+            }`}
+        >
             <SpinnerOverlay visible={isLoggingOut} />
-            <SidebarHeader>
+            <div className='sticky top-0 z-10 border-b border-gray-800 bg-gray-900'>
                 <div className='py-3 px-3'>
                     <Logo nostyles />
                 </div>
-            </SidebarHeader>
+            </div>
 
-            <SidebarContent>{children ? <SideNavigation>{children}</SideNavigation> : null}</SidebarContent>
+            <div className='flex flex-1 flex-col overflow-y-auto'>
+                {children ? <SideNavigation>{children}</SideNavigation> : null}
+            </div>
 
-            <SidebarFooter>
+            <div className='sticky bottom-0 z-10 border-t border-gray-800 bg-gray-900 p-3'>
                 {session ? (
                     <div className='flex min-w-0 items-center gap-3'>
                         <FaEye className='h-5 w-5 shrink-0 text-amber-400' />
@@ -157,8 +116,8 @@ export const SidebarModern = React.forwardRef<HTMLDivElement, SidebarProps>(({ c
                         )}
                     </div>
                 )}
-            </SidebarFooter>
-        </SidebarContainer>
+            </div>
+        </div>
     );
 });
 

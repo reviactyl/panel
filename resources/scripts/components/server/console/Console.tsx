@@ -9,7 +9,6 @@ import { ScrollDownHelperAddon } from '@/plugins/XtermScrollDownHelperAddon';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import { ServerContext } from '@/state/server';
 import { usePermissions } from '@/plugins/usePermissions';
-import { theme as th } from 'twin.macro';
 import useEventListener from '@/plugins/useEventListener';
 import { debounce } from 'debounce';
 import { usePersistedState } from '@/plugins/usePersistedState';
@@ -30,7 +29,7 @@ const terminalProps: ITerminalOptions = {
     cursorStyle: 'underline',
     allowTransparency: true,
     fontSize: 12,
-    fontFamily: th('fontFamily.mono'),
+    fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
     allowProposedApi: true,
     theme: theme,
 };
@@ -203,7 +202,9 @@ export default () => {
         <div className={classNames(styles.terminal, 'relative')}>
             <SpinnerOverlay visible={!connected} size={'large'} />
             <div
-                className={classNames(styles.container, styles.overflows_container, { 'rounded-b': !canSendCommands })}
+                className={classNames(styles.container, styles.overflows_container, {
+                    'rounded-b': !canSendCommands,
+                })}
             >
                 <div className={'h-full'}>
                     <div id={styles.terminal} ref={ref} />

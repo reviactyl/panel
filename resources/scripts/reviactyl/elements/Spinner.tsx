@@ -1,6 +1,4 @@
 import React, { Suspense } from 'react';
-import styled, { css, keyframes } from 'styled-components';
-import tw from 'twin.macro';
 import ErrorBoundary from '@/reviactyl/elements/ErrorBoundary';
 
 export type SpinnerSize = 'small' | 'base' | 'large';
@@ -9,41 +7,38 @@ interface Props {
     size?: SpinnerSize;
     centered?: boolean;
     isBlue?: boolean;
+    className?: string;
     children?: React.ReactNode;
 }
 
-const spin = keyframes`
-    to { transform: rotate(360deg); }
-`;
+const SpinnerElement = ({ size = 'base', isBlue, className }: Pick<Props, 'size' | 'isBlue' | 'className'>) => (
+    <div
+        className={[
+            'animate-spin rounded-full',
+            size === 'small'
+                ? 'h-4 w-4 border-2'
+                : size === 'large'
+                ? 'h-16 w-16 border-[6px]'
+                : 'h-8 w-8 border-[3px]',
+            className,
+        ]
+            .filter(Boolean)
+            .join(' ')}
+        style={{
+            borderColor: isBlue ? 'hsla(212, 92%, 43%, 0.2)' : 'rgba(255, 255, 255, 0.2)',
+            borderTopColor: isBlue ? 'hsl(212, 92%, 43%)' : 'rgb(255, 255, 255)',
+            animationTimingFunction: 'cubic-bezier(0.55, 0.25, 0.25, 0.7)',
+        }}
+    />
+);
 
-// noinspection CssOverwrittenProperties
-const SpinnerElement = styled.div<Props>`
-    ${tw`w-8 h-8`};
-    border-width: 3px;
-    border-radius: 50%;
-    animation: ${spin} 1s cubic-bezier(0.55, 0.25, 0.25, 0.7) infinite;
-
-    ${(props) =>
-        props.size === 'small'
-            ? tw`w-4 h-4 border-2`
-            : props.size === 'large'
-            ? css`
-                  ${tw`w-16 h-16`};
-                  border-width: 6px;
-              `
-            : null};
-
-    border-color: ${(props) => (!props.isBlue ? 'rgba(255, 255, 255, 0.2)' : 'hsla(212, 92%, 43%, 0.2)')};
-    border-top-color: ${(props) => (!props.isBlue ? 'rgb(255, 255, 255)' : 'hsl(212, 92%, 43%)')};
-`;
-
-const SpinnerFunc = ({ centered, ...props }: Props) =>
+const SpinnerFunc = ({ centered, className, ...props }: Props) =>
     centered ? (
-        <div css={[tw`flex justify-center items-center`, props.size === 'large' ? tw`m-20` : tw`m-6`]}>
-            <SpinnerElement {...props} />
+        <div className={`flex items-center justify-center ${props.size === 'large' ? 'm-20' : 'm-6'}`}>
+            <SpinnerElement {...props} className={className} />
         </div>
     ) : (
-        <SpinnerElement {...props} />
+        <SpinnerElement {...props} className={className} />
     );
 
 const SuspenseSpinner = ({ children, centered = true, size, ...props }: Props) => (
@@ -51,6 +46,7 @@ const SuspenseSpinner = ({ children, centered = true, size, ...props }: Props) =
         <ErrorBoundary>{children}</ErrorBoundary>
     </Suspense>
 );
+
 SuspenseSpinner.displayName = 'Spinner.Suspense';
 
 const Spinner = Object.assign(SpinnerFunc, {

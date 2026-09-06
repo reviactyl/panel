@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import CodeMirror from 'codemirror';
-import styled from 'styled-components';
-import tw from 'twin.macro';
 import modes from '@/modes';
+import styles from '@/reviactyl/elements/style.module.css';
 
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/theme/ayu-mirage.css';
@@ -78,44 +77,6 @@ import 'codemirror/mode/twig/twig';
 import 'codemirror/mode/vue/vue';
 import 'codemirror/mode/xml/xml';
 import 'codemirror/mode/yaml/yaml';
-
-const EditorContainer = styled.div`
-    min-height: 16rem;
-    height: calc(100vh - 20rem);
-    ${tw`relative`};
-
-    > div {
-        ${tw`rounded h-full`};
-    }
-
-    .CodeMirror {
-        font-size: 12px;
-        line-height: 1.375rem;
-        background: transparent !important;
-        background-color: transparent !important;
-    }
-
-    .CodeMirror-scroll {
-        background: transparent !important;
-        background-color: transparent !important;
-    }
-
-    .CodeMirror-gutters {
-        background: transparent !important;
-        background-color: transparent !important;
-    }
-
-    .CodeMirror-linenumber {
-        padding: 1px 12px 0 12px !important;
-    }
-
-    .CodeMirror-foldmarker {
-        color: #cbccc6;
-        text-shadow: none;
-        margin-left: 0.25rem;
-        margin-right: 0.25rem;
-    }
-`;
 
 export interface Props {
     style?: React.CSSProperties;
@@ -226,8 +187,8 @@ export default ({ style, initialContent, filename, mode, fetchContent, onContent
     }, [editor, fetchContent, onContentSaved]);
 
     return (
-        <EditorContainer style={style}>
+        <div className={styles.editor} style={style}>
             <textarea ref={ref} />
-        </EditorContainer>
+        </div>
     );
 };

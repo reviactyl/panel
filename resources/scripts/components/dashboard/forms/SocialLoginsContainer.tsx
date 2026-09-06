@@ -4,12 +4,10 @@ import getSocialLogins, { SocialLogin } from '@/api/account/getSocialLogins';
 import unlinkSocialLogin from '@/api/account/unlinkSocialLogin';
 import TitledGreyBox from '@/reviactyl/elements/TitledGreyBox';
 import { Button } from '@/reviactyl/components/button';
-import tw from 'twin.macro';
 import { format } from 'date-fns';
 import { FaLink, FaUnlink, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import { Dialog } from '@/reviactyl/elements/dialog';
-import styled from 'styled-components';
 import { Trans } from 'react-i18next';
 
 const GoogleIcon = () => (
@@ -57,14 +55,6 @@ const ProviderIcon = ({ provider }: { provider: string }) => {
             return <FaLink />;
     }
 };
-
-const Container = styled.div`
-    ${tw`grid grid-cols-1 gap-4`}
-`;
-
-const Item = styled.div`
-    ${tw`flex items-center justify-between p-4 rounded-ui border border-gray-800`}
-`;
 
 export default () => {
     const { t } = useTranslation('dashboard/account');
@@ -120,30 +110,33 @@ export default () => {
                 </Trans>
             </Dialog.Confirm>
 
-            <Container>
+            <div className='grid grid-cols-1 gap-4'>
                 {enabledProviders.map((provider) => {
                     const login = logins.find((l) => l.provider === provider);
                     const isLinked = !!login;
 
                     return (
-                        <Item key={provider}>
-                            <div css={tw`flex items-center`}>
-                                <div css={tw`text-2xl w-10 text-center text-gray-300`}>
+                        <div
+                            key={provider}
+                            className='flex items-center justify-between rounded-ui border border-gray-800 p-4'
+                        >
+                            <div className='flex items-center'>
+                                <div className='w-10 text-center text-2xl text-gray-300'>
                                     <ProviderIcon provider={provider} />
                                 </div>
-                                <div css={tw`ml-4`}>
-                                    <p css={tw`font-bold capitalize`}>{provider}</p>
-                                    <div css={tw`text-xs text-gray-400 mt-1`}>
+                                <div className='ml-4'>
+                                    <p className='font-bold capitalize'>{provider}</p>
+                                    <div className='mt-1 text-xs text-gray-400'>
                                         {isLinked ? (
-                                            <span css={tw`text-green-400 flex items-center`}>
-                                                <FaCheckCircle css={tw`mr-1`} />
+                                            <span className='flex items-center text-green-400'>
+                                                <FaCheckCircle className='mr-1' />
                                                 {t('overview.social.status.connected', {
                                                     date: format(login.updatedAt, t('overview.social.date_format')),
                                                 })}
                                             </span>
                                         ) : (
-                                            <span css={tw`text-muted flex items-center`}>
-                                                <FaTimesCircle css={tw`mr-1`} />
+                                            <span className='flex items-center text-muted'>
+                                                <FaTimesCircle className='mr-1' />
                                                 {t('overview.social.status.not-connected')}
                                             </span>
                                         )}
@@ -156,22 +149,22 @@ export default () => {
                                         size={Button.Sizes.Small}
                                         onClick={() => setUnlinkProvider(provider)}
                                     >
-                                        <FaUnlink css={tw`mr-2`} />
+                                        <FaUnlink className='mr-2' />
                                         {t('overview.social.actions.unlink')}
                                     </Button.Danger>
                                 ) : (
-                                    <a href={`/auth/login/${provider}`} css={tw`no-underline`}>
+                                    <a href={`/auth/login/${provider}`} className='no-underline'>
                                         <Button size={Button.Sizes.Small}>
-                                            <FaLink css={tw`mr-2`} />
+                                            <FaLink className='mr-2' />
                                             {t('overview.social.actions.link')}
                                         </Button>
                                     </a>
                                 )}
                             </div>
-                        </Item>
+                        </div>
                     );
                 })}
-            </Container>
+            </div>
         </TitledGreyBox>
     );
 };

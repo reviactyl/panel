@@ -1,16 +1,10 @@
-import styled from 'styled-components';
-import tw from 'twin.macro';
 import Console from '@/components/server/console/Console';
-
-const Container = styled.div`
-    ${tw`w-full bg-gray-900 px-2 py-2 border border-gray-800 rounded-ui`}
-`;
 
 const ConsoleBlock = () => {
     return (
-        <Container>
+        <div className='w-full rounded-ui border border-gray-800 bg-gray-900 px-2 py-2'>
             <Console />
-        </Container>
+        </div>
     );
 };
 
