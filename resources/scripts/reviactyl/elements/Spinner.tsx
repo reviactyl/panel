@@ -18,8 +18,8 @@ const SpinnerElement = ({ size = 'base', isBlue, className }: Pick<Props, 'size'
             size === 'small'
                 ? 'h-4 w-4 border-2'
                 : size === 'large'
-                ? 'h-16 w-16 border-[6px]'
-                : 'h-8 w-8 border-[3px]',
+                  ? 'h-16 w-16 border-[6px]'
+                  : 'h-8 w-8 border-[3px]',
             className,
         ]
             .filter(Boolean)

@@ -132,24 +132,24 @@ export default ({
                                 stats?.status === 'offline'
                                     ? 'bg-danger/20 text-danger border border-danger/30'
                                     : stats?.status === 'running'
-                                    ? 'bg-success/20 text-success border border-success/30'
-                                    : stats?.status === 'starting'
-                                    ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                                    : stats?.status === 'stopping'
-                                    ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30'
-                                    : ''
+                                      ? 'bg-success/20 text-success border border-success/30'
+                                      : stats?.status === 'starting'
+                                        ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                                        : stats?.status === 'stopping'
+                                          ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30'
+                                          : ''
                             }
                         `}
                         >
                             {stats?.status === 'offline'
                                 ? t('server.offline')
                                 : stats?.status === 'running'
-                                ? t('server.online')
-                                : stats?.status === 'starting'
-                                ? t('server.starting')
-                                : stats?.status === 'stopping'
-                                ? t('server.stopping')
-                                : ''}
+                                  ? t('server.online')
+                                  : stats?.status === 'starting'
+                                    ? t('server.starting')
+                                    : stats?.status === 'stopping'
+                                      ? t('server.stopping')
+                                      : ''}
                         </span>
                     </div>
                     <div
@@ -190,10 +190,10 @@ export default ({
                                             {server.isTransferring
                                                 ? t('server.transferring')
                                                 : server.status === 'installing'
-                                                ? t('server.installing')
-                                                : server.status === 'restoring_backup'
-                                                ? t('server.restoring-backup')
-                                                : t('server.unavailable')}
+                                                  ? t('server.installing')
+                                                  : server.status === 'restoring_backup'
+                                                    ? t('server.restoring-backup')
+                                                    : t('server.unavailable')}
                                         </p>
                                     </StatBlock>
                                 </React.Fragment>

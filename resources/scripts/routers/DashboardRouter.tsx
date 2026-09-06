@@ -62,14 +62,14 @@ const DashboardNavigation = () => {
                         : `${extension.name} Route`,
                 path: route.path,
                 icon: resolveExtensionIcon(typeof route?.icon === 'string' ? route.icon : undefined),
-            }))
+            })),
     );
     const normalizedSidebarButtons = (Array.isArray(customSidebarButtons) ? customSidebarButtons : []).filter(
         (button): button is DesignifySidebarButton =>
             typeof button?.label === 'string' &&
             button.label.trim().length > 0 &&
             typeof button?.url === 'string' &&
-            button.url.trim().length > 0
+            button.url.trim().length > 0,
     );
 
     return (

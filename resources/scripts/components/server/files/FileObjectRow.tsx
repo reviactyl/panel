@@ -80,12 +80,12 @@ const FileObjectRow = ({ file, onMediaClick }: FileObjectRowProps) => {
                             const FileIcon = file.isSymlink
                                 ? FaFileImport
                                 : file.isArchiveType()
-                                ? FaFileZipper
-                                : isImageFile(file)
-                                ? FaFileImage
-                                : isVideoFile(file)
-                                ? FaFileVideo
-                                : FaFileLines;
+                                  ? FaFileZipper
+                                  : isImageFile(file)
+                                    ? FaFileImage
+                                    : isVideoFile(file)
+                                      ? FaFileVideo
+                                      : FaFileLines;
                             return <FileIcon />;
                         })()
                     ) : (

@@ -90,7 +90,7 @@ export const registerAccountPasskey = async (password: string, name?: string): P
             password,
             _token: token,
         },
-        config
+        config,
     );
 
     const attestation = await createPasskeyCredential(optionsResponse.data);
@@ -102,7 +102,7 @@ export const registerAccountPasskey = async (password: string, name?: string): P
             name: name?.trim() || 'Passkey',
             _token: token,
         },
-        config
+        config,
     );
 };
 
@@ -116,6 +116,6 @@ export const deleteAccountPasskey = async (id: string, password: string): Promis
             password,
             _token: token,
         },
-        config
+        config,
     );
 };

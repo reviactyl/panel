@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Dialog, DialogProps, DialogWrapperContext, WrapperProps } from '@/reviactyl/elements/dialog';
 
 function asDialog(
-    initialProps?: WrapperProps
+    initialProps?: WrapperProps,
 ): <P extends object>(C: React.ComponentType<P>) => React.FunctionComponent<P & DialogProps> {
     return function (Component) {
         return function ({ open, onClose, ...rest }) {

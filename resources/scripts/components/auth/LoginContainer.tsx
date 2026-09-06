@@ -34,7 +34,7 @@ function LoginContainer() {
     const { clearFlashes, clearAndAddHttpError, addFlash } = useFlash();
     const { provider, recaptcha, turnstile } = useStoreState((state) => state.settings.data!.captcha);
     const passkeyLoginRequiresUsername = useStoreState(
-        (state) => state.settings.data?.passkeys?.loginRequiresUsername ?? false
+        (state) => state.settings.data?.passkeys?.loginRequiresUsername ?? false,
     );
     const registrationEnabled = useStoreState((state) => state.settings.data?.registrationEnabled ?? true);
 

@@ -19,7 +19,7 @@ const HytaleOauthRequireFeature = () => {
 
         const listener = (line: string) => {
             const url = line.match(
-                /https:\/\/oauth\.accounts\.hytale\.com\/oauth2\/device\/verify\?user_code=\S+/i
+                /https:\/\/oauth\.accounts\.hytale\.com\/oauth2\/device\/verify\?user_code=\S+/i,
             )?.[0];
 
             if (url) {

@@ -64,7 +64,7 @@ export default () => {
 
     const socialSettings = window.SocialLoginConfiguration || { google: false, discord: false, github: false };
     const enabledProviders = Object.keys(socialSettings).filter(
-        (k) => socialSettings[k as keyof typeof socialSettings]
+        (k) => socialSettings[k as keyof typeof socialSettings],
     );
 
     useEffect(() => {

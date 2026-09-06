@@ -1,4 +1,5 @@
 import { isObject } from '@/lib/objects';
+import { describe, it, expect } from 'vitest';
 
 describe('@/lib/objects.ts', function () {
     describe('isObject()', function () {
@@ -16,7 +17,7 @@ describe('@/lib/objects.ts', function () {
             'should return false for %p',
             function (value) {
                 expect(isObject(value)).toBe(false);
-            }
+            },
         );
     });
 });

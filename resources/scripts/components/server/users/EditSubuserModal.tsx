@@ -99,7 +99,7 @@ const EditSubuserModal = ({ subuser }: Props) => {
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const appendSubuser = ServerContext.useStoreActions((actions) => actions.subusers.appendSubuser);
     const { clearFlashes, clearAndAddHttpError } = useStoreActions(
-        (actions: Actions<ApplicationStore>) => actions.flashes
+        (actions: Actions<ApplicationStore>) => actions.flashes,
     );
     const { dismiss, setPropOverrides } = useContext(ModalContext);
 
@@ -115,7 +115,7 @@ const EditSubuserModal = ({ subuser }: Props) => {
     // The permissions that can be modified by this user.
     const editablePermissions = useDeepCompareMemo(() => {
         const cleaned = Object.keys(permissions).map((key) =>
-            Object.keys(permissions[key]?.keys ?? {}).map((pkey) => `${key}.${pkey}`)
+            Object.keys(permissions[key]?.keys ?? {}).map((pkey) => `${key}.${pkey}`),
         );
 
         const list: string[] = ([] as string[]).concat.apply([], Object.values(cleaned));
@@ -151,7 +151,7 @@ const EditSubuserModal = ({ subuser }: Props) => {
         () => () => {
             clearFlashes('user:edit');
         },
-        []
+        [],
     );
 
     return (

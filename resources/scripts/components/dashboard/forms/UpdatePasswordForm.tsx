@@ -44,7 +44,7 @@ export default () => {
                     type: 'error',
                     title: t('password.error-title'),
                     message: httpErrorToHuman(error),
-                })
+                }),
             )
             .then(() => setSubmitting(false));
     };

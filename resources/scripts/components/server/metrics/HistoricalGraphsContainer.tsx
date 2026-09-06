@@ -45,12 +45,12 @@ export default () => {
 
     const { data, error, isValidating } = useSWR<StatsResponse>(
         [uuid, '/resources/history', days],
-        async (uuid, url, days) => {
+        async ([uuid, url, days]) => {
             const { data } = await http.get(`/api/client/servers/${uuid}${url}`, {
                 params: { days: Number(days) },
             });
             return data;
-        }
+        },
     );
 
     if (error) {

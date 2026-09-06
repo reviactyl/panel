@@ -138,7 +138,7 @@ export default () => {
             while (queue.length > 0 && gen === searchGenRef.current && matches.length < MAX_FILES) {
                 const batch = queue.splice(0, CONCURRENCY);
                 const settled = await Promise.allSettled(
-                    batch.map((dir) => loadDirectory(uuid, dir).then((dirFiles) => ({ dir, dirFiles })))
+                    batch.map((dir) => loadDirectory(uuid, dir).then((dirFiles) => ({ dir, dirFiles }))),
                 );
 
                 if (gen !== searchGenRef.current) break;

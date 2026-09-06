@@ -1,4 +1,5 @@
 import { hexToRgba } from '@/lib/helpers';
+import { describe, it, expect } from 'vitest';
 
 describe('@/lib/helpers.ts', function () {
     describe('hexToRgba()', function () {

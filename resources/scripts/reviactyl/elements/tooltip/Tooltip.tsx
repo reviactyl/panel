@@ -87,7 +87,7 @@ export default ({ children, ...props }: Props) => {
                 getReferenceProps({
                     ...childProps,
                     ref: refs.setReference,
-                }) as any
+                }) as any,
             )}
 
             <AnimatePresence>
@@ -108,7 +108,7 @@ export default ({ children, ...props }: Props) => {
                             ref: refs.setFloating,
                             className: classNames(
                                 'bg-gray-900 text-sm text-gray-200 px-3 py-2 rounded-ui border border-gray-800 pointer-events-none max-w-[24rem] z-50',
-                                props.className
+                                props.className,
                             ),
                             style: {
                                 position: strategy,

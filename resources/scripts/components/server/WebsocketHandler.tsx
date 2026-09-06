@@ -62,7 +62,7 @@ export default () => {
                 updateToken(uuid, socket);
             } else {
                 setError(
-                    'There was an error validating the credentials provided for the websocket. Please refresh the page.'
+                    'There was an error validating the credentials provided for the websocket. Please refresh the page.',
                 );
             }
         });

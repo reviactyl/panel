@@ -79,7 +79,7 @@ const ServerNavigation = () => {
             typeof button?.label === 'string' &&
             button.label.trim().length > 0 &&
             typeof button?.url === 'string' &&
-            button.url.trim().length > 0
+            button.url.trim().length > 0,
     );
 
     const serverExtensionRoutes = (Array.isArray(extensionData) ? extensionData : []).flatMap((extension) =>
@@ -119,9 +119,9 @@ const ServerNavigation = () => {
                 permission: route?.permission,
                 path: route.path,
                 icon: resolveExtensionIcon(
-                    typeof route?.icon === 'string' && route.icon.trim().length > 0 ? route.icon : undefined
+                    typeof route?.icon === 'string' && route.icon.trim().length > 0 ? route.icon : undefined,
                 ),
-            }))
+            })),
     );
 
     return (

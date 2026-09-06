@@ -16,7 +16,7 @@ export const DropdownButtonRow = ({
         className={classNames(
             'flex w-full items-center rounded-ui p-2 text-gray-400 transition-all duration-150 hover:bg-gray-700',
             danger ? 'hover:text-red-300' : 'hover:text-gray-300',
-            className
+            className,
         )}
         {...props}
     />
