@@ -1,6 +1,5 @@
 import axios, { AxiosProgressEvent } from 'axios';
 import getFileUploadUrl from '@/api/server/files/getFileUploadUrl';
-import tw from 'twin.macro';
 import { useEffect, useRef, useState } from 'react';
 import { ModalMask } from '@/reviactyl/elements/Modal';
 import Fade from '@/reviactyl/elements/Fade';
@@ -380,7 +379,7 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
                             visibleRef.current = false;
                             setVisible(false);
                         }}
-                        className='bg-gray-900/40 backdrop-blur-sm transition-all duration-300 ease-in-out'
+                        className='bg-gray-900/40 backdrop-blur-sm-xs transition-all duration-300 ease-in-out'
                     >
                         <div className={'w-full flex items-center justify-center pointer-events-none'}>
                             <Card
@@ -400,7 +399,7 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
             <input
                 type={'file'}
                 ref={fileUploadInput}
-                css={tw`hidden`}
+                className='hidden'
                 onChange={(e) => {
                     if (!e.currentTarget.files) return;
 
@@ -412,7 +411,7 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
             <input
                 type={'file'}
                 ref={folderUploadInput}
-                css={tw`hidden`}
+                className='hidden'
                 onChange={(e) => {
                     if (!e.currentTarget.files) return;
 

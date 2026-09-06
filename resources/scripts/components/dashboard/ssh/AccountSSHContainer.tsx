@@ -3,7 +3,6 @@ import ContentBox from '@/reviactyl/elements/ContentBox';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import PageContentBlock from '@/reviactyl/elements/PageContentBlock';
-import tw from 'twin.macro';
 import GreyRowBox from '@/reviactyl/elements/GreyRowBox';
 import { useSSHKeys } from '@/api/account/ssh-keys';
 import { useFlashKey } from '@/plugins/useFlash';
@@ -28,27 +27,27 @@ export default () => {
     return (
         <PageContentBlock title={t('ssh.title')}>
             <FlashMessageRender byKey={'account'} />
-            <div css={tw`md:flex flex-nowrap my-10`}>
-                <ContentBox title={t('ssh.add-key')} css={tw`flex-none w-full md:w-1/2`}>
+            <div className='md:flex flex-nowrap my-10'>
+                <ContentBox title={t('ssh.add-key')} className='flex-none w-full md:w-1/2'>
                     <CreateSSHKeyForm />
                 </ContentBox>
-                <ContentBox title={t('ssh.title')} css={tw`flex-1 overflow-hidden mt-8 md:mt-0 md:ml-8`}>
+                <ContentBox title={t('ssh.title')} className='flex-1 overflow-hidden mt-8 md:mt-0 md:ml-8'>
                     <SpinnerOverlay visible={!data && isValidating} />
                     {!data || !data.length ? (
-                        <p css={tw`text-center text-sm`}>{!data ? t('overview.loading') : t('ssh.not-exist')}</p>
+                        <p className='text-center text-sm'>{!data ? t('overview.loading') : t('ssh.not-exist')}</p>
                     ) : (
                         data.map((key, index) => (
                             <GreyRowBox
                                 key={key.fingerprint}
-                                css={[tw`bg-gray-800 flex space-x-4 items-center`, index > 0 && tw`mt-2`]}
+                                className={`flex space-x-4 items-center ${index > 0 ? ' mt-2' : ''}`}
                             >
                                 <FaKey className={'text-gray-300'} />
-                                <div css={tw`flex-1`}>
-                                    <p css={tw`text-sm break-words font-medium`}>{key.name}</p>
-                                    <p css={tw`text-xs mt-1 font-mono truncate`}>
+                                <div className='flex-1'>
+                                    <p className='text-sm break-words font-medium'>{key.name}</p>
+                                    <p className='text-xs mt-1 font-mono truncate'>
                                         {t('ssh.fingerprint')}:{key.fingerprint}
                                     </p>
-                                    <p css={tw`text-xs mt-1 text-gray-300 uppercase`}>
+                                    <p className='text-xs mt-1 text-gray-300 uppercase'>
                                         {t('ssh.added-on')}:&nbsp;
                                         {format(key.createdAt, 'MMM do, yyyy HH:mm')}
                                     </p>

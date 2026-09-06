@@ -6,7 +6,6 @@ import useFlash from '@/plugins/useFlash';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import deleteBackup from '@/api/server/backups/deleteBackup';
 import Can from '@/reviactyl/elements/Can';
-import tw from 'twin.macro';
 import getServerBackups from '@/api/swr/getServerBackups';
 import { ServerBackup } from '@/api/server/types';
 import { ServerContext } from '@/state/server';
@@ -140,11 +139,11 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
                 onConfirmed={() => doRestorationAction()}
             >
                 <p>{t('restore-message')}</p>
-                <p css={tw`mt-4 -mb-2 bg-gray-900 p-3 rounded`}>
-                    <label htmlFor={'restore_truncate'} css={tw`text-base flex items-center cursor-pointer`}>
+                <p className='mt-4 -mb-2 bg-gray-900 p-3 rounded'>
+                    <label htmlFor={'restore_truncate'} className='text-base flex items-center cursor-pointer'>
                         <Input
                             type={'checkbox'}
-                            css={tw`text-red-500! w-5! h-5! mr-2`}
+                            className='text-red-500! w-5! h-5! mr-2'
                             id={'restore_truncate'}
                             value={'true'}
                             checked={truncate}
@@ -170,24 +169,24 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
                     renderToggle={(onClick) => (
                         <button
                             onClick={onClick}
-                            css={tw`text-gray-200 transition-colors duration-150 hover:text-gray-100 p-2`}
+                            className='text-gray-200 transition-colors duration-150 hover:text-gray-100 p-2'
                         >
                             <FaEllipsis />
                         </button>
                     )}
                 >
-                    <div css={tw`text-sm`}>
+                    <div className='text-sm'>
                         <ExtensionSlot name={`server:backups:menu:start`} />
                         <Can action={'backup.download'}>
                             <DropdownButtonRow onClick={doDownload}>
                                 <FaCloudArrowDown className={'text-xs inline-block w-[1.25em]'} />
-                                <span css={tw`ml-2`}>{t('download')}</span>
+                                <span className='ml-2'>{t('download')}</span>
                             </DropdownButtonRow>
                         </Can>
                         <Can action={'backup.restore'}>
                             <DropdownButtonRow onClick={() => setModal('restore')}>
                                 <FaBoxOpen className={'text-xs inline-block w-[1.25em]'} />
-                                <span css={tw`ml-2`}>{t('restore')}</span>
+                                <span className='ml-2'>{t('restore')}</span>
                             </DropdownButtonRow>
                         </Can>
                         <Can action={'backup.delete'}>
@@ -203,7 +202,7 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
                                 {!backup.isLocked && (
                                     <DropdownButtonRow danger onClick={() => setModal('delete')}>
                                         <FaTrash className={'text-xs inline-block w-[1.25em]'} />
-                                        <span css={tw`ml-2`}>{t('delete')}</span>
+                                        <span className='ml-2'>{t('delete')}</span>
                                     </DropdownButtonRow>
                                 )}
                             </>
@@ -215,7 +214,7 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
                 <Can action={'backup.delete'}>
                     <button
                         onClick={() => setModal('delete')}
-                        css={tw`text-gray-200 transition-colors duration-150 hover:text-gray-100 p-2`}
+                        className='text-gray-200 transition-colors duration-150 hover:text-gray-100 p-2'
                     >
                         <FaTrash />
                     </button>

@@ -1,32 +1,12 @@
-import styled from 'styled-components';
-import tw, { theme } from 'twin.macro';
+import React from 'react';
 
-const SubNavigation = styled.div`
-    ${tw`w-full bg-gray-900 shadow overflow-x-auto`};
-
-    & > div {
-        ${tw`flex items-center text-sm mx-auto px-2`};
-        max-width: 1200px;
-
-        & > a,
-        & > div {
-            ${tw`inline-block py-3 px-4 text-gray-300 no-underline whitespace-nowrap transition-all duration-150`};
-
-            &:not(:first-of-type) {
-                ${tw`ml-2`};
-            }
-
-            &:hover {
-                ${tw`text-gray-100`};
-            }
-
-            &:active,
-            &.active {
-                ${tw`text-gray-100`};
-                box-shadow: inset 0 -2px ${theme`colors.cyan.600`.toString()};
-            }
-        }
-    }
-`;
+const SubNavigation = ({ children, className = '', ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+    <div
+        className={`w-full overflow-x-auto bg-gray-900 shadow [&>div]:mx-auto [&>div]:flex [&>div]:max-w-[1200px] [&>div]:items-center [&>div]:px-2 [&>div]:text-sm [&>div>a]:inline-block [&>div>a]:whitespace-nowrap [&>div>a]:px-4 [&>div>a]:py-3 [&>div>a]:text-gray-300 [&>div>a]:no-underline [&>div>a]:transition-all [&>div>a]:duration-150 [&>div>div]:inline-block [&>div>div]:whitespace-nowrap [&>div>div]:px-4 [&>div>div]:py-3 [&>div>div]:text-gray-300 [&>div>div]:no-underline [&>div>div]:transition-all [&>div>div]:duration-150 [&>div>*:not(:first-of-type)]:ml-2 [&>div>a:hover]:text-gray-100 [&>div>div:hover]:text-gray-100 [&>div>a:active]:text-gray-100 [&>div>a.active]:text-gray-100 [&>div>div:active]:text-gray-100 [&>div>div.active]:text-gray-100 ${className}`}
+        {...props}
+    >
+        {children}
+    </div>
+);
 
 export default SubNavigation;

@@ -5,7 +5,6 @@ import RemoveSubuserButton from '@/components/server/users/RemoveSubuserButton';
 import EditSubuserModal from '@/components/server/users/EditSubuserModal';
 import Can from '@/reviactyl/elements/Can';
 import { useStoreState } from 'easy-peasy';
-import tw from 'twin.macro';
 import GreyRowBox from '@/reviactyl/elements/GreyRowBox';
 import { useTranslation } from 'react-i18next';
 import PreviewSubuserButton from '@/components/server/users/PreviewSubuserButton';
@@ -25,16 +24,16 @@ export default ({ subuser }: Props) => {
     const { t } = useTranslation('server/users');
 
     return (
-        <GreyRowBox css={tw`mb-2`}>
+        <GreyRowBox className='mb-2'>
             <EditSubuserModal subuser={subuser} visible={visible} onModalDismissed={() => setVisible(false)} />
-            <div css={tw`w-10 h-10 rounded-full bg-white border-2 border-gray-900 overflow-hidden hidden md:block`}>
-                <img css={tw`w-full h-full`} src={`${subuser.image}?s=400`} />
+            <div className='hidden h-10 w-10 overflow-hidden rounded-full border-2 border-gray-900 bg-white md:block'>
+                <img className='h-full w-full' src={`${subuser.image}?s=400`} />
             </div>
-            <div css={tw`ml-4 flex-1 overflow-hidden`}>
-                <p css={tw`text-sm truncate`}>{subuser.email}</p>
+            <div className='ml-4 flex-1 overflow-hidden'>
+                <p className='truncate text-sm'>{subuser.email}</p>
             </div>
-            <div css={tw`ml-4`}>
-                <p css={tw`font-medium text-center`}>
+            <div className='ml-4'>
+                <p className='text-center font-medium'>
                     &nbsp;
                     {subuser.twoFactorEnabled ? (
                         <FaUserLock className={'inline-block w-[1.25em]'} />
@@ -43,13 +42,13 @@ export default ({ subuser }: Props) => {
                     )}
                     &nbsp;
                 </p>
-                <p css={tw`text-2xs text-muted uppercase hidden md:block`}>{t('two-factor-enabled')}</p>
+                <p className='hidden text-2xs uppercase text-muted md:block'>{t('two-factor-enabled')}</p>
             </div>
-            <div css={tw`ml-4 hidden md:block`}>
-                <p css={tw`font-medium text-center`}>
+            <div className='ml-4 hidden md:block'>
+                <p className='text-center font-medium'>
                     {subuser.permissions.filter((permission) => permission !== 'websocket.connect').length}
                 </p>
-                <p css={tw`text-2xs text-muted uppercase`}>{t('permissions-label')}</p>
+                <p className='text-2xs uppercase text-muted'>{t('permissions-label')}</p>
             </div>
             {subuser.uuid !== uuid && (
                 <>
@@ -58,7 +57,7 @@ export default ({ subuser }: Props) => {
                         <button
                             type={'button'}
                             aria-label={t('edit-subuser')}
-                            css={tw`block text-sm p-1 md:p-2 text-gray-600 hover:text-gray-100 transition-colors duration-150 mx-4`}
+                            className='mx-4 block p-1 text-sm text-gray-600 transition-colors duration-150 hover:text-gray-100 md:p-2'
                             onClick={() => setVisible(true)}
                         >
                             <FaPen />

@@ -1,6 +1,5 @@
-import styled from 'styled-components';
-import tw from 'twin.macro';
+import React from 'react';
 
-export const LogoContainer = styled.div`
-    ${tw`flex gap-x-2 pb-5`}
-`;
+export const LogoContainer = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+    <div className={`flex gap-x-2 pb-5 ${className || ''}`} {...props} />
+);

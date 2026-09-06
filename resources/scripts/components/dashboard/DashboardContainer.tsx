@@ -7,7 +7,6 @@ import useFlash from '@/plugins/useFlash';
 import { useStoreState } from 'easy-peasy';
 import { usePersistedState } from '@/plugins/usePersistedState';
 import Switch from '@/reviactyl/elements/Switch';
-import tw from 'twin.macro';
 import useSWR from 'swr';
 import { PaginatedResult } from '@/api/http';
 import Pagination from '@/reviactyl/elements/Pagination';
@@ -26,6 +25,7 @@ import { Button } from '@/reviactyl/components/button';
 import { FaUserGear } from 'react-icons/fa6';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 import { useSubuserPreview } from '@/context/SubuserPreviewContext';
+import clsx from 'clsx';
 
 export default () => {
     const { t } = useTranslation('dashboard/index');
@@ -55,9 +55,11 @@ export default () => {
                 setEggFilterOpen(false);
             }
         };
+
         if (eggFilterOpen) {
             document.addEventListener('mousedown', handleClickOutside);
         }
+
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [eggFilterOpen]);
 
@@ -87,6 +89,7 @@ export default () => {
 
     useEffect(() => {
         if (!servers) return;
+
         if (servers.pagination.currentPage > 1 && !servers.items.length) {
             setPage(1);
         }
@@ -113,8 +116,10 @@ export default () => {
 
         const groups = (servers.items || []).reduce((acc, server) => {
             const catUuid = server.category?.uuid || 'primary';
+
             if (!acc[catUuid]) acc[catUuid] = [];
             acc[catUuid].push(server);
+
             return acc;
         }, {} as Record<string, Server[]>);
 
@@ -128,22 +133,27 @@ export default () => {
 
     const sortedCategorySlugs = useMemo(() => {
         const slugs = Object.keys(groupedServers);
+
         // Sort by category position if categories are loaded
         if (categories) {
             return slugs.sort((a, b) => {
-                if (a === 'primary') return 1; // Primary always last
+                if (a === 'primary') return 1;
                 if (b === 'primary') return -1;
+
                 const indexA = categories.findIndex((c) => c.uuid === a);
                 const indexB = categories.findIndex((c) => c.uuid === b);
+
                 return indexA - indexB;
             });
         }
+
         return slugs;
     }, [groupedServers, categories]);
 
     return (
-        <PageContentBlock className='pr-2' title={t('title')} showFlashKey={'dashboard'}>
+        <PageContentBlock className='pr-2' title={t('title')} showFlashKey='dashboard'>
             {!session && <ExtensionSlot name='dashboard:above' />}
+
             {!session && (
                 <CategoryManagerModal
                     visible={isModalVisible}
@@ -160,20 +170,23 @@ export default () => {
                     <Title className='text-4xl !font-bold'>
                         {showAdminServers ? t('servers-admin.title') : t('servers-user.title')}
                     </Title>
+
                     <p className='text-sm text-gray-200/80 hidden lg:block'>
                         {showAdminServers ? t('servers-admin.subtitle') : t('servers-user.subtitle')}
                     </p>
                 </div>
+
                 {!session && (
                     <div className='flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full md:w-auto'>
                         <div className='flex flex-row items-center justify-between sm:justify-start gap-4 sm:gap-0 w-full sm:w-auto sm:space-x-4'>
                             {rootAdmin && (
-                                <div className={`flex flex-shrink-0 items-center justify-between gap-2`}>
+                                <div className='flex flex-shrink-0 items-center justify-between gap-2'>
                                     <p className='uppercase text-xs text-gray-300 whitespace-nowrap'>
                                         {showOnlyAdmin ? t('other-servers') : t('your-servers')}
                                     </p>
+
                                     <Switch
-                                        name={'show_all_servers'}
+                                        name='show_all_servers'
                                         defaultChecked={showOnlyAdmin}
                                         onChange={() => {
                                             setShowOnlyAdmin((s) => !s);
@@ -182,28 +195,30 @@ export default () => {
                                     />
                                 </div>
                             )}
+
                             <div className='relative flex flex-shrink-0 items-center sm:border-l sm:border-[#334155] sm:pl-4 gap-x-1'>
                                 <div>
                                     <Button.Text
                                         type='button'
                                         onClick={() => setModalVisible(true)}
-                                        className={`!p-2`}
+                                        className='!p-2'
                                         title={t('categories.manage')}
                                         aria-label={t('categories.manage')}
                                     >
                                         <FaUserGear className='w-5 h-5 text-gray-50' />
                                     </Button.Text>
                                 </div>
+
                                 <div>
                                     {!showOnlyAdmin && (
                                         <Button.Text
                                             type='button'
                                             onClick={() => setEggFilterOpen((o) => !o)}
-                                            className={`!p-2 ${
-                                                selectedEggId !== null || selectedCategory !== 'all'
-                                                    ? 'bg-blue-700 hover:bg-blue-600'
-                                                    : ''
-                                            }`}
+                                            className={clsx(
+                                                '!p-2',
+                                                (selectedEggId !== null || selectedCategory !== 'all') &&
+                                                    'bg-blue-700 hover:bg-blue-600'
+                                            )}
                                             title={t('filter-label')}
                                             aria-label={t('filter-label')}
                                             aria-expanded={eggFilterOpen}
@@ -211,6 +226,7 @@ export default () => {
                                             <FilterIcon className='w-5 h-5 text-gray-50' />
                                         </Button.Text>
                                     )}
+
                                     {eggFilterOpen && (
                                         <Card
                                             ref={eggFilterRef}
@@ -223,6 +239,7 @@ export default () => {
                                                     <p className='text-xs text-gray-200 uppercase px-2 pb-1.5'>
                                                         {t('eggs.filter-label')}
                                                     </p>
+
                                                     <Select
                                                         className='w-full'
                                                         value={selectedEggId ?? ''}
@@ -235,6 +252,7 @@ export default () => {
                                                         aria-label={t('eggs.filter-label')}
                                                     >
                                                         <option value=''>{t('eggs.all')}</option>
+
                                                         {eggs.map((egg) => (
                                                             <option key={egg.id} value={egg.id}>
                                                                 {egg.name}
@@ -243,23 +261,27 @@ export default () => {
                                                     </Select>
                                                 </div>
                                             ) : null}
+
                                             {!showOnlyAdmin && (
                                                 <div>
                                                     <p className='text-xs text-gray-200 uppercase px-2 pb-1.5'>
                                                         {t('categories.filter-label')}
                                                     </p>
+
                                                     <Select
                                                         value={selectedCategory}
                                                         onChange={(e) => setSelectedCategory(e.target.value)}
                                                         aria-label={t('categories.all-categories')}
                                                     >
                                                         <option value='all'>{t('categories.all-categories')}</option>
+
                                                         {categories?.map((cat) => {
                                                             const maxLen = 40;
                                                             const label =
                                                                 cat.name.length <= maxLen
                                                                     ? cat.name
                                                                     : cat.name.slice(0, maxLen - 3) + '...';
+
                                                             return (
                                                                 <option
                                                                     key={cat.uuid}
@@ -270,6 +292,7 @@ export default () => {
                                                                 </option>
                                                             );
                                                         })}
+
                                                         <option value='primary'>{t('categories.primary')}</option>
                                                     </Select>
                                                 </div>
@@ -284,15 +307,16 @@ export default () => {
             </div>
 
             {!servers ? (
-                <Spinner centered size={'large'} />
+                <Spinner centered size='large' />
             ) : (
                 <div>
                     <Pagination data={servers} onPageSelect={setPage}>
                         {() => {
                             const items = servers.items || [];
+
                             if (items.length === 0) {
                                 return (
-                                    <Card css={tw`col-span-1 lg:col-span-2`}>
+                                    <Card className='col-span-1 lg:col-span-2'>
                                         <p className='flex justify-center text-center text-sm text-gray-400 py-10'>
                                             <EmojiSadIcon className='w-5 h-5 mr-1' />{' '}
                                             {activeEggId !== null
@@ -304,6 +328,7 @@ export default () => {
                                     </Card>
                                 );
                             }
+
                             if (showOnlyAdmin) {
                                 return (
                                     <LayoutContainer>
@@ -311,13 +336,14 @@ export default () => {
                                             <ServerLayout
                                                 key={server.uuid}
                                                 server={server}
-                                                css={index > 0 ? tw`mt-2` : undefined}
+                                                className={index > 0 ? 'mt-2' : undefined}
                                                 showCategory={false}
                                             />
                                         ))}
                                     </LayoutContainer>
                                 );
                             }
+
                             return sortedCategorySlugs.length > 0 ? (
                                 sortedCategorySlugs.map((slug) => (
                                     <CategorySection
@@ -330,7 +356,7 @@ export default () => {
                                     />
                                 ))
                             ) : (
-                                <Card css={tw`col-span-1 lg:col-span-2`}>
+                                <Card className='col-span-1 lg:col-span-2'>
                                     <p className='flex justify-center text-center text-sm text-gray-400 py-10'>
                                         <EmojiSadIcon className='w-5 h-5 mr-1' /> {t('no-servers')}
                                     </p>
@@ -340,6 +366,7 @@ export default () => {
                     </Pagination>
                 </div>
             )}
+
             <ExtensionSlot name='dashboard:below' />
         </PageContentBlock>
     );

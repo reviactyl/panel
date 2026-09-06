@@ -5,7 +5,6 @@ import getWebsocketToken from '@/api/server/getWebsocketToken';
 import ContentContainer from '@/reviactyl/elements/ContentContainer';
 import { motion } from 'framer-motion';
 import Spinner from '@/reviactyl/elements/Spinner';
-import tw from 'twin.macro';
 import { useTranslation } from 'react-i18next';
 import { FaTriangleExclamation } from 'react-icons/fa6';
 import { useSubuserPreview } from '@/context/SubuserPreviewContext';
@@ -118,18 +117,18 @@ export default () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.15, ease: 'easeIn' }}
-            css={tw`fixed top-4 right-4 z-50 bg-danger border-danger/50 py-2 px-4 rounded-lg shadow-lg`}
+            className='fixed top-4 right-4 z-50 rounded-lg border border-danger/50 bg-danger px-4 py-2 shadow-lg'
         >
-            <ContentContainer css={tw`flex items-center justify-center`}>
+            <ContentContainer className='flex items-center justify-center'>
                 {error === 'connecting' ? (
                     <>
                         <Spinner size={'small'} />
-                        <p css={tw`ml-2 text-sm text-red-100`}>{t('connection-trouble')}</p>
+                        <p className='ml-2 text-sm text-red-100'>{t('connection-trouble')}</p>
                     </>
                 ) : (
                     <>
-                        <FaTriangleExclamation css={tw`text-red-400`} />
-                        <p css={tw`ml-2 text-sm text-white`}>{error}</p>
+                        <FaTriangleExclamation className='text-red-400' />
+                        <p className='ml-2 text-sm text-white'>{error}</p>
                     </>
                 )}
             </ContentContainer>

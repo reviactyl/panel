@@ -8,7 +8,6 @@ import type { FormikHelpers } from 'formik';
 import { Formik } from 'formik';
 import { object, string } from 'yup';
 import Field from '@/reviactyl/elements/Field';
-import tw from 'twin.macro';
 import { Button } from '@/reviactyl/components/button/index';
 import Reaptcha from 'reaptcha';
 import Turnstile from '@/reviactyl/elements/Turnstile';
@@ -26,7 +25,7 @@ interface Values {
 
 function LoginContainer() {
     const { t } = useTranslation('auth');
-    const primaryButtonClass = tw`w-full !py-3`;
+    const primaryButtonClass = 'w-full py-3!';
     const ref = useRef<Reaptcha>(null);
     const [token, setToken] = useState('');
     const [show, setShow] = useState(false);
@@ -176,7 +175,7 @@ function LoginContainer() {
             })}
         >
             {({ isSubmitting, setSubmitting, values }) => (
-                <LoginFormContainer title={t('login-title')} css={tw`w-full flex`}>
+                <LoginFormContainer title={t('login-title')} className='flex w-full'>
                     <Field
                         icon={UserIcon}
                         type={'text'}
@@ -185,9 +184,9 @@ function LoginContainer() {
                         name={'username'}
                         disabled={isSubmitting}
                     />
-                    <div css={tw`mt-3`}>
+                    <div className='mt-3'>
                         <Label>{t('password-label')}</Label>
-                        <div css={tw`relative`}>
+                        <div className='relative'>
                             <Field
                                 icon={KeyIcon}
                                 type={show ? 'text' : 'password'}
@@ -197,31 +196,31 @@ function LoginContainer() {
                             />
                             <button
                                 type={'button'}
-                                css={tw`absolute top-[10px] right-[6px] py-2 p-1 text-gray-500`}
+                                className='absolute top-[10px] right-[6px] p-1 py-2 text-gray-500'
                                 onClick={() => setShow(!show)}
                             >
                                 {show ? <EyeIcon className='h-5 w-5' /> : <EyeOffIcon className='h-5 w-5' />}
                             </button>
                         </div>
                     </div>
-                    <div css={tw`mt-6`}>
-                        <Button css={primaryButtonClass} type={'submit'} disabled={isSubmitting}>
+                    <div className='mt-6'>
+                        <Button className={primaryButtonClass} type={'submit'} disabled={isSubmitting}>
                             {t('login-button')}
                         </Button>
                     </div>
-                    <div css={tw`mt-3`}>
+                    <div className='mt-3'>
                         <Button.Text
-                            css={primaryButtonClass}
+                            className={primaryButtonClass}
                             type={'button'}
                             disabled={isSubmitting}
                             onClick={() => performPasskeyLogin(values.username, setSubmitting)}
                         >
-                            <span css={tw`relative flex w-full items-center justify-center`}>
-                                <span css={[tw`leading-6`, isPasskeySubmitting && tw`invisible`]}>
+                            <span className='relative flex w-full items-center justify-center'>
+                                <span className={isPasskeySubmitting ? 'invisible leading-6' : 'leading-6'}>
                                     {t('passkey-button')}
                                 </span>
                                 {isPasskeySubmitting && (
-                                    <span css={tw`absolute inset-0 flex items-center justify-center`}>
+                                    <span className='absolute inset-0 flex items-center justify-center'>
                                         <Spinner size={'small'} />
                                     </span>
                                 )}
@@ -250,7 +249,7 @@ function LoginContainer() {
                         />
                     )}
                     {provider === 'turnstile' && (
-                        <div css={tw`mt-4 flex justify-center`}>
+                        <div className='mt-4 flex justify-center'>
                             <Turnstile
                                 siteKey={turnstile.siteKey}
                                 onVerify={(response) => setToken(response)}
@@ -258,17 +257,17 @@ function LoginContainer() {
                             />
                         </div>
                     )}
-                    <div css={tw`mt-3 flex flex-col items-center gap-2`}>
+                    <div className='mt-3 flex flex-col items-center gap-2'>
                         <Link
                             to={'/auth/password'}
-                            css={tw`text-sm text-reviactyl/80 tracking-wide no-underline hover:text-reviactyl/50`}
+                            className='text-sm tracking-wide text-reviactyl/80 no-underline hover:text-reviactyl/50'
                         >
                             {t('forgot-password.label')}
                         </Link>
                         {registrationEnabled && (
                             <Link
                                 to={'/auth/register'}
-                                css={tw`text-xs text-gray-400 tracking-wide no-underline hover:text-gray-300`}
+                                className='text-xs tracking-wide text-gray-400 no-underline hover:text-gray-300'
                             >
                                 {t('register.create-link')}
                             </Link>
@@ -278,7 +277,7 @@ function LoginContainer() {
                                 href={window.PanelConfiguration.billingCardLink}
                                 target={'_blank'}
                                 rel={'noreferrer'}
-                                css={tw`mt-2 flex items-center gap-1 text-xs text-indigo-400 hover:text-indigo-300 no-underline transition-colors duration-200`}
+                                className='mt-2 flex items-center gap-1 text-xs text-indigo-400 no-underline transition-colors duration-200 hover:text-indigo-300'
                             >
                                 <svg
                                     role='img'

@@ -1,12 +1,24 @@
-import styled from 'styled-components';
-import tw from 'twin.macro';
+import React, { forwardRef } from 'react';
+import classNames from 'classnames';
 
-export default styled.div<{ $hoverable?: boolean }>`
-    ${tw`flex rounded-ui no-underline text-gray-200 items-center bg-gray-900 p-4 border border-gray-800 transition-colors duration-150 overflow-hidden`};
+type GreyRowBoxProps = React.HTMLAttributes<HTMLDivElement> & { $hoverable?: boolean };
 
-    ${(props) => props.$hoverable !== false && tw`hover:border-gray-600`};
+const GreyRowBox = forwardRef<HTMLDivElement, GreyRowBoxProps>(
+    ({ $hoverable = true, className, children, ...props }, ref) => (
+        <div
+            ref={ref}
+            className={classNames(
+                'flex items-center overflow-hidden rounded-ui border border-gray-800 bg-gray-900 p-4 text-gray-200 no-underline transition-colors duration-150 [&_.icon]:flex [&_.icon]:w-16 [&_.icon]:items-center [&_.icon]:justify-center [&_.icon]:rounded-full [&_.icon]:bg-gray-600 [&_.icon]:p-3',
+                $hoverable && 'hover:border-gray-600',
+                className
+            )}
+            {...props}
+        >
+            {children}
+        </div>
+    )
+);
 
-    & .icon {
-        ${tw`rounded-full w-16 flex items-center justify-center bg-gray-600 p-3`};
-    }
-`;
+GreyRowBox.displayName = 'GreyRowBox';
+
+export default GreyRowBox;

@@ -1,0 +1,49 @@
+.editor {
+    position: relative;
+    min-height: 16rem;
+    height: calc(100vh - 20rem);
+}
+
+.editor > div {
+    height: 100%;
+    border-radius: var(--radius-ui);
+}
+
+.editor :global(.CodeMirror),
+.editor :global(.CodeMirror-scroll),
+.editor :global(.CodeMirror-gutters) {
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+.editor :global(.CodeMirror) {
+    font-size: 12px;
+    line-height: 1.375rem;
+}
+
+.editor :global(.CodeMirror-linenumber) {
+    padding: 1px 12px 0 !important;
+}
+
+.editor :global(.CodeMirror-foldmarker) {
+    margin-inline: 0.25rem;
+    color: #cbccc6;
+    text-shadow: none;
+}
+
+@keyframes retry-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.retryButton:hover {
+    animation: retry-spin 2s linear infinite;
+}
+
+.monacoEditor {
+    position: relative;
+    min-height: 16rem;
+    height: calc(100vh - 20rem);
+    border-radius: var(--radius-ui);
+}

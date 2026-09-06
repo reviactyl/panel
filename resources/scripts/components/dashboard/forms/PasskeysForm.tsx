@@ -1,6 +1,5 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import useSWR from 'swr';
-import tw from 'twin.macro';
 import Label from '@/reviactyl/elements/Label';
 import Input from '@/reviactyl/elements/Input';
 import Spinner from '@/reviactyl/elements/Spinner';
@@ -66,7 +65,7 @@ export const ListPasskeysForm = () => {
                 }}
                 onConfirmed={onDelete}
             >
-                <div css={tw`space-y-3`}>
+                <div className='space-y-3'>
                     <p>{t('passkeys.delete-confirm')}</p>
                     {deleteTarget && <Code>{deleteTarget.name || deleteTarget.id}</Code>}
                     <div>
@@ -79,40 +78,40 @@ export const ListPasskeysForm = () => {
                                 setDeletePassword(event.currentTarget.value)
                             }
                         />
-                        <p css={tw`mt-1 text-xs text-gray-300`}>{t('passkeys.delete-password-prompt')}</p>
+                        <p className='mt-1 text-xs text-gray-300'>{t('passkeys.delete-password-prompt')}</p>
                     </div>
                 </div>
             </Dialog.Confirm>
 
-            <div css={tw`space-y-3`}>
+            <div className='space-y-3'>
                 {isLoading && <Spinner size={'small'} />}
 
                 {!isLoading && (!passkeys || passkeys.length === 0) && (
-                    <p css={tw`text-center text-sm`}>{t('passkeys.empty')}</p>
+                    <p className='text-center text-sm'>{t('passkeys.empty')}</p>
                 )}
 
                 {(passkeys || []).map((passkey) => (
-                    <GreyRowBox key={passkey.id} css={tw`bg-gray-800 flex space-x-4 items-center`}>
+                    <GreyRowBox key={passkey.id} className='flex space-x-4 items-center'>
                         {passkey.authenticator === 'Google Password Manager' ? (
-                            <FaGoogle css={tw`text-gray-300`} />
+                            <FaGoogle className='text-gray-300' />
                         ) : (
-                            <FaFingerprint css={tw`text-gray-300`} />
+                            <FaFingerprint className='text-gray-300' />
                         )}
-                        <div css={tw`flex-1 min-w-0`}>
-                            <p css={tw`truncate text-sm font-medium text-gray-100`}>{passkey.name || passkey.id}</p>
+                        <div className='flex-1 min-w-0'>
+                            <p className='truncate text-sm font-medium text-gray-100'>{passkey.name || passkey.id}</p>
                             {passkey.authenticator && (
-                                <p css={tw`truncate text-xs text-gray-300`}>{passkey.authenticator}</p>
+                                <p className='truncate text-xs text-gray-300'>{passkey.authenticator}</p>
                             )}
-                            <p css={tw`mt-1 text-xs text-gray-300`}>
+                            <p className='mt-1 text-xs text-gray-300'>
                                 {t('passkeys.created')}: {passkey.createdAt.toLocaleString()}
                             </p>
-                            <p css={tw`text-xs text-gray-300`}>
+                            <p className='text-xs text-gray-300'>
                                 {t('passkeys.updated')}: {passkey.updatedAt.toLocaleString()}
                             </p>
                         </div>
                         <div>
                             <button
-                                css={tw`ml-4 p-2 text-sm`}
+                                className='ml-4 p-2 text-sm'
                                 onClick={() => setDeleteTarget({ id: passkey.id, name: passkey.name })}
                             >
                                 <FaTrash
@@ -161,10 +160,10 @@ export const CreatePasskeysForm = () => {
 
     return (
         <div>
-            <p css={tw`text-sm text-gray-200`}>{t('passkeys.description')}</p>
+            <p className='text-sm text-gray-200'>{t('passkeys.description')}</p>
 
-            <form css={tw`mt-6`} onSubmit={onRegister}>
-                <div css={tw`space-y-3`}>
+            <form className='mt-6' onSubmit={onRegister}>
+                <div className='space-y-3'>
                     <div>
                         <Label>{t('passkeys.name')}</Label>
                         <Input
@@ -187,10 +186,10 @@ export const CreatePasskeysForm = () => {
                     </div>
                 </div>
 
-                <div css={tw`mt-4`}>
+                <div className='mt-4'>
                     <Button type={'submit'} disabled={isRegistering || password.length < 1}>
                         {isRegistering ? (
-                            <span css={tw`flex justify-center items-center`}>
+                            <span className='flex justify-center items-center'>
                                 <Spinner size={'small'} />
                             </span>
                         ) : (

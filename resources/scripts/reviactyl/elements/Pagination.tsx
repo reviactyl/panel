@@ -1,7 +1,5 @@
 import React from 'react';
 import { PaginatedResult } from '@/api/http';
-import tw from 'twin.macro';
-import styled from 'styled-components';
 import Button from '@/reviactyl/elements/Button';
 import { FaAnglesLeft, FaAnglesRight } from 'react-icons/fa6';
 
@@ -19,13 +17,7 @@ interface Props<T> {
     children: (props: RenderFuncProps<T>) => React.ReactNode;
 }
 
-const Block = styled(Button)`
-    ${tw`p-0 w-10 h-10`}
-
-    &:not(:last-of-type) {
-        ${tw`mr-2`};
-    }
-`;
+const Block = (props: React.ComponentProps<typeof Button>) => <Button className='mr-2 h-10 w-10 p-0' {...props} />;
 
 function Pagination<T>({ data: { items, pagination }, onPageSelect, children }: Props<T>) {
     const isFirstPage = pagination.currentPage === 1;
@@ -46,7 +38,7 @@ function Pagination<T>({ data: { items, pagination }, onPageSelect, children }: 
         <>
             {children({ items, isFirstPage, isLastPage })}
             {pages.length > 1 && (
-                <div css={tw`mt-4 flex justify-center`}>
+                <div className='mt-4 flex justify-center'>
                     {(pages?.[0] ?? 0) > 1 && !isFirstPage && (
                         <Block isSecondary color={'primary'} onClick={() => onPageSelect(1)}>
                             <FaAnglesLeft />

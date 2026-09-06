@@ -3,66 +3,12 @@ import i18n from '@/i18n';
 import { useStoreActions, useStoreState } from 'easy-peasy';
 import updateAccountLanguage from '@/api/account/updateAccountLanguage';
 import { ApplicationStore } from '@/state';
-import styled from 'styled-components';
-import tw from 'twin.macro';
 import 'flag-icons/css/flag-icons.min.css';
 
 interface LanguageInfo {
     name: string;
     flag: string;
 }
-
-const Container = styled.div`
-    ${tw`relative`};
-`;
-
-const DropdownButton = styled.button`
-    ${tw`flex items-center gap-2 px-3 py-2 bg-gray-900 border border-gray-800 rounded-ui text-gray-200 text-sm cursor-pointer transition-all`};
-
-    &:hover {
-        ${tw`border-gray-600 bg-gray-700`};
-    }
-`;
-
-const DropdownMenu = styled.div<{ $isOpen: boolean }>`
-    ${tw`absolute right-0 top-full mt-1 border border-gray-800 rounded-ui shadow-lg z-50 overflow-hidden min-w-[200px]`};
-    display: ${(props) => (props.$isOpen ? 'block' : 'none')};
-
-    [dir='rtl'] & {
-        right: auto;
-        left: 0;
-    }
-`;
-
-const MenuItem = styled.button<{ $isActive?: boolean }>`
-    ${tw`flex items-center gap-2 w-full px-3 py-2 text-left text-sm transition-colors hover:text-reviactyl`};
-
-    [dir='rtl'] & {
-        text-align: right;
-    }
-
-    ${(props) =>
-        props.$isActive
-            ? `
-                color: rgb(var(--color-primary) / 10);
-                background-color: rgb(var(--color-primary) / 0.2);
-              `
-            : `
-                background-color: transparent;
-
-                &:hover {
-                    background-color: rgb(var(--color-primary) / 0.2);
-                }
-              `}
-`;
-
-const FlagIcon = styled.span`
-    ${tw`inline-block`};
-    width: 20px;
-    height: 15px;
-    border-radius: 2px;
-    box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
-`;
 
 const NavbarLanguageSwitcher = () => {
     const user = useStoreState((state: ApplicationStore) => state.user.data);
@@ -114,20 +60,43 @@ const NavbarLanguageSwitcher = () => {
     const currentLanguage = languages[currentLang];
 
     return (
-        <Container ref={containerRef}>
-            <DropdownButton onClick={() => setIsOpen(!isOpen)}>
-                {currentLanguage?.flag && <FlagIcon className={`fi fi-${currentLanguage.flag}`} />}
-            </DropdownButton>
+        <div className='relative' ref={containerRef}>
+            <button
+                className='flex cursor-pointer items-center gap-2 rounded-ui border border-gray-800 bg-gray-900 px-3 py-2 text-sm text-gray-200 transition-all hover:border-gray-600 hover:bg-gray-700'
+                onClick={() => setIsOpen(!isOpen)}
+            >
+                {currentLanguage?.flag && (
+                    <span
+                        className={`fi fi-${currentLanguage.flag} inline-block h-[15px] w-5 rounded-[2px] shadow-[0_0_2px_rgba(0,0,0,0.3)]`}
+                    />
+                )}
+            </button>
 
-            <DropdownMenu className='bg-gray-900/90 backdrop-blur-md' $isOpen={isOpen}>
+            <div
+                className={`absolute right-0 top-full z-50 mt-1 min-w-[200px] overflow-hidden rounded-ui border border-gray-800 bg-gray-900/90 shadow-lg backdrop-blur-sm-md rtl:left-0 rtl:right-auto ${
+                    isOpen ? 'block' : 'hidden'
+                }`}
+            >
                 {Object.entries(languages).map(([code, info]) => (
-                    <MenuItem key={code} $isActive={code === currentLang} onClick={() => handleSelect(code)}>
-                        {info.flag && <FlagIcon className={`fi fi-${info.flag}`} />}
+                    <button
+                        key={code}
+                        className={`flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors hover:text-reviactyl rtl:text-right ${
+                            code === currentLang
+                                ? 'bg-[rgb(var(--color-primary)/0.2)] text-[rgb(var(--color-primary)/0.1)]'
+                                : 'bg-transparent hover:bg-[rgb(var(--color-primary)/0.2)]'
+                        }`}
+                        onClick={() => handleSelect(code)}
+                    >
+                        {info.flag && (
+                            <span
+                                className={`fi fi-${info.flag} inline-block h-[15px] w-5 rounded-[2px] shadow-[0_0_2px_rgba(0,0,0,0.3)]`}
+                            />
+                        )}
                         {info.name}
-                    </MenuItem>
+                    </button>
                 ))}
-            </DropdownMenu>
-        </Container>
+            </div>
+        </div>
     );
 };
 

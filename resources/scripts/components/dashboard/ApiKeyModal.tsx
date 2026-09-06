@@ -1,5 +1,4 @@
 import { useContext } from 'react';
-import tw from 'twin.macro';
 import Button from '@/reviactyl/elements/Button';
 import asModal from '@/hoc/asModal';
 import ModalContext from '@/context/ModalContext';
@@ -16,14 +15,14 @@ const ApiKeyModal = ({ apiKey }: Props) => {
 
     return (
         <>
-            <h3 css={tw`mb-6 text-2xl`}>{t('api.modal.your-api-key')}</h3>
-            <p css={tw`text-sm mb-6`}>{t('api.modal.message')}</p>
-            <pre css={tw`text-sm bg-gray-900 border border-gray-800 rounded-ui py-2 px-4 font-mono`}>
+            <h3 className='mb-6 text-2xl'>{t('api.modal.your-api-key')}</h3>
+            <p className='mb-6 text-sm'>{t('api.modal.message')}</p>
+            <pre className='rounded-ui border border-gray-800 bg-gray-900 px-4 py-2 font-mono text-sm'>
                 <CopyOnClick text={apiKey}>
-                    <code css={tw`font-mono`}>{apiKey}</code>
+                    <code className='font-mono'>{apiKey}</code>
                 </CopyOnClick>
             </pre>
-            <div css={tw`flex justify-end mt-6`}>
+            <div className='mt-6 flex justify-end'>
                 <Button type={'button'} onClick={() => dismiss()}>
                     {t('api.modal.close')}
                 </Button>

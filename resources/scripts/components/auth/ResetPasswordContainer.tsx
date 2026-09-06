@@ -9,7 +9,6 @@ import { Formik, FormikHelpers } from 'formik';
 import { object, ref, string } from 'yup';
 import Field from '@/reviactyl/elements/Field';
 import Input from '@/reviactyl/elements/Input';
-import tw from 'twin.macro';
 import Button from '@/reviactyl/elements/Button';
 import { useTranslation } from 'react-i18next';
 
@@ -61,12 +60,12 @@ function ResetPasswordContainer() {
             })}
         >
             {({ isSubmitting }) => (
-                <LoginFormContainer title={t('reset-password.label')} css={tw`w-full flex`}>
+                <LoginFormContainer title={t('reset-password.label')} className='flex w-full'>
                     <div>
                         <label>{t('reset-password.email-label')}</label>
                         <Input value={email} disabled />
                     </div>
-                    <div css={tw`mt-6`}>
+                    <div className='mt-6'>
                         <Field
                             label={t('reset-password.new-label')}
                             name={'password'}
@@ -74,22 +73,22 @@ function ResetPasswordContainer() {
                             description={t('reset-password.min-length')}
                         />
                     </div>
-                    <div css={tw`mt-6`}>
+                    <div className='mt-6'>
                         <Field
                             label={t('reset-password.confirm-label')}
                             name={'passwordConfirmation'}
                             type={'password'}
                         />
                     </div>
-                    <div css={tw`mt-6`}>
+                    <div className='mt-6'>
                         <Button size={'xlarge'} type={'submit'} disabled={isSubmitting} isLoading={isSubmitting}>
                             {t('reset-password.label')}
                         </Button>
                     </div>
-                    <div css={tw`mt-3 text-center`}>
+                    <div className='mt-3 text-center'>
                         <Link
                             to={'/auth/login'}
-                            css={tw`text-sm text-reviactyl/80 tracking-wide no-underline hover:text-reviactyl/50`}
+                            className='text-sm tracking-wide text-reviactyl/80 no-underline hover:text-reviactyl/50'
                         >
                             {t('return')}
                         </Link>

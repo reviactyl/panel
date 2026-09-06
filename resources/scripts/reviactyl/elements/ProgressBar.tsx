@@ -1,15 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
 import { useStoreActions, useStoreState } from 'easy-peasy';
 import { randomInt } from '@/helpers';
 import { motion, AnimatePresence } from 'framer-motion';
-import tw from 'twin.macro';
-
-const BarFill = styled.div`
-    ${tw`h-full bg-blue-600`};
-    transition: 250ms ease-in-out;
-    box-shadow: 0 -2px 10px 2px rgb(var(--color-primary) / 0.9);
-`;
 
 type Timer = ReturnType<typeof setTimeout>;
 
@@ -59,7 +51,7 @@ export default () => {
     }, [progress, continuous]);
 
     return (
-        <div css={tw`w-full fixed`} style={{ height: '2px' }}>
+        <div className='fixed w-full' style={{ height: '2px' }}>
             <AnimatePresence>
                 {visible && (
                     <motion.div
@@ -68,7 +60,10 @@ export default () => {
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.15, ease: 'easeIn' }}
                     >
-                        <BarFill style={{ width: progress === undefined ? '100%' : `${progress}%` }} />
+                        <div
+                            className='h-full bg-blue-600 transition-[width] duration-250 ease-in-out shadow-[0_-2px_10px_2px_rgb(var(--color-primary)/0.9)]'
+                            style={{ width: progress === undefined ? '100%' : `${progress}%` }}
+                        />
                     </motion.div>
                 )}
             </AnimatePresence>

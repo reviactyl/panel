@@ -35,7 +35,7 @@ export default () => {
                 type='button'
                 aria-label='Search'
                 onClick={() => setVisible(true)}
-                className='flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-400 bg-gray-900 rounded-ui shadow-sm transition-all hover:scale-[1.02] active:scale-100 border border-gray-800'
+                className='flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-400 bg-gray-900 rounded-ui shadow-xs transition-all hover:scale-[1.02] active:scale-100 border border-gray-800'
             >
                 <SearchIcon className='w-5 h-5 text-gray-400' />
                 <div className='hidden md:block w-full text-left'>

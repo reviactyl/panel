@@ -10,7 +10,6 @@ import UrlDownloadButton from '@/components/server/files/UrlDownloadButton';
 import { NavLink, useLocation } from 'react-router-dom';
 import Can from '@/reviactyl/elements/Can';
 import { ServerError } from '@/reviactyl/elements/ScreenBlock';
-import tw from 'twin.macro';
 import { ServerContext } from '@/state/server';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import FileManagerStatus from '@/components/server/files/FileManagerStatus';
@@ -266,7 +265,7 @@ export default () => {
                                 renderLeft={
                                     <FileActionCheckbox
                                         type={'checkbox'}
-                                        css={tw`mx-4 block md:hidden`}
+                                        className='mx-4 block md:hidden'
                                         checked={selectedFilesLength === (files?.length === 0 ? -1 : files?.length)}
                                         onChange={onSelectAllClick}
                                     />
@@ -289,7 +288,7 @@ export default () => {
                                 }}
                                 className={'flex items-center gap-x-1 text-sm text-gray-300'}
                             >
-                                <span css={tw`text-xs font-semibold`}>{t('name')}</span>
+                                <span className='text-xs font-semibold'>{t('name')}</span>
                                 {sortType === 'name' ? (
                                     <FaArrowDownAZ className={sortDirection === 'asc' ? 'rotate-180' : ''} />
                                 ) : (
@@ -309,7 +308,7 @@ export default () => {
                                 }}
                                 className={'flex items-center gap-x-1 text-sm text-gray-300'}
                             >
-                                <span css={tw`text-xs font-semibold`}>{t('size')}</span>
+                                <span className='text-xs font-semibold'>{t('size')}</span>
                                 {sortType === 'size' ? (
                                     <FaArrowDown19 className={sortDirection === 'asc' ? 'rotate-180' : ''} />
                                 ) : (
@@ -329,7 +328,7 @@ export default () => {
                                 }}
                                 className={'flex items-center gap-x-1 text-sm text-gray-300'}
                             >
-                                <span css={tw`text-xs font-semibold`}>{t('date')}</span>
+                                <span className='text-xs font-semibold'>{t('date')}</span>
                                 {sortType === 'date' ? (
                                     <FaArrowDownShortWide className={sortDirection === 'asc' ? 'rotate-180' : ''} />
                                 ) : (
@@ -358,7 +357,7 @@ export default () => {
                                 animate={{ opacity: 1 }}
                                 transition={{ duration: 0.15, ease: 'easeIn' }}
                             >
-                                {isSearching && <p css={tw`text-xs text-muted text-center mb-2`}>{t('searching')}</p>}
+                                {isSearching && <p className='mb-2 text-center text-xs text-muted'>{t('searching')}</p>}
                                 {recursiveResults.map((file) => (
                                     <RecursiveFileRow key={file.fullPath} file={file} serverId={id} />
                                 ))}
@@ -376,8 +375,8 @@ export default () => {
                             transition={{ duration: 0.15, ease: 'easeIn' }}
                         >
                             {files.length > 250 && (
-                                <div css={tw`rounded bg-yellow-400 mb-px p-3`}>
-                                    <p css={tw`text-yellow-900 text-sm text-center`}>{t('too-large')}</p>
+                                <div className='mb-px rounded bg-yellow-400 p-3'>
+                                    <p className='text-center text-sm text-yellow-900'>{t('too-large')}</p>
                                 </div>
                             )}
                             {sortFiles(filteredFiles.slice(0, 250), sortType, sortDirection).map((file) => (

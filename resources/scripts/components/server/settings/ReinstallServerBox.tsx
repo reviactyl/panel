@@ -5,7 +5,6 @@ import reinstallServer from '@/api/server/reinstallServer';
 import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
-import tw from 'twin.macro';
 import { Button } from '@/reviactyl/components/button/index';
 import { Dialog } from '@/reviactyl/elements/dialog';
 import { useTranslation } from 'react-i18next';
@@ -42,13 +41,13 @@ export default () => {
     if (skipScripts) {
         return (
             <TitledGreyBox title={'Reinstall Server'}>
-                <p css={tw`text-sm`}>{t('reinstall.disabled')}</p>
+                <p className='text-sm'>{t('reinstall.disabled')}</p>
             </TitledGreyBox>
         );
     }
 
     return (
-        <TitledGreyBox title={t('reinstall.title')} css={tw`relative`}>
+        <TitledGreyBox title={t('reinstall.title')} className='relative'>
             <Dialog.Confirm
                 open={modalVisible}
                 title={t('reinstall.confirm-title')}
@@ -58,11 +57,11 @@ export default () => {
             >
                 {t('reinstall.info')}
             </Dialog.Confirm>
-            <p css={tw`text-sm`}>
+            <p className='text-sm'>
                 {t('reinstall.info-1')}&nbsp;
-                <strong css={tw`font-medium`}>{t('reinstall.info-2')}</strong>
+                <strong className='font-medium'>{t('reinstall.info-2')}</strong>
             </p>
-            <div css={tw`mt-6 text-right`}>
+            <div className='mt-6 text-right'>
                 <Button.Danger variant={Button.Variants.Secondary} onClick={() => setModalVisible(true)}>
                     {t('reinstall.button')}
                 </Button.Danger>

@@ -1,3 +1,5 @@
+@reference "#reviactyl";
+
 .stat_block {
     @apply flex items-center rounded-ui shadow-lg relative;
     @apply border border-gray-800;
@@ -26,7 +28,7 @@
         @apply -ml-4 sm:ml-0;
         width: calc(100% + 2rem);
 
-        @screen sm {
+        @media (width >= 40rem) {
             @apply w-full;
         }
     }

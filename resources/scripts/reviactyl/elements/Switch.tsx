@@ -1,40 +1,7 @@
 import React, { useMemo } from 'react';
-import styled from 'styled-components';
 import { v4 } from 'uuid';
-import tw from 'twin.macro';
 import Label from '@/reviactyl/elements/Label';
 import Input from '@/reviactyl/elements/Input';
-
-const ToggleContainer = styled.div`
-    ${tw`relative select-none w-12 leading-normal`};
-
-    & > input[type='checkbox'] {
-        ${tw`hidden`};
-
-        &:checked + label {
-            ${tw`bg-reviactyl border-reviactyl/80 shadow-none`};
-        }
-
-        &:checked + label:before {
-            right: 0.125rem;
-        }
-    }
-
-    & > label {
-        ${tw`mb-0 block overflow-hidden cursor-pointer bg-gray-700 border border-gray-600 rounded-full h-6 shadow-inner`};
-        transition: all 75ms linear;
-
-        &::before {
-            ${tw`absolute block bg-white border h-5 w-5 rounded-full`};
-            top: 0.125rem;
-            right: calc(50% + 0.125rem);
-            //width: 1.25rem;
-            //height: 1.25rem;
-            content: '';
-            transition: all 75ms ease-in;
-        }
-    }
-`;
 
 export interface SwitchProps {
     name: string;
@@ -50,28 +17,32 @@ const Switch = ({ name, label, description, defaultChecked, readOnly, onChange, 
     const uuid = useMemo(() => v4(), []);
 
     return (
-        <div css={tw`flex items-center`}>
-            <ToggleContainer css={tw`flex-none`}>
+        <div className='flex items-center'>
+            <div className='relative w-12 shrink-0 select-none leading-normal'>
                 {children || (
                     <Input
                         id={uuid}
                         name={name}
-                        type={'checkbox'}
+                        type='checkbox'
+                        className='peer sr-only'
                         onChange={(e) => onChange && onChange(e)}
                         defaultChecked={defaultChecked}
                         disabled={readOnly}
                     />
                 )}
-                <Label htmlFor={uuid} />
-            </ToggleContainer>
+                <label
+                    htmlFor={uuid}
+                    className="relative mb-0 block h-6 cursor-pointer overflow-hidden rounded-full border border-gray-600 bg-gray-700 shadow-inner transition-colors duration-150 before:absolute before:left-0.5 before:top-px before:block before:h-5 before:w-5 before:rounded-full before:border before:border-gray-300 before:bg-white before:shadow-sm before:content-[''] before:transition-transform before:duration-150 peer-checked:border-reviactyl/80 peer-checked:bg-reviactyl peer-checked:shadow-none peer-checked:before:translate-x-6 peer-focus-visible:ring-2 peer-focus-visible:ring-reviactyl/60 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-gray-900 peer-disabled:cursor-not-allowed peer-disabled:opacity-60"
+                />
+            </div>
             {(label || description) && (
-                <div css={tw`ml-4 w-full`}>
+                <div className='ml-4 w-full'>
                     {label && (
-                        <Label css={[tw`cursor-pointer`, !!description && tw`mb-0`]} htmlFor={uuid}>
+                        <Label className={`cursor-pointer ${description ? 'mb-0' : ''}`} htmlFor={uuid}>
                             {label}
                         </Label>
                     )}
-                    {description && <p css={tw`text-gray-400 text-sm mt-2`}>{description}</p>}
+                    {description && <p className='mt-2 text-sm text-gray-400'>{description}</p>}
                 </div>
             )}
         </div>

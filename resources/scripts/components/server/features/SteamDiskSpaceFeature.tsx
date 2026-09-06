@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import Modal from '@/reviactyl/elements/Modal';
-import tw from 'twin.macro';
 import Button from '@/reviactyl/elements/Button';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
@@ -49,38 +48,38 @@ const SteamDiskSpaceFeature = () => {
             closeOnBackground={false}
             showSpinnerOverlay={loading}
         >
-            <FlashMessageRender key={'feature:steamDiskSpace'} css={tw`mb-4`} />
+            <FlashMessageRender key={'feature:steamDiskSpace'} className='mb-4' />
             {isAdmin ? (
                 <>
-                    <div css={tw`mt-4 sm:flex items-center`}>
-                        <h2 css={tw`text-2xl mb-4 text-gray-100 `}>Out of available disk space...</h2>
+                    <div className='mt-4 items-center sm:flex'>
+                        <h2 className='mb-4 text-2xl text-gray-100'>Out of available disk space...</h2>
                     </div>
-                    <p css={tw`mt-4`}>
+                    <p className='mt-4'>
                         This server has run out of available disk space and cannot complete the install or update
                         process.
                     </p>
-                    <p css={tw`mt-4`}>
+                    <p className='mt-4'>
                         Ensure the machine has enough disk space by typing{' '}
-                        <code css={tw`font-mono bg-gray-950 rounded py-1 px-2`}>df -h</code> on the machine hosting this
-                        server. Delete files or increase the available disk space to resolve the issue.
+                        <code className='rounded bg-gray-950 px-2 py-1 font-mono'>df -h</code> on the machine hosting
+                        this server. Delete files or increase the available disk space to resolve the issue.
                     </p>
-                    <div css={tw`mt-8 sm:flex items-center justify-end`}>
-                        <Button onClick={() => setVisible(false)} css={tw`w-full sm:w-auto border-transparent`}>
+                    <div className='mt-8 items-center justify-end sm:flex'>
+                        <Button onClick={() => setVisible(false)} className='w-full border-transparent sm:w-auto'>
                             Close
                         </Button>
                     </div>
                 </>
             ) : (
                 <>
-                    <div css={tw`mt-4 sm:flex items-center`}>
-                        <h2 css={tw`text-2xl mb-4 text-gray-100`}>Out of available disk space...</h2>
+                    <div className='mt-4 items-center sm:flex'>
+                        <h2 className='mb-4 text-2xl text-gray-100'>Out of available disk space...</h2>
                     </div>
-                    <p css={tw`mt-4`}>
+                    <p className='mt-4'>
                         This server has run out of available disk space and cannot complete the install or update
                         process. Please get in touch with the administrator(s) and inform them of disk space issues.
                     </p>
-                    <div css={tw`mt-8 sm:flex items-center justify-end`}>
-                        <Button onClick={() => setVisible(false)} css={tw`w-full sm:w-auto border-transparent`}>
+                    <div className='mt-8 items-center justify-end sm:flex'>
+                        <Button onClick={() => setVisible(false)} className='w-full border-transparent sm:w-auto'>
                             Close
                         </Button>
                     </div>

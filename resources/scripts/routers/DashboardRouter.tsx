@@ -171,7 +171,7 @@ function DashboardRouter() {
                         {isSidebarOpen && (
                             <div
                                 onClick={() => setSidebarOpen(false)}
-                                className='fixed inset-0 z-30 bg-gray-900/40 backdrop-blur-sm transition-all duration-300 ease-in-out lg:hidden'
+                                className='fixed inset-0 z-30 bg-gray-900/40 backdrop-blur-sm-xs transition-all duration-300 ease-in-out lg:hidden'
                             />
                         )}
                         <motion.div

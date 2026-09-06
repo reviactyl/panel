@@ -1,6 +1,5 @@
 import React, { memo } from 'react';
 import { IconType } from 'react-icons';
-import tw from 'twin.macro';
 import isEqual from 'react-fast-compare';
 import Card from '@/reviactyl/ui/Card';
 import Title from '@/reviactyl/ui/Title';
@@ -18,10 +17,10 @@ const TitledGreyBox = ({ icon, title, children, className, showFlashes }: Props)
     const HeaderIcon = icon;
 
     return (
-        <Card css={tw`!p-0`} className={className}>
-            <div css={tw`p-3`}>
+        <Card className={`p-0! ${className || ''}`}>
+            <div className='p-3'>
                 {typeof title === 'string' ? (
-                    <Title css={tw`text-sm`}>
+                    <Title className='text-sm'>
                         {HeaderIcon && <HeaderIcon className={'mr-2 text-gray-300 inline-block'} />}
                         {title}
                     </Title>
@@ -30,9 +29,12 @@ const TitledGreyBox = ({ icon, title, children, className, showFlashes }: Props)
                 )}
             </div>
             {showFlashes && (
-                <FlashMessageRender byKey={typeof showFlashes === 'string' ? showFlashes : undefined} css={tw`mb-4`} />
+                <FlashMessageRender
+                    byKey={typeof showFlashes === 'string' ? showFlashes : undefined}
+                    className='mb-4'
+                />
             )}
-            <div css={tw`p-3`}>{children}</div>
+            <div className='p-3'>{children}</div>
         </Card>
     );
 };

@@ -9,7 +9,6 @@ import TaskDetailsModal from '@/components/server/schedules/TaskDetailsModal';
 import Can from '@/reviactyl/elements/Can';
 import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
-import tw from 'twin.macro';
 import ConfirmationModal from '@/reviactyl/elements/ConfirmationModal';
 import Icon from '@/reviactyl/elements/Icon';
 import { useTranslation } from 'react-i18next';
@@ -65,7 +64,7 @@ export default ({ schedule, task }: Props) => {
     const ActionIcon = icon;
 
     return (
-        <div css={tw`sm:flex items-center p-3 sm:p-6 border border-gray-800 rounded-ui p-1 mt-2`}>
+        <div className='mt-2 items-center rounded-ui border border-gray-800 p-3 sm:flex sm:p-6'>
             <SpinnerOverlay visible={isLoading} fixed size={'large'} />
             <TaskDetailsModal
                 schedule={schedule}
@@ -83,36 +82,34 @@ export default ({ schedule, task }: Props) => {
                 {t('confirm-task-deletion-body')}
             </ConfirmationModal>
             <ActionIcon className={'text-lg text-white hidden md:block'} />
-            <div css={tw`flex-none sm:flex-1 w-full sm:w-auto overflow-x-auto`}>
-                <p css={tw`md:ml-6 text-gray-200 font-semibold uppercase text-sm`}>{title}</p>
+            <div className='w-full flex-none overflow-x-auto sm:w-auto sm:flex-1'>
+                <p className='text-sm font-semibold uppercase text-gray-200 md:ml-6'>{title}</p>
                 {task.payload && (
-                    <div css={tw`md:ml-6 mt-2`}>
+                    <div className='mt-2 md:ml-6'>
                         {task.action === 'backup' && (
-                            <p css={tw`text-xs uppercase text-gray-400 font-semibold mb-1`}>
+                            <p className='mb-1 text-xs font-semibold uppercase text-gray-400'>
                                 {t('ignoring-files-folders')}
                             </p>
                         )}
-                        <div
-                            css={tw`font-mono bg-gray-800 rounded py-1 px-2 text-sm w-auto inline-block whitespace-pre-wrap break-all`}
-                        >
+                        <div className='inline-block w-auto whitespace-pre-wrap break-all rounded bg-gray-800 px-2 py-1 font-mono text-sm'>
                             {task.payload}
                         </div>
                     </div>
                 )}
             </div>
-            <div css={tw`mt-3 sm:mt-0 flex items-center w-full sm:w-auto`}>
+            <div className='mt-3 flex w-full items-center sm:mt-0 sm:w-auto'>
                 {task.continueOnFailure && (
-                    <div css={tw`mr-6`}>
-                        <div css={tw`flex items-center px-2 py-1 bg-yellow-500 text-yellow-800 text-sm rounded-full`}>
-                            <Icon icon={FaCircleArrowDown} css={tw`w-3 h-3 mr-2`} />
+                    <div className='mr-6'>
+                        <div className='flex items-center rounded-full bg-yellow-500 px-2 py-1 text-sm text-yellow-800'>
+                            <Icon icon={FaCircleArrowDown} className='mr-2 h-3 w-3' />
                             {t('continues-on-failure')}
                         </div>
                     </div>
                 )}
                 {task.sequenceId > 1 && task.timeOffset > 0 && (
-                    <div css={tw`mr-6`}>
-                        <div css={tw`flex items-center px-2 py-1 bg-gray-600 text-sm rounded-full`}>
-                            <Icon icon={FaClock} css={tw`w-3 h-3 mr-2`} />
+                    <div className='mr-6'>
+                        <div className='flex items-center rounded-full bg-gray-600 px-2 py-1 text-sm'>
+                            <Icon icon={FaClock} className='mr-2 h-3 w-3' />
                             {t('time-offset-later', { time: task.timeOffset })}
                         </div>
                     </div>
@@ -122,7 +119,7 @@ export default ({ schedule, task }: Props) => {
                         <button
                             type={'button'}
                             aria-label={t('edit-scheduled-task')}
-                            css={tw`block text-sm p-2 text-gray-600 hover:text-gray-100 transition-colors duration-150 mr-4 ml-auto sm:ml-0`}
+                            className='ml-auto mr-4 block p-2 text-sm text-gray-600 transition-colors duration-150 hover:text-gray-100 sm:ml-0'
                             onClick={() => setIsEditing(true)}
                         >
                             <FaPen />
@@ -133,7 +130,7 @@ export default ({ schedule, task }: Props) => {
                     <button
                         type={'button'}
                         aria-label={t('delete-scheduled-task')}
-                        css={tw`block text-sm p-2 text-gray-600 hover:text-red-600 transition-colors duration-150`}
+                        className='block p-2 text-sm text-gray-600 transition-colors duration-150 hover:text-red-600'
                         onClick={() => setVisible(true)}
                     >
                         <FaTrash />

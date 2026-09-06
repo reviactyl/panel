@@ -6,7 +6,6 @@ import { bytesToString } from '@/lib/formatters';
 import Can from '@/reviactyl/elements/Can';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import BackupContextMenu, { BackupContextMenuHandle } from '@/components/server/backups/BackupContextMenu';
-import tw from 'twin.macro';
 import GreyRowBox from '@/reviactyl/elements/GreyRowBox';
 import getServerBackups from '@/api/swr/getServerBackups';
 import { ServerBackup } from '@/api/server/types';
@@ -59,12 +58,11 @@ export default ({ backup, className }: Props) => {
 
     return (
         <GreyRowBox
-            css={tw`flex-wrap md:flex-nowrap items-center`}
-            className={className}
+            className={`flex-wrap items-center md:flex-nowrap ${className || ''}`}
             onContextMenu={handleContextMenu}
         >
-            <div css={tw`flex items-center truncate w-full md:flex-1`}>
-                <div css={tw`mr-4`}>
+            <div className='flex w-full items-center truncate md:flex-1'>
+                <div className='mr-4'>
                     {backup.completedAt !== null ? (
                         backup.isLocked ? (
                             <FaLock className={'text-yellow-500'} />
@@ -75,38 +73,36 @@ export default ({ backup, className }: Props) => {
                         <Spinner size={'small'} />
                     )}
                 </div>
-                <div css={tw`flex flex-col truncate`}>
-                    <div css={tw`flex items-center text-sm mb-1`}>
+                <div className='flex flex-col truncate'>
+                    <div className='mb-1 flex items-center text-sm'>
                         {backup.completedAt !== null && !backup.isSuccessful && (
-                            <span
-                                css={tw`bg-red-500 py-px px-2 rounded-full text-white text-xs uppercase border border-red-600 mr-2`}
-                            >
+                            <span className='mr-2 rounded-full border border-red-600 bg-red-500 px-2 py-px text-xs uppercase text-white'>
                                 {t('failed')}
                             </span>
                         )}
-                        <p css={tw`break-words truncate`}>{backup.name}</p>
+                        <p className='truncate break-words'>{backup.name}</p>
                         {backup.completedAt !== null && backup.isSuccessful && (
-                            <span css={tw`ml-3 text-gray-300 text-xs font-extralight hidden sm:inline`}>
+                            <span className='ml-3 hidden text-xs font-extralight text-gray-300 sm:inline'>
                                 {bytesToString(backup.bytes)}
                             </span>
                         )}
                     </div>
-                    <p css={tw`mt-1 md:mt-0 text-xs text-gray-400 font-mono truncate`}>{backup.checksum}</p>
+                    <p className='mt-1 truncate font-mono text-xs text-gray-400 md:mt-0'>{backup.checksum}</p>
                 </div>
             </div>
-            <div css={tw`flex-1 md:flex-none md:w-48 mt-4 md:mt-0 md:ml-8 md:text-center`}>
-                <p title={format(backup.createdAt, 'ddd, MMMM do, yyyy HH:mm:ss')} css={tw`text-sm`}>
+            <div className='mt-4 flex-1 md:mt-0 md:ml-8 md:w-48 md:flex-none md:text-center'>
+                <p title={format(backup.createdAt, 'ddd, MMMM do, yyyy HH:mm:ss')} className='text-sm'>
                     {formatDistanceToNow(backup.createdAt, { includeSeconds: true, addSuffix: true })}
                 </p>
-                <p css={tw`text-2xs text-muted uppercase mt-1`}>{t('created')}</p>
+                <p className='mt-1 text-2xs uppercase text-muted'>{t('created')}</p>
             </div>
             <Can
                 action={backup.isSuccessful ? ['backup.download', 'backup.restore', 'backup.delete'] : 'backup.delete'}
                 matchAny={backup.isSuccessful}
             >
-                <div css={tw`mt-4 md:mt-0 ml-6`} style={{ marginRight: '-0.5rem' }}>
+                <div className='mt-4 ml-6 md:mt-0' style={{ marginRight: '-0.5rem' }}>
                     {!backup.completedAt ? (
-                        <div css={tw`p-2 invisible`}>
+                        <div className='invisible p-2'>
                             <FaEllipsis />
                         </div>
                     ) : (
