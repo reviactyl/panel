@@ -26,6 +26,7 @@ import { Button } from '@/reviactyl/components/button';
 import { FaUserGear } from 'react-icons/fa6';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 import { useSubuserPreview } from '@/context/SubuserPreviewContext';
+import SearchContainer from '@/components/dashboard/search/SearchContainer';
 
 export default () => {
     const { t } = useTranslation('dashboard/index');
@@ -36,6 +37,7 @@ export default () => {
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const uuid = useStoreState((state) => state.user.data!.uuid);
     const accountRootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
+    const layoutType = useStoreState((state) => state.designify.data!.layoutType);
     const { session } = useSubuserPreview();
     const rootAdmin = accountRootAdmin && !session;
     const [showOnlyAdmin, setShowOnlyAdmin] = usePersistedState(`${uuid}:show_all_servers`, false);
@@ -167,6 +169,11 @@ export default () => {
                 {!session && (
                     <div className='flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full md:w-auto'>
                         <div className='flex flex-row items-center justify-between sm:justify-start gap-4 sm:gap-0 w-full sm:w-auto sm:space-x-4'>
+                            {layoutType === 'modern' && (
+                                <div className='w-full sm:w-auto'>
+                                    <SearchContainer />
+                                </div>
+                            )}
                             {rootAdmin && (
                                 <div className={`flex flex-shrink-0 items-center justify-between gap-2`}>
                                     <p className='uppercase text-xs text-gray-300 whitespace-nowrap'>

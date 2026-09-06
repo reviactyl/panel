@@ -1,14 +1,16 @@
-import { useEffect, useRef, useState } from 'react';
-import Modal, { RequiredModalProps } from '@/reviactyl/elements/Modal';
-import { Field, Form, Formik, FormikHelpers, useFormikContext } from 'formik';
-import { Actions, useStoreActions, useStoreState } from 'easy-peasy';
-import { object, string } from 'yup';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import Modal from '@/reviactyl/elements/Modal';
+import type { RequiredModalProps } from '@/reviactyl/elements/Modal';
+import { Field, Form, Formik, useFormikContext } from 'formik';
+import { useStoreActions, useStoreState } from 'easy-peasy';
+import type { Actions } from 'easy-peasy';
 import debounce from 'debounce';
+import { object, string } from 'yup';
 import FormikFieldWrapper from '@/reviactyl/elements/FormikFieldWrapper';
 import InputSpinner from '@/reviactyl/elements/InputSpinner';
 import getServers from '@/api/getServers';
-import { Server } from '@/api/server/getServer';
-import { ApplicationStore } from '@/state';
+import type { Server } from '@/api/server/getServer';
+import type { ApplicationStore } from '@/state';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import tw from 'twin.macro';
@@ -34,14 +36,19 @@ const ServerResult = styled(Link)`
     }
 `;
 
-const SearchWatcher = () => {
-    const { values, submitForm } = useFormikContext<Values>();
+interface SearchWatcherProps {
+    onTermChanged: (term: string, setSubmitting: (submitting: boolean) => void) => void;
+}
+
+const SearchWatcher = ({ onTermChanged }: SearchWatcherProps) => {
+    const { values, setFieldTouched, setSubmitting } = useFormikContext<Values>();
 
     useEffect(() => {
-        if (values.term.length >= 3) {
-            submitForm();
+        if (values.term.length > 0) {
+            void setFieldTouched('term', true, true);
         }
-    }, [values.term]);
+        onTermChanged(values.term, setSubmitting);
+    }, [values.term, onTermChanged, setFieldTouched, setSubmitting]);
 
     return null;
 };
@@ -49,25 +56,66 @@ const SearchWatcher = () => {
 export default ({ ...props }: Props) => {
     const { t } = useTranslation('dashboard/index');
     const ref = useRef<HTMLInputElement>(null);
+    const searchGeneration = useRef(0);
     const isAdmin = useStoreState((state) => state.user.data!.rootAdmin);
     const [servers, setServers] = useState<Server[]>([]);
     const { clearAndAddHttpError, clearFlashes } = useStoreActions(
         (actions: Actions<ApplicationStore>) => actions.flashes
     );
 
-    const search = debounce(({ term }: Values, { setSubmitting }: FormikHelpers<Values>) => {
-        clearFlashes('search');
+    const search = useMemo(
+        () =>
+            debounce((term: string, generation: number, setSubmitting: (submitting: boolean) => void) => {
+                clearFlashes('search');
 
-        // if (ref.current) ref.current.focus();
-        getServers({ query: term, type: isAdmin ? 'admin-all' : undefined })
-            .then((servers) => setServers(servers.items.filter((_, index) => index < 5)))
-            .catch((error) => {
-                console.error(error);
-                clearAndAddHttpError({ key: 'search', error });
-            })
-            .then(() => setSubmitting(false))
-            .then(() => ref.current?.focus());
-    }, 500);
+                // if (ref.current) ref.current.focus();
+                getServers({ query: term, type: isAdmin ? 'admin-all' : undefined })
+                    .then((response) => {
+                        if (generation === searchGeneration.current) {
+                            setServers(response.items.filter((_, index) => index < 5));
+                        }
+                    })
+                    .catch((error) => {
+                        if (generation === searchGeneration.current) {
+                            console.error(error);
+                            clearAndAddHttpError({ key: 'search', error });
+                        }
+                    })
+                    .then(() => {
+                        if (generation === searchGeneration.current) {
+                            setSubmitting(false);
+                            ref.current?.focus();
+                        }
+                    });
+            }, 500),
+        [clearAndAddHttpError, clearFlashes, isAdmin]
+    );
+
+    const onTermChanged = useCallback(
+        (term: string, setSubmitting: (submitting: boolean) => void) => {
+            const generation = ++searchGeneration.current;
+
+            search.clear();
+            setServers([]);
+
+            if (term.length < 3) {
+                setSubmitting(false);
+                return;
+            }
+
+            setSubmitting(true);
+            search(term, generation, setSubmitting);
+        },
+        [search]
+    );
+
+    useEffect(
+        () => () => {
+            searchGeneration.current++;
+            search.clear();
+        },
+        [search]
+    );
 
     useEffect(() => {
         if (props.visible) {
@@ -80,7 +128,7 @@ export default ({ ...props }: Props) => {
 
     return (
         <Formik
-            onSubmit={search}
+            onSubmit={() => Promise.resolve()}
             validationSchema={object().shape({
                 term: string().min(3, t('search.string-min')),
             })}
@@ -94,7 +142,7 @@ export default ({ ...props }: Props) => {
                             label={t('search.form-label')}
                             description={t('search.form-description')}
                         >
-                            <SearchWatcher />
+                            <SearchWatcher onTermChanged={onTermChanged} />
                             <InputSpinner visible={isSubmitting}>
                                 <Field as={InputWithRef} name={'term'} />
                             </InputSpinner>
