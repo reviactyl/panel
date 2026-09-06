@@ -39,7 +39,7 @@ jobs:
       - run: pnpm build
       - name: find previous release
         run: |
-          PREVIOUS_TAG=$(git describe --tags --abbrev=0 "${GITHUB_SHA}^")
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 "${GITHUB_SHA}^" 2>/dev/null || true)
           echo "PREVIOUS_TAG=$PREVIOUS_TAG" >> "$GITHUB_ENV"
       - name: create release branch and bump version
         env:
@@ -66,35 +66,42 @@ jobs:
           rm -rf node_modules tests CONTRIBUTING.md phpunit.xml
           tar -czf panel.tar.gz * .editorconfig .env.example .gitignore .prettierrc.json
 
-          CURRENT_RELEASE="$RUNNER_TEMP/current-release"
-          PREVIOUS_RELEASE="$RUNNER_TEMP/previous-release"
-          UPDATE_PACKAGE="$RUNNER_TEMP/update-package"
-          PREVIOUS_ARCHIVE="$RUNNER_TEMP/previous-archive"
-          DELETED_PATHS="$RUNNER_TEMP/deleted-paths"
-          mkdir -p "$CURRENT_RELEASE" "$PREVIOUS_RELEASE" "$UPDATE_PACKAGE" "$PREVIOUS_ARCHIVE"
-          tar -xzf panel.tar.gz -C "$CURRENT_RELEASE"
-          gh release download "$PREVIOUS_TAG" --pattern panel.tar.gz --dir "$PREVIOUS_ARCHIVE"
-          tar -xzf "$PREVIOUS_ARCHIVE/panel.tar.gz" -C "$PREVIOUS_RELEASE"
+          if [ -n "$PREVIOUS_TAG" ]; then
+            CURRENT_RELEASE="$RUNNER_TEMP/current-release"
+            PREVIOUS_RELEASE="$RUNNER_TEMP/previous-release"
+            UPDATE_PACKAGE="$RUNNER_TEMP/update-package"
+            PREVIOUS_ARCHIVE="$RUNNER_TEMP/previous-archive"
+            DELETED_PATHS="$RUNNER_TEMP/deleted-paths"
+            mkdir -p "$CURRENT_RELEASE" "$PREVIOUS_RELEASE" "$UPDATE_PACKAGE" "$PREVIOUS_ARCHIVE"
+            tar -xzf panel.tar.gz -C "$CURRENT_RELEASE"
+            gh release download "$PREVIOUS_TAG" --pattern panel.tar.gz --dir "$PREVIOUS_ARCHIVE"
+            tar -xzf "$PREVIOUS_ARCHIVE/panel.tar.gz" -C "$PREVIOUS_RELEASE"
 
-          : > "$DELETED_PATHS"
-          while IFS= read -r -d '' file; do
-            relative=${file#"$PREVIOUS_RELEASE/"}
-            if [ ! -f "$CURRENT_RELEASE/$relative" ]; then
-              printf '%s\0' "$relative" >> "$DELETED_PATHS"
-            fi
-          done < <(find "$PREVIOUS_RELEASE" -type f -print0)
+            : > "$DELETED_PATHS"
+            while IFS= read -r -d '' file; do
+              relative=${file#"$PREVIOUS_RELEASE/"}
+              case "$relative" in
+                .env|manifest.json|storage/*|vendor/*) continue ;;
+              esac
+              if [ ! -f "$CURRENT_RELEASE/$relative" ]; then
+                printf '%s\0' "$relative" >> "$DELETED_PATHS"
+              fi
+            done < <(find "$PREVIOUS_RELEASE" -type f -print0)
 
-          while IFS= read -r -d '' file; do
-            relative=${file#"$CURRENT_RELEASE/"}
-            if [ ! -f "$PREVIOUS_RELEASE/$relative" ] || ! cmp -s "$file" "$PREVIOUS_RELEASE/$relative"; then
-              mkdir -p "$UPDATE_PACKAGE/$(dirname "$relative")"
-              cp -p "$file" "$UPDATE_PACKAGE/$relative"
-            fi
-          done < <(find "$CURRENT_RELEASE" -type f -print0)
+            while IFS= read -r -d '' file; do
+              relative=${file#"$CURRENT_RELEASE/"}
+              case "$relative" in
+                .env|manifest.json|storage/*|vendor/*) continue ;;
+              esac
+              if [ ! -f "$PREVIOUS_RELEASE/$relative" ] || ! cmp -s "$file" "$PREVIOUS_RELEASE/$relative"; then
+                mkdir -p "$UPDATE_PACKAGE/$(dirname "$relative")"
+                cp -p "$file" "$UPDATE_PACKAGE/$relative"
+              fi
+            done < <(find "$CURRENT_RELEASE" -type f -print0)
 
-          FROM_VERSION=${PREVIOUS_TAG#v}
-          TO_VERSION=${VERSION#v}
-          FROM_VERSION="$FROM_VERSION" TO_VERSION="$TO_VERSION" DELETED_PATHS="$DELETED_PATHS" UPDATE_PACKAGE="$UPDATE_PACKAGE" node <<'NODE'
+            FROM_VERSION=${PREVIOUS_TAG#v}
+            TO_VERSION=${VERSION#v}
+            FROM_VERSION="$FROM_VERSION" TO_VERSION="$TO_VERSION" DELETED_PATHS="$DELETED_PATHS" UPDATE_PACKAGE="$UPDATE_PACKAGE" node <<'NODE'
           const fs = require('fs');
           const path = require('path');
 
@@ -107,13 +114,15 @@ jobs:
           fs.writeFileSync(path.join(process.env.UPDATE_PACKAGE, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`);
           NODE
 
-          (cd "$UPDATE_PACKAGE" && zip -q -r "$GITHUB_WORKSPACE/update.zip" .)
-          sha256sum update.zip > update.zip.sha256
+            (cd "$UPDATE_PACKAGE" && zip -q -r "$GITHUB_WORKSPACE/update.zip" .)
+            sha256sum update.zip > update.zip.sha256
+          fi
       - uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           draft: true
+          fail_on_unmatched_files: false
           prerelease: ${{ contains(github.ref_name, 'rc') || contains(github.ref_name, 'beta') || contains(github.ref_name, 'alpha') }}
           files: |
             panel.tar.gz
