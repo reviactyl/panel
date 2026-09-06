@@ -1,4 +1,5 @@
 import { isObject } from '@/lib/objects';
+import { describe, it, expect } from 'vitest';
 
 describe('@/lib/objects.ts', function () {
     describe('isObject()', function () {
