@@ -42,7 +42,7 @@ function LoginCheckpointContainer() {
                 />
             </div>
             <div className='mt-3'>
-                <Button className='w-full py-3!' type='submit' disabled={isSubmitting}>
+                <Button className='w-full !py-3' type='submit' disabled={isSubmitting}>
                     {t('checkpoint.button')}
                 </Button>
             </div>
