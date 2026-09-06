@@ -51,7 +51,7 @@ export default ({ schedule, task }: Props) => {
                 appendSchedule({
                     ...schedule,
                     tasks: schedule.tasks.filter((t) => t.id !== task.id),
-                })
+                }),
             )
             .catch((error) => {
                 console.error(error);

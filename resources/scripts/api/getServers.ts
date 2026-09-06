@@ -23,7 +23,7 @@ export default ({ query, eggId, ...params }: QueryParams): Promise<PaginatedResu
                 resolve({
                     items: (data.data || []).map((datum: any) => rawDataToServerObject(datum)),
                     pagination: getPaginationSet(data.meta.pagination),
-                })
+                }),
             )
             .catch(reject);
     });

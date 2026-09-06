@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Dialog, DialogWrapperContext } from '@/reviactyl/elements/dialog';
 import getTwoFactorTokenData, { TwoFactorTokenData } from '@/api/account/getTwoFactorTokenData';
 import { useFlashKey } from '@/plugins/useFlash';
-import QRCode from 'qrcode.react';
+import { QRCodeSVG } from 'qrcode.react';
 import { Button } from '@/reviactyl/components/button/index';
 import Spinner from '@/reviactyl/elements/Spinner';
 import { Input } from '@/reviactyl/elements/inputs';
@@ -67,7 +67,7 @@ const ConfigureTwoFactorForm = ({ onTokens }: Props) => {
                 {!token ? (
                     <Spinner />
                 ) : (
-                    <QRCode renderAs={'svg'} value={token.image_url_data} className={'w-full h-full shadow-none'} />
+                    <QRCodeSVG value={token.image_url_data} className={'w-full h-full shadow-none'} />
                 )}
             </div>
             <CopyOnClick text={token?.secret}>

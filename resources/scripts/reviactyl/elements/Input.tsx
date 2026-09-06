@@ -14,7 +14,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({ $hasError, className, 
         className={classNames(
             type === 'checkbox' || type === 'radio' ? styles.checkbox : styles.input,
             type === 'radio' && styles.radio,
-            className
+            className,
         )}
         {...props}
     />

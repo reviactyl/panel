@@ -5,7 +5,7 @@ const stripTrailingSlash = (p: string) => (p.length > 1 ? p.replace(/\/+$/, '') 
 export default function Navigate(props: NavLinkProps) {
     const location = useLocation();
 
-    const toPath = typeof props.to === 'string' ? props.to : props.to.pathname ?? '';
+    const toPath = typeof props.to === 'string' ? props.to : (props.to.pathname ?? '');
     const isSlashSafeActive = stripTrailingSlash(location.pathname) === stripTrailingSlash(toPath);
 
     const baseClassName = props.className;
@@ -19,7 +19,7 @@ export default function Navigate(props: NavLinkProps) {
                 const base =
                     typeof baseClassName === 'function'
                         ? baseClassName({ isActive: nextIsActive, isPending, isTransitioning })
-                        : baseClassName ?? '';
+                        : (baseClassName ?? '');
 
                 return `${base} ${nextIsActive ? 'active' : ''}`.trim();
             }}

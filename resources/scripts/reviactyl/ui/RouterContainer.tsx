@@ -5,7 +5,7 @@ export const RouterContainer = ({ className, ...props }: React.HTMLAttributes<HT
     <div
         className={classNames(
             'h-full min-h-screen bg-gray-950 bg-fixed bg-center bg-no-repeat bg-[image:var(--background)] bg-cover',
-            className
+            className,
         )}
         {...props}
     />

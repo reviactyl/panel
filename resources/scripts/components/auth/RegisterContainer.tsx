@@ -37,11 +37,14 @@ const RegisterContainer = () => {
         clearFlashes();
 
         // Keep session alive for registration
-        const interval = setInterval(() => {
-            fetch('/').catch(() => {
-                /* ignore */
-            });
-        }, 1000 * 60 * 5); // 5 minutes
+        const interval = setInterval(
+            () => {
+                fetch('/').catch(() => {
+                    /* ignore */
+                });
+            },
+            1000 * 60 * 5,
+        ); // 5 minutes
 
         return () => clearInterval(interval);
     }, []);

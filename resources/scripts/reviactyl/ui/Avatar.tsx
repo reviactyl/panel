@@ -29,7 +29,7 @@ export const avatarUrl = ({
                 : Md5(
                       String(email || 'system@localhost')
                           .trim()
-                          .toLowerCase()
+                          .toLowerCase(),
                   );
 
         return `https://www.gravatar.com/avatar/${hash}?s=200`;

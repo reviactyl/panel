@@ -19,12 +19,12 @@ const buttonClasses = ({ color, isSecondary, size }: Omit<Props, 'isLoading'>) =
         isSecondary
             ? 'border-gray-800 bg-transparent text-gray-200 hover:not-disabled:border-gray-600 hover:not-disabled:text-gray-100'
             : color === 'grey'
-            ? 'border-gray-800 bg-gray-600 text-gray-50 hover:not-disabled:bg-gray-700'
-            : color === 'green'
-            ? 'border-green-600 bg-green-500 text-green-50 hover:not-disabled:border-green-700 hover:not-disabled:bg-green-600'
-            : color === 'red'
-            ? 'border-red-600 bg-red-500 text-red-50 hover:not-disabled:border-red-700 hover:not-disabled:bg-red-600'
-            : 'border-primary-600/80 bg-primary-500/80 text-primary-50 hover:not-disabled:border-primary-700/80 hover:not-disabled:bg-primary-600/80',
+              ? 'border-gray-800 bg-gray-600 text-gray-50 hover:not-disabled:bg-gray-700'
+              : color === 'green'
+                ? 'border-green-600 bg-green-500 text-green-50 hover:not-disabled:border-green-700 hover:not-disabled:bg-green-600'
+                : color === 'red'
+                  ? 'border-red-600 bg-red-500 text-red-50 hover:not-disabled:border-red-700 hover:not-disabled:bg-red-600'
+                  : 'border-primary-600/80 bg-primary-500/80 text-primary-50 hover:not-disabled:border-primary-700/80 hover:not-disabled:bg-primary-600/80',
         isSecondary &&
             color === 'red' &&
             'hover:not-disabled:border-red-600 hover:not-disabled:bg-red-500 hover:not-disabled:text-red-50',
@@ -33,7 +33,7 @@ const buttonClasses = ({ color, isSecondary, size }: Omit<Props, 'isLoading'>) =
             'hover:not-disabled:border-primary-600 hover:not-disabled:bg-primary-500 hover:not-disabled:text-primary-50',
         isSecondary &&
             color === 'green' &&
-            'hover:not-disabled:border-green-600 hover:not-disabled:bg-green-500 hover:not-disabled:text-green-50'
+            'hover:not-disabled:border-green-600 hover:not-disabled:bg-green-500 hover:not-disabled:text-green-50',
     );
 
 const ButtonStyle = ({ className, ...props }: ComponentProps) => (

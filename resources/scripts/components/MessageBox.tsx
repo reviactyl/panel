@@ -42,7 +42,7 @@ const MessageBox = ({ title, children, type }: Props) => (
     <div
         className={classNames(
             'flex w-full items-center rounded-ui border p-2 text-sm leading-normal text-white lg:inline-flex',
-            styling(type)
+            styling(type),
         )}
         role='alert'
     >
@@ -50,7 +50,7 @@ const MessageBox = ({ title, children, type }: Props) => (
             <span
                 className={classNames(
                     'title mr-3 flex rounded-full px-2 py-1 text-xs font-bold leading-none uppercase backdrop-blur-md',
-                    getBackground(type)
+                    getBackground(type),
                 )}
             >
                 {title}

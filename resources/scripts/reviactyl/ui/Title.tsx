@@ -18,7 +18,7 @@ export const Title = ({ className, children, scheme = 'gray', ...props }: TitleP
             className={classNames(
                 'leading-tight bg-gradient-to-tl bg-clip-text font-semibold text-transparent',
                 colorClass,
-                className
+                className,
             )}
             {...props}
         >

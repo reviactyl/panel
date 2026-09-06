@@ -23,7 +23,7 @@ function PermissionTitleBox({ isEditable, title, permissions, className, childre
                 setValue(value.filter((p) => !permissions.includes(p)));
             }
         },
-        [permissions, value]
+        [permissions, value],
     );
 
     return (

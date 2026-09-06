@@ -8,14 +8,14 @@ const getAlertClass = (type: string): string =>
     type === 'info'
         ? 'bg-blue-800/10 border-blue-500/60'
         : type === 'announcement'
-        ? 'bg-reviactyl/10 border-reviactyl/60'
-        : type === 'danger'
-        ? 'bg-danger/10 border-danger/60'
-        : type === 'success'
-        ? 'bg-success/10 border-success/60'
-        : type === 'warning'
-        ? 'bg-yellow-800/10 border-yellow-500/60'
-        : '';
+          ? 'bg-reviactyl/10 border-reviactyl/60'
+          : type === 'danger'
+            ? 'bg-danger/10 border-danger/60'
+            : type === 'success'
+              ? 'bg-success/10 border-success/60'
+              : type === 'warning'
+                ? 'bg-yellow-800/10 border-yellow-500/60'
+                : '';
 
 const getAlertIcon = (type: string) =>
     type === 'info' ? (
@@ -41,8 +41,8 @@ const Announcement = () => {
         configuredAlerts.length > 0
             ? configuredAlerts
             : fallbackAlertType && fallbackAlertMessage
-            ? [{ type: fallbackAlertType, message: fallbackAlertMessage }]
-            : [];
+              ? [{ type: fallbackAlertType, message: fallbackAlertMessage }]
+              : [];
 
     return (
         <div className='px-2'>
@@ -52,7 +52,7 @@ const Announcement = () => {
                     <div
                         key={`${index}-${alert.type}-${alert.message.slice(0, 20)}`}
                         className={`mx-auto mt-2 flex w-full max-w-[1200px] items-center gap-x-3 rounded-ui border p-3 text-gray-100 ${getAlertClass(
-                            alert.type
+                            alert.type,
                         )}`}
                     >
                         <div>{getAlertIcon(alert.type)}</div>

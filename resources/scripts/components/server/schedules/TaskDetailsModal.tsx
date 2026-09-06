@@ -80,14 +80,14 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
         taskPermission === 'control.console'
             ? canSendCommand
             : taskPermission === 'control.start'
-            ? canStart
-            : taskPermission === 'control.stop'
-            ? canStop
-            : taskPermission === 'control.restart'
-            ? canRestart
-            : taskPermission === 'backup.create'
-            ? canCreateBackup
-            : false;
+              ? canStart
+              : taskPermission === 'control.stop'
+                ? canStop
+                : taskPermission === 'control.restart'
+                  ? canRestart
+                  : taskPermission === 'backup.create'
+                    ? canCreateBackup
+                    : false;
     const initialAction = task && canEditExistingAction ? task.action : defaultAction;
     const initialPayload =
         task && canEditExistingAction ? task.payload : initialAction === 'power' ? defaultPowerAction : '';

@@ -38,7 +38,7 @@ export default ({ ...props }: Props) => {
     const isAdmin = useStoreState((state) => state.user.data!.rootAdmin);
     const [servers, setServers] = useState<Server[]>([]);
     const { clearAndAddHttpError, clearFlashes } = useStoreActions(
-        (actions: Actions<ApplicationStore>) => actions.flashes
+        (actions: Actions<ApplicationStore>) => actions.flashes,
     );
 
     const search = debounce(({ term }: Values, { setSubmitting }: FormikHelpers<Values>) => {

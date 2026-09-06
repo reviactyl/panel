@@ -58,7 +58,7 @@ export const ExtensionSlot = ({ name, context }: Props) => {
                 .map((slot) => ({
                     extensionId: extension.id,
                     slot,
-                }))
+                })),
         )
         .sort((a, b) => (a.slot.order ?? 0) - (b.slot.order ?? 0));
 

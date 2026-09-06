@@ -39,7 +39,7 @@ export class PreviewWebsocket extends Websocket {
                     this.emit(SocketEvent.STATUS, status);
                     this.emit(
                         SocketEvent.CONSOLE_OUTPUT,
-                        i18n.t('preview.console-status', { ns: 'server/users', status })
+                        i18n.t('preview.console-status', { ns: 'server/users', status }),
                     );
                 })
                 .catch((error) => this.emit(SocketEvent.DAEMON_ERROR, error.message));
@@ -51,8 +51,8 @@ export class PreviewWebsocket extends Websocket {
                 .then(() =>
                     this.emit(
                         SocketEvent.CONSOLE_OUTPUT,
-                        i18n.t('preview.console-command', { ns: 'server/users', command: value })
-                    )
+                        i18n.t('preview.console-command', { ns: 'server/users', command: value }),
+                    ),
                 )
                 .catch((error) => this.emit(SocketEvent.DAEMON_ERROR, error.message));
             return;

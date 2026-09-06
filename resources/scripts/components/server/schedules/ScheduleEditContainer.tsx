@@ -50,7 +50,7 @@ const ScheduleEditContainer = () => {
 
     const schedule = ServerContext.useStoreState(
         (st) => st.schedules.data.find((s) => s.id === Number(scheduleId)),
-        isEqual
+        isEqual,
     );
     const appendSchedule = ServerContext.useStoreActions((actions) => actions.schedules.appendSchedule);
 
@@ -137,7 +137,7 @@ const ScheduleEditContainer = () => {
                             {schedule.tasks.length > 0
                                 ? schedule.tasks
                                       .sort((a, b) =>
-                                          a.sequenceId === b.sequenceId ? 0 : a.sequenceId > b.sequenceId ? 1 : -1
+                                          a.sequenceId === b.sequenceId ? 0 : a.sequenceId > b.sequenceId ? 1 : -1,
                                       )
                                       .map((task) => (
                                           <ScheduleTaskRow

@@ -79,12 +79,12 @@ export default () => {
                 'filter[category_uuid]':
                     activeCategory === 'all' ? undefined : activeCategory === 'primary' ? 'null' : activeCategory,
                 eggId: activeEggId ?? undefined,
-            })
+            }),
     );
 
     const { data: categories, mutate: mutateCategories } = useSWR(
         session ? null : '/api/client/account/categories',
-        getServerCategories
+        getServerCategories,
     );
 
     useEffect(() => {
@@ -114,14 +114,17 @@ export default () => {
     const groupedServers = useMemo(() => {
         if (!servers) return {};
 
-        const groups = (servers.items || []).reduce((acc, server) => {
-            const catUuid = server.category?.uuid || 'primary';
+        const groups = (servers.items || []).reduce(
+            (acc, server) => {
+                const catUuid = server.category?.uuid || 'primary';
 
-            if (!acc[catUuid]) acc[catUuid] = [];
-            acc[catUuid].push(server);
+                if (!acc[catUuid]) acc[catUuid] = [];
+                acc[catUuid].push(server);
 
-            return acc;
-        }, {} as Record<string, Server[]>);
+                return acc;
+            },
+            {} as Record<string, Server[]>,
+        );
 
         // If a specific category is selected, only keep that group
         if (selectedCategory !== 'all') {
@@ -217,7 +220,7 @@ export default () => {
                                             className={clsx(
                                                 '!p-2',
                                                 (selectedEggId !== null || selectedCategory !== 'all') &&
-                                                    'bg-blue-700 hover:bg-blue-600'
+                                                    'bg-blue-700 hover:bg-blue-600',
                                             )}
                                             title={t('filter-label')}
                                             aria-label={t('filter-label')}
@@ -245,7 +248,7 @@ export default () => {
                                                         value={selectedEggId ?? ''}
                                                         onChange={(e) => {
                                                             setSelectedEggId(
-                                                                e.target.value === '' ? null : Number(e.target.value)
+                                                                e.target.value === '' ? null : Number(e.target.value),
                                                             );
                                                             setEggFilterOpen(false);
                                                         }}
@@ -322,8 +325,8 @@ export default () => {
                                             {activeEggId !== null
                                                 ? t('eggs.no-servers-for-egg')
                                                 : showOnlyAdmin
-                                                ? t('no-other-servers')
-                                                : t('no-servers')}
+                                                  ? t('no-other-servers')
+                                                  : t('no-servers')}
                                         </p>
                                     </Card>
                                 );

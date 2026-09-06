@@ -6,7 +6,7 @@ export type SortDirection = 'asc' | 'desc';
 export const sortFiles = (
     files: FileObject[],
     sortType: SortType = 'name',
-    sortDirection: SortDirection = 'asc'
+    sortDirection: SortDirection = 'asc',
 ): FileObject[] => {
     const multiplier = sortDirection === 'asc' ? 1 : -1;
     const sorted = [...files].sort((a, b) => {

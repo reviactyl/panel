@@ -20,7 +20,7 @@ const PermissionRow = ({ permission, disabled }: Props) => {
                 {
                     'cursor-pointer hover:border-gray-600 hover:bg-gray-900': !disabled,
                     'opacity-50': disabled,
-                }
+                },
             )}
         >
             <div className='p-2'>

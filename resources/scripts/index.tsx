@@ -14,7 +14,7 @@ if (import.meta.env.PROD && typeof window !== 'undefined') {
         '%cThis is a browser feature intended for developers.\n' +
             'If someone told you to paste something here, it may be a scam and could put your account at risk.\n\n' +
             'Unless you understand exactly what you are doing, close this window.',
-        'font-size:16px;color:#e5e7eb;'
+        'font-size:16px;color:#e5e7eb;',
     );
 }
 
@@ -29,7 +29,7 @@ if (typeof window !== 'undefined') {
             const normalized = key.replace(/^\.\/reviactyl\//, 'reviactyl/').replace(/\.(ts|tsx)$/, '');
 
             return [normalized, mod];
-        })
+        }),
     );
 
     (window as any).__REVIACTYL_MODULES = moduleRegistry;

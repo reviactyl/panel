@@ -23,7 +23,7 @@ const schema = object().shape({
         .max(48, 'Database name must not exceed 48 characters.')
         .matches(
             /^[\w\-.]{3,48}$/,
-            'Database name should only contain alphanumeric characters, underscores, dashes, and/or periods.'
+            'Database name should only contain alphanumeric characters, underscores, dashes, and/or periods.',
         ),
     connectionsFrom: string().matches(/^[\w\-/.%:]+$/, {
         message: 'A valid host address must be provided.',

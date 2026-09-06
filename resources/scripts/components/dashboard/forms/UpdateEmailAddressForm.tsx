@@ -33,7 +33,7 @@ export default () => {
                     type: 'success',
                     key: 'account:email',
                     message: t('email.updated'),
-                })
+                }),
             )
             .catch((error) =>
                 addFlash({
@@ -41,7 +41,7 @@ export default () => {
                     key: 'account:email',
                     title: t('email.error-title'),
                     message: httpErrorToHuman(error),
-                })
+                }),
             )
             .then(() => {
                 resetForm();

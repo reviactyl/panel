@@ -15,7 +15,7 @@ const Card = forwardRef<HTMLDivElement, CardProps & React.HTMLAttributes<HTMLDiv
         >
             {children}
         </div>
-    )
+    ),
 );
 
 Card.displayName = 'Card';

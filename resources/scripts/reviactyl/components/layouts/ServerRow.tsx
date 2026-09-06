@@ -170,10 +170,10 @@ export default ({
                                     {server.isTransferring
                                         ? t('server.transferring')
                                         : server.status === 'installing'
-                                        ? t('server.installing')
-                                        : server.status === 'restoring_backup'
-                                        ? t('server.restoring-backup')
-                                        : t('server.unavailable')}
+                                          ? t('server.installing')
+                                          : server.status === 'restoring_backup'
+                                            ? t('server.restoring-backup')
+                                            : t('server.unavailable')}
                                 </span>
                             </div>
                         ) : (
@@ -222,8 +222,8 @@ export default ({
                         !stats?.status || stats.status === 'offline'
                             ? 'bg-danger'
                             : stats.status === 'running'
-                            ? 'bg-success'
-                            : 'bg-yellow-500'
+                              ? 'bg-success'
+                              : 'bg-yellow-500'
                     }`}
                 />
             </Link>

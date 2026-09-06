@@ -11,7 +11,7 @@ export default (description: string, allowedIps: string): Promise<ApiKey & { sec
                 resolve({
                     ...rawDataToApiKey(data.attributes),
                     secretToken: data.meta?.secret_token ?? '',
-                })
+                }),
             )
             .catch(reject);
     });

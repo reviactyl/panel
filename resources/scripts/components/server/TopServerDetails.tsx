@@ -52,7 +52,7 @@ const TopServerDetails = () => {
             memory: limits?.memory ? bytesToString(mbToBytes(limits.memory)) : null,
             disk: limits?.disk ? bytesToString(mbToBytes(limits.disk)) : null,
         }),
-        [limits]
+        [limits],
     );
 
     const allocation = ServerContext.useStoreState((state) => {

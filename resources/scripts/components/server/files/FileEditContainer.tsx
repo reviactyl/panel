@@ -84,7 +84,7 @@ export default () => {
         clearFlashes('files:view');
         fetchFileContent()
             .then((content) =>
-                name ? saveFileContents(uuid, name, content) : updateFileContents(uuid, hashToPath(hash), content)
+                name ? saveFileContents(uuid, name, content) : updateFileContents(uuid, hashToPath(hash), content),
             )
             .then(() => {
                 if (name) {

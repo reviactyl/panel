@@ -44,6 +44,7 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
     const doDownload = () => {
         setLoading(true);
         clearFlashes('backups');
+
         getBackupDownloadUrl(uuid, backup.uuid)
             .then((url) => {
                 window.location.href = url;
@@ -52,47 +53,52 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
                 console.error(error);
                 clearAndAddHttpError({ key: 'backups', error });
             })
-            .then(() => setLoading(false));
+            .finally(() => setLoading(false));
     };
 
     const doDeletion = () => {
         setLoading(true);
         clearFlashes('backups');
+
         deleteBackup(uuid, backup.uuid)
             .then(() =>
-                mutate(
-                    (data) => ({
+                mutate((data) => {
+                    if (!data) return data;
+
+                    return {
                         ...data,
                         items: data.items.filter((b) => b.uuid !== backup.uuid),
                         backupCount: backup.isSuccessful ? data.backupCount - 1 : data.backupCount,
-                    }),
-                    false
-                )
+                    };
+                }, false),
             )
             .catch((error) => {
                 console.error(error);
                 clearAndAddHttpError({ key: 'backups', error });
-                setLoading(false);
                 setModal('');
-            });
+            })
+            .finally(() => setLoading(false));
     };
 
     const doRestorationAction = () => {
         setLoading(true);
         clearFlashes('backups');
+
         restoreServerBackup(uuid, backup.uuid, truncate)
             .then(() =>
                 setServerFromState((s) => ({
                     ...s,
                     status: 'restoring_backup',
-                }))
+                })),
             )
             .catch((error) => {
                 console.error(error);
                 clearAndAddHttpError({ key: 'backups', error });
             })
-            .then(() => setLoading(false))
-            .then(() => setModal(''));
+            .finally(() => {
+                setLoading(false);
+                setModal('');
+            });
     };
 
     const onLockToggle = () => {
@@ -102,8 +108,10 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
 
         http.post(`/api/client/servers/${uuid}/backups/${backup.uuid}/lock`)
             .then(() =>
-                mutate(
-                    (data) => ({
+                mutate((data) => {
+                    if (!data) return data;
+
+                    return {
                         ...data,
                         items: data.items.map((b) =>
                             b.uuid !== backup.uuid
@@ -111,11 +119,10 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
                                 : {
                                       ...b,
                                       isLocked: !b.isLocked,
-                                  }
+                                  },
                         ),
-                    }),
-                    false
-                )
+                    };
+                }, false),
             )
             .catch((error) => alert(httpErrorToHuman(error)))
             .then(() => setModal(''));
@@ -131,6 +138,7 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
             >
                 {t('unlock-message')}
             </Dialog.Confirm>
+
             <Dialog.Confirm
                 open={modal === 'restore'}
                 onClose={() => setModal('')}
@@ -153,6 +161,7 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
                     </label>
                 </p>
             </Dialog.Confirm>
+
             <Dialog.Confirm
                 title={t('delete-backup', { name: backup.name })}
                 confirm={'Continue'}
@@ -162,7 +171,9 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
             >
                 {t('delete-message')}
             </Dialog.Confirm>
+
             <SpinnerOverlay visible={loading} fixed />
+
             {backup.isSuccessful ? (
                 <DropdownMenu
                     ref={dropdownRef}
@@ -177,18 +188,21 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
                 >
                     <div className='text-sm'>
                         <ExtensionSlot name={`server:backups:menu:start`} />
+
                         <Can action={'backup.download'}>
                             <DropdownButtonRow onClick={doDownload}>
                                 <FaCloudArrowDown className={'text-xs inline-block w-[1.25em]'} />
                                 <span className='ml-2'>{t('download')}</span>
                             </DropdownButtonRow>
                         </Can>
+
                         <Can action={'backup.restore'}>
                             <DropdownButtonRow onClick={() => setModal('restore')}>
                                 <FaBoxOpen className={'text-xs inline-block w-[1.25em]'} />
                                 <span className='ml-2'>{t('restore')}</span>
                             </DropdownButtonRow>
                         </Can>
+
                         <Can action={'backup.delete'}>
                             <>
                                 <DropdownButtonRow onClick={onLockToggle}>
@@ -199,6 +213,7 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
                                     )}
                                     {backup.isLocked ? t('unlock') : t('lock')}
                                 </DropdownButtonRow>
+
                                 {!backup.isLocked && (
                                     <DropdownButtonRow danger onClick={() => setModal('delete')}>
                                         <FaTrash className={'text-xs inline-block w-[1.25em]'} />
@@ -208,6 +223,7 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
                             </>
                         </Can>
                     </div>
+
                     <ExtensionSlot name={`server:backups:menu:end`} />
                 </DropdownMenu>
             ) : (

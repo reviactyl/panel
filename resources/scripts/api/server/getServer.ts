@@ -95,10 +95,10 @@ export const rawDataToServerObject = ({
     isTransferring: data.is_transferring,
     skipScripts: data.skip_scripts,
     variables: ((data.relationships?.variables as FractalResponseList | undefined)?.data || []).map(
-        rawDataToServerEggVariable
+        rawDataToServerEggVariable,
     ),
     allocations: ((data.relationships?.allocations as FractalResponseList | undefined)?.data || []).map(
-        rawDataToServerAllocation
+        rawDataToServerAllocation,
     ),
     category:
         (data.relationships?.category as FractalResponseData | undefined)?.attributes &&
@@ -126,7 +126,7 @@ export default (uuid: string): Promise<[Server, string[]]> => {
                 resolve([
                     rawDataToServerObject(data),
                     data.meta?.is_server_owner ? ['*'] : data.meta?.user_permissions || [],
-                ])
+                ]),
             )
             .catch(reject);
     });
