@@ -10,7 +10,7 @@ import AuthenticatedRoute from '@/reviactyl/elements/AuthenticatedRoute';
 import { ServerContext } from '@/state/server';
 import '@/assets/tailwind.css';
 import Spinner from '@/reviactyl/elements/Spinner';
-import { Invert } from '@/reviactyl/ui/SmartInvert';
+import { Theme } from '@/reviactyl/ui/Theme';
 import { LocaleLoader } from '@/reviactyl/ui/LanguageSwitcher';
 import { SubuserPreviewProvider } from '@/context/SubuserPreviewContext';
 import { SubuserPreviewFrame } from '@/components/subuser-preview/SubuserPreviewFrame';
@@ -75,7 +75,7 @@ function App() {
     }
 
     return (
-        <Invert>
+        <Theme>
             <StoreProvider store={store}>
                 <LocaleLoader />
                 <ProgressBar />
@@ -134,7 +134,7 @@ function App() {
                     </BrowserRouter>
                 </div>
             </StoreProvider>
-        </Invert>
+        </Theme>
     );
 }
 

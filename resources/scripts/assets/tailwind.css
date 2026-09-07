@@ -4,6 +4,8 @@
     strategy: "class";
 }
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme inline {
     --font-header: "IBM Plex Sans", "Roboto", system-ui, sans-serif;
     --font-sans: var(--font-family);

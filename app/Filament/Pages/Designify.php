@@ -66,6 +66,17 @@ class Designify extends Page implements HasSchemas
         'designify:color800',
         'designify:color900',
         'designify:color950',
+        'designify:color50L',
+        'designify:color100L',
+        'designify:color200L',
+        'designify:color300L',
+        'designify:color400L',
+        'designify:color500L',
+        'designify:color600L',
+        'designify:color700L',
+        'designify:color800L',
+        'designify:color900L',
+        'designify:color950L',
         'designify:sidebarLogout',
         'designify:sidebarButtons',
         'designify:background',
@@ -318,7 +329,7 @@ class Designify extends Page implements HasSchemas
                     ColorPicker::make('designify:colorSecondary')->label(trans('admin/settings.designify.secondary')),
                 ]),
 
-            Section::make(trans('admin/settings.designify.system-colors'))
+            Section::make(trans('admin/settings.designify.dark-colors'))
                 ->columns(5)
                 ->icon('tabler-color-swatch')
                 ->schema([
@@ -333,6 +344,23 @@ class Designify extends Page implements HasSchemas
                     ColorPicker::make('designify:color800')->label('800'),
                     ColorPicker::make('designify:color900')->label('900'),
                     ColorPicker::make('designify:color950')->label('950'),
+                ]),
+
+            Section::make(trans('admin/settings.designify.light-colors'))
+                ->columns(5)
+                ->icon('tabler-color-swatch')
+                ->schema([
+                    ColorPicker::make('designify:color50L')->label('50'),
+                    ColorPicker::make('designify:color100L')->label('100'),
+                    ColorPicker::make('designify:color200L')->label('200'),
+                    ColorPicker::make('designify:color300L')->label('300'),
+                    ColorPicker::make('designify:color400L')->label('400'),
+                    ColorPicker::make('designify:color500L')->label('500'),
+                    ColorPicker::make('designify:color600L')->label('600'),
+                    ColorPicker::make('designify:color700L')->label('700'),
+                    ColorPicker::make('designify:color800L')->label('800'),
+                    ColorPicker::make('designify:color900L')->label('900'),
+                    ColorPicker::make('designify:color950L')->label('950'),
                 ]),
         ];
     }

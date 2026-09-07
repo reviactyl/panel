@@ -17,7 +17,7 @@ import logout from '@/api/auth/logout';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '@/reviactyl/ui/LanguageSwitcher';
-import { InvertToggle } from '@/reviactyl/ui/SmartInvert';
+import { ThemeToggle } from '@/reviactyl/ui/Theme';
 import useFlash from '@/plugins/useFlash';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import FileEditorSwitcher from '@/reviactyl/ui/FileEditorSwitcher';
@@ -119,7 +119,7 @@ export default () => {
                     </TitledGreyBox>
                     <TitledGreyBox title={t('overview.customization')}>
                         <LanguageSwitcher />
-                        <InvertToggle />
+                        <ThemeToggle />
                         <FileEditorSwitcher />
                     </TitledGreyBox>
                     <ExtensionSlot name='account:overview:column1:end' />

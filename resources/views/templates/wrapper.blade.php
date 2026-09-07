@@ -81,21 +81,20 @@ SOFTWARE.
         </script>
     @show
     @php
-    use Illuminate\Support\Str;
-        function reviactyl($hex)
-        {
-            $hex = Str::replace('#', '', $hex);
+        $toHex = function ($hex) {
+            $hex = str_replace('#', '', $hex);
+
             if (strlen($hex) === 3) {
-                $r = hexdec(Str::repeat($hex[0], 2));
-                $g = hexdec(Str::repeat($hex[1], 2));
-                $b = hexdec(Str::repeat($hex[2], 2));
+                $r = hexdec(str_repeat($hex[0], 2));
+                $g = hexdec(str_repeat($hex[1], 2));
+                $b = hexdec(str_repeat($hex[2], 2));
             } else {
                 $r = hexdec(substr($hex, 0, 2));
                 $g = hexdec(substr($hex, 2, 2));
                 $b = hexdec(substr($hex, 4, 2));
             }
             return "$r $g $b";
-        }
+        };
     @endphp
     <style>
         @import url('//fonts.googleapis.com/css?family=Rubik:300,400,500&display=swap');
@@ -106,23 +105,37 @@ SOFTWARE.
             --background: url({{ $panelConfiguration['background'] }});
             --radius: {{ $panelConfiguration['radius'] }};
             --font-family: "{{ $panelConfiguration['fontFamily'] }}", sans-serif;
-            --color-primary: {{ reviactyl($panelConfiguration['colorPrimary']) }};
-            --color-success: {{ reviactyl($panelConfiguration['colorSuccess']) }};
-            --color-danger: {{ reviactyl($panelConfiguration['colorDanger']) }};
-            --color-secondary: {{ reviactyl($panelConfiguration['colorSecondary']) }};
-            --color-discord: {{ reviactyl($panelConfiguration['colorDiscord']) }};
-            --color-50: {{ reviactyl($panelConfiguration['color50']) }};
-            --color-100: {{ reviactyl($panelConfiguration['color100']) }};
-            --color-200: {{ reviactyl($panelConfiguration['color200']) }};
-            --color-300: {{ reviactyl($panelConfiguration['color300']) }};
-            --color-400: {{ reviactyl($panelConfiguration['color400']) }};
-            --color-500: {{ reviactyl($panelConfiguration['color500']) }};
-            --color-600: {{ reviactyl($panelConfiguration['color600']) }};
-            --color-700: {{ reviactyl($panelConfiguration['color700']) }};
-            --color-800: {{ reviactyl($panelConfiguration['color800']) }};
-            --color-900: {{ reviactyl($panelConfiguration['color900']) }};
-            --color-950: {{ reviactyl($panelConfiguration['color950']) }};
-            --color-muted-text: {{ reviactyl($panelConfiguration['colorMutedText']) }};
+            --color-primary: {{ $toHex($panelConfiguration['colorPrimary']) }};
+            --color-success: {{ $toHex($panelConfiguration['colorSuccess']) }};
+            --color-danger: {{ $toHex($panelConfiguration['colorDanger']) }};
+            --color-secondary: {{ $toHex($panelConfiguration['colorSecondary']) }};
+            --color-discord: {{ $toHex($panelConfiguration['colorDiscord']) }};
+            --color-50: {{ $toHex($panelConfiguration['color50L']) }};
+            --color-100: {{ $toHex($panelConfiguration['color100L']) }};
+            --color-200: {{ $toHex($panelConfiguration['color200L']) }};
+            --color-300: {{ $toHex($panelConfiguration['color300L']) }};
+            --color-400: {{ $toHex($panelConfiguration['color400L']) }};
+            --color-500: {{ $toHex($panelConfiguration['color500L']) }};
+            --color-600: {{ $toHex($panelConfiguration['color600L']) }};
+            --color-700: {{ $toHex($panelConfiguration['color700L']) }};
+            --color-800: {{ $toHex($panelConfiguration['color800L']) }};
+            --color-900: {{ $toHex($panelConfiguration['color900L']) }};
+            --color-950: {{ $toHex($panelConfiguration['color950L']) }};
+            --color-muted-text: {{ $toHex($panelConfiguration['colorMutedText']) }};
+        }
+
+        .dark {
+            --color-50: {{ $toHex($panelConfiguration['color50']) }};
+            --color-100: {{ $toHex($panelConfiguration['color100']) }};
+            --color-200: {{ $toHex($panelConfiguration['color200']) }};
+            --color-300: {{ $toHex($panelConfiguration['color300']) }};
+            --color-400: {{ $toHex($panelConfiguration['color400']) }};
+            --color-500: {{ $toHex($panelConfiguration['color500']) }};
+            --color-600: {{ $toHex($panelConfiguration['color600']) }};
+            --color-700: {{ $toHex($panelConfiguration['color700']) }};
+            --color-800: {{ $toHex($panelConfiguration['color800']) }};
+            --color-900: {{ $toHex($panelConfiguration['color900']) }};
+            --color-950: {{ $toHex($panelConfiguration['color950']) }};
         }
     </style>
 
@@ -134,7 +147,7 @@ SOFTWARE.
     @vite('resources/scripts/index.tsx')
 </head>
 
-<body class="{{ $css['body'] ?? 'bg-gray-950' }}" style="{{ $css['style'] ?? '' }}">
+<body class="bg-gray-950 text-gray-100">
     @section('content')
         @yield('above-container')
         @yield('container')

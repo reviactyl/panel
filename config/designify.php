@@ -24,6 +24,18 @@ return [
     'color900' => '#18181b',
     'color950' => '#09090b',
 
+    'color50L' => '#09090b',
+    'color100L' => '#18181b',
+    'color200L' => '#27272a',
+    'color300L' => '#3f3f46',
+    'color400L' => '#52525c',
+    'color500L' => '#71717b',
+    'color600L' => '#9f9fa9',
+    'color700L' => '#d4d4d8',
+    'color800L' => '#e4e4e7',
+    'color900L' => '#f4f4f5',
+    'color950L' => '#fafafa',
+
     'sidebarLogout' => false,
     'sidebarButtons' => '[]',
     'background' => 'none',
