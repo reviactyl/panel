@@ -62,7 +62,7 @@ export const Theme = ({ children }: ThemeProps) => {
         return () => mediaQuery.removeEventListener('change', handleChange);
     }, [theme]);
 
-    return <div>{children}</div>;
+    return <>{children}</>;
 };
 
 export const ThemeToggle = () => {
