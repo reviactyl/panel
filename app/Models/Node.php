@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Contracts\Models\Identifiable;
 use App\Exceptions\DisplayException;
 use App\Models\Traits\HasRealtimeIdentifier;
+use App\Rules\NodeFqdn;
 use Carbon\Carbon;
 use Database\Factories\NodeFactory;
 use Illuminate\Container\Container;
@@ -135,6 +136,14 @@ class Node extends Model implements Identifiable
         'daemonListen' => 8080,
         'maintenance_mode' => false,
     ];
+
+    public static function getRules(): array
+    {
+        $rules = parent::getRules();
+        $rules['fqdn'][] = new NodeFqdn();
+
+        return $rules;
+    }
 
     /**
      * Get the connection address to use when making calls to this node.
