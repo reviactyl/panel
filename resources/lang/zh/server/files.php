@@ -22,7 +22,7 @@ return [
     'file-mode-label' => '文件模式',
     'new-location' => '新地点：',
     'cancel-uploads' => '取消上传',
-    'close' => 'Close',
+    'close' => '关闭',
     'upload' => '上传',
     'upload-files' => '上传文件',
     'upload-folder' => '上传文件夹',

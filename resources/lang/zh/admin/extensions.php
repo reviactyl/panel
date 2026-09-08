@@ -14,7 +14,7 @@ return [
         'author' => '作者',
         'enabled' => '启用',
         'updated' => '已更新',
-        'last_updated' => 'Last Updated',
+        'last_updated' => '最后更新时间',
         'downloads' => '下载',
         'manifest_json' => '清单 JSON',
         'file' => '选择一个 .rext 文件进行上传',
