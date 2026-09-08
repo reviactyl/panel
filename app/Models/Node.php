@@ -150,7 +150,12 @@ class Node extends Model implements Identifiable
      */
     public function getConnectionAddress(): string
     {
-        return sprintf('%s://%s:%s', $this->scheme, $this->fqdn, $this->daemonListen);
+        $host = $this->fqdn;
+        if (filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+            $host = '['.$host.']';
+        }
+
+        return sprintf('%s://%s:%s', $this->scheme, $host, $this->daemonListen);
     }
 
     /**

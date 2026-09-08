@@ -2,11 +2,19 @@
 
 namespace App\Rules;
 
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class NodeFqdn implements Rule
+class NodeFqdn implements ValidationRule
 {
-    public function passes($attribute, $value): bool
+    public function validate(string $attribute, mixed $value, Closure $fail): void
+    {
+        if (! $this->isValidHost($value)) {
+            $fail('The :attribute must be a hostname or IP address without a scheme, port, or path.');
+        }
+    }
+
+    private function isValidHost(mixed $value): bool
     {
         if (! is_string($value) || $value === '') {
             return false;
@@ -22,10 +30,5 @@ class NodeFqdn implements Rule
         }
 
         return (bool) filter_var($value, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME);
-    }
-
-    public function message(): string
-    {
-        return 'The :attribute must be a hostname or IP address without a scheme, port, or path.';
     }
 }
