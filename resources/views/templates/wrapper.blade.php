@@ -139,6 +139,14 @@ SOFTWARE.
         }
     </style>
 
+    <script>
+        (function () {
+            var t = localStorage.getItem('theme') || 'system';
+            var dark = t === 'dark' || (t === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.classList.toggle('dark', dark);
+        })();
+    </script>
+
     @yield('assets')
 
     @include('layouts.scripts')
