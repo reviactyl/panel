@@ -29,6 +29,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->homeUrl('/admin')
             ->brandLogo(config('app.logo', '/reviactyl/logo.png'))
             ->brandLogoHeight('3rem')

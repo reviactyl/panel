@@ -13,7 +13,10 @@ const plugins = [
 if (process.env.VITEST === undefined) {
     plugins.push(
         laravel({
-            input: 'resources/scripts/index.tsx',
+            input: [
+                'resources/scripts/index.tsx',
+                'resources/css/filament/admin/theme.css',
+            ],
         }),
     );
 }
@@ -34,7 +37,7 @@ export default defineConfig({
 
     server: {
         watch: {
-            ignored: ['**/vendor/**', '**/storage/**', '**/bootstrap/**', '**/resources/views/**', '**/database/**'],
+            ignored: ['**/vendor/**', '**/storage/**', '**/bootstrap/**', '**/resources/lang/**', '**/database/**'],
         },
     },
 
