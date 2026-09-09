@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Nodes\Schemas;
 
+use App\Rules\NodeFqdn;
 use App\Services\Helpers\RandomWordService;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
@@ -163,6 +164,7 @@ class CreateNodeForm
                             Grid::make()
                                 ->schema([
                                     TextInput::make('fqdn')
+                                        ->rules([new NodeFqdn()])
                                         ->label(trans('admin/node.fields.fqdn.label'))
                                         ->required()
                                         ->maxLength(255)
