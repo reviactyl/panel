@@ -41,9 +41,9 @@ export const SidebarCompact = React.forwardRef<HTMLDivElement, SidebarProps>(({ 
     return (
         <div
             ref={ref}
-            className={`w-[225px] self-start flex-col border border-gray-800 bg-gray-900 text-white 2xl:w-64 lg:fixed lg:top-[var(--subuser-preview-offset,0px)] lg:left-0 lg:z-40 lg:flex lg:h-[calc(100dvh-var(--subuser-preview-offset,0px))] lg:overflow-y-auto ${
+            className={`w-[225px] self-start flex-col border border-gray-800 bg-gray-900 text-white 2xl:w-64 lg:fixed lg:top-[calc(4rem+var(--subuser-preview-offset,0px))] lg:left-0 lg:z-40 lg:flex lg:h-[calc(100dvh-4rem-var(--subuser-preview-offset,0px))] lg:overflow-y-auto ${
                 isOpen
-                    ? 'fixed top-[calc(4rem+var(--subuser-preview-offset,0px))] left-0 z-40 flex h-[calc(100dvh-var(--subuser-preview-offset,0px))] overflow-y-auto'
+                    ? 'fixed top-[calc(4rem+var(--subuser-preview-offset,0px))] left-0 z-40 flex h-[calc(100dvh-4rem-var(--subuser-preview-offset,0px))] overflow-y-auto'
                     : 'hidden'
             }`}
         >
