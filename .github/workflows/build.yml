@@ -19,6 +19,17 @@ jobs:
       - name: Code Checkout
         uses: actions/checkout@v4
 
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: intl, mbstring, pdo, zip
+          tools: composer:v2
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist --no-scripts
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:

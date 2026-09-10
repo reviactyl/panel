@@ -26,6 +26,8 @@ abstract class IntegrationTestCase extends TestCase
     {
         parent::setUp();
 
+        $this->withoutVite();
+
         Event::fake(ActivityLogged::class);
     }
 
