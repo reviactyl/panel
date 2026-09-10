@@ -6,9 +6,9 @@
 FROM --platform=$BUILDPLATFORM node:22-alpine
 WORKDIR /app
 COPY . ./
+COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 
-RUN apk add --no-cache php php-phar php-json php-mbstring php-openssl php-tokenizer php-xml php-fileinfo php-curl php-dom php-ctype curl \
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+RUN apk add --no-cache php php-phar php-json php-mbstring php-openssl php-tokenizer php-xml php-fileinfo php-curl php-dom php-ctype \
     && composer install --no-dev --optimize-autoloader --no-scripts --ignore-platform-reqs
 
 RUN npm install -g pnpm \
@@ -21,11 +21,11 @@ FROM --platform=$TARGETOS/$TARGETARCH php:8.3-fpm-alpine
 WORKDIR /app
 COPY . ./
 COPY --from=0 /app/public/assets ./public/assets
+COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 RUN apk add --no-cache --update ca-certificates dcron curl git supervisor tar unzip nginx libpng-dev libxml2-dev libzip-dev certbot certbot-nginx freetype-dev libjpeg-turbo-dev icu-dev mysql-client \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-configure zip \
     && docker-php-ext-install bcmath gd intl pdo_mysql zip \
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && cp .env.example .env \
     && mkdir -p bootstrap/cache/ storage/logs storage/framework/sessions storage/framework/views storage/framework/cache \
     && chmod 777 -R bootstrap storage \
