@@ -6,6 +6,11 @@
 FROM --platform=$BUILDPLATFORM node:22-alpine
 WORKDIR /app
 COPY . ./
+
+RUN apk add --no-cache php php-phar php-json php-mbstring php-openssl php-tokenizer php-xml php-fileinfo php-curl php-dom php-ctype curl \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    && composer install --no-dev --optimize-autoloader --no-scripts --ignore-platform-reqs
+
 RUN npm install -g pnpm \
     && pnpm install --frozen-lockfile \
     && pnpm run build
