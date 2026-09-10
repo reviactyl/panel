@@ -6,7 +6,7 @@
 FROM --platform=$BUILDPLATFORM node:22-alpine
 WORKDIR /app
 COPY . ./
-COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
+COPY --from=composer@sha256:d8f6343d3fae98107426bc49163ccad46ef85aabd4a27d80a74401fab4aba332 /usr/bin/composer /usr/local/bin/composer
 
 RUN apk add --no-cache php php-phar php-json php-mbstring php-openssl php-tokenizer php-xml php-fileinfo php-curl php-dom php-ctype \
     && composer install --no-dev --optimize-autoloader --no-scripts --ignore-platform-reqs
@@ -21,7 +21,7 @@ FROM --platform=$TARGETOS/$TARGETARCH php:8.3-fpm-alpine
 WORKDIR /app
 COPY . ./
 COPY --from=0 /app/public/assets ./public/assets
-COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
+COPY --from=composer@sha256:d8f6343d3fae98107426bc49163ccad46ef85aabd4a27d80a74401fab4aba332 /usr/bin/composer /usr/local/bin/composer
 RUN apk add --no-cache --update ca-certificates dcron curl git supervisor tar unzip nginx libpng-dev libxml2-dev libzip-dev certbot certbot-nginx freetype-dev libjpeg-turbo-dev icu-dev mysql-client \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-configure zip \
