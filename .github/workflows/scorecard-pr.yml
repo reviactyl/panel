@@ -1,0 +1,64 @@
+name: OpenSSF Scorecard PR report
+
+on:
+  pull_request:
+    branches:
+      - develop
+
+permissions:
+  contents: read
+
+jobs:
+  analysis:
+    name: PR file checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout PR head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+
+      - name: Install Scorecard CLI
+        working-directory: ${{ runner.temp }}
+        run: |
+          curl --fail --silent --show-error --location --retry 3 \
+            https://github.com/ossf/scorecard/releases/download/v5.5.0/scorecard_5.5.0_linux_amd64.tar.gz \
+            --output scorecard.tar.gz
+          echo '83b90a05c1540ef1390db1cd5711e5fd04be9c1d8537fb84d39d02092d6a8dff  scorecard.tar.gz' | sha256sum --check
+          mkdir -p scorecard-bin
+          tar -xzf scorecard.tar.gz -C scorecard-bin scorecard
+
+      - name: Analyze PR files
+        env:
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/scorecard-report"
+          # Local file checks only; do not execute PR code or publish to the public badge.
+          "$RUNNER_TEMP/scorecard-bin/scorecard" \
+            --local="$GITHUB_WORKSPACE" \
+            --checks=Binary-Artifacts,Dangerous-Workflow,License,Pinned-Dependencies,Security-Policy,Token-Permissions \
+            --format=json --show-details \
+            --output="$RUNNER_TEMP/scorecard-report/results.json"
+          {
+            echo '## OpenSSF Scorecard PR file checks'
+            echo
+            printf 'Analyzed PR head commit: `%s`\n\n' "$PR_HEAD_SHA"
+            echo 'These six file-based checks are advisory. They do not include repository settings or history.
+            echo
+            echo '| Check | Score (out of 10) |'
+            echo '| --- | --- |'
+            jq -r '.checks[] | "| \(.name) | \(if .score == -1 then "Unavailable" else (.score | tostring) end) |"' "$RUNNER_TEMP/scorecard-report/results.json"
+            echo
+            echo 'Download the workflow artifact for detailed findings.'
+          } > "$RUNNER_TEMP/scorecard-report/summary.md"
+          cat "$RUNNER_TEMP/scorecard-report/summary.md" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload PR report
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: scorecard-pr-${{ github.event.pull_request.number }}-${{ github.event.pull_request.head.sha }}
+          path: ${{ runner.temp }}/scorecard-report/
+          retention-days: 5
+          if-no-files-found: error

@@ -7,6 +7,7 @@
   <a href="https://github.com/reviactyl/panel"><img alt="badge" src="https://shieldcn.dev/github/reviactyl/panel/stars.svg?variant=secondary&amp;theme=orange" /></a>
   <a href="https://github.com/reviactyl/panel/releases"><img alt="release" src="https://shieldcn.dev/github/reviactyl/panel/release.svg" /></a>
   <a href="https://github.com/reviactyl/panel/releases"><img alt="downloads" src="https://shieldcn.dev/github/reviactyl/panel/downloads.svg" /></a>
+  <a href="https://scorecard.dev/viewer/?uri=github.com/reviactyl/panel"><img alt="OpenSSF Scorecard" src="https://api.scorecard.dev/projects/github.com/reviactyl/panel/badge" /></a>
 </p>
 
 <p align="center">
