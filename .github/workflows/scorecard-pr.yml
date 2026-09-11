@@ -45,7 +45,7 @@ jobs:
             echo '## OpenSSF Scorecard PR file checks'
             echo
             printf 'Analyzed PR head commit: `%s`\n\n' "$PR_HEAD_SHA"
-            echo 'These six file-based checks are advisory. They do not include repository settings or history.
+            echo 'These six file-based checks are advisory. They do not include repository settings or history.'
             echo
             echo '| Check | Score (out of 10) |'
             echo '| --- | --- |'
