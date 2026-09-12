@@ -8,6 +8,8 @@ on:
     branches:
       - "develop"
 
+permissions: {}
+
 env:
   APP_ENV: testing
   APP_DEBUG: "false"

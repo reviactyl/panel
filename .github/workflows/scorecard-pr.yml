@@ -5,14 +5,15 @@ on:
     branches:
       - develop
 
-permissions:
-  contents: read
+permissions: {}
 
 jobs:
   analysis:
     name: PR file checks
     runs-on: ubuntu-24.04
     timeout-minutes: 10
+    permissions:
+      contents: read
     steps:
       - name: Checkout PR head
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

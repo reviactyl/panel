@@ -3,6 +3,9 @@ on:
   push:
     tags:
       - "v26.*"
+
+permissions: {}
+
 jobs:
   release:
     name: Release
