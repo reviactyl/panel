@@ -82,18 +82,18 @@ export const SidebarClassic = React.forwardRef<HTMLDivElement, SidebarProps>(({ 
                         </Link>
                         <div className='flex flex-col'>
                             <div className='flex items-center gap-x-1'>
-                                <span className='text-xs tracking-widest uppercase text-white/50'>
+                                <span className='text-xs tracking-widest uppercase text-gray-500'>
                                     {rootAdmin ? t('overview.administrator') : `${name} ${t('overview.user')}`}
                                 </span>
                                 {rootAdmin && (
                                     // eslint-disable-next-line react/jsx-no-target-blank
-                                    <a href={`/admin`} target={'_blank'} className='h-5 w-5 text-white/70'>
+                                    <a href={`/admin`} target={'_blank'} className='h-5 w-5 text-gray-400'>
                                         <ExternalLinkIcon />
                                     </a>
                                 )}
                             </div>
                             <Link to='/account'>
-                                <span className='text-sm font-semibold'>
+                                <span className='text-sm font-semibold text-gray-400'>
                                     {nameFirst} {nameLast}
                                 </span>
                             </Link>

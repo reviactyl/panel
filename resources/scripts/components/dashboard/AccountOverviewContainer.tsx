@@ -14,11 +14,10 @@ import Title from '@/reviactyl/ui/Title';
 import { ExternalLinkIcon } from '@heroicons/react/solid';
 import { LogoutIcon } from '@heroicons/react/outline';
 import logout from '@/api/auth/logout';
-import ThemeSelector from '@/reviactyl/ui/ThemeEngine';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '@/reviactyl/ui/LanguageSwitcher';
-import { InvertToggle } from '@/reviactyl/ui/SmartInvert';
+import { ThemeToggle } from '@/reviactyl/ui/Theme';
 import useFlash from '@/plugins/useFlash';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import FileEditorSwitcher from '@/reviactyl/ui/FileEditorSwitcher';
@@ -35,7 +34,6 @@ export default () => {
     const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
     const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
-    const themeSelector = useStoreState((state) => state.designify.data!.themeSelector);
     const { addFlash, clearFlashes } = useFlash();
 
     useEffect(() => {
@@ -81,7 +79,7 @@ export default () => {
             <div className='mb-4 grid grid-cols-1 gap-4 lg:grid-cols-2'>
                 <div className={'flex flex-col gap-4'}>
                     <ExtensionSlot name='account:overview:column1:start' />
-                    <Card className='overflow-hidden !p-0'>
+                    <Card className='overflow-hidden p-0!'>
                         <SpinnerOverlay visible={isLoggingOut} />
                         <div className='flex flex-col items-center px-5 py-8'>
                             <Gravatar className='w-24 h-24 mb-3 shadow-lg' />
@@ -119,16 +117,9 @@ export default () => {
                     <TitledGreyBox title={t('overview.update-email')} showFlashes={'account:email'}>
                         <UpdateEmailAddressForm />
                     </TitledGreyBox>
-                    {themeSelector ? (
-                        <TitledGreyBox title={t('overview.theme-selector')}>
-                            <ThemeSelector />
-                        </TitledGreyBox>
-                    ) : (
-                        ''
-                    )}
                     <TitledGreyBox title={t('overview.customization')}>
                         <LanguageSwitcher />
-                        <InvertToggle />
+                        <ThemeToggle />
                         <FileEditorSwitcher />
                     </TitledGreyBox>
                     <ExtensionSlot name='account:overview:column1:end' />

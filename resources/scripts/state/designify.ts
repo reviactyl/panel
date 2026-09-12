@@ -16,7 +16,6 @@ export interface DesignifySettings {
     copyright: string;
     isUnderMaintenance: boolean;
     maintenance: string;
-    themeSelector: boolean;
     sidebarLogout: boolean;
     allocationBlur: boolean;
     alertType: string;
