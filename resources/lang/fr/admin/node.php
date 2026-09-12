@@ -126,6 +126,7 @@ return [
     'table' => [
         'health' => 'Santé',
         'health_http_status' => 'HTTP :status',
+        'health_agent_outdated' => 'Agent outdated. v:version is available. Click here to update Agent.',
         'health_check_console' => 'vérifier la console du navigateur',
         'id' => 'ID',
         'uuid' => 'UUID',

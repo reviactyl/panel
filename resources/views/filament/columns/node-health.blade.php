@@ -9,7 +9,7 @@
 @endphp
 
 <div
-    x-data="{ status: 'loading', tooltip: '', hovered: false, tipX: 0, tipY: 0 }"
+    x-data="{ status: 'loading', tooltip: '', updateUrl: '', updateInPanel: false, hovered: false, tipX: 0, tipY: 0 }"
     x-init="
         $watch('tooltip', function() {
             if (!hovered) return;
@@ -69,7 +69,12 @@
                         latestAgent !== 'error' &&
                         compareVersions(version, latestAgent) < 0
                     ) {
-                        tooltip = 'Agent outdated. v' + latestAgent + ' is available. Click here to update Agent.';
+                        tooltip = ($el.dataset.agentOutdatedTemplate ?? 'Agent outdated. v__VERSION__ is available. Click here to update Agent.')
+                            .replace('__VERSION__', latestAgent);
+                        updateInPanel = j.installation_type === 'native' && $el.dataset.panelUpdates === 'true';
+                        updateUrl = updateInPanel
+                            ? $el.dataset.updatesUrl
+                            : 'https://reviactyl.app/docs/agent/updating-agent';
                         status = 'outdated';
                     } else {
                         tooltip = 'v' + rawVersion;
@@ -92,6 +97,9 @@
     data-url="{{ $url }}"
     data-token="{{ $token }}"
     data-latest-agent="{{ $latestAgentVersion }}"
+    data-updates-url="{{ \App\Filament\Pages\SoftwareUpdates::getUrl() }}"
+    data-panel-updates="{{ app(\App\Services\Updates\InstallationTypeService::class)->panelSupportsSoftwareUpdatesPage() ? 'true' : 'false' }}"
+    data-agent-outdated-template="{{ trans('admin/node.table.health_agent_outdated', ['version' => '__VERSION__']) }}"
     data-http-template="{{ trans('admin/node.table.health_http_status', ['status' => '__STATUS__']) }}"
     data-error-template="__ERROR__"
     data-check-console="{{ trans('admin/node.table.health_check_console') }}"
@@ -127,7 +135,7 @@
         <x-tabler-alert-triangle style="color:orange;" />
     </span>
 
-    <span onclick="window.open('https://reviactyl.app/docs/agent/updating-agent', '_blank')" x-show="status === 'outdated'" x-cloak>
+    <span @click="updateInPanel ? window.location.href = updateUrl : window.open(updateUrl, '_blank')" x-show="status === 'outdated'" x-cloak>
         <x-tabler-heart-exclamation style="color:orange;" />
     </span>
 

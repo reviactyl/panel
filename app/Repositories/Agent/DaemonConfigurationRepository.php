@@ -30,6 +30,25 @@ class DaemonConfigurationRepository extends DaemonRepository
     }
 
     /**
+     * Downloads and installs a specific official Agent release.
+     *
+     * @throws DaemonConnectionException
+     */
+    public function updateSystem(string $version): array
+    {
+        try {
+            $response = $this->getHttpClient()->post('/api/system/update', [
+                'json' => ['version' => $version],
+                'timeout' => 150,
+            ]);
+        } catch (TransferException $exception) {
+            throw new DaemonConnectionException($exception);
+        }
+
+        return json_decode($response->getBody()->__toString(), true);
+    }
+
+    /**
      * Updates the configuration information for a daemon. Updates the information for
      * this instance using a passed-in model. This allows us to change plenty of information
      * in the model, and still use the old, pre-update model to actually make the HTTP request.
