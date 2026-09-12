@@ -7,6 +7,9 @@
   <a href="https://github.com/reviactyl/panel"><img alt="badge" src="https://shieldcn.dev/github/reviactyl/panel/stars.svg?variant=secondary&amp;theme=orange" /></a>
   <a href="https://github.com/reviactyl/panel/releases"><img alt="release" src="https://shieldcn.dev/github/reviactyl/panel/release.svg" /></a>
   <a href="https://github.com/reviactyl/panel/releases"><img alt="downloads" src="https://shieldcn.dev/github/reviactyl/panel/downloads.svg" /></a>
+</p>
+
+<p align="center">
   <a href="https://scorecard.dev/viewer/?uri=github.com/reviactyl/panel"><img alt="OpenSSF Scorecard" src="https://api.scorecard.dev/projects/github.com/reviactyl/panel/badge" /></a>
 </p>
 
@@ -18,23 +21,9 @@
 </p>
 
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://shieldcn.dev/badge/php-8.5.svg?variant=ghost&amp;theme=purple&amp;logo=php&amp;label=PHP&amp;mode=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://shieldcn.dev/badge/php-8.5.svg?variant=ghost&amp;theme=purple&amp;logo=php&amp;label=PHP&amp;mode=light" />
-    <img alt="PHP 8.5" src="https://shieldcn.dev/badge/php-8.5.svg?variant=ghost&amp;theme=purple&amp;logo=php&amp;label=PHP&amp;mode=light" />
-  </picture>
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://shieldcn.dev/npm/typescript.svg?variant=ghost&amp;theme=blue&amp;logo=typescript&amp;label=TypeScript&amp;mode=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://shieldcn.dev/npm/typescript.svg?variant=ghost&amp;theme=blue&amp;logo=typescript&amp;label=TypeScript&amp;mode=light" />
-    <img alt="TypeScript version" src="https://shieldcn.dev/npm/typescript.svg?variant=ghost&amp;theme=blue&amp;logo=typescript&amp;label=TypeScript&amp;mode=light" />
-  </picture>
-  <a href="https://github.com/reviactyl/panel">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://shieldcn.dev/github/reviactyl/panel/license.svg?variant=ghost&amp;theme=rose&amp;mode=dark" />
-      <source media="(prefers-color-scheme: light)" srcset="https://shieldcn.dev/github/reviactyl/panel/license.svg?variant=ghost&amp;theme=rose&amp;mode=light" />
-      <img alt="license" src="https://shieldcn.dev/github/reviactyl/panel/license.svg?variant=ghost&amp;theme=rose&amp;mode=light" />
-    </picture>
-  </a>
+  <picture><source media="(prefers-color-scheme: dark)" srcset="https://shieldcn.dev/badge/php-8.5.svg?variant=ghost&amp;theme=purple&amp;logo=php&amp;label=PHP" /><img alt="PHP 8.5" src="https://shieldcn.dev/badge/php-8.5.svg?variant=ghost&amp;theme=purple&amp;mode=light&amp;logo=php&amp;label=PHP" /></picture>
+  <picture><source media="(prefers-color-scheme: dark)" srcset="https://shieldcn.dev/npm/typescript.svg?variant=ghost&amp;theme=blue&amp;logo=typescript&amp;label=TypeScript" /><img alt="TypeScript version" src="https://shieldcn.dev/npm/typescript.svg?variant=ghost&amp;theme=blue&amp;mode=light&amp;logo=typescript&amp;label=TypeScript" /></picture>
+  <a href="https://github.com/reviactyl/panel"><picture><source media="(prefers-color-scheme: dark)" srcset="https://shieldcn.dev/github/reviactyl/panel/license.svg?variant=ghost&amp;theme=rose" /><img alt="license" src="https://shieldcn.dev/github/reviactyl/panel/license.svg?variant=ghost&amp;theme=rose&amp;mode=light" /></picture></a>
 </p>
 
 <div align="center">
@@ -90,10 +79,10 @@ I would like to extend my sincere thanks to the following sponsors for helping f
 
 Alternatively, [sponsor us on ko-fi](https://ko-fi.com/reviactyl)
 
-|                      **Company**                      |                                                                          **About**                                                                         |
-|:-----------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------------------------------------:|
-|       [**Tietokettu**](https://tietokettu.net/)       | Tietokettu is a company that provides network and server services founded in 2019. Our goal is to create affordable and functional solutions for old ones. |
-| [**CloudExa-Hosting**](https://cloudexa-hosting.com/) |   CloudExa Provides fast, reliable cloud hosting built for gaming, delivering smooth performance and scalable solutions for game servers and enterprises.  |
+| **Company** | **About** |
+| :---: | :---: |
+| [**Tietokettu**](https://tietokettu.net/) | Tietokettu is a company that provides network and server services founded in 2019. Our goal is to create affordable and functional solutions for old ones. |
+| [**CloudExa-Hosting**](https://cloudexa-hosting.com/) | CloudExa Provides fast, reliable cloud hosting built for gaming, delivering smooth performance and scalable solutions for game servers and enterprises. |
 
 <p align="center">
   <a href="https://github.com/reviactyl/panel/graphs/contributors"><img alt="contributors" src="https://shieldcn.dev/contributors/reviactyl/panel.svg?preset=gradient&amp;titleAlign=center&amp;limit=30&amp;mode=dark" /></a>
