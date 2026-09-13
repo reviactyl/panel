@@ -26,9 +26,19 @@ class SoftwareUpdates extends Page
 
     protected string $view = 'filament.pages.software-updates';
 
+    public string $channel = 'stable';
+
+    public function updatedChannel(): void
+    {
+        $this->validate(['channel' => ['required', 'in:stable,beta']]);
+        $this->refreshUpdates();
+    }
+
     public array $panel = [];
 
     public array $agents = [];
+
+    public bool $panelUpdateInProgress = false;
 
     public function mount(): void
     {
@@ -67,10 +77,11 @@ class SoftwareUpdates extends Page
 
     public function refreshUpdates(): void
     {
+        $this->normalizeChannel();
         $versions = app(SoftwareVersionService::class);
         $installationTypes = app(InstallationTypeService::class);
         $statuses = app(SoftwareUpdateStatusService::class);
-        $latestPanel = $versions->getPanel();
+        $latestPanel = $versions->getPanel($this->channel);
         $currentPanel = (string) config('app.version');
 
         $this->panel = [
@@ -79,12 +90,14 @@ class SoftwareUpdates extends Page
             'latest_available' => $latestPanel !== 'error',
             'installation_type' => $installationTypes->panel(),
             'automatic_supported' => $installationTypes->panelSupportsAutomaticUpdates(),
-            'outdated' => $latestPanel !== 'error' && ! $versions->isLatestPanel(),
+            'automatic_error' => $installationTypes->panelAutomaticUpdateError(),
+            'outdated' => $latestPanel !== 'error' && ! $versions->isLatestPanel($this->channel),
             'status' => $statuses->get($statuses->panelKey()),
         ];
+        $this->panelUpdateInProgress = $this->updateInProgress($this->panel['status']);
 
         $repository = app(DaemonConfigurationRepository::class);
-        $latestAgent = $versions->getDaemon();
+        $latestAgent = $versions->getDaemon($this->channel);
         $this->agents = Node::query()->orderBy('name')->get()->map(function (Node $node) use ($repository, $latestAgent, $versions, $statuses): array {
             try {
                 $information = $repository->setNode($node)->getSystemInformation();
@@ -108,7 +121,7 @@ class SoftwareUpdates extends Page
                     'latest' => $latestAgent,
                     'latest_available' => $latestAgent !== 'error',
                     'installation_type' => $installationType,
-                    'outdated' => $latestAgent !== 'error' && $current !== 'unknown' && ! $versions->isLatestDaemon($current),
+                    'outdated' => $latestAgent !== 'error' && $current !== 'unknown' && ! $versions->isLatestDaemon($current, $this->channel),
                     'reachable' => true,
                     'status' => $status,
                 ];
@@ -130,6 +143,7 @@ class SoftwareUpdates extends Page
 
     public function updatePanel(): void
     {
+        $this->refreshUpdates();
         $installationTypes = app(InstallationTypeService::class);
         if (
             ! $installationTypes->panelSupportsAutomaticUpdates()
@@ -145,7 +159,7 @@ class SoftwareUpdates extends Page
         $statuses = app(SoftwareUpdateStatusService::class);
         $statuses->set($statuses->panelKey(), 'queued', trans('admin/updates.status.queued'), $version);
         try {
-            UpdatePanelJob::dispatch($version);
+            UpdatePanelJob::dispatch($version, $this->channel);
         } catch (\Throwable $exception) {
             $statuses->set($statuses->panelKey(), 'failed', trans('admin/updates.status.panel_failed'), $version);
             report($exception);
@@ -160,6 +174,7 @@ class SoftwareUpdates extends Page
 
     public function updateAgent(int $nodeId): void
     {
+        $this->normalizeChannel();
         $node = Node::query()->find($nodeId);
         if (! $node) {
             Notification::make()->warning()->title(trans('admin/updates.unavailable'))->send();
@@ -170,10 +185,10 @@ class SoftwareUpdates extends Page
         try {
             $versions = app(SoftwareVersionService::class);
             $information = app(DaemonConfigurationRepository::class)->setNode($node)->getSystemInformation();
-            $version = $versions->getDaemon();
+            $version = $versions->getDaemon($this->channel);
             if (
                 $version === 'error'
-                || $versions->isLatestDaemon((string) ($information['version'] ?? 'develop'))
+                || $versions->isLatestDaemon((string) ($information['version'] ?? 'develop'), $this->channel)
                 || InstallationTypeService::normalize($information['installation_type'] ?? null) !== InstallationTypeService::NATIVE
             ) {
                 throw new \RuntimeException();
@@ -231,6 +246,13 @@ class SoftwareUpdates extends Page
         $this->refreshUpdates();
     }
 
+    private function normalizeChannel(): void
+    {
+        if (! in_array($this->channel, ['stable', 'beta'], true)) {
+            $this->channel = 'stable';
+        }
+    }
+
     private function updateInProgress(?array $status): bool
     {
         return in_array($status['state'] ?? null, self::BUSY_STATES, true);
@@ -240,7 +262,7 @@ class SoftwareUpdates extends Page
     {
         $key = $statuses->agentKey($nodeId);
         $statuses->set($key, 'queued', trans('admin/updates.status.queued'), $version);
-        $job = new UpdateAgentJob($nodeId, $version);
+        $job = new UpdateAgentJob($nodeId, $version, $this->channel);
 
         try {
             dispatch($job);

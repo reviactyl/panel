@@ -35,7 +35,7 @@ class PanelUpdateService
         $this->basePath = $basePath ?? base_path();
     }
 
-    public function update(string $version): void
+    public function update(string $version, string $channel = 'stable'): void
     {
         if (! $this->installationTypes->panelSupportsAutomaticUpdates()) {
             throw new RuntimeException('Automatic Panel updates require a released native installation using MySQL, MariaDB, PostgreSQL, or SQLite.');
@@ -43,7 +43,7 @@ class PanelUpdateService
         if (! preg_match(self::VERSION_PATTERN, $version)) {
             throw new RuntimeException('The requested Panel version is invalid.');
         }
-        if ($version !== $this->versions->getPanel()) {
+        if ($version !== $this->versions->getPanel($channel)) {
             throw new RuntimeException('The requested Panel version is not the current official release.');
         }
         if (version_compare((string) config('app.version'), $version, '>=')) {
@@ -141,8 +141,8 @@ class PanelUpdateService
                 600,
             );
             $this->runProcess(['chmod', '-R', '755', 'storage', 'bootstrap/cache']);
-            // The documented permission repair also reaches storage, so restore
-            // the private modes on the updater's retained recovery material.
+            // Permission repair reaches every retained backup, not just this update.
+            $this->runProcess(['chmod', '-R', 'go-rwx', 'storage/app/software-updates']);
             chmod($backupPath, 0700);
             chmod($backupPath.'/files', 0700);
             chmod($databaseBackup, 0600);
@@ -262,7 +262,7 @@ class PanelUpdateService
             'timeout' => 30,
         ]);
         $metadata = json_decode((string) $response->getBody(), true, flags: JSON_THROW_ON_ERROR);
-        if ($response->getStatusCode() !== 200 || ($metadata['tag_name'] ?? null) !== 'v'.$version) {
+        if ($response->getStatusCode() !== 200 || ($metadata['tag_name'] ?? null) !== 'v'.$version || ($metadata['draft'] ?? false)) {
             throw new RuntimeException('Unable to validate the official Panel release metadata.');
         }
 

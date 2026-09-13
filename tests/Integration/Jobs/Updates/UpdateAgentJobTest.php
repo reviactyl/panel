@@ -34,13 +34,13 @@ class UpdateAgentJobTest extends IntegrationTestCase
             'version' => '26.09.0',
             'installation_type' => 'native',
         ]);
-        $repository->shouldReceive('updateSystem')->once()->with('26.09.1')->andReturn([
+        $repository->shouldReceive('updateSystem')->once()->with('26.09.1', 'stable')->andReturn([
             'version' => '26.09.1',
             'status' => 'restarting',
         ]);
         $versions = Mockery::mock(SoftwareVersionService::class);
         $versions->shouldReceive('getDaemon')->once()->andReturn('26.09.1');
-        $versions->shouldReceive('isLatestDaemon')->once()->with('26.09.0')->andReturnFalse();
+        $versions->shouldReceive('isLatestDaemon')->once()->with('26.09.0', 'stable')->andReturnFalse();
 
         $job->handle($repository, app(SoftwareUpdateStatusService::class), $versions);
     }
@@ -54,21 +54,21 @@ class UpdateAgentJobTest extends IntegrationTestCase
             'version' => '26.09.0',
             'installation_type' => 'native',
         ]);
-        $repository->shouldReceive('updateSystem')->once()->with('26.09.1')->andReturn([
-            'version' => '26.09.1',
+        $repository->shouldReceive('updateSystem')->once()->with('26.10.0-rc.1', 'beta')->andReturn([
+            'version' => '26.10.0-rc.1',
             'status' => 'restarting',
         ]);
 
         $versions = Mockery::mock(SoftwareVersionService::class);
-        $versions->shouldReceive('getDaemon')->once()->andReturn('26.09.1');
-        $versions->shouldReceive('isLatestDaemon')->once()->with('26.09.0')->andReturnFalse();
+        $versions->shouldReceive('getDaemon')->once()->with('beta')->andReturn('26.10.0-rc.1');
+        $versions->shouldReceive('isLatestDaemon')->once()->with('26.09.0', 'beta')->andReturnFalse();
 
         $statuses = app(SoftwareUpdateStatusService::class);
-        (new UpdateAgentJob($node->id, '26.09.1'))->handle($repository, $statuses, $versions);
+        unserialize(serialize(new UpdateAgentJob($node->id, '26.10.0-rc.1', 'beta')))->handle($repository, $statuses, $versions);
 
         $status = $statuses->get($statuses->agentKey($node->id));
         $this->assertSame('restarting', $status['state']);
-        $this->assertSame('26.09.1', $status['version']);
+        $this->assertSame('26.10.0-rc.1', $status['version']);
     }
 
     public function test_docker_agent_is_never_sent_to_native_updater(): void

@@ -74,7 +74,10 @@ jobs:
             DELETED_PATHS="$RUNNER_TEMP/deleted-paths"
             mkdir -p "$CURRENT_RELEASE" "$PREVIOUS_RELEASE" "$UPDATE_PACKAGE" "$PREVIOUS_ARCHIVE"
             tar -xzf panel.tar.gz -C "$CURRENT_RELEASE"
-            gh release download "$PREVIOUS_TAG" --pattern panel.tar.gz --dir "$PREVIOUS_ARCHIVE"
+            if ! gh release download "$PREVIOUS_TAG" --pattern panel.tar.gz --dir "$PREVIOUS_ARCHIVE"; then
+              echo "Previous release archive unavailable; publishing the full release without an update package."
+              exit 0
+            fi
             tar -xzf "$PREVIOUS_ARCHIVE/panel.tar.gz" -C "$PREVIOUS_RELEASE"
 
             : > "$DELETED_PATHS"

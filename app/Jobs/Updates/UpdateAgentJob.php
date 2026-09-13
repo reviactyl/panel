@@ -25,8 +25,11 @@ class UpdateAgentJob extends Job implements ShouldBeUnique, ShouldQueue
 
     public int $uniqueFor = 300;
 
-    public function __construct(public int $nodeId, public string $version)
+    public string $channel = 'stable';
+
+    public function __construct(public int $nodeId, public string $version, string $channel = 'stable')
     {
+        $this->channel = $channel;
         $this->queue = 'standard';
     }
 
@@ -43,17 +46,17 @@ class UpdateAgentJob extends Job implements ShouldBeUnique, ShouldQueue
         if (InstallationTypeService::normalize($information['installation_type'] ?? null) !== InstallationTypeService::NATIVE) {
             throw new \RuntimeException('Automatic updates are unavailable for this Agent installation.');
         }
-        $latestVersion = $versions->getDaemon();
+        $latestVersion = $versions->getDaemon($this->channel);
         if ($this->version !== $latestVersion) {
             throw new \RuntimeException('The requested Agent version is not the current official release.');
         }
-        if ($versions->isLatestDaemon((string) ($information['version'] ?? 'develop'))) {
+        if ($versions->isLatestDaemon((string) ($information['version'] ?? 'develop'), $this->channel)) {
             $statuses->set($key, 'complete', trans('admin/updates.status.agent_current'), $this->version);
 
             return;
         }
 
-        $repository->setNode($node)->updateSystem($this->version);
+        $repository->setNode($node)->updateSystem($this->version, $this->channel);
         $statuses->set($key, 'restarting', trans('admin/updates.status.agent_restarting'), $this->version);
     }
 

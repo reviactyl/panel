@@ -17,14 +17,23 @@ class InstallationTypeService
 
     public function panelSupportsAutomaticUpdates(): bool
     {
-        if ($this->panel() !== self::NATIVE || config('app.version') === 'canary') {
-            return false;
+        return $this->panelAutomaticUpdateError() === null;
+    }
+
+    public function panelAutomaticUpdateError(): ?string
+    {
+        if ($this->panel() !== self::NATIVE) {
+            return 'unsupported_installation';
+        }
+
+        if (config('app.version') === 'canary') {
+            return 'development_build';
         }
 
         $connection = config('database.default');
         $driver = config("database.connections.{$connection}.driver");
 
-        return in_array($driver, ['mysql', 'mariadb', 'pgsql', 'sqlite'], true);
+        return in_array($driver, ['mysql', 'mariadb', 'pgsql', 'sqlite'], true) ? null : 'invalid_database';
     }
 
     public function panelSupportsSoftwareUpdatesPage(): bool

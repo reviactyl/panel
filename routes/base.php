@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\SoftwareUpdateStatusController;
 use App\Http\Controllers\Base;
 use App\Http\Middleware\AdminAuthenticate;
 use App\Http\Middleware\RequireTwoFactorAuthentication;
@@ -27,6 +28,10 @@ Route::get('/manifest.json', [Base\PwaManifestController::class, 'index'])
 
 Route::get('/status/{server}', [Base\IndexController::class, 'index'])
     ->withoutMiddleware(['auth', 'auth.session', RequireTwoFactorAuthentication::class]);
+
+Route::get('/admin/software-updates/status', SoftwareUpdateStatusController::class)
+    ->middleware(AdminAuthenticate::class)
+    ->name('admin.software-updates.status');
 
 Route::prefix('preview')
     ->middleware(['auth', AdminAuthenticate::class])

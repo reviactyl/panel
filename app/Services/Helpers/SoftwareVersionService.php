@@ -25,19 +25,19 @@ class SoftwareVersionService
     }
 
     /**
-     * Get the latest version of the panel from the CDN servers.
+     * Get the latest Panel version from the CDN or the selected official release channel.
      */
-    public function getPanel(): string
+    public function getPanel(?string $channel = null): string
     {
-        return Arr::get(self::$result, 'panel') ?? 'error';
+        return $channel !== null ? $this->releaseVersion('panel', $channel) : Arr::get(self::$result, 'panel') ?? 'error';
     }
 
     /**
-     * Get the latest version of the daemon from the CDN servers.
+     * Get the latest Agent version from the CDN or the selected official release channel.
      */
-    public function getDaemon(): string
+    public function getDaemon(?string $channel = null): string
     {
-        return Arr::get(self::$result, 'agent') ?? 'error';
+        return $channel !== null ? $this->releaseVersion('agent', $channel) : Arr::get(self::$result, 'agent') ?? 'error';
     }
 
     /**
@@ -59,25 +59,71 @@ class SoftwareVersionService
     /**
      * Determine if the current version of the panel is the latest.
      */
-    public function isLatestPanel(): bool
+    public function isLatestPanel(?string $channel = null): bool
     {
         if (config('app.version') === 'canary') {
             return true;
         }
 
-        return version_compare(config('app.version'), $this->getPanel()) >= 0;
+        return version_compare(config('app.version'), $this->getPanel($channel)) >= 0;
     }
 
     /**
      * Determine if a passed daemon version string is the latest.
      */
-    public function isLatestDaemon(string $version): bool
+    public function isLatestDaemon(string $version, ?string $channel = null): bool
     {
         if ($version === 'develop') {
             return true;
         }
 
-        return version_compare($version, $this->getDaemon()) >= 0;
+        return version_compare($version, $this->getDaemon($channel)) >= 0;
+    }
+
+    private function releaseVersion(string $component, string $channel): string
+    {
+        if (! in_array($channel, ['stable', 'beta'], true)) {
+            throw new \InvalidArgumentException('Invalid software update channel.');
+        }
+
+        return $this->cache->remember("panel:releases:{$component}:{$channel}", 300, function () use ($component, $channel): string {
+            try {
+                $latest = 'error';
+                for ($page = 1; $page <= 10; $page++) {
+                    $response = $this->client->request('GET', "https://api.github.com/repos/reviactyl/{$component}/releases", [
+                        'query' => ['per_page' => 100, 'page' => $page],
+                        'headers' => ['Accept' => 'application/vnd.github+json', 'User-Agent' => 'Reviactyl-Panel-Updater'],
+                        'connect_timeout' => 5,
+                        'timeout' => 15,
+                    ]);
+                    $releases = json_decode((string) $response->getBody(), true, flags: JSON_THROW_ON_ERROR);
+                    if ($response->getStatusCode() !== 200 || ! is_array($releases) || ! array_is_list($releases)) {
+                        return 'error';
+                    }
+                    foreach ($releases as $release) {
+                        $tag = $release['tag_name'] ?? '';
+                        if (($release['draft'] ?? false) || ! is_string($tag)
+                            || ! preg_match('/^v([0-9]+\.[0-9]+\.[0-9]+(?:-(?:beta|rc)[0-9]*(?:\.[0-9]+)*)?)$/i', $tag, $matches)) {
+                            continue;
+                        }
+                        $version = $matches[1];
+                        if ($channel === 'stable' && (($release['prerelease'] ?? false) || str_contains($version, '-'))) {
+                            continue;
+                        }
+                        if ($latest === 'error' || version_compare($version, $latest, '>')) {
+                            $latest = $version;
+                        }
+                    }
+                    if (count($releases) < 100) {
+                        return $latest;
+                    }
+                }
+            } catch (\Throwable) {
+                return 'error';
+            }
+
+            return $latest;
+        });
     }
 
     /**

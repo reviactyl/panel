@@ -34,11 +34,11 @@ class DaemonConfigurationRepository extends DaemonRepository
      *
      * @throws DaemonConnectionException
      */
-    public function updateSystem(string $version): array
+    public function updateSystem(string $version, string $channel = 'stable'): array
     {
         try {
             $response = $this->getHttpClient()->post('/api/system/update', [
-                'json' => ['version' => $version],
+                'json' => ['version' => $version, 'channel' => $channel],
                 'timeout' => 150,
             ]);
         } catch (TransferException $exception) {

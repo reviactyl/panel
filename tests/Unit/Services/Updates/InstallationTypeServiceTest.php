@@ -37,6 +37,7 @@ class InstallationTypeServiceTest extends TestCase
         config()->set('app.version', 'canary');
         config()->set('database.connections.database.driver', 'mysql');
         $this->assertFalse($service->panelSupportsAutomaticUpdates());
+        $this->assertSame('development_build', $service->panelAutomaticUpdateError());
         $this->assertTrue($service->panelSupportsSoftwareUpdatesPage());
 
         config()->set('app.version', '26.09.0');
@@ -48,6 +49,7 @@ class InstallationTypeServiceTest extends TestCase
 
         config()->set('database.connections.database.driver', 'sqlsrv');
         $this->assertFalse($service->panelSupportsAutomaticUpdates());
+        $this->assertSame('invalid_database', $service->panelAutomaticUpdateError());
     }
 
     public function test_missing_agent_metadata_is_treated_as_unknown(): void

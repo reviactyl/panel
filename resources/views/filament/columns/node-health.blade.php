@@ -135,9 +135,9 @@
         <x-tabler-alert-triangle style="color:orange;" />
     </span>
 
-    <span @click="updateInPanel ? window.location.href = updateUrl : window.open(updateUrl, '_blank')" x-show="status === 'outdated'" x-cloak>
+    <button type="button" :aria-label="tooltip" @click="updateInPanel ? window.location.href = updateUrl : window.open(updateUrl, '_blank')" x-show="status === 'outdated'" x-cloak>
         <x-tabler-heart-exclamation style="color:orange;" />
-    </span>
+    </button>
 
     <span x-show="status === 'down'" x-cloak>
         <x-tabler-heart-broken style="color:red;" />

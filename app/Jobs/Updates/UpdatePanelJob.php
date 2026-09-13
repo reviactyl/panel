@@ -24,8 +24,11 @@ class UpdatePanelJob extends Job implements ShouldQueue
 
     public bool $failOnTimeout = true;
 
-    public function __construct(public string $version)
+    public string $channel = 'stable';
+
+    public function __construct(public string $version, string $channel = 'stable')
     {
+        $this->channel = $channel;
         $this->queue = 'standard';
         $connection = (string) config('queue.default');
         $driver = (string) config("queue.connections.{$connection}.driver");
@@ -44,7 +47,7 @@ class UpdatePanelJob extends Job implements ShouldQueue
 
     public function handle(PanelUpdateService $updater): void
     {
-        $updater->update($this->version);
+        $updater->update($this->version, $this->channel);
     }
 
     public function failed(?Throwable $exception): void

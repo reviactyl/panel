@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Services\Updates;
 
+use App\Jobs\Updates\UpdatePanelJob;
 use App\Services\Helpers\SoftwareVersionService;
 use App\Services\Updates\InstallationTypeService;
 use App\Services\Updates\PanelUpdateService;
@@ -17,6 +18,17 @@ use Tests\TestCase;
 
 class PanelUpdateServiceTest extends TestCase
 {
+    public function test_queued_panel_update_passes_its_channel_to_the_installer(): void
+    {
+        config()->set('queue.default', 'database');
+        config()->set('queue.connections.database.retry_after', 3660);
+        $updater = Mockery::mock(PanelUpdateService::class);
+        $updater->shouldReceive('update')->once()->with('26.10.0-rc.1', 'beta');
+        $job = unserialize(serialize(new UpdatePanelJob('26.10.0-rc.1', 'beta')));
+        $job->handle($updater);
+        $this->assertSame('stable', (new UpdatePanelJob('26.10.0'))->channel);
+    }
+
     public function test_rejects_unsafe_archive_paths(): void
     {
         $service = $this->makeInspectableUpdater($this->baseDirectory());
@@ -107,6 +119,11 @@ class PanelUpdateServiceTest extends TestCase
         $files->put($base.'/composer.json', 'old composer');
         $files->put($base.'/vendor/installed.txt', 'old vendor');
 
+        $retained = $base.'/storage/app/software-updates/backups/retained';
+        $files->ensureDirectoryExists($retained, 0700);
+        $files->put($retained.'/database.sql', 'old private database');
+        chmod($retained.'/database.sql', 0600);
+
         $service = $this->makeInspectableUpdater($base);
         $service->fixture = $this->releaseArchive([
             'artisan' => 'new artisan',
@@ -129,7 +146,10 @@ class PanelUpdateServiceTest extends TestCase
         $this->assertLessThan($up, $restart);
         $this->assertStringContainsString('--dbname=panel --port=5432 --clean --if-exists --no-owner --no-privileges', $commands[$dump]);
 
-        $backups = $files->directories($base.'/storage/app/software-updates/backups');
+        clearstatcache();
+        $this->assertSame(0700, fileperms($retained) & 0777);
+        $this->assertSame(0, fileperms($retained.'/database.sql') & 0077);
+        $backups = array_values(array_diff($files->directories($base.'/storage/app/software-updates/backups'), [$retained]));
         $this->assertCount(1, $backups);
         $this->assertFileExists($backups[0].'/database.sql');
         $this->assertFileExists($backups[0].'/vendor/installed.txt');
@@ -284,15 +304,15 @@ class PanelUpdateServiceTest extends TestCase
     public function test_delta_update_rejects_unsafe_deleted_paths_before_maintenance_mode(): void
     {
         $this->configureMysql();
-        $base = $this->baseDirectory();
+        $parent = $this->baseDirectory();
+        $base = $parent.'/panel';
         $files = new Filesystem();
         $files->ensureDirectoryExists($base.'/storage/app');
         $files->ensureDirectoryExists($base.'/vendor');
         $files->put($base.'/artisan', 'old artisan');
         $files->put($base.'/composer.json', 'old composer');
-        $outside = dirname($base).'/outside.php';
+        $outside = $parent.'/outside.php';
         $files->put($outside, 'must remain untouched');
-        $this->beforeApplicationDestroyed(fn () => $files->delete($outside));
 
         $service = $this->makeInspectableUpdater($base);
         $service->updateFixture = $this->updateArchive([], ['../outside.php']);
@@ -530,6 +550,7 @@ class PanelUpdateServiceTest extends TestCase
 
     private function makeInspectableUpdater(string $basePath): PanelUpdateService
     {
+        (new Filesystem())->ensureDirectoryExists($basePath.'/bootstrap/cache');
         $versions = Mockery::mock(SoftwareVersionService::class);
         $versions->shouldReceive('getPanel')->andReturn('26.09.1');
 
@@ -605,7 +626,7 @@ class PanelUpdateServiceTest extends TestCase
 
                     return '';
                 }
-                if ($command[0] === 'mysql' || $command[0] === 'psql' || $command[0] === PHP_BINARY || $command[0] === 'chmod') {
+                if ($command[0] === 'mysql' || $command[0] === 'psql' || $command[0] === PHP_BINARY) {
                     return '';
                 }
                 if ($command[0] === 'composer') {
