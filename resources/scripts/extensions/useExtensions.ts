@@ -20,6 +20,6 @@ export const useExtensions = () => {
             revalidateOnReconnect: false,
             dedupingInterval: 3_000,
             refreshWhenHidden: false,
-        }
+        },
     );
 };

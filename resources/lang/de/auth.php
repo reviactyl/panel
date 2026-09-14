@@ -11,14 +11,14 @@ return [
     'password-label' => 'Passwort',
 
     'login-button' => 'Anmelden',
-    'passkey-button' => 'Login with Passkey',
+    'passkey-button' => 'Mit Passkey anmelden',
     'return' => 'Zurück zur Anmeldung',
 
-    'passkey-unsupported' => 'Passkeys are not supported by this browser.',
-    'passkey-failed' => 'Unable to complete passkey login. Please try again.',
-    'passkey-no-credentials' => 'No passkey is available for this login. Use your password or register a passkey first.',
-    'passkey-security' => 'Passkey verification could not be completed securely on this device.',
-    'passkey-username-required' => 'Enter your username or email before using a passkey.',
+    'passkey-unsupported' => 'Passkeys werden von diesem Browser nicht unterstützt.',
+    'passkey-failed' => 'Die Anmeldung mit dem Passkey konnte nicht abgeschlossen werden. Bitte versuchen Sie es erneut.',
+    'passkey-no-credentials' => 'Für diese Anmeldung ist kein Passkey verfügbar. Verwenden Sie Ihr Passwort oder registrieren Sie zunächst einen Passkey.',
+    'passkey-security' => 'Die Passkey-Überprüfung konnte auf diesem Gerät nicht sicher abgeschlossen werden.',
+    'passkey-username-required' => 'Geben Sie Ihren Benutzernamen oder Ihre E-Mail-Adresse ein, bevor Sie einen Passkey verwenden.',
 
     'social' => [
         'or' => 'ODER',
@@ -64,14 +64,14 @@ return [
         'namefirst-label' => 'Vorname',
         'namelast-label' => 'Nachname',
         'email-label' => 'E-Mail',
-        'username-label' => 'Username',
+        'username-label' => 'Benutzername',
         'password-label' => 'Passwort',
         'min-length' => 'Passwort muss mindestens 8 Zeichen lang sein.',
         'confirm-label' => 'Passwort bestätigen',
         'label' => 'Registrieren',
-        'create-link' => 'Don\'t have an account? Create one',
+        'create-link' => 'Sie haben noch kein Konto? Erstellen Sie eines.',
         'create-account' => 'Benutzerkonto erstellen',
-        'no-account' => 'Don\'t have an account?',
+        'no-account' => 'Sie haben noch kein Konto?',
     ],
 
     'failed' => 'Diese Kombination aus Zugangsdaten wurde nicht in unserer Datenbank gefunden.',
@@ -85,5 +85,5 @@ return [
     'throttle' => 'Zu viele Loginversuche. Versuchen Sie es bitte in :seconds Sekunden nochmal.',
     'password_requirements' => 'Das Passwort muss mindestens 8 Zeichen lang sein und sollte für diese Seite eindeutig sein.',
     '2fa_must_be_enabled' => 'Der Administrator hat festgelegt, dass die 2-Faktor-Authentifizierung für Ihr Konto aktiviert sein muss, um das Panel nutzen zu können.',
-    'captcha-required' => 'Please complete the captcha challenge to continue.',
+    'captcha-required' => 'Bitte lösen Sie das Captcha, um fortzufahren.',
 ];

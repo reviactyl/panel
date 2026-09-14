@@ -1,4 +1,3 @@
-import tw from 'twin.macro';
 import { useTranslation } from 'react-i18next';
 import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
 
@@ -67,23 +66,9 @@ function OAuthButton({ provider }: { provider: Provider }) {
             <a
                 href={href}
                 aria-label={label}
-                css={tw`bg-gray-800 border border-gray-700`}
+                className='flex flex-1 cursor-pointer items-center justify-center rounded-[10px] border border-gray-700 bg-gray-800 no-underline transition-[filter] duration-150 hover:brightness-125'
                 style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flex: 1,
                     height: '44px',
-                    borderRadius: '10px',
-                    textDecoration: 'none',
-                    transition: 'filter 0.15s ease',
-                    cursor: 'pointer',
-                }}
-                onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLAnchorElement).style.filter = 'brightness(1.25)';
-                }}
-                onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLAnchorElement).style.filter = 'brightness(1)';
                 }}
             >
                 <ProviderLogo provider={provider} />
@@ -108,10 +93,10 @@ export default function OAuthButtons({ google, discord, github }: OAuthButtonsPr
 
     return (
         <div>
-            <div css={tw`relative flex py-2 items-center`}>
-                <div css={tw`flex-grow border-t border-gray-800`} />
-                <span css={tw`flex-shrink mx-4 text-gray-400 text-xs`}>{t('social.or')}</span>
-                <div css={tw`flex-grow border-t border-gray-800`} />
+            <div className='relative flex items-center py-2'>
+                <div className='grow border-t border-gray-800' />
+                <span className='mx-4 shrink text-xs text-gray-400'>{t('social.or')}</span>
+                <div className='grow border-t border-gray-800' />
             </div>
             <div style={{ display: 'flex', gap: '10px' }}>
                 {enabled.map((provider) => (

@@ -5,7 +5,6 @@ import Field from '@/reviactyl/elements/Field';
 import { object, string } from 'yup';
 import pullFile from '@/api/server/files/pullFile';
 import getFileDownloads from '@/api/server/files/getFileDownloads';
-import tw from 'twin.macro';
 import { Button } from '@/reviactyl/components/button/index';
 import { useFlashKey } from '@/plugins/useFlash';
 import { WithClassname } from '@/components/types';
@@ -147,7 +146,7 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
                 >
                     {({ submitForm, isSubmitting }) => (
                         <>
-                            <Form css={tw`m-0`}>
+                            <Form className='m-0'>
                                 <p className={'mb-3 text-sm text-gray-400'}>{t('url-download.url-description')}</p>
                                 <Field
                                     autoFocus

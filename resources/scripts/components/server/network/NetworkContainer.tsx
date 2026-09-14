@@ -6,7 +6,6 @@ import { ServerContext } from '@/state/server';
 import AllocationRow from '@/components/server/network/AllocationRow';
 import Button from '@/reviactyl/elements/Button';
 import createServerAllocation from '@/api/server/network/createServerAllocation';
-import tw from 'twin.macro';
 import Can from '@/reviactyl/elements/Can';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import getServerAllocations from '@/api/swr/getServerAllocations';
@@ -64,12 +63,12 @@ const NetworkContainer = () => {
                     {allocationLimit > 0 && (
                         <Can action={'allocation.create'}>
                             <SpinnerOverlay visible={loading} />
-                            <div css={tw`mt-6 sm:flex items-center justify-end`}>
-                                <p css={tw`text-sm text-gray-300 mb-4 sm:mr-6 sm:mb-0`}>
+                            <div className='mt-6 sm:flex items-center justify-end'>
+                                <p className='text-sm text-gray-300 mb-4 sm:mr-6 sm:mb-0'>
                                     {t('created', { count: data.length, limit: allocationLimit })}
                                 </p>
                                 {allocationLimit > data.length && (
-                                    <Button css={tw`w-full sm:w-auto`} color={'primary'} onClick={onCreateAllocation}>
+                                    <Button className='w-full sm:w-auto' color={'primary'} onClick={onCreateAllocation}>
                                         {t('create')}
                                     </Button>
                                 )}

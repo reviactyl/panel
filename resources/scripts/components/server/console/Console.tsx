@@ -9,7 +9,6 @@ import { ScrollDownHelperAddon } from '@/plugins/XtermScrollDownHelperAddon';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import { ServerContext } from '@/state/server';
 import { usePermissions } from '@/plugins/usePermissions';
-import { theme as th } from 'twin.macro';
 import useEventListener from '@/plugins/useEventListener';
 import { debounce } from 'debounce';
 import { usePersistedState } from '@/plugins/usePersistedState';
@@ -30,7 +29,7 @@ const terminalProps: ITerminalOptions = {
     cursorStyle: 'underline',
     allowTransparency: true,
     fontSize: 12,
-    fontFamily: th('fontFamily.mono'),
+    fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
     allowProposedApi: true,
     theme: theme,
 };
@@ -68,7 +67,7 @@ export default () => {
 
     const handleDaemonErrorOutput = (line: string) =>
         terminal.writeln(
-            TERMINAL_PRELUDE + '\u001b[1m\u001b[41m' + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m'
+            TERMINAL_PRELUDE + '\u001b[1m\u001b[41m' + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
         );
 
     const handlePowerChangeEvent = (state: string) =>
@@ -139,7 +138,7 @@ export default () => {
                     (e) => {
                         lastY = e.touches[0]?.clientY ?? 0;
                     },
-                    { passive: true }
+                    { passive: true },
                 );
 
                 ref.current.addEventListener(
@@ -152,7 +151,7 @@ export default () => {
                         if (lines !== 0) terminal.scrollLines(lines);
                         e.preventDefault(); // prvent scroll
                     },
-                    { passive: false }
+                    { passive: false },
                 );
             }
         }
@@ -164,7 +163,7 @@ export default () => {
             if (terminal.element) {
                 fitAddon.fit();
             }
-        }, 100)
+        }, 100),
     );
 
     useEffect(() => {
@@ -203,7 +202,9 @@ export default () => {
         <div className={classNames(styles.terminal, 'relative')}>
             <SpinnerOverlay visible={!connected} size={'large'} />
             <div
-                className={classNames(styles.container, styles.overflows_container, { 'rounded-b': !canSendCommands })}
+                className={classNames(styles.container, styles.overflows_container, {
+                    'rounded-b': !canSendCommands,
+                })}
             >
                 <div className={'h-full'}>
                     <div id={styles.terminal} ref={ref} />
@@ -224,7 +225,7 @@ export default () => {
                     <div
                         className={classNames(
                             'text-gray-100 peer-focus:text-gray-50 peer-focus:animate-pulse',
-                            styles.command_icon
+                            styles.command_icon,
                         )}
                     >
                         <ChevronDoubleRightIcon className={'w-4 h-4'} />

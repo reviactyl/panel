@@ -17,11 +17,11 @@ const Component = forwardRef<HTMLInputElement, React.ComponentProps<'input'> & {
                 'form-input',
                 styles.text_input,
                 { [styles.loose]: variant === Variant.Loose },
-                className
+                className,
             )}
             {...props}
         />
-    )
+    ),
 );
 
 const InputField = Object.assign(Component, { Variants: Variant });

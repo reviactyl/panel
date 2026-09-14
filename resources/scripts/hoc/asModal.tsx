@@ -19,7 +19,7 @@ interface State {
 type ExtendedComponentType<T> = (C: React.ComponentType<T>) => React.ComponentType<T & AsModalProps>;
 
 function asModal<P extends object>(
-    modalProps?: SettableModalProps | ((props: P) => SettableModalProps)
+    modalProps?: SettableModalProps | ((props: P) => SettableModalProps),
 ): ExtendedComponentType<P> {
     return function (Component) {
         return class extends React.PureComponent<P & AsModalProps, State> {

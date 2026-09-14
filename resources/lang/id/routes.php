@@ -11,7 +11,7 @@ return [
     ],
     'account' => [
         'overview' => 'Ringkasan Akun',
-        'passkeys' => 'Passkeys',
+        'passkeys' => 'Kunci Akses',
         'api' => 'Kunci API',
         'ssh' => 'Kunci SSH',
         'activity' => 'Aktivitas',

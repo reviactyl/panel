@@ -62,14 +62,14 @@ const DashboardNavigation = () => {
                         : `${extension.name} Route`,
                 path: route.path,
                 icon: resolveExtensionIcon(typeof route?.icon === 'string' ? route.icon : undefined),
-            }))
+            })),
     );
     const normalizedSidebarButtons = (Array.isArray(customSidebarButtons) ? customSidebarButtons : []).filter(
         (button): button is DesignifySidebarButton =>
             typeof button?.label === 'string' &&
             button.label.trim().length > 0 &&
             typeof button?.url === 'string' &&
-            button.url.trim().length > 0
+            button.url.trim().length > 0,
     );
 
     return (
@@ -171,7 +171,7 @@ function DashboardRouter() {
                         {isSidebarOpen && (
                             <div
                                 onClick={() => setSidebarOpen(false)}
-                                className='fixed inset-0 z-30 bg-gray-900/40 backdrop-blur-sm transition-all duration-300 ease-in-out lg:hidden'
+                                className='fixed inset-0 z-30 bg-gray-900/40 backdrop-blur-xs transition-all duration-300 ease-in-out lg:hidden'
                             />
                         )}
                         <motion.div

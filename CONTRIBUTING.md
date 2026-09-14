@@ -54,7 +54,7 @@ Afterwards you can join our discord and request `Contributors` role.
 
 ## Translations
 
-For Translations, please use crowdin; https://translate.reviactyl.dev/
+For Translations, please use crowdin; https://translate.reviactyl.app/
 
 You can Request Translation via joining our discord, or using crowdin to.
 
@@ -62,7 +62,7 @@ Translators get `translator` role in our discord server.
 
 ## Security
 
-If you've found what you believe is a security issue please email `maintainers@reviactyl.dev`. Please check
+If you've found what you believe is a security issue please email `maintainers@reviactyl.app`. Please check
 [SECURITY.md](/SECURITY.md) for additional details.
 
 ### Contact Us

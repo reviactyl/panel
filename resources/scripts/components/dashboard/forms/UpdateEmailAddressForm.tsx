@@ -6,7 +6,6 @@ import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import Field from '@/reviactyl/elements/Field';
 import { httpErrorToHuman } from '@/api/http';
 import { ApplicationStore } from '@/state';
-import tw from 'twin.macro';
 import { Button } from '@/reviactyl/components/button/index';
 import { useTranslation } from 'react-i18next';
 
@@ -34,7 +33,7 @@ export default () => {
                     type: 'success',
                     key: 'account:email',
                     message: t('email.updated'),
-                })
+                }),
             )
             .catch((error) =>
                 addFlash({
@@ -42,7 +41,7 @@ export default () => {
                     key: 'account:email',
                     title: t('email.error-title'),
                     message: httpErrorToHuman(error),
-                })
+                }),
             )
             .then(() => {
                 resetForm();
@@ -55,9 +54,9 @@ export default () => {
             {({ isSubmitting, isValid }) => (
                 <React.Fragment>
                     <SpinnerOverlay size={'large'} visible={isSubmitting} />
-                    <Form css={tw`m-0`}>
+                    <Form className='m-0'>
                         <Field id={'current_email'} type={'email'} name={'email'} label={t('email.label')} />
-                        <div css={tw`mt-6`}>
+                        <div className='mt-6'>
                             <Field
                                 id={'confirm_password'}
                                 type={'password'}
@@ -65,7 +64,7 @@ export default () => {
                                 label={t('email.confirm-password')}
                             />
                         </div>
-                        <div css={tw`mt-6`}>
+                        <div className='mt-6'>
                             <Button disabled={isSubmitting || !isValid}>{t('email.update')}</Button>
                         </div>
                     </Form>

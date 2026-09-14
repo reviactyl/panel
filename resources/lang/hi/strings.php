@@ -21,7 +21,7 @@ return [
     'search' => 'खोजें',
     'suspended' => 'निलंबित',
     'account' => 'खाता',
-    'avatar' => 'Avatar',
+    'avatar' => 'अवतार',
     'security' => 'सुरक्षा',
     'ip' => 'आईपी पता',
     'last_activity' => 'अंतिम गतिविधि',

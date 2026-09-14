@@ -11,14 +11,14 @@ return [
     'password-label' => 'Senha',
 
     'login-button' => 'Entrar',
-    'passkey-button' => 'Login with Passkey',
+    'passkey-button' => 'Faça login com a chave de acesso',
     'return' => 'Voltar para o Login',
 
-    'passkey-unsupported' => 'Passkeys are not supported by this browser.',
-    'passkey-failed' => 'Unable to complete passkey login. Please try again.',
-    'passkey-no-credentials' => 'No passkey is available for this login. Use your password or register a passkey first.',
-    'passkey-security' => 'Passkey verification could not be completed securely on this device.',
-    'passkey-username-required' => 'Enter your username or email before using a passkey.',
+    'passkey-unsupported' => 'Este navegador não é compatível com as chaves de acesso.',
+    'passkey-failed' => 'Não foi possível concluir o login com a senha de acesso. Tente novamente.',
+    'passkey-no-credentials' => 'Não há senha disponível para este login. Use sua senha ou cadastre uma senha primeiro.',
+    'passkey-security' => 'Não foi possível concluir a verificação da senha de acesso com segurança neste dispositivo.',
+    'passkey-username-required' => 'Digite seu nome de usuário ou e-mail antes de usar uma senha de acesso.',
 
     'social' => [
         'or' => 'Ou',
@@ -64,14 +64,14 @@ return [
         'namefirst-label' => 'Nome',
         'namelast-label' => 'Sobrenome',
         'email-label' => 'E-mail',
-        'username-label' => 'Username',
+        'username-label' => 'Nome de usuário',
         'password-label' => 'Senha',
         'min-length' => 'As senhas devem ter pelo menos 8 caracteres.',
         'confirm-label' => 'Confirmar Senha',
         'label' => 'Registrar',
-        'create-link' => 'Don\'t have an account? Create one',
+        'create-link' => 'Ainda não tem uma conta? Crie uma',
         'create-account' => 'Criar uma conta',
-        'no-account' => 'Don\'t have an account?',
+        'no-account' => 'Ainda não tem uma conta?',
     ],
 
     'failed' => 'Nenhuma conta correspondente a essas credenciais foi encontrada.',
@@ -85,5 +85,5 @@ return [
     'throttle' => 'Muitas tentativas de login. Por favor, tente novamente em :seconds segundos.',
     'password_requirements' => 'A senha deve ter no mínimo 8 caracteres e deve ser exclusiva para este site.',
     '2fa_must_be_enabled' => 'O administrador exige que a Autenticação em 2 Fatores esteja ativada na sua conta para usar o Painel.',
-    'captcha-required' => 'Please complete the captcha challenge to continue.',
+    'captcha-required' => 'Por favor, responda ao desafio do captcha para continuar.',
 ];

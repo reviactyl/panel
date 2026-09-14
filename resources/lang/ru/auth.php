@@ -11,14 +11,14 @@ return [
     'password-label' => 'Пароль',
 
     'login-button' => 'Логин',
-    'passkey-button' => 'Login with Passkey',
+    'passkey-button' => 'Войти с помощью пароля-ключа',
     'return' => 'Вернуться на страницу входа',
 
-    'passkey-unsupported' => 'Passkeys are not supported by this browser.',
-    'passkey-failed' => 'Unable to complete passkey login. Please try again.',
-    'passkey-no-credentials' => 'No passkey is available for this login. Use your password or register a passkey first.',
-    'passkey-security' => 'Passkey verification could not be completed securely on this device.',
-    'passkey-username-required' => 'Enter your username or email before using a passkey.',
+    'passkey-unsupported' => 'Этот браузер не поддерживает пароли-ключи.',
+    'passkey-failed' => 'Не удалось выполнить вход с помощью пароля. Попробуйте ещё раз.',
+    'passkey-no-credentials' => 'Для данного логина ключ доступа отсутствует. Введите пароль или сначала зарегистрируйте ключ доступа.',
+    'passkey-security' => 'На этом устройстве не удалось безопасно выполнить проверку пароля.',
+    'passkey-username-required' => 'Перед использованием пароля введите своё имя пользователя или адрес электронной почты.',
 
     'social' => [
         'or' => 'OR',
@@ -64,14 +64,14 @@ return [
         'namefirst-label' => 'Имя',
         'namelast-label' => 'Фамилия',
         'email-label' => 'Адрес электронной почты',
-        'username-label' => 'Username',
+        'username-label' => 'Имя пользователя',
         'password-label' => 'Пароль',
         'min-length' => 'Длина пароля должна составлять не менее 8 символов.',
         'confirm-label' => 'Подтвердите пароль',
         'label' => 'Регистрация',
-        'create-link' => 'Don\'t have an account? Create one',
+        'create-link' => 'У вас нет учётной записи? Создайте её',
         'create-account' => 'Создать аккаунт',
-        'no-account' => 'Don\'t have an account?',
+        'no-account' => 'У вас нет учётной записи?',
     ],
 
     'failed' => 'Не удалось найти учётную запись с указанными данными.',
@@ -85,5 +85,5 @@ return [
     'throttle' => 'Слишком много попыток входа. Попробуйте снова через :seconds сек.',
     'password_requirements' => 'Пароль должен содержать не менее 8 символов и быть уникальным для этого сайта.',
     '2fa_must_be_enabled' => 'Администратор требует обязательного включения 2-факторной аутентификации для использования панели.',
-    'captcha-required' => 'Please complete the captcha challenge to continue.',
+    'captcha-required' => 'Пожалуйста, пройдите проверку CAPTCHA, чтобы продолжить.',
 ];

@@ -2,31 +2,7 @@ import React from 'react';
 import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { InformationCircleIcon, SupportIcon, CurrencyDollarIcon } from '@heroicons/react/solid';
-import styled from 'styled-components';
-import tw from 'twin.macro';
 import { useTranslation } from 'react-i18next';
-
-const Container = styled.div`
-    ${tw`px-2`}
-`;
-
-const CardsGrid = styled.div`
-    ${tw`mx-auto w-full max-w-[1200px] grid gap-3 mt-2`}
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-`;
-
-const CardLink = styled.a`
-    ${tw`flex items-center justify-between p-4 rounded-ui text-gray-100 bg-gray-900 border border-gray-800 hover:bg-gray-700 transition-all duration-200 cursor-pointer`}
-`;
-
-const IconWrapper = styled.div<{ $color?: string }>`
-    ${tw`p-2 rounded-ui flex items-center justify-center`}
-
-    svg {
-        color: ${({ $color }) => $color || 'var(--color-primary)'};
-        fill: currentColor;
-    }
-`;
 
 interface CardData {
     link: string;
@@ -79,21 +55,30 @@ const QuickLinks = () => {
     }
 
     return (
-        <Container>
-            <CardsGrid>
+        <div className='px-2'>
+            <div className='mx-auto mt-2 grid w-full max-w-[1200px] gap-3 [grid-template-columns:repeat(auto-fit,minmax(200px,1fr))]'>
                 {cards.map((card, index) => (
-                    <CardLink key={index} href={card.link} target='_blank' rel='noopener noreferrer'>
+                    <a
+                        key={index}
+                        href={card.link}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        className='flex cursor-pointer items-center justify-between rounded-ui border border-gray-800 bg-gray-900 p-4 text-gray-100 transition-all duration-200 hover:bg-gray-700'
+                    >
                         <div>
                             <h3 className='font-semibold text-gray-100'>{t(card.titleKey)}</h3>
                             <p className='text-sm text-gray-400'>{t(card.descriptionKey)}</p>
                         </div>
-                        <IconWrapper $color={card.iconColor}>
+                        <div
+                            className='flex items-center justify-center rounded-ui p-2 [&_svg]:fill-current'
+                            style={{ color: card.iconColor }}
+                        >
                             <card.icon className='h-6 w-6' />
-                        </IconWrapper>
-                    </CardLink>
+                        </div>
+                    </a>
                 ))}
-            </CardsGrid>
-        </Container>
+            </div>
+        </div>
     );
 };
 

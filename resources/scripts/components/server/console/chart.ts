@@ -11,7 +11,6 @@ import {
 import { DeepPartial } from 'ts-essentials';
 import { useState } from 'react';
 import { deepmerge, deepmergeCustom } from 'deepmerge-ts';
-import { theme } from 'twin.macro';
 import { hexToRgba } from '@/lib/helpers';
 
 ChartJS.register(LineElement, PointElement, Filler, LinearScale);
@@ -34,7 +33,6 @@ const options: ChartOptions<'line'> = {
             type: 'linear',
             grid: {
                 display: false,
-                drawBorder: false,
             },
             ticks: {
                 display: false,
@@ -46,16 +44,19 @@ const options: ChartOptions<'line'> = {
             grid: {
                 display: true,
                 color: `rgb(${getComputedStyle(document.documentElement).getPropertyValue('--color-600').trim()})`,
-                drawBorder: false,
             },
             ticks: {
                 display: true,
                 count: 3,
                 color: `rgb(${getComputedStyle(document.documentElement).getPropertyValue('--color-400').trim()})`,
                 font: {
-                    family: theme('fontFamily.sans'),
+                    family: getComputedStyle(document.documentElement)
+                        .getPropertyValue('--font-sans')
+                        .split(',')
+                        .map((font) => font.trim())
+                        .join(', '),
                     size: 11,
-                    weight: '400',
+                    weight: 400,
                 },
             },
         },
@@ -95,11 +96,16 @@ function getEmptyData(label: string, sets = 1, callback?: ChartDatasetCallback |
                         fill: true,
                         label,
                         data: Array(20).fill(-5),
-                        borderColor: theme('colors.blue.400'),
-                        backgroundColor: hexToRgba(theme('colors.blue.700'), 0.5),
+                        borderColor: `rgb(${getComputedStyle(document.documentElement)
+                            .getPropertyValue('--color-400')
+                            .trim()})`,
+                        backgroundColor: hexToRgba(
+                            `rgb(${getComputedStyle(document.documentElement).getPropertyValue('--color-700').trim()})`,
+                            0.5,
+                        ),
                     },
-                    index
-                )
+                    index,
+                ),
             ),
     };
 }
@@ -112,9 +118,18 @@ interface UseChartOptions {
     callback?: ChartDatasetCallback | undefined;
 }
 
-function useChart(label: string, opts?: UseChartOptions) {
+interface ChartHook {
+    props: {
+        data: ChartData<'line'>;
+        options: ChartOptions<'line'>;
+    };
+    push: (items: number | null | (number | null)[]) => void;
+    clear: () => void;
+}
+
+function useChart(label: string, opts?: UseChartOptions): ChartHook {
     const options = getOptions(
-        typeof opts?.options === 'number' ? { scales: { y: { min: 0, suggestedMax: opts.options } } } : opts?.options
+        typeof opts?.options === 'number' ? { scales: { y: { min: 0, suggestedMax: opts.options } } } : opts?.options,
     );
     const [data, setData] = useState(getEmptyData(label, opts?.sets || 1, opts?.callback));
 
@@ -128,7 +143,7 @@ function useChart(label: string, opts?: UseChartOptions) {
                             ?.slice(1)
                             ?.concat(typeof item === 'number' ? Number(item.toFixed(2)) : item) ?? [],
                 })),
-            })
+            }),
         );
 
     const clear = () =>
@@ -138,13 +153,13 @@ function useChart(label: string, opts?: UseChartOptions) {
                     ...value,
                     data: Array(20).fill(-5),
                 })),
-            })
+            }),
         );
 
     return { props: { data, options }, push, clear };
 }
 
-function useChartTickLabel(label: string, max: number, tickLabel: string, roundTo?: number) {
+function useChartTickLabel(label: string, max: number, tickLabel: string, roundTo?: number): ChartHook {
     return useChart(label, {
         sets: 1,
         options: {

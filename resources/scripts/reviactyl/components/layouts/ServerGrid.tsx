@@ -132,24 +132,24 @@ export default ({
                                 stats?.status === 'offline'
                                     ? 'bg-danger/20 text-danger border border-danger/30'
                                     : stats?.status === 'running'
-                                    ? 'bg-success/20 text-success border border-success/30'
-                                    : stats?.status === 'starting'
-                                    ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                                    : stats?.status === 'stopping'
-                                    ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30'
-                                    : ''
+                                      ? 'bg-success/20 text-success border border-success/30'
+                                      : stats?.status === 'starting'
+                                        ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                                        : stats?.status === 'stopping'
+                                          ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30'
+                                          : ''
                             }
                         `}
                         >
                             {stats?.status === 'offline'
                                 ? t('server.offline')
                                 : stats?.status === 'running'
-                                ? t('server.online')
-                                : stats?.status === 'starting'
-                                ? t('server.starting')
-                                : stats?.status === 'stopping'
-                                ? t('server.stopping')
-                                : ''}
+                                  ? t('server.online')
+                                  : stats?.status === 'starting'
+                                    ? t('server.starting')
+                                    : stats?.status === 'stopping'
+                                      ? t('server.stopping')
+                                      : ''}
                         </span>
                     </div>
                     <div
@@ -162,7 +162,7 @@ export default ({
                         {!stats || isSuspended || server.isNodeUnderMaintenance ? (
                             isSuspended ? (
                                 <React.Fragment>
-                                    <StatBlock className='bg-danger/20 backdrop-blur-sm border border-danger/80'>
+                                    <StatBlock className='bg-danger/20 backdrop-blur-sm-xs border border-danger/80'>
                                         <p className='text-danger font-medium'>
                                             {server.status === 'suspended'
                                                 ? t('server.suspended')
@@ -172,7 +172,7 @@ export default ({
                                 </React.Fragment>
                             ) : server.isNodeUnderMaintenance ? (
                                 <React.Fragment>
-                                    <StatBlock className='backdrop-blur-sm bg-yellow-500/50 border border-yellow-500/70'>
+                                    <StatBlock className='backdrop-blur-xs bg-yellow-500/50 border border-yellow-500/70'>
                                         <span className='w-4 sm:w-5 text-yellow-400'>
                                             <FaTriangleExclamation />
                                         </span>
@@ -181,7 +181,7 @@ export default ({
                                 </React.Fragment>
                             ) : server.isTransferring || server.status ? (
                                 <React.Fragment>
-                                    <StatBlock className='backdrop-blur-sm bg-yellow-500/50 border border-yellow-500/70'>
+                                    <StatBlock className='backdrop-blur-xs bg-yellow-500/50 border border-yellow-500/70'>
                                         <span className='w-4 sm:w-5 text-yellow-400'>
                                             <FaTriangleExclamation />
                                         </span>
@@ -190,10 +190,10 @@ export default ({
                                             {server.isTransferring
                                                 ? t('server.transferring')
                                                 : server.status === 'installing'
-                                                ? t('server.installing')
-                                                : server.status === 'restoring_backup'
-                                                ? t('server.restoring-backup')
-                                                : t('server.unavailable')}
+                                                  ? t('server.installing')
+                                                  : server.status === 'restoring_backup'
+                                                    ? t('server.restoring-backup')
+                                                    : t('server.unavailable')}
                                         </p>
                                     </StatBlock>
                                 </React.Fragment>
@@ -202,7 +202,7 @@ export default ({
                             )
                         ) : (
                             <React.Fragment>
-                                <StatBlock className='backdrop-blur-sm bg-gray-600/20 border border-gray-600/50'>
+                                <StatBlock className='backdrop-blur-xs bg-gray-600/20 border border-gray-600/50'>
                                     <span className='w-4 sm:w-5 text-gray-300'>
                                         <FaGlobe />
                                     </span>
@@ -216,7 +216,7 @@ export default ({
                                             ))}
                                     </Blur>
                                 </StatBlock>
-                                <StatBlock className='backdrop-blur-sm bg-gray-600/20 border border-gray-600/50'>
+                                <StatBlock className='backdrop-blur-xs bg-gray-600/20 border border-gray-600/50'>
                                     <span className='w-4 sm:w-5 text-gray-300'>
                                         <FaMicrochip />
                                     </span>
@@ -225,7 +225,7 @@ export default ({
                                     </p>
                                     <span className='text-xs sm:text-sm text-gray-300'>/ {cpuLimit}</span>
                                 </StatBlock>
-                                <StatBlock className='backdrop-blur-sm bg-gray-600/20 border border-gray-600/50'>
+                                <StatBlock className='backdrop-blur-xs bg-gray-600/20 border border-gray-600/50'>
                                     <span className='w-4 sm:w-5 text-gray-300'>
                                         <FaMemory />
                                     </span>
@@ -234,7 +234,7 @@ export default ({
                                     </p>
                                     <span className='text-xs sm:text-sm text-gray-300'>/ {memoryLimit}</span>
                                 </StatBlock>
-                                <StatBlock className='backdrop-blur-sm bg-gray-600/20 border border-gray-600/50'>
+                                <StatBlock className='backdrop-blur-xs bg-gray-600/20 border border-gray-600/50'>
                                     <span className='w-4 sm:w-5 text-gray-300'>
                                         <FaFloppyDisk />
                                     </span>

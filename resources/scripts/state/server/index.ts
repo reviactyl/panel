@@ -120,5 +120,5 @@ export const ServerContext: ReturnType<typeof createContextStore<ServerStore>> =
             name: 'ServerStore',
             trace: true,
         }) as typeof reduxCompose,
-    }
+    },
 );

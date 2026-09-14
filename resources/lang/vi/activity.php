@@ -14,12 +14,12 @@ return [
         'using-sftp' => 'Sử dụng SFTP',
     ],
     'event' => [
-        'password-reset' => 'Password reset',
+        'password-reset' => 'Đặt lại mật khẩu',
     ],
     'auth' => [
         'fail' => 'Đăng nhập không thành công',
         'success' => 'Đã đăng nhập',
-        'passkey' => 'Logged in with passkey',
+        'passkey' => 'Đã đăng nhập bằng mật khẩu',
         'password-reset' => 'Đặt lại mật khẩu',
         'reset-password' => 'Yêu cầu đặt lại mật khẩu',
         'checkpoint' => 'Đã yêu cầu xác thực hai yếu tố',
@@ -38,8 +38,8 @@ return [
             'email-changed' => 'Đã thay đổi email từ :old thành :new',
             'password-changed' => 'Đã thay đổi mật khẩu',
             'language-changed' => 'Đã thay đổi ngôn ngữ từ :old thành :new',
-            'file-editor-changed' => 'Changed file editor from :old to :new',
-            'avatar-changed' => 'Changed avatar style from :old to :new',
+            'file-editor-changed' => 'Đã thay đổi trình soạn thảo tệp từ :old sang :new',
+            'avatar-changed' => 'Đã thay đổi kiểu ảnh đại diện từ :old sang :new',
         ],
         'api-key' => [
             'create' => 'Đã tạo khóa API mới :identifier',
@@ -54,8 +54,8 @@ return [
             'delete' => 'Xác thực hai yếu tố bị vô hiệu hóa',
         ],
         'passkey' => [
-            'create' => 'Registered a new passkey',
-            'delete' => 'Removed passkey :id',
+            'create' => 'Đã đăng ký một mật khẩu mới',
+            'delete' => 'Đã xóa mật khẩu :id',
         ],
     ],
     'server' => [
@@ -136,7 +136,7 @@ return [
         'settings' => [
             'rename' => 'Đã đổi tên máy chủ từ :old thành :new',
             'description' => 'Đã thay đổi mô tả máy chủ từ :old thành :new',
-            'category' => 'Changed server category',
+            'category' => 'Đã thay đổi danh mục máy chủ',
         ],
         'startup' => [
             'edit' => 'Đã thay đổi biến :variable từ ":old" thành ":new"',

@@ -3,14 +3,19 @@
 namespace Tests\Integration\Services\Servers;
 
 use App\Exceptions\Http\Connection\DaemonConnectionException;
+use App\Filament\Resources\Servers\Tables\ServersTable;
+use App\Filament\Resources\Users\RelationManagers\ServersRelationManager;
 use App\Models\Database;
 use App\Models\DatabaseHost;
 use App\Repositories\Agent\DaemonServerRepository;
 use App\Services\Databases\DatabaseManagementService;
 use App\Services\Servers\ServerDeletionService;
+use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Table;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use Illuminate\Database\Eloquent\Collection;
 use Mockery\MockInterface;
 use Tests\Integration\IntegrationTestCase;
 
@@ -156,5 +161,70 @@ class ServerDeletionServiceTest extends IntegrationTestCase
     private function getService(): ServerDeletionService
     {
         return $this->app->make(ServerDeletionService::class);
+    }
+
+    public function test_all_server_bulk_actions_clean_up_remote_resources(): void
+    {
+        foreach ($this->serverBulkActions() as $action) {
+            $server = $this->createServerModel();
+            $allocation = $server->allocation;
+            $allocation->update(['notes' => 'remove on deletion']);
+            $host = DatabaseHost::factory()->create();
+            $database = Database::factory()->create(['database_host_id' => $host->id, 'server_id' => $server->id]);
+
+            $this->databaseManagementService->expects('delete')
+                ->with(\Mockery::on(fn ($record) => $record->id === $database->id))
+                ->andReturnUsing(function ($record) use ($server): void {
+                    $this->assertDatabaseHas('servers', ['id' => $server->id]);
+                    $record->delete();
+                });
+            $this->daemonServerRepository->expects('setServer')
+                ->with(\Mockery::on(fn ($record) => $record->id === $server->id))
+                ->andReturnSelf();
+            $this->daemonServerRepository->expects('delete')->andReturnUsing(function () use ($server, $database): void {
+                $this->assertDatabaseMissing('databases', ['id' => $database->id]);
+                $this->assertDatabaseHas('servers', ['id' => $server->id]);
+            });
+
+            $action->process(null, ['records' => new Collection([$server])]);
+
+            $this->assertDatabaseMissing('servers', ['id' => $server->id]);
+            $this->assertDatabaseHas('allocations', ['id' => $allocation->id, 'server_id' => null, 'notes' => null]);
+        }
+    }
+
+    public function test_all_server_bulk_actions_retain_failed_servers_and_continue(): void
+    {
+        foreach ($this->serverBulkActions() as $action) {
+            $failed = $this->createServerModel();
+            $successful = $this->createServerModel();
+            $this->daemonServerRepository->expects('setServer')
+                ->with(\Mockery::on(fn ($record) => $record->id === $failed->id))
+                ->andReturnSelf();
+            $this->daemonServerRepository->expects('delete')->andThrow(
+                new DaemonConnectionException(new BadResponseException('Unavailable', new Request('DELETE', '/test'), new Response(500)))
+            );
+            $this->daemonServerRepository->expects('setServer')
+                ->with(\Mockery::on(fn ($record) => $record->id === $successful->id))
+                ->andReturnSelf();
+            $this->daemonServerRepository->expects('delete')->andReturnUndefined();
+
+            $action->process(null, ['records' => new Collection([$failed, $successful])]);
+
+            $this->assertDatabaseHas('servers', ['id' => $failed->id]);
+            $this->assertDatabaseMissing('servers', ['id' => $successful->id]);
+            $this->assertSame(1, (new \ReflectionProperty($action, 'bulkProcessingFailureWithoutMessageCount'))->getValue($action));
+        }
+    }
+
+    private function serverBulkActions(): array
+    {
+        $livewire = \Mockery::mock(HasTable::class)->shouldIgnoreMissing();
+
+        return [
+            ServersTable::configure(Table::make($livewire))->getBulkAction('delete'),
+            (new ServersRelationManager())->table(Table::make($livewire))->getBulkAction('delete'),
+            (new \App\Filament\Resources\Nodes\RelationManagers\ServersRelationManager())->table(Table::make($livewire))->getBulkAction('delete'),
+        ];
     }
 }

@@ -19,7 +19,7 @@ const LanguageSwitcher = () => {
     const setUserData = useStoreActions((actions: any) => actions.user.setUserData);
     const [languages, setLanguages] = useState<Record<string, LanguageInfo>>({});
     const [currentLang, setCurrentLang] = useState(
-        user?.language && user.language !== 'geo' ? user.language : serverLocale
+        user?.language && user.language !== 'geo' ? user.language : serverLocale,
     );
 
     useEffect(() => {

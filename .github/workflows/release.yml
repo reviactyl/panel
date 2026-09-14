@@ -3,6 +3,9 @@ on:
   push:
     tags:
       - "v26.*"
+
+permissions: {}
+
 jobs:
   release:
     name: Release
@@ -46,7 +49,7 @@ jobs:
           VERSION: ${{ github.ref_name }}
         run: |
           BRANCH=release/${{ env.VERSION }}
-          git config --local user.email 'ci@reviactyl.dev'
+          git config --local user.email 'ci@reviactyl.app'
           git config --local user.name 'Reviactyl CI'
           git checkout -b "$BRANCH"
           git push -u origin "$BRANCH"

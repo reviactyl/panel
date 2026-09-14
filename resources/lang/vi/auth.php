@@ -11,14 +11,14 @@ return [
     'password-label' => 'Mật khẩu',
 
     'login-button' => 'Đăng nhập',
-    'passkey-button' => 'Login with Passkey',
+    'passkey-button' => 'Đăng nhập bằng Passkey',
     'return' => 'Quay lại đăng nhập',
 
-    'passkey-unsupported' => 'Passkeys are not supported by this browser.',
-    'passkey-failed' => 'Unable to complete passkey login. Please try again.',
-    'passkey-no-credentials' => 'No passkey is available for this login. Use your password or register a passkey first.',
-    'passkey-security' => 'Passkey verification could not be completed securely on this device.',
-    'passkey-username-required' => 'Enter your username or email before using a passkey.',
+    'passkey-unsupported' => 'Trình duyệt này không hỗ trợ Passkeys.',
+    'passkey-failed' => 'Không thể hoàn tất việc đăng nhập bằng mật khẩu. Vui lòng thử lại.',
+    'passkey-no-credentials' => 'Không có mã truy cập nào cho tài khoản đăng nhập này. Vui lòng sử dụng mật khẩu của bạn hoặc đăng ký mã truy cập trước.',
+    'passkey-security' => 'Không thể hoàn tất quá trình xác minh mật khẩu một cách an toàn trên thiết bị này.',
+    'passkey-username-required' => 'Vui lòng nhập tên người dùng hoặc địa chỉ email trước khi sử dụng mã truy cập.',
 
     'social' => [
         'or' => 'OR',
@@ -64,14 +64,14 @@ return [
         'namefirst-label' => 'Tên',
         'namelast-label' => 'Họ',
         'email-label' => 'E-mail',
-        'username-label' => 'Username',
+        'username-label' => 'Tên người dùng',
         'password-label' => 'Mật khẩu',
         'min-length' => 'Mật khẩu phải có độ dài ít nhất 8 ký tự.',
         'confirm-label' => 'Xác nhận mật khẩu',
         'label' => 'Đăng ký',
-        'create-link' => 'Don\'t have an account? Create one',
+        'create-link' => 'Chưa có tài khoản? Hãy tạo một tài khoản',
         'create-account' => 'Tạo tài khoản',
-        'no-account' => 'Don\'t have an account?',
+        'no-account' => 'Bạn chưa có tài khoản?',
     ],
 
     'failed' => 'Không tìm thấy tài khoản nào phù hợp với thông tin xác thực đó.',
@@ -85,5 +85,5 @@ return [
     'throttle' => 'Quá nhiều lần thử đăng nhập. Vui lòng thử lại sau :seconds giây.',
     'password_requirements' => 'Mật khẩu phải có độ dài ít nhất 8 ký tự và phải là duy nhất cho trang này.',
     '2fa_must_be_enabled' => 'Quản trị viên đã yêu cầu bật Xác thực 2 yếu tố cho tài khoản của bạn để sử dụng Bảng điều khiển.',
-    'captcha-required' => 'Please complete the captcha challenge to continue.',
+    'captcha-required' => 'Vui lòng hoàn thành bài kiểm tra captcha để tiếp tục.',
 ];

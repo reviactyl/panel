@@ -14,12 +14,12 @@ return [
         'using-sftp' => 'SFTP का उपयोग कर रहा है',
     ],
     'event' => [
-        'password-reset' => 'Password reset',
+        'password-reset' => 'पासवर्ड रीसेट',
     ],
     'auth' => [
         'fail' => 'लॉगिन असफल',
         'success' => 'लॉगिन हुआ',
-        'passkey' => 'Logged in with passkey',
+        'passkey' => 'पासकी से लॉग इन',
         'password-reset' => 'पासवर्ड रीसेट किया गया',
         'reset-password' => 'पासवर्ड रीसेट का अनुरोध किया गया',
         'checkpoint' => 'दो-फैक्टर प्रमाणीकरण का अनुरोध किया गया',
@@ -38,8 +38,8 @@ return [
             'email-changed' => 'ईमेल :old से :new में बदला गया',
             'password-changed' => 'पासवर्ड बदल दिया गया',
             'language-changed' => 'भाषा को :old से :new में बदला गया',
-            'file-editor-changed' => 'Changed file editor from :old to :new',
-            'avatar-changed' => 'Changed avatar style from :old to :new',
+            'file-editor-changed' => 'फ़ाइल संपादक को :old से :new में बदला गया।',
+            'avatar-changed' => 'अवतार की शैली को :old से :new में बदला।',
         ],
         'api-key' => [
             'create' => 'नई API कुंजी :identifier बनाई गई',
@@ -54,8 +54,8 @@ return [
             'delete' => 'दो-फैक्टर प्रमाणीकरण अक्षम किया गया',
         ],
         'passkey' => [
-            'create' => 'Registered a new passkey',
-            'delete' => 'Removed passkey :id',
+            'create' => 'एक नई पासकी पंजीकृत की',
+            'delete' => 'पासकी हटाई गई :id',
         ],
     ],
     'server' => [
@@ -136,7 +136,7 @@ return [
         'settings' => [
             'rename' => 'सर्वर का नाम :old से :new में बदल दिया गया',
             'description' => 'सर्वर विवरण :old से :new में बदल दिया गया',
-            'category' => 'Changed server category',
+            'category' => 'सर्वर श्रेणी बदली गई',
         ],
         'startup' => [
             'edit' => ':variable वेरिएबल ":old" से ":new" में बदल दिया गया',

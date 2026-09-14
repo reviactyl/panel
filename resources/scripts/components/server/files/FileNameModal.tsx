@@ -4,7 +4,6 @@ import { object, string } from 'yup';
 import Field from '@/reviactyl/elements/Field';
 import { ServerContext } from '@/state/server';
 import { join } from 'pathe';
-import tw from 'twin.macro';
 import Button from '@/reviactyl/elements/Button';
 import { useTranslation } from 'react-i18next';
 
@@ -49,7 +48,7 @@ export default ({ onFileNamed, onDismissed, ...props }: Props) => {
                             description={t('file-name-description')}
                             autoFocus
                         />
-                        <div css={tw`mt-6 text-right`}>
+                        <div className='mt-6 text-right'>
                             <Button>{t('create-file')}</Button>
                         </div>
                     </Form>

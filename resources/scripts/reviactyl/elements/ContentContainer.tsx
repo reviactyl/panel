@@ -1,15 +1,8 @@
-import styled from 'styled-components';
-import { breakpoint } from '@/theme';
-import tw from 'twin.macro';
+import React from 'react';
+import classNames from 'classnames';
 
-const ContentContainer = styled.div`
-    max-width: 1200px;
-    ${tw`mx-4`};
-
-    ${breakpoint('xl')`
-        ${tw`mx-auto`};
-    `};
-`;
-ContentContainer.displayName = 'ContentContainer';
+const ContentContainer = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+    <div className={classNames('mx-4 max-w-[1200px] xl:mx-auto', className)} {...props} />
+);
 
 export default ContentContainer;

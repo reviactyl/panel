@@ -27,8 +27,8 @@ const ServerConsoleContainer = () => {
                     {isNodeUnderMaintenance
                         ? t('node-under-maintenance')
                         : isInstalling
-                        ? t('server-installing')
-                        : t('server-transferring')}
+                          ? t('server-installing')
+                          : t('server-transferring')}
                 </Alert>
             )}
             <ExtensionSlot name='server:console:above' />

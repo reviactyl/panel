@@ -8,7 +8,6 @@ import Spinner from '@/reviactyl/elements/Spinner';
 import CreateDatabaseButton from '@/components/server/databases/CreateDatabaseButton';
 import Can from '@/reviactyl/elements/Can';
 import useFlash from '@/plugins/useFlash';
-import tw from 'twin.macro';
 import Fade from '@/reviactyl/elements/Fade';
 import ServerContentBlock from '@/reviactyl/elements/ServerContentBlock';
 import { useDeepMemoize } from '@/plugins/useDeepMemoize';
@@ -43,7 +42,7 @@ export default () => {
 
     return (
         <ServerContentBlock title={t('title')}>
-            <FlashMessageRender byKey={'databases'} css={tw`mb-4`} />
+            <FlashMessageRender byKey={'databases'} className='mb-4' />
             <ExtensionSlot name='server:databases:above' />
             {!databases.length && loading ? (
                 <Spinner size={'large'} centered />
@@ -60,21 +59,23 @@ export default () => {
                             ))
                         ) : (
                             <Card>
-                                <p css={tw`flex justify-center text-center text-sm text-gray-400`}>
+                                <p className='flex justify-center text-center text-sm text-gray-400'>
                                     <DatabaseIcon className='w-5 h-5 mr-1' />
                                     {databaseLimit > 0 ? t('out-of-databases') : t('no-databases')}
                                 </p>
                             </Card>
                         )}
                         <Can action={'database.create'}>
-                            <div css={tw`mt-6 flex items-center justify-end`}>
+                            <div className='mt-6 flex items-center justify-end'>
                                 {databaseLimit > 0 && databases.length > 0 && (
-                                    <p css={tw`text-sm text-gray-300 mb-4 sm:mr-6 sm:mb-0`}>
+                                    <p className='text-sm text-gray-300 mb-4 sm:mr-6 sm:mb-0'>
                                         {t('created', { count: databases.length, limit: databaseLimit })}
                                     </p>
                                 )}
                                 {databaseLimit > 0 && databaseLimit !== databases.length && (
-                                    <CreateDatabaseButton css={tw`flex justify-end mt-6`} />
+                                    <div className='flex justify-end mt-6'>
+                                        <CreateDatabaseButton />
+                                    </div>
                                 )}
                             </div>
                         </Can>

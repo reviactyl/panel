@@ -9,7 +9,6 @@ import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
 import { Button } from '@/reviactyl/components/button/index';
-import tw from 'twin.macro';
 import Label from '@/reviactyl/elements/Label';
 import FormikFieldWrapper from '@/reviactyl/elements/FormikFieldWrapper';
 import { Textarea } from '@/reviactyl/elements/Input';
@@ -25,17 +24,17 @@ const RenameServerBox = () => {
     const { isSubmitting } = useFormikContext<Values>();
 
     return (
-        <TitledGreyBox title={t('rename.title')} css={tw`relative`}>
+        <TitledGreyBox title={t('rename.title')} className='relative'>
             <SpinnerOverlay visible={isSubmitting} />
-            <Form css={tw`mb-0`}>
+            <Form className='mb-0'>
                 <Field id={'name'} name={'name'} label={t('rename.name')} type={'text'} />
-                <div css={tw`mt-6`}>
+                <div className='mt-6'>
                     <Label>{t('rename.description')}</Label>
                     <FormikFieldWrapper name={'description'}>
                         <FormikField as={Textarea} name={'description'} rows={3} />
                     </FormikFieldWrapper>
                 </div>
-                <div css={tw`mt-6 text-right`}>
+                <div className='mt-6 text-right'>
                     <Button type={'submit'}>{t('rename.button')}</Button>
                 </div>
             </Form>

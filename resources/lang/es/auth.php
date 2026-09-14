@@ -11,14 +11,14 @@ return [
     'password-label' => 'Contraseña',
 
     'login-button' => 'Iniciar sesión',
-    'passkey-button' => 'Login with Passkey',
+    'passkey-button' => 'Iniciar sesión con Passkey',
     'return' => 'Volver al inicio de sesión',
 
-    'passkey-unsupported' => 'Passkeys are not supported by this browser.',
-    'passkey-failed' => 'Unable to complete passkey login. Please try again.',
-    'passkey-no-credentials' => 'No passkey is available for this login. Use your password or register a passkey first.',
-    'passkey-security' => 'Passkey verification could not be completed securely on this device.',
-    'passkey-username-required' => 'Enter your username or email before using a passkey.',
+    'passkey-unsupported' => 'Este navegador no es compatible con las claves de acceso.',
+    'passkey-failed' => 'No se ha podido completar el inicio de sesión con la clave de acceso. Inténtalo de nuevo.',
+    'passkey-no-credentials' => 'No hay ninguna clave de acceso disponible para este inicio de sesión. Utiliza tu contraseña o registra primero una clave de acceso.',
+    'passkey-security' => 'No se ha podido completar la verificación de la clave de acceso de forma segura en este dispositivo.',
+    'passkey-username-required' => 'Introduce tu nombre de usuario o tu correo electrónico antes de utilizar una clave de acceso.',
 
     'social' => [
         'or' => 'O',
@@ -64,14 +64,14 @@ return [
         'namefirst-label' => 'Nombre de pila',
         'namelast-label' => 'Apellido',
         'email-label' => 'Correo electrónico',
-        'username-label' => 'Username',
+        'username-label' => 'Nombre de usuario',
         'password-label' => 'Contraseña',
         'min-length' => 'Las contraseñas deben tener al menos 8 caracteres de longitud.',
         'confirm-label' => 'confirmar Contraseña',
         'label' => 'Registro',
-        'create-link' => 'Don\'t have an account? Create one',
+        'create-link' => '¿Aún no tienes una cuenta? Crea una',
         'create-account' => 'Crear una cuenta',
-        'no-account' => 'Don\'t have an account?',
+        'no-account' => '¿Aún no tienes una cuenta?',
     ],
 
     'failed' => 'No se pudo encontrar ninguna cuenta que coincida con esas credenciales.',
@@ -85,5 +85,5 @@ return [
     'throttle' => 'Demasiados intentos de inicio de sesión. Por favor, intenta de nuevo en :seconds segundos.',
     'password_requirements' => 'La contraseña debe tener al menos 8 caracteres y ser única para este sitio.',
     '2fa_must_be_enabled' => 'El administrador ha requerido que la autenticación de 2 factores esté habilitada para tu cuenta para usar el Panel.',
-    'captcha-required' => 'Please complete the captcha challenge to continue.',
+    'captcha-required' => 'Por favor, completa el captcha para continuar.',
 ];

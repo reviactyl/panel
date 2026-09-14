@@ -1,9 +1,6 @@
 import type { ReactNode } from 'react';
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import Spinner from '@/reviactyl/elements/Spinner';
-import tw from 'twin.macro';
-import styled, { css } from 'styled-components';
-import { breakpoint } from '@/theme';
 import FadeTransition from '@/reviactyl/elements/transitions/FadeTransition';
 import { createPortal } from 'react-dom';
 
@@ -24,54 +21,14 @@ export interface ModalProps extends RequiredModalProps {
     noScroll?: boolean;
 }
 
-export const ModalMask = styled.div`
-    ${tw`fixed z-[9999] overflow-auto flex w-full inset-0`};
-`;
-
-const ModalContainer = styled.div<{ alignTop?: boolean; size?: 'sm' | 'md' | 'lg' }>`
-    max-width: 95%;
-    max-height: calc(100vh - 8rem);
-
-    ${(props) =>
-        props.size === 'sm'
-            ? css`
-                  ${breakpoint('md')`max-width: 50%`};
-                  ${breakpoint('lg')`max-width: 35%`};
-              `
-            : props.size === 'lg'
-            ? css`
-                  ${breakpoint('md')`max-width: 90%`};
-                  ${breakpoint('lg')`max-width: 80%`};
-              `
-            : css`
-                  ${breakpoint('md')`max-width: 75%`};
-                  ${breakpoint('lg')`max-width: 50%`};
-              `};
-
-    ${tw`relative flex flex-col w-full m-auto`};
-
-    ${(props) =>
-        props.alignTop &&
-        css`
-            margin-top: 20%;
-            ${breakpoint('md')`margin-top: 10%`};
-        `};
-
-    margin-bottom: auto;
-
-    & > .close-icon {
-        ${tw`absolute right-0 p-2 text-white cursor-pointer opacity-50 transition-all duration-150 ease-linear hover:opacity-100`};
-        top: -2.5rem;
-
-        &:hover {
-            ${tw`transform rotate-90`}
-        }
-
-        & > svg {
-            ${tw`w-6 h-6`};
-        }
-    }
-`;
+export const ModalMask = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+    <div className={`fixed inset-0 z-[9999] flex w-full overflow-auto ${className || ''}`} {...props} />
+);
+const sizes = {
+    sm: 'md:max-w-[50%] lg:max-w-[35%]',
+    md: 'md:max-w-[75%] lg:max-w-[50%]',
+    lg: 'md:max-w-[90%] lg:max-w-[80%]',
+};
 
 function Modal({
     visible,
@@ -115,7 +72,7 @@ function Modal({
     return (
         <FadeTransition as={Fragment} show={render} duration='duration-150' appear={appear ?? true} unmount>
             <ModalMask
-                className='bg-gray-900/40 backdrop-blur-sm transition-all duration-300 ease-in-out'
+                className='bg-gray-900/40 backdrop-blur-sm-xs transition-all duration-300 ease-in-out'
                 onClick={(e: React.MouseEvent) => e.stopPropagation()}
                 onContextMenu={(e: React.MouseEvent) => e.stopPropagation()}
                 onMouseDown={(e: React.MouseEvent) => {
@@ -128,10 +85,14 @@ function Modal({
                     }
                 }}
             >
-                <ModalContainer alignTop={top} size={size}>
+                <div
+                    className={`relative m-auto mb-auto flex max-h-[calc(100vh-8rem)] w-full max-w-[95%] flex-col ${
+                        sizes[size]
+                    } ${top ? 'mt-[20%] md:mt-[10%]' : ''}`}
+                >
                     {isDismissable && (
                         <div
-                            className={'close-icon'}
+                            className='absolute -top-10 right-0 cursor-pointer p-2 text-white opacity-50 transition-all duration-150 ease-linear hover:rotate-90 hover:opacity-100 [&>svg]:h-6 [&>svg]:w-6'
                             onClick={() => {
                                 setRender(false);
                                 onDismissed();
@@ -154,21 +115,20 @@ function Modal({
                     )}
                     <FadeTransition duration='duration-150' show={showSpinnerOverlay ?? false} appear>
                         <div
-                            css={tw`absolute w-full h-full rounded flex items-center justify-center`}
+                            className='absolute flex h-full w-full items-center justify-center rounded'
                             style={{ background: 'hsla(211, 10%, 53%, 0.35)', zIndex: 9999 }}
                         >
                             <Spinner />
                         </div>
                     </FadeTransition>
                     <div
-                        css={[
-                            tw`bg-gray-900 border border-gray-800 p-3 sm:p-4 md:p-6 rounded-ui shadow-md transition-all duration-150`,
-                            noScroll ? tw`overflow-visible` : tw`overflow-y-scroll`,
-                        ]}
+                        className={`rounded-ui border border-gray-800 bg-gray-900 p-3 shadow-md transition-all duration-150 sm:p-4 md:p-6 ${
+                            noScroll ? 'overflow-visible' : 'overflow-y-scroll'
+                        }`}
                     >
                         {children}
                     </div>
-                </ModalContainer>
+                </div>
             </ModalMask>
         </FadeTransition>
     );

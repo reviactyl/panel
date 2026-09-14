@@ -44,7 +44,7 @@ const Fade = React.forwardRef<HTMLDivElement, Props>(
                 {children}
             </motion.div>
         );
-    }
+    },
 );
 Fade.displayName = 'Fade';
 

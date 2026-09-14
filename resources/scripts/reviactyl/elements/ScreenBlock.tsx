@@ -1,11 +1,10 @@
 import PageContentBlock from '@/reviactyl/elements/PageContentBlock';
 import { FaArrowLeft, FaArrowsRotate } from 'react-icons/fa6';
-import styled, { keyframes } from 'styled-components';
-import tw from 'twin.macro';
 import Button from '@/reviactyl/elements/Button';
 import NotFoundSvg from '@/assets/images/not_found.svg';
 import ServerErrorSvg from '@/assets/images/server_error.svg';
 import Card from '@/reviactyl/ui/Card';
+import styles from '@/reviactyl/elements/style.module.css';
 
 interface BaseProps {
     title: string;
@@ -27,30 +26,20 @@ interface PropsWithBack extends BaseProps {
 
 export type ScreenBlockProps = PropsWithBack | PropsWithRetry;
 
-const spin = keyframes`
-    to { transform: rotate(360deg) }
-`;
-
-const ActionButton = styled(Button)`
-    ${tw`rounded-full w-8 h-8 flex items-center justify-center p-0`};
-
-    &.hover\\:spin:hover {
-        animation: ${spin} 2s linear infinite;
-    }
-`;
-
 const ScreenBlock = ({ title, image, message, onBack, onRetry }: ScreenBlockProps) => (
     <PageContentBlock>
-        <div css={tw`flex justify-center`}>
-            <Card css={tw`w-full sm:w-3/4 md:w-1/2 p-12 md:p-20 relative`}>
+        <div className='flex justify-center'>
+            <Card className='relative w-full p-12 sm:w-3/4 md:w-1/2 md:p-20'>
                 {(typeof onBack === 'function' || typeof onRetry === 'function') && (
-                    <div css={tw`absolute left-0 top-0 ml-4 mt-4`}>
-                        <ActionButton
+                    <div className='absolute top-0 left-0 mt-4 ml-4'>
+                        <Button
                             onClick={() => (onRetry ? onRetry() : onBack ? onBack() : null)}
-                            className={onRetry ? 'hover:spin' : undefined}
+                            className={`flex h-8 w-8 items-center justify-center rounded-full p-0 ${
+                                onRetry ? styles.retryButton : ''
+                            }`}
                         >
                             {onRetry ? <FaArrowsRotate /> : <FaArrowLeft />}
-                        </ActionButton>
+                        </Button>
                     </div>
                 )}
                 <div className='grid grid-rows-2 gap-x-4 items-center grid-cols-[auto,1fr]'>

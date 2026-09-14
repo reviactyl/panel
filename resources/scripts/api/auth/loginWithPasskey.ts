@@ -73,7 +73,7 @@ export default async (username?: string): Promise<LoginResponse> => {
             },
             // Avoid ambiguous X-XSRF-TOKEN when duplicate cookies exist in tunneled environments.
             xsrfCookieName: '__reviactyl_ignore_xsrf_cookie__',
-        }
+        },
     );
 
     let assertion;
@@ -92,7 +92,7 @@ export default async (username?: string): Promise<LoginResponse> => {
                 'X-XSRF-TOKEN': xsrfToken,
             },
             xsrfCookieName: '__reviactyl_ignore_xsrf_cookie__',
-        }
+        },
     );
 
     return {

@@ -40,7 +40,7 @@ class TelemetryCollectionService
             return;
         }
 
-        Http::post('https://telemetry.reviactyl.dev', $data);
+        Http::post('https://telemetry.reviactyl.app', $data);
     }
 
     /**
