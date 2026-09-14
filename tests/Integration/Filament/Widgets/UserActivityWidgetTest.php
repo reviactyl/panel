@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Filament\Widgets;
+namespace Tests\Integration\Filament\Widgets;
 
 use App\Filament\Widgets\UserActivityWidget;
 use App\Models\User;
@@ -10,9 +10,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Mockery\MockInterface;
-use Tests\TestCase;
+use Tests\Integration\IntegrationTestCase;
 
-class UserActivityWidgetTest extends TestCase
+class UserActivityWidgetTest extends IntegrationTestCase
 {
     use RefreshDatabase;
 
