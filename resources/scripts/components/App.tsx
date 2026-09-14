@@ -82,12 +82,7 @@ function App() {
                 <LocaleLoader />
                 <ProgressBar />
                 <div className='mx-auto w-auto'>
-                    <BrowserRouter
-                        future={{
-                            v7_startTransition: true,
-                            v7_relativeSplatPath: true,
-                        }}
-                    >
+                    <BrowserRouter>
                         <SubuserPreviewProvider>
                             <SubuserPreviewFrame>
                                 <Routes>

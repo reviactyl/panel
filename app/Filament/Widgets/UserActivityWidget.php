@@ -2,15 +2,12 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\User;
-use App\Services\Helpers\GeoIPService;
+use App\Jobs\Administration\RefreshUserActivityLocationsJob;
 use BackedEnum;
 use Filament\Support\RawJs;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Js;
 
 class UserActivityWidget extends ChartWidget
@@ -143,63 +140,6 @@ class UserActivityWidget extends ChartWidget
      */
     private function getCountryDistribution(): array
     {
-        return Cache::remember('metric:active_user_country_distribution_v2', 3600, function () {
-            $geoIPService = app(GeoIPService::class);
-            $userMorphType = (new User())->getMorphClass();
-            $activeSince = now()->subDays(30);
-            $latestActivityIds = DB::table('activity_logs as activity')
-                ->join('users', 'users.id', '=', 'activity.actor_id')
-                ->where('activity.timestamp', '>=', $activeSince)
-                ->where('activity.actor_type', $userMorphType)
-                ->whereNotExists(function (Builder $query) use ($activeSince, $userMorphType): void {
-                    $query->selectRaw('1')
-                        ->from('activity_logs as newer_activity')
-                        ->whereColumn('newer_activity.actor_id', 'activity.actor_id')
-                        ->where('newer_activity.actor_type', $userMorphType)
-                        ->where('newer_activity.timestamp', '>=', $activeSince)
-                        ->where(function (Builder $query): void {
-                            $query->whereColumn('newer_activity.timestamp', '>', 'activity.timestamp')
-                                ->orWhere(function (Builder $query): void {
-                                    $query->whereColumn('newer_activity.timestamp', 'activity.timestamp')
-                                        ->whereColumn('newer_activity.id', '>', 'activity.id');
-                                });
-                        });
-                })
-                ->select('activity.id');
-            $recentIpCounts = DB::table('activity_logs')
-                ->whereIn('id', $latestActivityIds)
-                ->select('ip')
-                ->selectRaw('COUNT(*) as user_count')
-                ->groupBy('ip')
-                ->cursor();
-
-            $countryData = [];
-
-            foreach ($recentIpCounts as $activity) {
-                $info = $geoIPService->getCountryInfo((string) $activity->ip);
-
-                if (! $info || $info['country'] === 'Unknown') {
-                    $info = [
-                        'country' => 'Unknown',
-                        'code' => 'UNKNOWN',
-                    ];
-                }
-
-                $key = $info['code'];
-                $countryData[$key] ??= [
-                    'country' => $info['country'],
-                    'code' => $info['code'],
-                    'count' => 0,
-                ];
-                $countryData[$key]['count'] += (int) $activity->user_count;
-            }
-
-            usort(
-                $countryData,
-                fn (array $a, array $b): int => ($b['count'] <=> $a['count']) ?: ($a['country'] <=> $b['country'])
-            );
-
-            return $countryData;
-        });
+        return Cache::get(RefreshUserActivityLocationsJob::CACHE_KEY, []);
     }
 }
