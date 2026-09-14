@@ -13,10 +13,13 @@ use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Bus\UniqueLock;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
+use Illuminate\Support\Facades\Cache;
 
 class SoftwareUpdates extends Page
 {
     private const BUSY_STATES = ['queued', 'downloading', 'validating', 'backing_up', 'installing', 'migrating', 'restarting'];
+
+    private const PANEL_UPDATE_ADMISSION_LOCK = 'software-update:panel:admission';
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-arrow-path';
 
@@ -78,24 +81,10 @@ class SoftwareUpdates extends Page
     public function refreshUpdates(): void
     {
         $this->normalizeChannel();
+        $this->refreshPanel();
+
         $versions = app(SoftwareVersionService::class);
-        $installationTypes = app(InstallationTypeService::class);
         $statuses = app(SoftwareUpdateStatusService::class);
-        $latestPanel = $versions->getPanel($this->channel);
-        $currentPanel = (string) config('app.version');
-
-        $this->panel = [
-            'current' => $currentPanel,
-            'latest' => $latestPanel,
-            'latest_available' => $latestPanel !== 'error',
-            'installation_type' => $installationTypes->panel(),
-            'automatic_supported' => $installationTypes->panelSupportsAutomaticUpdates(),
-            'automatic_error' => $installationTypes->panelAutomaticUpdateError(),
-            'outdated' => $latestPanel !== 'error' && ! $versions->isLatestPanel($this->channel),
-            'status' => $statuses->get($statuses->panelKey()),
-        ];
-        $this->panelUpdateInProgress = $this->updateInProgress($this->panel['status']);
-
         $repository = app(DaemonConfigurationRepository::class);
         $latestAgent = $versions->getDaemon($this->channel);
         $this->agents = Node::query()->orderBy('name')->get()->map(function (Node $node) use ($repository, $latestAgent, $versions, $statuses): array {
@@ -143,31 +132,44 @@ class SoftwareUpdates extends Page
 
     public function updatePanel(): void
     {
-        $this->refreshUpdates();
-        $installationTypes = app(InstallationTypeService::class);
-        if (
-            ! $installationTypes->panelSupportsAutomaticUpdates()
-            || ! ($this->panel['outdated'] ?? false)
-            || $this->updateInProgress($this->panel['status'] ?? null)
-        ) {
-            Notification::make()->warning()->title(trans('admin/updates.unavailable'))->send();
+        $lock = Cache::lock(self::PANEL_UPDATE_ADMISSION_LOCK, 120);
+        if (! $lock->get()) {
+            Notification::make()->warning()->title(trans('admin/updates.already_running'))->send();
 
             return;
         }
 
-        $version = (string) $this->panel['latest'];
-        $statuses = app(SoftwareUpdateStatusService::class);
-        $statuses->set($statuses->panelKey(), 'queued', trans('admin/updates.status.queued'), $version);
         try {
-            UpdatePanelJob::dispatch($version, $this->channel);
-        } catch (\Throwable $exception) {
-            $statuses->set($statuses->panelKey(), 'failed', trans('admin/updates.status.panel_failed'), $version);
-            report($exception);
-            Notification::make()->danger()->title(trans('admin/updates.status.panel_failed'))->send();
-            $this->panel['status'] = $statuses->get($statuses->panelKey());
+            $this->normalizeChannel();
+            $this->refreshPanel();
+            $installationTypes = app(InstallationTypeService::class);
+            if (
+                ! $installationTypes->panelSupportsAutomaticUpdates()
+                || ! ($this->panel['outdated'] ?? false)
+                || $this->updateInProgress($this->panel['status'] ?? null)
+            ) {
+                Notification::make()->warning()->title(trans('admin/updates.unavailable'))->send();
 
-            return;
+                return;
+            }
+
+            $version = (string) $this->panel['latest'];
+            $statuses = app(SoftwareUpdateStatusService::class);
+            $statuses->set($statuses->panelKey(), 'queued', trans('admin/updates.status.queued'), $version);
+            try {
+                UpdatePanelJob::dispatch($version, $this->channel);
+            } catch (\Throwable $exception) {
+                $statuses->set($statuses->panelKey(), 'failed', trans('admin/updates.status.panel_failed'), $version);
+                report($exception);
+                Notification::make()->danger()->title(trans('admin/updates.status.panel_failed'))->send();
+                $this->panel['status'] = $statuses->get($statuses->panelKey());
+
+                return;
+            }
+        } finally {
+            $lock->release();
         }
+
         Notification::make()->success()->title(trans('admin/updates.panel_queued'))->send();
         $this->refreshUpdates();
     }
@@ -256,6 +258,27 @@ class SoftwareUpdates extends Page
     private function updateInProgress(?array $status): bool
     {
         return in_array($status['state'] ?? null, self::BUSY_STATES, true);
+    }
+
+    private function refreshPanel(): void
+    {
+        $versions = app(SoftwareVersionService::class);
+        $installationTypes = app(InstallationTypeService::class);
+        $statuses = app(SoftwareUpdateStatusService::class);
+        $latestPanel = $versions->getPanel($this->channel);
+        $currentPanel = (string) config('app.version');
+
+        $this->panel = [
+            'current' => $currentPanel,
+            'latest' => $latestPanel,
+            'latest_available' => $latestPanel !== 'error',
+            'installation_type' => $installationTypes->panel(),
+            'automatic_supported' => $installationTypes->panelSupportsAutomaticUpdates(),
+            'automatic_error' => $installationTypes->panelAutomaticUpdateError(),
+            'outdated' => $latestPanel !== 'error' && ! $versions->isLatestPanel($this->channel),
+            'status' => $statuses->get($statuses->panelKey()),
+        ];
+        $this->panelUpdateInProgress = $this->updateInProgress($this->panel['status']);
     }
 
     private function dispatchAgentUpdate(SoftwareUpdateStatusService $statuses, int $nodeId, string $version): bool

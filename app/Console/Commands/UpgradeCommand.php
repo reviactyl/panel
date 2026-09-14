@@ -26,13 +26,13 @@ class UpgradeCommand extends Command
             return self::FAILURE;
         }
 
-        $version = $versions->getPanel();
+        $version = $versions->getPanel('stable');
         if ($version === 'error') {
             $this->error('Unable to resolve the latest Panel release.');
 
             return self::FAILURE;
         }
-        if ($versions->isLatestPanel()) {
+        if ($versions->isLatestPanel('stable')) {
             $this->info('The Panel is already up to date.');
 
             return self::SUCCESS;

@@ -9,6 +9,8 @@
         panelUpdateRequested: {{ $panelBusy ? 'true' : 'false' }},
         pollTimer: null,
         panelUpdatePollTimer: null,
+        panelUpdatePollController: null,
+        panelUpdatePollingActive: false,
         panelWasUnavailable: false,
         panelUpdateStartedAt: null,
         panelUpdateRequestRejected: false,
@@ -28,57 +30,82 @@
             this.pollTimer = null
         },
         startPanelUpdatePolling() {
-            if (this.panelUpdatePollTimer) return
+            if (this.panelUpdatePollingActive) return
 
+            this.panelUpdatePollingActive = true
             this.panelUpdateStartedAt ??= Date.now()
-            this.panelUpdatePollTimer = setInterval(async () => {
-                try {
-                    const url = new URL('/admin/software-updates/status', window.location.origin)
-                    url.searchParams.set('update-poll', Date.now().toString())
-                    const response = await fetch(url, {
-                        cache: 'no-store',
-                        credentials: 'same-origin',
-                        headers: { Accept: 'application/json' },
-                    })
+            this.pollPanelUpdate()
+        },
+        async pollPanelUpdate() {
+            if (!this.panelUpdatePollingActive) return
 
-                    if (response.status >= 500) {
-                        this.panelWasUnavailable = true
-                        return
-                    }
+            if (Date.now() - this.panelUpdateStartedAt >= 900000) {
+                this.panelUpdatePollingActive = false
+                window.location.reload()
+                return
+            }
 
-                    if (!response.ok) {
-                        if (this.panelWasUnavailable && response.status === 404) window.location.reload()
+            const controller = new AbortController()
+            this.panelUpdatePollController = controller
+            const requestTimeout = setTimeout(() => controller.abort(), 5000)
 
-                        return
-                    }
+            try {
+                const url = new URL('/admin/software-updates/status', window.location.origin)
+                url.searchParams.set('update-poll', Date.now().toString())
+                const response = await fetch(url, {
+                    cache: 'no-store',
+                    credentials: 'same-origin',
+                    headers: { Accept: 'application/json' },
+                    signal: controller.signal,
+                })
 
-                    const status = await response.json()
-                    if (this.panelUpdateRequestRejected && status.state === 'idle') {
-                        this.panelUpdateRequested = false
-                        this.panelUpdateRequestRejected = false
-                        this.stopPanelUpdatePolling()
-                        this.startPolling()
+                if (response.status >= 500) {
+                    this.panelWasUnavailable = true
+                    return
+                }
 
-                        return
-                    }
-
-                    if (
-                        ['complete', 'failed'].includes(status.state)
-                        || this.panelWasUnavailable
-                        || Date.now() - this.panelUpdateStartedAt >= 900000
-                    ) {
+                if (!response.ok) {
+                    if (this.panelWasUnavailable && response.status === 404) {
+                        this.panelUpdatePollingActive = false
                         window.location.reload()
                     }
-                } catch {
-                    this.panelWasUnavailable = true
+
+                    return
                 }
-            }, 1000)
+
+                const status = await response.json()
+                if (this.panelUpdateRequestRejected && status.state === 'idle') {
+                    this.panelUpdateRequested = false
+                    this.panelUpdateRequestRejected = false
+                    this.stopPanelUpdatePolling()
+                    this.startPolling()
+
+                    return
+                }
+
+                if (['complete', 'failed'].includes(status.state) || this.panelWasUnavailable) {
+                    this.panelUpdatePollingActive = false
+                    window.location.reload()
+                }
+            } catch {
+                if (this.panelUpdatePollingActive) this.panelWasUnavailable = true
+            } finally {
+                clearTimeout(requestTimeout)
+                if (this.panelUpdatePollController === controller) this.panelUpdatePollController = null
+                if (this.panelUpdatePollingActive) {
+                    this.panelUpdatePollTimer = setTimeout(() => {
+                        this.panelUpdatePollTimer = null
+                        this.pollPanelUpdate()
+                    }, 1000)
+                }
+            }
         },
         stopPanelUpdatePolling() {
-            if (!this.panelUpdatePollTimer) return
-
-            clearInterval(this.panelUpdatePollTimer)
+            this.panelUpdatePollingActive = false
+            clearTimeout(this.panelUpdatePollTimer)
             this.panelUpdatePollTimer = null
+            this.panelUpdatePollController?.abort()
+            this.panelUpdatePollController = null
         },
         destroy() {
             this.stopPolling()

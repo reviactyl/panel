@@ -9,6 +9,7 @@ use App\Models\Node;
 use App\Models\User;
 use App\Repositories\Agent\DaemonConfigurationRepository;
 use App\Services\Helpers\SoftwareVersionService;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Queue;
 use Livewire\Livewire;
 use Mockery;
@@ -51,9 +52,13 @@ class SoftwareUpdatesTest extends IntegrationTestCase
             ->assertSee('Test Agent')
             ->assertSee('panelUpdateRequested', false)
             ->assertSee('panelUpdatePollTimer', false)
+            ->assertSee('panelUpdatePollController', false)
+            ->assertSee('panelUpdatePollingActive', false)
             ->assertSee('panelWasUnavailable', false)
             ->assertSee('panelUpdateRequestRejected', false)
             ->assertSee('fetch(url', false)
+            ->assertSee('new AbortController()', false)
+            ->assertSee('signal: controller.signal', false)
             ->assertSee("status.state === 'idle'", false)
             ->assertSee('window.location.reload()', false)
             ->assertSee('wire:loading.flex', false)
@@ -90,5 +95,31 @@ class SoftwareUpdatesTest extends IntegrationTestCase
                 'state' => 'queued',
                 'version' => '26.10.0-rc.1',
             ]);
+    }
+
+    public function test_panel_update_admission_is_serialized(): void
+    {
+        $this->actingAs(User::factory()->create(['root_admin' => 1]));
+        config()->set('panel.installation_type', 'native');
+        config()->set('app.version', '26.09.0');
+        Queue::fake();
+        $versions = Mockery::mock(SoftwareVersionService::class);
+        $versions->shouldReceive('getPanel')->with('stable')->andReturn('26.09.1');
+        $versions->shouldReceive('getDaemon')->with('stable')->andReturn('error');
+        $versions->shouldReceive('isLatestPanel')->with('stable')->andReturnFalse();
+        $this->app->instance(SoftwareVersionService::class, $versions);
+
+        $lock = Cache::lock('software-update:panel:admission', 120);
+        $this->assertTrue($lock->get());
+
+        try {
+            Livewire::test(SoftwareUpdates::class)
+                ->call('updatePanel')
+                ->assertHasNoErrors();
+
+            Queue::assertNothingPushed();
+        } finally {
+            $lock->release();
+        }
     }
 }
