@@ -8,8 +8,12 @@ return [
         'settings' => 'الإعدادات',
         'api' => 'مفتاح واجهة البرمجة',
         'activity_log' => 'سجل النشاطات',
-        'user_activity_metrics' => 'إحصائيات نشاط المستخدمين',
+        'user_activity_metrics' => 'Active User Locations',
+        'user_activity_description' => 'Location of active users in the past 30 days.',
+        'active_users' => 'Active users',
         'no_data' => 'لا توجد بيانات متاحة.',
+        'other' => 'Other',
+        'unknown' => 'Unknown',
     ],
     'management' => [
         'title' => 'التحكم',
