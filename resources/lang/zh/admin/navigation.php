@@ -8,8 +8,12 @@ return [
         'settings' => '设置',
         'api' => '应用 API',
         'activity_log' => '活动日志',
-        'user_activity_metrics' => '用户活动指标',
+        'user_activity_metrics' => 'Active User Locations',
+        'user_activity_description' => 'Location of active users in the past 30 days.',
+        'active_users' => 'Active users',
         'no_data' => '暂无数据。',
+        'other' => 'Other',
+        'unknown' => 'Unknown',
     ],
     'management' => [
         'title' => '管理',
