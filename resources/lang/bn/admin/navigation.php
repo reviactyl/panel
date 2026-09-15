@@ -8,8 +8,12 @@ return [
         'settings' => 'সেটিংস',
         'api' => 'অ্যাপ্লিকেশন API',
         'activity_log' => 'কার্যকলাপ লগ',
-        'user_activity_metrics' => 'ইউজার কার্যকলাপ মেট্রিক্স',
+        'user_activity_metrics' => 'Active User Locations',
+        'user_activity_description' => 'Location of active users in the past 30 days.',
+        'active_users' => 'Active users',
         'no_data' => 'কোনো ডাটা উপলব্ধ নেই।',
+        'other' => 'Other',
+        'unknown' => 'Unknown',
     ],
     'management' => [
         'title' => 'ম্যানেজমেন্ট',
