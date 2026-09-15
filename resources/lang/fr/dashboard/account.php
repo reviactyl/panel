@@ -19,7 +19,7 @@ return [
         'customization' => 'Personnalisation',
         'language' => 'Language du Panel',
         'editor' => 'Éditeur de fichiers préféré',
-        'smart-invert' => 'Thême négatif',
+        'theme-toggle' => 'Theme Toggle',
         'on' => 'Désactivé',
         'off' => 'Activé',
         'loading' => 'Chargement...',
