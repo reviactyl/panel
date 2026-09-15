@@ -8,8 +8,12 @@ return [
         'settings' => 'Paramètres',
         'api' => 'API',
         'activity_log' => 'Journal d’activité',
-        'user_activity_metrics' => 'Indicateurs d’activité des utilisateurs',
+        'user_activity_metrics' => 'Localisation des utilisateurs actifs',
+        'user_activity_description' => 'Localisation des utilisateurs actifs au cours des 30 derniers jours.',
+        'active_users' => 'Utilisateurs actifs',
         'no_data' => 'Aucune donnée disponible.',
+        'other' => 'Autres',
+        'unknown' => 'Inconnu',
     ],
     'management' => [
         'title' => 'Gestion',
