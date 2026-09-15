@@ -8,8 +8,12 @@ return [
         'settings' => 'Pengaturan',
         'api' => 'API Aplikasi',
         'activity_log' => 'Catatan Aktivitas',
-        'user_activity_metrics' => 'Metrik Aktivitas Pengguna',
+        'user_activity_metrics' => 'Active User Locations',
+        'user_activity_description' => 'Location of active users in the past 30 days.',
+        'active_users' => 'Active users',
         'no_data' => 'Tidak ada data yang tersedia.',
+        'other' => 'Other',
+        'unknown' => 'Unknown',
     ],
     'management' => [
         'title' => 'Manajemen',
