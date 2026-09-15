@@ -8,8 +8,12 @@ return [
         'settings' => 'सेटिंग्स',
         'api' => 'एप्लिकेशन API',
         'activity_log' => 'गतिविधि लॉग',
-        'user_activity_metrics' => 'उपयोगकर्ता गतिविधि मेट्रिक्स',
+        'user_activity_metrics' => 'Active User Locations',
+        'user_activity_description' => 'Location of active users in the past 30 days.',
+        'active_users' => 'Active users',
         'no_data' => 'कोई डेटा मौजूद नहीं।',
+        'other' => 'Other',
+        'unknown' => 'Unknown',
     ],
     'management' => [
         'title' => 'प्रबंध',
