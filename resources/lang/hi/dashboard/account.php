@@ -19,7 +19,7 @@ return [
         'customization' => 'अनुकूलन',
         'language' => 'पैनल भाषा',
         'editor' => 'पसंदीदा फ़ाइल संपादक',
-        'smart-invert' => 'स्मार्ट इनवर्ट',
+        'theme-toggle' => 'Theme Toggle',
         'on' => 'चालू',
         'off' => 'बंद',
         'loading' => 'लोड हो रहा है...',
