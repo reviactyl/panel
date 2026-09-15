@@ -19,7 +19,7 @@ return [
         'customization' => 'কাস্টমাইজেশন',
         'language' => 'প্যানেলের ভাষা',
         'editor' => 'পছন্দের ফাইল এডিটর',
-        'smart-invert' => 'স্মার্ট ইনভার্ট',
+        'theme-toggle' => 'Theme Toggle',
         'on' => 'চালু',
         'off' => 'বন্ধ',
         'loading' => 'লোড হচ্ছে...',
