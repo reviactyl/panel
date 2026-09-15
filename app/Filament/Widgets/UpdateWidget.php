@@ -2,7 +2,9 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Pages\SoftwareUpdates;
 use App\Services\Helpers\SoftwareVersionService;
+use App\Services\Updates\InstallationTypeService;
 use Filament\Actions\Action;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
@@ -34,7 +36,12 @@ class UpdateWidget extends BaseWidget
                     Action::make('update')
                         ->label(trans('admin/index.update-btn'))
                         ->icon('heroicon-c-cursor-arrow-rays')
-                        ->url('https://reviactyl.app/docs/panel/updating-the-panel', true)
+                        ->url(
+                            fn (): string => app(InstallationTypeService::class)->panelSupportsAutomaticUpdates()
+                                ? SoftwareUpdates::getUrl()
+                                : 'https://reviactyl.app/docs/panel/updating-the-panel',
+                            fn (): bool => ! app(InstallationTypeService::class)->panelSupportsAutomaticUpdates(),
+                        )
                         ->color('warning'),
                 ])
                 ->schema([
