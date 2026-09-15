@@ -19,7 +19,7 @@ return [
         'customization' => 'Tùy chỉnh',
         'language' => 'Ngôn ngữ bảng điều khiển',
         'editor' => 'Trình chỉnh sửa tệp ưa thích',
-        'smart-invert' => 'Đảo ngược thông minh',
+        'theme-toggle' => 'Theme Toggle',
         'on' => 'TRÊN',
         'off' => 'Tắt',
         'loading' => 'Đang tải...',

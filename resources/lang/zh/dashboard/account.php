@@ -19,7 +19,7 @@ return [
         'customization' => '自定义设置',
         'language' => '面板语言',
         'editor' => '首选文件编辑器',
-        'smart-invert' => '智能反色',
+        'theme-toggle' => 'Theme Toggle',
         'on' => '开启',
         'off' => '关闭',
         'loading' => '加载中……',

@@ -19,7 +19,7 @@ return [
         'customization' => 'Özelleştirme',
         'language' => 'Panel Dili',
         'editor' => 'Tercih Edilen Dosya Düzenleyici',
-        'smart-invert' => 'Akıllı Ters Çevirme',
+        'theme-toggle' => 'Theme Toggle',
         'on' => 'Açık',
         'off' => 'Kapalı',
         'loading' => 'Yükleniyor...',

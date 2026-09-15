@@ -19,7 +19,7 @@ return [
         'customization' => 'Anpassning',
         'language' => 'Panel språk',
         'editor' => 'Föredragen filredigerare',
-        'smart-invert' => 'Smart Invert',
+        'theme-toggle' => 'Theme Toggle',
         'on' => 'På',
         'off' => 'Av',
         'loading' => 'Laddar',
