@@ -8,8 +8,12 @@ return [
         'settings' => 'Cài đặt',
         'api' => 'API ứng dụng',
         'activity_log' => 'Nhật ký hoạt động',
-        'user_activity_metrics' => 'Số liệu hoạt động của người dùng',
+        'user_activity_metrics' => 'Active User Locations',
+        'user_activity_description' => 'Location of active users in the past 30 days.',
+        'active_users' => 'Active users',
         'no_data' => 'Không có dữ liệu có sẵn.',
+        'other' => 'Other',
+        'unknown' => 'Unknown',
     ],
     'management' => [
         'title' => 'Sự quản lý',
