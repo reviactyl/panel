@@ -19,7 +19,7 @@ return [
         'customization' => 'Kustomisasi',
         'language' => 'Bahasa Panel',
         'editor' => 'Editor File Pilihan',
-        'smart-invert' => 'Pembalikan Cerdas',
+        'theme-toggle' => 'Theme Toggle',
         'on' => 'Nyala',
         'off' => 'Mati',
         'loading' => 'Memuat...',
