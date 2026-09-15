@@ -8,8 +8,12 @@ return [
         'settings' => 'ಸೆಟ್ಟಿಂಗ್‌ಗಳು',
         'api' => 'ಅಪ್ಲಿಕೇಶನ್ API',
         'activity_log' => 'ಚಟುವಟಿಕೆ ಲಾಗ್',
-        'user_activity_metrics' => 'ಬಳಕೆದಾರರ ಚಟುವಟಿಕೆ ಮೆಟ್ರಿಕ್ಸ್',
+        'user_activity_metrics' => 'Active User Locations',
+        'user_activity_description' => 'Location of active users in the past 30 days.',
+        'active_users' => 'Active users',
         'no_data' => 'ಯಾವುದೇ ಡೇಟಾ ಲಭ್ಯವಿಲ್ಲ.',
+        'other' => 'Other',
+        'unknown' => 'Unknown',
     ],
     'management' => [
         'title' => 'ನಿರ್ವಹಣೆ',
