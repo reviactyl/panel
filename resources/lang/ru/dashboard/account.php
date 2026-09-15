@@ -19,7 +19,7 @@ return [
         'customization' => 'Персонализация',
         'language' => 'Язык панели',
         'editor' => 'Предпочитаемый редактор файлов',
-        'smart-invert' => 'Умная инверсия',
+        'theme-toggle' => 'Theme Toggle',
         'on' => 'Вкл.',
         'off' => 'Выкл.',
         'loading' => 'Загрузка...',
