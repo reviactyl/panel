@@ -6,6 +6,7 @@ use App\Console\Commands\Maintenance\CleanServiceBackupFilesCommand;
 use App\Console\Commands\Maintenance\PruneOrphanedBackupsCommand;
 use App\Console\Commands\Schedule\ProcessRunnableCommand;
 use App\Exceptions\Model\DataValidationException;
+use App\Jobs\Administration\RefreshUserActivityLocationsJob;
 use App\Models\ActivityLog;
 use App\Models\SubuserPreviewSession;
 use App\Repositories\Eloquent\SettingsRepository;
@@ -50,6 +51,7 @@ class Kernel extends ConsoleKernel
         }
 
         $schedule->command('server:capture-stats')->everyTenMinutes();
+        $schedule->job(new RefreshUserActivityLocationsJob())->everyTenMinutes()->withoutOverlapping();
         $schedule->call(fn () => SubuserPreviewSession::query()->where('expires_at', '<', now())->delete())
             ->description('Prune expired subuser preview sessions')
             ->everyMinute();
