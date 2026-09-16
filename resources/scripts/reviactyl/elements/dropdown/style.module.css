@@ -1,3 +1,5 @@
+@reference "#reviactyl";
+
 .menu {
   @apply relative inline-block text-left;
 
@@ -10,7 +12,7 @@
     }
 
     &:focus, &:focus-within, &:active {
-      @apply ring-2 ring-opacity-50 ring-gray-300 text-white;
+      @apply ring-2 ring-gray-300/50 text-white;
     }
 
     & svg {

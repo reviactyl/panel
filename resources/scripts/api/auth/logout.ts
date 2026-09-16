@@ -30,6 +30,6 @@ export default async (): Promise<void> => {
             },
             // Prevent axios from injecting X-XSRF-TOKEN from duplicate cookies.
             xsrfCookieName: '__reviactyl_ignore_xsrf_cookie__',
-        }
+        },
     );
 };

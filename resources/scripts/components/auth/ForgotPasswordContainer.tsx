@@ -7,7 +7,6 @@ import { useStoreState } from 'easy-peasy';
 import Field from '@/reviactyl/elements/Field';
 import { Formik, FormikHelpers } from 'formik';
 import { object, string } from 'yup';
-import tw from 'twin.macro';
 import { Button } from '@/reviactyl/components/button/index';
 import Reaptcha from 'reaptcha';
 import Turnstile from '@/reviactyl/elements/Turnstile';
@@ -76,7 +75,7 @@ export default () => {
             })}
         >
             {({ isSubmitting, setSubmitting, submitForm }) => (
-                <LoginFormContainer title={t('forgot-password.title')} css={tw`w-full flex`}>
+                <LoginFormContainer title={t('forgot-password.title')} className='flex w-full'>
                     <Field
                         icon={AtSymbolIcon}
                         label={t('forgot-password.email-label')}
@@ -84,8 +83,8 @@ export default () => {
                         name={'email'}
                         type={'email'}
                     />
-                    <div css={tw`mt-6`}>
-                        <Button css={tw`w-full !py-3`} type={'submit'} disabled={isSubmitting}>
+                    <div className='mt-6'>
+                        <Button className='w-full !py-3' type='submit' disabled={isSubmitting}>
                             {t('forgot-password.send-email')}
                         </Button>
                     </div>
@@ -105,7 +104,7 @@ export default () => {
                         />
                     )}
                     {provider === 'turnstile' && (
-                        <div css={tw`mt-4 flex justify-center`}>
+                        <div className='mt-4 flex justify-center'>
                             <Turnstile
                                 siteKey={turnstile.siteKey}
                                 onVerify={(response) => setToken(response)}
@@ -113,10 +112,10 @@ export default () => {
                             />
                         </div>
                     )}
-                    <div css={tw`mt-3 text-center`}>
+                    <div className='mt-3 text-center'>
                         <Link
                             to={'/auth/login'}
-                            css={tw`text-sm text-reviactyl/80 tracking-wide no-underline hover:text-reviactyl/50`}
+                            className='text-sm tracking-wide text-reviactyl/80 no-underline hover:text-reviactyl/50'
                         >
                             {t('return')}
                         </Link>

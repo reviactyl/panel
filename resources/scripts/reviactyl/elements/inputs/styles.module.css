@@ -1,25 +1,80 @@
+@reference "#reviactyl";
+
 .checkbox_input {
-    @apply w-4 h-4 rounded-sm border-gray-500 bg-gray-600 text-primary-500;
+    @apply w-4 h-4 rounded-sm border-gray-500 bg-gray-600 text-reviactyl;
 
     &:focus, &:active {
-        @apply ring-2 ring-primary-500 ring-offset-2 ring-offset-gray-700;
+        @apply ring-2 ring-reviactyl ring-offset-2 ring-offset-gray-700;
     }
 
     &.indeterminate:checked {
-        @apply text-primary-500/50 border border-primary-500;
+        @apply text-reviactyl/50 border border-reviactyl;
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='white'%3E%3Cpath fill-rule='evenodd' d='M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z' clip-rule='evenodd' /%3E%3C/svg%3E");
     }
 }
 
 .text_input {
     @apply transition-shadow duration-75;
-    @apply w-full bg-gray-900 rounded px-4 py-2 outline-none border-0;
+    @apply w-full bg-gray-900 rounded px-4 py-2 outline-hidden border-0;
 
     &:focus, &:active {
-        @apply ring-4 ring-blue-300 ring-opacity-75;
+        @apply ring-4 ring-blue-300/75;
     }
 
     &.loose {
         @apply px-6 py-3;
     }
+}
+
+.input {
+    @apply appearance-none outline-hidden w-full min-w-0 p-3 border rounded-ui text-sm transition-all duration-150 bg-white/5 border-gray-700 hover:border-gray-400 text-gray-200 shadow-none focus:ring-0;
+    resize: none;
+}
+
+.input[data-has-error='true'] {
+    @apply text-red-100 border-red-400 hover:border-red-300;
+}
+
+.input:disabled {
+    @apply opacity-75;
+}
+
+.input:not(:disabled):not(:read-only):focus {
+    @apply shadow-md border-primary-300 ring-2 ring-primary-400/50;
+}
+
+.input[data-has-error='true']:not(:disabled):not(:read-only):focus {
+    @apply border-red-300 ring-red-200;
+}
+
+.checkbox {
+    @apply inline-block w-4 h-4 shrink-0 appearance-none rounded border border-gray-600 bg-transparent text-reviactyl align-middle cursor-pointer select-none;
+}
+
+.checkbox:not(:checked):hover {
+    @apply border-gray-300;
+}
+
+.checkbox:checked {
+    @apply bg-reviactyl border-reviactyl;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M3 8.5L6.5 12L13 4.5' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.checkbox:checked:hover {
+    @apply bg-reviactyl border-reviactyl;
+}
+
+.radio {
+    @apply rounded-full;
+}
+
+.select {
+    @apply block w-full rounded-ui border border-gray-600 bg-gray-800 p-3 pr-8 text-sm text-gray-200 shadow-none outline-hidden transition-colors duration-150 ease-linear hover:border-gray-400 focus:border-gray-400;
+    appearance: none;
+    background-size: 1rem;
+    background-repeat: no-repeat;
+    background-position: calc(100% - 0.75rem) center;
 }

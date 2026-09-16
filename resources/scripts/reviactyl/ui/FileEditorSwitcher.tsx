@@ -21,7 +21,10 @@ const FileEditorSwitcher = () => {
             .then((res) => res.json())
             .then((data) => setEditors(data))
             .catch(() =>
-                setEditors({ cm: { display: 'CodeMirror (Default Editor)' }, mo: { display: 'Monaco (Like VS Code)' } })
+                setEditors({
+                    cm: { display: 'CodeMirror (Default Editor)' },
+                    mo: { display: 'Monaco (Like VS Code)' },
+                }),
             );
     }, []);
 

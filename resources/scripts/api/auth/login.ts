@@ -70,8 +70,8 @@ export default ({ username, password, captchaToken, captchaProvider }: LoginData
                         },
                         // Avoid ambiguous X-XSRF-TOKEN when duplicate cookies exist in tunneled environments.
                         xsrfCookieName: '__reviactyl_ignore_xsrf_cookie__',
-                    }
-                )
+                    },
+                ),
             )
             .then((response) => {
                 if (!(response.data instanceof Object)) {

@@ -6,6 +6,7 @@ use App\Models\ApiKey;
 use App\Models\Node;
 use App\Repositories\Agent\DaemonConfigurationRepository;
 use App\Repositories\Agent\DaemonMonitoringRepository;
+use App\Rules\NodeFqdn;
 use App\Services\Api\KeyCreationService;
 use App\Services\Helpers\SoftwareVersionService;
 use Filament\Actions\Action;
@@ -385,6 +386,7 @@ class EditNodeForm
                                     ->description(trans('admin/node.sections.connection.description'))
                                     ->schema([
                                         TextInput::make('fqdn')
+                                            ->rules([new NodeFqdn()])
                                             ->label(trans('admin/node.fields.fqdn.label'))
                                             ->required()
                                             ->maxLength(255)

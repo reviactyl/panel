@@ -14,12 +14,12 @@ return [
         'using-sftp' => 'Menggunakan SFTP',
     ],
     'event' => [
-        'password-reset' => 'Password reset',
+        'password-reset' => 'Pengaturan ulang kata sandi',
     ],
     'auth' => [
         'fail' => 'Gagal masuk',
         'success' => 'Berhasil masuk',
-        'passkey' => 'Logged in with passkey',
+        'passkey' => 'Masuk menggunakan passkey',
         'password-reset' => 'Kata sandi diatur ulang',
         'reset-password' => 'Meminta pengaturan ulang kata sandi',
         'checkpoint' => 'Otentikasi dua faktor diminta',
@@ -38,8 +38,8 @@ return [
             'email-changed' => 'Mengubah email dari :old menjadi :new',
             'password-changed' => 'Mengubah kata sandi',
             'language-changed' => 'Mengubah bahasa dari :old menjadi :new',
-            'file-editor-changed' => 'Changed file editor from :old to :new',
-            'avatar-changed' => 'Changed avatar style from :old to :new',
+            'file-editor-changed' => 'Mengubah editor berkas dari :old menjadi :new',
+            'avatar-changed' => 'Gaya avatar telah diubah dari :old menjadi :new',
         ],
         'api-key' => [
             'create' => 'Membuat kunci API baru :identifier',
@@ -54,8 +54,8 @@ return [
             'delete' => 'Menonaktifkan otentikasi dua faktor',
         ],
         'passkey' => [
-            'create' => 'Registered a new passkey',
-            'delete' => 'Removed passkey :id',
+            'create' => 'Telah mendaftarkan kode sandi baru',
+            'delete' => 'Kunci akses telah dihapus :id',
         ],
     ],
     'server' => [
@@ -136,7 +136,7 @@ return [
         'settings' => [
             'rename' => 'Mengubah nama server dari :old menjadi :new',
             'description' => 'Mengubah deskripsi server dari :old menjadi :new',
-            'category' => 'Changed server category',
+            'category' => 'Kategori server telah diubah',
         ],
         'startup' => [
             'edit' => 'Mengubah variabel :variable dari ":old" menjadi ":new"',

@@ -1,6 +1,5 @@
 import axios, { AxiosProgressEvent } from 'axios';
 import getFileUploadUrl from '@/api/server/files/getFileUploadUrl';
-import tw from 'twin.macro';
 import { useEffect, useRef, useState } from 'react';
 import { ModalMask } from '@/reviactyl/elements/Modal';
 import Fade from '@/reviactyl/elements/Fade';
@@ -95,8 +94,8 @@ const filesFromDataTransfer = async (dataTransfer: DataTransfer): Promise<Upload
         return (
             await Promise.all(
                 entries.map((entry) =>
-                    filesFromEntry(entry, entry.isDirectory ? normalizeRelativePath(entry.name) : undefined)
-                )
+                    filesFromEntry(entry, entry.isDirectory ? normalizeRelativePath(entry.name) : undefined),
+                ),
             )
         ).flat();
     }
@@ -226,7 +225,7 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
     const { session } = useSubuserPreview();
     const directory = ServerContext.useStoreState((state) => state.files.directory);
     const { removeFileUpload, pushFileUpload, setUploadProgress } = ServerContext.useStoreActions(
-        (actions) => actions.files
+        (actions) => actions.files,
     );
 
     useEventListener(
@@ -240,7 +239,7 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
                 setVisible(true);
             }
         },
-        { capture: true }
+        { capture: true },
     );
 
     useEventListener(
@@ -253,7 +252,7 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
                 setVisible(false);
             }
         },
-        { capture: true }
+        { capture: true },
     );
 
     useEventListener('dragover', (e) => e.preventDefault(), { capture: true });
@@ -273,7 +272,7 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
                     .catch((error) => clearAndAddHttpError(error));
             }
         },
-        { capture: true }
+        { capture: true },
     );
 
     useEventListener('keydown', () => {
@@ -313,29 +312,29 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
                               i18n.t('preview.file-too-large', {
                                   ns: 'server/users',
                                   size: bytesToString(session.maxFileSize),
-                              })
-                          )
+                              }),
+                          ),
                       )
                     : session
-                    ? file.arrayBuffer().then((content) =>
-                          http.post(`/api/client/servers/${uuid}/files/write`, content, {
-                              params: { file: destination },
-                              headers: { 'Content-Type': 'application/octet-stream' },
-                              signal: controller.signal,
-                          })
-                      )
-                    : getFileUploadUrl(uuid).then((url) =>
-                          axios.post(
-                              url,
-                              { files: file },
-                              {
-                                  signal: controller.signal,
-                                  headers: { 'Content-Type': 'multipart/form-data' },
-                                  params: { directory: uploadDirectory },
-                                  onUploadProgress: (data) => onUploadProgress(data, path),
-                              }
-                          )
-                      )
+                      ? file.arrayBuffer().then((content) =>
+                            http.post(`/api/client/servers/${uuid}/files/write`, content, {
+                                params: { file: destination },
+                                headers: { 'Content-Type': 'application/octet-stream' },
+                                signal: controller.signal,
+                            }),
+                        )
+                      : getFileUploadUrl(uuid).then((url) =>
+                            axios.post(
+                                url,
+                                { files: file },
+                                {
+                                    signal: controller.signal,
+                                    headers: { 'Content-Type': 'multipart/form-data' },
+                                    params: { directory: uploadDirectory },
+                                    onUploadProgress: (data) => onUploadProgress(data, path),
+                                },
+                            ),
+                        )
                 )
                     .then(() => setUploadProgress({ name: path, loaded: file.size }))
                     .then(() => {
@@ -380,7 +379,7 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
                             visibleRef.current = false;
                             setVisible(false);
                         }}
-                        className='bg-gray-900/40 backdrop-blur-sm transition-all duration-300 ease-in-out'
+                        className='bg-gray-900/40 backdrop-blur-sm-xs transition-all duration-300 ease-in-out'
                     >
                         <div className={'w-full flex items-center justify-center pointer-events-none'}>
                             <Card
@@ -400,7 +399,7 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
             <input
                 type={'file'}
                 ref={fileUploadInput}
-                css={tw`hidden`}
+                className='hidden'
                 onChange={(e) => {
                     if (!e.currentTarget.files) return;
 
@@ -412,7 +411,7 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
             <input
                 type={'file'}
                 ref={folderUploadInput}
-                css={tw`hidden`}
+                className='hidden'
                 onChange={(e) => {
                     if (!e.currentTarget.files) return;
 

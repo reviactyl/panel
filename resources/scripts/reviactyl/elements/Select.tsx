@@ -1,41 +1,15 @@
-import styled, { css } from 'styled-components';
-import tw from 'twin.macro';
+import { forwardRef } from 'react';
+import classNames from 'classnames';
+import styles from '@/reviactyl/elements/inputs/styles.module.css';
 
 interface Props {
     hideDropdownArrow?: boolean;
 }
+type SelectProps = Props & React.SelectHTMLAttributes<HTMLSelectElement>;
 
-const Select = styled.select<Props>`
-    ${tw`shadow-none block p-3 pr-8 rounded-ui border w-full text-sm transition-colors duration-150 ease-linear`};
+const Select = forwardRef<HTMLSelectElement, SelectProps>(({ hideDropdownArrow, className, ...props }, ref) => (
+    <select ref={ref} className={classNames(styles.select, hideDropdownArrow && 'bg-none', className)} {...props} />
+));
 
-    &,
-    &:hover:not(:disabled),
-    &:focus {
-        ${tw`outline-none`};
-    }
-
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-size: 1rem;
-    background-repeat: no-repeat;
-    background-position-x: calc(100% - 0.75rem);
-    background-position-y: center;
-
-    &::-ms-expand {
-        display: none;
-    }
-
-    ${(props) =>
-        !props.hideDropdownArrow &&
-        css`
-            ${tw`bg-gray-800 border border-gray-600 text-gray-200`};
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='%23C3D1DF' d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z'/%3e%3c/svg%3e ");
-
-            &:hover:not(:disabled),
-            &:focus {
-                ${tw`border-gray-400`};
-            }
-        `};
-`;
-
+Select.displayName = 'Select';
 export default Select;

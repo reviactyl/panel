@@ -8,8 +8,12 @@ return [
         'settings' => 'Configurações',
         'api' => 'API de aplicação',
         'activity_log' => 'Logs',
-        'user_activity_metrics' => 'Métricas de atividade do usuário',
+        'user_activity_metrics' => 'Localizações de usuários ativos',
+        'user_activity_description' => 'Localização dos usuários ativos nos últimos 30 dias.',
+        'active_users' => 'Usuários ativos',
         'no_data' => 'Não há dados disponíveis.',
+        'other' => 'Outros',
+        'unknown' => 'Desconhecido',
     ],
     'management' => [
         'title' => 'Gerenciamento',

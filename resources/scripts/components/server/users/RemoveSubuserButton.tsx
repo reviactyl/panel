@@ -7,7 +7,6 @@ import deleteSubuser from '@/api/server/users/deleteSubuser';
 import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
-import tw from 'twin.macro';
 import { useTranslation } from 'react-i18next';
 
 export default ({ subuser }: { subuser: Subuser }) => {
@@ -49,7 +48,7 @@ export default ({ subuser }: { subuser: Subuser }) => {
             <button
                 type={'button'}
                 aria-label={t('delete-subuser-aria')}
-                css={tw`block text-sm p-2 text-gray-600 hover:text-red-600 transition-colors duration-150`}
+                className='block text-sm p-2 text-gray-600 hover:text-red-600 transition-colors duration-150'
                 onClick={() => setShowConfirmation(true)}
             >
                 <FaTrash />

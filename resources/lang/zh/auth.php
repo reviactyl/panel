@@ -11,14 +11,14 @@ return [
     'password-label' => '密码',
 
     'login-button' => '登录',
-    'passkey-button' => 'Login with Passkey',
+    'passkey-button' => '使用密钥登录',
     'return' => '返回登录',
 
-    'passkey-unsupported' => 'Passkeys are not supported by this browser.',
-    'passkey-failed' => 'Unable to complete passkey login. Please try again.',
-    'passkey-no-credentials' => 'No passkey is available for this login. Use your password or register a passkey first.',
-    'passkey-security' => 'Passkey verification could not be completed securely on this device.',
-    'passkey-username-required' => 'Enter your username or email before using a passkey.',
+    'passkey-unsupported' => '此浏览器不支持密钥。',
+    'passkey-failed' => '无法完成密钥登录。请重试。',
+    'passkey-no-credentials' => '此登录账号暂无通行码。请先使用密码登录，或先注册通行码。',
+    'passkey-security' => '无法在此设备上安全地完成密钥验证。',
+    'passkey-username-required' => '在使用密钥之前，请输入您的用户名或电子邮件地址。',
 
     'social' => [
         'or' => '或',
@@ -64,14 +64,14 @@ return [
         'namefirst-label' => '名字',
         'namelast-label' => '姓氏',
         'email-label' => '电子邮箱',
-        'username-label' => 'Username',
+        'username-label' => '用户名',
         'password-label' => '密码',
         'min-length' => '密码长度至少为8个字符。',
         'confirm-label' => '确认密码',
         'label' => '注册',
-        'create-link' => 'Don\'t have an account? Create one',
+        'create-link' => '还没有账号？注册一个',
         'create-account' => '创建账户',
-        'no-account' => 'Don\'t have an account?',
+        'no-account' => '还没有账号吗？',
     ],
 
     'failed' => '未找到与这些凭证匹配的账户。',
@@ -85,5 +85,5 @@ return [
     'throttle' => '登录尝试次数过多。请在 :seconds 秒后重试。',
     'password_requirements' => '密码长度必须至少为 8 个字符，且对此站点应是唯一的。',
     '2fa_must_be_enabled' => '管理员要求您启用2步身份验证后才能使用此面板。',
-    'captcha-required' => 'Please complete the captcha challenge to continue.',
+    'captcha-required' => '请完成验证码挑战以继续。',
 ];

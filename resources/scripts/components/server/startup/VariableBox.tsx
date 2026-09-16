@@ -36,15 +36,16 @@ const VariableBox = ({ variable }: Props) => {
         updateStartupVariable(uuid, variable.envVariable, value)
             .then(([response, invocation]) =>
                 mutate(
-                    (data) => ({
-                        ...data,
-                        invocation,
-                        variables: (data.variables || []).map((v) =>
-                            v.envVariable === response.envVariable ? response : v
-                        ),
-                    }),
-                    false
-                )
+                    (data) =>
+                        data && {
+                            ...data,
+                            invocation,
+                            variables: data.variables.map((v) =>
+                                v.envVariable === response.envVariable ? response : v,
+                            ),
+                        },
+                    false,
+                ),
             )
             .catch((error) => {
                 console.error(error);
@@ -54,7 +55,7 @@ const VariableBox = ({ variable }: Props) => {
     }, 500);
 
     const useSwitch = variable.rules.some(
-        (v) => v === 'boolean' || v === 'in:0,1' || v === 'in:1,0' || v === 'in:true,false' || v === 'in:false,true'
+        (v) => v === 'boolean' || v === 'in:0,1' || v === 'in:1,0' || v === 'in:true,false' || v === 'in:false,true',
     );
     const isStringSwitch = variable.rules.some((v) => v === 'string');
     const selectValues = variable.rules.find((v) => v.startsWith('in:'))?.split(',') || [];

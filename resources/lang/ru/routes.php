@@ -11,7 +11,7 @@ return [
     ],
     'account' => [
         'overview' => 'Обзор учётной записи',
-        'passkeys' => 'Passkeys',
+        'passkeys' => 'Пароли',
         'api' => 'Ключи API',
         'ssh' => 'Ключи SSH',
         'activity' => 'Активность',

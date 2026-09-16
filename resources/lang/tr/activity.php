@@ -14,12 +14,12 @@ return [
         'using-sftp' => 'SFTP Kullanılıyor',
     ],
     'event' => [
-        'password-reset' => 'Password reset',
+        'password-reset' => 'Şifre sıfırlama',
     ],
     'auth' => [
         'fail' => 'Giriş başarısız',
         'success' => 'Giriş yapıldı',
-        'passkey' => 'Logged in with passkey',
+        'passkey' => 'Şifre anahtarıyla oturum açıldı',
         'password-reset' => 'Parola sıfırlandı',
         'reset-password' => 'Parola sıfırlama isteği gönderildi',
         'checkpoint' => 'İki aşamalı doğrulama istendi',
@@ -38,8 +38,8 @@ return [
             'email-changed' => 'E-posta adresi :old adresinden :new adresine değiştirildi',
             'password-changed' => 'Parola değiştirildi',
             'language-changed' => 'Dil :old dilinden :new diline değiştirildi',
-            'file-editor-changed' => 'Changed file editor from :old to :new',
-            'avatar-changed' => 'Changed avatar style from :old to :new',
+            'file-editor-changed' => 'Dosya düzenleyicisi :old\'dan :new\'e değiştirildi',
+            'avatar-changed' => 'Avatar stilini :old\'dan :new\'e değiştirdim',
         ],
         'api-key' => [
             'create' => 'Yeni API anahtarı :identifier oluşturuldu',
@@ -54,8 +54,8 @@ return [
             'delete' => 'İki aşamalı doğrulama devre dışı bırakıldı',
         ],
         'passkey' => [
-            'create' => 'Registered a new passkey',
-            'delete' => 'Removed passkey :id',
+            'create' => 'Yeni bir şifre kaydedildi',
+            'delete' => 'Kaldırılan erişim anahtarı: id',
         ],
     ],
     'server' => [
@@ -136,7 +136,7 @@ return [
         'settings' => [
             'rename' => 'Sunucu adı :old iken :new olarak değiştirildi',
             'description' => 'Sunucu açıklaması :old iken :new olarak değiştirildi',
-            'category' => 'Changed server category',
+            'category' => 'Sunucu kategorisi değiştirildi',
         ],
         'startup' => [
             'edit' => ':variable değişkeni ":old" iken ":new" olarak değiştirildi',

@@ -11,7 +11,6 @@ import updateServerCategory from '@/api/account/updateServerCategory';
 import reorderServerCategories from '@/api/account/reorderServerCategories';
 import useFlash from '@/plugins/useFlash';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import styled from 'styled-components';
 import { FaTrash, FaPen, FaPlus, FaLayerGroup, FaArrowDownWideShort, FaBars } from 'react-icons/fa6';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { useTranslation } from 'react-i18next';
@@ -29,42 +28,6 @@ interface Values {
     description: string;
     color: string;
 }
-
-const ResponsiveLayout = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-
-    @media (min-width: 1024px) {
-        flex-direction: row;
-    }
-`;
-
-const Column = styled.div`
-    flex: 1 1 0%;
-    min-width: 0;
-`;
-
-const DragItem = styled.div<{ isDragging?: boolean }>`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 0.85rem;
-    margin-bottom: 0.75rem;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
-    box-shadow: ${(props) => (props.isDragging ? '0 10px 15px -3px rgba(0, 0, 0, 0.4)' : 'none')};
-    cursor: grab;
-
-    @media (min-width: 640px) {
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    &:active {
-        cursor: grabbing;
-    }
-`;
 
 export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
     const { t } = useTranslation('dashboard/index');
@@ -87,6 +50,7 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
 
     const submit = (values: Values, { setSubmitting, resetForm }: FormikHelpers<Values>) => {
         clearFlashes('category-modal');
+
         const action = editingCategory
             ? updateServerCategory(editingCategory.uuid, values)
             : createServerCategory(values);
@@ -120,28 +84,30 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
 
         const newCategories = [...categories];
         const [reorderedItem] = newCategories.splice(result.source.index, 1);
-        if (!reorderedItem) return;
-        newCategories.splice(result.destination.index, 0, reorderedItem);
 
+        if (!reorderedItem) return;
+
+        newCategories.splice(result.destination.index, 0, reorderedItem);
         setCategories(newCategories);
-        reorderServerCategories(newCategories.map((c) => c.uuid))
+
+        reorderServerCategories(newCategories.map((category) => category.uuid))
             .then(() => onCategoryChanged())
             .catch((error: any) => clearAndAddHttpError({ key: 'category-modal', error }));
     };
 
     return (
-        <Modal visible={visible} onDismissed={onDismissed} dismissable={true} size={'lg'} noScroll={true}>
+        <Modal visible={visible} onDismissed={onDismissed} dismissable={true} size='lg' noScroll={true}>
             <div className='mb-6 border-b border-gray-800 pb-4'>
                 <Title className='text-2xl font-semibold text-gray-100'>{t('categories.manage-title')}</Title>
             </div>
 
-            <div style={{ marginBottom: '1.5rem' }}>
-                <FlashMessageRender byKey={'category-modal'} />
+            <div className='mb-6'>
+                <FlashMessageRender byKey='category-modal' />
             </div>
 
-            <ResponsiveLayout>
+            <div className='flex flex-col gap-8 lg:flex-row'>
                 {/* LEFT SECTION: CREATE/EDIT */}
-                <Column>
+                <div className='min-w-0 flex-1'>
                     <div className='flex items-center gap-2 mb-5'>
                         <div className='bg-blue-500/10 p-2 rounded-ui'>
                             {editingCategory ? (
@@ -150,12 +116,13 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
                                 <FaPlus className='text-blue-400' />
                             )}
                         </div>
+
                         <h3 className='text-lg font-semibold text-gray-200'>
                             {editingCategory ? t('categories.modify-category') : t('categories.create-category')}
                         </h3>
                     </div>
 
-                    <Card className='bg-[#1e293b] border border-[#334155] rounded-2xl p-6 shadow-sm'>
+                    <Card className='bg-[#1e293b] border border-[#334155] rounded-2xl p-6 shadow-xs'>
                         <Formik
                             onSubmit={submit}
                             initialValues={{
@@ -176,7 +143,7 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
                                 <Form>
                                     <div className='flex flex-col gap-5'>
                                         <Field
-                                            name={'name'}
+                                            name='name'
                                             label={t('categories.category-name')}
                                             placeholder={t('categories.name-placeholder')}
                                         />
@@ -184,12 +151,13 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
                                         <div className='flex items-end gap-3'>
                                             <div className='flex-1'>
                                                 <Field
-                                                    name={'color'}
+                                                    name='color'
                                                     label={t('categories.theme-color')}
-                                                    type={'color'}
+                                                    type='color'
                                                     style={{ height: '42px', padding: '0.2rem' }}
                                                 />
                                             </div>
+
                                             <div className='flex-none pb-2 text-xs text-gray-400 flex items-center gap-1.5'>
                                                 <div
                                                     style={{
@@ -202,14 +170,14 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
                                         </div>
 
                                         <Field
-                                            name={'description'}
+                                            name='description'
                                             label={t('categories.description')}
                                             placeholder={t('categories.description-placeholder')}
                                         />
 
                                         <div className='mt-2 flex flex-col gap-3'>
                                             <Button
-                                                type={'submit'}
+                                                type='submit'
                                                 disabled={isSubmitting}
                                                 isLoading={isSubmitting}
                                                 className='w-full'
@@ -220,7 +188,7 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
                                             </Button>
                                             {editingCategory && (
                                                 <Button
-                                                    type={'button'}
+                                                    type='button'
                                                     isSecondary
                                                     onClick={() => setEditingCategory(null)}
                                                     className='w-full'
@@ -234,23 +202,25 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
                             )}
                         </Formik>
                     </Card>
-                </Column>
+                </div>
 
                 {/* RIGHT SECTION: ARRANGE */}
-                <Column>
+                <div className='min-w-0 flex-1'>
                     <div className='flex items-center justify-between mb-5'>
                         <div className='flex items-center gap-2'>
                             <div className='bg-purple-500/10 p-2 rounded-ui'>
                                 <FaArrowDownWideShort className='text-purple-400' />
                             </div>
+
                             <h3 className='text-lg font-semibold text-gray-200'>{t('categories.arrange-order')}</h3>
                         </div>
+
                         <span className='text-xs text-gray-400 bg-gray-900 px-2.5 py-1 rounded-ui border border-gray-800'>
                             {t('categories.categories-count', { count: categories.length })}
                         </span>
                     </div>
 
-                    <div style={{ paddingRight: '0.5rem' }}>
+                    <div className='pr-2'>
                         {categories.length === 0 ? (
                             <Card className='!border-2 !border-dashed !p-12 flex items-center justify-center gap-3'>
                                 <FaLayerGroup className='text-3xl text-gray-400' />
@@ -264,117 +234,79 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
                                             {categories.map((cat, index) => (
                                                 <Draggable key={cat.uuid} draggableId={cat.uuid} index={index}>
                                                     {(provided, snapshot) => (
-                                                        <DragItem
-                                                            className='bg-gray-900 border border-gray-800 rounded-ui'
+                                                        <div
                                                             ref={provided.innerRef}
                                                             {...provided.draggableProps}
                                                             {...provided.dragHandleProps}
-                                                            isDragging={snapshot.isDragging}
+                                                            className={[
+                                                                'flex flex-col items-start p-3.5 mb-3',
+                                                                'transition-colors duration-200',
+                                                                'cursor-grab active:cursor-grabbing',
+                                                                'bg-gray-900 border border-gray-800 rounded-ui',
+                                                                'sm:flex-row sm:items-center sm:justify-between',
+                                                                snapshot.isDragging ? 'shadow-lg shadow-black/40' : '',
+                                                            ].join(' ')}
                                                         >
-                                                            <div
-                                                                style={{
-                                                                    display: 'flex',
-                                                                    alignItems: 'center',
-                                                                    minWidth: 0,
-                                                                }}
-                                                            >
-                                                                <FaBars
-                                                                    className='text-gray-600'
-                                                                    style={{
-                                                                        marginRight: '0.75rem',
-                                                                        cursor: 'grab',
-                                                                    }}
-                                                                />
+                                                            <div className='flex items-center min-w-0'>
+                                                                <FaBars className='text-gray-600 mr-3 cursor-grab' />
+
                                                                 <div
+                                                                    className='w-5 h-5 rounded-[0.4rem] mr-3 shrink-0 border border-white/10'
                                                                     style={{
                                                                         backgroundColor: cat.color || '#3b82f6',
-                                                                        width: '1.25rem',
-                                                                        height: '1.25rem',
-                                                                        borderRadius: '0.4rem',
-                                                                        marginRight: '0.75rem',
-                                                                        flexShrink: 0,
-                                                                        border: '1px solid rgba(255,255,255,0.1)',
                                                                     }}
                                                                 />
-                                                                <div style={{ minWidth: 0 }}>
-                                                                    <p
-                                                                        style={{
-                                                                            fontWeight: 600,
-                                                                            color: '#f3f4f6',
-                                                                            overflow: 'hidden',
-                                                                            textOverflow: 'ellipsis',
-                                                                            whiteSpace: 'nowrap',
-                                                                            fontSize: '0.95rem',
-                                                                        }}
-                                                                    >
+
+                                                                <div className='min-w-0'>
+                                                                    <p className='font-semibold text-gray-100 overflow-hidden text-ellipsis whitespace-nowrap text-[0.95rem]'>
                                                                         {cat.name}
                                                                     </p>
-                                                                    <p
-                                                                        style={{
-                                                                            fontSize: '0.7rem',
-                                                                            color: '#9ca3af',
-                                                                            overflow: 'hidden',
-                                                                            textOverflow: 'ellipsis',
-                                                                            whiteSpace: 'nowrap',
-                                                                        }}
-                                                                    >
+
+                                                                    <p className='text-[0.7rem] text-gray-400 overflow-hidden text-ellipsis whitespace-nowrap'>
                                                                         {cat.description ||
                                                                             t('categories.no-description')}
                                                                     </p>
                                                                 </div>
                                                             </div>
 
-                                                            <div
-                                                                className='mt-3 sm:mt-0 w-full sm:w-auto justify-end'
-                                                                style={{
-                                                                    display: 'flex',
-                                                                    alignItems: 'center',
-                                                                    gap: '0.4rem',
-                                                                    flexShrink: 0,
-                                                                }}
-                                                            >
+                                                            <div className='mt-3 w-full flex items-center justify-end gap-1.5 shrink-0 sm:mt-0 sm:w-auto'>
                                                                 <button
-                                                                    type={'button'}
+                                                                    type='button'
                                                                     onClick={(e) => {
                                                                         e.stopPropagation();
                                                                         setEditingCategory(cat);
                                                                     }}
-                                                                    style={{
-                                                                        padding: '0.5rem',
-                                                                        borderRadius: '0.5rem',
-                                                                        backgroundColor: snapshot.isDragging
-                                                                            ? '#475569'
-                                                                            : '#1e293b',
-                                                                        border: '1px solid #334155',
-                                                                        color: '#60a5fa',
-                                                                        cursor: 'pointer',
-                                                                    }}
+                                                                    className={[
+                                                                        'p-2 rounded-lg border border-[#334155]',
+                                                                        'text-blue-400 cursor-pointer',
+                                                                        snapshot.isDragging
+                                                                            ? 'bg-[#475569]'
+                                                                            : 'bg-[#1e293b]',
+                                                                    ].join(' ')}
                                                                     title={t('categories.edit')}
                                                                 >
                                                                     <FaPen className='text-sm' />
                                                                 </button>
+
                                                                 <button
-                                                                    type={'button'}
+                                                                    type='button'
                                                                     onClick={(e) => {
                                                                         e.stopPropagation();
                                                                         handleDelete(cat.uuid);
                                                                     }}
-                                                                    style={{
-                                                                        padding: '0.5rem',
-                                                                        borderRadius: '0.5rem',
-                                                                        backgroundColor: snapshot.isDragging
-                                                                            ? '#475569'
-                                                                            : '#1e293b',
-                                                                        border: '1px solid #334155',
-                                                                        color: '#f87171',
-                                                                        cursor: 'pointer',
-                                                                    }}
+                                                                    className={[
+                                                                        'p-2 rounded-lg border border-[#334155]',
+                                                                        'text-red-400 cursor-pointer',
+                                                                        snapshot.isDragging
+                                                                            ? 'bg-[#475569]'
+                                                                            : 'bg-[#1e293b]',
+                                                                    ].join(' ')}
                                                                     title={t('categories.delete')}
                                                                 >
                                                                     <FaTrash className='text-sm' />
                                                                 </button>
                                                             </div>
-                                                        </DragItem>
+                                                        </div>
                                                     )}
                                                 </Draggable>
                                             ))}
@@ -385,8 +317,8 @@ export default ({ visible, onDismissed, onCategoryChanged }: Props) => {
                             </DragDropContext>
                         )}
                     </div>
-                </Column>
-            </ResponsiveLayout>
+                </div>
+            </div>
         </Modal>
     );
 };

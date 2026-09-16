@@ -2,10 +2,8 @@ import { Field, Form, Formik, FormikHelpers } from 'formik';
 import { object, string } from 'yup';
 import FormikFieldWrapper from '@/reviactyl/elements/FormikFieldWrapper';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
-import tw from 'twin.macro';
 import Button from '@/reviactyl/elements/Button';
 import Input, { Textarea } from '@/reviactyl/elements/Input';
-import styled from 'styled-components';
 import { useFlashKey } from '@/plugins/useFlash';
 import { createSSHKey, useSSHKeys } from '@/api/account/ssh-keys';
 import { useTranslation } from 'react-i18next';
@@ -14,10 +12,6 @@ interface Values {
     name: string;
     publicKey: string;
 }
-
-const CustomTextarea = styled(Textarea)`
-    ${tw`h-32`}
-`;
 
 export default () => {
     const { t } = useTranslation('dashboard/account');
@@ -49,7 +43,7 @@ export default () => {
                 {({ isSubmitting }) => (
                     <Form>
                         <SpinnerOverlay visible={isSubmitting} />
-                        <FormikFieldWrapper label={t('ssh.create.key-name')} name={'name'} css={tw`mb-6`}>
+                        <FormikFieldWrapper label={t('ssh.create.key-name')} name={'name'} className={'mb-6'}>
                             <Field name={'name'} as={Input} />
                         </FormikFieldWrapper>
                         <FormikFieldWrapper
@@ -57,9 +51,9 @@ export default () => {
                             name={'publicKey'}
                             description={t('ssh.create.public-key-content')}
                         >
-                            <Field name={'publicKey'} as={CustomTextarea} />
+                            <Field className={'h-32'} name={'publicKey'} as={Textarea} />
                         </FormikFieldWrapper>
-                        <div css={tw`flex justify-end mt-6`}>
+                        <div className={`flex justify-end mt-6`}>
                             <Button>{t('ssh.create.save')}</Button>
                         </div>
                     </Form>

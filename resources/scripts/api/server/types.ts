@@ -1,10 +1,5 @@
 export type ServerStatus =
-    | 'installing'
-    | 'install_failed'
-    | 'reinstall_failed'
-    | 'suspended'
-    | 'restoring_backup'
-    | null;
+    'installing' | 'install_failed' | 'reinstall_failed' | 'suspended' | 'restoring_backup' | null;
 
 export interface ServerBackup {
     uuid: string;

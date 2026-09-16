@@ -8,8 +8,12 @@ return [
         'settings' => 'Ayarlar',
         'api' => 'Uygulama API',
         'activity_log' => 'Etkinlik Günlüğü',
-        'user_activity_metrics' => 'Kullanıcı Etkinlik Metrikleri',
+        'user_activity_metrics' => 'Aktif Kullanıcı Konumları',
+        'user_activity_description' => 'Son 30 gün içinde aktif olan kullanıcıların konumları.',
+        'active_users' => 'Aktif kullanıcılar',
         'no_data' => 'Veri mevcut değil.',
+        'other' => 'Diğer',
+        'unknown' => 'Bilinmiyor',
     ],
     'management' => [
         'title' => 'Kaynak Yönetimi',

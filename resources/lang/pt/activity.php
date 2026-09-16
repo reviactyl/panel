@@ -14,12 +14,12 @@ return [
         'using-sftp' => 'Usando SFTP',
     ],
     'event' => [
-        'password-reset' => 'Password reset',
+        'password-reset' => 'Redefinição de senha',
     ],
     'auth' => [
         'fail' => 'Falha ao entrar',
         'success' => 'Entrou com sucesso',
-        'passkey' => 'Logged in with passkey',
+        'passkey' => 'Entrou com a senha',
         'password-reset' => 'Senha redefinida',
         'reset-password' => 'Solicitou redefinição de senha',
         'checkpoint' => 'Autenticação em Dois Fatores solicitada',
@@ -38,8 +38,8 @@ return [
             'email-changed' => 'E-mail alterado de :old para :new',
             'password-changed' => 'Senha alterada',
             'language-changed' => 'Alterou o idioma de :old para :new',
-            'file-editor-changed' => 'Changed file editor from :old to :new',
-            'avatar-changed' => 'Changed avatar style from :old to :new',
+            'file-editor-changed' => 'Alterou o editor de arquivos de :antigo para :novo',
+            'avatar-changed' => 'Alterei o estilo do avatar de :antigo para :novo',
         ],
         'api-key' => [
             'create' => 'Criada nova chave de API :identifier',
@@ -54,8 +54,8 @@ return [
             'delete' => 'Autenticação em Dois Fatores desativada',
         ],
         'passkey' => [
-            'create' => 'Registered a new passkey',
-            'delete' => 'Removed passkey :id',
+            'create' => 'Registrou uma nova senha',
+            'delete' => 'Chave de acesso removida: id',
         ],
     ],
     'server' => [
@@ -136,7 +136,7 @@ return [
         'settings' => [
             'rename' => 'Servidor renomeado de :old para :new',
             'description' => 'Descrição do servidor alterada de :old para :new',
-            'category' => 'Changed server category',
+            'category' => 'Alteração da categoria do servidor',
         ],
         'startup' => [
             'edit' => 'Variável :variable alterada de ":old" para ":new"',

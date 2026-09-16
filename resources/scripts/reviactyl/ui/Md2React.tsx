@@ -44,7 +44,7 @@ const Md2React = ({ markdown }: Md2ReactProps) => {
                 rel='noopener noreferrer'
             >
                 {match[1]}
-            </a>
+            </a>,
         );
         lastIndex = match.index + match[0].length;
     }

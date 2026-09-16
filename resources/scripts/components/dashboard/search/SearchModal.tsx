@@ -12,8 +12,6 @@ import getServers from '@/api/getServers';
 import type { Server } from '@/api/server/getServer';
 import type { ApplicationStore } from '@/state';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
-import tw from 'twin.macro';
 import Input from '@/reviactyl/elements/Input';
 import { ip } from '@/lib/formatters';
 import { useTranslation } from 'react-i18next';
@@ -23,18 +21,6 @@ type Props = RequiredModalProps;
 interface Values {
     term: string;
 }
-
-const ServerResult = styled(Link)`
-    ${tw`flex items-center bg-gray-950 p-4 rounded border-l-4 border-gray-950 no-underline transition-all duration-150`};
-
-    &:hover {
-        ${tw`shadow border-cyan-500`};
-    }
-
-    &:not(:last-of-type) {
-        ${tw`mb-2`};
-    }
-`;
 
 interface SearchWatcherProps {
     onTermChanged: (term: string, setSubmitting: (submitting: boolean) => void) => void;
@@ -60,7 +46,7 @@ export default ({ ...props }: Props) => {
     const isAdmin = useStoreState((state) => state.user.data!.rootAdmin);
     const [servers, setServers] = useState<Server[]>([]);
     const { clearAndAddHttpError, clearFlashes } = useStoreActions(
-        (actions: Actions<ApplicationStore>) => actions.flashes
+        (actions: Actions<ApplicationStore>) => actions.flashes,
     );
 
     const search = useMemo(
@@ -88,7 +74,7 @@ export default ({ ...props }: Props) => {
                         }
                     });
             }, 500),
-        [clearAndAddHttpError, clearFlashes, isAdmin]
+        [clearAndAddHttpError, clearFlashes, isAdmin],
     );
 
     const onTermChanged = useCallback(
@@ -106,7 +92,7 @@ export default ({ ...props }: Props) => {
             setSubmitting(true);
             search(term, generation, setSubmitting);
         },
-        [search]
+        [search],
     );
 
     useEffect(
@@ -114,7 +100,7 @@ export default ({ ...props }: Props) => {
             searchGeneration.current++;
             search.clear();
         },
-        [search]
+        [search],
     );
 
     useEffect(() => {
@@ -149,16 +135,17 @@ export default ({ ...props }: Props) => {
                         </FormikFieldWrapper>
                     </Form>
                     {servers.length > 0 && (
-                        <div css={tw`mt-6`}>
+                        <div className='mt-6'>
                             {servers.map((server) => (
-                                <ServerResult
+                                <Link
                                     key={server.uuid}
                                     to={`/server/${server.id}`}
                                     onClick={() => props.onDismissed()}
+                                    className='mb-2 flex items-center rounded border-l-4 border-gray-950 bg-gray-950 p-4 no-underline transition-all duration-150 last:mb-0 hover:border-cyan-500 hover:shadow'
                                 >
-                                    <div css={tw`flex-1 mr-4`}>
-                                        <p css={tw`text-sm`}>{server.name}</p>
-                                        <p css={tw`mt-1 text-xs text-gray-400`}>
+                                    <div className='mr-4 flex-1'>
+                                        <p className='text-sm'>{server.name}</p>
+                                        <p className='mt-1 text-xs text-gray-400'>
                                             {server.allocations
                                                 .filter((alloc) => alloc.isDefault)
                                                 .map((allocation) => (
@@ -168,12 +155,12 @@ export default ({ ...props }: Props) => {
                                                 ))}
                                         </p>
                                     </div>
-                                    <div css={tw`flex-none text-right`}>
-                                        <span css={tw`text-xs py-1 px-2 bg-cyan-800 text-cyan-100 rounded`}>
+                                    <div className='flex-none text-right'>
+                                        <span className='rounded bg-cyan-800 px-2 py-1 text-xs text-cyan-100'>
                                             {server.node}
                                         </span>
                                     </div>
-                                </ServerResult>
+                                </Link>
                             ))}
                         </div>
                     )}

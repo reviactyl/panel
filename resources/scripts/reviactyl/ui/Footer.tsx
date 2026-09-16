@@ -1,39 +1,29 @@
-import styled from 'styled-components';
-import tw from 'twin.macro';
 import { useStoreState } from 'easy-peasy';
 import Md2React from '@/reviactyl/ui/Md2React';
-
-const Container = styled.div`
-    ${tw`mt-4 mb-4`}
-`;
-
-const Copyright = styled.div`
-    ${tw`text-center text-muted text-xs`}
-`;
 
 export default () => {
     const customCopyright = useStoreState((state) => state.designify.data!.customCopyright);
     const copyright = useStoreState((state) => state.designify.data!.copyright);
     return (
-        <Container>
-            <Copyright>
+        <div className='mt-4 mb-4'>
+            <div className='text-center text-xs text-muted'>
                 <a
                     rel={'noopener nofollow noreferrer'}
                     href={'https://reviactyl.app'}
                     target={'_blank'}
-                    css={tw`no-underline text-muted hover:text-gray-300`}
+                    className='text-muted no-underline hover:text-gray-300'
                 >
                     Reviactyl&trade;
                 </a>
                 &nbsp;&copy; {new Date().getFullYear()}
-            </Copyright>
+            </div>
             {customCopyright ? (
-                <Copyright>
+                <div className='text-center text-xs text-muted'>
                     <Md2React markdown={copyright} />
-                </Copyright>
+                </div>
             ) : (
                 ''
             )}
-        </Container>
+        </div>
     );
 };

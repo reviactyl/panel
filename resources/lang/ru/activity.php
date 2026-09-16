@@ -14,12 +14,12 @@ return [
         'using-sftp' => 'Использование SFTP',
     ],
     'event' => [
-        'password-reset' => 'Password reset',
+        'password-reset' => 'Сброс пароля',
     ],
     'auth' => [
         'fail' => 'Ошибка входа',
         'success' => 'Выполнен вход',
-        'passkey' => 'Logged in with passkey',
+        'passkey' => 'Вошел с помощью пароля',
         'password-reset' => 'Сброс пароля',
         'reset-password' => 'Запрос сброса пароля',
         'checkpoint' => 'Запрошена двухфакторная аутентификация',
@@ -38,8 +38,8 @@ return [
             'email-changed' => 'Изменён адрес электронной почты с :old на :new',
             'password-changed' => 'Изменён пароль',
             'language-changed' => 'Язык изменён с :old на :new',
-            'file-editor-changed' => 'Changed file editor from :old to :new',
-            'avatar-changed' => 'Changed avatar style from :old to :new',
+            'file-editor-changed' => 'Редактор файлов был заменен с :old на :new',
+            'avatar-changed' => 'Изменил стиль аватара с :old на :new',
         ],
         'api-key' => [
             'create' => 'Создан новый API-ключ :identifier',
@@ -54,8 +54,8 @@ return [
             'delete' => 'Отключена двухфакторная аутентификация',
         ],
         'passkey' => [
-            'create' => 'Registered a new passkey',
-            'delete' => 'Removed passkey :id',
+            'create' => 'Зарегистрирован новый пароль',
+            'delete' => 'Удален ключ доступа :id',
         ],
     ],
     'server' => [
@@ -136,7 +136,7 @@ return [
         'settings' => [
             'rename' => 'Сервер переименован с :old на :new',
             'description' => 'Описание сервера изменено с :old на :new',
-            'category' => 'Changed server category',
+            'category' => 'Изменена категория сервера',
         ],
         'startup' => [
             'edit' => 'Переменная :variable изменена с ":old" на ":new"',

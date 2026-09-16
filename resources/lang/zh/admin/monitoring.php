@@ -67,7 +67,7 @@ return [
         'partitions_mountpoint' => '挂载点',
         'partitions_filesystem' => '文件系统',
         'partitions_size' => '尺寸',
-        'partitions_usage' => 'Usage',
+        'partitions_usage' => '使用率',
 
         'network_section' => '网络',
         'bytes_sent' => '发送字节数',

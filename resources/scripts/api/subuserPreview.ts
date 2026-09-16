@@ -70,11 +70,11 @@ export const getSubuserPreviewStatus = async (): Promise<SubuserPreviewStatus> =
 export const startSubuserPreview = async (
     serverUuid: string,
     subuserUuid: string,
-    replace = false
+    replace = false,
 ): Promise<SubuserPreviewStatus> => {
     const { data } = await http.post<PreviewResponse>(
         `/api/client/servers/${serverUuid}/users/${subuserUuid}/preview`,
-        { replace }
+        { replace },
     );
 
     return transform(data);

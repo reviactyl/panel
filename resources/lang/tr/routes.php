@@ -11,7 +11,7 @@ return [
     ],
     'account' => [
         'overview' => 'Hesap Özeti',
-        'passkeys' => 'Passkeys',
+        'passkeys' => 'Erişim Anahtarları',
         'api' => 'API Anahtarları',
         'ssh' => 'SSH Anahtarları',
         'activity' => 'Etkinlik',

@@ -8,10 +8,8 @@ import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import { ApiKey } from '@/api/account/getApiKeys';
-import tw from 'twin.macro';
 import Button from '@/reviactyl/elements/Button';
 import Input, { Textarea } from '@/reviactyl/elements/Input';
-import styled from 'styled-components';
 import ApiKeyModal from '@/components/dashboard/ApiKeyModal';
 import { useTranslation } from 'react-i18next';
 
@@ -19,10 +17,6 @@ interface Values {
     description: string;
     allowedIps: string;
 }
-
-const CustomTextarea = styled(Textarea)`
-    ${tw`h-32`}
-`;
 
 export default ({ onKeyCreated }: { onKeyCreated: (key: ApiKey) => void }) => {
     const { t } = useTranslation('dashboard/account');
@@ -64,7 +58,7 @@ export default ({ onKeyCreated }: { onKeyCreated: (key: ApiKey) => void }) => {
                             label={t('api.create.description-label')}
                             name={'description'}
                             description={t('api.create.description-content')}
-                            css={tw`mb-6`}
+                            className={'mb-6'}
                         >
                             <Field name={'description'} as={Input} />
                         </FormikFieldWrapper>
@@ -73,9 +67,9 @@ export default ({ onKeyCreated }: { onKeyCreated: (key: ApiKey) => void }) => {
                             name={'allowedIps'}
                             description={t('api.create.allowed-ips-content')}
                         >
-                            <Field name={'allowedIps'} as={CustomTextarea} />
+                            <Field className={'h-32'} name={'allowedIps'} as={Textarea} />
                         </FormikFieldWrapper>
-                        <div css={tw`flex justify-end mt-6`}>
+                        <div className={'flex justify-end mt-6'}>
                             <Button>{t('api.create.button')}</Button>
                         </div>
                     </Form>

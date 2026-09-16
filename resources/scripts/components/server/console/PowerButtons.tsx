@@ -22,7 +22,7 @@ export default ({ className }: PowerButtonProps) => {
     const killable = status === 'stopping';
     const onButtonClick = (
         action: PowerAction | 'kill-confirmed',
-        e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+        e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     ): void => {
         e.preventDefault();
         if (action === 'kill') {

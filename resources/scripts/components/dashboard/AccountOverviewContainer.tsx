@@ -2,9 +2,6 @@ import { useState, useEffect } from 'react';
 import UpdatePasswordForm from '@/components/dashboard/forms/UpdatePasswordForm';
 import UpdateEmailAddressForm from '@/components/dashboard/forms/UpdateEmailAddressForm';
 import ConfigureTwoFactorForm from '@/components/dashboard/forms/ConfigureTwoFactorForm';
-import tw from 'twin.macro';
-import { breakpoint } from '@/theme';
-import styled from 'styled-components';
 import MessageBox from '@/components/MessageBox';
 import { useLocation } from 'react-router-dom';
 import ContentBlock from '@/reviactyl/ui/ContentBlock';
@@ -17,11 +14,10 @@ import Title from '@/reviactyl/ui/Title';
 import { ExternalLinkIcon } from '@heroicons/react/solid';
 import { LogoutIcon } from '@heroicons/react/outline';
 import logout from '@/api/auth/logout';
-import ThemeSelector from '@/reviactyl/ui/ThemeEngine';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '@/reviactyl/ui/LanguageSwitcher';
-import { InvertToggle } from '@/reviactyl/ui/SmartInvert';
+import { ThemeToggle } from '@/reviactyl/ui/Theme';
 import useFlash from '@/plugins/useFlash';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import FileEditorSwitcher from '@/reviactyl/ui/FileEditorSwitcher';
@@ -29,22 +25,6 @@ import AvatarSelector from '@/components/dashboard/AvatarSelector';
 
 import SocialLoginsContainer from '@/components/dashboard/forms/SocialLoginsContainer';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
-
-const Container = styled.div`
-    ${tw`flex flex-wrap`};
-
-    & > div {
-        ${tw`w-full`};
-
-        ${breakpoint('sm')`
-      width: calc(50% - 1rem);
-    `}
-
-        ${breakpoint('md')`
-      ${tw`w-auto flex-1`};
-    `}
-    }
-`;
 
 export default () => {
     const { t } = useTranslation('dashboard/account');
@@ -54,7 +34,6 @@ export default () => {
     const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
     const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
-    const themeSelector = useStoreState((state) => state.designify.data!.themeSelector);
     const { addFlash, clearFlashes } = useFlash();
 
     useEffect(() => {
@@ -89,7 +68,7 @@ export default () => {
 
     return (
         <ContentBlock title={t('overview.account-overview')}>
-            <FlashMessageRender css={tw`mb-4`} />
+            <FlashMessageRender className='mb-4' />
             <ExtensionSlot name='account:overview:above' />
             {state?.twoFactorRedirect && (
                 <MessageBox title={t('overview.2fa-required')} type={'error'}>
@@ -97,10 +76,10 @@ export default () => {
                 </MessageBox>
             )}
 
-            <Container css={[tw`grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4`]}>
+            <div className='mb-4 grid grid-cols-1 gap-4 lg:grid-cols-2'>
                 <div className={'flex flex-col gap-4'}>
                     <ExtensionSlot name='account:overview:column1:start' />
-                    <Card className='overflow-hidden !p-0'>
+                    <Card className='overflow-hidden p-0!'>
                         <SpinnerOverlay visible={isLoggingOut} />
                         <div className='flex flex-col items-center px-5 py-8'>
                             <Gravatar className='w-24 h-24 mb-3 shadow-lg' />
@@ -138,16 +117,9 @@ export default () => {
                     <TitledGreyBox title={t('overview.update-email')} showFlashes={'account:email'}>
                         <UpdateEmailAddressForm />
                     </TitledGreyBox>
-                    {themeSelector ? (
-                        <TitledGreyBox title={t('overview.theme-selector')}>
-                            <ThemeSelector />
-                        </TitledGreyBox>
-                    ) : (
-                        ''
-                    )}
                     <TitledGreyBox title={t('overview.customization')}>
                         <LanguageSwitcher />
-                        <InvertToggle />
+                        <ThemeToggle />
                         <FileEditorSwitcher />
                     </TitledGreyBox>
                     <ExtensionSlot name='account:overview:column1:end' />
@@ -164,7 +136,7 @@ export default () => {
                     </TitledGreyBox>
                     <ExtensionSlot name='account:overview:column2:end' />
                 </div>
-            </Container>
+            </div>
             <ExtensionSlot name='account:overview:below' />
         </ContentBlock>
     );

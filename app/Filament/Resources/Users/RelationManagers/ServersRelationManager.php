@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Users\RelationManagers;
 
 use App\Models\Server;
+use App\Services\Servers\ServerDeletionService;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -11,7 +12,9 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Throwable;
 
 class ServersRelationManager extends RelationManager
 {
@@ -134,6 +137,22 @@ class ServersRelationManager extends RelationManager
             ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
+                        ->using(function (DeleteBulkAction $action, Collection $records): void {
+                            foreach ($records as $record) {
+                                if (! $record instanceof Server) {
+                                    $action->reportBulkProcessingFailure();
+
+                                    continue;
+                                }
+
+                                try {
+                                    app(ServerDeletionService::class)->withForce(false)->handle($record);
+                                } catch (Throwable $exception) {
+                                    $action->reportBulkProcessingFailure();
+                                    report($exception);
+                                }
+                            }
+                        })
                         ->label(trans('admin/server.actions.delete'))
                         ->requiresConfirmation(),
                 ]),

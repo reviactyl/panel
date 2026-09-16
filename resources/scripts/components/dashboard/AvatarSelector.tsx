@@ -70,7 +70,7 @@ export default () => {
                                 isSaving && 'cursor-wait opacity-70',
                                 isSelected
                                     ? 'border-primary-500 bg-primary-500/10'
-                                    : 'border-transparent hover:border-gray-600'
+                                    : 'border-transparent hover:border-gray-600',
                             )}
                         >
                             <Avatar

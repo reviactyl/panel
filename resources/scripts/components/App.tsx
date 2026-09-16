@@ -6,14 +6,11 @@ import { SiteSettings } from '@/state/settings';
 import { DesignifySettings } from '@/state/designify';
 import ProgressBar from '@/reviactyl/elements/ProgressBar';
 import { NotFound } from '@/reviactyl/elements/ScreenBlock';
-import tw from 'twin.macro';
-import GlobalStylesheet from '@/assets/css/GlobalStylesheet';
 import AuthenticatedRoute from '@/reviactyl/elements/AuthenticatedRoute';
 import { ServerContext } from '@/state/server';
 import '@/assets/tailwind.css';
 import Spinner from '@/reviactyl/elements/Spinner';
-import { ThemeLoader } from '@/reviactyl/ui/ThemeEngine';
-import { Invert } from '@/reviactyl/ui/SmartInvert';
+import { Theme } from '@/reviactyl/ui/Theme';
 import { LocaleLoader } from '@/reviactyl/ui/LanguageSwitcher';
 import { SubuserPreviewProvider } from '@/context/SubuserPreviewContext';
 import { SubuserPreviewFrame } from '@/components/subuser-preview/SubuserPreviewFrame';
@@ -78,19 +75,12 @@ function App() {
     }
 
     return (
-        <Invert>
-            <GlobalStylesheet />
+        <Theme>
             <StoreProvider store={store}>
-                <ThemeLoader />
                 <LocaleLoader />
                 <ProgressBar />
-                <div css={tw`mx-auto w-auto`}>
-                    <BrowserRouter
-                        future={{
-                            v7_startTransition: true,
-                            v7_relativeSplatPath: true,
-                        }}
-                    >
+                <div className='mx-auto w-auto'>
+                    <BrowserRouter>
                         <SubuserPreviewProvider>
                             <SubuserPreviewFrame>
                                 <Routes>
@@ -139,7 +129,7 @@ function App() {
                     </BrowserRouter>
                 </div>
             </StoreProvider>
-        </Invert>
+        </Theme>
     );
 }
 

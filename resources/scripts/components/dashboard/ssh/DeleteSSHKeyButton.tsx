@@ -1,4 +1,3 @@
-import tw from 'twin.macro';
 import { FaTrash } from 'react-icons/fa6';
 import { useState } from 'react';
 import { useFlashKey } from '@/plugins/useFlash';
@@ -36,7 +35,7 @@ export default ({ name, fingerprint }: { name: string; fingerprint: string }) =>
             >
                 {t('ssh.delete.info')} <Code>{name}</Code>
             </Dialog.Confirm>
-            <button css={tw`ml-4 p-2 text-sm`} onClick={() => setVisible(true)}>
+            <button className='ml-4 p-2 text-sm' onClick={() => setVisible(true)}>
                 <FaTrash className={'text-gray-400 hover:text-red-400 transition-colors duration-150'} />
             </button>
         </>

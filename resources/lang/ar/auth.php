@@ -11,14 +11,14 @@ return [
     'password-label' => 'كلمة المرور',
 
     'login-button' => 'تسجيل الدخول',
-    'passkey-button' => 'Login with Passkey',
+    'passkey-button' => 'تسجيل الدخول باستخدام Passkey',
     'return' => 'العودة إلى تسجيل الدخول',
 
-    'passkey-unsupported' => 'Passkeys are not supported by this browser.',
-    'passkey-failed' => 'Unable to complete passkey login. Please try again.',
-    'passkey-no-credentials' => 'No passkey is available for this login. Use your password or register a passkey first.',
-    'passkey-security' => 'Passkey verification could not be completed securely on this device.',
-    'passkey-username-required' => 'Enter your username or email before using a passkey.',
+    'passkey-unsupported' => 'لا يدعم هذا المتصفح ملفات Passkeys.',
+    'passkey-failed' => 'تعذر إتمام تسجيل الدخول باستخدام مفتاح المرور. يرجى المحاولة مرة أخرى.',
+    'passkey-no-credentials' => 'لا توجد كلمة مرور متاحة لهذا الحساب. استخدم كلمة مرورك أو قم بتسجيل كلمة مرور أولاً.',
+    'passkey-security' => 'تعذر إتمام عملية التحقق من مفتاح المرور بشكل آمن على هذا الجهاز.',
+    'passkey-username-required' => 'أدخل اسم المستخدم أو عنوان البريد الإلكتروني قبل استخدام مفتاح المرور.',
 
     'social' => [
         'or' => 'أو',
@@ -64,14 +64,14 @@ return [
         'namefirst-label' => 'الاسم الأول',
         'namelast-label' => 'اسم العائلة',
         'email-label' => 'البريد الإلكتروني',
-        'username-label' => 'Username',
+        'username-label' => 'اسم المستخدم',
         'password-label' => 'كلمة المرور',
         'min-length' => 'يجب أن تتكون كلمات المرور من 8 أحرف على الأقل.',
         'confirm-label' => 'تأكيد كلمة المرور',
         'label' => 'تسجيل',
-        'create-link' => 'Don\'t have an account? Create one',
+        'create-link' => 'ليس لديك حساب؟ أنشئ حسابًا',
         'create-account' => 'إنشاء حساب',
-        'no-account' => 'Don\'t have an account?',
+        'no-account' => 'ليس لديك حساب؟',
     ],
 
     'failed' => 'لا يوجد حساب يطابق تلك البيانات.',
@@ -85,5 +85,5 @@ return [
     'throttle' => 'عدد كبير جدًا من محاولات تسجيل الدخول. الرجاء المحاولة مرة أخرى بعد :seconds ثانية.',
     'password_requirements' => 'يجب أن تتكون كلمة المرور من 8 أحرف على الأقل ويجب أن تكون فريدة لهذا الموقع.',
     '2fa_must_be_enabled' => 'طلب المشرف تفعيل المصادقة الثنائية لحسابك لاستخدام اللوحة.',
-    'captcha-required' => 'Please complete the captcha challenge to continue.',
+    'captcha-required' => 'يرجى إكمال اختبار «كابتشا» للمتابعة.',
 ];

@@ -26,7 +26,7 @@ const DropdownItem = forwardRef<HTMLAnchorElement, Props>(
                                 [styles.danger]: danger,
                                 [styles.disabled]: disabled,
                             },
-                            className
+                            className,
                         )}
                         onClick={onClick}
                     >
@@ -36,7 +36,7 @@ const DropdownItem = forwardRef<HTMLAnchorElement, Props>(
                 )}
             </Menu.Item>
         );
-    }
+    },
 );
 
 export default DropdownItem;
