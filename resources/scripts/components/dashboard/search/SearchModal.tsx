@@ -82,6 +82,7 @@ export default ({ ...props }: Props) => {
             const generation = ++searchGeneration.current;
 
             search.clear();
+            clearFlashes('search');
             setServers([]);
 
             if (term.length < 3) {
@@ -92,7 +93,7 @@ export default ({ ...props }: Props) => {
             setSubmitting(true);
             search(term, generation, setSubmitting);
         },
-        [search],
+        [clearFlashes, search],
     );
 
     useEffect(
