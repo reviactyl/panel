@@ -98,7 +98,11 @@ export default ({ backup, className }: Props) => {
                 <p className='mt-1 text-2xs uppercase text-muted'>{t('created')}</p>
             </div>
             <Can
-                action={backup.isSuccessful ? ['backup.download', 'backup.restore', 'backup.delete'] : 'backup.delete'}
+                action={
+                    backup.isSuccessful
+                        ? ['backup.create', 'backup.download', 'backup.restore', 'backup.delete']
+                        : 'backup.delete'
+                }
                 matchAny={backup.isSuccessful}
             >
                 <div className='mt-4 ml-6 md:mt-0' style={{ marginRight: '-0.5rem' }}>

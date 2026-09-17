@@ -15,6 +15,8 @@ return [
     'delete-message' => 'This is a permanent operation. The backup cannot be recovered once deleted.',
     'download' => 'Download',
     'restore' => 'Restore',
+    'rename' => 'Rename',
+    'cancel' => 'Cancel',
     'unlock' => 'Unlock',
     'lock' => 'Lock',
     'delete' => 'Delete',
