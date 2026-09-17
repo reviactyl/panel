@@ -15,6 +15,8 @@ return [
     'delete-message' => 'Esta es una operación permanente. La copia de seguridad no se puede recuperar una vez eliminada.',
     'download' => 'Descargar',
     'restore' => 'Restaurar',
+    'rename' => 'Rename',
+    'cancel' => 'Cancel',
     'unlock' => 'Desbloquear',
     'lock' => 'Bloquear',
     'delete' => 'Eliminar',
