@@ -15,6 +15,8 @@ return [
     'delete-message' => '这是一个永久性操作。一旦删除，备份将无法恢复。',
     'download' => '下载',
     'restore' => '恢复',
+    'rename' => 'Rename',
+    'cancel' => 'Cancel',
     'unlock' => '解锁',
     'lock' => '锁定',
     'delete' => '删除',
