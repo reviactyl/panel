@@ -13,9 +13,13 @@ return [
         'using-api-key' => 'API Anahtarı Kullanılıyor',
         'using-sftp' => 'SFTP Kullanılıyor',
     ],
+    'event' => [
+        'password-reset' => 'Şifre sıfırlama',
+    ],
     'auth' => [
         'fail' => 'Giriş başarısız',
         'success' => 'Giriş yapıldı',
+        'passkey' => 'Şifre anahtarıyla oturum açıldı',
         'password-reset' => 'Parola sıfırlandı',
         'reset-password' => 'Parola sıfırlama isteği gönderildi',
         'checkpoint' => 'İki aşamalı doğrulama istendi',
@@ -27,10 +31,15 @@ return [
         ],
     ],
     'user' => [
+        'user' => [
+            'create' => 'Yeni bir kullanıcı oluşturuldu: e-posta',
+        ],
         'account' => [
             'email-changed' => 'E-posta adresi :old adresinden :new adresine değiştirildi',
             'password-changed' => 'Parola değiştirildi',
             'language-changed' => 'Dil :old dilinden :new diline değiştirildi',
+            'file-editor-changed' => 'Dosya düzenleyicisi :old\'dan :new\'e değiştirildi',
+            'avatar-changed' => 'Avatar stilini :old\'dan :new\'e değiştirdim',
         ],
         'api-key' => [
             'create' => 'Yeni API anahtarı :identifier oluşturuldu',
@@ -43,6 +52,10 @@ return [
         'two-factor' => [
             'create' => 'İki aşamalı doğrulama etkinleştirildi',
             'delete' => 'İki aşamalı doğrulama devre dışı bırakıldı',
+        ],
+        'passkey' => [
+            'create' => 'Yeni bir şifre kaydedildi',
+            'delete' => 'Kaldırılan erişim anahtarı: id',
         ],
     ],
     'server' => [
@@ -123,6 +136,7 @@ return [
         'settings' => [
             'rename' => 'Sunucu adı :old iken :new olarak değiştirildi',
             'description' => 'Sunucu açıklaması :old iken :new olarak değiştirildi',
+            'category' => 'Sunucu kategorisi değiştirildi',
         ],
         'startup' => [
             'edit' => ':variable değişkeni ":old" iken ":new" olarak değiştirildi',

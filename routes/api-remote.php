@@ -3,7 +3,7 @@
 use App\Http\Controllers\Api\Remote;
 use Illuminate\Support\Facades\Route;
 
-// Routes for the Wings daemon.
+// Routes for the Agent daemon.
 Route::post('/sftp/auth', Remote\SftpAuthenticationController::class);
 
 Route::get('/servers', [Remote\Servers\ServerDetailsController::class, 'list']);

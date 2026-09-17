@@ -51,7 +51,7 @@ class EggTransformer extends BaseTransformer
             'id' => $model->id,
             'uuid' => $model->uuid,
             'name' => $model->name,
-            'banner' => $model->banner,
+            'image' => $model->image,
             'nest' => $model->nest_id,
             'author' => $model->author,
             'description' => $model->description,

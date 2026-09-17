@@ -26,6 +26,8 @@ class RegisterController extends AbstractLoginController
      */
     public function index(): View
     {
+        abort_unless(config('panel.auth.registration_enabled', true), 404);
+
         return view('templates/auth.core');
     }
 
@@ -34,6 +36,8 @@ class RegisterController extends AbstractLoginController
      */
     public function register(Request $request): JsonResponse
     {
+        abort_unless(config('panel.auth.registration_enabled', true), 404);
+
         $request->validate([
             'email' => 'required|email|unique:users,email',
             'username' => ['required', 'string', 'min:3', 'unique:users,username', new Username()],

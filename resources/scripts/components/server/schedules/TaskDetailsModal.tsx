@@ -4,19 +4,20 @@ import { Field as FormikField, Form, Formik, FormikHelpers, useField } from 'for
 import { ServerContext } from '@/state/server';
 import createOrUpdateScheduleTask from '@/api/server/schedules/createOrUpdateScheduleTask';
 import { httpErrorToHuman } from '@/api/http';
-import Field from '@/components/elements/Field';
+import Field from '@/reviactyl/elements/Field';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { boolean, number, object, string } from 'yup';
 import useFlash from '@/plugins/useFlash';
-import FormikFieldWrapper from '@/components/elements/FormikFieldWrapper';
-import tw from 'twin.macro';
-import Label from '@/components/elements/Label';
-import { Textarea } from '@/components/elements/Input';
-import { Button } from '@/components/elements/button/index';
-import Select from '@/components/elements/Select';
+import FormikFieldWrapper from '@/reviactyl/elements/FormikFieldWrapper';
+import Label from '@/reviactyl/elements/Label';
+import { Textarea } from '@/reviactyl/elements/Input';
+import { Button } from '@/reviactyl/components/button/index';
+import Select from '@/reviactyl/elements/Select';
 import ModalContext from '@/context/ModalContext';
 import asModal from '@/hoc/asModal';
-import FormikSwitch from '@/components/elements/FormikSwitch';
+import FormikSwitch from '@/reviactyl/elements/FormikSwitch';
+import { usePermissions } from '@/plugins/usePermissions';
+import { getTaskActionPermission, taskActionPermissions } from '@/components/server/schedules/taskPermissions';
 
 interface Props {
     schedule: Schedule;
@@ -47,13 +48,13 @@ const schema = object().shape({
         .max(900, 'The time offset must be less than 900 seconds.'),
 });
 
-const ActionListener = () => {
+const ActionListener = ({ defaultPowerAction }: { defaultPowerAction: string }) => {
     const [{ value }, { initialValue: initialAction }] = useField<string>('action');
     const [, { initialValue: initialPayload }, { setValue, setTouched }] = useField<string>('payload');
 
     useEffect(() => {
         if (value !== initialAction) {
-            setValue(value === 'power' ? 'start' : '');
+            setValue(value === 'power' ? defaultPowerAction : '');
             setTouched(false);
         } else {
             setValue(initialPayload || '');
@@ -71,6 +72,25 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const appendSchedule = ServerContext.useStoreActions((actions) => actions.schedules.appendSchedule);
     const backupLimit = ServerContext.useStoreState((state) => state.server.data!.featureLimits.backups);
+    const [canSendCommand, canStart, canStop, canRestart, canCreateBackup] = usePermissions(taskActionPermissions);
+    const defaultPowerAction = canStart ? 'start' : canRestart ? 'restart' : canStop ? 'stop' : '';
+    const defaultAction = canSendCommand ? 'command' : defaultPowerAction ? 'power' : 'backup';
+    const taskPermission = task ? getTaskActionPermission(task.action, task.payload) : null;
+    const canEditExistingAction =
+        taskPermission === 'control.console'
+            ? canSendCommand
+            : taskPermission === 'control.start'
+              ? canStart
+              : taskPermission === 'control.stop'
+                ? canStop
+                : taskPermission === 'control.restart'
+                  ? canRestart
+                  : taskPermission === 'backup.create'
+                    ? canCreateBackup
+                    : false;
+    const initialAction = task && canEditExistingAction ? task.action : defaultAction;
+    const initialPayload =
+        task && canEditExistingAction ? task.payload : initialAction === 'power' ? defaultPowerAction : '';
 
     useEffect(() => {
         return () => {
@@ -110,29 +130,29 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
             onSubmit={submit}
             validationSchema={schema}
             initialValues={{
-                action: task?.action || 'command',
-                payload: task?.payload || '',
+                action: initialAction,
+                payload: initialPayload,
                 timeOffset: task?.timeOffset.toString() || '0',
                 continueOnFailure: task?.continueOnFailure || false,
             }}
         >
             {({ isSubmitting, values }) => (
-                <Form css={tw`m-0`}>
-                    <FlashMessageRender byKey={'schedule:task'} css={tw`mb-4`} />
-                    <h2 css={tw`text-2xl mb-6`}>{task ? 'Edit Task' : 'Create Task'}</h2>
-                    <div css={tw`flex`}>
-                        <div css={tw`mr-2 w-1/3`}>
+                <Form className='m-0'>
+                    <FlashMessageRender byKey={'schedule:task'} className='mb-4' />
+                    <h2 className='text-2xl mb-6'>{task ? 'Edit Task' : 'Create Task'}</h2>
+                    <div className='flex'>
+                        <div className='mr-2 w-1/3'>
                             <Label>Action</Label>
-                            <ActionListener />
+                            <ActionListener defaultPowerAction={defaultPowerAction} />
                             <FormikFieldWrapper name={'action'}>
                                 <FormikField as={Select} name={'action'}>
-                                    <option value={'command'}>Send command</option>
-                                    <option value={'power'}>Send power action</option>
-                                    <option value={'backup'}>Create backup</option>
+                                    {canSendCommand && <option value={'command'}>Send command</option>}
+                                    {defaultPowerAction && <option value={'power'}>Send power action</option>}
+                                    {canCreateBackup && <option value={'backup'}>Create backup</option>}
                                 </FormikField>
                             </FormikFieldWrapper>
                         </div>
-                        <div css={tw`flex-1 ml-6`}>
+                        <div className='flex-1 ml-6'>
                             <Field
                                 name={'timeOffset'}
                                 label={'Time offset (in seconds)'}
@@ -142,7 +162,7 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
                             />
                         </div>
                     </div>
-                    <div css={tw`mt-6`}>
+                    <div className='mt-6'>
                         {values.action === 'command' ? (
                             <div>
                                 <Label>Payload</Label>
@@ -155,10 +175,10 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
                                 <Label>Payload</Label>
                                 <FormikFieldWrapper name={'payload'}>
                                     <FormikField as={Select} name={'payload'}>
-                                        <option value={'start'}>Start the server</option>
-                                        <option value={'restart'}>Restart the server</option>
-                                        <option value={'stop'}>Stop the server</option>
-                                        <option value={'kill'}>Terminate the server</option>
+                                        {canStart && <option value={'start'}>Start the server</option>}
+                                        {canRestart && <option value={'restart'}>Restart the server</option>}
+                                        {canStop && <option value={'stop'}>Stop the server</option>}
+                                        {canStop && <option value={'kill'}>Terminate the server</option>}
                                     </FormikField>
                                 </FormikFieldWrapper>
                             </div>
@@ -176,14 +196,14 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
                             </div>
                         )}
                     </div>
-                    <div css={tw`mt-6 bg-gray-700 border border-gray-800 shadow-inner p-4 rounded`}>
+                    <div className='mt-6 bg-gray-900 border border-gray-900 shadow-inner p-4 rounded'>
                         <FormikSwitch
                             name={'continueOnFailure'}
                             description={'Future tasks will be run when this task fails.'}
                             label={'Continue on Failure'}
                         />
                     </div>
-                    <div css={tw`flex justify-end mt-6`}>
+                    <div className='flex justify-end mt-6'>
                         <Button type={'submit'} disabled={isSubmitting}>
                             {task ? 'Save Changes' : 'Create Task'}
                         </Button>

@@ -5,7 +5,7 @@ return [
     'label' => 'Banco de Dados',
     'plural-label' => 'Bancos de Dados',
 
-    'none' => 'None',
+    'none' => 'Nenhum',
 
     'sections' => [
         'host_details' => [
@@ -24,8 +24,6 @@ return [
 
     'placeholders' => [
         'name' => 'MySQL Produção',
-        'host' => '127.0.0.1',
-        'username' => 'reviactyl',
     ],
 
     'helpers' => [
@@ -40,7 +38,7 @@ return [
     'columns' => [
         'id' => 'ID',
         'name' => 'Nome',
-        'host' => 'Host',
+        'host' => 'Hospedar',
         'port' => 'Porta',
         'username' => 'Usuário',
         'linked_node' => 'Host Vinculado',

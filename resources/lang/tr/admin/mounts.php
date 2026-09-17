@@ -6,7 +6,7 @@ return [
     'plural_label' => 'Bağlama Noktaları',
 
     'sections' => [
-        'configuration' => 'Mount Configuration',
+        'configuration' => 'Montaj Yapılandırması',
     ],
 
     'fields' => [
@@ -37,8 +37,8 @@ return [
     ],
 
     'actions' => [
-        'attach_egg' => 'Attach Egg',
-        'attach_node' => 'Attach Node',
+        'attach_egg' => 'Yumurtayı Tak',
+        'attach_node' => 'Düğüm Ekle',
     ],
 
 ];

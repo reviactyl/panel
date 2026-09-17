@@ -3,7 +3,6 @@
 namespace App\Transformers\Api\Client;
 
 use App\Models\User;
-use Illuminate\Support\Str;
 
 class UserTransformer extends BaseClientTransformer
 {
@@ -26,7 +25,7 @@ class UserTransformer extends BaseClientTransformer
             'identifier' => $model->identifier,
             'username' => $model->username,
             'email' => $model->email,
-            'image' => 'https://gravatar.com/avatar/'.md5(Str::lower($model->email)),
+            'image' => $model->avatar_url,
             '2fa_enabled' => $model->use_totp,
             'created_at' => $model->created_at->toAtomString(),
         ];

@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 import { store } from '@/state';
+import { getPreviewToken } from '@/lib/subuserPreviewStorage';
 
 const http: AxiosInstance = axios.create({
     withCredentials: true,
@@ -11,8 +12,16 @@ const http: AxiosInstance = axios.create({
     },
 });
 
+const isBackgroundRequest = (url?: string): boolean =>
+    url?.endsWith('/resources') === true || url?.endsWith('/subuser-preview/heartbeat') === true;
+
 http.interceptors.request.use((req) => {
-    if (!req.url?.endsWith('/resources')) {
+    const previewToken = getPreviewToken();
+    if (previewToken && req.url?.startsWith('/api/client')) {
+        req.headers.set('X-Subuser-Preview', previewToken);
+    }
+
+    if (!isBackgroundRequest(req.url)) {
         store.getActions().progress.startContinuous();
     }
 
@@ -21,17 +30,19 @@ http.interceptors.request.use((req) => {
 
 http.interceptors.response.use(
     (resp) => {
-        if (!resp.request?.url?.endsWith('/resources')) {
+        if (!isBackgroundRequest(resp.request?.url)) {
             store.getActions().progress.setComplete();
         }
 
         return resp;
     },
     (error) => {
-        store.getActions().progress.setComplete();
+        if (!isBackgroundRequest(error.config?.url ?? error.request?.url)) {
+            store.getActions().progress.setComplete();
+        }
 
         throw error;
-    }
+    },
 );
 
 export default http;
@@ -58,7 +69,7 @@ export function httpErrorToHuman(error: any): string {
             return data.errors[0].detail;
         }
 
-        // Errors from wings directory, mostly just for file uploads.
+        // Errors from agent directory, mostly just for file uploads.
         if (data.error && typeof data.error === 'string') {
             return data.error;
         }
@@ -135,11 +146,14 @@ export interface QueryBuilderParams<FilterKeys extends string = string, SortKeys
 export const withQueryBuilderParams = (data?: QueryBuilderParams): Record<string, unknown> => {
     if (!data) return {};
 
-    const filters = Object.keys(data.filters || {}).reduce((obj, key) => {
-        const value = data.filters?.[key];
+    const filters = Object.keys(data.filters || {}).reduce(
+        (obj, key) => {
+            const value = data.filters?.[key];
 
-        return !value || value === '' ? obj : { ...obj, [`filter[${key}]`]: value };
-    }, {} as NonNullable<QueryBuilderParams['filters']>);
+            return !value || value === '' ? obj : { ...obj, [`filter[${key}]`]: value };
+        },
+        {} as NonNullable<QueryBuilderParams['filters']>,
+    );
 
     const sorts = Object.keys(data.sorts || {}).reduce((arr, key) => {
         const value = data.sorts?.[key];

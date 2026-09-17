@@ -5,8 +5,13 @@ return [
         'dashboard' => '仪表板',
         'logout' => '登出',
     ],
+    'sidebar' => [
+        'more' => '更多的',
+        'extensions' => '扩展',
+    ],
     'account' => [
         'overview' => '账户概览',
+        'passkeys' => '通行密钥',
         'api' => 'API 密钥',
         'ssh' => 'SSH 密钥',
         'activity' => '活动日志',

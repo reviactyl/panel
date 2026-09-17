@@ -2,11 +2,16 @@
 
 return [
     'index' => [
-        'dashboard' => 'Dashboard',
+        'dashboard' => 'Armaturenbrett',
         'logout' => 'Abmelden',
+    ],
+    'sidebar' => [
+        'more' => 'Mehr',
+        'extensions' => 'Erweiterungen',
     ],
     'account' => [
         'overview' => 'Kontoübersicht',
+        'passkeys' => 'Passwörter',
         'api' => 'API-Schlüssel',
         'ssh' => 'SSH-Schlüssel',
         'activity' => 'Aktivität',

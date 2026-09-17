@@ -7,8 +7,10 @@ use App\Models\SocialLogin;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Laravel\Socialite\Contracts\Factory;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\User as SocialiteUser;
+use SocialiteProviders\Discord\Provider;
 
 class SocialLoginController extends Controller
 {
@@ -132,6 +134,33 @@ class SocialLoginController extends Controller
         config(['services.'.$provider.'.client_secret' => $clientSecret]);
         config(['services.'.$provider.'.redirect' => $redirectUri]);
 
+        $this->registerExtendedProvider($provider);
+
         return true;
+    }
+
+    protected function registerExtendedProvider(string $provider): void
+    {
+        $extendedProviders = [
+            'discord' => Provider::class,
+        ];
+
+        if (! isset($extendedProviders[$provider])) {
+            return;
+        }
+
+        $providerClass = $extendedProviders[$provider];
+
+        app(Factory::class)
+            ->extend($provider, function ($app) use ($provider, $providerClass) {
+                $config = $app['config']['services.'.$provider];
+
+                return app($providerClass, [
+                    'request' => $app['request'],
+                    'clientId' => $config['client_id'],
+                    'clientSecret' => $config['client_secret'],
+                    'redirectUrl' => $config['redirect'],
+                ]);
+            });
     }
 }

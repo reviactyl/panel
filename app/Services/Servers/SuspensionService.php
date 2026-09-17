@@ -3,7 +3,7 @@
 namespace App\Services\Servers;
 
 use App\Models\Server;
-use App\Repositories\Wings\DaemonServerRepository;
+use App\Repositories\Agent\DaemonServerRepository;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Webmozart\Assert\Assert;
 
@@ -48,10 +48,10 @@ class SuspensionService
         ]);
 
         try {
-            // Tell wings to re-sync the server state.
+            // Tell agent to re-sync the server state.
             $this->daemonServerRepository->setServer($server)->sync();
         } catch (\Exception $exception) {
-            // Rollback the server's suspension status if wings fails to sync the server.
+            // Rollback the server's suspension status if agent fails to sync the server.
             $server->update([
                 'status' => $isSuspending ? null : Server::STATUS_SUSPENDED,
             ]);

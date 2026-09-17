@@ -23,9 +23,7 @@ return [
     ],
 
     'placeholders' => [
-        'name' => 'Production MySQL',
-        'host' => '127.0.0.1',
-        'username' => 'reviactyl',
+        'name' => 'MySQL de production',
     ],
 
     'helpers' => [
@@ -40,7 +38,7 @@ return [
     'columns' => [
         'id' => 'ID',
         'name' => 'Nom',
-        'host' => 'Host',
+        'host' => 'Hôte',
         'port' => 'Port',
         'username' => 'Nom d\'utilisateur',
         'linked_node' => 'Nœud lié',

@@ -5,8 +5,13 @@ return [
         'dashboard' => 'Instrumentpanel',
         'logout' => 'Logga ut',
     ],
+    'sidebar' => [
+        'more' => 'Mer',
+        'extensions' => 'Tillägg',
+    ],
     'account' => [
         'overview' => 'Kontoinformation',
+        'passkeys' => 'Lösenord',
         'api' => 'API-nycklar',
         'ssh' => 'SSH-nycklar',
         'activity' => 'Aktivitet',

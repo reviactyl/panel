@@ -3,30 +3,37 @@ import { Subuser } from '@/state/server/subusers';
 import { FaPen, FaUnlock, FaUserLock } from 'react-icons/fa6';
 import RemoveSubuserButton from '@/components/server/users/RemoveSubuserButton';
 import EditSubuserModal from '@/components/server/users/EditSubuserModal';
-import Can from '@/components/elements/Can';
+import Can from '@/reviactyl/elements/Can';
 import { useStoreState } from 'easy-peasy';
-import tw from 'twin.macro';
-import GreyRowBox from '@/components/elements/GreyRowBox';
+import GreyRowBox from '@/reviactyl/elements/GreyRowBox';
+import { useTranslation } from 'react-i18next';
+import PreviewSubuserButton from '@/components/server/users/PreviewSubuserButton';
+import { ServerContext } from '@/state/server';
+import { useSubuserPreview } from '@/context/SubuserPreviewContext';
 
 interface Props {
     subuser: Subuser;
 }
 
 export default ({ subuser }: Props) => {
-    const uuid = useStoreState((state) => state.user!.data!.uuid);
+    const accountUuid = useStoreState((state) => state.user!.data!.uuid);
+    const { session } = useSubuserPreview();
+    const uuid = session?.subuserUuid ?? accountUuid;
+    const isServerOwner = ServerContext.useStoreState((state) => state.server.data?.isOwner === true);
     const [visible, setVisible] = useState(false);
+    const { t } = useTranslation('server/users');
 
     return (
-        <GreyRowBox css={tw`mb-2`}>
+        <GreyRowBox className='mb-2'>
             <EditSubuserModal subuser={subuser} visible={visible} onModalDismissed={() => setVisible(false)} />
-            <div css={tw`w-10 h-10 rounded-full bg-white border-2 border-gray-800 overflow-hidden hidden md:block`}>
-                <img css={tw`w-full h-full`} src={`${subuser.image}?s=400`} />
+            <div className='hidden h-10 w-10 overflow-hidden rounded-full border-2 border-gray-900 bg-white md:block'>
+                <img className='h-full w-full' src={`${subuser.image}?s=400`} />
             </div>
-            <div css={tw`ml-4 flex-1 overflow-hidden`}>
-                <p css={tw`text-sm truncate`}>{subuser.email}</p>
+            <div className='ml-4 flex-1 overflow-hidden'>
+                <p className='truncate text-sm'>{subuser.email}</p>
             </div>
-            <div css={tw`ml-4`}>
-                <p css={tw`font-medium text-center`}>
+            <div className='ml-4'>
+                <p className='text-center font-medium'>
                     &nbsp;
                     {subuser.twoFactorEnabled ? (
                         <FaUserLock className={'inline-block w-[1.25em]'} />
@@ -35,21 +42,22 @@ export default ({ subuser }: Props) => {
                     )}
                     &nbsp;
                 </p>
-                <p css={tw`text-2xs text-gray-500 uppercase hidden md:block`}>2FA Enabled</p>
+                <p className='hidden text-2xs uppercase text-muted md:block'>{t('two-factor-enabled')}</p>
             </div>
-            <div css={tw`ml-4 hidden md:block`}>
-                <p css={tw`font-medium text-center`}>
+            <div className='ml-4 hidden md:block'>
+                <p className='text-center font-medium'>
                     {subuser.permissions.filter((permission) => permission !== 'websocket.connect').length}
                 </p>
-                <p css={tw`text-2xs text-gray-500 uppercase`}>Permissions</p>
+                <p className='text-2xs uppercase text-muted'>{t('permissions-label')}</p>
             </div>
             {subuser.uuid !== uuid && (
                 <>
+                    {isServerOwner && <PreviewSubuserButton subuser={subuser} />}
                     <Can action={'user.update'}>
                         <button
                             type={'button'}
-                            aria-label={'Edit subuser'}
-                            css={tw`block text-sm p-1 md:p-2 text-gray-500 hover:text-gray-100 transition-colors duration-150 mx-4`}
+                            aria-label={t('edit-subuser')}
+                            className='mx-4 block p-1 text-sm text-gray-600 transition-colors duration-150 hover:text-gray-100 md:p-2'
                             onClick={() => setVisible(true)}
                         >
                             <FaPen />

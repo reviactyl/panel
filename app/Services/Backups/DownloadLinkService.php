@@ -2,6 +2,7 @@
 
 namespace App\Services\Backups;
 
+use App\Enum\JwtScope;
 use App\Extensions\Backups\BackupManager;
 use App\Extensions\Filesystem\S3Filesystem;
 use App\Models\Backup;
@@ -18,7 +19,7 @@ class DownloadLinkService
 
     /**
      * Returns the URL that allows for a backup to be downloaded by an individual
-     * user, or by the Wings control software.
+     * user, or by the Agent control software.
      */
     public function handle(Backup $backup, User $user): string
     {
@@ -33,6 +34,7 @@ class DownloadLinkService
                 'backup_uuid' => $backup->uuid,
                 'server_uuid' => $backup->server->uuid,
             ])
+            ->setScopes(JwtScope::BackupDownload)
             ->handle($backup->server->node, $user->id.$backup->server->uuid);
 
         return sprintf('%s/download/backup?token=%s', $backup->server->node->getConnectionAddress(), $token->toString());

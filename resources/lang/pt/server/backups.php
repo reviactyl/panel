@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'title' => 'Backups',
+    'title' => 'Cópias de segurança',
     'out-of-backups' => 'Parece que não temos mais backups para mostrar, tente voltar uma página.',
     'no-backups' => 'Parece que não há backups armazenados atualmente para este servidor.',
     'cannot-create' => 'Não é possível criar backups para este servidor.',

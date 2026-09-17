@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Database\Factories\ServerTransferFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -25,6 +27,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 class ServerTransfer extends Model
 {
+    /** @use HasFactory<ServerTransferFactory> */
+    use HasFactory;
+
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.

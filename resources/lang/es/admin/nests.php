@@ -2,46 +2,46 @@
 
 return [
 
-    'label' => 'Nest',
-    'plural_label' => 'Nests',
+    'label' => 'Nido',
+    'plural_label' => 'Nidos',
 
     'sections' => [
-        'configuration' => 'Nest Configuration',
+        'configuration' => 'Configuración de nido',
     ],
 
     'fields' => [
-        'name' => 'Name',
-        'author' => 'Author',
-        'description' => 'Description',
+        'name' => 'Nombre',
+        'author' => 'Autor',
+        'description' => 'Descripción',
     ],
 
     'helpers' => [
-        'name' => 'A unique name used to identify this nest.',
-        'author' => 'The author of this nest. Must be a valid email.',
-        'description' => 'A description of this nest.',
+        'name' => 'Un nombre único utilizado para identificar este nido.',
+        'author' => 'El autor de este nido. Debe ser un correo electrónico válido.',
+        'description' => 'Una descripción de este nido.',
     ],
 
     'columns' => [
         'id' => 'ID',
-        'name' => 'Name',
-        'author' => 'Author',
-        'eggs' => 'Eggs',
-        'servers' => 'Servers',
+        'name' => 'Nombre',
+        'author' => 'Autor',
+        'eggs' => 'Huevos',
+        'servers' => 'Servidores',
     ],
 
     'actions' => [
-        'import' => 'Import Egg',
+        'import' => 'Importar huevo',
     ],
 
     'import' => [
-        'file_label' => 'Egg File (JSON)',
-        'nest_label' => 'Associated Nest',
-        'file_not_found' => 'File not found',
-        'file_not_found_body' => 'Could not locate uploaded file.',
-        'invalid_format' => 'Invalid file format',
-        'invalid_format_body' => 'Unexpected file format received.',
-        'success' => 'Egg imported successfully',
-        'failed' => 'Failed to import egg',
+        'file_label' => 'Archivo de huevo (JSON)',
+        'nest_label' => 'Nido asociado',
+        'file_not_found' => 'Archivo no encontrado',
+        'file_not_found_body' => 'No se pudo localizar el archivo cargado.',
+        'invalid_format' => 'Formato de archivo no válido',
+        'invalid_format_body' => 'Se recibió un formato de archivo inesperado.',
+        'success' => 'Huevo importado con éxito',
+        'failed' => 'No se pudo importar el huevo',
     ],
 
     'notices' => [

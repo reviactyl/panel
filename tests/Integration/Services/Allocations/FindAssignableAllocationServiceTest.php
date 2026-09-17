@@ -67,7 +67,14 @@ class FindAssignableAllocationServiceTest extends IntegrationTestCase
     public function test_only_port_not_in_use_is_created()
     {
         $server = $this->createServerModel();
-        $server2 = $this->createServerModel(['node_id' => $server->node_id]);
+        $server2 = $this->createServerModel([
+            'node_id' => $server->node_id,
+            'allocation_id' => Allocation::factory()->create([
+                'node_id' => $server->node_id,
+                'ip' => '192.0.2.1',
+                'port' => 6006,
+            ])->id,
+        ]);
 
         config()->set('panel.client_features.allocations.range_start', 5000);
         config()->set('panel.client_features.allocations.range_end', 5001);
@@ -86,7 +93,14 @@ class FindAssignableAllocationServiceTest extends IntegrationTestCase
     public function test_exception_is_thrown_if_no_more_allocations_can_be_created_in_range()
     {
         $server = $this->createServerModel();
-        $server2 = $this->createServerModel(['node_id' => $server->node_id]);
+        $server2 = $this->createServerModel([
+            'node_id' => $server->node_id,
+            'allocation_id' => Allocation::factory()->create([
+                'node_id' => $server->node_id,
+                'ip' => '192.0.2.1',
+                'port' => 6006,
+            ])->id,
+        ]);
         config()->set('panel.client_features.allocations.range_start', 5000);
         config()->set('panel.client_features.allocations.range_end', 5005);
 

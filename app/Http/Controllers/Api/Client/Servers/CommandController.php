@@ -7,7 +7,7 @@ use App\Facades\Activity;
 use App\Http\Controllers\Api\Client\ClientApiController;
 use App\Http\Requests\Api\Client\Servers\SendCommandRequest;
 use App\Models\Server;
-use App\Repositories\Wings\DaemonCommandRepository;
+use App\Repositories\Agent\DaemonCommandRepository;
 use GuzzleHttp\Exception\BadResponseException;
 use Illuminate\Http\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;

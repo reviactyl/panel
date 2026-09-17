@@ -1,20 +1,22 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import login from '@/api/auth/login';
+import loginWithPasskey from '@/api/auth/loginWithPasskey';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
 import { useStoreState } from 'easy-peasy';
 import type { FormikHelpers } from 'formik';
 import { Formik } from 'formik';
 import { object, string } from 'yup';
-import Field from '@/components/elements/Field';
-import tw from 'twin.macro';
-import { Button } from '@/components/elements/button/index';
+import Field from '@/reviactyl/elements/Field';
+import { Button } from '@/reviactyl/components/button/index';
 import Reaptcha from 'reaptcha';
-import Turnstile from '@/components/elements/Turnstile';
+import Turnstile from '@/reviactyl/elements/Turnstile';
 import useFlash from '@/plugins/useFlash';
-import Label from '@/components/elements/Label';
+import Label from '@/reviactyl/elements/Label';
+import Spinner from '@/reviactyl/elements/Spinner';
 import { KeyIcon, UserIcon, EyeIcon, EyeOffIcon } from '@heroicons/react/solid';
 import { useTranslation } from 'react-i18next';
+import OAuthButtons from '@/components/auth/OAuthButtons';
 
 interface Values {
     username: string;
@@ -23,16 +25,50 @@ interface Values {
 
 function LoginContainer() {
     const { t } = useTranslation('auth');
+    const primaryButtonClass = 'w-full !py-3';
     const ref = useRef<Reaptcha>(null);
     const [token, setToken] = useState('');
     const [show, setShow] = useState(false);
+    const [isPasskeySubmitting, setIsPasskeySubmitting] = useState(false);
 
     const { clearFlashes, clearAndAddHttpError, addFlash } = useFlash();
     const { provider, recaptcha, turnstile } = useStoreState((state) => state.settings.data!.captcha);
+    const passkeyLoginRequiresUsername = useStoreState(
+        (state) => state.settings.data?.passkeys?.loginRequiresUsername ?? false,
+    );
+    const registrationEnabled = useStoreState((state) => state.settings.data?.registrationEnabled ?? true);
 
     const socialSettings = window.SocialLoginConfiguration || { google: false, discord: false, github: false };
 
     const navigate = useNavigate();
+
+    const mapPasskeyError = (error: unknown): Error => {
+        if (!(error instanceof Error)) {
+            return new Error(t('passkey-failed'));
+        }
+
+        if (/timed out|not allowed/i.test(error.message)) {
+            return new Error(t('passkey-no-credentials'));
+        }
+
+        if (error.message === 'PASSKEY_NO_CREDENTIAL') {
+            return new Error(t('passkey-no-credentials'));
+        }
+
+        if (error.message === 'PASSKEY_UNSUPPORTED') {
+            return new Error(t('passkey-unsupported'));
+        }
+
+        if (error.message === 'PASSKEY_SECURITY_ERROR') {
+            return new Error(t('passkey-security'));
+        }
+
+        if (error.message === 'PASSKEY_LOGIN_FAILED') {
+            return new Error(t('passkey-failed'));
+        }
+
+        return error;
+    };
 
     useEffect(() => {
         clearFlashes();
@@ -78,6 +114,34 @@ function LoginContainer() {
             });
     };
 
+    const performPasskeyLogin = (username: string, setSubmitting: (isSubmitting: boolean) => void) => {
+        clearFlashes();
+
+        if (passkeyLoginRequiresUsername && !username.trim()) {
+            clearAndAddHttpError({ error: new Error(t('passkey-username-required')) });
+            return;
+        }
+
+        setIsPasskeySubmitting(true);
+        setSubmitting(true);
+
+        loginWithPasskey(username)
+            .then((response) => {
+                if (response.complete) {
+                    window.location.href = response.intended || '/';
+                    return;
+                }
+
+                navigate('/auth/login/checkpoint', { state: { token: response.confirmationToken } });
+            })
+            .catch((error) => {
+                console.error(error);
+                setIsPasskeySubmitting(false);
+                setSubmitting(false);
+                clearAndAddHttpError({ error: mapPasskeyError(error) });
+            });
+    };
+
     const onSubmit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes();
 
@@ -91,8 +155,9 @@ function LoginContainer() {
             return;
         }
 
-        // For Turnstile, the token is set automatically by the widget
+        // For Turnstile, require captcha completion before allowing submit
         if (provider === 'turnstile' && !token) {
+            addFlash({ type: 'error', title: 'Error', message: t('captcha-required') });
             setSubmitting(false);
             return;
         }
@@ -110,7 +175,7 @@ function LoginContainer() {
             })}
         >
             {({ isSubmitting, setSubmitting, values }) => (
-                <LoginFormContainer title={t('login-title')} css={tw`w-full flex`}>
+                <LoginFormContainer title={t('login-title')} className='flex w-full'>
                     <Field
                         icon={UserIcon}
                         type={'text'}
@@ -119,9 +184,9 @@ function LoginContainer() {
                         name={'username'}
                         disabled={isSubmitting}
                     />
-                    <div css={tw`mt-3`}>
+                    <div className='mt-3'>
                         <Label>{t('password-label')}</Label>
-                        <div css={tw`relative`}>
+                        <div className='relative'>
                             <Field
                                 icon={KeyIcon}
                                 type={show ? 'text' : 'password'}
@@ -131,52 +196,43 @@ function LoginContainer() {
                             />
                             <button
                                 type={'button'}
-                                css={tw`absolute border-l-2 top-[10px] right-[6px] py-2 p-1 border-gray-300 text-gray-300`}
+                                className='absolute top-[10px] right-[6px] p-1 py-2 text-gray-500'
                                 onClick={() => setShow(!show)}
                             >
-                                {show ? <EyeOffIcon className='h-5 w-5' /> : <EyeIcon className='h-5 w-5' />}
+                                {show ? <EyeIcon className='h-5 w-5' /> : <EyeOffIcon className='h-5 w-5' />}
                             </button>
                         </div>
                     </div>
-                    <div css={tw`mt-6`}>
-                        <Button css={tw`w-full !py-3`} type={'submit'} disabled={isSubmitting}>
+                    <div className='mt-6'>
+                        <Button className={primaryButtonClass} type={'submit'} disabled={isSubmitting}>
                             {t('login-button')}
                         </Button>
                     </div>
+                    <div className='mt-3'>
+                        <Button.Text
+                            className={primaryButtonClass}
+                            type={'button'}
+                            disabled={isSubmitting}
+                            onClick={() => performPasskeyLogin(values.username, setSubmitting)}
+                        >
+                            <span className='relative flex w-full items-center justify-center'>
+                                <span className={isPasskeySubmitting ? 'invisible leading-6' : 'leading-6'}>
+                                    {t('passkey-button')}
+                                </span>
+                                {isPasskeySubmitting && (
+                                    <span className='absolute inset-0 flex items-center justify-center'>
+                                        <Spinner size={'small'} />
+                                    </span>
+                                )}
+                            </span>
+                        </Button.Text>
+                    </div>
 
-                    {Object.values(socialSettings).some(Boolean) && (
-                        <div css={tw`mt-4 grid grid-cols-1 gap-2`}>
-                            <div css={tw`relative flex py-2 items-center`}>
-                                <div css={tw`flex-grow border-t border-gray-600`}></div>
-                                <span css={tw`flex-shrink mx-4 text-gray-400 text-xs`}>{t('social.or')}</span>
-                                <div css={tw`flex-grow border-t border-gray-600`}></div>
-                            </div>
-                            {socialSettings.google && (
-                                <Button
-                                    onClick={() => (window.location.href = '/auth/login/google')}
-                                    css={tw`w-full !py-3 !bg-green-600`}
-                                >
-                                    {t('social.google')}
-                                </Button>
-                            )}
-                            {socialSettings.discord && (
-                                <Button
-                                    onClick={() => (window.location.href = '/auth/login/discord')}
-                                    css={tw`w-full !py-3 !bg-indigo-600`}
-                                >
-                                    {t('social.discord')}
-                                </Button>
-                            )}
-                            {socialSettings.github && (
-                                <Button
-                                    onClick={() => (window.location.href = '/auth/login/github')}
-                                    css={tw` !py-3 !bg-white !text-black`}
-                                >
-                                    {t('social.github')}
-                                </Button>
-                            )}
-                        </div>
-                    )}
+                    <OAuthButtons
+                        google={socialSettings.google}
+                        discord={socialSettings.discord}
+                        github={socialSettings.github}
+                    />
                     {provider === 'recaptcha' && (
                         <Reaptcha
                             ref={ref}
@@ -193,7 +249,7 @@ function LoginContainer() {
                         />
                     )}
                     {provider === 'turnstile' && (
-                        <div css={tw`mt-4 flex justify-center`}>
+                        <div className='mt-4 flex justify-center'>
                             <Turnstile
                                 siteKey={turnstile.siteKey}
                                 onVerify={(response) => setToken(response)}
@@ -201,25 +257,27 @@ function LoginContainer() {
                             />
                         </div>
                     )}
-                    <div css={tw`mt-3 flex flex-col items-center gap-2`}>
+                    <div className='mt-3 flex flex-col items-center gap-2'>
                         <Link
                             to={'/auth/password'}
-                            css={tw`text-sm text-reviactyl/80 tracking-wide no-underline hover:text-reviactyl/50`}
+                            className='text-sm tracking-wide text-reviactyl/80 no-underline hover:text-reviactyl/50'
                         >
                             {t('forgot-password.label')}
                         </Link>
-                        <Link
-                            to={'/auth/register'}
-                            css={tw`text-xs text-gray-400 tracking-wide no-underline hover:text-gray-300`}
-                        >
-                            Don&apos;t have an account? Create one
-                        </Link>
-                        {window.ReviactylConfiguration?.billingCardLink && (
+                        {registrationEnabled && (
+                            <Link
+                                to={'/auth/register'}
+                                className='text-xs tracking-wide text-gray-400 no-underline hover:text-gray-300'
+                            >
+                                {t('register.create-link')}
+                            </Link>
+                        )}
+                        {window.PanelConfiguration?.billingCardLink && (
                             <a
-                                href={window.ReviactylConfiguration.billingCardLink}
+                                href={window.PanelConfiguration.billingCardLink}
                                 target={'_blank'}
                                 rel={'noreferrer'}
-                                css={tw`mt-2 flex items-center gap-1 text-xs text-indigo-400 hover:text-indigo-300 no-underline transition-colors duration-200`}
+                                className='mt-2 flex items-center gap-1 text-xs text-indigo-400 no-underline transition-colors duration-200 hover:text-indigo-300'
                             >
                                 <svg
                                     role='img'

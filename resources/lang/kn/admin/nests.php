@@ -2,46 +2,46 @@
 
 return [
 
-    'label' => 'Nest',
-    'plural_label' => 'Nests',
+    'label' => 'ಗೂಡು',
+    'plural_label' => 'ಗೂಡುಗಳು',
 
     'sections' => [
-        'configuration' => 'Nest Configuration',
+        'configuration' => 'ನೆಸ್ಟ್ ಕಾನ್ಫಿಗರೇಶನ್',
     ],
 
     'fields' => [
-        'name' => 'Name',
-        'author' => 'Author',
-        'description' => 'Description',
+        'name' => 'ಹೆಸರು',
+        'author' => 'ಲೇಖಕ',
+        'description' => 'ವಿವರಣೆ',
     ],
 
     'helpers' => [
-        'name' => 'A unique name used to identify this nest.',
-        'author' => 'The author of this nest. Must be a valid email.',
-        'description' => 'A description of this nest.',
+        'name' => 'ಈ ಗೂಡನ್ನು ಗುರುತಿಸಲು ಬಳಸಲಾಗುವ ವಿಶಿಷ್ಟ ಹೆಸರು.',
+        'author' => 'ಈ ಗೂಡಿನ ಲೇಖಕ. ಮಾನ್ಯವಾದ ಇಮೇಲ್ ಆಗಿರಬೇಕು.',
+        'description' => 'ಈ ಗೂಡಿನ ವಿವರಣೆ.',
     ],
 
     'columns' => [
         'id' => 'ID',
-        'name' => 'Name',
-        'author' => 'Author',
-        'eggs' => 'Eggs',
-        'servers' => 'Servers',
+        'name' => 'ಹೆಸರು',
+        'author' => 'ಲೇಖಕ',
+        'eggs' => 'ಮೊಟ್ಟೆಗಳು',
+        'servers' => 'ಸರ್ವರ್‌ಗಳು',
     ],
 
     'actions' => [
-        'import' => 'Import Egg',
+        'import' => 'ಆಮದು ಮೊಟ್ಟೆ',
     ],
 
     'import' => [
-        'file_label' => 'Egg File (JSON)',
-        'nest_label' => 'Associated Nest',
-        'file_not_found' => 'File not found',
-        'file_not_found_body' => 'Could not locate uploaded file.',
-        'invalid_format' => 'Invalid file format',
-        'invalid_format_body' => 'Unexpected file format received.',
-        'success' => 'Egg imported successfully',
-        'failed' => 'Failed to import egg',
+        'file_label' => 'ಎಗ್ ಫೈಲ್ (JSON)',
+        'nest_label' => 'ಅಸೋಸಿಯೇಟೆಡ್ ನೆಸ್ಟ್',
+        'file_not_found' => 'ಫೈಲ್ ಕಂಡುಬಂದಿಲ್ಲ',
+        'file_not_found_body' => 'ಅಪ್‌ಲೋಡ್ ಮಾಡಿದ ಫೈಲ್ ಅನ್ನು ಪತ್ತೆ ಮಾಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.',
+        'invalid_format' => 'ಅಮಾನ್ಯ ಫೈಲ್ ಫಾರ್ಮ್ಯಾಟ್',
+        'invalid_format_body' => 'ಅನಿರೀಕ್ಷಿತ ಫೈಲ್ ಫಾರ್ಮ್ಯಾಟ್ ಸ್ವೀಕರಿಸಲಾಗಿದೆ.',
+        'success' => 'ಮೊಟ್ಟೆಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಆಮದು ಮಾಡಿಕೊಳ್ಳಲಾಗಿದೆ',
+        'failed' => 'ಮೊಟ್ಟೆಯನ್ನು ಆಮದು ಮಾಡಿಕೊಳ್ಳಲು ವಿಫಲವಾಗಿದೆ',
     ],
 
     'notices' => [

@@ -3,7 +3,7 @@
 return [
 
     'label' => 'Nest',
-    'plural_label' => 'Nests',
+    'plural_label' => 'Nester',
 
     'sections' => [
         'configuration' => 'Nest Konfiguration',
@@ -25,23 +25,23 @@ return [
         'id' => 'ID',
         'name' => 'Name',
         'author' => 'Ersteller',
-        'eggs' => 'Eggs',
+        'eggs' => 'Eier',
         'servers' => 'Server',
     ],
 
     'actions' => [
-        'import' => 'Import Egg',
+        'import' => 'Ei importieren',
     ],
 
     'import' => [
-        'file_label' => 'Egg File (JSON)',
-        'nest_label' => 'Associated Nest',
-        'file_not_found' => 'File not found',
-        'file_not_found_body' => 'Could not locate uploaded file.',
-        'invalid_format' => 'Invalid file format',
-        'invalid_format_body' => 'Unexpected file format received.',
-        'success' => 'Egg imported successfully',
-        'failed' => 'Failed to import egg',
+        'file_label' => 'Egg-Datei (JSON)',
+        'nest_label' => 'Zugehöriges Nest',
+        'file_not_found' => 'Datei nicht gefunden',
+        'file_not_found_body' => 'Die hochgeladene Datei konnte nicht gefunden werden.',
+        'invalid_format' => 'Ungültiges Dateiformat',
+        'invalid_format_body' => 'Unerwartetes Dateiformat empfangen.',
+        'success' => 'Ei erfolgreich importiert',
+        'failed' => 'Ei konnte nicht importiert werden',
     ],
 
     'notices' => [

@@ -3,7 +3,7 @@
 namespace Tests\Integration\Api\Client\Server;
 
 use App\Models\Permission;
-use App\Repositories\Wings\DaemonServerRepository;
+use App\Repositories\Agent\DaemonServerRepository;
 use Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
 class ResourceUtilizationControllerTest extends ClientApiIntegrationTestCase

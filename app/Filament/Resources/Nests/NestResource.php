@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Nests;
 
+use App\Filament\Components\ImageInput;
 use App\Models\Nest;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -12,8 +13,10 @@ use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 
 class NestResource extends Resource
 {
@@ -61,12 +64,23 @@ class NestResource extends Resource
                         ->maxLength(191)
                         ->helperText(trans('admin/nests.helpers.name')),
 
+                    ImageInput::make('image')
+                        ->nullable(),
+
+                    TextInput::make('uuid')
+                        ->label('UUID')
+                        ->default(fn (): string => Str::uuid()->toString())
+                        ->disabled()
+                        ->readOnly(),
+
                     TextInput::make('author')
                         ->label(trans('admin/nests.fields.author'))
                         ->email()
                         ->required()
+                        ->default(fn (): string => config('panel.service.author'))
                         ->helperText(trans('admin/nests.helpers.author'))
-                        ->disabled(fn ($record) => $record !== null),
+                        ->disabled()
+                        ->readOnly(),
 
                     Textarea::make('description')
                         ->label(trans('admin/nests.fields.description'))
@@ -82,8 +96,11 @@ class NestResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')
-                    ->label(trans('admin/nests.columns.id'))
-                    ->sortable(),
+                    ->label('ID')
+                    ->toggleable(),
+
+                ImageColumn::make('image')
+                    ->getStateUsing(fn ($record) => $record->image ?: url('/reviactyl/icon.png')),
 
                 TextColumn::make('name')
                     ->label(trans('admin/nests.columns.name'))

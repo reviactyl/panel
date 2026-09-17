@@ -41,8 +41,11 @@ export class ScrollDownHelperAddon implements ITerminalAddon {
         if (!this.terminal || !this.terminal.element) {
             return;
         }
+
         if (this.element) {
-            this.element.style.visibility = 'visible';
+            this.element.style.opacity = '1';
+            this.element.style.transform = 'translateY(0)';
+            this.element.style.pointerEvents = 'auto';
             return;
         }
 
@@ -56,24 +59,38 @@ export class ScrollDownHelperAddon implements ITerminalAddon {
         this.element.style.bottom = '.5rem';
         this.element.style.padding = '.5rem';
         this.element.style.fontSize = '1.25em';
-        this.element.style.border = '1.5px solid rgb(var(--color-600))';
-        this.element.style.boxShadow = '0 2px 8px rgb(var(--color-primary))';
-        this.element.style.backgroundColor = 'rgb(var(--color-700))';
+        this.element.style.border = '1.5px solid rgb(var(--color-700))';
+        this.element.style.boxShadow = '0 4px 24px rgba(var(--color-primary), 0.3)';
+        this.element.style.backdropFilter = 'blur(8px)';
+        this.element.style.backgroundColor = 'rgb(var(--color-800))';
         this.element.style.color = 'rgb(var(--color-200))';
         this.element.style.borderRadius = '15px';
         this.element.style.zIndex = '999';
         this.element.style.cursor = 'pointer';
+        this.element.style.opacity = '0';
+        this.element.style.transform = 'translateY(8px)';
+        this.element.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
 
         this.element.addEventListener('click', () => {
             this.terminal.scrollToBottom();
         });
 
         this.terminal.element.appendChild(this.element);
+
+        requestAnimationFrame(() => {
+            if (this.element) {
+                this.element.style.opacity = '1';
+                this.element.style.transform = 'translateY(0)';
+                this.element.style.pointerEvents = 'auto';
+            }
+        });
     }
 
     hide(): void {
         if (this.element) {
-            this.element.style.visibility = 'hidden';
+            this.element.style.opacity = '0';
+            this.element.style.transform = 'translateY(8px)';
+            this.element.style.pointerEvents = 'none';
         }
     }
 

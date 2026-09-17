@@ -13,9 +13,13 @@ return [
         'using-api-key' => 'Usando clave API',
         'using-sftp' => 'Usando SFTP',
     ],
+    'event' => [
+        'password-reset' => 'Restablecimiento de contraseña',
+    ],
     'auth' => [
         'fail' => 'Inicio de sesión fallido',
         'success' => 'Sesión iniciada',
+        'passkey' => 'He iniciado sesión con una clave de acceso',
         'password-reset' => 'Contraseña restablecida',
         'reset-password' => 'Solicitado restablecimiento de contraseña',
         'checkpoint' => 'Se solicitó autenticación de doble factor',
@@ -27,10 +31,15 @@ return [
         ],
     ],
     'user' => [
+        'user' => [
+            'create' => 'Se ha creado un nuevo usuario: correo electrónico',
+        ],
         'account' => [
             'email-changed' => 'Correo cambiado de :old a :new',
             'password-changed' => 'Contraseña cambiada',
             'language-changed' => 'Correo cambiado de :old a :new',
+            'file-editor-changed' => 'Se ha cambiado el editor de archivos de :old a :new',
+            'avatar-changed' => 'He cambiado el estilo del avatar de :old a :new',
         ],
         'api-key' => [
             'create' => 'Creada nueva clave API :identifier',
@@ -43,6 +52,10 @@ return [
         'two-factor' => [
             'create' => 'Autenticación de doble factor habilitada',
             'delete' => 'Autenticación de doble factor deshabilitada',
+        ],
+        'passkey' => [
+            'create' => 'Se ha registrado una nueva clave de acceso',
+            'delete' => 'Se ha eliminado la clave de acceso :id',
         ],
     ],
     'server' => [
@@ -123,6 +136,7 @@ return [
         'settings' => [
             'rename' => 'Servidor renombrado de :old a :new',
             'description' => 'Descripción del servidor cambiada de :old a :new',
+            'category' => 'Se ha cambiado la categoría del servidor',
         ],
         'startup' => [
             'edit' => 'Variable :variable cambiada de ":old" a ":new"',

@@ -13,24 +13,33 @@ return [
         'using-api-key' => 'Utilisation de la clé API',
         'using-sftp' => 'Utilisation du SFTP',
     ],
+    'event' => [
+        'password-reset' => 'Réinitialisation du mot de passe',
+    ],
     'auth' => [
         'fail' => 'Échec de connexion',
         'success' => 'Connexion',
+        'passkey' => 'Connexion avec un mot de passe',
         'password-reset' => 'Réinitialiser le mot de passe',
         'reset-password' => 'Réinitialisation du mot de passe demandée',
         'checkpoint' => 'Authentification à deux facteurs requise',
         'recovery-token' => 'Jeton de récupération à deux facteurs utilisé',
         'token' => 'Défi à deux facteurs résolu',
-        'ip-blocked' => 'Blocked request from unlisted IP address for :identifier',
+        'ip-blocked' => 'Demande bloquée depuis une adresse IP non répertoriée pour :identifier',
         'sftp' => [
             'fail' => 'Échec de la connexion SFTP',
         ],
     ],
     'user' => [
+        'user' => [
+            'create' => 'Création d\'un nouvel utilisateur : e-mail',
+        ],
         'account' => [
             'email-changed' => 'Modification de l\'adresse mail de :old à :new',
             'password-changed' => 'Mot de passe modifié',
             'language-changed' => 'Changement de langue de :old à :new',
+            'file-editor-changed' => 'L\'éditeur de fichiers est passé de :old à :new',
+            'avatar-changed' => 'J\'ai changé le style de l\'avatar, passant de :old à :new',
         ],
         'api-key' => [
             'create' => 'Création d\'une nouvelle clé API :identifier',
@@ -43,6 +52,10 @@ return [
         'two-factor' => [
             'create' => 'Authentification à deux facteurs activée',
             'delete' => 'Authentification à deux facteurs désactivée',
+        ],
+        'passkey' => [
+            'create' => 'Enregistrement d\'un nouveau mot de passe',
+            'delete' => 'Clé d\'accès supprimée : id',
         ],
     ],
     'server' => [
@@ -110,7 +123,7 @@ return [
             'delete' => 'Suppression de l\'allocation :allocation',
         ],
         'schedule' => [
-            'create' => 'Création d\'une tâche automatique : :nom',
+            'create' => 'Création du planning :name',
             'update' => 'Modification de la tâche automatique : :name',
             'execute' => 'Éxecution manuelle de la tâche automatique :name',
             'delete' => 'Suppression de la tâche automatique :name',
@@ -118,11 +131,12 @@ return [
         'task' => [
             'create' => 'Ajout d\'un ordre \':action\' pour la tâche automatique :name',
             'update' => 'Modification de l\'ordre \':action\' pour la tâche automatique :name',
-            'delete' => 'Suppression de l\'ordre \':action\' pour la tâche automatique :name',
+            'delete' => 'Suppression d\'une tâche pour le planning :name',
         ],
         'settings' => [
             'rename' => 'Renommage du serveur de :old à :new',
             'description' => 'Modification de la description de :old à :new',
+            'category' => 'Modification de la catégorie du serveur',
         ],
         'startup' => [
             'edit' => 'Modification de la variable :variable de \':old\' à \':new\'',

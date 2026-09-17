@@ -4,9 +4,9 @@
         "version": "RCYL_v26",
         "update_url": null
     },
-    "exported_at": "2026-03-08T13:23:46+00:00",
+    "exported_at": "2026-05-01T13:55:06+00:00",
     "name": "Teamspeak3 Server",
-    "banner": null,
+    "image": "https:\/\/cdn.reviactyl.app\/@reviactyl\/eggs\/voice\/teamspeak.webp",
     "author": "authors@reviactyl.app",
     "description": "VoIP software designed with security in mind, featuring crystal clear voice quality, endless customization options, and scalabilty up to thousands of simultaneous users.",
     "features": null,

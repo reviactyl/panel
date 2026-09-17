@@ -37,8 +37,8 @@ return [
     ],
 
     'actions' => [
-        'attach_egg' => 'Attach Egg',
-        'attach_node' => 'Attach Node',
+        'attach_egg' => '附上鸡蛋',
+        'attach_node' => '附加节点',
     ],
 
 ];

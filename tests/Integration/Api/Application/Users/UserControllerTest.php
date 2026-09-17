@@ -208,6 +208,8 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function test_create_user()
     {
+        config()->set('designify.avatarType', 'critters');
+
         $response = $this->postJson('/api/application/users', [
             'username' => 'testuser',
             'email' => 'test@example.com',
@@ -223,7 +225,11 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
             'meta' => ['resource'],
         ]);
 
-        $this->assertDatabaseHas('users', ['username' => 'testuser', 'email' => 'test@example.com']);
+        $this->assertDatabaseHas('users', [
+            'username' => 'testuser',
+            'email' => 'test@example.com',
+            'avatar_style' => 'critters',
+        ]);
 
         $user = User::where('username', 'testuser')->first();
         $response->assertJson([
@@ -233,6 +239,23 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
                 'resource' => route('api.application.users.view', $user->id),
             ],
         ], true);
+    }
+
+    public function test_create_user_falls_back_to_gravatar_for_an_invalid_configured_default()
+    {
+        config()->set('designify.avatarType', 'rings');
+
+        $this->postJson('/api/application/users', [
+            'username' => 'fallback-user',
+            'email' => 'fallback@example.com',
+            'first_name' => 'Fallback',
+            'last_name' => 'User',
+        ])->assertCreated();
+
+        $this->assertDatabaseHas('users', [
+            'username' => 'fallback-user',
+            'avatar_style' => 'gravatar',
+        ]);
     }
 
     /**

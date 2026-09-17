@@ -5,6 +5,7 @@ namespace App\Http\Middleware\Api\Client\Server;
 use App\Exceptions\Http\Server\ServerStateConflictException;
 use App\Models\Server;
 use App\Models\User;
+use App\Services\Subusers\SubuserPreviewContext;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -24,13 +25,19 @@ class AuthenticateServerAccess
     public function __construct() {}
 
     /**
-     * Authenticate that this server exists and is not suspended or marked as installing.
+     * Authenticates access to a server route and enforces the server's current state.
+     *
+     * @return mixed The response produced by the next middleware.
+     *
+     * @throws NotFoundHttpException If the server is invalid, the preview targets another server, or the user lacks access.
+     * @throws ServerStateConflictException If the server state does not permit the requested route.
      */
     public function handle(Request $request, \Closure $next): mixed
     {
         /** @var User $user */
         $user = $request->user();
         $server = $request->route()->parameter('server');
+        $preview = $request->attributes->get(SubuserPreviewContext::class);
 
         if (! $server instanceof Server) {
             throw new NotFoundHttpException(trans('exceptions.api.resource_not_found'));
@@ -39,7 +46,11 @@ class AuthenticateServerAccess
         // At the very least, ensure that the user trying to make this request is the
         // server owner, a subuser, or a root admin. We'll leave it up to the controllers
         // to authenticate more detailed permissions if needed.
-        if ($user->id !== $server->owner_id && ! $user->root_admin) {
+        if ($preview instanceof SubuserPreviewContext && ! $preview->isServer($server)) {
+            throw new NotFoundHttpException(trans('exceptions.api.resource_not_found'));
+        }
+
+        if (! ($preview instanceof SubuserPreviewContext) && $user->id !== $server->owner_id && ! $user->root_admin) {
             // Check for subuser status.
             if (! $server->subusers->contains('user_id', $user->id)) {
                 throw new NotFoundHttpException(trans('exceptions.api.resource_not_found'));

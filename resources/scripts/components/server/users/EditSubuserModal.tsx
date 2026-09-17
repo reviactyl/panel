@@ -2,22 +2,22 @@ import React, { useContext, useEffect, useRef } from 'react';
 import { Subuser } from '@/state/server/subusers';
 import { Form, Formik, useFormikContext } from 'formik';
 import { array, object, string } from 'yup';
-import Field from '@/components/elements/Field';
+import Field from '@/reviactyl/elements/Field';
 import { Actions, useStoreActions, useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import createOrUpdateSubuser from '@/api/server/users/createOrUpdateSubuser';
 import { ServerContext } from '@/state/server';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import Can from '@/components/elements/Can';
+import Can from '@/reviactyl/elements/Can';
 import { usePermissions } from '@/plugins/usePermissions';
 import { useDeepCompareMemo } from '@/plugins/useDeepCompareMemo';
-import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
-import Select from '@/components/elements/Select';
+import Button from '@/reviactyl/elements/Button';
+import Select from '@/reviactyl/elements/Select';
 import PermissionTitleBox from '@/components/server/users/PermissionTitleBox';
 import asModal from '@/hoc/asModal';
 import PermissionRow from '@/components/server/users/PermissionRow';
 import ModalContext from '@/context/ModalContext';
+import { useSubuserPreview } from '@/context/SubuserPreviewContext';
 
 type Props = {
     subuser?: Subuser;
@@ -36,6 +36,7 @@ const PRESET_PERMISSIONS = {
         'control.restart',
         'file.create',
         'file.read',
+        'file.read-content',
         'file.update',
         'file.delete',
         'file.archive',
@@ -98,11 +99,13 @@ const EditSubuserModal = ({ subuser }: Props) => {
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const appendSubuser = ServerContext.useStoreActions((actions) => actions.subusers.appendSubuser);
     const { clearFlashes, clearAndAddHttpError } = useStoreActions(
-        (actions: Actions<ApplicationStore>) => actions.flashes
+        (actions: Actions<ApplicationStore>) => actions.flashes,
     );
     const { dismiss, setPropOverrides } = useContext(ModalContext);
 
-    const isRootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
+    const accountRootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
+    const { session } = useSubuserPreview();
+    const isRootAdmin = accountRootAdmin && !session;
     const permissions = useStoreState((state) => state.permissions.data);
     // The currently logged in user's permissions. We're going to filter out any permissions
     // that they should not need.
@@ -112,7 +115,7 @@ const EditSubuserModal = ({ subuser }: Props) => {
     // The permissions that can be modified by this user.
     const editablePermissions = useDeepCompareMemo(() => {
         const cleaned = Object.keys(permissions).map((key) =>
-            Object.keys(permissions[key]?.keys ?? {}).map((pkey) => `${key}.${pkey}`)
+            Object.keys(permissions[key]?.keys ?? {}).map((pkey) => `${key}.${pkey}`),
         );
 
         const list: string[] = ([] as string[]).concat.apply([], Object.values(cleaned));
@@ -148,7 +151,7 @@ const EditSubuserModal = ({ subuser }: Props) => {
         () => () => {
             clearFlashes('user:edit');
         },
-        []
+        [],
     );
 
     return (
@@ -169,24 +172,24 @@ const EditSubuserModal = ({ subuser }: Props) => {
             })}
         >
             <Form>
-                <div css={tw`flex justify-between`}>
-                    <h2 css={tw`text-2xl`} ref={ref}>
+                <div className='flex justify-between'>
+                    <h2 className='text-2xl' ref={ref}>
                         {subuser
                             ? `${canEditUser ? 'Modify' : 'View'} permissions for ${subuser.email}`
                             : 'Create new subuser'}
                     </h2>
                     <div>
-                        <Button type={'submit'} css={tw`w-full sm:w-auto`}>
+                        <Button type='submit' className='w-full sm:w-auto'>
                             {subuser ? 'Save' : 'Invite User'}
                         </Button>
                     </div>
                 </div>
-                <FlashMessageRender byKey={'user:edit'} css={tw`mt-4`} />
-                <div css={tw`mt-6`}>
-                    <label css={tw`mb-2 text-gray-300 font-bold block text-sm`}>Select Info</label>
-                    <div css={tw`p-4 bg-gray-600 rounded-lg border border-gray-500`}>
-                        <h3 css={tw`text-white font-semibold mb-2`}>Role Presets</h3>
-                        <p css={tw`text-gray-300 text-sm mb-4`}>
+                <FlashMessageRender byKey='user:edit' className='mt-4' />
+                <div className='mt-6'>
+                    <label className='mb-2 block text-sm font-bold text-gray-300'>Select Info</label>
+                    <div className='rounded-lg border border-gray-600 bg-gray-700 p-4'>
+                        <h3 className='mb-2 font-semibold text-white'>Role Presets</h3>
+                        <p className='mb-4 text-sm text-gray-300'>
                             Select a preset to automatically configure permissions for this user. You can still
                             fine-tune individual permissions below.
                         </p>
@@ -194,15 +197,15 @@ const EditSubuserModal = ({ subuser }: Props) => {
                     </div>
                 </div>
                 {!isRootAdmin && loggedInPermissions[0] !== '*' && (
-                    <div css={tw`mt-4 pl-4 py-2 border-l-4 border-cyan-400`}>
-                        <p css={tw`text-sm text-gray-300`}>
+                    <div className='mt-4 border-l-4 border-cyan-400 py-2 pl-4'>
+                        <p className='text-sm text-gray-300'>
                             Only permissions which your account is currently assigned may be selected when creating or
                             modifying other users.
                         </p>
                     </div>
                 )}
                 {!subuser && (
-                    <div css={tw`mt-6`}>
+                    <div className='mt-6'>
                         <Field
                             name={'email'}
                             label={'User Email'}
@@ -212,7 +215,7 @@ const EditSubuserModal = ({ subuser }: Props) => {
                         />
                     </div>
                 )}
-                <div css={tw`my-6`}>
+                <div className='my-6'>
                     {Object.keys(permissions)
                         .filter((key) => key !== 'websocket')
                         .map((key, index) => (
@@ -221,9 +224,9 @@ const EditSubuserModal = ({ subuser }: Props) => {
                                 title={key}
                                 isEditable={canEditUser}
                                 permissions={Object.keys(permissions[key]?.keys ?? {}).map((pkey) => `${key}.${pkey}`)}
-                                css={index > 0 ? tw`mt-4` : undefined}
+                                className={index > 0 ? 'mt-4' : undefined}
                             >
-                                <p css={tw`text-sm text-gray-400 mb-4`}>{permissions[key]?.description}</p>
+                                <p className='mb-4 text-sm text-gray-400'>{permissions[key]?.description}</p>
                                 {Object.keys(permissions[key]?.keys ?? {}).map((pkey) => (
                                     <PermissionRow
                                         key={`permission_${key}.${pkey}`}
@@ -235,8 +238,8 @@ const EditSubuserModal = ({ subuser }: Props) => {
                         ))}
                 </div>
                 <Can action={subuser ? 'user.update' : 'user.create'}>
-                    <div css={tw`pb-6 flex justify-end`}>
-                        <Button type={'submit'} css={tw`w-full sm:w-auto`}>
+                    <div className='flex justify-end pb-6'>
+                        <Button type='submit' className='w-full sm:w-auto'>
                             {subuser ? 'Save' : 'Invite User'}
                         </Button>
                     </div>

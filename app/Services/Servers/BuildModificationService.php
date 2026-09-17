@@ -6,7 +6,7 @@ use App\Exceptions\DisplayException;
 use App\Exceptions\Http\Connection\DaemonConnectionException;
 use App\Models\Allocation;
 use App\Models\Server;
-use App\Repositories\Wings\DaemonServerRepository;
+use App\Repositories\Agent\DaemonServerRepository;
 use App\Services\Activity\ActivityLogService;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -59,7 +59,7 @@ class BuildModificationService
 
         $updateData = $this->structureService->handle($server);
 
-        // Because Wings always fetches an updated configuration from the Panel when booting
+        // Because Agent always fetches an updated configuration from the Panel when booting
         // a server this type of exception can be safely "ignored" and just written to the logs.
         // Ideally this request succeeds, so we can apply resource modifications on the fly, but
         // if it fails we can just continue on as normal.

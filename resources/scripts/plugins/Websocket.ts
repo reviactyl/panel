@@ -35,7 +35,7 @@ export class Websocket extends EventEmitter {
                 this.authenticate();
             },
             onreconnect: (evt) => {
-                // We return code 4409 from Wings when a server is suspended. We've
+                // We return code 4409 from Agent when a server is suspended. We've
                 // gone ahead and reserved 4400 as well here for future expansion without
                 // having to loop back around.
                 //

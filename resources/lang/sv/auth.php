@@ -11,7 +11,14 @@ return [
     'password-label' => 'Lösenord',
 
     'login-button' => 'Logga in',
+    'passkey-button' => 'Logga in med Passkey',
     'return' => 'Återgå till inloggning',
+
+    'passkey-unsupported' => 'Passkeys stöds inte av den här webbläsaren.',
+    'passkey-failed' => 'Det gick inte att genomföra inloggningen med lösenord. Försök igen.',
+    'passkey-no-credentials' => 'Det finns inget lösenord för denna inloggning. Använd ditt lösenord eller registrera ett lösenord först.',
+    'passkey-security' => 'Det gick inte att genomföra verifieringen av passordnyckeln på ett säkert sätt på den här enheten.',
+    'passkey-username-required' => 'Ange ditt användarnamn eller din e-postadress innan du använder en engångskod.',
 
     'social' => [
         'or' => 'OR',
@@ -62,7 +69,9 @@ return [
         'min-length' => 'Lösenord måste vara minst 8 tecken långt.',
         'confirm-label' => 'Bekräfta lösenord',
         'label' => 'Registrera',
-        'create-account' => 'Create Account',
+        'create-link' => 'Har du inget konto? Skapa ett',
+        'create-account' => 'Skapa konto',
+        'no-account' => 'Har du inget konto?',
     ],
 
     'failed' => 'Ingen matchande konto med dessa uppgifter kunde hittas.',
@@ -76,4 +85,5 @@ return [
     'throttle' => 'För många inloggningsförsök. Vänligen försök igen om :seconds sekunder.',
     'password_requirements' => 'Lösenordet måste vara minst 8 tecken långt och bör vara unikt för denna webbplats.',
     '2fa_must_be_enabled' => 'Administratören har krävt att tvåfaktorsautentisering aktiveras för ditt konto för att kunna använda panelen.',
+    'captcha-required' => 'Vänligen lös captcha-utmaningen för att fortsätta.',
 ];

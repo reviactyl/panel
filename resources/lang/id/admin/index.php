@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'title' => 'Dashboard',
+    'title' => 'Dasbor',
     'uptodate-header' => 'Panel Anda sudah terbaru',
     'uptodate-body' => 'Anda saat ini menggunakan :version. Panel Anda sudah yang terbaru!',
     'notuptodate-header' => 'Panel Anda belum terbaru',
@@ -14,11 +14,21 @@ return [
     'sponsor-btn' => 'Sponsori Proyek',
 
     'help-btn' => 'Dapatkan Bantuan',
+    'update-btn' => 'Panel Pembaruan',
     'docs-btn' => 'Dokumentasi',
-    'metrics-header' => 'User Activity Metrics',
-    'most-active-country' => 'Most Active Country',
-    'activity-description' => 'Based on recent login activity.',
-    'no_activity' => 'There is no recent activity to display.',
-    'activity-header' => 'Recent Activity',
-    'more-btn' => 'View More',
+    'metrics-header' => 'Metrik Aktivitas Pengguna',
+    'most-active-country' => 'Negara Paling Aktif',
+    'activity-description' => 'Berdasarkan aktivitas login terkini.',
+    'no_activity' => 'Tidak ada aktivitas terkini untuk ditampilkan.',
+    'activity-header' => 'Aktivitas Terkini',
+    'more-btn' => 'Lihat Lebih Banyak',
+    'dashboard' => [
+        'total_users' => 'Total Pengguna',
+        'new_users' => 'Pengguna baru: :count',
+        'total_servers' => 'Total Server',
+        'new_servers' => 'Server baru: :count',
+        'developmental_build' => 'Build Pengembangan',
+        'up_to_date' => 'Terkini',
+        'outdated_build' => 'Build Kedaluwarsa',
+    ],
 ];

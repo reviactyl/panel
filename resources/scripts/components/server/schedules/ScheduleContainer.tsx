@@ -1,18 +1,17 @@
 import { useEffect, useState } from 'react';
 import getServerSchedules from '@/api/server/schedules/getServerSchedules';
 import { ServerContext } from '@/state/server';
-import Spinner from '@/components/elements/Spinner';
+import Spinner from '@/reviactyl/elements/Spinner';
 import { Link } from 'react-router-dom';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import ScheduleRow from '@/components/server/schedules/ScheduleRow';
 import { httpErrorToHuman } from '@/api/http';
 import EditScheduleModal from '@/components/server/schedules/EditScheduleModal';
-import Can from '@/components/elements/Can';
+import Can from '@/reviactyl/elements/Can';
 import useFlash from '@/plugins/useFlash';
-import tw from 'twin.macro';
-import GreyRowBox from '@/components/elements/GreyRowBox';
-import { Button } from '@/components/elements/button/index';
-import ServerContentBlock from '@/components/elements/ServerContentBlock';
+import GreyRowBox from '@/reviactyl/elements/GreyRowBox';
+import { Button } from '@/reviactyl/components/button/index';
+import ServerContentBlock from '@/reviactyl/elements/ServerContentBlock';
 import Card from '@/reviactyl/ui/Card';
 import { ClockIcon } from '@heroicons/react/solid';
 import { useTranslation } from 'react-i18next';
@@ -41,32 +40,29 @@ function ScheduleContainer() {
 
     return (
         <ServerContentBlock title={t('title')}>
-            <FlashMessageRender byKey={'schedules'} css={tw`mb-4`} />
+            <FlashMessageRender byKey={'schedules'} className='mb-4' />
             {!schedules.length && loading ? (
                 <Spinner size={'large'} centered />
             ) : (
                 <>
                     {schedules.length === 0 ? (
                         <Card>
-                            <p css={tw`flex justify-center text-center text-sm text-gray-400`}>
+                            <p className='flex justify-center text-center text-sm text-gray-400'>
                                 <ClockIcon className='w-5 h-5 mr-1' />
                                 {t('no-schedules')}
                             </p>
                         </Card>
                     ) : (
                         schedules.map((schedule) => (
-                            <GreyRowBox
-                                as={Link}
-                                key={schedule.id}
-                                to={String(schedule.id)}
-                                css={tw`cursor-pointer mb-2 flex-wrap`}
-                            >
-                                <ScheduleRow schedule={schedule} />
-                            </GreyRowBox>
+                            <Link key={schedule.id} to={String(schedule.id)} className='mb-2 block cursor-pointer'>
+                                <GreyRowBox className='flex-wrap'>
+                                    <ScheduleRow schedule={schedule} />
+                                </GreyRowBox>
+                            </Link>
                         ))
                     )}
                     <Can action={'schedule.create'}>
-                        <div css={tw`mt-2 flex justify-end`}>
+                        <div className='mt-2 flex justify-end'>
                             <EditScheduleModal visible={visible} onModalDismissed={() => setVisible(false)} />
                             <Button type={'button'} onClick={() => setVisible(true)}>
                                 {t('create-schedule')}

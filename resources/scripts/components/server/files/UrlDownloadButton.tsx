@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import { Form, Formik, FormikHelpers } from 'formik';
-import Field from '@/components/elements/Field';
+import Field from '@/reviactyl/elements/Field';
 import { object, string } from 'yup';
 import pullFile from '@/api/server/files/pullFile';
-import tw from 'twin.macro';
-import { Button } from '@/components/elements/button/index';
+import getFileDownloads from '@/api/server/files/getFileDownloads';
+import { Button } from '@/reviactyl/components/button/index';
 import { useFlashKey } from '@/plugins/useFlash';
 import { WithClassname } from '@/components/types';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import { Dialog } from '@/components/elements/dialog';
+import { Dialog } from '@/reviactyl/elements/dialog';
 import { useTranslation } from 'react-i18next';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
-import Tooltip from '@/components/elements/tooltip/Tooltip';
-import { CloudDownloadIcon } from '@heroicons/react/solid';
+import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
+import { FaCloudArrowUp } from 'react-icons/fa6';
 
 interface Values {
     url: string;
@@ -61,11 +61,12 @@ const extractFilename = (url: string): string | null => {
     }
 };
 
-export default ({ className, compact = false }: WithClassname & { compact?: boolean }) => {
+export default ({ className }: WithClassname & { compact?: boolean }) => {
     const { t } = useTranslation('server/files');
     const [open, setOpen] = useState(false);
     const [downloading, setDownloading] = useState(false);
     const [downloadingFile, setDownloadingFile] = useState<string | null>(null);
+    const [downloadIdentifier, setDownloadIdentifier] = useState<string | null>(null);
 
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const directory = ServerContext.useStoreState((state) => state.files.directory);
@@ -73,38 +74,44 @@ export default ({ className, compact = false }: WithClassname & { compact?: bool
     const { clearAndAddHttpError, clearFlashes } = useFlashKey('files:url-download-modal');
 
     useEffect(() => {
-        if (!downloading || !downloadingFile) return;
+        if (!downloading || !downloadIdentifier) return;
 
         let active = true;
-        const poll = setInterval(async () => {
-            const files = await mutate();
-            if (!active) return;
-            if (files?.some((f) => f.name === downloadingFile)) {
+        let poll: ReturnType<typeof setTimeout>;
+        const checkDownload = async () => {
+            try {
+                const downloads = await getFileDownloads(uuid);
+                if (!active) return;
+                if (downloads.some((download) => download.identifier === downloadIdentifier)) {
+                    poll = setTimeout(checkDownload, 2000);
+                    return;
+                }
+
+                await mutate();
+                if (!active) return;
                 setDownloading(false);
                 setDownloadingFile(null);
+                setDownloadIdentifier(null);
+            } catch {
+                if (active) poll = setTimeout(checkDownload, 2000);
             }
-        }, 2000);
-
-        const giveUp = setTimeout(() => {
-            if (!active) return;
-            setDownloading(false);
-            setDownloadingFile(null);
-        }, 60000);
+        };
+        poll = setTimeout(checkDownload, 2000);
 
         return () => {
             active = false;
-            clearInterval(poll);
-            clearTimeout(giveUp);
+            clearTimeout(poll);
         };
-    }, [downloading, downloadingFile]);
+    }, [downloading, downloadIdentifier, uuid]);
 
     const submit = ({ url }: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes();
         const filename = extractFilename(url.trim());
         pullFile(uuid, url.trim(), directory)
-            .then(() => {
+            .then((identifier) => {
                 setOpen(false);
                 setDownloadingFile(filename);
+                setDownloadIdentifier(identifier);
                 setDownloading(true);
             })
             .catch((error) => {
@@ -120,11 +127,11 @@ export default ({ className, compact = false }: WithClassname & { compact?: bool
                     <button
                         className={
                             className ||
-                            'relative flex items-center justify-center w-10 h-10 rounded-ui bg-gray-700 border border-gray-600 text-gray-300'
+                            'relative flex items-center justify-center w-10 h-10 rounded-ui bg-gray-900 border border-gray-800 text-gray-300'
                         }
                     >
                         <DownloadSpinner className={'w-8 h-8'} />
-                        <CloudDownloadIcon className={'h-3 absolute mx-auto animate-pulse'} />
+                        <FaCloudArrowUp className={'h-3 absolute mx-auto animate-pulse'} />
                     </button>
                 </Tooltip>
             )}
@@ -139,7 +146,7 @@ export default ({ className, compact = false }: WithClassname & { compact?: bool
                 >
                     {({ submitForm, isSubmitting }) => (
                         <>
-                            <Form css={tw`m-0`}>
+                            <Form className='m-0'>
                                 <p className={'mb-3 text-sm text-gray-400'}>{t('url-download.url-description')}</p>
                                 <Field
                                     autoFocus
@@ -161,21 +168,11 @@ export default ({ className, compact = false }: WithClassname & { compact?: bool
                     )}
                 </Formik>
             </Dialog>
-            {compact ? (
-                <Tooltip content={t('url-download.button')}>
-                    <Button.Text
-                        onClick={() => setOpen(true)}
-                        className={className}
-                        aria-label={t('url-download.button')}
-                    >
-                        <CloudDownloadIcon className='h-5 w-5' />
-                    </Button.Text>
-                </Tooltip>
-            ) : (
-                <Button.Text onClick={() => setOpen(true)} className={className}>
-                    {t('url-download.button')}
+            <Tooltip content={t('url-download.button')}>
+                <Button.Text onClick={() => setOpen(true)} className={className} aria-label={t('url-download.button')}>
+                    <FaCloudArrowUp className='h-5 w-5' />
                 </Button.Text>
-            )}
+            </Tooltip>
         </>
     );
 };

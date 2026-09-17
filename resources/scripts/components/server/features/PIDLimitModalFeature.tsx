@@ -1,22 +1,26 @@
 import { useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
-import Modal from '@/components/elements/Modal';
-import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
+import Modal from '@/reviactyl/elements/Modal';
+import Button from '@/reviactyl/elements/Button';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
 import { SocketEvent } from '@/components/server/events';
 import { useStoreState } from 'easy-peasy';
+import { useSubuserPreview } from '@/context/SubuserPreviewContext';
 import { FaTriangleExclamation } from 'react-icons/fa6';
+import { useTranslation } from 'react-i18next';
 
 const PIDLimitModalFeature = () => {
     const [visible, setVisible] = useState(false);
     const [loading] = useState(false);
+    const { t } = useTranslation('server/features');
 
     const status = ServerContext.useStoreState((state) => state.status.value);
     const { clearFlashes } = useFlash();
     const { connected, instance } = ServerContext.useStoreState((state) => state.socket);
-    const isAdmin = useStoreState((state) => state.user.data!.rootAdmin);
+    const accountAdmin = useStoreState((state) => state.user.data!.rootAdmin);
+    const { session } = useSubuserPreview();
+    const isAdmin = accountAdmin && !session;
 
     useEffect(() => {
         if (!connected || !instance || status === 'running') return;
@@ -54,45 +58,45 @@ const PIDLimitModalFeature = () => {
             closeOnBackground={false}
             showSpinnerOverlay={loading}
         >
-            <FlashMessageRender key={'feature:pidLimit'} css={tw`mb-4`} />
+            <FlashMessageRender key={'feature:pidLimit'} className='mb-4' />
             {isAdmin ? (
                 <>
-                    <div css={tw`mt-4 sm:flex items-center`}>
-                        <FaTriangleExclamation css={tw`pr-4`} color={'orange'} size={'4em'} />
-                        <h2 css={tw`text-2xl mb-4 text-gray-100 `}>Memory or process limit reached...</h2>
+                    <div className='mt-4 items-center sm:flex'>
+                        <FaTriangleExclamation className='pr-4' color={'orange'} size={'4em'} />
+                        <h2 className='mb-4 text-2xl text-gray-100'>Memory or process limit reached...</h2>
                     </div>
-                    <p css={tw`mt-4`}>This server has reached the maximum process or memory limit.</p>
-                    <p css={tw`mt-4`}>
-                        Increasing <code css={tw`font-mono bg-gray-900`}>container_pid_limit</code> in the wings
-                        configuration, <code css={tw`font-mono bg-gray-900`}>config.yml</code>, might help resolve this
-                        issue.
+                    <p className='mt-4'>{t('pid-limit.message')}</p>
+                    <p className='mt-4'>
+                        Increasing <code className='bg-gray-950 font-mono'>container_pid_limit</code> in the agent
+                        configuration, <code className='bg-gray-950 font-mono'>config.yml</code>, might help resolve
+                        this issue.
                     </p>
-                    <p css={tw`mt-4`}>
-                        <b>Note: Wings must be restarted for the configuration file changes to take effect</b>
+                    <p className='mt-4'>
+                        <b>Note: Agent must be restarted for the configuration file changes to take effect</b>
                     </p>
-                    <div css={tw`mt-8 sm:flex items-center justify-end`}>
-                        <Button onClick={() => setVisible(false)} css={tw`w-full sm:w-auto border-transparent`}>
+                    <div className='mt-8 items-center justify-end sm:flex'>
+                        <Button onClick={() => setVisible(false)} className='w-full border-transparent sm:w-auto'>
                             Close
                         </Button>
                     </div>
                 </>
             ) : (
                 <>
-                    <div css={tw`mt-4 sm:flex items-center`}>
-                        <FaTriangleExclamation css={tw`pr-4`} color={'orange'} size={'4em'} />
-                        <h2 css={tw`text-2xl mb-4 text-gray-100`}>Possible resource limit reached...</h2>
+                    <div className='mt-4 items-center sm:flex'>
+                        <FaTriangleExclamation className='pr-4' color={'orange'} size={'4em'} />
+                        <h2 className='mb-4 text-2xl text-gray-100'>Possible resource limit reached...</h2>
                     </div>
-                    <p css={tw`mt-4`}>
+                    <p className='mt-4'>
                         This server is attempting to use more resources than allocated. Please contact the administrator
                         and give them the error below.
                     </p>
-                    <p css={tw`mt-4`}>
-                        <code css={tw`font-mono bg-gray-900`}>
+                    <p className='mt-4'>
+                        <code className='bg-gray-950 font-mono'>
                             pthread_create failed, Possibly out of memory or process/resource limits reached
                         </code>
                     </p>
-                    <div css={tw`mt-8 sm:flex items-center justify-end`}>
-                        <Button onClick={() => setVisible(false)} css={tw`w-full sm:w-auto border-transparent`}>
+                    <div className='mt-8 items-center justify-end sm:flex'>
+                        <Button onClick={() => setVisible(false)} className='w-full border-transparent sm:w-auto'>
                             Close
                         </Button>
                     </div>

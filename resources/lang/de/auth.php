@@ -11,7 +11,14 @@ return [
     'password-label' => 'Passwort',
 
     'login-button' => 'Anmelden',
+    'passkey-button' => 'Mit Passkey anmelden',
     'return' => 'Zurück zur Anmeldung',
+
+    'passkey-unsupported' => 'Passkeys werden von diesem Browser nicht unterstützt.',
+    'passkey-failed' => 'Die Anmeldung mit dem Passkey konnte nicht abgeschlossen werden. Bitte versuchen Sie es erneut.',
+    'passkey-no-credentials' => 'Für diese Anmeldung ist kein Passkey verfügbar. Verwenden Sie Ihr Passwort oder registrieren Sie zunächst einen Passkey.',
+    'passkey-security' => 'Die Passkey-Überprüfung konnte auf diesem Gerät nicht sicher abgeschlossen werden.',
+    'passkey-username-required' => 'Geben Sie Ihren Benutzernamen oder Ihre E-Mail-Adresse ein, bevor Sie einen Passkey verwenden.',
 
     'social' => [
         'or' => 'ODER',
@@ -62,7 +69,9 @@ return [
         'min-length' => 'Passwort muss mindestens 8 Zeichen lang sein.',
         'confirm-label' => 'Passwort bestätigen',
         'label' => 'Registrieren',
-        'create-account' => 'Create Account',
+        'create-link' => 'Sie haben noch kein Konto? Erstellen Sie eines.',
+        'create-account' => 'Benutzerkonto erstellen',
+        'no-account' => 'Sie haben noch kein Konto?',
     ],
 
     'failed' => 'Diese Kombination aus Zugangsdaten wurde nicht in unserer Datenbank gefunden.',
@@ -76,4 +85,5 @@ return [
     'throttle' => 'Zu viele Loginversuche. Versuchen Sie es bitte in :seconds Sekunden nochmal.',
     'password_requirements' => 'Das Passwort muss mindestens 8 Zeichen lang sein und sollte für diese Seite eindeutig sein.',
     '2fa_must_be_enabled' => 'Der Administrator hat festgelegt, dass die 2-Faktor-Authentifizierung für Ihr Konto aktiviert sein muss, um das Panel nutzen zu können.',
+    'captcha-required' => 'Bitte lösen Sie das Captcha, um fortzufahren.',
 ];

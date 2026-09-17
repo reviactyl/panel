@@ -11,7 +11,14 @@ return [
     'password-label' => 'Parola',
 
     'login-button' => 'Giriş Yap',
+    'passkey-button' => 'Passkey ile giriş yap',
     'return' => 'Giriş Ekranına Dön',
+
+    'passkey-unsupported' => 'Bu tarayıcı, Passkeys özelliğini desteklemiyor.',
+    'passkey-failed' => 'Şifreli oturum açma işlemi tamamlanamadı. Lütfen tekrar deneyin.',
+    'passkey-no-credentials' => 'Bu oturum açma işlemi için herhangi bir erişim anahtarı bulunmamaktadır. Şifrenizi kullanın veya önce bir erişim anahtarı kaydedin.',
+    'passkey-security' => 'Bu cihazda şifre doğrulaması güvenli bir şekilde tamamlanamadı.',
+    'passkey-username-required' => 'Şifre anahtarını kullanmadan önce kullanıcı adınızı veya e-posta adresinizi girin.',
 
     'social' => [
         'or' => 'VEYA',
@@ -57,12 +64,14 @@ return [
         'namefirst-label' => 'Ad',
         'namelast-label' => 'Soyad',
         'email-label' => 'E-posta',
-        'username-label' => 'Kullanıcı Adı',
+        'username-label' => 'Kullanıcı adı',
         'password-label' => 'Parola',
         'min-length' => 'Parolalar en az 8 karakter uzunluğunda olmalıdır.',
         'confirm-label' => 'Parolayı Onayla',
         'label' => 'Kayıt Ol',
-        'create-account' => 'Create Account',
+        'create-link' => 'Hesabınız yok mu? Bir hesap oluşturun',
+        'create-account' => 'Hesap oluşturmak',
+        'no-account' => 'Henüz bir hesabınız yok mu?',
     ],
 
     'failed' => 'Bu kimlik bilgileriyle eşleşen bir hesap bulunamadı.',
@@ -76,4 +85,5 @@ return [
     'throttle' => 'Çok fazla giriş denemesi. Lütfen :seconds saniye sonra tekrar deneyin.',
     'password_requirements' => 'Parola en az 8 karakter uzunluğunda olmalı ve bu siteye özel olmalıdır.',
     '2fa_must_be_enabled' => 'Yönetici, Paneli kullanabilmeniz için hesabınızda 2 Adımlı Doğrulamanın etkinleştirilmesini zorunlu kıldı.',
+    'captcha-required' => 'Devam etmek için lütfen captcha testini tamamlayın.',
 ];

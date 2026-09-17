@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Exceptions\Http\Connection\DaemonConnectionException;
 use App\Models\Server;
 use App\Models\ServerStatsHistory;
-use App\Repositories\Wings\DaemonServerRepository;
+use App\Repositories\Agent\DaemonServerRepository;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
@@ -43,8 +43,6 @@ class CaptureServerStats extends Command
         // Process servers in chunks to avoid memory issues
         Server::query()
             ->whereNull('status')
-            ->where('suspended', 0)
-            ->where('status', '!=', 'installing') // Don't check installing servers
             ->chunkById(100, function ($servers) {
                 foreach ($servers as $server) {
                     try {

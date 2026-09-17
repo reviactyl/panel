@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ApplicationStore } from '@/state';
 import { useStoreActions, useStoreState } from 'easy-peasy';
 import updateEditor from '@/api/account/updateAccountEditor';
-import Select from '@/components/elements/Select';
+import Select from '@/reviactyl/elements/Select';
 
 interface FileEditorSwitcherProps {
     display: string;
@@ -21,7 +21,10 @@ const FileEditorSwitcher = () => {
             .then((res) => res.json())
             .then((data) => setEditors(data))
             .catch(() =>
-                setEditors({ cm: { display: 'CodeMirror (Default Editor)' }, mo: { display: 'Monaco (Like VS Code)' } })
+                setEditors({
+                    cm: { display: 'CodeMirror (Default Editor)' },
+                    mo: { display: 'Monaco (Like VS Code)' },
+                }),
             );
     }, []);
 

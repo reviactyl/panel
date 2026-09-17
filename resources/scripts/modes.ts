@@ -93,7 +93,7 @@ const modes: Mode[] = [
     },
     { name: 'SQL', mime: 'text/x-sql', mode: 'sql', ext: ['sql'] },
     { name: 'SQLite', mime: 'text/x-sqlite', mode: 'sql' },
-    { name: 'TOML', mime: 'text/x-toml', mode: 'toml', ext: ['toml'] },
+    { name: 'TOML', mime: 'text/x-toml', mode: 'hcl', ext: ['toml'] },
     { name: 'TypeScript', mime: 'application/typescript', mode: 'javascript', ext: ['ts'], alias: ['ts'] },
     { name: 'Vue', mime: 'script/x-vue', mimes: ['script/x-vue', 'text/x-vue'], mode: 'vue', ext: ['vue'] },
     {

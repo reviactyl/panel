@@ -67,9 +67,15 @@ class Egg extends Model implements Identifiable
     public const RESOURCE_NAME = 'egg';
 
     /**
+     * Every egg version the panel can import sorted by newest first.
+     * Add to this list to release a new egg version.
+     */
+    public const VERSIONS = ['RCYL_v26', 'PTDL_v2', 'PTDL_v1'];
+
+    /**
      * Defines the current egg export version.
      */
-    public const EXPORT_VERSION = 'RCYL_v26';
+    public const EXPORT_VERSION = self::VERSIONS[0];
 
     /**
      * Different features that can be enabled on any given egg. These are used internally
@@ -110,7 +116,7 @@ class Egg extends Model implements Identifiable
         'script_entry',
         'script_container',
         'copy_script_from',
-        'banner',
+        'image',
     ];
 
     /**
@@ -146,7 +152,7 @@ class Egg extends Model implements Identifiable
         'config_files' => 'required_without:config_from|nullable|json',
         'update_url' => 'sometimes|nullable|string',
         'force_outgoing_ip' => 'sometimes|boolean',
-        'banner' => 'string|nullable',
+        'image' => 'string|nullable',
     ];
 
     protected $attributes = [
@@ -157,7 +163,7 @@ class Egg extends Model implements Identifiable
         'config_logs' => null,
         'config_files' => null,
         'update_url' => null,
-        'banner' => null,
+        'image' => null,
     ];
 
     /**

@@ -82,7 +82,7 @@ class NodesTable
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 IconColumn::make('ssl')
-                    ->label('SSL')
+                    ->label(trans('admin/node.fields.ssl.label'))
                     ->boolean()
                     ->trueIcon('tabler-lock')
                     ->falseIcon('tabler-lock-open')

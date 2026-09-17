@@ -13,6 +13,7 @@ return [
         'title' => 'Hata Ayıklama Bilgisi',
         'node' => 'Düğüm',
         'server' => 'Sunucu Kimliği',
+        'public-status-page' => 'Genel Durum Sayfası',
     ],
     'rename' => [
         'title' => 'Sunucu Detaylarını Değiştir',
@@ -28,5 +29,6 @@ return [
         'info-1' => 'Sunucunuzu yeniden kurmak onu durduracak ve ardından kurulumu ilk yapan betiği yeniden çalıştıracaktır.',
         'info-2' => 'Bu işlem sırasında bazı dosyalar silinebilir veya değiştirilebilir, lütfen devam etmeden önce verilerinizi yedekleyin.',
         'button' => 'Sunucuyu Yeniden Kur',
+        'disabled' => 'Bu sunucu, egg dosyasının kurulum betiğini atlayacak şekilde yapılandırıldığından yeniden yükleme işlemi yapılamaz.',
     ],
 ];

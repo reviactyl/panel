@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
-import Modal from '@/components/elements/Modal';
-import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
+import Modal from '@/reviactyl/elements/Modal';
+import Button from '@/reviactyl/elements/Button';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
 import { SocketEvent } from '@/components/server/events';
@@ -19,8 +18,12 @@ const HytaleOauthRequireFeature = () => {
         if (!connected || !instance || status === 'running') return;
 
         const listener = (line: string) => {
-            if (line.match(/https:\/\/oauth\.accounts\.hytale\.com\/oauth2\/device\/verify\?user_code=(.*)/i)) {
-                setLink(line);
+            const url = line.match(
+                /https:\/\/oauth\.accounts\.hytale\.com\/oauth2\/device\/verify\?user_code=\S+/i,
+            )?.[0];
+
+            if (url) {
+                setLink(url);
                 setVisible(true);
             }
         };
@@ -54,17 +57,17 @@ const HytaleOauthRequireFeature = () => {
             closeOnBackground={false}
             showSpinnerOverlay={false}
         >
-            <FlashMessageRender key={'feature:hytaleOauth'} css={tw`mb-4`} />
-            <h2 css={tw`text-2xl mb-4 text-gray-100`}>Authentication Required</h2>
-            <p css={tw`text-gray-200`}>
+            <FlashMessageRender key={'feature:hytaleOauth'} className='mb-4' />
+            <h2 className='text-2xl mb-4 text-gray-100'>Authentication Required</h2>
+            <p className='text-gray-200'>
                 You need to authenticate with your Hytale account to download or update server files. Please log in to
                 continue.
             </p>
-            <div css={tw`mt-8 sm:flex items-center justify-end`}>
-                <Button isSecondary onClick={() => setVisible(false)} css={tw`w-full sm:w-auto border-transparent`}>
+            <div className='mt-8 sm:flex items-center justify-end'>
+                <Button isSecondary onClick={() => setVisible(false)} className='w-full sm:w-auto border-transparent'>
                     Cancel
                 </Button>
-                <Button onClick={handleLogin} css={tw`mt-4 sm:mt-0 sm:ml-4 w-full sm:w-auto`}>
+                <Button onClick={handleLogin} className='mt-4 sm:mt-0 sm:ml-4 w-full sm:w-auto'>
                     Log in
                 </Button>
             </div>

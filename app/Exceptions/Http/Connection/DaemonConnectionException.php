@@ -15,7 +15,7 @@ class DaemonConnectionException extends DisplayException
     private int $statusCode = Response::HTTP_GATEWAY_TIMEOUT;
 
     /**
-     * Every request to the Wings instance will return a unique X-Request-Id header
+     * Every request to the Agent instance will return a unique X-Request-Id header
      * which allows for all errors to be efficiently tied to a specific request that
      * triggered them, and gives users a more direct method of informing hosts when
      * something goes wrong.
@@ -33,7 +33,7 @@ class DaemonConnectionException extends DisplayException
 
         if ($useStatusCode) {
             $this->statusCode = is_null($response) ? $this->statusCode : $response->getStatusCode();
-            // There are rare conditions where wings encounters a panic condition and crashes the
+            // There are rare conditions where agent encounters a panic condition and crashes the
             // request being made after content has already been sent over the wire. In these cases
             // you can end up with a "successful" response code that is actual an error.
             //

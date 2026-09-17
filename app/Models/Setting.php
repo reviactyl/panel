@@ -5,7 +5,6 @@ namespace App\Models;
 /**
  * App\Models\Setting.
  *
- * @property int $id
  * @property string $key
  * @property string $value
  */
@@ -15,6 +14,12 @@ class Setting extends Model
      * The table associated with the model.
      */
     protected $table = 'settings';
+
+    protected $primaryKey = 'key';
+
+    protected $keyType = 'string';
+
+    public $incrementing = false;
 
     public $timestamps = false;
 

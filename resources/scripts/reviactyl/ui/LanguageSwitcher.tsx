@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import i18n from '@/i18n';
-import Select from '@/components/elements/Select';
+import Select from '@/reviactyl/elements/Select';
 import { useTranslation } from 'react-i18next';
 import { useStoreActions, useStoreState } from 'easy-peasy';
 import updateAccountLanguage from '@/api/account/updateAccountLanguage';
@@ -19,7 +19,7 @@ const LanguageSwitcher = () => {
     const setUserData = useStoreActions((actions: any) => actions.user.setUserData);
     const [languages, setLanguages] = useState<Record<string, LanguageInfo>>({});
     const [currentLang, setCurrentLang] = useState(
-        user?.language && user.language !== 'geo' ? user.language : serverLocale
+        user?.language && user.language !== 'geo' ? user.language : serverLocale,
     );
 
     useEffect(() => {

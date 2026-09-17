@@ -8,8 +8,12 @@ return [
         'settings' => '设置',
         'api' => '应用 API',
         'activity_log' => '活动日志',
-        'user_activity_metrics' => '用户活动指标',
+        'user_activity_metrics' => '活跃用户位置',
+        'user_activity_description' => '过去 30 天内活跃用户的位置。',
+        'active_users' => '活跃用户',
         'no_data' => '暂无数据。',
+        'other' => '其他',
+        'unknown' => '未知',
     ],
     'management' => [
         'title' => '管理',
@@ -21,7 +25,7 @@ return [
     ],
     'service' => [
         'title' => '服务管理',
-        'extensions' => 'Extensions',
+        'extensions' => '扩展',
         'mounts' => '挂载',
         'nests' => '预设',
     ],

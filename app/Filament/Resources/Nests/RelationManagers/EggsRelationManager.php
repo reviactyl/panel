@@ -22,6 +22,11 @@ class EggsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('name')
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->label('ID')
+                    ->toggleable(),
+                Tables\Columns\ImageColumn::make('image')
+                    ->getStateUsing(fn ($record) => $record->image ?: url('/reviactyl/icon.png')),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
@@ -29,6 +34,7 @@ class EggsRelationManager extends RelationManager
                     ->searchable(),
                 Tables\Columns\TextColumn::make('description')
                     ->limit(50)
+                    ->toggleable()
                     ->searchable(),
             ])
             ->headerActions([

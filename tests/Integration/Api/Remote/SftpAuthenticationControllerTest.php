@@ -97,15 +97,27 @@ class SftpAuthenticationControllerTest extends IntegrationTestCase
      * the endpoint.
      */
     #[DataProvider('authorizationTypeDataProvider')]
-    public function test_user_is_throttled_if_invalid_credentials_are_provided()
+    public function test_user_is_throttled_if_invalid_credentials_are_provided(string $type)
     {
+        $statuses = [];
+
         for ($i = 0; $i <= 10; $i++) {
-            $this->postJson('/api/remote/sftp/auth', [
-                'type' => 'public_key',
+            $statuses[] = $this->postJson('/api/remote/sftp/auth', [
+                'type' => $type,
                 'username' => $i % 2 === 0 ? $this->user->username : $this->getUsername(),
                 'password' => 'invalid key',
             ])
-                ->assertStatus($i === 10 ? 429 : 403);
+                ->getStatusCode();
+        }
+
+        $this->assertSame(403, $statuses[0]);
+        $this->assertContains(429, $statuses);
+
+        $firstLockout = array_search(429, $statuses, true);
+        $this->assertNotFalse($firstLockout);
+
+        for ($i = $firstLockout; $i < count($statuses); $i++) {
+            $this->assertSame(429, $statuses[$i]);
         }
     }
 
@@ -122,6 +134,20 @@ class SftpAuthenticationControllerTest extends IntegrationTestCase
                 'password' => EC::createKey('Ed25519')->getPublicKey()->toString('OpenSSH'),
             ])
                 ->assertForbidden();
+        }
+    }
+
+    public function test_certificate_public_key_authentication_is_rejected_as_invalid_key()
+    {
+        $certificate = $this->makeCertificate();
+
+        for ($i = 0; $i <= 5; $i++) {
+            $this->postJson('/api/remote/sftp/auth', [
+                'type' => 'public_key',
+                'username' => $this->getUsername(),
+                'password' => $certificate,
+            ])
+                ->assertStatus($i === 5 ? 429 : 403);
         }
     }
 
@@ -161,7 +187,7 @@ class SftpAuthenticationControllerTest extends IntegrationTestCase
             'password' => 'foobar',
         ])
             ->assertForbidden()
-            ->assertJsonPath('errors.0.detail', 'You do not have permission to access SFTP for this server.');
+            ->assertJsonPath('errors.0.detail', 'Authorization credentials were not correct, please try again.');
     }
 
     #[DataProvider('serverStateDataProvider')]
@@ -243,5 +269,27 @@ class SftpAuthenticationControllerTest extends IntegrationTestCase
         $node = $node ?? $this->server->node;
 
         $this->withHeader('Authorization', 'Bearer '.$node->daemon_token_id.'.'.decrypt($node->daemon_token));
+    }
+
+    protected function makeCertificate(): string
+    {
+        return <<<'PEM'
+-----BEGIN CERTIFICATE-----
+MIIClzCCAX+gAwIBAgIBADANBgkqhkiG9w0BAQUFADAPMQ0wCwYDVQQDDAR0ZXN0
+MB4XDTI2MDYyODIxMzQzMFoXDTI2MDYyOTIxMzQzMFowDzENMAsGA1UEAwwEdGVz
+dDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALZNPzyWTEinfefSMYI8
+jPtiDpQ3n4xnqobumxAMDSQd7Wkbi9MyWfV3tr7PIVzblC4aH5iLIy5dOhUWqyBd
+LwYbmdGfeghnP261CrYw4npoBO+k1CoAtfjxuv5Mkz9zs4/BtknyqKxteLxLglJI
+VTTl/IdGVdacvBSkfystMkK3AjvIwNseWLe2fcwMSs1k0yN/p/6NUYsO4BBkybaM
+JF7s3s29nKZDwPn8HxYD/5cnStSI0nhcltYF5O7/6DiH4x5lvT4Z9D+aHppDMTur
+yxAkMTSTZqMkE5iOtk6XrnEaXDVOci1fYFYIO0yKExnbf2DkB//W9f1wMYbO40Zc
+jMkCAwEAATANBgkqhkiG9w0BAQUFAAOCAQEAAbbdgyP9X3kAgMdMo2yMX6jJC9Kl
+NTio30d+NPCXsziA6elS2wWK7LhAVx0WRCho3KNJC2j3sKGOSXwf7HlG8yX4QPng
+oMf91+yM95yhJZxVGelKfBGg34Wu1e8l0FcuCchmseR8QtwwuwScDXnYQV7PyRiW
+OJ5KEg6opQivmfI4gJWDNbe6ALwHxR0TZeRITQ+tU0r/JCFwbjMX2pFNAl2sjE9x
+iiZwIndK2bAsME622kuPgfx/osJ/8zuQhBeRsiLfUT44j2RJNRj99gXRfKAA0vyG
+LaKfKLpXnF7mm6UuShG/HRt07bxu6Ayan/SJnv3E5ZkinR5lX0upcmM/gQ==
+-----END CERTIFICATE-----
+PEM;
     }
 }

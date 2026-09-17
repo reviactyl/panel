@@ -4,7 +4,7 @@ namespace Tests\Integration\Api\Client\Server;
 
 use App\Models\Permission;
 use App\Models\Server;
-use App\Repositories\Wings\DaemonServerRepository;
+use App\Repositories\Agent\DaemonServerRepository;
 use Illuminate\Http\Response;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
@@ -109,6 +109,48 @@ class SettingsControllerTest extends ClientApiIntegrationTestCase
 
         $server = $server->refresh();
         $this->assertTrue($server->isInstalled());
+    }
+
+    /**
+     * Test that a server configured to skip its egg's install script cannot be reinstalled.
+     */
+    #[DataProvider('reinstallPermissionsDataProvider')]
+    public function test_server_cannot_be_reinstalled_if_configured_to_skip_scripts(array $permissions)
+    {
+        [$user, $server] = $this->generateTestAccount($permissions);
+        $server->update(['skip_scripts' => true]);
+
+        $service = \Mockery::mock(DaemonServerRepository::class);
+        $this->app->instance(DaemonServerRepository::class, $service);
+
+        $service->expects('setServer')->never();
+
+        $this->actingAs($user)
+            ->postJson("/api/client/servers/$server->uuid/settings/reinstall")
+            ->assertStatus(Response::HTTP_BAD_REQUEST)
+            ->assertJsonPath('errors.0.detail', trans('admin/server.exceptions.skipping_install_script'));
+
+        $this->assertNull($server->refresh()->status);
+    }
+
+    /**
+     * Test that the "skip scripts" state is exposed to the client API.
+     */
+    public function test_skip_scripts_state_is_exposed_to_client()
+    {
+        [$user, $server] = $this->generateTestAccount([Permission::ACTION_SETTINGS_REINSTALL]);
+
+        $this->actingAs($user)
+            ->getJson("/api/client/servers/$server->uuid")
+            ->assertOk()
+            ->assertJsonPath('attributes.skip_scripts', false);
+
+        $server->update(['skip_scripts' => true]);
+
+        $this->actingAs($user)
+            ->getJson("/api/client/servers/$server->uuid")
+            ->assertOk()
+            ->assertJsonPath('attributes.skip_scripts', true);
     }
 
     public static function renamePermissionsDataProvider(): array

@@ -4,9 +4,10 @@ namespace App\Services\Users;
 
 use App\Contracts\Repository\UserRepositoryInterface;
 use App\Exceptions\Model\DataValidationException;
+use App\Facades\Activity;
 use App\Models\User;
 use App\Notifications\AccountCreated;
-use Illuminate\Contracts\Auth\PasswordBroker;
+use Illuminate\Auth\Passwords\PasswordBroker;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Support\Str;
@@ -32,6 +33,11 @@ class UserCreationService
      */
     public function handle(array $data): User
     {
+        $defaultAvatarStyle = config('designify.avatarType', 'gravatar');
+        $data['avatar_style'] ??= is_string($defaultAvatarStyle) && in_array($defaultAvatarStyle, User::AVATAR_STYLES, true)
+            ? $defaultAvatarStyle
+            : 'gravatar';
+
         if (array_key_exists('password', $data) && ! empty($data['password'])) {
             $data['password'] = $this->hasher->make($data['password']);
         }
@@ -64,6 +70,15 @@ class UserCreationService
                 throw $exception;
             }
         }
+
+        Activity::event('user:user.create')
+            ->subject($user)
+            ->property([
+                'email' => $user->email,
+                'username' => $user->username,
+                'admin' => $user->root_admin,
+            ])
+            ->log();
 
         return $user;
     }

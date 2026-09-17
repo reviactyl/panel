@@ -7,7 +7,7 @@ return [
     'memo' => 'Observação',
     'last-used' => 'Último uso',
     'created' => 'Criado em',
-    'author' => 'Author',
+    'author' => 'Autor',
     'never-used' => 'Nunca Usado',
 
     'revoke' => 'Revogar',
@@ -18,7 +18,7 @@ return [
     'permissions' => 'Selecionar permissões',
     'read-only' => 'Leitura',
     'read-write' => 'Ler & Escrever',
-    'none' => 'None',
+    'none' => 'Nenhum',
 
     'description' => 'Descrição',
     'info' => 'Depois de atribuir permissões e criar este conjunto de credenciais, você não poderá voltar para editá-lo. Se precisar fazer alterações no futuro, será necessário criar um novo conjunto de credenciais.',

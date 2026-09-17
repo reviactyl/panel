@@ -141,11 +141,14 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
      */
     public function getNodeWithResourceUsage(int $node_id): Node
     {
+        $columns = ['nodes.id', 'nodes.fqdn', 'nodes.scheme', 'nodes.daemon_token', 'nodes.daemonListen', 'nodes.memory', 'nodes.disk', 'nodes.memory_overallocate', 'nodes.disk_overallocate'];
+
         $instance = $this->getBuilder()
-            ->select(['nodes.id', 'nodes.fqdn', 'nodes.scheme', 'nodes.daemon_token', 'nodes.daemonListen', 'nodes.memory', 'nodes.disk', 'nodes.memory_overallocate', 'nodes.disk_overallocate'])
+            ->select($columns)
             ->selectRaw('COALESCE(SUM(servers.memory), 0) as sum_memory, COALESCE(SUM(servers.disk), 0) as sum_disk')
             ->leftJoin('servers', 'servers.node_id', '=', 'nodes.id')
-            ->where('nodes.id', $node_id);
+            ->where('nodes.id', $node_id)
+            ->groupBy($columns);
 
         return $instance->first();
     }

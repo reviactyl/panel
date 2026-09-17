@@ -95,12 +95,12 @@ interface RepositoryInterface
     public function deleteWhere(array $attributes): int;
 
     /**
-     * Update a given ID with the passed array of fields.
+     * Update a given record with the passed array of fields.
      *
      * @throws DataValidationException
      * @throws RecordNotFoundException
      */
-    public function update(int $id, array $fields, bool $validate = true, bool $force = false): mixed;
+    public function update(int|string $id, array $fields, bool $validate = true, bool $force = false): mixed;
 
     /**
      * Perform a mass update where matching records are updated using whereIn.

@@ -37,7 +37,7 @@ class SoftwareVersionService
      */
     public function getDaemon(): string
     {
-        return Arr::get(self::$result, 'wings') ?? 'error';
+        return Arr::get(self::$result, 'agent') ?? 'error';
     }
 
     /**

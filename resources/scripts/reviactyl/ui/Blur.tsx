@@ -7,12 +7,16 @@ interface BlurProps extends React.HTMLAttributes<HTMLSpanElement> {
 }
 
 export default function Blur({ className = '', children, ...rest }: BlurProps) {
-    const allocationBlur = useStoreState((state) => state.reviactyl.data!.allocationBlur);
+    const allocationBlur = useStoreState((state) => state.designify.data!.allocationBlur);
 
     return (
         <span
             {...rest}
-            className={`${allocationBlur ? 'duration-300 blur-sm hover:blur-none' : 'blur-none'} ${className}`}
+            className={`${
+                allocationBlur
+                    ? 'blur-xs transition-[filter] duration-250 ease-out hover:blur-none motion-reduce:transition-none'
+                    : 'blur-none'
+            } inline-block max-w-full truncate align-bottom ${className}`}
         >
             {children}
         </span>

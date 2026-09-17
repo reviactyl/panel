@@ -1,17 +1,16 @@
 import { useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
-import Modal from '@/components/elements/Modal';
-import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
+import Modal from '@/reviactyl/elements/Modal';
+import Button from '@/reviactyl/elements/Button';
 import setSelectedDockerImage from '@/api/server/setSelectedDockerImage';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
-import Select from '@/components/elements/Select';
+import Select from '@/reviactyl/elements/Select';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
-import Can from '@/components/elements/Can';
+import Can from '@/reviactyl/elements/Can';
 import getServerStartup from '@/api/swr/getServerStartup';
-import InputSpinner from '@/components/elements/InputSpinner';
+import InputSpinner from '@/reviactyl/elements/InputSpinner';
 
 const MATCH_ERRORS = [
     'minecraft 1.17 requires running the server with java 16 or above',
@@ -75,16 +74,16 @@ const JavaVersionModalFeature = () => {
             closeOnBackground={false}
             showSpinnerOverlay={loading}
         >
-            <FlashMessageRender key={'feature:javaVersion'} css={tw`mb-4`} />
-            <h2 css={tw`text-2xl mb-4 text-gray-100`}>Unsupported Java Version</h2>
-            <p css={tw`mt-4`}>
+            <FlashMessageRender key={'feature:javaVersion'} className='mb-4' />
+            <h2 className='text-2xl mb-4 text-gray-100'>Unsupported Java Version</h2>
+            <p className='mt-4'>
                 This server is currently running an unsupported version of Java and cannot be started.
                 <Can action={'startup.docker-image'}>
                     &nbsp;Please select a supported version from the list below to continue starting the server.
                 </Can>
             </p>
             <Can action={'startup.docker-image'}>
-                <div css={tw`mt-4`}>
+                <div className='mt-4'>
                     <InputSpinner visible={!data || isValidating}>
                         <Select disabled={!data} onChange={(e) => setSelectedVersion(e.target.value)}>
                             {!data ? (
@@ -100,12 +99,12 @@ const JavaVersionModalFeature = () => {
                     </InputSpinner>
                 </div>
             </Can>
-            <div css={tw`mt-8 flex flex-col sm:flex-row justify-end sm:space-x-4 space-y-4 sm:space-y-0`}>
-                <Button isSecondary onClick={() => setVisible(false)} css={tw`w-full sm:w-auto`}>
+            <div className='mt-8 flex flex-col justify-end space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0'>
+                <Button isSecondary onClick={() => setVisible(false)} className='w-full sm:w-auto'>
                     Cancel
                 </Button>
                 <Can action={'startup.docker-image'}>
-                    <Button onClick={updateJava} css={tw`w-full sm:w-auto`}>
+                    <Button onClick={updateJava} className='w-full sm:w-auto'>
                         Update Docker Image
                     </Button>
                 </Can>

@@ -4,16 +4,17 @@ namespace App\Http\Controllers\Auth;
 
 use App\Events\Auth\DirectLogin;
 use App\Exceptions\DisplayException;
+use App\Facades\Activity;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Auth\AuthManager;
+use Carbon\CarbonImmutable;
 use Illuminate\Auth\Events\Failed;
-use Illuminate\Container\Container;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 
@@ -21,7 +22,7 @@ abstract class AbstractLoginController extends Controller
 {
     use AuthenticatesUsers;
 
-    protected AuthManager $auth;
+    protected StatefulGuard $auth;
 
     /**
      * Lockout time for failed login requests.
@@ -45,7 +46,6 @@ abstract class AbstractLoginController extends Controller
     {
         $this->lockoutTime = config('auth.lockout.time');
         $this->maxLoginAttempts = config('auth.lockout.attempts');
-        $this->auth = Container::getInstance()->make(AuthManager::class);
     }
 
     /**
@@ -79,13 +79,7 @@ abstract class AbstractLoginController extends Controller
 
         $this->clearLoginAttempts($request);
 
-        $guard = $this->auth->guard();
-
-        if (! $guard instanceof StatefulGuard) {
-            throw new \RuntimeException('Configured auth guard does not support stateful login.');
-        }
-
-        $guard->login($user, true);
+        Auth::login($user, true);
 
         Event::dispatch(new DirectLogin($user, true));
 
@@ -94,6 +88,24 @@ abstract class AbstractLoginController extends Controller
                 'complete' => true,
                 'intended' => $this->redirectPath(),
                 'user' => $user->toVueObject(),
+            ],
+        ]);
+    }
+
+    protected function sendLoginCheckpointResponse(User $user, Request $request): JsonResponse
+    {
+        Activity::event('auth:checkpoint')->withRequestMetadata()->subject($user)->log();
+
+        $request->session()->put('auth_confirmation_token', [
+            'user_id' => $user->id,
+            'token_value' => $token = Str::random(64),
+            'expires_at' => CarbonImmutable::now()->addMinutes(5),
+        ]);
+
+        return new JsonResponse([
+            'data' => [
+                'complete' => false,
+                'confirmation_token' => $token,
             ],
         ]);
     }

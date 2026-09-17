@@ -11,14 +11,21 @@ return [
     'password-label' => 'पासवर्ड',
 
     'login-button' => 'लॉगिन',
+    'passkey-button' => 'पासकी से लॉगिन करें',
     'return' => 'लॉगिन पर लौटें',
 
+    'passkey-unsupported' => 'इस ब्राउज़र में पासकीज़ समर्थित नहीं हैं।',
+    'passkey-failed' => 'पासकी लॉगिन पूरा नहीं हो सका। कृपया फिर से प्रयास करें।',
+    'passkey-no-credentials' => 'इस लॉगिन के लिए कोई पासकी उपलब्ध नहीं है। अपना पासवर्ड का उपयोग करें या पहले एक पासकी पंजीकृत करें।',
+    'passkey-security' => 'इस डिवाइस पर पासकी सत्यापन सुरक्षित रूप से पूरा नहीं किया जा सका।',
+    'passkey-username-required' => 'पासकी का उपयोग करने से पहले अपना उपयोगकर्ता नाम या ईमेल दर्ज करें।',
+
     'social' => [
-        'or' => 'OR',
-        'google' => 'Google',
-        'discord' => 'Discord',
-        'github' => 'GitHub',
-        'not_linked' => 'This account has not been linked to any :provider account. Please log in with your email and password first, then link your :provider account in the Account Settings page.',
+        'or' => 'या',
+        'google' => 'गूगल',
+        'discord' => 'अनबन',
+        'github' => 'गिटहब',
+        'not_linked' => 'यह खाता किसी भी :provider खाते से लिंक नहीं किया गया है. कृपया पहले अपने ईमेल और पासवर्ड से लॉग इन करें, फिर खाता सेटिंग पृष्ठ में अपने :provider खाते को लिंक करें।',
     ],
 
     'forgot-password' => [
@@ -53,16 +60,18 @@ return [
     ],
 
     'register' => [
-        'no-match' => 'Your password does not match.',
-        'namefirst-label' => 'First Name',
-        'namelast-label' => 'Last Name',
-        'email-label' => 'Email',
-        'username-label' => 'UserName',
-        'password-label' => 'Password',
-        'min-length' => 'Passwords must be at least 8 characters in length.',
-        'confirm-label' => 'Confirm Password',
-        'label' => 'Register',
-        'create-account' => 'Create Account',
+        'no-match' => 'आपका पासवर्ड मेल नहीं खाता.',
+        'namefirst-label' => 'पहला नाम',
+        'namelast-label' => 'उपनाम',
+        'email-label' => 'ईमेल',
+        'username-label' => 'उपयोगकर्ता नाम',
+        'password-label' => 'पासवर्ड',
+        'min-length' => 'पासवर्ड कम से कम 8 अक्षर का होना चाहिए।',
+        'confirm-label' => 'पासवर्ड की पुष्टि कीजिये',
+        'label' => 'पंजीकरण करवाना',
+        'create-link' => 'खाता नहीं है? एक बनाएँ',
+        'create-account' => 'खाता बनाएं',
+        'no-account' => 'खाता नहीं है?',
     ],
 
     'failed' => 'इन क्रेडेंशियल्स से मेल खाने वाला कोई खाता नहीं मिला।',
@@ -76,4 +85,5 @@ return [
     'throttle' => 'लॉगिन प्रयास अधिक हो गए हैं। कृपया :seconds सेकंड में पुनः प्रयास करें।',
     'password_requirements' => 'पासवर्ड कम से कम 8 अक्षरों का होना चाहिए और इस साइट के लिए अद्वितीय होना चाहिए।',
     '2fa_must_be_enabled' => 'प्रशासक ने पैनल का उपयोग करने के लिए आपके खाते पर 2-फैक्टर प्रमाणीकरण सक्षम करना अनिवार्य कर दिया है।',
+    'captcha-required' => 'कृपया जारी रखने के लिए कैप्चा चुनौती पूरी करें।',
 ];

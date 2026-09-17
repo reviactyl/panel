@@ -5,8 +5,13 @@ return [
         'dashboard' => 'Panel',
         'logout' => 'Çıkış Yap',
     ],
+    'sidebar' => [
+        'more' => 'Daha',
+        'extensions' => 'Uzantılar',
+    ],
     'account' => [
         'overview' => 'Hesap Özeti',
+        'passkeys' => 'Erişim Anahtarları',
         'api' => 'API Anahtarları',
         'ssh' => 'SSH Anahtarları',
         'activity' => 'Etkinlik',

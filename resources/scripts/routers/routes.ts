@@ -13,6 +13,7 @@ import AccountOverviewContainer from '@/components/dashboard/AccountOverviewCont
 import AccountApiContainer from '@/components/dashboard/AccountApiContainer';
 import AccountSSHContainer from '@/components/dashboard/ssh/AccountSSHContainer';
 import ActivityLogContainer from '@/components/dashboard/activity/ActivityLogContainer';
+import PasskeysContainer from '@/components/dashboard/PasskeysContainer';
 import ServerActivityLogContainer from '@/components/server/ServerActivityLogContainer';
 import {
     FaBoltLightning,
@@ -26,6 +27,7 @@ import {
     FaKey,
     FaLock,
     FaPlay,
+    FaFingerprint,
     FaTerminal,
     FaUser,
     FaUsers,
@@ -85,6 +87,12 @@ export default {
             name: 'account.api',
             icon: FaLock,
             component: AccountApiContainer,
+        },
+        {
+            route: 'passkeys',
+            name: 'account.passkeys',
+            icon: FaFingerprint,
+            component: PasskeysContainer,
         },
         {
             route: 'ssh',

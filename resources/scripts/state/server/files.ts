@@ -5,6 +5,7 @@ export interface FileUploadData {
     loaded: number;
     readonly abort: AbortController;
     readonly total: number;
+    readonly group?: string;
 }
 
 export interface ServerFileStore {

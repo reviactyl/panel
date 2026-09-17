@@ -2,59 +2,57 @@
 
 return [
 
-    'label' => 'Database',
-    'plural-label' => 'Databases',
+    'label' => 'Basis data',
+    'plural-label' => 'Basis Data',
 
-    'none' => 'None',
+    'none' => 'Tidak ada',
 
     'sections' => [
         'host_details' => [
-            'title' => 'Host Details',
-            'description' => 'Configure the database host connection settings.',
+            'title' => 'Detail Tuan Rumah',
+            'description' => 'Konfigurasikan pengaturan koneksi host database.',
         ],
 
         'authentication' => [
-            'title' => 'Authentication',
+            'title' => 'Otentikasi',
         ],
 
         'linked_node' => [
-            'title' => 'Linked Node',
+            'title' => 'Node Tertaut',
         ],
     ],
 
     'placeholders' => [
-        'name' => 'Production MySQL',
-        'host' => '127.0.0.1',
-        'username' => 'reviactyl',
+        'name' => 'MySQL Produksi',
     ],
 
     'helpers' => [
-        'host' => 'The hostname or IP address of the database server.',
-        'linked_node' => 'Optional. Link this host to a specific node.',
+        'host' => 'Nama host atau alamat IP server database.',
+        'linked_node' => 'Opsional. Tautkan host ini ke node tertentu.',
     ],
 
     'fields' => [
-        'linked_node' => 'Linked Node',
+        'linked_node' => 'Node Tertaut',
     ],
 
     'columns' => [
         'id' => 'ID',
-        'name' => 'Name',
-        'host' => 'Host',
-        'port' => 'Port',
-        'username' => 'Username',
-        'linked_node' => 'Linked Node',
-        'databases' => 'Databases',
-        'created' => 'Created',
+        'name' => 'Nama',
+        'host' => 'Tuan rumah',
+        'port' => 'Pelabuhan',
+        'username' => 'Nama belakang',
+        'linked_node' => 'Node Tertaut',
+        'databases' => 'Basis Data',
+        'created' => 'Dibuat',
     ],
 
     'actions' => [
-        'edit' => 'Edit',
-        'delete' => 'Delete',
+        'edit' => 'Sunting',
+        'delete' => 'Menghapus',
     ],
 
     'errors' => [
-        'cannot_delete' => 'Cannot delete a database host with associated databases.',
+        'cannot_delete' => 'Tidak dapat menghapus host database dengan database terkait.',
     ],
 
 ];

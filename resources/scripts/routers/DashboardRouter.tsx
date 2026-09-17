@@ -3,18 +3,14 @@ import { Suspense } from 'react';
 import { useRoutes } from 'react-router-dom';
 import Navigate from '@/reviactyl/components/Navigate';
 import DashboardContainer from '@/components/dashboard/DashboardContainer';
-import { NotFound } from '@/components/elements/ScreenBlock';
-import Spinner from '@/components/elements/Spinner';
+import { NotFound } from '@/reviactyl/elements/ScreenBlock';
+import Spinner from '@/reviactyl/elements/Spinner';
 import routes from '@/routers/routes';
 import { RouterContainer } from '@/reviactyl/ui/RouterContainer';
-import Navbar from '@/reviactyl/ui/Navbar';
-import { LogoContainer } from '@/reviactyl/ui/LogoContainer';
 import { XIcon, MenuIcon, ExternalLinkIcon } from '@heroicons/react/solid';
-import tw from 'twin.macro';
 import { ContentContainer } from '@/reviactyl/ui/ContentContainer';
 import { motion } from 'framer-motion';
-import Sidebar from '@/reviactyl/ui/Sidebar';
-import { ApplicationStore } from '@/state';
+import { Navbar, Sidebar } from '@/reviactyl/components/Layout';
 import { useStoreState } from 'easy-peasy';
 import Announcement from '@/reviactyl/ui/Announcement';
 import MaintenanceAlert from '@/reviactyl/ui/MaintenanceAlert';
@@ -22,11 +18,13 @@ import QuickLinks from '@/reviactyl/ui/QuickLinks';
 import Maintenance from '@/reviactyl/ui/Maintenance';
 import { useTranslation } from 'react-i18next';
 import { FaHouse } from 'react-icons/fa6';
-import { ReviactylSidebarButton } from '@/state/reviactyl';
+import { DesignifySidebarButton } from '@/state/designify';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 import { useExtensionRoutes } from '@/extensions/useExtensionRoutes';
 import { useExtensions } from '@/extensions/useExtensions';
 import { resolveExtensionIcon } from '@/extensions/iconResolver';
+import PasskeysContainer from '@/components/dashboard/PasskeysContainer';
+import { useSubuserPreview } from '@/context/SubuserPreviewContext';
 
 interface Props {
     route: any;
@@ -49,8 +47,9 @@ const NavItem = ({ route }: Props) => {
 
 const DashboardNavigation = () => {
     const { t } = useTranslation('routes');
-    const customSidebarButtons = useStoreState((state) => state.reviactyl.data?.sidebarButtons ?? []);
+    const customSidebarButtons = useStoreState((state) => state.designify.data?.sidebarButtons ?? []);
     const { data: extensionData } = useExtensions();
+    const { session } = useSubuserPreview();
 
     const dashboardExtensionRoutes = (Array.isArray(extensionData) ? extensionData : []).flatMap((extension) =>
         (extension.frontend?.routes?.dashboardRouter ?? [])
@@ -63,37 +62,43 @@ const DashboardNavigation = () => {
                         : `${extension.name} Route`,
                 path: route.path,
                 icon: resolveExtensionIcon(typeof route?.icon === 'string' ? route.icon : undefined),
-            }))
+            })),
     );
     const normalizedSidebarButtons = (Array.isArray(customSidebarButtons) ? customSidebarButtons : []).filter(
-        (button): button is ReviactylSidebarButton =>
+        (button): button is DesignifySidebarButton =>
             typeof button?.label === 'string' &&
             button.label.trim().length > 0 &&
             typeof button?.url === 'string' &&
-            button.url.trim().length > 0
+            button.url.trim().length > 0,
     );
 
     return (
         <>
             <div>
-                <Navigate id='index.dashboard' to='/' end className='mt-2'>
-                    <span className='flex items-center'>
-                        <FaHouse className='w-5 mr-1' /> {t('index.dashboard')}
-                    </span>
-                </Navigate>
-
                 <div className='mt-2'>
-                    {routes.account
-                        .filter((route) => !!route.name)
-                        .map((route) => (
-                            <NavItem key={route.name} route={route} />
-                        ))}
+                    <span className='label -mb-2'>{t('index.dashboard')}</span>
+                    <Navigate id='index.dashboard' to='/' end className='mt-2'>
+                        <span className='flex items-center'>
+                            <FaHouse className='w-5 mr-1' /> {t('index.dashboard')}
+                        </span>
+                    </Navigate>
                 </div>
+
+                {!session && (
+                    <div className='mt-2'>
+                        <span className='label'>{t('account.overview')}</span>
+                        {routes.account
+                            .filter((route) => !!route.name)
+                            .map((route) => (
+                                <NavItem key={route.name} route={route} />
+                            ))}
+                    </div>
+                )}
             </div>
 
-            {normalizedSidebarButtons.length > 0 && (
+            {!session && normalizedSidebarButtons.length > 0 && (
                 <div className='mt-2'>
-                    <span className='label'>MORE</span>
+                    <span className='label'>{t('sidebar.more')}</span>
                     {normalizedSidebarButtons.map((button, index) => (
                         <a
                             key={`${button.url}-${index}`}
@@ -110,9 +115,9 @@ const DashboardNavigation = () => {
                 </div>
             )}
 
-            {dashboardExtensionRoutes.length > 0 && (
+            {!session && dashboardExtensionRoutes.length > 0 && (
                 <div className='mt-2'>
-                    <span className='label'>EXTENSIONS</span>
+                    <span className='label'>{t('sidebar.extensions')}</span>
                     {dashboardExtensionRoutes.map((route) => (
                         <Navigate
                             key={route.id}
@@ -131,13 +136,20 @@ const DashboardNavigation = () => {
     );
 };
 
+/**
+ * Renders the dashboard layout and routes.
+ *
+ * Displays the maintenance screen when maintenance is active unless a root administrator is viewing the account normally. Restricts account, passkey, and extension navigation during subuser preview sessions.
+ *
+ * @returns The dashboard interface or maintenance screen.
+ */
 function DashboardRouter() {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
-    const logo = useStoreState((state: ApplicationStore) => state.settings.data!.logo);
-    const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
-    const isUnderMaintenance = useStoreState((state) => state.reviactyl.data?.isUnderMaintenance);
-    const rootAdmin = useStoreState((state) => state.user.data?.rootAdmin);
+    const isUnderMaintenance = useStoreState((state) => state.designify.data?.isUnderMaintenance);
+    const accountRootAdmin = useStoreState((state) => state.user.data?.rootAdmin);
     const injectedRoutes = useExtensionRoutes('dashboardRouter');
+    const { session } = useSubuserPreview();
+    const rootAdmin = accountRootAdmin && !session;
 
     return (
         <>
@@ -149,25 +161,17 @@ function DashboardRouter() {
                         <div className='lg:hidden'>
                             <button
                                 onClick={() => setSidebarOpen(!isSidebarOpen)}
-                                className='text-gray-500 bg-gray-700 p-2 rounded-ui'
+                                className='text-gray-600 bg-gray-900 p-2 rounded-ui'
                             >
                                 {isSidebarOpen ? <XIcon className='w-6 h-6' /> : <MenuIcon className='w-6 h-6' />}
                             </button>
                         </div>
-                        <LogoContainer>
-                            <img
-                                src={logo}
-                                alt={name}
-                                onClick={() => (window.location.href = '/')}
-                                css={tw`h-[3rem] mt-5 cursor-pointer`}
-                            />
-                        </LogoContainer>
                     </Navbar>
                     <ContentContainer>
                         {isSidebarOpen && (
                             <div
                                 onClick={() => setSidebarOpen(false)}
-                                className='fixed inset-0 z-30 bg-gray-800/40 backdrop-blur-sm transition-all duration-300 ease-in-out lg:hidden'
+                                className='fixed inset-0 z-30 bg-gray-900/40 backdrop-blur-xs transition-all duration-300 ease-in-out lg:hidden'
                             />
                         )}
                         <motion.div
@@ -186,20 +190,28 @@ function DashboardRouter() {
                                         path: '',
                                         element: (
                                             <>
-                                                <ExtensionSlot name='dashboard:router:above' />
+                                                {!session && <ExtensionSlot name='dashboard:router:above' />}
                                                 <Announcement />
                                                 <MaintenanceAlert />
-                                                <QuickLinks />
+                                                {!session && <QuickLinks />}
                                                 <DashboardContainer />
-                                                <ExtensionSlot name='dashboard:router:below' />
+                                                {!session && <ExtensionSlot name='dashboard:router:below' />}
                                             </>
                                         ),
                                     },
-                                    ...routes.account.map(({ route, component: Component }) => ({
+                                    ...(!session ? routes.account : []).map(({ route, component: Component }) => ({
                                         path: `/account/${route}`.replace('//', '/'),
                                         element: <Component />,
                                     })),
-                                    ...injectedRoutes,
+                                    ...(!session
+                                        ? [
+                                              {
+                                                  path: '/passkey/*',
+                                                  element: <PasskeysContainer />,
+                                              },
+                                          ]
+                                        : []),
+                                    ...(!session ? injectedRoutes : []),
                                     { path: '*', element: <NotFound /> },
                                 ])}
                             </Suspense>

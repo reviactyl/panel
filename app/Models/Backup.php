@@ -40,7 +40,7 @@ class Backup extends Model implements Identifiable
 
     public const RESOURCE_NAME = 'backup';
 
-    public const ADAPTER_WINGS = 'wings';
+    public const ADAPTER_WINGS = 'agent';
 
     public const ADAPTER_AWS_S3 = 's3';
 

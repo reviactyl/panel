@@ -11,20 +11,27 @@ return [
     'password-label' => 'Kata Sandi',
 
     'login-button' => 'Masuk',
+    'passkey-button' => 'Masuk dengan Passkey',
     'return' => 'Kembali ke Login',
+
+    'passkey-unsupported' => 'Passkey tidak didukung oleh browser ini.',
+    'passkey-failed' => 'Tidak dapat menyelesaikan proses masuk dengan kode sandi. Silakan coba lagi.',
+    'passkey-no-credentials' => 'Tidak ada passkey yang tersedia untuk login ini. Silakan gunakan kata sandi Anda atau daftarkan passkey terlebih dahulu.',
+    'passkey-security' => 'Verifikasi kode sandi tidak dapat diselesaikan dengan aman di perangkat ini.',
+    'passkey-username-required' => 'Masukkan nama pengguna atau alamat email Anda sebelum menggunakan passkey.',
 
     'social' => [
         'or' => 'OR',
         'google' => 'Google',
         'discord' => 'Discord',
         'github' => 'GitHub',
-        'not_linked' => 'This account has not been linked to any :provider account. Please log in with your email and password first, then link your :provider account in the Account Settings page.',
+        'not_linked' => 'Akun ini belum ditautkan ke akun :provider mana pun. Silakan login dengan email dan kata sandi Anda terlebih dahulu, lalu tautkan akun :provider Anda di halaman Pengaturan Akun.',
     ],
 
     'forgot-password' => [
         'title' => 'Minta Atur Ulang Kata Sandi',
         'label' => 'Lupa Kata Sandi?',
-        'email-label' => 'Email',
+        'email-label' => 'E-mail',
         'email-content' => 'Masukkan alamat email akun Anda untuk menerima instruksi pengaturan ulang kata sandi.',
         'send-email' => 'Kirim Email',
     ],
@@ -45,7 +52,7 @@ return [
         'new-required' => 'Kata sandi baru wajib diisi.',
         'min-required' => 'Kata sandi baru Anda harus memiliki setidaknya 8 karakter.',
         'no-match' => 'Kata sandi baru Anda tidak cocok.',
-        'email-label' => 'Email',
+        'email-label' => 'E-mail',
         'new-label' => 'Kata Sandi Baru',
         'min-length' => 'Kata sandi harus memiliki setidaknya 8 karakter.',
         'confirm-label' => 'Konfirmasi Kata Sandi Baru',
@@ -53,16 +60,18 @@ return [
     ],
 
     'register' => [
-        'no-match' => 'Your password does not match.',
-        'namefirst-label' => 'First Name',
-        'namelast-label' => 'Last Name',
-        'email-label' => 'Email',
-        'username-label' => 'UserName',
-        'password-label' => 'Password',
-        'min-length' => 'Passwords must be at least 8 characters in length.',
-        'confirm-label' => 'Confirm Password',
-        'label' => 'Register',
-        'create-account' => 'Create Account',
+        'no-match' => 'Kata sandi Anda tidak cocok.',
+        'namefirst-label' => 'Nama depan',
+        'namelast-label' => 'Nama Belakang',
+        'email-label' => 'E-mail',
+        'username-label' => 'Nama Pengguna',
+        'password-label' => 'Kata sandi',
+        'min-length' => 'Panjang kata sandi minimal harus 8 karakter.',
+        'confirm-label' => 'Konfirmasi Kata Sandi',
+        'label' => 'Daftar',
+        'create-link' => 'Belum punya akun? Buat akun',
+        'create-account' => 'Buat Akun',
+        'no-account' => 'Belum punya akun?',
     ],
 
     'failed' => 'Tidak ada akun yang cocok dengan kredensial tersebut.',
@@ -76,4 +85,5 @@ return [
     'throttle' => 'Terlalu banyak percobaan login. Silakan coba lagi dalam :seconds detik.',
     'password_requirements' => 'Kata sandi harus memiliki setidaknya 8 karakter dan harus unik untuk situs ini.',
     '2fa_must_be_enabled' => 'Administrator mengharuskan Otentikasi 2-Faktor diaktifkan pada akun Anda untuk menggunakan Panel.',
+    'captcha-required' => 'Silakan selesaikan tantangan captcha untuk melanjutkan.',
 ];

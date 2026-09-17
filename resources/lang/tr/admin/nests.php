@@ -2,7 +2,7 @@
 
 return [
 
-    'label' => 'Nest',
+    'label' => 'Yuva',
     'plural_label' => 'Nestler',
 
     'sections' => [
@@ -30,18 +30,18 @@ return [
     ],
 
     'actions' => [
-        'import' => 'Import Egg',
+        'import' => 'Yumurta İthalatı',
     ],
 
     'import' => [
-        'file_label' => 'Egg File (JSON)',
-        'nest_label' => 'Associated Nest',
-        'file_not_found' => 'File not found',
-        'file_not_found_body' => 'Could not locate uploaded file.',
-        'invalid_format' => 'Invalid file format',
-        'invalid_format_body' => 'Unexpected file format received.',
-        'success' => 'Egg imported successfully',
-        'failed' => 'Failed to import egg',
+        'file_label' => 'Yumurta Dosyası (JSON)',
+        'nest_label' => 'İlişkili Yuva',
+        'file_not_found' => 'Dosya bulunamadı',
+        'file_not_found_body' => 'Yüklenen dosya bulunamadı.',
+        'invalid_format' => 'Geçersiz dosya biçimi',
+        'invalid_format_body' => 'Beklenmeyen dosya formatı alındı.',
+        'success' => 'Yumurta başarıyla içe aktarıldı',
+        'failed' => 'Yumurta içe aktarılamadı',
     ],
 
     'notices' => [

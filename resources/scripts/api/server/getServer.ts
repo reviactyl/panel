@@ -58,16 +58,21 @@ export interface Server {
         backups: number;
     };
     isTransferring: boolean;
+    skipScripts: boolean;
     variables: ServerEggVariable[];
     allocations: Allocation[];
     category: ServerCategory | null;
     nestId: number;
     eggId: number;
-    eggBanner: string;
+    eggImage: string;
     containerText: string;
+    isOwner?: boolean;
 }
 
-export const rawDataToServerObject = ({ attributes: data }: FractalResponseData): Server => ({
+export const rawDataToServerObject = ({
+    attributes: data,
+    meta,
+}: FractalResponseData & { meta?: Record<string, any> }): Server => ({
     id: data.identifier,
     identifier: data.server_identifier,
     internalId: data.internal_id,
@@ -88,11 +93,12 @@ export const rawDataToServerObject = ({ attributes: data }: FractalResponseData)
     eggFeatures: data.egg_features || [],
     featureLimits: { ...data.feature_limits },
     isTransferring: data.is_transferring,
+    skipScripts: data.skip_scripts,
     variables: ((data.relationships?.variables as FractalResponseList | undefined)?.data || []).map(
-        rawDataToServerEggVariable
+        rawDataToServerEggVariable,
     ),
     allocations: ((data.relationships?.allocations as FractalResponseList | undefined)?.data || []).map(
-        rawDataToServerAllocation
+        rawDataToServerAllocation,
     ),
     category:
         (data.relationships?.category as FractalResponseData | undefined)?.attributes &&
@@ -108,8 +114,9 @@ export const rawDataToServerObject = ({ attributes: data }: FractalResponseData)
             : null,
     nestId: data.nest_id,
     eggId: data.egg_id,
-    eggBanner: data.egg_banner,
+    eggImage: data.egg_image,
     containerText: data.containerText,
+    isOwner: meta?.is_server_owner === true,
 });
 
 export default (uuid: string): Promise<[Server, string[]]> => {
@@ -119,7 +126,7 @@ export default (uuid: string): Promise<[Server, string[]]> => {
                 resolve([
                     rawDataToServerObject(data),
                     data.meta?.is_server_owner ? ['*'] : data.meta?.user_permissions || [],
-                ])
+                ]),
             )
             .catch(reject);
     });

@@ -4,9 +4,9 @@
         "version": "RCYL_v26",
         "update_url": null
     },
-    "exported_at": "2026-03-08T09:36:22+00:00",
+    "exported_at": "2026-05-01T13:50:03+00:00",
     "name": "Sponge (SpongeVanilla)",
-    "banner": "https:\/\/cdn.reviactyl.app\/@reviactyl\/eggs\/minecraft\/night_waterfall.webp",
+    "image": "https:\/\/cdn.reviactyl.app\/@reviactyl\/eggs\/minecraft\/sponge.webp",
     "author": "authors@reviactyl.app",
     "description": "SpongeVanilla is the SpongeAPI implementation for Vanilla Minecraft.",
     "features": [

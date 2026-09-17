@@ -3,7 +3,7 @@
 namespace Tests\Integration\Services\Servers;
 
 use App\Models\Server;
-use App\Repositories\Wings\DaemonServerRepository;
+use App\Repositories\Agent\DaemonServerRepository;
 use App\Services\Servers\SuspensionService;
 use Mockery\MockInterface;
 use Tests\Integration\IntegrationTestCase;

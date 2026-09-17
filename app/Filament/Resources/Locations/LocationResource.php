@@ -58,13 +58,13 @@ class LocationResource extends Resource
                             ->required()
                             ->maxLength(60)
                             ->unique(ignoreRecord: true)
-                            ->placeholder(trans('admin/locations.fields.short.placeholder'))
+                            ->placeholder('us.nyc.1')
                             ->helperText(trans('admin/locations.fields.short.helper')),
 
                         TextInput::make('long')
                             ->label(trans('admin/locations.fields.long.label'))
                             ->maxLength(191)
-                            ->placeholder(trans('admin/locations.fields.long.placeholder'))
+                            ->placeholder('New York City, NY, USA')
                             ->helperText(trans('admin/locations.fields.long.helper')),
                     ])
                     ->columnSpanFull(),

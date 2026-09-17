@@ -13,13 +13,11 @@ return [
     'fields' => [
         'short' => [
             'label' => 'Kısa Kod',
-            'placeholder' => 'us.nyc.1',
             'helper' => 'Bu konum için kısa bir tanımlayıcı.',
         ],
 
         'long' => [
             'label' => 'Açıklama',
-            'placeholder' => 'New York City, NY, USA',
             'helper' => 'Bu konumun daha uzun bir açıklaması.',
         ],
     ],

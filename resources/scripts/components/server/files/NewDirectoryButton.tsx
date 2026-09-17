@@ -1,23 +1,22 @@
 import { useContext, useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import { Form, Formik, FormikHelpers } from 'formik';
-import Field from '@/components/elements/Field';
+import Field from '@/reviactyl/elements/Field';
 import { join } from 'pathe';
 import { object, string } from 'yup';
 import createDirectory from '@/api/server/files/createDirectory';
-import tw from 'twin.macro';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/reviactyl/components/button/index';
 import { FileObject } from '@/api/server/files/loadDirectory';
 import { useFlashKey } from '@/plugins/useFlash';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import { WithClassname } from '@/components/types';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import { Dialog, DialogWrapperContext } from '@/components/elements/dialog';
-import Code from '@/components/elements/Code';
+import { Dialog, DialogWrapperContext } from '@/reviactyl/elements/dialog';
+import Code from '@/reviactyl/elements/Code';
 import asDialog from '@/hoc/asDialog';
 import { useTranslation } from 'react-i18next';
-import Tooltip from '@/components/elements/tooltip/Tooltip';
-import { FolderAddIcon } from '@heroicons/react/solid';
+import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
+import { FaFolderPlus } from 'react-icons/fa6';
 
 interface Values {
     directoryName: string;
@@ -42,15 +41,18 @@ const generateDirectoryData = (name: string): FileObject => ({
     isEditable: () => false,
 });
 
-const NewDirectoryDialog = asDialog({
-    title: 'Create Directory',
-})(() => {
+const NewDirectoryDialog = asDialog({})(() => {
+    const { t } = useTranslation('server/files');
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const directory = ServerContext.useStoreState((state) => state.files.directory);
 
     const { mutate } = useFileManagerSwr();
-    const { close } = useContext(DialogWrapperContext);
+    const { close, setProps } = useContext(DialogWrapperContext);
     const { clearAndAddHttpError } = useFlashKey('files:directory-modal');
+
+    useEffect(() => {
+        setProps({ title: t('create-directory') });
+    }, [setProps, t]);
 
     useEffect(() => {
         return () => {
@@ -60,7 +62,7 @@ const NewDirectoryDialog = asDialog({
 
     const submit = ({ directoryName }: Values, { setSubmitting }: FormikHelpers<Values>) => {
         createDirectory(uuid, directory, directoryName)
-            .then(() => mutate((data) => [...data, generateDirectoryData(directoryName)], false))
+            .then(() => mutate((data) => data && [...data, generateDirectoryData(directoryName)], false))
             .then(() => close())
             .catch((error) => {
                 setSubmitting(false);
@@ -79,13 +81,18 @@ const NewDirectoryDialog = asDialog({
             {({ submitForm, values }) => (
                 <>
                     <FlashMessageRender key={'files:directory-modal'} />
-                    <Form css={tw`m-0`}>
-                        <Field autoFocus id={'directoryName'} name={'directoryName'} label={'Name'} />
-                        <p css={tw`mt-2 text-sm md:text-base break-all`}>
-                            <span css={tw`text-gray-200`}>This directory will be created as&nbsp;</span>
+                    <Form className='m-0'>
+                        <Field
+                            autoFocus
+                            id={'directoryName'}
+                            name={'directoryName'}
+                            label={t('directory-name-label')}
+                        />
+                        <p className='mt-2 break-all text-sm md:text-base'>
+                            <span className='text-gray-200'>{t('directory-created-as')}&nbsp;</span>
                             <Code>
                                 /home/container
-                                <span css={tw`text-cyan-200`}>
+                                <span className='text-cyan-200'>
                                     /{join(directory, values.directoryName).replace(/^(\.\.\/|\/)+/, '')}
                                 </span>
                             </Code>
@@ -93,10 +100,10 @@ const NewDirectoryDialog = asDialog({
                     </Form>
                     <Dialog.Footer>
                         <Button.Text className={'w-full sm:w-auto'} onClick={close}>
-                            Cancel
+                            {t('cancel')}
                         </Button.Text>
                         <Button className={'w-full sm:w-auto'} onClick={submitForm}>
-                            Create
+                            {t('create')}
                         </Button>
                     </Dialog.Footer>
                 </>
@@ -105,28 +112,22 @@ const NewDirectoryDialog = asDialog({
     );
 });
 
-export default ({ className, compact = false }: WithClassname & { compact?: boolean }) => {
+export default ({ className }: WithClassname & { compact?: boolean }) => {
     const { t } = useTranslation('server/files');
     const [open, setOpen] = useState(false);
 
     return (
         <>
             <NewDirectoryDialog open={open} onClose={setOpen.bind(this, false)} />
-            {compact ? (
-                <Tooltip content={t('create-directory')}>
-                    <Button.Text
-                        onClick={setOpen.bind(this, true)}
-                        className={className}
-                        aria-label={t('create-directory')}
-                    >
-                        <FolderAddIcon className='h-5 w-5' />
-                    </Button.Text>
-                </Tooltip>
-            ) : (
-                <Button.Text onClick={setOpen.bind(this, true)} className={className}>
-                    {t('create-directory')}
+            <Tooltip content={t('create-directory')}>
+                <Button.Text
+                    onClick={setOpen.bind(this, true)}
+                    className={className}
+                    aria-label={t('create-directory')}
+                >
+                    <FaFolderPlus className='h-5 w-5' />
                 </Button.Text>
-            )}
+            </Tooltip>
         </>
     );
 };

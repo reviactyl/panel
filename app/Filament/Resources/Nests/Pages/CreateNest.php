@@ -3,18 +3,16 @@
 namespace App\Filament\Resources\Nests\Pages;
 
 use App\Filament\Resources\Nests\NestResource;
+use App\Services\Nests\NestCreationService;
 use Filament\Resources\Pages\CreateRecord;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Model;
 
 class CreateNest extends CreateRecord
 {
     protected static string $resource = NestResource::class;
 
-    protected function mutateFormDataBeforeCreate(array $data): array
+    protected function handleRecordCreation(array $data): Model
     {
-        $data['uuid'] = Str::uuid()->toString();
-        $data['author'] = $data['author'] ?? config('panel.service.author');
-
-        return $data;
+        return app(NestCreationService::class)->handle($data, $data['author'] ?? null);
     }
 }

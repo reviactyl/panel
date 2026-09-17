@@ -1,13 +1,13 @@
 import { fileBitsToString } from '@/helpers';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
-import Modal, { RequiredModalProps } from '@/components/elements/Modal';
+import Modal, { RequiredModalProps } from '@/reviactyl/elements/Modal';
 import { Form, Formik, FormikHelpers } from 'formik';
-import Field from '@/components/elements/Field';
+import Field from '@/reviactyl/elements/Field';
 import chmodFiles from '@/api/server/files/chmodFiles';
 import { ServerContext } from '@/state/server';
-import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
+import Button from '@/reviactyl/elements/Button';
 import useFlash from '@/plugins/useFlash';
+import { useTranslation } from 'react-i18next';
 
 interface FormikValues {
     mode: string;
@@ -22,6 +22,7 @@ type OwnProps = RequiredModalProps & { files: File[] };
 
 const ChmodFileModal = ({ files, ...props }: OwnProps) => {
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const { t } = useTranslation('server/files');
     const { mutate } = useFileManagerSwr();
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const directory = ServerContext.useStoreState((state) => state.files.directory);
@@ -33,9 +34,9 @@ const ChmodFileModal = ({ files, ...props }: OwnProps) => {
         await mutate(
             (data) =>
                 data!.map((f) =>
-                    f.name === files[0]?.file ? { ...f, mode: fileBitsToString(mode, !f.isFile), modeBits: mode } : f
+                    f.name === files[0]?.file ? { ...f, mode: fileBitsToString(mode, !f.isFile), modeBits: mode } : f,
                 ),
-            false
+            false,
         );
 
         const data = files.map((f) => ({ file: f.file, mode: mode }));
@@ -52,16 +53,22 @@ const ChmodFileModal = ({ files, ...props }: OwnProps) => {
     };
 
     return (
-        <Formik onSubmit={submit} initialValues={{ mode: files.length > 1 ? '' : files[0]?.mode ?? '' }}>
+        <Formik onSubmit={submit} initialValues={{ mode: files.length > 1 ? '' : (files[0]?.mode ?? '') }}>
             {({ isSubmitting }) => (
                 <Modal {...props} dismissable={!isSubmitting} showSpinnerOverlay={isSubmitting}>
-                    <Form css={tw`m-0`}>
-                        <div css={tw`flex flex-wrap items-end`}>
-                            <div css={tw`w-full sm:flex-1 sm:mr-4`}>
-                                <Field type={'string'} id={'file_mode'} name={'mode'} label={'File Mode'} autoFocus />
+                    <Form className='m-0'>
+                        <div className='flex flex-wrap items-end'>
+                            <div className='w-full sm:flex-1 sm:mr-4'>
+                                <Field
+                                    type={'string'}
+                                    id={'file_mode'}
+                                    name={'mode'}
+                                    label={t('file-mode-label')}
+                                    autoFocus
+                                />
                             </div>
-                            <div css={tw`w-full sm:w-auto mt-4 sm:mt-0`}>
-                                <Button css={tw`w-full`}>Update</Button>
+                            <div className='w-full sm:w-auto mt-4 sm:mt-0'>
+                                <Button className='w-full'>{t('update')}</Button>
                             </div>
                         </div>
                     </Form>

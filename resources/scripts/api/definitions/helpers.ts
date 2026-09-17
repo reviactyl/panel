@@ -14,17 +14,17 @@ function transform<T, M>(data: null | undefined, transformer: TransformerFunc<T>
 function transform<T, M>(
     data: FractalResponseData | null | undefined,
     transformer: TransformerFunc<T>,
-    missing?: M
+    missing?: M,
 ): T | M;
 function transform<T, M>(
     data: FractalResponseList | FractalPaginatedResponse | null | undefined,
     transformer: TransformerFunc<T>,
-    missing?: M
+    missing?: M,
 ): T[] | M;
 function transform<T>(
     data: FractalResponseData | FractalResponseList | FractalPaginatedResponse | null | undefined,
     transformer: TransformerFunc<T>,
-    missing = undefined
+    missing = undefined,
 ) {
     if (data === undefined || data === null) {
         return missing;

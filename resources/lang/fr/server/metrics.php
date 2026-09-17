@@ -1,30 +1,30 @@
 <?php
 
 return [
-    'title' => 'Historical Metrics',
-    'error' => 'Unable to load historical stats.',
+    'title' => 'Mesures historiques',
+    'error' => 'Impossible de charger les statistiques historiques.',
     'time_range' => [
-        'last_24_hours' => 'Last 24 Hours',
-        'last_3_days' => 'Last 3 Days',
-        'last_7_days' => 'Last 7 Days',
+        'last_24_hours' => 'Dernières 24 heures',
+        'last_3_days' => '3 derniers jours',
+        'last_7_days' => '7 derniers jours',
     ],
     'charts' => [
         'cpu' => [
-            'title' => 'CPU History',
-            'label' => 'CPU Usage (%)',
+            'title' => 'Historique du processeur',
+            'label' => 'Utilisation du processeur (%)',
         ],
         'memory' => [
-            'title' => 'Memory History',
-            'label' => 'Memory Usage (MB)',
+            'title' => 'Historique de la mémoire',
+            'label' => 'Utilisation de la mémoire (Mo)',
         ],
         'disk' => [
-            'title' => 'Disk History',
-            'label' => 'Disk Usage (MB)',
+            'title' => 'Historique du disque',
+            'label' => 'Utilisation du disque (Mo)',
         ],
         'network' => [
-            'title' => 'Network History',
-            'rx_label' => 'Network RX (MB)',
-            'tx_label' => 'Network TX (MB)',
+            'title' => 'Historique du réseau',
+            'rx_label' => 'Réception réseau (Mo)',
+            'tx_label' => 'Émission réseau (Mo)',
         ],
     ],
 ];

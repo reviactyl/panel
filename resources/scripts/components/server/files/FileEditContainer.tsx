@@ -1,26 +1,26 @@
 import { useEffect, useState } from 'react';
 import getFileContents from '@/api/server/files/getFileContents';
 import { httpErrorToHuman } from '@/api/http';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import saveFileContents from '@/api/server/files/saveFileContents';
+import updateFileContents from '@/api/server/files/updateFileContents';
 import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcrumbs';
 import { useLocation, useNavigate } from 'react-router-dom';
 import FileNameModal from '@/components/server/files/FileNameModal';
-import Can from '@/components/elements/Can';
+import Can from '@/reviactyl/elements/Can';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import ContentBlock from '@/reviactyl/ui/ContentBlock';
-import { ServerError } from '@/components/elements/ScreenBlock';
-import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
-import Select from '@/components/elements/Select';
+import { ServerError } from '@/reviactyl/elements/ScreenBlock';
+import Button from '@/reviactyl/elements/Button';
+import Select from '@/reviactyl/elements/Select';
 import modes from '@/modes';
 import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
-import ErrorBoundary from '@/components/elements/ErrorBoundary';
+import ErrorBoundary from '@/reviactyl/elements/ErrorBoundary';
 import { encodePathSegments, hashToPath } from '@/helpers';
 import { dirname } from 'pathe';
-import CodemirrorEditor from '@/components/elements/CodemirrorEditor';
-import MonacoEditor from '@/components/elements/MonacoEditor';
+import CodemirrorEditor from '@/reviactyl/elements/CodemirrorEditor';
+import MonacoEditor from '@/reviactyl/elements/MonacoEditor';
 import Card from '@/reviactyl/ui/Card';
 
 import { ApplicationStore } from '@/state';
@@ -49,11 +49,17 @@ export default () => {
     let fetchFileContent: null | (() => Promise<string>) = null;
 
     useEffect(() => {
-        if (isNewFile) return;
+        if (isNewFile) {
+            const path = hashToPath(hash);
+            if (path && path !== '/') {
+                setDirectory(path);
+            }
+            return;
+        }
 
         setError('');
         const path = hashToPath(hash);
-        // Guard: if path resolves to root (no file hash), redirect rather than asking Wings to read "/" and getting a 200/500 error.
+        // Guard: if path resolves to root (no file hash), redirect rather than asking Agent to read "/" and getting a 200/500 error.
         if (path === '/' || path === '') {
             navigate(`/server/${id}/files`);
             return;
@@ -77,7 +83,9 @@ export default () => {
         setLoading(true);
         clearFlashes('files:view');
         fetchFileContent()
-            .then((content) => saveFileContents(uuid, name || hashToPath(hash), content))
+            .then((content) =>
+                name ? saveFileContents(uuid, name, content) : updateFileContents(uuid, hashToPath(hash), content),
+            )
             .then(() => {
                 if (name) {
                     navigate(`/server/${id}/files/edit#/${encodePathSegments(name)}`);
@@ -99,25 +107,29 @@ export default () => {
 
     return (
         <ContentBlock title={'File Editor'}>
-            <FlashMessageRender byKey={'files:view'} css={tw`mb-4`} />
+            <FlashMessageRender byKey='files:view' className='mb-4' />
             <ErrorBoundary>
-                <Card css={tw`!rounded-b-none !px-2 !py-6 mb-1 mt-2`}>
+                <Card className='mt-2 mb-1 rounded-b-none! px-2! py-6!'>
                     <FileManagerBreadcrumbs withinFileEditor isNewFile={isNewFile} />
                 </Card>
             </ErrorBoundary>
             {hash.replace(/^#/, '').endsWith('.pteroignore') && (
                 <Card className='!rounded-none mb-1'>
-                    <div css={tw`mb-4 p-4 rounded-ui border border-gray-600`}>
-                        <p css={tw`text-gray-300 text-sm`}>
+                    <div className='mb-4 rounded-ui border border-gray-800 p-4'>
+                        <p className='text-sm text-gray-300'>
                             You&apos;re editing a{' '}
-                            <code css={tw`font-mono bg-gray-900 rounded-ui border border-gray-600 py-px px-1`}>
+                            <code className='rounded-ui border border-gray-800 bg-gray-950 px-1 py-px font-mono'>
                                 .pteroignore
                             </code>{' '}
                             file. Any files or directories listed in here will be excluded from backups. Wildcards are
                             supported by using an asterisk (
-                            <code css={tw`font-mono bg-gray-900 rounded-ui border border-gray-600 py-px px-1`}>*</code>
+                            <code className='rounded-ui border border-gray-800 bg-gray-950 px-1 py-px font-mono'>
+                                *
+                            </code>
                             ). You can negate a prior rule by prepending an exclamation point (
-                            <code css={tw`font-mono bg-gray-900 rounded-ui border border-gray-600 py-px px-1`}>!</code>
+                            <code className='rounded-ui border border-gray-800 bg-gray-950 px-1 py-px font-mono'>
+                                !
+                            </code>
                             ).
                         </p>
                     </div>
@@ -131,7 +143,7 @@ export default () => {
                     save(name);
                 }}
             />
-            <Card css={tw`relative !p-1 !rounded-none mb-1`}>
+            <Card className='relative mb-1 rounded-none! p-1!'>
                 <SpinnerOverlay visible={loading} />
                 {user?.fileEditor === 'cm' && (
                     <CodemirrorEditor
@@ -170,8 +182,8 @@ export default () => {
                     />
                 )}
             </Card>
-            <Card css={tw`flex justify-end !rounded-t-none !px-2 !py-3`}>
-                <div css={tw`flex-1 sm:flex-none rounded-ui bg-gray-700 border border-gray-600 mr-4`}>
+            <Card className='flex justify-end rounded-t-none! px-2! py-3!'>
+                <div className='mr-4 flex-1 rounded-ui border border-gray-800 bg-gray-900 sm:flex-none'>
                     <Select value={mode} onChange={(e) => setMode(e.currentTarget.value)}>
                         {modes.map((mode) => (
                             <option key={`${mode.name}_${mode.mime}`} value={mode.mime}>
@@ -182,13 +194,13 @@ export default () => {
                 </div>
                 {!isNewFile ? (
                     <Can action={'file.update'}>
-                        <Button css={tw`flex-1 sm:flex-none`} onClick={() => save()}>
+                        <Button className='flex-1 sm:flex-none' onClick={() => save()}>
                             Save Content
                         </Button>
                     </Can>
                 ) : (
                     <Can action={'file.create'}>
-                        <Button css={tw`flex-1 sm:flex-none`} onClick={() => setModalVisible(true)}>
+                        <Button className='flex-1 sm:flex-none' onClick={() => setModalVisible(true)}>
                             Create File
                         </Button>
                     </Can>

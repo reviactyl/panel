@@ -1,8 +1,7 @@
 import React, { memo, useCallback } from 'react';
 import { useField } from 'formik';
-import TitledGreyBox from '@/components/elements/TitledGreyBox';
-import tw from 'twin.macro';
-import Input from '@/components/elements/Input';
+import TitledGreyBox from '@/reviactyl/elements/TitledGreyBox';
+import Input from '@/reviactyl/elements/Input';
 import isEqual from 'react-fast-compare';
 
 interface Props {
@@ -24,14 +23,14 @@ function PermissionTitleBox({ isEditable, title, permissions, className, childre
                 setValue(value.filter((p) => !permissions.includes(p)));
             }
         },
-        [permissions, value]
+        [permissions, value],
     );
 
     return (
         <TitledGreyBox
             title={
-                <div css={tw`flex items-center`}>
-                    <p css={tw`text-sm uppercase flex-1`}>{title}</p>
+                <div className='flex items-center'>
+                    <p className='text-sm uppercase flex-1'>{title}</p>
                     {isEditable && (
                         <Input
                             type={'checkbox'}

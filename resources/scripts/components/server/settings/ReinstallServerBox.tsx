@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
-import TitledGreyBox from '@/components/elements/TitledGreyBox';
+import TitledGreyBox from '@/reviactyl/elements/TitledGreyBox';
 import reinstallServer from '@/api/server/reinstallServer';
 import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
-import tw from 'twin.macro';
-import { Button } from '@/components/elements/button/index';
-import { Dialog } from '@/components/elements/dialog';
+import { Button } from '@/reviactyl/components/button/index';
+import { Dialog } from '@/reviactyl/elements/dialog';
 import { useTranslation } from 'react-i18next';
 
 export default () => {
     const { t } = useTranslation('server/settings');
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const skipScripts = ServerContext.useStoreState((state) => state.server.data!.skipScripts);
     const [modalVisible, setModalVisible] = useState(false);
     const { addFlash, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
@@ -38,8 +38,16 @@ export default () => {
         clearFlashes();
     }, []);
 
+    if (skipScripts) {
+        return (
+            <TitledGreyBox title={'Reinstall Server'}>
+                <p className='text-sm'>{t('reinstall.disabled')}</p>
+            </TitledGreyBox>
+        );
+    }
+
     return (
-        <TitledGreyBox title={t('reinstall.title')} css={tw`relative`}>
+        <TitledGreyBox title={t('reinstall.title')} className='relative'>
             <Dialog.Confirm
                 open={modalVisible}
                 title={t('reinstall.confirm-title')}
@@ -49,11 +57,11 @@ export default () => {
             >
                 {t('reinstall.info')}
             </Dialog.Confirm>
-            <p css={tw`text-sm`}>
+            <p className='text-sm'>
                 {t('reinstall.info-1')}&nbsp;
-                <strong css={tw`font-medium`}>{t('reinstall.info-2')}</strong>
+                <strong className='font-medium'>{t('reinstall.info-2')}</strong>
             </p>
-            <div css={tw`mt-6 text-right`}>
+            <div className='mt-6 text-right'>
                 <Button.Danger variant={Button.Variants.Secondary} onClick={() => setModalVisible(true)}>
                     {t('reinstall.button')}
                 </Button.Danger>

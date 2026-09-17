@@ -6,7 +6,7 @@ However, if you are interested in running custom themes or making modifications 
 system in place to generate these compiled assets. To get your environment setup you'll need at minimum:
 
 * [Node.js](https://nodejs.org/en/) v22.x.x
-* [pnpm](https://pnpm.io/) v9.x.x
+* [pnpm](https://pnpm.io/) v10.x.x
 * [Go](https://golang.org/) 1.17.x
 
 ### Install Dependencies
@@ -32,15 +32,17 @@ pnpm run watch
 For more advanced users, we also support 'Hot Module Reloading', allowing you to quickly see changes you're making
 to the Vue template files without having to reload the page you're on. To Get started with this, you just need
 to run the command below.
-**This might be outdated, please use [`the intended development environment`](https://github.com/reviactyl/development)!**
 
 ```bash
-pnpm dev --host 192.168.1.1
+pnpm dev
 ```
 
-#### Development Environment
-If you're using the [`reviactyl/development`](https://github.com/reviactyl/development) environments, which are
-highly recommended, you can just run `pnpm dev` to run the HMR server, no additional configuration is necessary.
+### Serve the Backend
+To serve Laravel app, you need to run the command below. It will load Laravel Application, check "Hot Module Reloading" to quickly see changes to frontend.
+
+```bash
+php artisan serve
+```
 
 ### Building for Production
 Once you have your files squared away and ready for the live server, you'll be needing to generate compiled, minified,
@@ -53,7 +55,7 @@ pnpm run build
 This will generate a production JS bundle and associated assets, all located in `public/assets/` which will need to
 be uploaded to your server or CDN for clients to use.
 
-### Running Wings
-To run `wings` in development all you need to do is set up the configuration file as normal when adding a new node, and
-then you can build and run a local version of Wings by executing `make debug` in the Wings code directory. This must
+### Running Agent
+To run `agent` in development all you need to do is set up the configuration file as normal when adding a new node, and
+then you can build and run a local version of Agent by executing `make debug` in the Agent code directory. This must
 be run on a Linux VM of some sort, you cannot run this locally on macOS or Windows.

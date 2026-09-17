@@ -31,6 +31,10 @@ return [
     'fields' => [
         'nest' => 'Nest',
         'uuid' => 'UUID',
+        'name' => 'Name',
+        'author' => 'Author',
+        'image' => 'Image',
+        'description' => 'Description',
         'image_name' => 'Image Name',
         'image_uri' => 'Image URI',
         'add_docker_image' => 'Add Docker Image',
@@ -47,6 +51,7 @@ return [
         'user_viewable' => 'Users Can View',
         'user_editable' => 'Users Can Edit',
         'rules' => 'Input Rules',
+        'default_value' => 'Default Value',
         'script_install' => 'Install Script',
         'script_container' => 'Script Container',
         'script_entry' => 'Script Entrypoint Command',

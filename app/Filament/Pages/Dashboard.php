@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Widgets\ActivityLogWidget;
+use App\Filament\Widgets\DashboardStatsOverview;
 use App\Filament\Widgets\FeedbackWidget;
 use App\Filament\Widgets\SponsorWidget;
 use App\Filament\Widgets\UpdateWidget;
@@ -18,6 +19,7 @@ class Dashboard extends BaseDashboard
     public function getWidgets(): array
     {
         return [
+            DashboardStatsOverview::class,
             UpdateWidget::class,
             FeedbackWidget::class,
             SponsorWidget::class,

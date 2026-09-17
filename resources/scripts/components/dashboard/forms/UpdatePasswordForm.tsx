@@ -1,14 +1,13 @@
 import React from 'react';
 import { Actions, State, useStoreActions, useStoreState } from 'easy-peasy';
 import { Form, Formik, FormikHelpers } from 'formik';
-import Field from '@/components/elements/Field';
+import Field from '@/reviactyl/elements/Field';
 import * as Yup from 'yup';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import updateAccountPassword from '@/api/account/updateAccountPassword';
 import { httpErrorToHuman } from '@/api/http';
 import { ApplicationStore } from '@/state';
-import tw from 'twin.macro';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/reviactyl/components/button/index';
 import { useTranslation } from 'react-i18next';
 
 interface Values {
@@ -43,9 +42,9 @@ export default () => {
                 addFlash({
                     key: 'account:password',
                     type: 'error',
-                    title: 'Error',
+                    title: t('password.error-title'),
                     message: httpErrorToHuman(error),
-                })
+                }),
             )
             .then(() => setSubmitting(false));
     };
@@ -60,14 +59,14 @@ export default () => {
                 {({ isSubmitting, isValid }) => (
                     <React.Fragment>
                         <SpinnerOverlay size={'large'} visible={isSubmitting} />
-                        <Form css={tw`m-0`}>
+                        <Form className='m-0'>
                             <Field
                                 id={'current_password'}
                                 type={'password'}
                                 name={'current'}
                                 label={t('password.current')}
                             />
-                            <div css={tw`mt-6`}>
+                            <div className='mt-6'>
                                 <Field
                                     id={'new_password'}
                                     type={'password'}
@@ -76,7 +75,7 @@ export default () => {
                                     description={t('password.description')}
                                 />
                             </div>
-                            <div css={tw`mt-6`}>
+                            <div className='mt-6'>
                                 <Field
                                     id={'confirm_new_password'}
                                     type={'password'}
@@ -84,7 +83,7 @@ export default () => {
                                     label={t('password.confirm-new')}
                                 />
                             </div>
-                            <div css={tw`mt-6`}>
+                            <div className='mt-6'>
                                 <Button disabled={isSubmitting || !isValid}>{t('password.update')}</Button>
                             </div>
                         </Form>

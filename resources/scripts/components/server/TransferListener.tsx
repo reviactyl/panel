@@ -14,7 +14,7 @@ const TransferListener = () => {
             return;
         }
 
-        if (status === 'failed') {
+        if (status === 'failure') {
             setServerFromState((s) => ({ ...s, isTransferring: false }));
             return;
         }

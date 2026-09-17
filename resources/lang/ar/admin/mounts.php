@@ -37,8 +37,8 @@ return [
     ],
 
     'actions' => [
-        'attach_egg' => 'Attach Egg',
-        'attach_node' => 'Attach Node',
+        'attach_egg' => 'نعلق البيض',
+        'attach_node' => 'إرفاق العقدة',
     ],
 
 ];

@@ -4,12 +4,12 @@ return [
     'flag' => 'cn',
     'title' => '仪表板',
     'servers-user' => [
-        'title' => 'Your Servers',
-        'subtitle' => 'Here you can see all the servers you have access to.',
+        'title' => '您的服务器',
+        'subtitle' => '在这里您可以看到您有权访问的所有服务器。',
     ],
     'servers-admin' => [
-        'title' => 'Others\' Servers',
-        'subtitle' => 'Here you can see all the servers created on this panel.',
+        'title' => '别人的服务器',
+        'subtitle' => '在这里您可以看到在此面板上创建的所有服务器。',
     ],
     'other-servers' => '显示其他人的服务器',
     'your-servers' => '展示你的服务器',
@@ -39,6 +39,7 @@ return [
         'restoring-backup' => '正在恢复备份',
         'unavailable' => '不可用',
         'unlimited' => '无限制',
+        'maintenance' => '维护中',
     ],
     'status-card' => [
         'title' => '服务器状态',

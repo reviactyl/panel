@@ -2,44 +2,42 @@
 
 return [
 
-    'label' => 'Location',
-    'plural-label' => 'Locations',
+    'label' => 'Lokasi',
+    'plural-label' => 'Lokasi',
 
     'section' => [
-        'title' => 'Location Details',
-        'description' => 'Define a location that nodes can be assigned to.',
+        'title' => 'Detail Lokasi',
+        'description' => 'Tentukan lokasi di mana node dapat ditugaskan.',
     ],
 
     'fields' => [
         'short' => [
-            'label' => 'Short Code',
-            'placeholder' => 'us.nyc.1',
-            'helper' => 'A short identifier for this location.',
+            'label' => 'Kode Pendek',
+            'helper' => 'Pengidentifikasi singkat untuk lokasi ini.',
         ],
 
         'long' => [
-            'label' => 'Description',
-            'placeholder' => 'New York City, NY, USA',
-            'helper' => 'A longer description of this location.',
+            'label' => 'Keterangan',
+            'helper' => 'Deskripsi yang lebih panjang tentang lokasi ini.',
         ],
     ],
 
     'table' => [
         'id' => 'ID',
-        'short' => 'Short Code',
-        'long' => 'Description',
-        'nodes' => 'Nodes',
-        'servers' => 'Servers',
-        'created' => 'Created',
+        'short' => 'Kode Pendek',
+        'long' => 'Keterangan',
+        'nodes' => 'Node',
+        'servers' => 'Server',
+        'created' => 'Dibuat',
     ],
 
     'actions' => [
-        'edit' => 'Edit',
-        'delete' => 'Delete',
+        'edit' => 'Sunting',
+        'delete' => 'Menghapus',
     ],
 
     'messages' => [
-        'cannot_delete_with_nodes' => 'Cannot delete a location with associated nodes.',
+        'cannot_delete_with_nodes' => 'Tidak dapat menghapus lokasi dengan node terkait.',
     ],
 
 ];

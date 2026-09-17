@@ -13,6 +13,7 @@ return [
         'title' => 'Información de depuración',
         'node' => 'Nodo',
         'server' => 'ID del servidor',
+        'public-status-page' => 'Página de estado público',
     ],
     'rename' => [
         'title' => 'Cambiar detalles del servidor',
@@ -28,5 +29,6 @@ return [
         'info-1' => 'Reinstalar tu servidor lo detendrá y luego volverá a ejecutar el script de instalación que lo configuró inicialmente.',
         'info-2' => 'Algunos archivos pueden ser eliminados o modificados durante este proceso, por favor realiza una copia de seguridad de tus datos antes de continuar.',
         'button' => 'Reinstalar servidor',
+        'disabled' => 'No es posible volver a instalarlo porque este servidor está configurado para omitir el script de instalación de su «egg».',
     ],
 ];

@@ -1,30 +1,30 @@
 <?php
 
 return [
-    'title' => 'Historical Metrics',
-    'error' => 'Unable to load historical stats.',
+    'title' => 'Metrik Historis',
+    'error' => 'Tidak dapat memuat statistik historis.',
     'time_range' => [
-        'last_24_hours' => 'Last 24 Hours',
-        'last_3_days' => 'Last 3 Days',
-        'last_7_days' => 'Last 7 Days',
+        'last_24_hours' => '24 Jam Terakhir',
+        'last_3_days' => '3 Hari Terakhir',
+        'last_7_days' => '7 Hari Terakhir',
     ],
     'charts' => [
         'cpu' => [
-            'title' => 'CPU History',
-            'label' => 'CPU Usage (%)',
+            'title' => 'Sejarah CPU',
+            'label' => 'Penggunaan CPU (%)',
         ],
         'memory' => [
-            'title' => 'Memory History',
-            'label' => 'Memory Usage (MB)',
+            'title' => 'Sejarah Memori',
+            'label' => 'Penggunaan Memori (MB)',
         ],
         'disk' => [
-            'title' => 'Disk History',
-            'label' => 'Disk Usage (MB)',
+            'title' => 'Riwayat Disk',
+            'label' => 'Penggunaan Disk (MB)',
         ],
         'network' => [
-            'title' => 'Network History',
-            'rx_label' => 'Network RX (MB)',
-            'tx_label' => 'Network TX (MB)',
+            'title' => 'Sejarah Jaringan',
+            'rx_label' => 'Jaringan RX (MB)',
+            'tx_label' => 'Jaringan TX (MB)',
         ],
     ],
 ];

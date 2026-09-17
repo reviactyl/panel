@@ -13,9 +13,13 @@ return [
         'using-api-key' => 'Usando Chave de API',
         'using-sftp' => 'Usando SFTP',
     ],
+    'event' => [
+        'password-reset' => 'Redefinição de senha',
+    ],
     'auth' => [
         'fail' => 'Falha ao entrar',
         'success' => 'Entrou com sucesso',
+        'passkey' => 'Entrou com a senha',
         'password-reset' => 'Senha redefinida',
         'reset-password' => 'Solicitou redefinição de senha',
         'checkpoint' => 'Autenticação em Dois Fatores solicitada',
@@ -27,10 +31,15 @@ return [
         ],
     ],
     'user' => [
+        'user' => [
+            'create' => 'Criado um novo usuário: e-mail',
+        ],
         'account' => [
             'email-changed' => 'E-mail alterado de :old para :new',
             'password-changed' => 'Senha alterada',
             'language-changed' => 'Alterou o idioma de :old para :new',
+            'file-editor-changed' => 'Alterou o editor de arquivos de :antigo para :novo',
+            'avatar-changed' => 'Alterei o estilo do avatar de :antigo para :novo',
         ],
         'api-key' => [
             'create' => 'Criada nova chave de API :identifier',
@@ -43,6 +52,10 @@ return [
         'two-factor' => [
             'create' => 'Autenticação em Dois Fatores ativada',
             'delete' => 'Autenticação em Dois Fatores desativada',
+        ],
+        'passkey' => [
+            'create' => 'Registrou uma nova senha',
+            'delete' => 'Chave de acesso removida: id',
         ],
     ],
     'server' => [
@@ -123,6 +136,7 @@ return [
         'settings' => [
             'rename' => 'Servidor renomeado de :old para :new',
             'description' => 'Descrição do servidor alterada de :old para :new',
+            'category' => 'Alteração da categoria do servidor',
         ],
         'startup' => [
             'edit' => 'Variável :variable alterada de ":old" para ":new"',

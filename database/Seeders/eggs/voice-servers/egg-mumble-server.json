@@ -4,9 +4,9 @@
         "version": "RCYL_v26",
         "update_url": null
     },
-    "exported_at": "2026-03-08T13:23:46+00:00",
+    "exported_at": "2026-05-01T13:55:03+00:00",
     "name": "Mumble Server",
-    "banner": null,
+    "image": "https:\/\/cdn.reviactyl.app\/@reviactyl\/eggs\/voice\/mumble.webp",
     "author": "authors@reviactyl.app",
     "description": "Mumble is an open source, low-latency, high quality voice chat software primarily intended for use while gaming.",
     "features": null,

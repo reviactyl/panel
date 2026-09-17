@@ -18,7 +18,7 @@ return [
         'first_name' => 'الاسم الأول',
         'last_name' => 'النسب',
         'language' => 'اللغة',
-        'geolocate' => 'Geolocate (Automatic)',
+        'geolocate' => 'تحديد الموقع الجغرافي (تلقائي)',
         'password' => 'كلمة المرور',
         'password_confirmation' => 'تأكيد كلمة المرور',
         'root_admin' => 'المسؤول الجذري (الرئيسي)',

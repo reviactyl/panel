@@ -2,8 +2,8 @@
 
 return [
 
-    'label' => 'Nest',
-    'plural_label' => 'Nests',
+    'label' => 'Ninho',
+    'plural_label' => 'Ninhos',
 
     'sections' => [
         'configuration' => 'Configurações do Nest',
@@ -25,23 +25,23 @@ return [
         'id' => 'ID',
         'name' => 'Nome',
         'author' => 'Autor',
-        'eggs' => 'Eggs',
+        'eggs' => 'Ovos',
         'servers' => 'Servidores',
     ],
 
     'actions' => [
-        'import' => 'Import Egg',
+        'import' => 'Importar ovo',
     ],
 
     'import' => [
-        'file_label' => 'Egg File (JSON)',
-        'nest_label' => 'Associated Nest',
-        'file_not_found' => 'File not found',
-        'file_not_found_body' => 'Could not locate uploaded file.',
-        'invalid_format' => 'Invalid file format',
-        'invalid_format_body' => 'Unexpected file format received.',
-        'success' => 'Egg imported successfully',
-        'failed' => 'Failed to import egg',
+        'file_label' => 'Arquivo ovo (JSON)',
+        'nest_label' => 'Ninho Associado',
+        'file_not_found' => 'Arquivo não encontrado',
+        'file_not_found_body' => 'Não foi possível localizar o arquivo enviado.',
+        'invalid_format' => 'Formato de arquivo inválido',
+        'invalid_format_body' => 'Formato de arquivo inesperado recebido.',
+        'success' => 'Ovo importado com sucesso',
+        'failed' => 'Falha ao importar ovo',
     ],
 
     'notices' => [

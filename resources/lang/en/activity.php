@@ -13,9 +13,13 @@ return [
         'using-api-key' => 'Using API Key',
         'using-sftp' => 'Using SFTP',
     ],
+    'event' => [
+        'password-reset' => 'Password reset',
+    ],
     'auth' => [
         'fail' => 'Failed log in',
         'success' => 'Logged in',
+        'passkey' => 'Logged in with passkey',
         'password-reset' => 'Password reset',
         'reset-password' => 'Requested password reset',
         'checkpoint' => 'Two-factor authentication requested',
@@ -27,10 +31,15 @@ return [
         ],
     ],
     'user' => [
+        'user' => [
+            'create' => 'Created a new user :email',
+        ],
         'account' => [
             'email-changed' => 'Changed email from :old to :new',
             'password-changed' => 'Changed password',
             'language-changed' => 'Changed language from :old to :new',
+            'file-editor-changed' => 'Changed file editor from :old to :new',
+            'avatar-changed' => 'Changed avatar style from :old to :new',
         ],
         'api-key' => [
             'create' => 'Created new API key :identifier',
@@ -43,6 +52,10 @@ return [
         'two-factor' => [
             'create' => 'Enabled two-factor auth',
             'delete' => 'Disabled two-factor auth',
+        ],
+        'passkey' => [
+            'create' => 'Registered a new passkey',
+            'delete' => 'Removed passkey :id',
         ],
     ],
     'server' => [
@@ -74,7 +87,7 @@ return [
             'delete' => 'Deleted database :name',
         ],
         'file' => [
-            'compress_one' => 'Compressed :directory:file',
+            'compress_one' => 'Compressed :directory:files.0',
             'compress_other' => 'Compressed :count files in :directory',
             'read' => 'Viewed the contents of :file',
             'copy' => 'Created a copy of :file',
@@ -123,6 +136,7 @@ return [
         'settings' => [
             'rename' => 'Renamed the server from :old to :new',
             'description' => 'Changed the server description from :old to :new',
+            'category' => 'Changed server category',
         ],
         'startup' => [
             'edit' => 'Changed the :variable variable from ":old" to ":new"',

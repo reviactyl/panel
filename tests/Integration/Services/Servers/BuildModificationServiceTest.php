@@ -6,7 +6,7 @@ use App\Exceptions\DisplayException;
 use App\Exceptions\Http\Connection\DaemonConnectionException;
 use App\Models\Allocation;
 use App\Models\Server;
-use App\Repositories\Wings\DaemonServerRepository;
+use App\Repositories\Agent\DaemonServerRepository;
 use App\Services\Servers\BuildModificationService;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
@@ -99,11 +99,11 @@ class BuildModificationServiceTest extends IntegrationTestCase
     }
 
     /**
-     * Test that the build data for the server is properly passed along to the Wings instance so that
+     * Test that the build data for the server is properly passed along to the Agent instance so that
      * the server data is updated in realtime. This test also ensures that only certain fields get updated
      * for the server, and not just any arbitrary field.
      */
-    public function test_server_build_data_is_properly_updated_on_wings()
+    public function test_server_build_data_is_properly_updated_on_agent()
     {
         $server = $this->createServerModel();
 
@@ -139,8 +139,8 @@ class BuildModificationServiceTest extends IntegrationTestCase
     }
 
     /**
-     * Test that an exception when connecting to the Wings instance is properly ignored
-     * when making updates. This allows for a server to be modified even when the Wings
+     * Test that an exception when connecting to the Agent instance is properly ignored
+     * when making updates. This allows for a server to be modified even when the Agent
      * node is offline.
      */
     public function test_connection_exception_is_ignored_when_updating_server_settings()

@@ -6,8 +6,8 @@ use App\Exceptions\Service\Backup\TooManyBackupsException;
 use App\Extensions\Backups\BackupManager;
 use App\Models\Backup;
 use App\Models\Server;
+use App\Repositories\Agent\DaemonBackupRepository;
 use App\Repositories\Eloquent\BackupRepository;
-use App\Repositories\Wings\DaemonBackupRepository;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\ConnectionInterface;
 use Ramsey\Uuid\Uuid;
@@ -27,7 +27,6 @@ class InitiateBackupService
         private BackupRepository $repository,
         private ConnectionInterface $connection,
         private DaemonBackupRepository $daemonBackupRepository,
-        private DeleteBackupService $deleteBackupService,
         private BackupManager $backupManager,
     ) {}
 
@@ -66,7 +65,7 @@ class InitiateBackupService
     }
 
     /**
-     * Initiates the backup process for a server on Wings.
+     * Initiates the backup process for a server on Agent.
      *
      * @throws \Throwable
      * @throws TooManyBackupsException
@@ -94,15 +93,11 @@ class InitiateBackupService
                 throw new TooManyBackupsException($server->backup_limit);
             }
 
-            // Get the oldest backup the server has that is not "locked" (indicating a backup that should
-            // never be automatically purged). If we find a backup we will delete it and then continue with
-            // this process. If no backup is found that can be used an exception is thrown.
-            $oldest = $successful->where('is_locked', false)->orderBy('created_at')->first();
-            if (! $oldest) {
+            // Ensure a backup is available for rotation. It is selected and deleted only after the
+            // replacement reports a successful completion so failed backups preserve the existing copy.
+            if (! $successful->where('is_locked', false)->exists()) {
                 throw new TooManyBackupsException($server->backup_limit);
             }
-
-            $this->deleteBackupService->handle($oldest);
         }
 
         return $this->connection->transaction(function () use ($server, $name) {

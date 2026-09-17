@@ -6,7 +6,7 @@ use App\Facades\Activity;
 use App\Http\Controllers\Api\Client\ClientApiController;
 use App\Http\Requests\Api\Client\Servers\SendPowerRequest;
 use App\Models\Server;
-use App\Repositories\Wings\DaemonPowerRepository;
+use App\Repositories\Agent\DaemonPowerRepository;
 use Illuminate\Http\Response;
 
 class PowerController extends ClientApiController

@@ -5,8 +5,8 @@ namespace App\Models;
 use Carbon\CarbonImmutable;
 use Database\Factories\EggVariableFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property int $id
@@ -87,11 +87,11 @@ class EggVariable extends Model
     }
 
     /**
-     * @return HasOne<Egg, $this>
+     * @return BelongsTo<Egg, $this>
      */
-    public function egg(): HasOne
+    public function egg(): BelongsTo
     {
-        return $this->hasOne(Egg::class);
+        return $this->belongsTo(Egg::class);
     }
 
     /**

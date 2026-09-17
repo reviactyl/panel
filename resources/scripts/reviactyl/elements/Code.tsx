@@ -1,0 +1,11 @@
+import React from 'react';
+
+interface CodeProps {
+    children: React.ReactNode;
+}
+
+export default ({ children }: CodeProps) => (
+    <code className={'font-mono text-sm px-2 py-1 inline-block rounded-ui bg-gray-900 border border-gray-800'}>
+        {children}
+    </code>
+);

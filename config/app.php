@@ -95,6 +95,9 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    // Keep generated asset URLs pinned to the public app URL in proxied environments.
+    'asset_url' => env('ASSET_URL', env('APP_URL', 'http://localhost')),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

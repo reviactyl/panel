@@ -1,28 +1,23 @@
 import { memo, useCallback, useState } from 'react';
 import isEqual from 'react-fast-compare';
-import tw from 'twin.macro';
 import { FaNetworkWired } from 'react-icons/fa6';
-import InputSpinner from '@/components/elements/InputSpinner';
-import { Textarea } from '@/components/elements/Input';
-import Can from '@/components/elements/Can';
-import { Button } from '@/components/elements/button/index';
-import GreyRowBox from '@/components/elements/GreyRowBox';
+import InputSpinner from '@/reviactyl/elements/InputSpinner';
+import { Textarea } from '@/reviactyl/elements/Input';
+import Can from '@/reviactyl/elements/Can';
+import { Button } from '@/reviactyl/components/button/index';
+import GreyRowBox from '@/reviactyl/elements/GreyRowBox';
 import { Allocation } from '@/api/server/getServer';
-import styled from 'styled-components';
 import { debounce } from 'debounce';
 import setServerAllocationNotes from '@/api/server/network/setServerAllocationNotes';
 import { useFlashKey } from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
-import CopyOnClick from '@/components/elements/CopyOnClick';
+import CopyOnClick from '@/reviactyl/elements/CopyOnClick';
 import DeleteAllocationButton from '@/components/server/network/DeleteAllocationButton';
 import setPrimaryServerAllocation from '@/api/server/network/setPrimaryServerAllocation';
 import getServerAllocations from '@/api/swr/getServerAllocations';
 import { ip } from '@/lib/formatters';
-import Code from '@/components/elements/Code';
-
-const Label = styled.label`
-    ${tw`uppercase text-xs mt-1 text-gray-400 block px-1 select-none transition-colors duration-150`}
-`;
+import Code from '@/reviactyl/elements/Code';
+import { usePermissions } from '@/plugins/usePermissions';
 
 interface Props {
     allocation: Allocation;
@@ -33,6 +28,7 @@ const AllocationRow = ({ allocation }: Props) => {
     const { clearFlashes, clearAndAddHttpError } = useFlashKey('server:network');
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const { mutate } = getServerAllocations();
+    const [canUpdate] = usePermissions(['allocation.update']);
 
     const onNotesChanged = useCallback((id: number, notes: string) => {
         mutate((data) => data?.map((a) => (a.id === id ? { ...a, notes } : a)), false);
@@ -74,11 +70,23 @@ const AllocationRow = ({ allocation }: Props) => {
                             <Code>{ip(allocation.ip)}</Code>
                         </CopyOnClick>
                     )}
-                    <Label>{allocation.alias ? 'Hostname' : 'IP Address'}</Label>
+                    <label
+                        className={
+                            'uppercase text-xs mt-1 text-gray-400 block px-1 select-none transition-colors duration-150'
+                        }
+                    >
+                        {allocation.alias ? 'Hostname' : 'IP Address'}
+                    </label>
                 </div>
                 <div className={'w-16 md:w-24 overflow-hidden'}>
                     <Code>{allocation.port}</Code>
-                    <Label>Port</Label>
+                    <label
+                        className={
+                            'uppercase text-xs mt-1 text-gray-400 block px-1 select-none transition-colors duration-150'
+                        }
+                    >
+                        Port
+                    </label>
                 </div>
             </div>
             <div className={'mt-4 w-full md:mt-0 md:flex-1 md:w-auto'}>
@@ -86,6 +94,7 @@ const AllocationRow = ({ allocation }: Props) => {
                     <Textarea
                         placeholder={'Notes'}
                         defaultValue={allocation.notes || undefined}
+                        disabled={!canUpdate}
                         onChange={(e) => setAllocationNotes(e.currentTarget.value)}
                     />
                 </InputSpinner>

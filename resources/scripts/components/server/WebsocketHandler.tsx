@@ -2,16 +2,19 @@ import { useEffect, useState } from 'react';
 import { Websocket } from '@/plugins/Websocket';
 import { ServerContext } from '@/state/server';
 import getWebsocketToken from '@/api/server/getWebsocketToken';
-import ContentContainer from '@/components/elements/ContentContainer';
+import ContentContainer from '@/reviactyl/elements/ContentContainer';
 import { motion } from 'framer-motion';
-import Spinner from '@/components/elements/Spinner';
-import tw from 'twin.macro';
+import Spinner from '@/reviactyl/elements/Spinner';
 import { useTranslation } from 'react-i18next';
+import { FaTriangleExclamation } from 'react-icons/fa6';
+import { useSubuserPreview } from '@/context/SubuserPreviewContext';
+import { PreviewWebsocket } from '@/plugins/PreviewWebsocket';
 
 const reconnectErrors = ['jwt: exp claim is invalid', 'jwt: created too far in past (denylist)'];
 
 export default () => {
     const { t } = useTranslation('server/console');
+    const { session } = useSubuserPreview();
     let updatingToken = false;
     const [error, setError] = useState<'connecting' | string>('');
     const { connected, instance } = ServerContext.useStoreState((state) => state.socket);
@@ -32,7 +35,7 @@ export default () => {
     };
 
     const connect = (uuid: string) => {
-        const socket = new Websocket();
+        const socket = session ? new PreviewWebsocket(uuid) : new Websocket();
 
         socket.on('auth success', () => setConnectionState(true));
         socket.on('SOCKET_CLOSE', () => setConnectionState(false));
@@ -53,13 +56,13 @@ export default () => {
         socket.on('token expired', () => updateToken(uuid, socket));
         socket.on('jwt error', (error: string) => {
             setConnectionState(false);
-            console.warn('JWT validation error from wings:', error);
+            console.warn('JWT validation error from agent:', error);
 
             if (reconnectErrors.find((v) => error.toLowerCase().indexOf(v) >= 0)) {
                 updateToken(uuid, socket);
             } else {
                 setError(
-                    'There was an error validating the credentials provided for the websocket. Please refresh the page.'
+                    'There was an error validating the credentials provided for the websocket. Please refresh the page.',
                 );
             }
         });
@@ -107,23 +110,26 @@ export default () => {
         }
 
         connect(uuid);
-    }, [uuid]);
+    }, [uuid, session?.uuid]);
 
     return error ? (
         <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.15, ease: 'easeIn' }}
-            css={tw`bg-red-500 py-2`}
+            className='fixed top-4 right-4 z-50 rounded-lg border border-danger/50 bg-danger px-4 py-2 shadow-lg'
         >
-            <ContentContainer css={tw`flex items-center justify-center`}>
+            <ContentContainer className='flex items-center justify-center'>
                 {error === 'connecting' ? (
                     <>
                         <Spinner size={'small'} />
-                        <p css={tw`ml-2 text-sm text-red-100`}>{t('connection-trouble')}</p>
+                        <p className='ml-2 text-sm text-red-100'>{t('connection-trouble')}</p>
                     </>
                 ) : (
-                    <p css={tw`ml-2 text-sm text-white`}>{error}</p>
+                    <>
+                        <FaTriangleExclamation className='text-red-400' />
+                        <p className='ml-2 text-sm text-white'>{error}</p>
+                    </>
                 )}
             </ContentContainer>
         </motion.div>

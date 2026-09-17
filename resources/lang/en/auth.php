@@ -11,7 +11,14 @@ return [
     'password-label' => 'Password',
 
     'login-button' => 'Login',
+    'passkey-button' => 'Login with Passkey',
     'return' => 'Return to Login',
+
+    'passkey-unsupported' => 'Passkeys are not supported by this browser.',
+    'passkey-failed' => 'Unable to complete passkey login. Please try again.',
+    'passkey-no-credentials' => 'No passkey is available for this login. Use your password or register a passkey first.',
+    'passkey-security' => 'Passkey verification could not be completed securely on this device.',
+    'passkey-username-required' => 'Enter your username or email before using a passkey.',
 
     'social' => [
         'or' => 'OR',
@@ -57,12 +64,14 @@ return [
         'namefirst-label' => 'First Name',
         'namelast-label' => 'Last Name',
         'email-label' => 'Email',
-        'username-label' => 'UserName',
+        'username-label' => 'Username',
         'password-label' => 'Password',
         'min-length' => 'Passwords must be at least 8 characters in length.',
         'confirm-label' => 'Confirm Password',
         'label' => 'Register',
+        'create-link' => 'Don\'t have an account? Create one',
         'create-account' => 'Create Account',
+        'no-account' => 'Don\'t have an account?',
     ],
 
     'failed' => 'No account matching those credentials could be found.',
@@ -76,4 +85,5 @@ return [
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
     'password_requirements' => 'Password must be at least 8 characters in length and should be unique to this site.',
     '2fa_must_be_enabled' => 'The administrator has required that 2-Factor Authentication be enabled for your account in order to use the Panel.',
+    'captcha-required' => 'Please complete the captcha challenge to continue.',
 ];

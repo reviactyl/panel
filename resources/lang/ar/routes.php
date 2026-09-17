@@ -5,8 +5,13 @@ return [
         'dashboard' => 'لوحة التحكم',
         'logout' => 'تسجيل الخروج',
     ],
+    'sidebar' => [
+        'more' => 'أكثر',
+        'extensions' => 'ملحقات',
+    ],
     'account' => [
         'overview' => 'النظرة على الحساب',
+        'passkeys' => 'مفاتيح المرور',
         'api' => 'مفتاح واجهة برمجة التطبيقات',
         'ssh' => 'مفتاح SSH',
         'activity' => 'نشاط',

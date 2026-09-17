@@ -70,7 +70,6 @@ class UpdateSubuserTest extends ClientApiIntegrationTestCase
                 'permissions' => [
                     'control.start',
                     'control.stop',
-                    'control.stop',
                     'foo.bar',
                     'power.fake',
                 ],

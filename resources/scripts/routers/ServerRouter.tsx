@@ -3,36 +3,33 @@ import { Route, Routes, useParams, useLocation } from 'react-router-dom';
 import Navigate from '@/reviactyl/components/Navigate';
 
 import TransferListener from '@/components/server/TransferListener';
-import Navbar from '@/reviactyl/ui/Navbar';
 import WebsocketHandler from '@/components/server/WebsocketHandler';
 import { ServerContext } from '@/state/server';
-import Can from '@/components/elements/Can';
-import Spinner from '@/components/elements/Spinner';
-import { NotFound, ServerError } from '@/components/elements/ScreenBlock';
+import Can from '@/reviactyl/elements/Can';
+import Spinner from '@/reviactyl/elements/Spinner';
+import { NotFound, ServerError } from '@/reviactyl/elements/ScreenBlock';
 import { httpErrorToHuman } from '@/api/http';
 import { useStoreState } from 'easy-peasy';
 import InstallListener from '@/components/server/InstallListener';
-import ErrorBoundary from '@/components/elements/ErrorBoundary';
+import ErrorBoundary from '@/reviactyl/elements/ErrorBoundary';
 import ConflictStateRenderer from '@/components/server/ConflictStateRenderer';
-import PermissionRoute from '@/components/elements/PermissionRoute';
+import PermissionRoute from '@/reviactyl/elements/PermissionRoute';
 import routes from '@/routers/routes';
-import Sidebar from '@/reviactyl/ui/Sidebar';
+import { Sidebar, Navbar } from '@/reviactyl/components/Layout';
 import { XIcon, MenuIcon, ExternalLinkIcon } from '@heroicons/react/solid';
-import { LogoContainer } from '@/reviactyl/ui/LogoContainer';
-import tw from 'twin.macro';
 import { RouterContainer } from '@/reviactyl/ui/RouterContainer';
 import { ContentContainer } from '@/reviactyl/ui/ContentContainer';
 import TopServerDetails from '@/components/server/TopServerDetails';
-import { ApplicationStore } from '@/state';
 import Announcement from '@/reviactyl/ui/Announcement';
 import MaintenanceAlert from '@/reviactyl/ui/MaintenanceAlert';
 import Maintenance from '@/reviactyl/ui/Maintenance';
 import { useTranslation } from 'react-i18next';
-import { ReviactylSidebarButton } from '@/state/reviactyl';
+import { DesignifySidebarButton } from '@/state/designify';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 import { useExtensionRoutes } from '@/extensions/useExtensionRoutes';
 import { useExtensions } from '@/extensions/useExtensions';
 import { resolveExtensionIcon } from '@/extensions/iconResolver';
+import { useSubuserPreview } from '@/context/SubuserPreviewContext';
 
 interface NavItemProps {
     route: any;
@@ -70,17 +67,19 @@ const NavItem = ({ route }: NavItemProps) => {
 
 const ServerNavigation = () => {
     const { t } = useTranslation('server/index');
+    const { t: tr } = useTranslation('routes');
     const params = useParams<{ id: string }>();
     const serverNestId = ServerContext.useStoreState((state) => state.server.data?.nestId);
     const serverEggId = ServerContext.useStoreState((state) => state.server.data?.eggId);
     const { data: extensionData } = useExtensions();
-    const customSidebarButtons = useStoreState((state) => state.reviactyl.data?.sidebarButtons ?? []);
+    const customSidebarButtons = useStoreState((state) => state.designify.data?.sidebarButtons ?? []);
+    const { session } = useSubuserPreview();
     const normalizedSidebarButtons = (Array.isArray(customSidebarButtons) ? customSidebarButtons : []).filter(
-        (button): button is ReviactylSidebarButton =>
+        (button): button is DesignifySidebarButton =>
             typeof button?.label === 'string' &&
             button.label.trim().length > 0 &&
             typeof button?.url === 'string' &&
-            button.url.trim().length > 0
+            button.url.trim().length > 0,
     );
 
     const serverExtensionRoutes = (Array.isArray(extensionData) ? extensionData : []).flatMap((extension) =>
@@ -120,9 +119,9 @@ const ServerNavigation = () => {
                 permission: route?.permission,
                 path: route.path,
                 icon: resolveExtensionIcon(
-                    typeof route?.icon === 'string' && route.icon.trim().length > 0 ? route.icon : undefined
+                    typeof route?.icon === 'string' && route.icon.trim().length > 0 ? route.icon : undefined,
                 ),
-            }))
+            })),
     );
 
     return (
@@ -151,9 +150,9 @@ const ServerNavigation = () => {
                 </div>
             ))}
 
-            {serverExtensionRoutes.length > 0 && (
+            {!session && serverExtensionRoutes.length > 0 && (
                 <div>
-                    <span className='label'>EXTENSIONS</span>
+                    <span className='label'>{tr('sidebar.extensions')}</span>
                     {serverExtensionRoutes.map((route) => {
                         const normalizedPath = route.path.replace(/^\/+/, '');
                         const to = route.path.startsWith('/server/')
@@ -182,9 +181,9 @@ const ServerNavigation = () => {
                 </div>
             )}
 
-            {normalizedSidebarButtons.length > 0 && (
+            {!session && normalizedSidebarButtons.length > 0 && (
                 <div>
-                    <span className='label'>MORE</span>
+                    <span className='label'>{tr('sidebar.more')}</span>
                     {normalizedSidebarButtons.map((button, index) => (
                         <a
                             key={`${button.url}-${index}`}
@@ -204,12 +203,17 @@ const ServerNavigation = () => {
     );
 };
 
+/**
+ * Renders the server interface, including navigation, server pages, and route-aware content.
+ */
 export default function ServerRouter() {
     const params = useParams<{ id: string }>();
     const location = useLocation();
 
-    const isUnderMaintenance = useStoreState((state) => state.reviactyl.data?.isUnderMaintenance);
-    const rootAdmin = useStoreState((state) => state.user.data?.rootAdmin);
+    const isUnderMaintenance = useStoreState((state) => state.designify.data?.isUnderMaintenance);
+    const accountRootAdmin = useStoreState((state) => state.user.data?.rootAdmin);
+    const { session } = useSubuserPreview();
+    const rootAdmin = accountRootAdmin && !session;
 
     const [error, setError] = useState('');
     const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -223,9 +227,6 @@ export default function ServerRouter() {
 
     const getServer = ServerContext.useStoreActions((actions) => actions.server.getServer);
     const clearServerState = ServerContext.useStoreActions((actions) => actions.clearServerState);
-
-    const logo = useStoreState((state: ApplicationStore) => state.settings.data!.logo);
-    const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
 
     useEffect(() => () => clearServerState(), []);
 
@@ -274,7 +275,7 @@ export default function ServerRouter() {
                                 <div className='lg:hidden'>
                                     <button
                                         onClick={() => setSidebarOpen(!isSidebarOpen)}
-                                        className='text-gray-500 bg-gray-700 p-2 rounded-ui'
+                                        className='text-gray-600 bg-gray-900 p-2 rounded-ui'
                                     >
                                         {isSidebarOpen ? (
                                             <XIcon className='w-6 h-6' />
@@ -283,22 +284,13 @@ export default function ServerRouter() {
                                         )}
                                     </button>
                                 </div>
-
-                                <LogoContainer>
-                                    <img
-                                        src={logo}
-                                        alt={name}
-                                        onClick={() => (window.location.href = '/')}
-                                        css={tw`h-[3rem] mt-5 cursor-pointer`}
-                                    />
-                                </LogoContainer>
                             </Navbar>
 
                             <ContentContainer>
                                 {isSidebarOpen && (
                                     <div
                                         onClick={() => setSidebarOpen(false)}
-                                        className='fixed inset-0 z-30 bg-gray-800/40 backdrop-blur-sm lg:hidden'
+                                        className='fixed inset-0 z-30 bg-gray-900/40 backdrop-blur-xs lg:hidden'
                                     />
                                 )}
 
@@ -317,13 +309,15 @@ export default function ServerRouter() {
                                     ) : (
                                         <ErrorBoundary>
                                             <TopServerDetails />
-                                            <ExtensionSlot
-                                                name='server:router:above'
-                                                context={{
-                                                    eggId: serverEggId,
-                                                    nestId: serverNestId,
-                                                }}
-                                            />
+                                            {!session && (
+                                                <ExtensionSlot
+                                                    name='server:router:above'
+                                                    context={{
+                                                        eggId: serverEggId,
+                                                        nestId: serverNestId,
+                                                    }}
+                                                />
+                                            )}
                                             <Announcement />
                                             <MaintenanceAlert />
 
@@ -344,28 +338,31 @@ export default function ServerRouter() {
                                                         />
                                                     ))}
 
-                                                {injectedRoutes.map(({ path, element, permission }) => (
-                                                    <Route
-                                                        key={`extension:${path}`}
-                                                        path={path}
-                                                        element={
-                                                            <PermissionRoute permission={permission}>
-                                                                {element}
-                                                            </PermissionRoute>
-                                                        }
-                                                    />
-                                                ))}
+                                                {!session &&
+                                                    injectedRoutes.map(({ path, element, permission }) => (
+                                                        <Route
+                                                            key={`extension:${path}`}
+                                                            path={path}
+                                                            element={
+                                                                <PermissionRoute key={path} permission={permission}>
+                                                                    {element}
+                                                                </PermissionRoute>
+                                                            }
+                                                        />
+                                                    ))}
 
                                                 <Route path='*' element={<NotFound />} />
                                             </Routes>
 
-                                            <ExtensionSlot
-                                                name='server:router:below'
-                                                context={{
-                                                    eggId: serverEggId,
-                                                    nestId: serverNestId,
-                                                }}
-                                            />
+                                            {!session && (
+                                                <ExtensionSlot
+                                                    name='server:router:below'
+                                                    context={{
+                                                        eggId: serverEggId,
+                                                        nestId: serverNestId,
+                                                    }}
+                                                />
+                                            )}
                                         </ErrorBoundary>
                                     )}
                                 </div>

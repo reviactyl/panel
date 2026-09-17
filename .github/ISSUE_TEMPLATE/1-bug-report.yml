@@ -37,10 +37,10 @@ body:
       required: true
 
   - type: input
-    id: wings-version
+    id: agent-version
     attributes:
-      label: Wings Version
-      description: Version number of your Wings (latest is not a version)
+      label: Agent Version
+      description: Version number of your Agent (latest is not a version)
       placeholder: 1.4.2
     validations:
       required: true
@@ -66,7 +66,7 @@ body:
       description: |
         Run the following command to collect logs on your system.
 
-        Wings: `sudo wings diagnostics`
+        Agent: `sudo agent diagnostics`
         Panel: `tail -n 150 /var/www/reviactyl/storage/logs/laravel-$(date +%F).log | nc pteropaste.com 99`
       placeholder: "https://pteropaste.com/a1h6z"
       render: bash

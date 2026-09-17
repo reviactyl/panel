@@ -26,7 +26,7 @@ class GeoIPServiceTest extends TestCase
     {
         $info = $this->service->getCountryInfo('127.0.0.1');
 
-        $this->assertEquals(__('strings.local_network'), $info['country']);
+        $this->assertEquals('Local Network', $info['country']);
         $this->assertEquals('LOCAL', $info['code']);
     }
 
@@ -34,7 +34,7 @@ class GeoIPServiceTest extends TestCase
     {
         $info = $this->service->getCountryInfo('::1');
 
-        $this->assertEquals(__('strings.local_network'), $info['country']);
+        $this->assertEquals('Local Network', $info['country']);
         $this->assertEquals('LOCAL', $info['code']);
     }
 
@@ -44,7 +44,7 @@ class GeoIPServiceTest extends TestCase
 
         foreach ($privateIps as $ip) {
             $info = $this->service->getCountryInfo($ip);
-            $this->assertEquals(__('strings.local_network'), $info['country'], "Failed for $ip");
+            $this->assertEquals('Local Network', $info['country'], "Failed for $ip");
             $this->assertEquals('LOCAL', $info['code']);
         }
     }
@@ -55,7 +55,7 @@ class GeoIPServiceTest extends TestCase
 
         foreach ($privateIps as $ip) {
             $info = $this->service->getCountryInfo($ip);
-            $this->assertEquals(__('strings.local_network'), $info['country'], "Failed for $ip");
+            $this->assertEquals('Local Network', $info['country'], "Failed for $ip");
             $this->assertEquals('LOCAL', $info['code']);
         }
     }
@@ -64,10 +64,9 @@ class GeoIPServiceTest extends TestCase
     {
         $ip = '8.8.8.8';
         Http::fake([
-            'http://ip-api.com/json/*' => Http::response([
-                'status' => 'success',
-                'country' => 'United States',
-                'countryCode' => 'US',
+            'https://ipapi.co/*/json/' => Http::response([
+                'country_name' => 'United States',
+                'country_code' => 'US',
             ]),
         ]);
 
@@ -81,13 +80,14 @@ class GeoIPServiceTest extends TestCase
         $this->assertEquals($info, $info2);
 
         Http::assertSentCount(1);
+        Http::assertSent(fn ($request): bool => str_starts_with($request->url(), 'https://'));
     }
 
     public function test_it_returns_null_on_api_failure_and_does_not_throw_exception()
     {
         $ip = '8.8.8.8';
         Http::fake([
-            'http://ip-api.com/json/*' => Http::response([], 500),
+            'https://ipapi.co/*/json/' => Http::response([], 500),
         ]);
 
         $this->logger->shouldReceive('warning')->once();

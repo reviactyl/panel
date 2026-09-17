@@ -5,8 +5,13 @@ return [
         'dashboard' => 'Panel de control',
         'logout' => 'Cerrar sesión',
     ],
+    'sidebar' => [
+        'more' => 'Más',
+        'extensions' => 'Extensiones',
+    ],
     'account' => [
         'overview' => 'Resumen de la cuenta',
+        'passkeys' => 'Claves de acceso',
         'api' => 'Claves API',
         'ssh' => 'Claves SSH',
         'activity' => 'Actividad',
@@ -16,7 +21,7 @@ return [
         'files' => 'Archivos',
         'startup' => 'Inicio',
         'network' => 'Red',
-        'metrics' => 'Metrics',
+        'metrics' => 'Métrica',
         'databases' => 'Bases de datos',
         'schedules' => 'Programaciones',
         'backups' => 'Copias de seguridad',

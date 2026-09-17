@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'title' => 'Databases',
+    'title' => 'Bancos de dados',
     'out-of-databases' => 'Parece que você não possui databases.',
     'no-databases' => 'Não é possível criar databases para este servidor.',
     'cannot-create' => 'Não é possível criar backups para este servidor.',
@@ -14,4 +14,17 @@ return [
     'cancel' => 'Cancelar',
     'create-database' => 'Criar Database',
     'new-database' => 'Novo Database',
+    'delete-title' => 'Confirmar exclusão do banco de dados',
+    'delete-description' => 'A exclusão de um banco de dados é uma ação permanente e não pode ser desfeita. Isso excluirá permanentemente o',
+    'delete-description-tail' => 'banco de dados e remova todos os dados associados.',
+    'confirm-name' => 'Confirme o nome do banco de dados',
+    'confirm-name-description' => 'Insira o nome do banco de dados para confirmar a exclusão.',
+    'confirm-name-required' => 'O nome do banco de dados deve ser fornecido.',
+    'delete-database' => 'Excluir banco de dados',
+    'connection-title' => 'Detalhes de conexão com o banco de dados',
+    'endpoint' => 'Ponto final',
+    'connections-from' => 'Conexões de',
+    'username' => 'Nome de usuário',
+    'password' => 'Senha',
+    'jdbc-connection-string' => 'Cadeia de conexão JDBC',
 ];

@@ -4,7 +4,7 @@ namespace Tests\Integration\Api\Client\Server\Subuser;
 
 use App\Models\Subuser;
 use App\Models\User;
-use App\Repositories\Wings\DaemonRevocationRepository;
+use App\Repositories\Agent\DaemonRevocationRepository;
 use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Integration\Api\Client\ClientApiIntegrationTestCase;

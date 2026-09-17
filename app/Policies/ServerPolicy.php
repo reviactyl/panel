@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Server;
 use App\Models\User;
+use App\Services\Subusers\SubuserPreviewContext;
 
 class ServerPolicy
 {
@@ -21,10 +22,21 @@ class ServerPolicy
     }
 
     /**
-     * Runs before any of the functions are called. Used to determine if user is root admin, if so, ignore permissions.
+     * Determines whether a user may perform an ability on a server.
+     *
+     * Preview contexts restrict access to the specified server and permitted abilities. Otherwise,
+     * root administrators and server owners are authorized automatically, while other users are
+     * authorized according to their server permissions.
+     *
+     * @return bool `true` if the user is authorized, `false` otherwise.
      */
     public function before(User $user, string $ability, Server $server): bool
     {
+        $preview = request()->attributes->get(SubuserPreviewContext::class);
+        if ($preview instanceof SubuserPreviewContext) {
+            return $preview->isServer($server) && $preview->allows($ability);
+        }
+
         if ($user->root_admin || $server->owner_id === $user->id) {
             return true;
         }

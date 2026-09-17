@@ -14,6 +14,7 @@ return [
     'sponsor-btn' => '赞助项目',
 
     'help-btn' => '获取帮助',
+    'update-btn' => '更新面板',
     'docs-btn' => '使用文档',
     'metrics-header' => '用户活动指标',
     'most-active-country' => '最活跃的国家',
@@ -21,4 +22,13 @@ return [
     'no_activity' => '暂无最近活动记录。',
     'activity-header' => '最近活动',
     'more-btn' => '查看更多',
+    'dashboard' => [
+        'total_users' => '用户总数',
+        'new_users' => '新用户：:count',
+        'total_servers' => '服务器总数',
+        'new_servers' => '新服务器：:count',
+        'developmental_build' => '开发版本',
+        'up_to_date' => '已是最新版本',
+        'outdated_build' => '过时版本',
+    ],
 ];

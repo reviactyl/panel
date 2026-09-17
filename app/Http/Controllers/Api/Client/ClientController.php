@@ -7,6 +7,7 @@ use App\Models\Egg;
 use App\Models\Filters\MultiFieldServerFilter;
 use App\Models\Permission;
 use App\Models\Server;
+use App\Services\Subusers\SubuserPreviewContext;
 use App\Transformers\Api\Client\ServerTransformer;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -22,28 +23,40 @@ class ClientController extends ClientApiController
     }
 
     /**
-     * Return all the servers available to the client making the API
-     * request, including servers the user has access to as a subuser.
+     * Lists servers visible to the authenticated client, including servers accessible through subuser permissions.
+     *
+     * @param  GetServersRequest  $request  The request containing filters, access mode, pagination, and preview context.
+     * @return array The transformed, paginated server collection.
      */
     public function index(GetServersRequest $request): array
     {
         $user = $request->user();
+        $preview = $request->attributes->get(SubuserPreviewContext::class);
         $transformer = $this->getTransformer(ServerTransformer::class);
+        $includes = $this->getIncludesForTransformer($transformer, ['node']);
+        $includeCategory = in_array('category', $includes, true);
+        $includes = array_values(array_diff($includes, ['category']));
+
+        $query = Server::query()->with($includes);
+        if ($includeCategory) {
+            $query->with(['categoryAssignments' => fn ($query) => $query
+                ->where('user_id', $user->id)
+                ->with('category')]);
+        }
 
         // Start the query builder and ensure we eager load any requested relationships from the request.
-        $builder = QueryBuilder::for(
-            Server::query()->with($this->getIncludesForTransformer($transformer, ['node']))
-        )->allowedFilters([
+        $builder = QueryBuilder::for($query)->allowedFilters([
             'uuid',
             'name',
             'description',
             'external_id',
-            AllowedFilter::callback('category_uuid', function ($query, $value) {
+            AllowedFilter::callback('category_uuid', function ($query, $value) use ($user) {
                 if (is_null($value) || $value === 'null') {
-                    $query->whereNull('category_id');
+                    $query->whereDoesntHave('categoryAssignments', fn ($query) => $query->where('user_id', $user->id));
                 } else {
-                    $query->whereHas('category', function ($q) use ($value) {
-                        $q->where('uuid', $value);
+                    $query->whereHas('categoryAssignments', function ($query) use ($user, $value) {
+                        $query->where('user_id', $user->id)
+                            ->whereHas('category', fn ($query) => $query->where('uuid', $value));
                     });
                 }
             }),
@@ -56,7 +69,9 @@ class ClientController extends ClientApiController
         // just return all the servers the user has access to because they are the owner or a subuser of the
         // server. If ?type=admin-all is passed all servers on the system will be returned to the user, rather
         // than only servers they can see because they are an admin.
-        if (in_array($type, ['admin', 'admin-all'])) {
+        if ($preview instanceof SubuserPreviewContext) {
+            $builder->where('servers.id', $preview->session()->server_id);
+        } elseif (in_array($type, ['admin', 'admin-all'])) {
             // If they aren't an admin but want all the admin servers don't fail the request, just
             // make it a query that will never return any results back.
             if (! $user->root_admin) {
@@ -91,16 +106,19 @@ class ClientController extends ClientApiController
     }
 
     /**
-     * Returns eggs for the dashboard egg filter. With default scope, returns eggs from
-     * the user's accessible servers. With ?type=admin (root_admin only), returns eggs
-     * from "other" servers (servers the admin can see but is not owner/subuser of).
+     * Provides the eggs available for the dashboard filter based on the requested server scope.
+     *
+     * @return array A list containing the available eggs and their IDs and names.
      */
     public function eggs(GetServersRequest $request): array
     {
         $user = $request->user();
         $type = $request->input('type');
+        $preview = $request->attributes->get(SubuserPreviewContext::class);
 
-        if ($type === 'admin' && $user->root_admin) {
+        if ($preview instanceof SubuserPreviewContext) {
+            $serverIds = [$preview->session()->server_id];
+        } elseif ($type === 'admin' && $user->root_admin) {
             $serverIds = Server::whereNotIn('id', $user->accessibleServers()->pluck('id')->all())->pluck('id')->all();
         } else {
             $serverIds = $user->accessibleServers()->pluck('id')->all();

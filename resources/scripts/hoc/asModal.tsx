@@ -1,5 +1,5 @@
 import React from 'react';
-import PortaledModal, { ModalProps } from '@/components/elements/Modal';
+import PortaledModal, { ModalProps } from '@/reviactyl/elements/Modal';
 import ModalContext, { ModalContextValues } from '@/context/ModalContext';
 import isEqual from 'react-fast-compare';
 
@@ -19,7 +19,7 @@ interface State {
 type ExtendedComponentType<T> = (C: React.ComponentType<T>) => React.ComponentType<T & AsModalProps>;
 
 function asModal<P extends object>(
-    modalProps?: SettableModalProps | ((props: P) => SettableModalProps)
+    modalProps?: SettableModalProps | ((props: P) => SettableModalProps),
 ): ExtendedComponentType<P> {
     return function (Component) {
         return class extends React.PureComponent<P & AsModalProps, State> {

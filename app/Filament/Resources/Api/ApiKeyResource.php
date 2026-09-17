@@ -98,14 +98,24 @@ class ApiKeyResource extends Resource
             ->columns([
                 TextColumn::make('key')
                     ->label(trans('admin/api.key'))
-                    ->state(function (ApiKey $key) {
+                    ->state(function (ApiKey $key): string {
                         try {
-                            return $key->identifier.decrypt($key->token);
-                        } catch (DecryptException $e) {
+                            $token = decrypt($key->token);
+
+                            if ($key->user_id === auth()->id()) {
+                                return $key->identifier.$token;
+                            }
+
+                            return $key->identifier
+                                .'<span style="filter: blur(5px); user-select: none;">'
+                                .e($token)
+                                .'</span>';
+                        } catch (DecryptException) {
                             return $key->identifier.'(encrypted with old key)';
                         }
                     })
-                    ->copyable(),
+                    ->html()
+                    ->copyable(fn (ApiKey $key): bool => $key->user_id === auth()->id()),
 
                 TextColumn::make('memo')
                     ->label(trans('admin/api.memo'))

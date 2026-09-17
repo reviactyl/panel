@@ -30,18 +30,18 @@ return [
     ],
 
     'actions' => [
-        'import' => 'Import Egg',
+        'import' => 'استيراد البيض',
     ],
 
     'import' => [
-        'file_label' => 'Egg File (JSON)',
-        'nest_label' => 'Associated Nest',
-        'file_not_found' => 'File not found',
-        'file_not_found_body' => 'Could not locate uploaded file.',
-        'invalid_format' => 'Invalid file format',
-        'invalid_format_body' => 'Unexpected file format received.',
-        'success' => 'Egg imported successfully',
-        'failed' => 'Failed to import egg',
+        'file_label' => 'ملف البيض (JSON)',
+        'nest_label' => 'عش المرتبطة',
+        'file_not_found' => 'لم يتم العثور على الملف',
+        'file_not_found_body' => 'تعذر تحديد موقع الملف الذي تم تحميله.',
+        'invalid_format' => 'تنسيق الملف غير صالح',
+        'invalid_format_body' => 'تم استلام تنسيق ملف غير متوقع.',
+        'success' => 'تم استيراد البيض بنجاح',
+        'failed' => 'فشل في استيراد البيض',
     ],
 
     'notices' => [

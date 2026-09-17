@@ -2,59 +2,57 @@
 
 return [
 
-    'label' => 'Database',
-    'plural-label' => 'Databases',
+    'label' => 'ಡೇಟಾಬೇಸ್',
+    'plural-label' => 'ಡೇಟಾಬೇಸ್‌ಗಳು',
 
-    'none' => 'None',
+    'none' => 'ಯಾವುದೂ ಇಲ್ಲ',
 
     'sections' => [
         'host_details' => [
-            'title' => 'Host Details',
-            'description' => 'Configure the database host connection settings.',
+            'title' => 'ಹೋಸ್ಟ್ ವಿವರಗಳು',
+            'description' => 'ಡೇಟಾಬೇಸ್ ಹೋಸ್ಟ್ ಸಂಪರ್ಕ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಿ.',
         ],
 
         'authentication' => [
-            'title' => 'Authentication',
+            'title' => 'ದೃಢೀಕರಣ',
         ],
 
         'linked_node' => [
-            'title' => 'Linked Node',
+            'title' => 'ಲಿಂಕ್ ಮಾಡಲಾದ ನೋಡ್',
         ],
     ],
 
     'placeholders' => [
-        'name' => 'Production MySQL',
-        'host' => '127.0.0.1',
-        'username' => 'reviactyl',
+        'name' => 'ಉತ್ಪಾದನೆ MySQL',
     ],
 
     'helpers' => [
-        'host' => 'The hostname or IP address of the database server.',
-        'linked_node' => 'Optional. Link this host to a specific node.',
+        'host' => 'ಡೇಟಾಬೇಸ್ ಸರ್ವರ್‌ನ ಹೋಸ್ಟ್ ಹೆಸರು ಅಥವಾ IP ವಿಳಾಸ.',
+        'linked_node' => 'ಐಚ್ಛಿಕ. ಈ ಹೋಸ್ಟ್ ಅನ್ನು ನಿರ್ದಿಷ್ಟ ನೋಡ್‌ಗೆ ಲಿಂಕ್ ಮಾಡಿ.',
     ],
 
     'fields' => [
-        'linked_node' => 'Linked Node',
+        'linked_node' => 'ಲಿಂಕ್ ಮಾಡಲಾದ ನೋಡ್',
     ],
 
     'columns' => [
         'id' => 'ID',
-        'name' => 'Name',
-        'host' => 'Host',
-        'port' => 'Port',
-        'username' => 'Username',
-        'linked_node' => 'Linked Node',
-        'databases' => 'Databases',
-        'created' => 'Created',
+        'name' => 'ಹೆಸರು',
+        'host' => 'ಹೋಸ್ಟ್',
+        'port' => 'ಬಂದರು',
+        'username' => 'ಬಳಕೆದಾರ ಹೆಸರು',
+        'linked_node' => 'ಲಿಂಕ್ ಮಾಡಲಾದ ನೋಡ್',
+        'databases' => 'ಡೇಟಾಬೇಸ್‌ಗಳು',
+        'created' => 'ರಚಿಸಲಾಗಿದೆ',
     ],
 
     'actions' => [
-        'edit' => 'Edit',
-        'delete' => 'Delete',
+        'edit' => 'ಸಂಪಾದಿಸು',
+        'delete' => 'ಅಳಿಸಿ',
     ],
 
     'errors' => [
-        'cannot_delete' => 'Cannot delete a database host with associated databases.',
+        'cannot_delete' => 'ಸಂಯೋಜಿತ ಡೇಟಾಬೇಸ್‌ಗಳೊಂದಿಗೆ ಡೇಟಾಬೇಸ್ ಹೋಸ್ಟ್ ಅನ್ನು ಅಳಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.',
     ],
 
 ];

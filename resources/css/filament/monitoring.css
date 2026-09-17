@@ -1,0 +1,190 @@
+.monitoring-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.monitoring-table__header,
+.monitoring-table__muted {
+    color: var(--gray-600);
+}
+
+.monitoring-table__primary {
+    color: var(--gray-950);
+}
+
+.monitoring-table__row {
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.monitoring-table__avatar {
+    background-color: var(--gray-100);
+    color: var(--gray-950);
+}
+
+.monitoring-table__track {
+    background-color: var(--gray-200);
+}
+
+.monitoring-table__network--receive {
+    color: var(--success-700);
+}
+
+.monitoring-table__network--transmit {
+    color: var(--info-700);
+}
+
+.monitoring-table__info {
+    color: var(--info-700);
+}
+
+.monitoring-empty {
+    color: var(--gray-600);
+}
+
+.monitoring-empty--danger {
+    color: var(--danger-700);
+}
+
+.monitoring-metric--success {
+    color: var(--success-700);
+}
+
+.monitoring-metric--warning {
+    color: var(--warning-700);
+}
+
+.monitoring-metric--danger {
+    color: var(--danger-700);
+}
+
+.monitoring-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.1875rem 0.625rem;
+    border: 1px solid;
+    border-radius: 9999px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+}
+
+.monitoring-state__dot {
+    width: 0.375rem;
+    height: 0.375rem;
+    flex-shrink: 0;
+    border-radius: 9999px;
+    background-color: currentColor;
+}
+
+.monitoring-state[data-state='running'] {
+    border-color: var(--success-300);
+    background-color: var(--success-50);
+    color: var(--success-700);
+}
+
+.monitoring-state[data-state='starting'] {
+    border-color: var(--warning-300);
+    background-color: var(--warning-50);
+    color: var(--warning-700);
+}
+
+.monitoring-state[data-state='stopping'] {
+    border-color: var(--warning-300);
+    background-color: var(--warning-50);
+    color: var(--warning-700);
+}
+
+.monitoring-state[data-state='offline'],
+.monitoring-state[data-state='unknown'] {
+    border-color: var(--gray-300);
+    background-color: var(--gray-50);
+    color: var(--gray-700);
+}
+
+.monitoring-state[data-state='crashed'] {
+    border-color: var(--danger-300);
+    background-color: var(--danger-50);
+    color: var(--danger-700);
+}
+
+.dark .monitoring-table__header,
+.dark .monitoring-table__muted {
+    color: var(--gray-400);
+}
+
+.dark .monitoring-table__primary {
+    color: var(--gray-100);
+}
+
+.dark .monitoring-table__row {
+    border-bottom-color: color-mix(in srgb, white 8%, transparent);
+}
+
+.dark .monitoring-table__avatar {
+    background-color: color-mix(in srgb, white 6%, transparent);
+    border-color: var(--gray-700) !important;
+    color: var(--gray-100);
+}
+
+.dark .monitoring-table__track {
+    background-color: color-mix(in srgb, white 8%, transparent);
+}
+
+.dark .monitoring-table__network--receive {
+    color: var(--success-400);
+}
+
+.dark .monitoring-table__network--transmit {
+    color: var(--info-400);
+}
+
+.dark .monitoring-table__info {
+    color: var(--info-400);
+}
+
+.dark .monitoring-empty {
+    color: var(--gray-400);
+}
+
+.dark .monitoring-empty--danger {
+    color: var(--danger-400);
+}
+
+.dark .monitoring-metric--success {
+    color: var(--success-400);
+}
+
+.dark .monitoring-metric--warning {
+    color: var(--warning-400);
+}
+
+.dark .monitoring-metric--danger {
+    color: var(--danger-400);
+}
+
+.dark .monitoring-state[data-state='running'] {
+    border-color: var(--success-700);
+    background-color: color-mix(in srgb, var(--success-400) 12%, transparent);
+    color: var(--success-300);
+}
+
+.dark .monitoring-state[data-state='starting'],
+.dark .monitoring-state[data-state='stopping'] {
+    border-color: var(--warning-700);
+    background-color: color-mix(in srgb, var(--warning-400) 12%, transparent);
+    color: var(--warning-300);
+}
+
+.dark .monitoring-state[data-state='offline'],
+.dark .monitoring-state[data-state='unknown'] {
+    border-color: var(--gray-600);
+    background-color: color-mix(in srgb, var(--gray-400) 8%, transparent);
+    color: var(--gray-300);
+}
+
+.dark .monitoring-state[data-state='crashed'] {
+    border-color: var(--danger-700);
+    background-color: color-mix(in srgb, var(--danger-400) 12%, transparent);
+    color: var(--danger-300);
+}

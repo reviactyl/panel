@@ -8,7 +8,7 @@ return [
     // have been made, without losing data.
     'default' => env('APP_BACKUP_DRIVER', Backup::ADAPTER_WINGS),
 
-    // This value is used to determine the lifespan of UploadPart presigned urls that wings
+    // This value is used to determine the lifespan of UploadPart presigned urls that agent
     // uses to upload backups to S3 storage.  Value is in minutes, so this would default to an hour.
     'presigned_url_lifespan' => (int) env('BACKUP_PRESIGNED_URL_LIFESPAN', 60),
 
@@ -32,9 +32,9 @@ return [
     ],
 
     'disks' => [
-        // There is no configuration for the local disk for Wings. That configuration
+        // There is no configuration for the local disk for Agent. That configuration
         // is determined by the Daemon configuration, and not the Panel.
-        'wings' => [
+        'agent' => [
             'adapter' => Backup::ADAPTER_WINGS,
         ],
 

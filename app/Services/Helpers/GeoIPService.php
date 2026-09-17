@@ -8,7 +8,7 @@ use Psr\Log\LoggerInterface;
 
 class GeoIPService
 {
-    private const API_URL = 'http://ip-api.com/json/';
+    private const API_URL = 'https://ipapi.co/';
 
     public function __construct(private LoggerInterface $logger) {}
 
@@ -21,23 +21,23 @@ class GeoIPService
     {
         if (! $this->isPublicIP($ip)) {
             return [
-                'country' => __('strings.local_network'),
+                'country' => 'Local Network',
                 'code' => 'LOCAL',
             ];
         }
 
-        return Cache::remember('geoip:v2:'.$ip, 86400, function () use ($ip) {
+        return Cache::remember('geoip:v3:'.$ip, 86400, function () use ($ip) {
             try {
-                $response = Http::get(self::API_URL.$ip, [
-                    'fields' => 'status,message,country,countryCode',
-                ]);
+                $response = Http::acceptJson()
+                    ->timeout(5)
+                    ->get(self::API_URL.$ip.'/json/');
 
                 if ($response->successful()) {
                     $data = $response->json();
-                    if (($data['status'] ?? '') === 'success') {
+                    if (! ($data['error'] ?? false)) {
                         return [
-                            'country' => $data['country'] ?? 'Unknown',
-                            'code' => $data['countryCode'] ?? 'UN',
+                            'country' => $data['country_name'] ?? 'Unknown',
+                            'code' => $data['country_code'] ?? 'UN',
                         ];
                     }
                 }

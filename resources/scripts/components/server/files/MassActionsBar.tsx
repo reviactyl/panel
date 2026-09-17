@@ -1,17 +1,18 @@
 import { useEffect, useState } from 'react';
-import tw from 'twin.macro';
-import { Button } from '@/components/elements/button/index';
-import Fade from '@/components/elements/Fade';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import { Button } from '@/reviactyl/components/button/index';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import useFlash from '@/plugins/useFlash';
 import compressFiles from '@/api/server/files/compressFiles';
 import { ServerContext } from '@/state/server';
 import deleteFiles from '@/api/server/files/deleteFiles';
 import RenameFileModal from '@/components/server/files/RenameFileModal';
-import Portal from '@/components/elements/Portal';
-import { Dialog } from '@/components/elements/dialog';
+import { Dialog } from '@/reviactyl/elements/dialog';
 import { useTranslation } from 'react-i18next';
+import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
+import { FaFileArrowUp, FaTrash } from 'react-icons/fa6';
+import Spinner from '@/reviactyl/elements/Spinner';
+import { FaFileArchive } from 'react-icons/fa';
+import Can from '@/reviactyl/elements/Can';
 
 const MassActionsBar = () => {
     const { t } = useTranslation('server/files');
@@ -35,7 +36,7 @@ const MassActionsBar = () => {
     const onClickCompress = () => {
         setLoading(true);
         clearFlashes('files');
-        setLoadingMessage('Archiving files...');
+        setLoadingMessage(t('mass-actions.archiving'));
 
         compressFiles(uuid, directory, selectedFiles)
             .then(() => mutate())
@@ -48,11 +49,11 @@ const MassActionsBar = () => {
         setLoading(true);
         setShowConfirm(false);
         clearFlashes('files');
-        setLoadingMessage('Deleting files...');
+        setLoadingMessage(t('mass-actions.deleting'));
 
         deleteFiles(uuid, directory, selectedFiles)
             .then(() => {
-                mutate((files) => files.filter((f) => selectedFiles.indexOf(f.name) < 0), false);
+                mutate((files) => files?.filter((f) => selectedFiles.indexOf(f.name) < 0), false);
                 setSelectedFiles([]);
             })
             .catch((error) => {
@@ -64,52 +65,65 @@ const MassActionsBar = () => {
 
     return (
         <>
-            <div css={tw`pointer-events-none fixed bottom-0 z-20 left-0 right-0 flex justify-center`}>
-                <SpinnerOverlay visible={loading} size={'large'} fixed>
-                    {loadingMessage}
-                </SpinnerOverlay>
-                <Dialog.Confirm
-                    title={'Delete Files'}
-                    open={showConfirm}
-                    confirm={'Delete'}
-                    onClose={() => setShowConfirm(false)}
-                    onConfirmed={onClickConfirmDeletion}
-                >
-                    <p className={'mb-2'}>
-                        Are you sure you want to delete&nbsp;
-                        <span className={'font-semibold text-gray-50'}>{selectedFiles.length} files</span>? This is a
-                        permanent action and the files cannot be recovered.
-                    </p>
+            <Dialog.Confirm
+                title={t('mass-actions.delete-title')}
+                open={showConfirm}
+                confirm={t('mass-actions.delete-confirm')}
+                onClose={() => setShowConfirm(false)}
+                onConfirmed={onClickConfirmDeletion}
+            >
+                <p className={'mb-2'}>
+                    {t('mass-actions.delete-message-start')}&nbsp;
+                    <span className={'font-semibold text-gray-50'}>
+                        {selectedFiles.length} {t('mass-actions.delete-message-files')}
+                    </span>
+                    {t('mass-actions.delete-message-end')}
                     {selectedFiles.slice(0, 15).map((file) => (
                         <li key={file}>{file}</li>
                     ))}
                     {selectedFiles.length > 15 && <li>and {selectedFiles.length - 15} others</li>}
-                </Dialog.Confirm>
-                {showMove && (
-                    <RenameFileModal
-                        files={selectedFiles}
-                        visible
-                        appear
-                        useMoveTerminology
-                        onDismissed={() => setShowMove(false)}
-                    />
-                )}
-                <Portal>
-                    <div className={'pointer-events-none fixed bottom-0 mb-6 flex justify-center w-full z-50'}>
-                        <Fade timeout={75} in={selectedFiles.length > 0} unmountOnExit>
-                            <div
-                                className={`flex items-center space-x-4 pointer-events-auto rounded-ui p-4 bg-gray-800/50 backdrop-blur-md border border-gray-600`}
-                            >
-                                <Button onClick={() => setShowMove(true)}>{t('move')}</Button>
-                                <Button onClick={onClickCompress}>{t('archive')}</Button>
-                                <Button.Danger variant={Button.Variants.Secondary} onClick={() => setShowConfirm(true)}>
-                                    {t('delete')}
-                                </Button.Danger>
-                            </div>
-                        </Fade>
-                    </div>
-                </Portal>
-            </div>
+                </p>
+            </Dialog.Confirm>
+            {showMove && (
+                <RenameFileModal
+                    files={selectedFiles}
+                    visible
+                    appear
+                    useMoveTerminology
+                    onDismissed={() => setShowMove(false)}
+                />
+            )}
+            <Can action={['file.update', 'file.archive', 'file.delete']} matchAny>
+                <span className='border-l border-gray-600 h-5 mx-2' />
+            </Can>
+            <Can action={'file.update'}>
+                <Tooltip content={t('move')}>
+                    <Button.Text onClick={() => setShowMove(true)} aria-label={t('move')} disabled={loading}>
+                        <FaFileArrowUp className='h-5 w-5' />
+                    </Button.Text>
+                </Tooltip>
+            </Can>
+            <Can action={'file.archive'}>
+                <Tooltip content={t('archive')}>
+                    <Button.Success onClick={onClickCompress} aria-label={t('archive')} disabled={loading}>
+                        <FaFileArchive className='h-5 w-5' />
+                    </Button.Success>
+                </Tooltip>
+            </Can>
+            <Can action={'file.delete'}>
+                <Tooltip content={t('delete')}>
+                    <Button.Danger onClick={() => setShowConfirm(true)} aria-label={t('delete')} disabled={loading}>
+                        <FaTrash className='h-5 w-5' />
+                    </Button.Danger>
+                </Tooltip>
+            </Can>
+            {loading && (
+                <Tooltip content={loadingMessage}>
+                    <Button disabled aria-label={loadingMessage} className='cursor-wait'>
+                        <Spinner className='h-5 w-5' />
+                    </Button>
+                </Tooltip>
+            )}
         </>
     );
 };

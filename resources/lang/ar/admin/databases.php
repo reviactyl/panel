@@ -24,8 +24,6 @@ return [
 
     'placeholders' => [
         'name' => 'الإنتاجية قاعدة بيانات',
-        'host' => '127.0.0.1',
-        'username' => 'رفيا كتيل',
     ],
 
     'helpers' => [

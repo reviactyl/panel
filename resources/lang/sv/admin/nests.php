@@ -2,7 +2,7 @@
 
 return [
 
-    'label' => 'Nest',
+    'label' => 'Bo',
     'plural_label' => 'Nesten',
 
     'sections' => [
@@ -30,18 +30,18 @@ return [
     ],
 
     'actions' => [
-        'import' => 'Import Egg',
+        'import' => 'Importera ägg',
     ],
 
     'import' => [
-        'file_label' => 'Egg File (JSON)',
+        'file_label' => 'Äggfil (JSON)',
         'nest_label' => 'Associated Nest',
-        'file_not_found' => 'File not found',
-        'file_not_found_body' => 'Could not locate uploaded file.',
-        'invalid_format' => 'Invalid file format',
-        'invalid_format_body' => 'Unexpected file format received.',
-        'success' => 'Egg imported successfully',
-        'failed' => 'Failed to import egg',
+        'file_not_found' => 'Filen hittades inte',
+        'file_not_found_body' => 'Det gick inte att hitta den uppladdade filen.',
+        'invalid_format' => 'Ogiltigt filformat',
+        'invalid_format_body' => 'Oväntat filformat mottaget.',
+        'success' => 'Ägget har importerats',
+        'failed' => 'Det gick inte att importera ägg',
     ],
 
     'notices' => [

@@ -22,8 +22,8 @@ class MakeNodeCommand extends Command
                             {--maxDisk= : Set the max disk amount.}
                             {--overallocateDisk= : Enter the amount of disk to overallocate (% or -1 to overallocate the maximum).}
                             {--uploadSize= : Enter the maximum upload filesize.}
-                            {--daemonListeningPort= : Enter the wings listening port.}
-                            {--daemonSFTPPort= : Enter the wings SFTP listening port.}
+                            {--daemonListeningPort= : Enter the agent listening port.}
+                            {--daemonSFTPPort= : Enter the agent SFTP listening port.}
                             {--daemonBase= : Enter the base folder.}';
 
     protected $description = 'Creates a new node on the system via the CLI.';
@@ -60,8 +60,8 @@ class MakeNodeCommand extends Command
         $data['disk'] = $this->option('maxDisk') ?? $this->ask('Enter the maximum amount of disk space');
         $data['disk_overallocate'] = $this->option('overallocateDisk') ?? $this->ask('Enter the amount of memory to over allocate by, -1 will disable checking and 0 will prevent creating new server');
         $data['upload_size'] = $this->option('uploadSize') ?? $this->ask('Enter the maximum filesize upload', '100');
-        $data['daemonListen'] = $this->option('daemonListeningPort') ?? $this->ask('Enter the wings listening port', '8080');
-        $data['daemonSFTP'] = $this->option('daemonSFTPPort') ?? $this->ask('Enter the wings SFTP listening port', '2022');
+        $data['daemonListen'] = $this->option('daemonListeningPort') ?? $this->ask('Enter the agent listening port', '8080');
+        $data['daemonSFTP'] = $this->option('daemonSFTPPort') ?? $this->ask('Enter the agent SFTP listening port', '2022');
         $data['daemonBase'] = $this->option('daemonBase') ?? $this->ask('Enter the base folder', '/var/lib/reviactyl/volumes');
 
         $node = $this->creationService->handle($data);

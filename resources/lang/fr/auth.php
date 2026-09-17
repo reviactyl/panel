@@ -11,14 +11,21 @@ return [
     'password-label' => 'Mot de passe',
 
     'login-button' => 'Connexion',
+    'passkey-button' => 'Se connecter avec Passkey',
     'return' => 'Retourner à la connexion',
+
+    'passkey-unsupported' => 'Les clés d\'accès ne sont pas prises en charge par ce navigateur.',
+    'passkey-failed' => 'Impossible de se connecter à l\'aide de la clé d\'accès. Veuillez réessayer.',
+    'passkey-no-credentials' => 'Aucune clé d\'accès n\'est disponible pour cette connexion. Utilisez votre mot de passe ou enregistrez d\'abord une clé d\'accès.',
+    'passkey-security' => 'La vérification de la clé d\'accès n\'a pas pu être effectuée en toute sécurité sur cet appareil.',
+    'passkey-username-required' => 'Saisissez votre nom d\'utilisateur ou votre adresse e-mail avant d\'utiliser un code d\'accès.',
 
     'social' => [
         'or' => 'OR',
         'google' => 'Google',
         'discord' => 'Discord',
         'github' => 'GitHub',
-        'not_linked' => 'This account has not been linked to any :provider account. Please log in with your email and password first, then link your :provider account in the Account Settings page.',
+        'not_linked' => 'Ce compte n\'a été lié à aucun compte :provider. Veuillez d\'abord vous connecter avec votre e-mail et votre mot de passe, puis associer votre compte :provider sur la page Paramètres du compte.',
     ],
 
     'forgot-password' => [
@@ -45,7 +52,7 @@ return [
         'new-required' => 'Un nouveau mot de passe est requis.',
         'min-required' => 'Votre nouveau mot de passe doit comporter au moins 8 caractères.',
         'no-match' => 'Votre nouveau mot de passe ne correspond pas.',
-        'email-label' => 'Email',
+        'email-label' => 'E-mail',
         'new-label' => 'Nouveau mot de passe',
         'min-length' => 'Les mots de passe doivent comporter au moins 8 caractères.',
         'confirm-label' => 'Confirmer le nouveau mot de passe',
@@ -53,16 +60,18 @@ return [
     ],
 
     'register' => [
-        'no-match' => 'Your password does not match.',
-        'namefirst-label' => 'First Name',
-        'namelast-label' => 'Last Name',
-        'email-label' => 'Email',
-        'username-label' => 'UserName',
-        'password-label' => 'Password',
-        'min-length' => 'Passwords must be at least 8 characters in length.',
-        'confirm-label' => 'Confirm Password',
-        'label' => 'Register',
-        'create-account' => 'Create Account',
+        'no-match' => 'Votre mot de passe ne correspond pas.',
+        'namefirst-label' => 'Prénom',
+        'namelast-label' => 'Nom de famille',
+        'email-label' => 'E-mail',
+        'username-label' => 'Nom d\'utilisateur',
+        'password-label' => 'Mot de passe',
+        'min-length' => 'Les mots de passe doivent comporter au moins 8 caractères.',
+        'confirm-label' => 'Confirmez le mot de passe',
+        'label' => 'Registre',
+        'create-link' => 'Vous n\'avez pas encore de compte ? Créez-en un',
+        'create-account' => 'Créer un compte',
+        'no-account' => 'Vous n\'avez pas encore de compte ?',
     ],
 
     'failed' => 'Aucun compte correspondant à ces informations d\'identification n\'a été trouvé.',
@@ -76,4 +85,5 @@ return [
     'throttle' => 'Trop de tentatives de connexion. Veuillez réessayer dans :seconds secondes.',
     'password_requirements' => 'Le mot de passe doit comporter au moins 8 caractères et être unique à ce site.',
     '2fa_must_be_enabled' => 'L\'administrateur a exigé que l\'authentification à deux facteurs soit activée pour votre compte afin de pouvoir utiliser le panel.',
+    'captcha-required' => 'Veuillez répondre au test CAPTCHA pour continuer.',
 ];

@@ -13,13 +13,11 @@ return [
     'fields' => [
         'short' => [
             'label' => 'Kortkod',
-            'placeholder' => 'us.nyc.1',
             'helper' => 'En kort identifierare för denna plats.',
         ],
 
         'long' => [
             'label' => 'Beskrivning',
-            'placeholder' => 'New York City, NY, USA',
             'helper' => 'En längre beskrivning av denna plats.',
         ],
     ],

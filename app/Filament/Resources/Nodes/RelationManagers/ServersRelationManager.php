@@ -2,15 +2,16 @@
 
 namespace App\Filament\Resources\Nodes\RelationManagers;
 
-use App\Models\Allocation;
 use App\Models\Server;
-use App\Services\Allocations\AllocationDeletionService;
+use App\Services\Servers\ServerDeletionService;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Throwable;
 
 class ServersRelationManager extends RelationManager
 {
@@ -34,7 +35,7 @@ class ServersRelationManager extends RelationManager
                         $email = strtolower(trim($state->email ?? ''));
                         $hash = md5($email);
                         $avatar = "https://www.gravatar.com/avatar/{$hash}?s=64&d=mp";
-                        $name = $state->name_first.' '.$state->name_last;
+                        $name = e($state->name_first.' '.$state->name_last);
 
                         return "
                             <div style='display:flex;align-items:center;gap:8px'>
@@ -43,8 +44,20 @@ class ServersRelationManager extends RelationManager
                             </div>
                         ";
                     })
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHas('user', function (Builder $query) use ($search): void {
+                            $query->where('username', 'like', "%{$search}%")
+                                ->orWhere('email', 'like', "%{$search}%")
+                                ->orWhere('name_first', 'like', "%{$search}%")
+                                ->orWhere('name_last', 'like', "%{$search}%");
+                        });
+                    })
+                    ->sortable(query: function (Builder $query, string $direction): Builder {
+                        return $query
+                            ->leftJoin('users', 'users.id', '=', 'servers.owner_id')
+                            ->orderBy('users.username', $direction)
+                            ->select('servers.*');
+                    }),
                 TextColumn::make('allocation')
                     ->label(trans('admin/server.table.allocation'))
                     ->formatStateUsing(fn ($state) => $state?->toString()), // I don't image any server would be without an allocation, unless somebody manually tampered with the database
@@ -60,18 +73,21 @@ class ServersRelationManager extends RelationManager
                         ->label(trans('admin/server.actions.delete'))
                         ->icon('heroicon-o-trash')
                         ->requiresConfirmation()
-                        ->action(function (Collection $records) {
-                            $records->each(function ($record): void {
+                        ->using(function (DeleteBulkAction $action, Collection $records): void {
+                            foreach ($records as $record) {
                                 if (! $record instanceof Server) {
-                                    return;
+                                    $action->reportBulkProcessingFailure();
+
+                                    continue;
                                 }
 
-                                if ($record->allocation instanceof Allocation) {
-                                    app(AllocationDeletionService::class)->handle($record->allocation);
+                                try {
+                                    app(ServerDeletionService::class)->withForce(false)->handle($record);
+                                } catch (Throwable $exception) {
+                                    $action->reportBulkProcessingFailure();
+                                    report($exception);
                                 }
-
-                                $record->delete();
-                            });
+                            }
                         }),
                 ]),
             ]);

@@ -21,6 +21,9 @@ Route::get('/', [Client\ClientController::class, 'index'])->name('api:client.ind
 Route::get('/permissions', [Client\ClientController::class, 'permissions']);
 Route::get('/eggs', [Client\ClientController::class, 'eggs'])->name('api:client.eggs');
 Route::get('/extensions', [Client\ExtensionsController::class, 'index'])->name('api:client.extensions.index');
+Route::get('/subuser-preview', [Client\SubuserPreviewController::class, 'status']);
+Route::post('/subuser-preview/heartbeat', [Client\SubuserPreviewController::class, 'heartbeat']);
+Route::delete('/subuser-preview', [Client\SubuserPreviewController::class, 'destroy']);
 
 Route::prefix('/account')->middleware(AccountSubject::class)->group(function () {
     Route::prefix('/')->withoutMiddleware(RequireTwoFactorAuthentication::class)->group(function () {
@@ -28,12 +31,19 @@ Route::prefix('/account')->middleware(AccountSubject::class)->group(function () 
         Route::get('/two-factor', [Client\TwoFactorController::class, 'index']);
         Route::post('/two-factor', [Client\TwoFactorController::class, 'store']);
         Route::post('/two-factor/disable', [Client\TwoFactorController::class, 'delete']);
+        Route::get('/passkeys', [Client\PasskeyController::class, 'index']);
+        Route::post('/passkeys/remove', [Client\PasskeyController::class, 'delete']);
+        Route::delete('/passkeys/{id}', [Client\PasskeyController::class, 'delete']);
     });
+
+    Route::post('/passkeys/register/options', [Client\PasskeyController::class, 'options']);
+    Route::post('/passkeys/register', [Client\PasskeyController::class, 'store']);
 
     Route::put('/email', [Client\AccountController::class, 'updateEmail'])->name('api:client.account.update-email');
     Route::put('/password', [Client\AccountController::class, 'updatePassword'])->name('api:client.account.update-password');
     Route::put('/language', [Client\AccountController::class, 'updateLanguage'])->name('api:client.account.update-language');
     Route::put('/file-editor', [Client\AccountController::class, 'updateEditor'])->name('api:client.account.update-editor');
+    Route::put('/avatar', [Client\AccountController::class, 'updateAvatar'])->name('api:client.account.update-avatar');
 
     Route::get('/activity', Client\ActivityLogController::class)->name('api:client.account.activity');
 
@@ -102,11 +112,13 @@ Route::group([
         Route::put('/rename', [Client\Servers\FileController::class, 'rename']);
         Route::post('/copy', [Client\Servers\FileController::class, 'copy']);
         Route::post('/write', [Client\Servers\FileController::class, 'write']);
+        Route::put('/write', [Client\Servers\FileController::class, 'update']);
         Route::post('/compress', [Client\Servers\FileController::class, 'compress']);
         Route::post('/decompress', [Client\Servers\FileController::class, 'decompress']);
         Route::post('/delete', [Client\Servers\FileController::class, 'delete']);
         Route::post('/create-folder', [Client\Servers\FileController::class, 'create']);
         Route::post('/chmod', [Client\Servers\FileController::class, 'chmod']);
+        Route::get('/pull', [Client\Servers\FileController::class, 'pulls']);
         Route::middleware([ResourceLimit::FilePull->middleware()])
             ->post('/pull', [Client\Servers\FileController::class, 'pull']);
         Route::get('/upload', Client\Servers\FileUploadController::class);
@@ -142,6 +154,7 @@ Route::group([
         Route::get('/{user}', [Client\Servers\SubuserController::class, 'view']);
         Route::post('/{user}', [Client\Servers\SubuserController::class, 'update']);
         Route::delete('/{user}', [Client\Servers\SubuserController::class, 'delete']);
+        Route::post('/{user}/preview', [Client\SubuserPreviewController::class, 'store']);
     });
 
     Route::group(['prefix' => '/backups'], function () {

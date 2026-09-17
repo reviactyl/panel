@@ -2,43 +2,43 @@
 
 return [
 
-    'label' => 'Mount',
-    'plural_label' => 'Mounts',
+    'label' => 'ಮೌಂಟ್',
+    'plural_label' => 'ಆರೋಹಣಗಳು',
 
     'sections' => [
-        'configuration' => 'Mount Configuration',
+        'configuration' => 'ಮೌಂಟ್ ಕಾನ್ಫಿಗರೇಶನ್',
     ],
 
     'fields' => [
-        'name' => 'Name',
-        'description' => 'Description',
-        'source' => 'Source Path',
-        'target' => 'Target Path',
-        'read_only' => 'Read Only',
-        'user_mountable' => 'User Mountable',
+        'name' => 'ಹೆಸರು',
+        'description' => 'ವಿವರಣೆ',
+        'source' => 'ಮೂಲ ಮಾರ್ಗ',
+        'target' => 'ಗುರಿ ಮಾರ್ಗ',
+        'read_only' => 'ಓದಲು ಮಾತ್ರ',
+        'user_mountable' => 'ಬಳಕೆದಾರ ಮೌಂಟಬಲ್',
     ],
 
     'helpers' => [
-        'name' => 'A unique name used to separate this mount from another.',
-        'description' => 'A longer, human-readable description of this mount.',
-        'source' => 'The file path on the host machine to mount to containers.',
-        'target' => 'The path inside the container to mount this as.',
-        'read_only' => 'If set, the mount will be read-only inside the container.',
-        'user_mountable' => 'If set, users will be able to mount this to their servers.',
+        'name' => 'ಈ ಮೌಂಟ್ ಅನ್ನು ಇನ್ನೊಂದರಿಂದ ಪ್ರತ್ಯೇಕಿಸಲು ಒಂದು ಅನನ್ಯ ಹೆಸರನ್ನು ಬಳಸಲಾಗುತ್ತದೆ.',
+        'description' => 'ಈ ಮೌಂಟ್‌ನ ದೀರ್ಘವಾದ, ಮಾನವ-ಓದಬಲ್ಲ ವಿವರಣೆ.',
+        'source' => 'ಕಂಟೈನರ್‌ಗಳಿಗೆ ಆರೋಹಿಸಲು ಹೋಸ್ಟ್ ಗಣಕದಲ್ಲಿನ ಫೈಲ್ ಮಾರ್ಗ.',
+        'target' => 'ಇದನ್ನು ಆರೋಹಿಸಲು ಕಂಟೇನರ್‌ನ ಒಳಗಿನ ಮಾರ್ಗ.',
+        'read_only' => 'ಹೊಂದಿಸಿದರೆ, ಕಂಟೈನರ್ ಒಳಗೆ ಮೌಂಟ್ ಓದಲು ಮಾತ್ರ ಇರುತ್ತದೆ.',
+        'user_mountable' => 'ಹೊಂದಿಸಿದರೆ, ಬಳಕೆದಾರರು ಇದನ್ನು ತಮ್ಮ ಸರ್ವರ್‌ಗಳಿಗೆ ಆರೋಹಿಸಲು ಸಾಧ್ಯವಾಗುತ್ತದೆ.',
     ],
 
     'columns' => [
         'id' => 'ID',
-        'name' => 'Name',
-        'source' => 'Source',
-        'target' => 'Target',
-        'read_only' => 'Read Only',
-        'user_mountable' => 'User Mountable',
+        'name' => 'ಹೆಸರು',
+        'source' => 'ಮೂಲ',
+        'target' => 'ಗುರಿ',
+        'read_only' => 'ಓದಲು ಮಾತ್ರ',
+        'user_mountable' => 'ಬಳಕೆದಾರ ಮೌಂಟಬಲ್',
     ],
 
     'actions' => [
-        'attach_egg' => 'Attach Egg',
-        'attach_node' => 'Attach Node',
+        'attach_egg' => 'ಮೊಟ್ಟೆಯನ್ನು ಲಗತ್ತಿಸಿ',
+        'attach_node' => 'ನೋಡ್ ಅನ್ನು ಲಗತ್ತಿಸಿ',
     ],
 
 ];

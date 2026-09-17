@@ -12,7 +12,7 @@ export default (data: { name: string; description?: string; color?: string }): P
                     color: data.attributes.color,
                     createdAt: new Date(data.attributes.created_at),
                     updatedAt: new Date(data.attributes.updated_at),
-                })
+                }),
             )
             .catch(reject);
     });

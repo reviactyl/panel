@@ -151,15 +151,15 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     }
 
     /**
-     * Update a given ID with the passed array of fields.
+     * Update a given record with the passed array of fields.
      *
      * @throws DataValidationException
      * @throws RecordNotFoundException
      */
-    public function update(int $id, array $fields, bool $validate = true, bool $force = false): Model|bool
+    public function update(int|string $id, array $fields, bool $validate = true, bool $force = false): Model|bool
     {
         try {
-            $instance = $this->getBuilder()->where('id', $id)->firstOrFail();
+            $instance = $this->getBuilder()->where($this->getModel()->getKeyName(), $id)->firstOrFail();
         } catch (ModelNotFoundException) {
             throw new RecordNotFoundException();
         }
@@ -209,12 +209,12 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
         }
 
         try {
-            $instance = $this->setColumns('id')->findFirstWhere($where);
+            $instance = $this->findFirstWhere($where);
         } catch (RecordNotFoundException) {
             return $this->create(array_merge($where, $fields), $validate, $force);
         }
 
-        return $this->update($instance->id, $fields, $validate, $force);
+        return $this->update($instance->getKey(), $fields, $validate, $force);
     }
 
     /**

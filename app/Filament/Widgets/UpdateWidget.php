@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Services\Helpers\SoftwareVersionService;
+use Filament\Actions\Action;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -22,45 +23,32 @@ class UpdateWidget extends BaseWidget
 
     public function form(Schema $schema): Schema
     {
-        $isLatest = $this->softwareVersionService->isLatestPanel();
-
         return $schema->components([
-            $isLatest
-                ? Section::make(
-                    trans('admin/index.uptodate-header')
-                )
-                    ->icon('heroicon-o-check-circle')
-                    ->iconColor('success')
-                    ->schema([
-                        TextEntry::make('info')
-                            ->hiddenLabel()
-                            ->state(
-                                trans(
-                                    'admin/index.uptodate-body',
-                                    [
-                                        'version' => config('app.version'),
-                                    ]
-                                )
-                            ),
-                    ])
-
-                : Section::make(
-                    trans('admin/index.notuptodate-header')
-                )
-                    ->icon('heroicon-o-information-circle')
-                    ->iconColor('warning')
-                    ->schema([
-                        TextEntry::make('info')
-                            ->hiddenLabel()
-                            ->state(
-                                trans(
-                                    'admin/index.notuptodate-body',
-                                    [
-                                        'latest' => $this->softwareVersionService->getPanel(),
-                                    ]
-                                )
-                            ),
-                    ]),
+            Section::make(
+                trans('admin/index.notuptodate-header')
+            )
+                ->icon('heroicon-o-information-circle')
+                ->iconColor('warning')
+                ->visible(! $this->softwareVersionService->isLatestPanel())
+                ->headerActions([
+                    Action::make('update')
+                        ->label(trans('admin/index.update-btn'))
+                        ->icon('heroicon-c-cursor-arrow-rays')
+                        ->url('https://reviactyl.app/docs/panel/updating-the-panel', true)
+                        ->color('warning'),
+                ])
+                ->schema([
+                    TextEntry::make('info')
+                        ->hiddenLabel()
+                        ->state(
+                            trans(
+                                'admin/index.notuptodate-body',
+                                [
+                                    'latest' => $this->softwareVersionService->getPanel(),
+                                ]
+                            )
+                        ),
+                ]),
         ]);
     }
 }

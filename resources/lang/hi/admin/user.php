@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'title' => 'User',
+    'title' => 'उपयोगकर्ता',
     'exceptions' => [
         'delete_self' => 'आप अपना स्वयं का खाता नहीं हटा सकते।',
         'user_has_servers' => 'सक्रिय सर्वर वाले उपयोगकर्ता को हटाया नहीं जा सकता। कृपया जारी रखने से पहले उनके सर्वर हटाएं।',
@@ -11,19 +11,19 @@ return [
         'account_updated' => 'खाता सफलतापूर्वक अपडेट किया गया है।',
     ],
     'details' => [
-        'account_details' => 'Account Details',
-        'external_id' => 'External ID',
-        'username' => 'Username',
-        'email' => 'Email Address',
-        'first_name' => 'First Name',
-        'last_name' => 'Last Name',
-        'language' => 'Language',
-        'geolocate' => 'Geolocate (Automatic)',
-        'password' => 'Password',
-        'password_confirmation' => 'Confirm Password',
-        'root_admin' => 'Root Administrator',
-        'root_admin_desc' => 'This user will have full access to all servers and settings on the system.',
-        'privileges' => 'Privileges',
-        'admin_status' => 'Admin Status',
+        'account_details' => 'खाता विवरण',
+        'external_id' => 'बाहरी आईडी',
+        'username' => 'उपयोगकर्ता नाम',
+        'email' => 'मेल पता',
+        'first_name' => 'पहला नाम',
+        'last_name' => 'उपनाम',
+        'language' => 'भाषा',
+        'geolocate' => 'जियोलोकेट (स्वचालित)',
+        'password' => 'पासवर्ड',
+        'password_confirmation' => 'पासवर्ड की पुष्टि कीजिये',
+        'root_admin' => 'रूट प्रशासक',
+        'root_admin_desc' => 'इस उपयोगकर्ता के पास सिस्टम के सभी सर्वर और सेटिंग्स तक पूर्ण पहुंच होगी।',
+        'privileges' => 'विशेषाधिकार',
+        'admin_status' => 'व्यवस्थापक स्थिति',
     ],
 ];

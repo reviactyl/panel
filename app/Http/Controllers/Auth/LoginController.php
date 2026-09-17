@@ -3,14 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Exceptions\DisplayException;
-use App\Facades\Activity;
 use App\Models\User;
-use Carbon\CarbonImmutable;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class LoginController extends AbstractLoginController
@@ -59,19 +56,6 @@ class LoginController extends AbstractLoginController
             return $this->sendLoginResponse($user, $request);
         }
 
-        Activity::event('auth:checkpoint')->withRequestMetadata()->subject($user)->log();
-
-        $request->session()->put('auth_confirmation_token', [
-            'user_id' => $user->id,
-            'token_value' => $token = Str::random(64),
-            'expires_at' => CarbonImmutable::now()->addMinutes(5),
-        ]);
-
-        return new JsonResponse([
-            'data' => [
-                'complete' => false,
-                'confirmation_token' => $token,
-            ],
-        ]);
+        return $this->sendLoginCheckpointResponse($user, $request);
     }
 }

@@ -3,18 +3,17 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { StoreProvider } from 'easy-peasy';
 import { store } from '@/state';
 import { SiteSettings } from '@/state/settings';
-import { ReviactylSettings } from '@/state/reviactyl';
-import ProgressBar from '@/components/elements/ProgressBar';
-import { NotFound } from '@/components/elements/ScreenBlock';
-import tw from 'twin.macro';
-import GlobalStylesheet from '@/assets/css/GlobalStylesheet';
-import AuthenticatedRoute from '@/components/elements/AuthenticatedRoute';
+import { DesignifySettings } from '@/state/designify';
+import ProgressBar from '@/reviactyl/elements/ProgressBar';
+import { NotFound } from '@/reviactyl/elements/ScreenBlock';
+import AuthenticatedRoute from '@/reviactyl/elements/AuthenticatedRoute';
 import { ServerContext } from '@/state/server';
 import '@/assets/tailwind.css';
-import Spinner from '@/components/elements/Spinner';
-import { ThemeLoader } from '@/reviactyl/ui/ThemeEngine';
-import { Invert } from '@/reviactyl/ui/SmartInvert';
+import Spinner from '@/reviactyl/elements/Spinner';
+import { Theme } from '@/reviactyl/ui/Theme';
 import { LocaleLoader } from '@/reviactyl/ui/LanguageSwitcher';
+import { SubuserPreviewProvider } from '@/context/SubuserPreviewContext';
+import { SubuserPreviewFrame } from '@/components/subuser-preview/SubuserPreviewFrame';
 
 const DashboardRouter = lazy(() => import('@/routers/DashboardRouter'));
 const ServerRouter = lazy(() => import('@/routers/ServerRouter'));
@@ -23,7 +22,7 @@ const PublicServerStatus = lazy(() => import('@/components/public/PublicServerSt
 
 interface ExtendedWindow extends Window {
     SiteConfiguration?: SiteSettings;
-    ReviactylConfiguration?: ReviactylSettings;
+    PanelConfiguration?: DesignifySettings;
     PanelUser?: {
         uuid: string;
         username: string;
@@ -34,15 +33,21 @@ interface ExtendedWindow extends Window {
         use_totp: boolean;
         language: string;
         editor: string;
+        avatar_style: string;
+        avatar_animated: boolean;
         updated_at: string;
         created_at: string;
     };
 }
 
-// setupInterceptors(history);
+/**
+ * Renders the application shell, global providers, and route tree.
+ *
+ * @returns The configured application interface.
+ */
 
 function App() {
-    const { PanelUser, SiteConfiguration, ReviactylConfiguration } = window as ExtendedWindow;
+    const { PanelUser, SiteConfiguration, PanelConfiguration } = window as ExtendedWindow;
     if (PanelUser && !store.getState().user.data) {
         store.getActions().user.setUserData({
             uuid: PanelUser.uuid,
@@ -55,6 +60,8 @@ function App() {
             useTotp: PanelUser.use_totp,
             createdAt: new Date(PanelUser.created_at),
             fileEditor: PanelUser.editor,
+            avatarStyle: PanelUser.avatar_style || 'gravatar',
+            avatarAnimated: PanelUser.avatar_animated ?? true,
             updatedAt: new Date(PanelUser.updated_at),
         });
     }
@@ -63,69 +70,66 @@ function App() {
         store.getActions().settings.setSettings(SiteConfiguration!);
     }
 
-    if (!store.getState().reviactyl.data) {
-        store.getActions().reviactyl.setReviactyl(ReviactylConfiguration!);
+    if (!store.getState().designify.data) {
+        store.getActions().designify.setDesignify(PanelConfiguration!);
     }
 
     return (
-        <Invert>
-            <GlobalStylesheet />
+        <Theme>
             <StoreProvider store={store}>
-                <ThemeLoader />
                 <LocaleLoader />
                 <ProgressBar />
-                <div css={tw`mx-auto w-auto`}>
-                    <BrowserRouter
-                        future={{
-                            v7_startTransition: true,
-                            v7_relativeSplatPath: true,
-                        }}
-                    >
-                        <Routes>
-                            <Route
-                                path='/auth/*'
-                                element={
-                                    <Spinner.Suspense>
-                                        <AuthenticationRouter />
-                                    </Spinner.Suspense>
-                                }
-                            />
-                            <Route
-                                path='/server/:id/*'
-                                element={
-                                    <AuthenticatedRoute>
-                                        <Spinner.Suspense>
-                                            <ServerContext.Provider>
-                                                <ServerRouter />
-                                            </ServerContext.Provider>
-                                        </Spinner.Suspense>
-                                    </AuthenticatedRoute>
-                                }
-                            />
-                            <Route
-                                path='/status/:id/*'
-                                element={
-                                    <Spinner.Suspense>
-                                        <PublicServerStatus />
-                                    </Spinner.Suspense>
-                                }
-                            />
-                            <Route
-                                path='/*'
-                                element={
-                                    <AuthenticatedRoute>
-                                        <Spinner.Suspense>
-                                            <DashboardRouter />
-                                        </Spinner.Suspense>
-                                    </AuthenticatedRoute>
-                                }
-                            />
-                            <Route path='*' element={<NotFound />} />
-                        </Routes>
+                <div className='mx-auto w-auto'>
+                    <BrowserRouter>
+                        <SubuserPreviewProvider>
+                            <SubuserPreviewFrame>
+                                <Routes>
+                                    <Route
+                                        path='/auth/*'
+                                        element={
+                                            <Spinner.Suspense>
+                                                <AuthenticationRouter />
+                                            </Spinner.Suspense>
+                                        }
+                                    />
+                                    <Route
+                                        path='/server/:id/*'
+                                        element={
+                                            <AuthenticatedRoute>
+                                                <Spinner.Suspense>
+                                                    <ServerContext.Provider>
+                                                        <ServerRouter />
+                                                    </ServerContext.Provider>
+                                                </Spinner.Suspense>
+                                            </AuthenticatedRoute>
+                                        }
+                                    />
+                                    <Route
+                                        path='/status/:id/*'
+                                        element={
+                                            <Spinner.Suspense>
+                                                <PublicServerStatus />
+                                            </Spinner.Suspense>
+                                        }
+                                    />
+                                    <Route
+                                        path='/*'
+                                        element={
+                                            <AuthenticatedRoute>
+                                                <Spinner.Suspense>
+                                                    <DashboardRouter />
+                                                </Spinner.Suspense>
+                                            </AuthenticatedRoute>
+                                        }
+                                    />
+                                    <Route path='*' element={<NotFound />} />
+                                </Routes>
+                            </SubuserPreviewFrame>
+                        </SubuserPreviewProvider>
                     </BrowserRouter>
                 </div>
             </StoreProvider>
-        </Invert>
+        </Theme>
     );
 }
 

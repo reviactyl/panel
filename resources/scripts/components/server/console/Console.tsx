@@ -6,10 +6,9 @@ import { SearchAddon } from '@xterm/addon-search';
 import { WebLinksAddon } from '@xterm/addon-web-links';
 import { Unicode11Addon } from '@xterm/addon-unicode11';
 import { ScrollDownHelperAddon } from '@/plugins/XtermScrollDownHelperAddon';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import { ServerContext } from '@/state/server';
 import { usePermissions } from '@/plugins/usePermissions';
-import { theme as th } from 'twin.macro';
 import useEventListener from '@/plugins/useEventListener';
 import { debounce } from 'debounce';
 import { usePersistedState } from '@/plugins/usePersistedState';
@@ -30,7 +29,7 @@ const terminalProps: ITerminalOptions = {
     cursorStyle: 'underline',
     allowTransparency: true,
     fontSize: 12,
-    fontFamily: th('fontFamily.mono'),
+    fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
     allowProposedApi: true,
     theme: theme,
 };
@@ -41,7 +40,7 @@ export default () => {
     const TERMINAL_PRELUDE = `\u001b[1m\u001b[33m${containerText} \u001b[0m`;
     const ref = useRef<HTMLDivElement>(null);
     const terminal = useMemo(() => new Terminal({ ...terminalProps }), []);
-    const fitAddon = new FitAddon();
+    const fitAddon = useMemo(() => new FitAddon(), []);
     const searchAddon = new SearchAddon();
     const searchBar = new SearchBarAddon(searchAddon);
     const webLinksAddon = new WebLinksAddon();
@@ -68,7 +67,7 @@ export default () => {
 
     const handleDaemonErrorOutput = (line: string) =>
         terminal.writeln(
-            TERMINAL_PRELUDE + '\u001b[1m\u001b[41m' + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m'
+            TERMINAL_PRELUDE + '\u001b[1m\u001b[41m' + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
         );
 
     const handlePowerChangeEvent = (state: string) =>
@@ -130,6 +129,31 @@ export default () => {
                 }
                 return true;
             });
+
+            if (ref.current) {
+                let lastY = 0;
+
+                ref.current.addEventListener(
+                    'touchstart',
+                    (e) => {
+                        lastY = e.touches[0]?.clientY ?? 0;
+                    },
+                    { passive: true },
+                );
+
+                ref.current.addEventListener(
+                    'touchmove',
+                    (e) => {
+                        const currentY = e.touches[0]?.clientY ?? lastY;
+                        const dy = lastY - currentY;
+                        lastY = currentY;
+                        const lines = Math.round(dy / (terminal.options.fontSize ?? 12));
+                        if (lines !== 0) terminal.scrollLines(lines);
+                        e.preventDefault(); // prvent scroll
+                    },
+                    { passive: false },
+                );
+            }
         }
     }, [terminal, connected]);
 
@@ -139,7 +163,7 @@ export default () => {
             if (terminal.element) {
                 fitAddon.fit();
             }
-        }, 100)
+        }, 100),
     );
 
     useEffect(() => {
@@ -178,7 +202,9 @@ export default () => {
         <div className={classNames(styles.terminal, 'relative')}>
             <SpinnerOverlay visible={!connected} size={'large'} />
             <div
-                className={classNames(styles.container, styles.overflows_container, { 'rounded-b': !canSendCommands })}
+                className={classNames(styles.container, styles.overflows_container, {
+                    'rounded-b': !canSendCommands,
+                })}
             >
                 <div className={'h-full'}>
                     <div id={styles.terminal} ref={ref} />
@@ -199,7 +225,7 @@ export default () => {
                     <div
                         className={classNames(
                             'text-gray-100 peer-focus:text-gray-50 peer-focus:animate-pulse',
-                            styles.command_icon
+                            styles.command_icon,
                         )}
                     >
                         <ChevronDoubleRightIcon className={'w-4 h-4'} />

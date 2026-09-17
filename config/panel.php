@@ -37,6 +37,8 @@ return [
 
     'auth' => [
         '2fa_required' => env('APP_2FA_REQUIRED', 0),
+        'passkey_login_requires_username' => env('PANEL_PASSKEY_LOGIN_REQUIRES_USERNAME', false),
+        'registration_enabled' => env('PANEL_REGISTRATION_ENABLED', true),
         '2fa' => [
             'bytes' => 32,
             'window' => env('APP_2FA_WINDOW', 4),
@@ -131,6 +133,7 @@ return [
 
     'files' => [
         'max_edit_size' => env('PANEL_FILES_MAX_EDIT_SIZE', 1024 * 1024 * 4),
+        'max_preview_state_size' => env('PANEL_FILES_MAX_PREVIEW_STATE_SIZE', 1024 * 1024 * 16),
     ],
 
     /*

@@ -13,9 +13,13 @@ return [
         'using-api-key' => 'Menggunakan Kunci API',
         'using-sftp' => 'Menggunakan SFTP',
     ],
+    'event' => [
+        'password-reset' => 'Pengaturan ulang kata sandi',
+    ],
     'auth' => [
         'fail' => 'Gagal masuk',
         'success' => 'Berhasil masuk',
+        'passkey' => 'Masuk menggunakan passkey',
         'password-reset' => 'Kata sandi diatur ulang',
         'reset-password' => 'Meminta pengaturan ulang kata sandi',
         'checkpoint' => 'Otentikasi dua faktor diminta',
@@ -27,10 +31,15 @@ return [
         ],
     ],
     'user' => [
+        'user' => [
+            'create' => 'Telah membuat pengguna baru :email',
+        ],
         'account' => [
             'email-changed' => 'Mengubah email dari :old menjadi :new',
             'password-changed' => 'Mengubah kata sandi',
             'language-changed' => 'Mengubah bahasa dari :old menjadi :new',
+            'file-editor-changed' => 'Mengubah editor berkas dari :old menjadi :new',
+            'avatar-changed' => 'Gaya avatar telah diubah dari :old menjadi :new',
         ],
         'api-key' => [
             'create' => 'Membuat kunci API baru :identifier',
@@ -43,6 +52,10 @@ return [
         'two-factor' => [
             'create' => 'Mengaktifkan otentikasi dua faktor',
             'delete' => 'Menonaktifkan otentikasi dua faktor',
+        ],
+        'passkey' => [
+            'create' => 'Telah mendaftarkan kode sandi baru',
+            'delete' => 'Kunci akses telah dihapus :id',
         ],
     ],
     'server' => [
@@ -123,6 +136,7 @@ return [
         'settings' => [
             'rename' => 'Mengubah nama server dari :old menjadi :new',
             'description' => 'Mengubah deskripsi server dari :old menjadi :new',
+            'category' => 'Kategori server telah diubah',
         ],
         'startup' => [
             'edit' => 'Mengubah variabel :variable dari ":old" menjadi ":new"',

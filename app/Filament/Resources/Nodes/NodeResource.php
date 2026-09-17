@@ -7,7 +7,7 @@ use App\Filament\Resources\Nodes\Pages\EditNode;
 use App\Filament\Resources\Nodes\Pages\ListNodes;
 use App\Filament\Resources\Nodes\RelationManagers\AllocationRelationManager;
 use App\Filament\Resources\Nodes\RelationManagers\ServersRelationManager;
-use App\Filament\Resources\Nodes\Schemas\NodeForm;
+use App\Filament\Resources\Nodes\Schemas\EditNodeForm;
 use App\Filament\Resources\Nodes\Tables\NodesTable;
 use App\Models\Node;
 use Filament\Resources\Resource;
@@ -58,7 +58,7 @@ class NodeResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
-        return NodeForm::configure($schema);
+        return EditNodeForm::configure($schema);
     }
 
     public static function table(Table $table): Table

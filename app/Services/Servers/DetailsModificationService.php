@@ -4,7 +4,7 @@ namespace App\Services\Servers;
 
 use App\Exceptions\Http\Connection\DaemonConnectionException;
 use App\Models\Server;
-use App\Repositories\Wings\DaemonRevocationRepository;
+use App\Repositories\Agent\DaemonRevocationRepository;
 use App\Traits\Services\ReturnsUpdatedModels;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Support\Arr;
@@ -39,7 +39,7 @@ class DetailsModificationService
             ])->saveOrFail();
 
             // If the owner_id value is changed we need to revoke any tokens that exist for the server
-            // on the Wings instance so that the old owner no longer has any permission to access the
+            // on the Agent instance so that the old owner no longer has any permission to access the
             // websockets.
             if (! $server->refresh()->user->is($original)) {
                 try {
@@ -48,7 +48,7 @@ class DetailsModificationService
                         [$server->uuid],
                     );
                 } catch (DaemonConnectionException $exception) {
-                    // Do nothing. A failure here is not ideal, but it is likely to be caused by Wings
+                    // Do nothing. A failure here is not ideal, but it is likely to be caused by Agent
                     // being offline, or in an entirely broken state. Remember, these tokens reset every
                     // few minutes by default, we're just trying to help it along a little quicker.
                 }

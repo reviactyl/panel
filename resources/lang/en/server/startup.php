@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Startup',
+    'read-only' => 'Read Only',
     'startup-command' => 'Startup Command',
     'docker-image' => 'Docker Image',
     'docker-info' => 'This is an advanced feature allowing you to select a Docker image to use when running this server instance.',

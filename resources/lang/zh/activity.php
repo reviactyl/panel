@@ -13,9 +13,13 @@ return [
         'using-api-key' => '使用 API 密钥',
         'using-sftp' => '使用 SFTP',
     ],
+    'event' => [
+        'password-reset' => '密码重置',
+    ],
     'auth' => [
         'fail' => '登录失败',
         'success' => '登录成功',
+        'passkey' => '使用密码密钥登录',
         'password-reset' => '密码已重置',
         'reset-password' => '请求重置密码',
         'checkpoint' => '请求双重认证',
@@ -27,10 +31,15 @@ return [
         ],
     ],
     'user' => [
+        'user' => [
+            'create' => '已创建新用户：email',
+        ],
         'account' => [
             'email-changed' => '邮箱已从 :old 更改为 :new',
             'password-changed' => '密码已更改',
             'language-changed' => '语言已从 :old 更改为 :new',
+            'file-editor-changed' => '将文件编辑器从 :old 更改为 :new',
+            'avatar-changed' => '将头像样式从 :old 更改为 :new',
         ],
         'api-key' => [
             'create' => '创建了新的 API 密钥 :identifier',
@@ -43,6 +52,10 @@ return [
         'two-factor' => [
             'create' => '启用了双重认证',
             'delete' => '禁用了双重认证',
+        ],
+        'passkey' => [
+            'create' => '已注册新的密钥',
+            'delete' => '已删除密钥 :id',
         ],
     ],
     'server' => [
@@ -74,7 +87,7 @@ return [
             'delete' => '删除了数据库 :name',
         ],
         'file' => [
-            'compress_one' => '压缩了 :directory:file',
+            'compress_one' => '压缩了 :directory:files.0',
             'compress_other' => '在 :directory 目录中压缩了 :count 个文件',
             'read' => '查看了 :file 的内容',
             'copy' => '创建了 :file 的一个副本',
@@ -123,6 +136,7 @@ return [
         'settings' => [
             'rename' => '将服务器名称从 :old 重命名为 :new',
             'description' => '将服务器描述从 :old 更改为 :new',
+            'category' => '更改了服务器类别',
         ],
         'startup' => [
             'edit' => '将 :variable 变量从 ":old" 更改为 ":new"',

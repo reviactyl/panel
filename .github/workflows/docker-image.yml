@@ -8,6 +8,8 @@ on:
     types:
       - published
 
+permissions: {}
+
 jobs:
   push:
     name: Push

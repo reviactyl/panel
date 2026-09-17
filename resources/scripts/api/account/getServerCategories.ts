@@ -15,8 +15,8 @@ export default (): Promise<ServerCategory[]> => {
                         color: datum.attributes.color,
                         createdAt: new Date(datum.attributes.created_at),
                         updatedAt: new Date(datum.attributes.updated_at),
-                    }))
-                )
+                    })),
+                ),
             )
             .catch(reject);
     });

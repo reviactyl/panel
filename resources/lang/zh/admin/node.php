@@ -5,6 +5,20 @@ return [
     'plural-label' => '节点',
 
     'sections' => [
+        'overview' => [
+            'title' => '概述',
+            'information-label' => '节点信息',
+            'version-label' => '代理版',
+            'architecture-label' => '建筑学',
+            'kernel-label' => '核心',
+            'cpus-label' => 'CPU线程',
+            'cpu-usage-label' => '中央处理器使用率',
+            'memory-usage-label' => '内存使用情况',
+            'disk-usage-label' => '磁盘使用情况',
+        ],
+        'tabs' => [
+            'title' => '节点配置',
+        ],
         'identity' => [
             'title' => '身份信息',
             'description' => '基本节点信息。',
@@ -22,15 +36,15 @@ return [
             'description' => '配置守护进程特定设置。',
         ],
         'configuration' => [
-            'title' => 'Configuration',
-            'config_description' => 'Configuration File',
-            'deploy_description' => 'Generate a custom deployment command that can be used to configure Wings on the target server.',
+            'title' => '配置',
+            'config_description' => '配置文件',
+            'deploy_description' => '生成可用于在目标服务器上配置代理的自定义部署命令。',
         ],
     ],
 
     'fields' => [
         'uuid' => [
-            'label' => 'UUID',
+            'label' => '通用唯一标识符',
         ],
         'public' => [
             'label' => '公开',
@@ -51,7 +65,7 @@ return [
             'helper' => '此节点所属的区域。',
         ],
         'fqdn' => [
-            'label' => 'FQDN',
+            'label' => '完全合格域名',
             'placeholder' => 'node.example.com',
             'helper' => '节点的完整限定域名或 IP 地址。',
         ],
@@ -90,7 +104,6 @@ return [
         ],
         'daemon_base' => [
             'label' => '基础目录',
-            'placeholder' => '/home/daemon-files',
             'helper' => '服务器文件存储的目录。',
         ],
         'daemon_listen' => [
@@ -111,15 +124,14 @@ return [
     ],
 
     'table' => [
-        'health' => 'Health',
+        'health' => '健康',
         'health_http_status' => 'HTTP :status',
-        'health_error' => ':error',
-        'health_check_console' => 'check browser console',
+        'health_check_console' => '检查浏览器控制台',
         'id' => 'ID',
-        'uuid' => 'UUID',
+        'uuid' => '通用唯一标识符',
         'name' => '名称',
         'location' => '区域',
-        'fqdn' => 'FQDN',
+        'fqdn' => '完全合格域名',
         'scheme' => '协议',
         'public' => '公开',
         'behind_proxy' => '位于代理后',
@@ -138,12 +150,12 @@ return [
     ],
 
     'filters' => [
-        'public' => 'Public',
-        'maintenance' => 'Maintenance',
-        'public_true' => 'Public',
-        'public_false' => 'Private',
-        'maintenance_true' => 'Under Maintenance',
-        'maintenance_false' => 'Active',
+        'public' => '民众',
+        'maintenance' => '维护',
+        'public_true' => '民众',
+        'public_false' => '私人的',
+        'maintenance_true' => '维护中',
+        'maintenance_false' => '积极的',
     ],
 
     'actions' => [
@@ -151,17 +163,27 @@ return [
         'edit' => '编辑',
         'delete' => '删除',
         'view' => '查看',
+        'random' => '随机的',
+        'view_monitoring' => '查看监控',
     ],
 
     'deployment' => [
-        'generate_label' => 'Generate Deployment Token',
-        'modal_heading' => 'Auto-Deploy Command',
-        'modal_description' => 'Run this command on your node to automatically configure Wings.',
-        'modal_close' => 'Close',
-        'command_label' => 'Deployment Command',
-        'command_helper' => 'Copy and run this command on your node server.',
-        'token_success' => 'Token Generated Successfully',
-        'token_success_body' => 'Copy and run the command below on your node.',
+        'generate_label' => '生成部署令牌',
+        'modal_heading' => '自动部署命令',
+        'modal_description' => '在您的节点上运行此命令以自动配置 Agent。',
+        'modal_close' => '关闭',
+        'command_label' => '部署命令',
+        'command_helper' => '在节点服务器上复制并运行此命令。',
+        'token_success' => '令牌生成成功',
+        'token_success_body' => '在您的节点上复制并运行以下命令。',
+        'save_first' => '请先保存节点。',
+        'auto_generated_key' => '自动生成节点部署密钥。',
+        'error' => '生成令牌时出错。请再试一次。',
+    ],
+
+    'general' => [
+        'na' => '不适用',
+        'unavailable' => '不可用',
     ],
 
     'messages' => [
@@ -174,7 +196,7 @@ return [
     'allocations' => [
         'label' => '分配',
         'table' => [
-            'ip' => 'IP',
+            'ip' => '知识产权',
             'port' => '端口',
             'alias' => '别名',
             'server' => '服务器',

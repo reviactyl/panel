@@ -5,8 +5,13 @@ return [
         'dashboard' => 'Dashboard',
         'logout' => 'Logout',
     ],
+    'sidebar' => [
+        'more' => 'More',
+        'extensions' => 'Extensions',
+    ],
     'account' => [
         'overview' => 'Account Overview',
+        'passkeys' => 'Passkeys',
         'api' => 'API Keys',
         'ssh' => 'SSH Keys',
         'activity' => 'Activity',

@@ -32,20 +32,20 @@ SOFTWARE.
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta name="robots" content="noindex">
-        <meta name="title" content="{{ $reviactylConfiguration['site_title'] }}" />
-        <meta name="description" content="{{ $reviactylConfiguration['site_description'] }}" />
+        <meta name="title" content="{{ $panelConfiguration['site_title'] }}" />
+        <meta name="description" content="{{ $panelConfiguration['site_description'] }}" />
         <link rel="icon" type="image/x-icon" href="{{ $siteConfiguration['icon'] }}">
         @if ($siteConfiguration['pwa'])
         <link rel="manifest" href="{{ url('manifest.json') }}">
         <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicons/apple-touch-icon.png') }}">
         <meta name="mobile-web-app-capable" content="yes">
         @endif
-        <meta name="theme-color" content="{{ $reviactylConfiguration['site_color'] }}" />
+        <meta name="theme-color" content="{{ $panelConfiguration['site_color'] }}" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="{{ config('app.url', 'https://localhost') }}" />
-        <meta property="og:title" content="{{ $reviactylConfiguration['site_title'] }}" />
-        <meta property="og:description" content="{{ $reviactylConfiguration['site_description'] }}" />
-        <meta property="og:image" content="{{ $reviactylConfiguration['site_image'] }}" />
+        <meta property="og:title" content="{{ $panelConfiguration['site_title'] }}" />
+        <meta property="og:description" content="{{ $panelConfiguration['site_description'] }}" />
+        <meta property="og:image" content="{{ $panelConfiguration['site_image'] }}" />
     @show
 
     @section('user-data')
@@ -59,9 +59,9 @@ SOFTWARE.
                 window.SiteConfiguration = {!! json_encode($siteConfiguration) !!};
             </script>
         @endif
-        @if (!empty($reviactylConfiguration))
+        @if (!empty($panelConfiguration))
             <script>
-                window.ReviactylConfiguration = {!! json_encode($reviactylConfiguration) !!};
+                window.PanelConfiguration = {!! json_encode($panelConfiguration) !!};
             </script>
         @endif
         <script>
@@ -81,48 +81,71 @@ SOFTWARE.
         </script>
     @show
     @php
-    use Illuminate\Support\Str;
-        function reviactyl($hex)
-        {
-            $hex = Str::replace('#', '', $hex);
+        $toHex = function ($hex) {
+            $hex = str_replace('#', '', $hex);
+
             if (strlen($hex) === 3) {
-                $r = hexdec(Str::repeat($hex[0], 2));
-                $g = hexdec(Str::repeat($hex[1], 2));
-                $b = hexdec(Str::repeat($hex[2], 2));
+                $r = hexdec(str_repeat($hex[0], 2));
+                $g = hexdec(str_repeat($hex[1], 2));
+                $b = hexdec(str_repeat($hex[2], 2));
             } else {
                 $r = hexdec(substr($hex, 0, 2));
                 $g = hexdec(substr($hex, 2, 2));
                 $b = hexdec(substr($hex, 4, 2));
             }
             return "$r $g $b";
-        }
+        };
     @endphp
     <style>
         @import url('//fonts.googleapis.com/css?family=Rubik:300,400,500&display=swap');
         @import url('//fonts.googleapis.com/css?family=IBM+Plex+Mono|IBM+Plex+Sans:500&display=swap');
-        @import url('//fonts.googleapis.com/css2?family={{ $reviactylConfiguration['fontFamily'] }}:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+        @import url('//fonts.googleapis.com/css2?family={{ $panelConfiguration['fontFamily'] }}:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
         :root {
-            --background: url({{ $reviactylConfiguration['background'] }});
-            --radius: {{ $reviactylConfiguration['radius'] }};
-            --font-family: "{{ $reviactylConfiguration['fontFamily'] }}", sans-serif;
-            --color-primary: {{ reviactyl($reviactylConfiguration['colorPrimary']) }};
-            --color-success: {{ reviactyl($reviactylConfiguration['colorSuccess']) }};
-            --color-danger: {{ reviactyl($reviactylConfiguration['colorDanger']) }};
-            --color-secondary: {{ reviactyl($reviactylConfiguration['colorSecondary']) }};
-            --color-discord: {{ reviactyl($reviactylConfiguration['colorDiscord']) }};
-            --color-50: {{ reviactyl($reviactylConfiguration['color50']) }};
-            --color-100: {{ reviactyl($reviactylConfiguration['color100']) }};
-            --color-200: {{ reviactyl($reviactylConfiguration['color200']) }};
-            --color-300: {{ reviactyl($reviactylConfiguration['color300']) }};
-            --color-400: {{ reviactyl($reviactylConfiguration['color400']) }};
-            --color-500: {{ reviactyl($reviactylConfiguration['color500']) }};
-            --color-600: {{ reviactyl($reviactylConfiguration['color600']) }};
-            --color-700: {{ reviactyl($reviactylConfiguration['color700']) }};
-            --color-800: {{ reviactyl($reviactylConfiguration['color800']) }};
-            --color-900: {{ reviactyl($reviactylConfiguration['color900']) }};
+            --background: url({{ $panelConfiguration['background'] }});
+            --radius: {{ $panelConfiguration['radius'] }};
+            --font-family: "{{ $panelConfiguration['fontFamily'] }}", sans-serif;
+            --color-primary: {{ $toHex($panelConfiguration['colorPrimary']) }};
+            --color-success: {{ $toHex($panelConfiguration['colorSuccess']) }};
+            --color-danger: {{ $toHex($panelConfiguration['colorDanger']) }};
+            --color-secondary: {{ $toHex($panelConfiguration['colorSecondary']) }};
+            --color-discord: {{ $toHex($panelConfiguration['colorDiscord']) }};
+            --color-50: {{ $toHex($panelConfiguration['color50L']) }};
+            --color-100: {{ $toHex($panelConfiguration['color100L']) }};
+            --color-200: {{ $toHex($panelConfiguration['color200L']) }};
+            --color-300: {{ $toHex($panelConfiguration['color300L']) }};
+            --color-400: {{ $toHex($panelConfiguration['color400L']) }};
+            --color-500: {{ $toHex($panelConfiguration['color500L']) }};
+            --color-600: {{ $toHex($panelConfiguration['color600L']) }};
+            --color-700: {{ $toHex($panelConfiguration['color700L']) }};
+            --color-800: {{ $toHex($panelConfiguration['color800L']) }};
+            --color-900: {{ $toHex($panelConfiguration['color900L']) }};
+            --color-950: {{ $toHex($panelConfiguration['color950L']) }};
+            --color-muted-text: {{ $toHex($panelConfiguration['colorMutedText']) }};
+        }
+
+        .dark {
+            --color-50: {{ $toHex($panelConfiguration['color50']) }};
+            --color-100: {{ $toHex($panelConfiguration['color100']) }};
+            --color-200: {{ $toHex($panelConfiguration['color200']) }};
+            --color-300: {{ $toHex($panelConfiguration['color300']) }};
+            --color-400: {{ $toHex($panelConfiguration['color400']) }};
+            --color-500: {{ $toHex($panelConfiguration['color500']) }};
+            --color-600: {{ $toHex($panelConfiguration['color600']) }};
+            --color-700: {{ $toHex($panelConfiguration['color700']) }};
+            --color-800: {{ $toHex($panelConfiguration['color800']) }};
+            --color-900: {{ $toHex($panelConfiguration['color900']) }};
+            --color-950: {{ $toHex($panelConfiguration['color950']) }};
         }
     </style>
+
+    <script>
+        (function () {
+            var t = localStorage.getItem('theme') || 'system';
+            var dark = t === 'dark' || (t === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.classList.toggle('dark', dark);
+        })();
+    </script>
 
     @yield('assets')
 
@@ -132,12 +155,19 @@ SOFTWARE.
     @vite('resources/scripts/index.tsx')
 </head>
 
-<body class="{{ $css['body'] ?? 'bg-neutral-50' }}" style="{{ $css['style'] ?? '' }}">
+<body class="bg-gray-950 text-gray-100">
     @section('content')
         @yield('above-container')
         @yield('container')
         @yield('below-container')
     @show
 </body>
+
+<!--
+ __
+( o>  <( meow~ g.. g.. g.. )
+///\
+\V_/_
+-->
 
 </html>
