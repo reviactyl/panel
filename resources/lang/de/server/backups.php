@@ -15,6 +15,8 @@ return [
     'delete-message' => 'Dies ist ein dauerhafter Vorgang. Das Backup kann nach dem Löschen nicht mehr wiederhergestellt werden.',
     'download' => 'Herunterladen',
     'restore' => 'Wiederherstellen',
+    'rename' => 'Rename',
+    'cancel' => 'Cancel',
     'unlock' => 'Entsperren',
     'lock' => 'Sperren',
     'delete' => 'Löschen',
