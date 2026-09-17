@@ -7,7 +7,6 @@ use App\Jobs\Administration\RefreshUserActivityLocationsJob;
 use App\Models\User;
 use App\Services\Helpers\GeoIPService;
 use Carbon\CarbonInterface;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Mockery\MockInterface;
@@ -15,8 +14,6 @@ use Tests\Integration\IntegrationTestCase;
 
 class UserActivityWidgetTest extends IntegrationTestCase
 {
-    use RefreshDatabase;
-
     public function test_country_percentages_total_one_hundred(): void
     {
         Cache::put(RefreshUserActivityLocationsJob::CACHE_KEY, [
