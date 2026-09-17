@@ -126,8 +126,8 @@ return [
     'table' => [
         'health' => 'Sức khỏe',
         'health_http_status' => ':status HTTP',
-        'health_agent_outdated' => 'Agent outdated. v:version is available. Click here to update Agent.',
         'health_check_console' => 'kiểm tra bảng điều khiển trình duyệt',
+        'health_agent_outdated' => 'Agent outdated. v:version is available. Click here to update Agent.',
         'id' => 'ID',
         'uuid' => 'UUID',
         'name' => 'Tên',
