@@ -126,6 +126,7 @@ return [
     'table' => [
         'health' => 'Kesehatan',
         'health_http_status' => 'HTTP :status',
+        'health_agent_outdated' => 'Agent outdated. v:version is available. Click here to update Agent.',
         'health_check_console' => 'periksa konsol browser',
         'id' => 'ID',
         'uuid' => 'UUID',
