@@ -15,6 +15,8 @@ return [
     'delete-message' => 'هذه عملية دائمة. لا يمكن استرداد النسخة الاحتياطية بمجرد حذفها.',
     'download' => 'تحميل',
     'restore' => 'يعيد',
+    'rename' => 'Rename',
+    'cancel' => 'Cancel',
     'unlock' => 'فتح',
     'lock' => 'قفل',
     'delete' => 'يمسح',
