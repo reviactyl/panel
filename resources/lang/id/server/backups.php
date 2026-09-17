@@ -15,6 +15,8 @@ return [
     'delete-message' => 'Ini adalah operasi permanen. Backup tidak dapat dipulihkan setelah dihapus.',
     'download' => 'Unduh',
     'restore' => 'Pulihkan',
+    'rename' => 'Rename',
+    'cancel' => 'Cancel',
     'unlock' => 'Buka Kunci',
     'lock' => 'Kunci',
     'delete' => 'Hapus',
