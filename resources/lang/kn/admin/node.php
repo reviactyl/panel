@@ -126,8 +126,8 @@ return [
     'table' => [
         'health' => 'ಆರೋಗ್ಯ',
         'health_http_status' => 'HTTP :status',
-        'health_agent_outdated' => 'Agent outdated. v:version is available. Click here to update Agent.',
         'health_check_console' => 'ಬ್ರೌಸರ್ ಕನ್ಸೋಲ್ ಅನ್ನು ಪರಿಶೀಲಿಸಿ',
+        'health_agent_outdated' => 'Agent outdated. v:version is available. Click here to update Agent.',
         'id' => 'ID',
         'uuid' => 'UUID',
         'name' => 'ಹೆಸರು',

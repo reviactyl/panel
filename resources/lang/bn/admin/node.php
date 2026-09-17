@@ -126,8 +126,8 @@ return [
     'table' => [
         'health' => 'স্বাস্থ্য',
         'health_http_status' => 'HTTP :status',
-        'health_agent_outdated' => 'Agent outdated. v:version is available. Click here to update Agent.',
         'health_check_console' => 'ব্রাউজার কনসোল পরীক্ষা করুন',
+        'health_agent_outdated' => 'Agent outdated. v:version is available. Click here to update Agent.',
         'id' => 'আইডি',
         'uuid' => 'UUID',
         'name' => 'নাম',

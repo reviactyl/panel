@@ -15,6 +15,8 @@ return [
     'delete-message' => 'Il s\'agit d\'une opération permanente. La sauvegarde ne peut pas être récupérée une fois supprimée.',
     'download' => 'Télécharger',
     'restore' => 'Restaurer',
+    'rename' => 'Rename',
+    'cancel' => 'Cancel',
     'unlock' => 'Déverouiller',
     'lock' => 'Verrouiller',
     'delete' => 'Supprimée',

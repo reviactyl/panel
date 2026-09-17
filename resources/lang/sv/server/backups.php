@@ -15,6 +15,8 @@ return [
     'delete-message' => 'Detta är en permanent åtgärd. Säkerhetskopian kan inte återställas när den väl har raderats.',
     'download' => 'Ladda ner',
     'restore' => 'Återställ',
+    'rename' => 'Rename',
+    'cancel' => 'Cancel',
     'unlock' => 'Lås upp',
     'lock' => 'Lås',
     'delete' => 'Radera',

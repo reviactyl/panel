@@ -15,6 +15,8 @@ return [
     'delete-message' => 'এটি একটি স্থায়ী অপারেশন। একবার মুছে ফেললে ব্যাকআপ পুনরুদ্ধার করা যাবে না।',
     'download' => 'ডাউনলোড',
     'restore' => 'পুনরুদ্ধার',
+    'rename' => 'Rename',
+    'cancel' => 'Cancel',
     'unlock' => 'আনলক',
     'lock' => 'লক',
     'delete' => 'মুছে ফেলুন',
