@@ -1,52 +1,75 @@
-import Modal, { RequiredModalProps } from '@/reviactyl/elements/Modal';
 import { Form, Formik, FormikHelpers } from 'formik';
 import Field from '@/reviactyl/elements/Field';
-import Button from '@/reviactyl/elements/Button';
+import { Button } from '@/reviactyl/components/button';
 import { ServerBackup } from '@/api/server/types';
 import { useTranslation } from 'react-i18next';
+import { Dialog } from '@/reviactyl/elements/dialog';
+import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 
 interface FormikValues {
     name: string;
 }
 
-interface Props extends RequiredModalProps {
+interface Props {
+    visible: boolean;
+    onDismissed: () => void;
     backup: ServerBackup;
     onRenamed: (name: string) => Promise<void>;
 }
 
-const RenameBackupModal = ({ backup, onRenamed, ...props }: Props) => {
+const RenameBackupModal = ({ visible, onDismissed, backup, onRenamed }: Props) => {
     const { t } = useTranslation('server/backups');
 
     const submit = ({ name }: FormikValues, { setSubmitting }: FormikHelpers<FormikValues>) => {
-        onRenamed(name)
-            .then(() => props.onDismissed())
+        return onRenamed(name)
+            .then(() => onDismissed())
             .catch(() => setSubmitting(false));
     };
 
     return (
         <Formik onSubmit={submit} enableReinitialize initialValues={{ name: backup.name }}>
-            {({ isSubmitting, values }) => (
-                <Modal {...props} dismissable={!isSubmitting} showSpinnerOverlay={isSubmitting}>
+            {({ isSubmitting, resetForm, submitForm, values }) => (
+                <Dialog
+                    open={visible}
+                    onClose={() => {
+                        resetForm();
+                        onDismissed();
+                    }}
+                    title={t('rename')}
+                    hideCloseIcon={isSubmitting}
+                    preventExternalClose={isSubmitting}
+                >
+                    <SpinnerOverlay visible={isSubmitting} />
                     <Form className='m-0'>
-                        <div className='flex flex-wrap items-end'>
-                            <div className='w-full sm:mr-4 sm:flex-1'>
-                                <Field
-                                    type={'string'}
-                                    id={'backup_name'}
-                                    name={'name'}
-                                    label={t('backup-name')}
-                                    description={t('name-description')}
-                                    autoFocus
-                                />
-                            </div>
-                            <div className='mt-4 w-full sm:mt-0 sm:w-auto'>
-                                <Button className='w-full' disabled={values.name.trim().length < 1}>
-                                    Rename
-                                </Button>
-                            </div>
-                        </div>
+                        <Field
+                            type={'text'}
+                            id={'backup_name'}
+                            name={'name'}
+                            label={t('backup-name')}
+                            description={t('name-description')}
+                            autoFocus
+                        />
                     </Form>
-                </Modal>
+                    <Dialog.Footer>
+                        <Button.Text
+                            className='w-full sm:w-auto'
+                            onClick={() => {
+                                resetForm();
+                                onDismissed();
+                            }}
+                            disabled={isSubmitting}
+                        >
+                            {t('cancel')}
+                        </Button.Text>
+                        <Button
+                            className='w-full sm:w-auto'
+                            onClick={submitForm}
+                            disabled={isSubmitting || !values.name?.trim()}
+                        >
+                            {t('rename')}
+                        </Button>
+                    </Dialog.Footer>
+                </Dialog>
             )}
         </Formik>
     );

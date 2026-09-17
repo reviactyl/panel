@@ -44,4 +44,23 @@ class RenameBackupTest extends ClientApiIntegrationTestCase
         $this->assertSame('New Backup Name', $backup->name);
         $this->assertActivityFor('server:backup.rename', $user, [$backup, $backup->server]);
     }
+
+    public function test_unchanged_backup_alias_does_not_log_rename_activity(): void
+    {
+        Event::fake([ActivityLogged::class]);
+
+        [$user, $server] = $this->generateTestAccount([Permission::ACTION_BACKUP_CREATE]);
+
+        $backup = Backup::factory()->create([
+            'server_id' => $server->id,
+            'name' => 'Existing Backup Name',
+        ]);
+
+        $this->actingAs($user)
+            ->postJson($this->link($backup, '/rename'), ['name' => 'Existing Backup Name'])
+            ->assertOk()
+            ->assertJsonPath('attributes.name', 'Existing Backup Name');
+
+        Event::assertNotDispatched(ActivityLogged::class);
+    }
 }

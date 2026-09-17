@@ -137,11 +137,13 @@ class BackupController extends ClientApiController
             'name' => ['required', 'string', 'max:191'],
         ]);
 
-        $backup->update([
-            'name' => $data['name'],
-        ]);
+        if ($data['name'] !== $backup->name) {
+            $backup->update([
+                'name' => $data['name'],
+            ]);
 
-        Activity::event('server:backup.rename')->subject($backup)->property('name', $backup->name)->log();
+            Activity::event('server:backup.rename')->subject($backup)->property('name', $backup->name)->log();
+        }
 
         return $this->fractal->item($backup)
             ->transformWith($this->getTransformer(BackupTransformer::class))

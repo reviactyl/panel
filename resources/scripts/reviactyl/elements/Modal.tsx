@@ -92,7 +92,7 @@ function Modal({
                 >
                     {isDismissable && (
                         <div
-                            className='absolute top-0 right-0 m-2 cursor-pointer p-2 text-gray-200 opacity-70 transition-all duration-150 ease-linear hover:rotate-90 hover:opacity-100 [&>svg]:h-6 [&>svg]:w-6'
+                            className='absolute -top-10 right-0 cursor-pointer p-2 text-white opacity-50 transition-all duration-150 ease-linear hover:rotate-90 hover:opacity-100 [&>svg]:h-6 [&>svg]:w-6'
                             onClick={() => {
                                 setRender(false);
                                 onDismissed();

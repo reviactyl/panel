@@ -131,6 +131,10 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
     };
 
     const onRename = (name: string) => {
+        if (name === backup.name) {
+            return Promise.resolve();
+        }
+
         clearFlashes('backups');
 
         return renameBackup(uuid, backup.uuid, name)
@@ -163,7 +167,6 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
         <>
             <RenameBackupModal
                 visible={modal === 'rename'}
-                appear
                 backup={backup}
                 onDismissed={() => setModal('')}
                 onRenamed={onRename}
@@ -229,7 +232,7 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
                         <Can action={'backup.create'}>
                             <DropdownButtonRow onClick={() => setModal('rename')}>
                                 <FaPen className={'text-xs inline-block w-[1.25em]'} />
-                                <span className='ml-2'>Rename</span>
+                                <span className='ml-2'>{t('rename')}</span>
                             </DropdownButtonRow>
                         </Can>
                         <Can action={'backup.download'}>
