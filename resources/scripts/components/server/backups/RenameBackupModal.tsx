@@ -21,7 +21,15 @@ const RenameBackupModal = ({ visible, onDismissed, backup, onRenamed }: Props) =
     const { t } = useTranslation('server/backups');
 
     const submit = ({ name }: FormikValues, { setSubmitting }: FormikHelpers<FormikValues>) => {
-        return onRenamed(name)
+        const trimmedName = name.trim();
+
+        if (!trimmedName) {
+            setSubmitting(false);
+
+            return;
+        }
+
+        return onRenamed(trimmedName)
             .then(() => onDismissed())
             .catch(() => setSubmitting(false));
     };
