@@ -1,4 +1,4 @@
-import { lazy } from 'react';
+import { lazy, useEffect } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { StoreProvider } from 'easy-peasy';
 import { store } from '@/state';
@@ -10,7 +10,7 @@ import AuthenticatedRoute from '@/reviactyl/elements/AuthenticatedRoute';
 import { ServerContext } from '@/state/server';
 import '@/assets/tailwind.css';
 import Spinner from '@/reviactyl/elements/Spinner';
-import { ThemeLoader } from '@/reviactyl/ui/ThemeEngine';
+import { refreshSelectedTheme, ThemeLoader } from '@/reviactyl/ui/ThemeEngine';
 import { Invert } from '@/reviactyl/ui/SmartInvert';
 import { LocaleLoader } from '@/reviactyl/ui/LanguageSwitcher';
 import { SubuserPreviewProvider } from '@/context/SubuserPreviewContext';
@@ -40,6 +40,109 @@ interface ExtendedWindow extends Window {
         created_at: string;
     };
 }
+
+const previewColorKeys = [
+    'colorPrimary',
+    'colorSuccess',
+    'colorDanger',
+    'colorSecondary',
+    'color50',
+    'color100',
+    'color200',
+    'color300',
+    'color400',
+    'color500',
+    'color600',
+    'color700',
+    'color800',
+    'color900',
+    'color950',
+] as const;
+
+const toRgbChannels = (hex: string): string | null => {
+    const match = hex.match(/^#([\da-f]{3}|[\da-f]{6})$/i);
+    if (!match) return null;
+
+    const matchedHex = match[1];
+    if (!matchedHex) return null;
+
+    const value = matchedHex.length === 3 ? matchedHex.replace(/(.)/g, '$1$1') : matchedHex;
+    const number = Number.parseInt(value, 16);
+
+    return `${(number >> 16) & 255} ${(number >> 8) & 255} ${number & 255}`;
+};
+
+const DesignifyPreviewBridge = () => {
+    useEffect(() => {
+        if (window.self === window.top) return;
+
+        const handlePreviewUpdate = (event: MessageEvent) => {
+            if (event.origin !== window.location.origin || event.source !== window.parent) return;
+            if (event.data?.type !== 'reviactyl:designify-preview' || !event.data.settings) return;
+
+            const settings = event.data.settings as DesignifySettings & Record<string, unknown>;
+            const existingSettings = (window.PanelConfiguration ?? {}) as DesignifySettings & Record<string, unknown>;
+            const nextSettings = { ...existingSettings, ...settings } as DesignifySettings & Record<string, unknown>;
+
+            for (let index = 1; index <= 7; index += 1) {
+                const key = `theme${index}`;
+                const existingTheme = existingSettings[key];
+                const incomingTheme = settings[key];
+                if (typeof incomingTheme === 'object' && incomingTheme !== null && !Array.isArray(incomingTheme)) {
+                    nextSettings[key] = {
+                        ...(typeof existingTheme === 'object' && existingTheme !== null && !Array.isArray(existingTheme)
+                            ? existingTheme
+                            : {}),
+                        ...incomingTheme,
+                    };
+                }
+            }
+
+            window.PanelConfiguration = nextSettings;
+            store.getActions().designify.setDesignify(nextSettings);
+
+            const root = document.documentElement;
+            previewColorKeys.forEach((key) => {
+                const value = settings[key];
+                const channels = typeof value === 'string' ? toRgbChannels(value) : null;
+                const property = `--color-${key.replace('color', '').toLowerCase()}`;
+                if (channels) {
+                    root.style.setProperty(property, channels);
+                } else {
+                    root.style.removeProperty(property);
+                }
+            });
+
+            if (settings.background === 'none') {
+                root.style.setProperty('--background', 'none');
+            } else if (typeof settings.background === 'string' && settings.background.length > 0) {
+                root.style.setProperty('--background', `url(${JSON.stringify(settings.background)})`);
+            } else {
+                root.style.removeProperty('--background');
+            }
+            if (typeof settings.radius === 'string' && CSS.supports('border-radius', settings.radius)) {
+                root.style.setProperty('--radius', settings.radius);
+            } else {
+                root.style.removeProperty('--radius');
+            }
+            if (typeof settings.fontFamily === 'string' && settings.fontFamily.length > 0) {
+                root.style.setProperty('--font-family', `"${settings.fontFamily.replaceAll('+', ' ')}", sans-serif`);
+            } else {
+                root.style.removeProperty('--font-family');
+            }
+
+            refreshSelectedTheme();
+            window.dispatchEvent(new Event('reviactyl:designify-config-updated'));
+        };
+
+        window.addEventListener('message', handlePreviewUpdate);
+        window.parent.postMessage({ type: 'reviactyl:designify-preview-ready' }, window.location.origin);
+
+        return () => window.removeEventListener('message', handlePreviewUpdate);
+    }, []);
+
+    return null;
+};
 
 /**
  * Renders the application shell, global providers, and route tree.
@@ -78,16 +181,12 @@ function App() {
     return (
         <Invert>
             <StoreProvider store={store}>
+                <DesignifyPreviewBridge />
                 <ThemeLoader />
                 <LocaleLoader />
                 <ProgressBar />
                 <div className='mx-auto w-auto'>
-                    <BrowserRouter
-                        future={{
-                            v7_startTransition: true,
-                            v7_relativeSplatPath: true,
-                        }}
-                    >
+                    <BrowserRouter>
                         <SubuserPreviewProvider>
                             <SubuserPreviewFrame>
                                 <Routes>

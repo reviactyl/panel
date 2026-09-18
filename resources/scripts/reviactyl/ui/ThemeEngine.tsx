@@ -85,6 +85,13 @@ const applyTheme = (colors: ThemeData) => {
     });
 };
 
+export const refreshSelectedTheme = () => {
+    const themeName = getCookie('theme');
+    if (themeName && paletteKeys.includes(themeName as PaletteKey)) {
+        applyTheme(getThemeFromConfig(themeName as PaletteKey));
+    }
+};
+
 const clearTheme = () => {
     if (typeof document === 'undefined') return;
     const root = document.documentElement;
@@ -103,20 +110,29 @@ const ThemeSelector = () => {
     useEffect(() => {
         if (typeof window === 'undefined') return;
 
-        const loadedThemes: Record<PaletteKey, ThemeData> = {} as any;
-        for (const key of paletteKeys) {
-            loadedThemes[key] = getThemeFromConfig(key);
-        }
-        setThemes(loadedThemes);
+        const loadThemes = (preserveBaseColors = false) => {
+            const loadedThemes: Record<PaletteKey, ThemeData> = {} as any;
+            for (const key of paletteKeys) {
+                loadedThemes[key] = getThemeFromConfig(key);
+            }
+            setThemes(loadedThemes);
 
-        const saved = getCookie('theme');
-        if (saved && paletteKeys.includes(saved as PaletteKey)) {
-            applyTheme(loadedThemes[saved as PaletteKey]);
-            setSelected(saved as PaletteKey);
-        } else {
-            clearTheme();
-            setSelected('default');
-        }
+            const saved = getCookie('theme');
+            if (saved && paletteKeys.includes(saved as PaletteKey)) {
+                applyTheme(loadedThemes[saved as PaletteKey]);
+                setSelected(saved as PaletteKey);
+            } else {
+                if (!preserveBaseColors) clearTheme();
+                setSelected('default');
+            }
+        };
+
+        const handleConfigUpdate = () => loadThemes(true);
+
+        loadThemes();
+        window.addEventListener('reviactyl:designify-config-updated', handleConfigUpdate);
+
+        return () => window.removeEventListener('reviactyl:designify-config-updated', handleConfigUpdate);
     }, []);
 
     const handleThemeChange = (theme: 'default' | PaletteKey) => {
@@ -174,11 +190,7 @@ export const ThemeLoader = () => {
     useEffect(() => {
         if (typeof window === 'undefined') return;
 
-        const themeName = getCookie('theme');
-        if (themeName && paletteKeys.includes(themeName as PaletteKey)) {
-            const theme = getThemeFromConfig(themeName as PaletteKey);
-            applyTheme(theme);
-        }
+        refreshSelectedTheme();
     }, []);
 
     return null;
