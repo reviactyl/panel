@@ -15,6 +15,8 @@ return [
     'delete-message' => 'Bu kalıcı bir işlemdir. Yedek silindikten sonra geri kurtarılamaz.',
     'download' => 'İndir',
     'restore' => 'Geri Yükle',
+    'rename' => 'Rename',
+    'cancel' => 'Cancel',
     'unlock' => 'Kilidi Aç',
     'lock' => 'Kilitle',
     'delete' => 'Sil',

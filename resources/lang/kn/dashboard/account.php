@@ -19,7 +19,7 @@ return [
         'customization' => 'ಅನುಗುಣಗೊಳಿಸುವಿಕೆ',
         'language' => 'ಪ್ಯಾನೆಲ್ ಭಾಷೆ',
         'editor' => 'ಆದ್ಯತೆಯ ಫೈಲ್ ಎಡಿಟರ್',
-        'smart-invert' => 'ಸ್ಮಾರ್ಟ್ ಇನ್‌ವರ್ಟ್',
+        'theme-toggle' => 'Theme Toggle',
         'on' => 'ಆನ್',
         'off' => 'ಆಫ್',
         'loading' => 'ಲೋಡ್ ಆಗುತ್ತಿದೆ...',

@@ -20,13 +20,12 @@ const SpinnerElement = ({ size = 'base', isBlue, className }: Pick<Props, 'size'
                 : size === 'large'
                   ? 'h-16 w-16 border-[6px]'
                   : 'h-8 w-8 border-[3px]',
+            isBlue ? 'border-blue-200 border-t-blue-600' : 'border-gray-700 border-t-gray-300',
             className,
         ]
             .filter(Boolean)
             .join(' ')}
         style={{
-            borderColor: isBlue ? 'hsla(212, 92%, 43%, 0.2)' : 'rgba(255, 255, 255, 0.2)',
-            borderTopColor: isBlue ? 'hsl(212, 92%, 43%)' : 'rgb(255, 255, 255)',
             animationTimingFunction: 'cubic-bezier(0.55, 0.25, 0.25, 0.7)',
         }}
     />

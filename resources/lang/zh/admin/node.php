@@ -127,6 +127,7 @@ return [
         'health' => '健康',
         'health_http_status' => 'HTTP :status',
         'health_check_console' => '检查浏览器控制台',
+        'health_agent_outdated' => 'Agent outdated. v:version is available. Click here to update Agent.',
         'id' => 'ID',
         'uuid' => '通用唯一标识符',
         'name' => '名称',

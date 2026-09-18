@@ -15,6 +15,8 @@ return [
     'delete-message' => 'यह एक स्थायी क्रिया है। बैकअप हटाने के बाद पुनर्प्राप्त नहीं किया जा सकता।',
     'download' => 'डाउनलोड',
     'restore' => 'पुनर्स्थापित करें',
+    'rename' => 'Rename',
+    'cancel' => 'Cancel',
     'unlock' => 'अनलॉक',
     'lock' => 'लॉक',
     'delete' => 'हटाएं',

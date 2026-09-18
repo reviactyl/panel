@@ -19,7 +19,7 @@ return [
         'customization' => 'Anpassung',
         'language' => 'Panel-Sprache',
         'editor' => 'Bevorzugter Dateieditor',
-        'smart-invert' => 'Schlaues Invertieren',
+        'theme-toggle' => 'Theme Toggle',
         'on' => 'An',
         'off' => 'Aus',
         'loading' => 'Laden...',

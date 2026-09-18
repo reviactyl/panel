@@ -127,6 +127,7 @@ return [
         'health' => 'स्वास्थ्य',
         'health_http_status' => 'HTTP :स्थिति',
         'health_check_console' => 'ब्राउज़र कंसोल की जाँच करें',
+        'health_agent_outdated' => 'Agent outdated. v:version is available. Click here to update Agent.',
         'id' => 'आईडी',
         'uuid' => 'यूयूआईडी',
         'name' => 'नाम',

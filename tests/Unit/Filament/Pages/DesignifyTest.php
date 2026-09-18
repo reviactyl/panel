@@ -12,8 +12,8 @@ class DesignifyTest extends TestCase
         $page = app(Designify::class);
         $page->data = [
             'designify:colorPrimary' => '#2563eb',
-            'designify:theme1:name' => 'Ocean',
-            'designify:theme1:colorPrimary' => '#0ea5e9',
+            'designify:color50' => '#09090b',
+            'designify:color50L' => '#fafafa',
             'designify:errors:404:title' => 'Lost in space',
             'designify:alerts' => [['type' => 'info', 'message' => 'Hello']],
             'unrelated' => 'ignored',
@@ -21,10 +21,8 @@ class DesignifyTest extends TestCase
 
         $this->assertSame([
             'colorPrimary' => '#2563eb',
-            'theme1' => [
-                'name' => 'Ocean',
-                'colorPrimary' => '#0ea5e9',
-            ],
+            'color50' => '#09090b',
+            'color50L' => '#fafafa',
             'errors' => [
                 '404' => ['title' => 'Lost in space'],
             ],

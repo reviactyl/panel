@@ -87,7 +87,7 @@
                 <a
                     href="{{ url('/admin') }}"
                     class="designify-editor__back"
-                    aria-label="Return to administration"
+                    aria-label="{{ trans('admin/settings.designify.editor-return-to-admin') }}"
                 >
                     <x-tabler-arrow-left />
                 </a>
@@ -96,7 +96,7 @@
                 </div>
             </div>
 
-            <div class="designify-editor__mobile-switcher" aria-label="Editor panel">
+            <div class="designify-editor__mobile-switcher" aria-label="{{ trans('admin/settings.designify.editor-panel-label') }}">
                 <button
                     type="button"
                     class="designify-editor__tool-button"
@@ -104,7 +104,7 @@
                     x-on:click="workspacePanel = 'settings'"
                 >
                     <x-tabler-adjustments-horizontal />
-                    <span>Settings</span>
+                    <span>{{ trans('admin/settings.designify.editor-settings') }}</span>
                 </button>
                 <button
                     type="button"
@@ -113,14 +113,14 @@
                     x-on:click="workspacePanel = 'preview'"
                 >
                     <x-tabler-eye />
-                    <span>Preview</span>
+                    <span>{{ trans('admin/settings.designify.editor-preview') }}</span>
                 </button>
             </div>
 
             <div class="designify-editor__actions">
                 <span class="designify-editor__save-state" x-bind:data-dirty="isDirty.toString()" aria-live="polite">
                     <span class="designify-editor__save-state-dot" aria-hidden="true"></span>
-                    <span x-text="isDirty ? 'Unsaved' : 'Saved'"></span>
+                    <span x-text="isDirty ? @js(trans('admin/settings.designify.editor-unsaved')) : @js(trans('admin/settings.designify.editor-saved'))"></span>
                 </span>
                 <x-filament::button
                     color="gray"
@@ -129,7 +129,7 @@
                     wire:click="mountAction('reset')"
                     :disabled="config('panel.load_environment_only')"
                 >
-                    Reset
+                    {{ trans('admin/settings.designify.editor-reset') }}
                 </x-filament::button>
                 <x-filament::button
                     icon="tabler-device-floppy"
@@ -138,8 +138,8 @@
                     wire:target="save"
                     :disabled="config('panel.load_environment_only')"
                 >
-                    <span wire:loading.remove wire:target="save">Save changes</span>
-                    <span wire:loading wire:target="save">Saving…</span>
+                    <span wire:loading.remove wire:target="save">{{ trans('admin/settings.designify.editor-save-changes') }}</span>
+                    <span wire:loading wire:target="save">{{ trans('admin/settings.designify.editor-saving') }}</span>
                 </x-filament::button>
             </div>
         </header>
@@ -147,7 +147,7 @@
         <main class="designify-editor__workspace">
             <aside
                 class="designify-editor__panel designify-editor__controls"
-                aria-label="Designify settings"
+                aria-label="{{ trans('admin/settings.designify.editor-settings-label') }}"
                 x-show="isDesktop || workspacePanel === 'settings'"
                 x-cloak
             >
@@ -158,16 +158,16 @@
 
             <section
                 class="designify-editor__panel designify-editor__preview"
-                aria-label="Live panel preview"
+                aria-label="{{ trans('admin/settings.designify.editor-live-preview-label') }}"
                 x-show="isDesktop || workspacePanel === 'preview'"
                 x-cloak
             >
                 <div class="designify-editor__preview-bar">
                     <div class="designify-editor__preview-tools">
-                        <div class="designify-editor__page-switcher" aria-label="Preview page">
+                        <div class="designify-editor__page-switcher" aria-label="{{ trans('admin/settings.designify.editor-preview-page') }}">
                             <button type="button" class="designify-editor__tool-button" x-bind:aria-pressed="previewMode === 'home'" x-on:click="setPreview('home')">
                                 <x-tabler-home />
-                                <span>Panel</span>
+                                <span>{{ trans('admin/settings.designify.editor-panel') }}</span>
                             </button>
                             @foreach ([403, 404, 500] as $status)
                                 <button
@@ -179,33 +179,33 @@
                                     <span>{{ $status }}</span>
                                 </button>
                             @endforeach
-                            <button type="button" class="designify-editor__tool-button" aria-label="Reload preview" x-on:click="refreshPreview()">
+                            <button type="button" class="designify-editor__tool-button" aria-label="{{ trans('admin/settings.designify.editor-reload-preview') }}" x-on:click="refreshPreview()">
                                 <x-tabler-refresh />
                             </button>
                             <button
                                 type="button"
                                 class="designify-editor__tool-button"
-                                aria-label="Open saved preview in a new tab"
+                                aria-label="{{ trans('admin/settings.designify.editor-open-saved-preview') }}"
                                 x-bind:disabled="isDirty"
-                                x-bind:title="isDirty ? 'Save changes before opening a new tab' : 'Open saved preview in a new tab'"
+                                x-bind:title="isDirty ? @js(trans('admin/settings.designify.editor-save-before-open')) : @js(trans('admin/settings.designify.editor-open-new-tab'))"
                                 x-on:click="openPreview()"
                             >
                                 <x-tabler-external-link />
                             </button>
                         </div>
 
-                        <div class="designify-editor__device-switcher" aria-label="Preview viewport">
+                        <div class="designify-editor__device-switcher" aria-label="{{ trans('admin/settings.designify.editor-preview-viewport') }}">
                             <button type="button" class="designify-editor__tool-button" x-bind:aria-pressed="viewport === 'desktop'" x-on:click="setViewport('desktop')">
                                 <x-tabler-device-desktop />
-                                <span>Desktop</span>
+                                <span>{{ trans('admin/settings.designify.editor-desktop') }}</span>
                             </button>
                             <button type="button" class="designify-editor__tool-button" x-bind:aria-pressed="viewport === 'tablet'" x-on:click="setViewport('tablet')">
                                 <x-tabler-device-tablet />
-                                <span>Tablet</span>
+                                <span>{{ trans('admin/settings.designify.editor-tablet') }}</span>
                             </button>
                             <button type="button" class="designify-editor__tool-button" x-bind:aria-pressed="viewport === 'mobile'" x-on:click="setViewport('mobile')">
                                 <x-tabler-device-mobile />
-                                <span>Mobile</span>
+                                <span>{{ trans('admin/settings.designify.editor-mobile') }}</span>
                             </button>
                         </div>
                     </div>
@@ -217,7 +217,7 @@
                             x-ref="previewFrame"
                             class="designify-editor__frame"
                             src="{{ url('/') }}"
-                            title="Live Designify preview"
+                            title="{{ trans('admin/settings.designify.editor-live-preview-title') }}"
                             x-on:load="sendPreview()"
                         ></iframe>
                     </div>

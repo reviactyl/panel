@@ -15,6 +15,8 @@ return [
     'delete-message' => 'Esta é uma operação permanente. O backup não poderá ser recuperado após a exclusão.',
     'download' => 'Baixar',
     'restore' => 'Restaurar',
+    'rename' => 'Rename',
+    'cancel' => 'Cancel',
     'unlock' => 'Desbloquear',
     'lock' => 'Bloquear',
     'delete' => 'Excluir',

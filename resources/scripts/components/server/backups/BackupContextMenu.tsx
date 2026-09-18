@@ -1,5 +1,5 @@
 import { useState, useRef, forwardRef, useImperativeHandle } from 'react';
-import { FaBoxOpen, FaCloudArrowDown, FaEllipsis, FaLock, FaTrash, FaUnlock } from 'react-icons/fa6';
+import { FaBoxOpen, FaCloudArrowDown, FaEllipsis, FaLock, FaPen, FaTrash, FaUnlock } from 'react-icons/fa6';
 import DropdownMenu, { DropdownButtonRow } from '@/reviactyl/elements/DropdownMenu';
 import getBackupDownloadUrl from '@/api/server/backups/getBackupDownloadUrl';
 import useFlash from '@/plugins/useFlash';
@@ -15,6 +15,8 @@ import http, { httpErrorToHuman } from '@/api/http';
 import { Dialog } from '@/reviactyl/elements/dialog';
 import { useTranslation } from 'react-i18next';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
+import { renameBackup } from '@/api/server/backups';
+import RenameBackupModal from '@/components/server/backups/RenameBackupModal';
 
 interface Props {
     backup: ServerBackup;
@@ -128,8 +130,47 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
             .then(() => setModal(''));
     };
 
+    const onRename = (name: string) => {
+        if (name === backup.name) {
+            return Promise.resolve();
+        }
+
+        clearFlashes('backups');
+
+        return renameBackup(uuid, backup.uuid, name)
+            .then(() =>
+                mutate(
+                    (data) =>
+                        data && {
+                            ...data,
+                            items: data.items.map((b) =>
+                                b.uuid === backup.uuid
+                                    ? {
+                                          ...b,
+                                          name,
+                                      }
+                                    : b,
+                            ),
+                        },
+                    false,
+                ),
+            )
+            .then(() => undefined)
+            .catch((error) => {
+                clearAndAddHttpError({ key: 'backups', error });
+
+                throw error;
+            });
+    };
+
     return (
         <>
+            <RenameBackupModal
+                visible={modal === 'rename'}
+                backup={backup}
+                onDismissed={() => setModal('')}
+                onRenamed={onRename}
+            />
             <Dialog.Confirm
                 open={modal === 'unlock'}
                 onClose={() => setModal('')}
@@ -188,7 +229,12 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
                 >
                     <div className='text-sm'>
                         <ExtensionSlot name={`server:backups:menu:start`} />
-
+                        <Can action={'backup.create'}>
+                            <DropdownButtonRow onClick={() => setModal('rename')}>
+                                <FaPen className={'text-xs inline-block w-[1.25em]'} />
+                                <span className='ml-2'>{t('rename')}</span>
+                            </DropdownButtonRow>
+                        </Can>
                         <Can action={'backup.download'}>
                             <DropdownButtonRow onClick={doDownload}>
                                 <FaCloudArrowDown className={'text-xs inline-block w-[1.25em]'} />

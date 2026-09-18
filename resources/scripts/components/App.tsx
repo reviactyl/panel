@@ -10,8 +10,7 @@ import AuthenticatedRoute from '@/reviactyl/elements/AuthenticatedRoute';
 import { ServerContext } from '@/state/server';
 import '@/assets/tailwind.css';
 import Spinner from '@/reviactyl/elements/Spinner';
-import { refreshSelectedTheme, ThemeLoader } from '@/reviactyl/ui/ThemeEngine';
-import { Invert } from '@/reviactyl/ui/SmartInvert';
+import { Theme } from '@/reviactyl/ui/Theme';
 import { LocaleLoader } from '@/reviactyl/ui/LanguageSwitcher';
 import { SubuserPreviewProvider } from '@/context/SubuserPreviewContext';
 import { SubuserPreviewFrame } from '@/components/subuser-preview/SubuserPreviewFrame';
@@ -41,23 +40,9 @@ interface ExtendedWindow extends Window {
     };
 }
 
-const previewColorKeys = [
-    'colorPrimary',
-    'colorSuccess',
-    'colorDanger',
-    'colorSecondary',
-    'color50',
-    'color100',
-    'color200',
-    'color300',
-    'color400',
-    'color500',
-    'color600',
-    'color700',
-    'color800',
-    'color900',
-    'color950',
-] as const;
+const previewColorKeys = ['colorPrimary', 'colorSuccess', 'colorDanger', 'colorSecondary'] as const;
+
+const previewPaletteSteps = ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950'] as const;
 
 const toRgbChannels = (hex: string): string | null => {
     const match = hex.match(/^#([\da-f]{3}|[\da-f]{6})$/i);
@@ -84,26 +69,12 @@ const DesignifyPreviewBridge = () => {
             const existingSettings = (window.PanelConfiguration ?? {}) as DesignifySettings & Record<string, unknown>;
             const nextSettings = { ...existingSettings, ...settings } as DesignifySettings & Record<string, unknown>;
 
-            for (let index = 1; index <= 7; index += 1) {
-                const key = `theme${index}`;
-                const existingTheme = existingSettings[key];
-                const incomingTheme = settings[key];
-                if (typeof incomingTheme === 'object' && incomingTheme !== null && !Array.isArray(incomingTheme)) {
-                    nextSettings[key] = {
-                        ...(typeof existingTheme === 'object' && existingTheme !== null && !Array.isArray(existingTheme)
-                            ? existingTheme
-                            : {}),
-                        ...incomingTheme,
-                    };
-                }
-            }
-
             window.PanelConfiguration = nextSettings;
             store.getActions().designify.setDesignify(nextSettings);
 
             const root = document.documentElement;
             previewColorKeys.forEach((key) => {
-                const value = settings[key];
+                const value = nextSettings[key];
                 const channels = typeof value === 'string' ? toRgbChannels(value) : null;
                 const property = `--color-${key.replace('color', '').toLowerCase()}`;
                 if (channels) {
@@ -113,26 +84,46 @@ const DesignifyPreviewBridge = () => {
                 }
             });
 
-            if (settings.background === 'none') {
+            let paletteStyle = document.querySelector<HTMLStyleElement>('style[data-designify-preview-palette]');
+            if (!paletteStyle) {
+                paletteStyle = document.createElement('style');
+                paletteStyle.dataset.designifyPreviewPalette = '';
+                document.head.append(paletteStyle);
+            }
+
+            const paletteDeclarations = (suffix: '' | 'L') =>
+                previewPaletteSteps
+                    .map((step) => {
+                        const value = nextSettings[`color${step}${suffix}`];
+                        const channels = typeof value === 'string' ? toRgbChannels(value) : null;
+
+                        return channels ? `--color-${step}: ${channels}` : null;
+                    })
+                    .filter(Boolean)
+                    .join(';');
+
+            paletteStyle.textContent = `:root { ${paletteDeclarations('L')} } .dark { ${paletteDeclarations('')} }`;
+
+            if (nextSettings.background === 'none') {
                 root.style.setProperty('--background', 'none');
-            } else if (typeof settings.background === 'string' && settings.background.length > 0) {
-                root.style.setProperty('--background', `url(${JSON.stringify(settings.background)})`);
+            } else if (typeof nextSettings.background === 'string' && nextSettings.background.length > 0) {
+                root.style.setProperty('--background', `url(${JSON.stringify(nextSettings.background)})`);
             } else {
                 root.style.removeProperty('--background');
             }
-            if (typeof settings.radius === 'string' && CSS.supports('border-radius', settings.radius)) {
-                root.style.setProperty('--radius', settings.radius);
+            if (typeof nextSettings.radius === 'string' && CSS.supports('border-radius', nextSettings.radius)) {
+                root.style.setProperty('--radius', nextSettings.radius);
             } else {
                 root.style.removeProperty('--radius');
             }
-            if (typeof settings.fontFamily === 'string' && settings.fontFamily.length > 0) {
-                root.style.setProperty('--font-family', `"${settings.fontFamily.replaceAll('+', ' ')}", sans-serif`);
+            if (typeof nextSettings.fontFamily === 'string' && nextSettings.fontFamily.length > 0) {
+                root.style.setProperty(
+                    '--font-family',
+                    `"${nextSettings.fontFamily.replaceAll('+', ' ')}", sans-serif`,
+                );
             } else {
                 root.style.removeProperty('--font-family');
             }
-
-            refreshSelectedTheme();
-            window.dispatchEvent(new Event('reviactyl:designify-config-updated'));
         };
 
         window.addEventListener('message', handlePreviewUpdate);
@@ -179,10 +170,9 @@ function App() {
     }
 
     return (
-        <Invert>
+        <Theme>
             <StoreProvider store={store}>
                 <DesignifyPreviewBridge />
-                <ThemeLoader />
                 <LocaleLoader />
                 <ProgressBar />
                 <div className='mx-auto w-auto'>
@@ -235,7 +225,7 @@ function App() {
                     </BrowserRouter>
                 </div>
             </StoreProvider>
-        </Invert>
+        </Theme>
     );
 }
 

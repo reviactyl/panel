@@ -15,6 +15,8 @@ return [
     'delete-message' => 'Đây là một hoạt động lâu dài. Bản sao lưu không thể được phục hồi sau khi bị xóa.',
     'download' => 'Tải xuống',
     'restore' => 'Khôi phục',
+    'rename' => 'Rename',
+    'cancel' => 'Cancel',
     'unlock' => 'Mở khóa',
     'lock' => 'Khóa',
     'delete' => 'Xóa bỏ',

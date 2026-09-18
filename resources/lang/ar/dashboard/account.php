@@ -19,7 +19,7 @@ return [
         'customization' => 'تخصيص',
         'language' => 'لغة اللوحة',
         'editor' => 'محرر الملفات المفضل',
-        'smart-invert' => 'عكس ذكي',
+        'theme-toggle' => 'Theme Toggle',
         'on' => 'تشغيل',
         'off' => 'إيقاف',
         'loading' => 'جارٍ التحميل...',
