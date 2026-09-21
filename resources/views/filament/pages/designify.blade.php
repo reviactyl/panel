@@ -214,6 +214,7 @@
                 <div class="designify-editor__canvas">
                     <div class="designify-editor__frame-shell" x-bind:data-viewport="viewport">
                         <iframe
+                            wire:ignore
                             x-ref="previewFrame"
                             class="designify-editor__frame"
                             src="{{ url('/') }}"
