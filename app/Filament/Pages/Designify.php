@@ -5,7 +5,6 @@ namespace App\Filament\Pages;
 use App\Contracts\Repository\SettingsRepositoryInterface;
 use App\Filament\Components\Alert;
 use App\Filament\Components\ImageInput;
-use App\Filament\Widgets\PreviewWidget;
 use App\Traits\Helpers\AvailableLanguages;
 use Filament\Actions\Action;
 use Filament\Forms\Components\ColorPicker;
@@ -19,13 +18,13 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\InteractsWithHeaderActions;
 use Filament\Pages\Page;
-use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Contracts\HasSchemas;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Console\Kernel;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
@@ -177,8 +176,10 @@ class Designify extends Page implements HasSchemas
         return [
             Tabs::make('settings-tabs')
                 ->disabled(fn (): bool => config('panel.load_environment_only'))
+                ->live(debounce: 300)
                 ->persistTabInQueryString()
                 ->vertical()
+                ->extraAttributes(['class' => 'designify-settings-tabs'])
                 ->tabs([
                     Tab::make('general')
                         ->label(trans('admin/settings.designify.general'))
@@ -240,8 +241,10 @@ class Designify extends Page implements HasSchemas
     private function generalSettings(): array
     {
         return [
-            Group::make()
-                ->columns(2)
+            Section::make(trans('admin/settings.designify.section-footer'))
+                ->description(trans('admin/settings.designify.section-footer-description'))
+                ->icon('tabler-copyright')
+                ->columns(1)
                 ->schema([
                     Toggle::make('designify:customCopyright')
                         ->label(trans('admin/settings.designify.custom-copyright'))
@@ -255,8 +258,10 @@ class Designify extends Page implements HasSchemas
                         ->columnSpan(1),
                 ]),
 
-            Group::make()
-                ->columns(2)
+            Section::make(trans('admin/settings.designify.section-maintenance'))
+                ->description(trans('admin/settings.designify.section-maintenance-description'))
+                ->icon('tabler-tool')
+                ->columns(1)
                 ->schema([
                     Toggle::make('designify:isUnderMaintenance')
                         ->label(trans('admin/settings.designify.maintenance-mode'))
@@ -270,8 +275,10 @@ class Designify extends Page implements HasSchemas
                         ->columnSpan(1),
                 ]),
 
-            Group::make()
-                ->columns(2)
+            Section::make(trans('admin/settings.designify.section-behavior'))
+                ->description(trans('admin/settings.designify.section-behavior-description'))
+                ->icon('tabler-adjustments-horizontal')
+                ->columns(1)
                 ->schema([
                     Toggle::make('designify:alwaysShowKillButton')
                         ->label(trans('admin/settings.designify.always-show-kill-button'))
@@ -295,8 +302,10 @@ class Designify extends Page implements HasSchemas
                         ->columnSpan(1),
                 ]),
 
-            Group::make()
-                ->columns(3)
+            Section::make(trans('admin/settings.designify.section-destinations'))
+                ->description(trans('admin/settings.designify.section-destinations-description'))
+                ->icon('tabler-external-link')
+                ->columns(1)
                 ->schema([
                     TextInput::make('designify:statusCardLink')
                         ->label(trans('admin/settings.designify.status-card-link'))
@@ -320,7 +329,7 @@ class Designify extends Page implements HasSchemas
     {
         return [
             Section::make(trans('admin/settings.designify.basic-colors'))
-                ->columns(4)
+                ->columns(2)
                 ->icon('tabler-palette')
                 ->schema([
                     ColorPicker::make('designify:colorPrimary')->label(trans('admin/settings.designify.primary')),
@@ -330,7 +339,7 @@ class Designify extends Page implements HasSchemas
                 ]),
 
             Section::make(trans('admin/settings.designify.dark-colors'))
-                ->columns(5)
+                ->columns(2)
                 ->icon('tabler-color-swatch')
                 ->schema([
                     ColorPicker::make('designify:color50')->label('50'),
@@ -347,7 +356,7 @@ class Designify extends Page implements HasSchemas
                 ]),
 
             Section::make(trans('admin/settings.designify.light-colors'))
-                ->columns(5)
+                ->columns(2)
                 ->icon('tabler-color-swatch')
                 ->schema([
                     ColorPicker::make('designify:color50L')->label('50'),
@@ -368,8 +377,10 @@ class Designify extends Page implements HasSchemas
     private function lookAndFeelSettings(): array
     {
         return [
-            Group::make()
-                ->columns(4)
+            Section::make(trans('admin/settings.designify.section-navigation'))
+                ->description(trans('admin/settings.designify.section-navigation-description'))
+                ->icon('tabler-layout-sidebar')
+                ->columns(1)
                 ->schema([
 
                     Toggle::make('designify:sidebarLogout')
@@ -381,10 +392,12 @@ class Designify extends Page implements HasSchemas
                         ->label(trans('admin/settings.designify.panel-background'))
                         ->helperText(trans('admin/settings.designify.panel-background-helper'))
                         ->maxLength(255)
-                        ->columnSpan(2),
+                        ->columnSpanFull(),
                 ]),
-            Group::make()
-                ->columns(4)
+            Section::make(trans('admin/settings.designify.section-surface'))
+                ->description(trans('admin/settings.designify.section-surface-description'))
+                ->icon('tabler-brush')
+                ->columns(1)
                 ->schema([
                     Toggle::make('designify:allocationBlur')
                         ->label(trans('admin/settings.designify.allocation-blur'))
@@ -410,7 +423,7 @@ class Designify extends Page implements HasSchemas
                         ])
                         ->searchable()
                         ->native(false)
-                        ->columnSpan(2),
+                        ->columnSpanFull(),
                 ]),
         ];
     }
@@ -418,7 +431,9 @@ class Designify extends Page implements HasSchemas
     private function layoutSettings(): array
     {
         return [
-            Group::make()
+            Section::make(trans('admin/settings.designify.section-layout'))
+                ->description(trans('admin/settings.designify.section-layout-description'))
+                ->icon('tabler-layout-dashboard')
                 ->columns(1)
                 ->schema([
                     ToggleButtons::make('designify:cardType')
@@ -433,7 +448,7 @@ class Designify extends Page implements HasSchemas
                             'row' => trans('admin/settings.designify.row'),
                         ])
                         ->required()
-                        ->columnSpan(2),
+                        ->columnSpanFull(),
                     ToggleButtons::make('designify:layoutType')
                         ->label(trans('admin/settings.designify.navbar-sidebar-layout'))
                         ->inline()
@@ -450,7 +465,7 @@ class Designify extends Page implements HasSchemas
                             'accent' => trans('admin/settings.designify.accent'),
                         ])
                         ->required()
-                        ->columnSpan(2),
+                        ->columnSpanFull(),
                 ]),
         ];
     }
@@ -458,7 +473,9 @@ class Designify extends Page implements HasSchemas
     private function alertSettings(): array
     {
         return [
-            Group::make()
+            Section::make(trans('admin/settings.designify.section-alerts'))
+                ->description(trans('admin/settings.designify.section-alerts-description'))
+                ->icon('tabler-bell')
                 ->schema([
                     Repeater::make('designify:alerts')
                         ->label(trans('admin/settings.designify.alert-messages'))
@@ -493,8 +510,10 @@ class Designify extends Page implements HasSchemas
     private function siteSettings(): array
     {
         return [
-            Group::make()
-                ->columns(2)
+            Section::make(trans('admin/settings.designify.section-identity'))
+                ->description(trans('admin/settings.designify.section-identity-description'))
+                ->icon('tabler-world-www')
+                ->columns(1)
                 ->schema([
                     TextInput::make('designify:site_title')
                         ->label(trans('admin/settings.designify.site-title'))
@@ -532,7 +551,7 @@ class Designify extends Page implements HasSchemas
     {
         return [
             Section::make(trans('admin/settings.designify.error-404'))
-                ->columns(2)
+                ->columns(1)
                 ->iconColor('warning')
                 ->icon('tabler-device-imac-exclamation')
                 ->schema([
@@ -548,11 +567,15 @@ class Designify extends Page implements HasSchemas
                         ->label(trans('admin/settings.designify.message'))
                         ->rows(3)
                         ->required()
-                        ->columnSpan(2),
+                        ->columnSpanFull(),
+                    ImageInput::make('designify:errors:404:image')
+                        ->label(trans('admin/settings.designify.site-image')),
+                    ColorPicker::make('designify:errors:404:color')
+                        ->label(trans('admin/settings.designify.site-color')),
                 ]),
 
             Section::make(trans('admin/settings.designify.error-403'))
-                ->columns(2)
+                ->columns(1)
                 ->icon('tabler-device-imac-exclamation')
                 ->iconColor('primary')
                 ->schema([
@@ -568,13 +591,17 @@ class Designify extends Page implements HasSchemas
                         ->label(trans('admin/settings.designify.message'))
                         ->rows(3)
                         ->required()
-                        ->columnSpan(2),
+                        ->columnSpanFull(),
+                    ImageInput::make('designify:errors:403:image')
+                        ->label(trans('admin/settings.designify.site-image')),
+                    ColorPicker::make('designify:errors:403:color')
+                        ->label(trans('admin/settings.designify.site-color')),
                 ]),
 
             Section::make(trans('admin/settings.designify.error-500'))
                 ->iconColor('danger')
                 ->icon('tabler-device-imac-exclamation')
-                ->columns(2)
+                ->columns(1)
                 ->schema([
                     TextInput::make('designify:errors:500:title')
                         ->label(trans('admin/settings.designify.title'))
@@ -588,7 +615,11 @@ class Designify extends Page implements HasSchemas
                         ->label(trans('admin/settings.designify.message'))
                         ->rows(3)
                         ->required()
-                        ->columnSpan(2),
+                        ->columnSpanFull(),
+                    ImageInput::make('designify:errors:500:image')
+                        ->label(trans('admin/settings.designify.site-image')),
+                    ColorPicker::make('designify:errors:500:color')
+                        ->label(trans('admin/settings.designify.site-color')),
                 ]),
         ];
     }
@@ -596,7 +627,9 @@ class Designify extends Page implements HasSchemas
     private function sidebarSettings(): array
     {
         return [
-            Group::make()
+            Section::make(trans('admin/settings.designify.section-sidebar-links'))
+                ->description(trans('admin/settings.designify.section-sidebar-links-description'))
+                ->icon('tabler-link-plus')
                 ->schema([
                     Repeater::make('designify:sidebarButtons')
                         ->label(trans('admin/settings.designify.sidebar-links'))
@@ -616,7 +649,7 @@ class Designify extends Page implements HasSchemas
                                 ->label(trans('admin/settings.designify.open-in-new-tab'))
                                 ->inline(false),
                         ])
-                        ->columns(3)
+                        ->columns(1)
                         ->addActionLabel(trans('admin/settings.designify.add-link'))
                         ->columnSpanFull(),
                 ]),
@@ -626,6 +659,26 @@ class Designify extends Page implements HasSchemas
     protected function getFormStatePath(): ?string
     {
         return 'data';
+    }
+
+    public function updatedData(): void
+    {
+        $this->dispatch('designify-preview-updated', settings: $this->getPreviewSettings());
+    }
+
+    public function getPreviewSettings(): array
+    {
+        $preview = [];
+
+        foreach ($this->data ?? [] as $key => $value) {
+            if (! is_string($key) || ! str_starts_with($key, 'designify:')) {
+                continue;
+            }
+
+            Arr::set($preview, str_replace(':', '.', Str::after($key, 'designify:')), $value);
+        }
+
+        return $preview;
     }
 
     public function save(): void
@@ -662,6 +715,7 @@ class Designify extends Page implements HasSchemas
             ->send();
 
         $this->dispatch('$refresh');
+        $this->dispatch('designify-saved', settings: $this->getPreviewSettings());
         $this->js("window.dispatchEvent(new CustomEvent('reload-iframe'))");
     }
 
@@ -687,9 +741,11 @@ class Designify extends Page implements HasSchemas
 
         $this->dispatch('$refresh');
 
+        $this->dispatch('designify-reset');
+
         // We have to reload the window after resetting designify settings.
         // Please open PR if there's another way without running js code.
-        $this->js('window.location.reload()');
+        $this->js('window.__designifySkipBeforeUnload = true; window.location.reload()');
     }
 
     protected function getHeaderActions(): array
@@ -711,13 +767,6 @@ class Designify extends Page implements HasSchemas
                 ->modalHeading(trans('admin/settings.designify.reset-designify'))
                 ->modalDescription(trans('admin/settings.designify.reset-description'))
                 ->action(fn () => $this->resetToDefaults()),
-        ];
-    }
-
-    protected function getFooterWidgets(): array
-    {
-        return [
-            PreviewWidget::class,
         ];
     }
 }
