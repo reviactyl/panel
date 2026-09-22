@@ -37,6 +37,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.4
+          tools: composer
+
+      - run: composer install --no-interaction --prefer-dist --no-progress
       - run: pnpm install --frozen-lockfile
       - run: pnpm tsc
       - run: pnpm build
@@ -66,7 +72,7 @@ jobs:
           VERSION: ${{ github.ref_name }}
         run: |
           set -euo pipefail
-          rm -rf node_modules tests CONTRIBUTING.md phpunit.xml
+          rm -rf node_modules vendor tests CONTRIBUTING.md phpunit.xml
           tar -czf panel.tar.gz * .editorconfig .env.example .gitignore .prettierrc.json
 
           if [ -n "$PREVIOUS_TAG" ]; then
