@@ -14,7 +14,6 @@ import { Navbar, Sidebar } from '@/reviactyl/components/Layout';
 import { useStoreState } from 'easy-peasy';
 import Announcement from '@/reviactyl/ui/Announcement';
 import MaintenanceAlert from '@/reviactyl/ui/MaintenanceAlert';
-import QuickLinks from '@/reviactyl/ui/QuickLinks';
 import Maintenance from '@/reviactyl/ui/Maintenance';
 import { useTranslation } from 'react-i18next';
 import { FaHouse } from 'react-icons/fa6';
@@ -193,7 +192,6 @@ function DashboardRouter() {
                                                 {!session && <ExtensionSlot name='dashboard:router:above' />}
                                                 <Announcement />
                                                 <MaintenanceAlert />
-                                                {!session && <QuickLinks />}
                                                 <DashboardContainer />
                                                 {!session && <ExtensionSlot name='dashboard:router:below' />}
                                             </>

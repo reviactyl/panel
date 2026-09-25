@@ -22,9 +22,6 @@ export interface DesignifySettings {
     alertMessage: string;
     alerts?: DesignifyAlert[];
     sidebarButtons?: DesignifySidebarButton[];
-    statusCardLink: string;
-    supportCardLink: string;
-    billingCardLink: string;
     alwaysShowKillButton: boolean;
     cardType: 'grid' | 'row';
     layoutType: 'modern' | 'classic' | 'compact' | 'accent';

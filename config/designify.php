@@ -77,10 +77,6 @@ return [
         ],
     ],
 
-    'statusCardLink' => '',
-    'supportCardLink' => '',
-    'billingCardLink' => '',
-
     'alwaysShowKillButton' => false,
 
     'cardType' => 'grid',

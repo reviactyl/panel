@@ -90,9 +90,6 @@ class Designify extends Page implements HasSchemas
         'designify:site_description',
         'designify:site_image',
         'designify:site_favicon',
-        'designify:statusCardLink',
-        'designify:supportCardLink',
-        'designify:billingCardLink',
         'designify:alwaysShowKillButton',
         'designify:cardType',
         'designify:layoutType',
@@ -299,27 +296,6 @@ class Designify extends Page implements HasSchemas
                             'thumbs' => 'Thumbs',
                         ])
                         ->required()
-                        ->columnSpan(1),
-                ]),
-
-            Section::make(trans('admin/settings.designify.section-destinations'))
-                ->description(trans('admin/settings.designify.section-destinations-description'))
-                ->icon('tabler-external-link')
-                ->columns(1)
-                ->schema([
-                    TextInput::make('designify:statusCardLink')
-                        ->label(trans('admin/settings.designify.status-card-link'))
-                        ->placeholder('https://status.reviactyl.app')
-                        ->columnSpan(1),
-
-                    TextInput::make('designify:supportCardLink')
-                        ->label(trans('admin/settings.designify.support-card-link'))
-                        ->placeholder('https://support.reviactyl.app')
-                        ->columnSpan(1),
-
-                    TextInput::make('designify:billingCardLink')
-                        ->label(trans('admin/settings.designify.billing-card-link'))
-                        ->placeholder('https://billing.reviactyl.app')
                         ->columnSpan(1),
                 ]),
         ];
