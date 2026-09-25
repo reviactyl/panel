@@ -161,8 +161,6 @@ return [
         'section-maintenance-description' => 'Prepare the message users see while the panel is unavailable.',
         'section-behavior' => 'Panel Behavior',
         'section-behavior-description' => 'Choose defaults that affect how users interact with the panel.',
-        'section-destinations' => 'Dashboard Destinations',
-        'section-destinations-description' => 'Connect dashboard cards to your status, support, and billing pages.',
         'section-navigation' => 'Navigation',
         'section-navigation-description' => 'Choose which navigation tools are available to users.',
         'section-surface' => 'Surface and Type',
