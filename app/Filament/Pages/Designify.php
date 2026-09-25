@@ -140,7 +140,7 @@ class Designify extends Page implements HasSchemas
 
         foreach ($this->settingKeys as $key) {
 
-            $value = $settings->get('settings::'.$key);
+            $value = $settings->get("settings::$key", null);
 
             if ($value === null) {
                 $value = $config->get(Str::replace(':', '.', $key));
