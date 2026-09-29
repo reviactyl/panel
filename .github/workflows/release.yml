@@ -1,4 +1,5 @@
 name: Release
+
 on:
   push:
     tags:
@@ -12,10 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -46,34 +49,159 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm tsc
       - run: pnpm build
-      - name: find previous release
+
+      - name: Find previous release
+        env:
+          VERSION: ${{ github.ref_name }}
         run: |
-          PREVIOUS_TAG=$(git describe --tags --abbrev=0 "${GITHUB_SHA}^" 2>/dev/null || true)
+          set -euo pipefail
+
+          CURRENT_VERSION="${VERSION#v}"
+
+          if [[ "$CURRENT_VERSION" =~ ^([0-9]+\.[0-9]+\.[0-9]+)-alpha\.([0-9]+)$ ]]; then
+            CHANNEL="alpha"
+          elif [[ "$CURRENT_VERSION" =~ ^([0-9]+\.[0-9]+\.[0-9]+)-beta\.([0-9]+)$ ]]; then
+            CHANNEL="beta"
+          elif [[ "$CURRENT_VERSION" =~ ^([0-9]+\.[0-9]+\.[0-9]+)-rc\.([0-9]+)$ ]]; then
+            CHANNEL="rc"
+          elif [[ "$CURRENT_VERSION" =~ ^([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
+            CHANNEL="stable"
+          else
+            echo "Unsupported version: $CURRENT_VERSION"
+            exit 1
+          fi
+
+          echo "VERSION=$CURRENT_VERSION"
+          echo "CHANNEL=$CHANNEL"
+
+          TAGS=$(git tag --list 'v26.*')
+
+          PREVIOUS_TAG=""
+
+          while IFS= read -r TAG; do
+            [ -z "$TAG" ] && continue
+
+            TAG_VERSION="${TAG#v}"
+
+            case "$CHANNEL" in
+              alpha)
+                [[ "$TAG_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+-alpha\.[0-9]+$ ]] || continue
+                ;;
+
+              beta)
+                [[ "$TAG_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+-(alpha|beta)\.[0-9]+$ ]] || continue
+                ;;
+
+              rc)
+                [[ "$TAG_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+-(beta|rc)\.[0-9]+$ ]] || continue
+                ;;
+
+              stable)
+                [[ "$TAG_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-rc\.[0-9]+)?$ ]] || continue
+                ;;
+            esac
+
+            if [ "$TAG" = "$VERSION" ]; then
+              continue
+            fi
+
+            if [ -z "$PREVIOUS_TAG" ]; then
+              PREVIOUS_TAG="$TAG"
+              continue
+            fi
+
+            if node - "$TAG_VERSION" "${PREVIOUS_TAG#v}" <<'NODE'
+          const [a, b] = process.argv.slice(2);
+
+          function parse(version) {
+            const match = version.match(
+              /^(\d+)\.(\d+)\.(\d+)(?:-(alpha|beta|rc)\.(\d+))?$/
+            );
+
+            if (!match) {
+              throw new Error(`Invalid version: ${version}`);
+            }
+
+            return {
+              major: Number(match[1]),
+              minor: Number(match[2]),
+              patch: Number(match[3]),
+              channel: match[4] || "stable",
+              number: Number(match[5] || 0),
+            };
+          }
+
+          function compare(a, b) {
+            const channels = {
+              alpha: 0,
+              beta: 1,
+              rc: 2,
+              stable: 3,
+            };
+
+            if (a.major !== b.major) return a.major - b.major;
+            if (a.minor !== b.minor) return a.minor - b.minor;
+            if (a.patch !== b.patch) return a.patch - b.patch;
+
+            if (channels[a.channel] !== channels[b.channel]) {
+              return channels[a.channel] - channels[b.channel];
+            }
+
+            return a.number - b.number;
+          }
+
+          process.exit(compare(parse(a), parse(b)) > 0 ? 0 : 1);
+          NODE
+            then
+              PREVIOUS_TAG="$TAG"
+            fi
+          done <<< "$TAGS"
+
           echo "PREVIOUS_TAG=$PREVIOUS_TAG" >> "$GITHUB_ENV"
-      - name: create release branch and bump version
+
+          if [ -n "$PREVIOUS_TAG" ]; then
+            echo "Previous release: $PREVIOUS_TAG"
+          else
+            echo "No previous compatible release found."
+          fi
+
+      - name: Create release branch and bump version
         env:
           VERSION: ${{ github.ref_name }}
         run: |
           BRANCH=release/${{ env.VERSION }}
+
           git config --local user.email 'ci@reviactyl.app'
           git config --local user.name 'Reviactyl CI'
+
           git checkout -b "$BRANCH"
           git push -u origin "$BRANCH"
+
           sed -i "s/'canary'/'${VERSION:1}'/" config/app.php
           sed -i "s/"26\.0\.0-dev"/"${VERSION:1}"/g" package.json composer.json
+
           git add config/app.php
           git add package.json
           git add composer.json
+
           git commit -m 'ci(release): bump version'
           git push
-      - name: create release archives
+
+      - name: Create release archives
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ github.ref_name }}
         run: |
           set -euo pipefail
+
           rm -rf node_modules vendor tests CONTRIBUTING.md phpunit.xml
-          tar -czf panel.tar.gz * .editorconfig .env.example .gitignore .prettierrc.json
+
+          tar -czf panel.tar.gz \
+            * \
+            .editorconfig \
+            .env.example \
+            .gitignore \
+            .prettierrc.json
 
           if [ -n "$PREVIOUS_TAG" ]; then
             CURRENT_RELEASE="$RUNNER_TEMP/current-release"
@@ -81,61 +209,113 @@ jobs:
             UPDATE_PACKAGE="$RUNNER_TEMP/update-package"
             PREVIOUS_ARCHIVE="$RUNNER_TEMP/previous-archive"
             DELETED_PATHS="$RUNNER_TEMP/deleted-paths"
-            mkdir -p "$CURRENT_RELEASE" "$PREVIOUS_RELEASE" "$UPDATE_PACKAGE" "$PREVIOUS_ARCHIVE"
+
+            mkdir -p \
+              "$CURRENT_RELEASE" \
+              "$PREVIOUS_RELEASE" \
+              "$UPDATE_PACKAGE" \
+              "$PREVIOUS_ARCHIVE"
+
             tar -xzf panel.tar.gz -C "$CURRENT_RELEASE"
-            if ! gh release download "$PREVIOUS_TAG" --pattern panel.tar.gz --dir "$PREVIOUS_ARCHIVE"; then
+
+            if ! gh release download "$PREVIOUS_TAG" \
+              --pattern panel.tar.gz \
+              --dir "$PREVIOUS_ARCHIVE"; then
+
               echo "Previous release archive unavailable; publishing the full release without an update package."
               exit 0
             fi
-            tar -xzf "$PREVIOUS_ARCHIVE/panel.tar.gz" -C "$PREVIOUS_RELEASE"
+
+            tar -xzf \
+              "$PREVIOUS_ARCHIVE/panel.tar.gz" \
+              -C "$PREVIOUS_RELEASE"
 
             : > "$DELETED_PATHS"
+
             while IFS= read -r -d '' file; do
               relative=${file#"$PREVIOUS_RELEASE/"}
+
               case "$relative" in
-                .env|manifest.json|storage/*|vendor/*) continue ;;
+                .env|manifest.json|storage/*|vendor/*)
+                  continue
+                  ;;
               esac
+
               if [ ! -f "$CURRENT_RELEASE/$relative" ]; then
                 printf '%s\0' "$relative" >> "$DELETED_PATHS"
               fi
-            done < <(find "$PREVIOUS_RELEASE" -type f -print0)
+            done < <(
+              find "$PREVIOUS_RELEASE" \
+                -type f \
+                -print0
+            )
 
             while IFS= read -r -d '' file; do
               relative=${file#"$CURRENT_RELEASE/"}
+
               case "$relative" in
-                .env|manifest.json|storage/*|vendor/*) continue ;;
+                .env|manifest.json|storage/*|vendor/*)
+                  continue
+                  ;;
               esac
-              if [ ! -f "$PREVIOUS_RELEASE/$relative" ] || ! cmp -s "$file" "$PREVIOUS_RELEASE/$relative"; then
+
+              if [ ! -f "$PREVIOUS_RELEASE/$relative" ] ||
+                 ! cmp -s "$file" "$PREVIOUS_RELEASE/$relative"; then
+
                 mkdir -p "$UPDATE_PACKAGE/$(dirname "$relative")"
                 cp -p "$file" "$UPDATE_PACKAGE/$relative"
               fi
-            done < <(find "$CURRENT_RELEASE" -type f -print0)
+            done < <(
+              find "$CURRENT_RELEASE" \
+                -type f \
+                -print0
+            )
 
             FROM_VERSION=${PREVIOUS_TAG#v}
             TO_VERSION=${VERSION#v}
-            FROM_VERSION="$FROM_VERSION" TO_VERSION="$TO_VERSION" DELETED_PATHS="$DELETED_PATHS" UPDATE_PACKAGE="$UPDATE_PACKAGE" node <<'NODE'
+
+            FROM_VERSION="$FROM_VERSION" \
+            TO_VERSION="$TO_VERSION" \
+            DELETED_PATHS="$DELETED_PATHS" \
+            UPDATE_PACKAGE="$UPDATE_PACKAGE" \
+            node <<'NODE'
           const fs = require('fs');
           const path = require('path');
 
-          const deleted = fs.readFileSync(process.env.DELETED_PATHS).toString().split('\0').filter(Boolean).sort();
+          const deleted = fs
+            .readFileSync(process.env.DELETED_PATHS)
+            .toString()
+            .split('\0')
+            .filter(Boolean)
+            .sort();
+
           const manifest = {
             from: process.env.FROM_VERSION,
             to: process.env.TO_VERSION,
             deleted,
           };
-          fs.writeFileSync(path.join(process.env.UPDATE_PACKAGE, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`);
+
+          fs.writeFileSync(
+            path.join(process.env.UPDATE_PACKAGE, 'manifest.json'),
+            `${JSON.stringify(manifest, null, 2)}\n`
+          );
           NODE
 
-            (cd "$UPDATE_PACKAGE" && zip -q -r "$GITHUB_WORKSPACE/update.zip" .)
+            (
+              cd "$UPDATE_PACKAGE"
+              zip -q -r "$GITHUB_WORKSPACE/update.zip" .
+            )
+
             sha256sum update.zip > update.zip.sha256
           fi
+
       - uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           draft: true
           fail_on_unmatched_files: false
-          prerelease: ${{ contains(github.ref_name, 'rc') || contains(github.ref_name, 'beta') || contains(github.ref_name, 'alpha') }}
+          prerelease: ${{ contains(github.ref_name, '-rc.') || contains(github.ref_name, '-beta.') || contains(github.ref_name, '-alpha.') }}
           files: |
             panel.tar.gz
             update.zip
