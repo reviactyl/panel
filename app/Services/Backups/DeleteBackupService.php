@@ -75,7 +75,7 @@ class DeleteBackupService
 
             $adapter->getClient()->deleteObject([
                 'Bucket' => $adapter->getBucket(),
-                'Key' => sprintf('%s/%s.tar.gz', $backup->server->uuid, $backup->uuid),
+                'Key' => $backup->storageKey(),
             ]);
         });
     }

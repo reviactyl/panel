@@ -99,6 +99,24 @@ class AccountController extends ClientApiController
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 
+    public function updateArchiveFormat(Request $request): JsonResponse
+    {
+        $request->validate(['format' => ['required', 'in:tar.gz,zip']]);
+
+        $user = $request->user();
+        $original = $user->archive_format;
+        $user->archive_format = $request->input('format');
+        $user->saveOrFail();
+
+        if ($original !== $user->archive_format) {
+            Activity::event('user:account.archive-format-changed')
+                ->property(['old' => $original, 'new' => $user->archive_format])
+                ->log();
+        }
+
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+    }
+
     public function updateEditor(Request $request): JsonResponse
     {
         $request->validate([

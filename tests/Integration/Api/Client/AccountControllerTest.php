@@ -31,8 +31,24 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
                 'language' => $user->language,
                 'avatar_style' => 'gravatar',
                 'avatar_animated' => true,
+                'archive_format' => 'tar.gz',
             ],
         ]);
+    }
+
+    public function test_archive_format_preference_is_saved_on_account(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->putJson('/api/client/account/archive-format', ['format' => 'zip'])
+            ->assertNoContent();
+        $this->assertSame('zip', $user->refresh()->archive_format);
+        $this->actingAs($user)->get('/api/client/account')
+            ->assertJsonPath('attributes.archive_format', 'zip');
+
+        $this->actingAs($user)->putJson('/api/client/account/archive-format', ['format' => 'rar'])
+            ->assertUnprocessable();
+        $this->assertSame('zip', $user->refresh()->archive_format);
     }
 
     public function test_avatar_preferences_are_updated()

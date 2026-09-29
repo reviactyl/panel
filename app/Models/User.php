@@ -50,6 +50,7 @@ use Laravel\Passkeys\PasskeyAuthenticatable;
  * @property bool $gravatar
  * @property string $avatar_style
  * @property bool $avatar_animated
+ * @property string $archive_format
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property \Illuminate\Database\Eloquent\Collection|ApiKey[] $apiKeys
@@ -162,6 +163,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'gravatar',
         'avatar_style',
         'avatar_animated',
+        'archive_format',
         'root_admin',
         'editor',
         'last_seen',
@@ -196,6 +198,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'totp_secret' => null,
         'avatar_style' => 'gravatar',
         'avatar_animated' => true,
+        'archive_format' => 'tar.gz',
     ];
 
     /**
@@ -215,6 +218,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'totp_secret' => 'nullable|string',
         'avatar_style' => 'string|in:gravatar,identicon,loops,initials,waves,critters,pixelbot,thumbs',
         'avatar_animated' => 'boolean',
+        'archive_format' => 'string|in:tar.gz,zip',
     ];
 
     /**

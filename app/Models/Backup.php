@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $name
  * @property string[] $ignored_files
  * @property string $disk
+ * @property string $format
  * @property string|null $checksum
  * @property int $bytes
  * @property string|null $upload_id
@@ -75,6 +76,7 @@ class Backup extends Model implements Identifiable
         'name' => 'required|string',
         'ignored_files' => 'array',
         'disk' => 'required|string',
+        'format' => 'sometimes|in:tar.gz,zip',
         'checksum' => 'nullable|string',
         'bytes' => 'numeric',
         'upload_id' => 'nullable|string',
@@ -86,5 +88,10 @@ class Backup extends Model implements Identifiable
     public function server(): BelongsTo
     {
         return $this->belongsTo(Server::class);
+    }
+
+    public function storageKey(): string
+    {
+        return sprintf('%s/%s.%s', $this->server->uuid, $this->uuid, $this->format ?: 'tar.gz');
     }
 }

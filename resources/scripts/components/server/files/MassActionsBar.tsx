@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/reviactyl/components/button/index';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import useFlash from '@/plugins/useFlash';
@@ -13,6 +13,7 @@ import { FaFileArrowUp, FaTrash } from 'react-icons/fa6';
 import Spinner from '@/reviactyl/elements/Spinner';
 import { FaFileArchive } from 'react-icons/fa';
 import Can from '@/reviactyl/elements/Can';
+import { useStoreState } from 'easy-peasy';
 
 const MassActionsBar = () => {
     const { t } = useTranslation('server/files');
@@ -24,6 +25,8 @@ const MassActionsBar = () => {
     const [loadingMessage, setLoadingMessage] = useState('');
     const [showConfirm, setShowConfirm] = useState(false);
     const [showMove, setShowMove] = useState(false);
+    const [showFormatMenu, setShowFormatMenu] = useState(false);
+    const archiveRef = useRef<HTMLDivElement>(null);
     const directory = ServerContext.useStoreState((state) => state.files.directory);
 
     const selectedFiles = ServerContext.useStoreState((state) => state.files.selectedFiles);
@@ -33,12 +36,24 @@ const MassActionsBar = () => {
         if (!loading) setLoadingMessage('');
     }, [loading]);
 
-    const onClickCompress = () => {
+    useEffect(() => {
+        if (!showFormatMenu) return;
+        const closeOnOutsideTap = (event: PointerEvent) => {
+            if (!archiveRef.current?.contains(event.target as Node)) setShowFormatMenu(false);
+        };
+        document.addEventListener('pointerdown', closeOnOutsideTap);
+        return () => document.removeEventListener('pointerdown', closeOnOutsideTap);
+    }, [showFormatMenu]);
+
+    const archiveFormat = useStoreState((state) => state.user.data!.archiveFormat);
+
+    const onClickCompress = (format: 'tar.gz' | 'zip') => {
+        setShowFormatMenu(false);
         setLoading(true);
         clearFlashes('files');
         setLoadingMessage(t('mass-actions.archiving'));
 
-        compressFiles(uuid, directory, selectedFiles)
+        compressFiles(uuid, directory, selectedFiles, format)
             .then(() => mutate())
             .then(() => setSelectedFiles([]))
             .catch((error) => clearAndAddHttpError({ key: 'files', error }))
@@ -104,11 +119,38 @@ const MassActionsBar = () => {
                 </Tooltip>
             </Can>
             <Can action={'file.archive'}>
-                <Tooltip content={t('archive')}>
-                    <Button.Success onClick={onClickCompress} aria-label={t('archive')} disabled={loading}>
+                <div ref={archiveRef} className='group relative flex items-center'>
+                    <Button.Success
+                        onClick={() => {
+                            if (window.matchMedia('(hover: none), (max-width: 639px)').matches) {
+                                setShowFormatMenu((open) => !open);
+                                return;
+                            }
+                            onClickCompress(archiveFormat);
+                        }}
+                        aria-label={t('archive')}
+                        disabled={loading}
+                    >
                         <FaFileArchive className='h-5 w-5' />
                     </Button.Success>
-                </Tooltip>
+                    <div
+                        style={{ display: showFormatMenu ? 'flex' : undefined }}
+                        className='absolute left-[calc(100%-0.5rem)] top-0 z-20 hidden w-48 flex-col rounded-ui border border-gray-800 bg-gray-800 p-2 text-gray-100 shadow-lg group-hover:flex group-focus-within:flex max-sm:left-0 max-sm:top-full'
+                    >
+                        {(['tar.gz', 'zip'] as const).map((format) => (
+                            <button
+                                key={format}
+                                type='button'
+                                onClick={() => onClickCompress(format)}
+                                disabled={loading}
+                                aria-label={t('archive-as', { format })}
+                                className='w-full rounded-ui p-2 text-left text-sm hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:text-gray-800'
+                            >
+                                {format}
+                            </button>
+                        ))}
+                    </div>
+                </div>
             </Can>
             <Can action={'file.delete'}>
                 <Tooltip content={t('delete')}>

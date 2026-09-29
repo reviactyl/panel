@@ -65,7 +65,7 @@ class BackupRemoteUploadController extends Controller
         }
 
         // The path where backup will be uploaded to
-        $path = sprintf('%s/%s.tar.gz', $model->server->uuid, $model->uuid);
+        $path = $model->storageKey();
 
         // Get the S3 client
         $client = $adapter->getClient();
@@ -75,7 +75,7 @@ class BackupRemoteUploadController extends Controller
         $params = [
             'Bucket' => $adapter->getBucket(),
             'Key' => $path,
-            'ContentType' => 'application/x-gzip',
+            'ContentType' => $model->format === 'zip' ? 'application/zip' : 'application/x-gzip',
         ];
 
         $storageClass = config('backups.disks.s3.storage_class');

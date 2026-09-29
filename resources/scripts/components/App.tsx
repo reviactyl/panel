@@ -35,6 +35,7 @@ interface ExtendedWindow extends Window {
         editor: string;
         avatar_style: string;
         avatar_animated: boolean;
+        archive_format: 'tar.gz' | 'zip';
         updated_at: string;
         created_at: string;
     };
@@ -157,6 +158,7 @@ function App() {
             fileEditor: PanelUser.editor,
             avatarStyle: PanelUser.avatar_style || 'gravatar',
             avatarAnimated: PanelUser.avatar_animated ?? true,
+            archiveFormat: PanelUser.archive_format || 'tar.gz',
             updatedAt: new Date(PanelUser.updated_at),
         });
     }

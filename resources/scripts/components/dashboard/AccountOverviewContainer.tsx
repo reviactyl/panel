@@ -22,6 +22,7 @@ import useFlash from '@/plugins/useFlash';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import FileEditorSwitcher from '@/reviactyl/ui/FileEditorSwitcher';
 import AvatarSelector from '@/components/dashboard/AvatarSelector';
+import ArchiveFormatSwitcher from '@/components/dashboard/ArchiveFormatSwitcher';
 
 import SocialLoginsContainer from '@/components/dashboard/forms/SocialLoginsContainer';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
@@ -121,6 +122,7 @@ export default () => {
                         <LanguageSwitcher />
                         <ThemeToggle />
                         <FileEditorSwitcher />
+                        <ArchiveFormatSwitcher />
                     </TitledGreyBox>
                     <ExtensionSlot name='account:overview:column1:end' />
                 </div>

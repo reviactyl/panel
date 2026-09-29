@@ -32,6 +32,7 @@ class DownloadLinkService
             ->setUser($user)
             ->setClaims([
                 'backup_uuid' => $backup->uuid,
+                'format' => $backup->format,
                 'server_uuid' => $backup->server->uuid,
             ])
             ->setScopes(JwtScope::BackupDownload)
@@ -52,8 +53,8 @@ class DownloadLinkService
         $request = $adapter->getClient()->createPresignedRequest(
             $adapter->getClient()->getCommand('GetObject', [
                 'Bucket' => $adapter->getBucket(),
-                'Key' => sprintf('%s/%s.tar.gz', $backup->server->uuid, $backup->uuid),
-                'ContentType' => 'application/x-gzip',
+                'Key' => $backup->storageKey(),
+                'ResponseContentType' => $backup->format === 'zip' ? 'application/zip' : 'application/x-gzip',
             ]),
             CarbonImmutable::now()->addMinutes(5)
         );
