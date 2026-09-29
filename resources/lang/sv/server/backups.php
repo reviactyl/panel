@@ -24,6 +24,7 @@ return [
     'created' => 'Skapad',
     'create-backup' => 'Skapa serverbackup',
     'backup-name' => 'Backupnamn',
+    'format' => 'Archive format',
     'name-description' => 'Om angivet, namnet som ska användas för att referera till denna backup.',
     'ignored' => 'Ignorerade filer & kataloger',
     'ignored-description' => 'Ange filerna eller mapparna som ska ignoreras när denna backup genereras. Lämna tomt för att använda innehållet i .pteroignore-filen i roten av serverkatalogen om den finns. Wildcard-matchning av filer och mappar stöds, utöver att negera en regel genom att prefixa sökvägen med ett utropstecken.',

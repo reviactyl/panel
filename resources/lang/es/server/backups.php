@@ -24,6 +24,7 @@ return [
     'created' => 'Creado',
     'create-backup' => 'Crear copia de seguridad del servidor',
     'backup-name' => 'Nombre de la copia de seguridad',
+    'format' => 'Archive format',
     'name-description' => 'Si se proporciona, será el nombre usado para identificar esta copia de seguridad.',
     'ignored' => 'Archivos y directorios ignorados',
     'ignored-description' => 'Introduce los archivos o carpetas que deben ignorarse al generar esta copia de seguridad. Déjalo en blanco para usar el contenido del archivo .pteroignore en la raíz del directorio del servidor si está presente. Se admite el uso de comodines y la negación de reglas anteponiendo un signo de exclamación a la ruta.',

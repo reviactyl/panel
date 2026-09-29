@@ -19,6 +19,8 @@ return [
         'customization' => 'अनुकूलन',
         'language' => 'पैनल भाषा',
         'editor' => 'पसंदीदा फ़ाइल संपादक',
+        'archive-format' => 'Default Archive Format',
+        'archive-format-description' => 'Used for file archives and new backups across your servers.',
         'theme-toggle' => 'Theme Toggle',
         'on' => 'चालू',
         'off' => 'बंद',

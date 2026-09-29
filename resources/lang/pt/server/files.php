@@ -77,4 +77,5 @@ return [
         'delete-message-files' => 'arquivos',
         'delete-message-end' => '? Esta é uma ação permanente e os arquivos não podem ser recuperados.',
     ],
+    'archive-as' => 'Archive as {{format}}',
 ];

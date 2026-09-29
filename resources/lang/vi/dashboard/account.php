@@ -19,6 +19,8 @@ return [
         'customization' => 'Tùy chỉnh',
         'language' => 'Ngôn ngữ bảng điều khiển',
         'editor' => 'Trình chỉnh sửa tệp ưa thích',
+        'archive-format' => 'Default Archive Format',
+        'archive-format-description' => 'Used for file archives and new backups across your servers.',
         'theme-toggle' => 'Theme Toggle',
         'on' => 'TRÊN',
         'off' => 'Tắt',

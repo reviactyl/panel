@@ -24,6 +24,7 @@ return [
     'created' => 'Tạo',
     'create-backup' => 'Tạo bản sao lưu máy chủ',
     'backup-name' => 'Tên dự phòng',
+    'format' => 'Archive format',
     'name-description' => 'Nếu được cung cấp, tên sẽ được sử dụng để tham chiếu bản sao lưu này.',
     'ignored' => 'Tập tin và thư mục bị bỏ qua',
     'ignored-description' => 'Nhập các tệp hoặc thư mục cần bỏ qua khi tạo bản sao lưu này. Để trống để sử dụng nội dung của tệp .pteroignore trong thư mục gốc của thư mục máy chủ nếu có. Hỗ trợ kết hợp ký tự đại diện của các tệp và thư mục ngoài việc phủ định quy tắc bằng cách đặt tiền tố vào đường dẫn bằng dấu chấm than.',

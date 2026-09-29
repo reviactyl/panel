@@ -24,6 +24,7 @@ return [
     'created' => 'Criado ',
     'create-backup' => 'Criar backup do servidor',
     'backup-name' => 'Nome do backup',
+    'format' => 'Archive format',
     'name-description' => 'Se fornecido, será o nome usado como referência para este backup.',
     'ignored' => 'Arquivos e Diretórios Ignorados',
     'ignored-description' => 'Insira os arquivos ou pastas a serem ignorados ao gerar este backup. Deixe em branco para usar o conteúdo do arquivo .pteroignore no diretório raiz do servidor, se presente. É possível utilizar curingas para corresponder arquivos e pastas, além de negar uma regra prefixando o caminho com um ponto de exclamação.',

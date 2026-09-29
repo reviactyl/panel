@@ -19,6 +19,8 @@ return [
         'customization' => 'ಅನುಗುಣಗೊಳಿಸುವಿಕೆ',
         'language' => 'ಪ್ಯಾನೆಲ್ ಭಾಷೆ',
         'editor' => 'ಆದ್ಯತೆಯ ಫೈಲ್ ಎಡಿಟರ್',
+        'archive-format' => 'Default Archive Format',
+        'archive-format-description' => 'Used for file archives and new backups across your servers.',
         'theme-toggle' => 'Theme Toggle',
         'on' => 'ಆನ್',
         'off' => 'ಆಫ್',

@@ -24,6 +24,7 @@ return [
     'created' => 'Créée',
     'create-backup' => 'Créer une sauvegarde du serveur',
     'backup-name' => 'Nom de la sauvegarde',
+    'format' => 'Archive format',
     'name-description' => 'Si fourni, le nom qui doit être utilisé pour référencer cette sauvegarde.',
     'ignored' => 'Fichiers et répertoires ignorés',
     'ignored-description' => 'Entrez les fichiers ou dossiers à ignorer lors de la génération de cette sauvegarde. Laissez ce champ vide pour utiliser le contenu du fichier .pteroignore situé à la racine du répertoire du serveur, s\'il existe. La correspondance par caractères génériques des fichiers et dossiers est prise en charge, en plus de la possibilité d\'annuler une règle en préfixant le chemin d\'accès par un point d\'exclamation.',

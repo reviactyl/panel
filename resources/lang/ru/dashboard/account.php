@@ -19,6 +19,8 @@ return [
         'customization' => 'Персонализация',
         'language' => 'Язык панели',
         'editor' => 'Предпочитаемый редактор файлов',
+        'archive-format' => 'Default Archive Format',
+        'archive-format-description' => 'Used for file archives and new backups across your servers.',
         'theme-toggle' => 'Theme Toggle',
         'on' => 'Вкл.',
         'off' => 'Выкл.',

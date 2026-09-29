@@ -19,6 +19,8 @@ return [
         'customization' => 'Kustomisasi',
         'language' => 'Bahasa Panel',
         'editor' => 'Editor File Pilihan',
+        'archive-format' => 'Default Archive Format',
+        'archive-format-description' => 'Used for file archives and new backups across your servers.',
         'theme-toggle' => 'Theme Toggle',
         'on' => 'Nyala',
         'off' => 'Mati',

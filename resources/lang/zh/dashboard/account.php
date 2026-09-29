@@ -19,6 +19,8 @@ return [
         'customization' => '自定义设置',
         'language' => '面板语言',
         'editor' => '首选文件编辑器',
+        'archive-format' => 'Default Archive Format',
+        'archive-format-description' => 'Used for file archives and new backups across your servers.',
         'theme-toggle' => 'Theme Toggle',
         'on' => '开启',
         'off' => '关闭',

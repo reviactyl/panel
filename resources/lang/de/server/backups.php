@@ -24,6 +24,7 @@ return [
     'created' => 'Erstellt',
     'create-backup' => 'Server-Backup erstellen',
     'backup-name' => 'Backup-Name',
+    'format' => 'Archive format',
     'name-description' => 'Wenn angegeben, der Name, der verwendet werden soll, um auf dieses Backup zu verweisen.',
     'ignored' => 'Ignorierte Dateien & Verzeichnisse',
     'ignored-description' => 'Geben Sie die Dateien oder Ordner ein, die beim Erstellen dieses Backups ignoriert werden sollen. Lassen Sie dieses Feld leer, um den Inhalt der Datei .pteroignore im Stammverzeichnis des Servers zu verwenden, falls vorhanden. Die Platzhalterübereinstimmung von Dateien und Ordnern wird unterstützt, zusätzlich zur Negierung einer Regel, indem dem Pfad ein Ausrufezeichen vorangestellt wird.',

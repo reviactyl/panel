@@ -77,4 +77,5 @@ return [
         'delete-message-files' => 'ملفات',
         'delete-message-end' => '؟ هذا إجراء دائم ولا يمكن استرداد الملفات.',
     ],
+    'archive-as' => 'Archive as {{format}}',
 ];

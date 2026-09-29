@@ -19,6 +19,8 @@ return [
         'customization' => 'কাস্টমাইজেশন',
         'language' => 'প্যানেলের ভাষা',
         'editor' => 'পছন্দের ফাইল এডিটর',
+        'archive-format' => 'Default Archive Format',
+        'archive-format-description' => 'Used for file archives and new backups across your servers.',
         'theme-toggle' => 'Theme Toggle',
         'on' => 'চালু',
         'off' => 'বন্ধ',

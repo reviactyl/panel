@@ -24,6 +24,7 @@ return [
     'created' => 'Oluşturuldu',
     'create-backup' => 'Sunucu yedeği oluştur',
     'backup-name' => 'Yedek adı',
+    'format' => 'Archive format',
     'name-description' => 'Sağlanırsa, bu yedeğe başvurmak için kullanılacak isim.',
     'ignored' => 'Yoksayılan Dosyalar ve Dizinler',
     'ignored-description' => 'Bu yedeği oluştururken yoksayılacak dosyaları veya klasörleri girin. Varsa, sunucu dizininin kökündeki .pteroignore dosyasının içeriğini kullanmak için boş bırakın. Dosyaların ve klasörlerin joker karakterle eşleşmesi desteklenir, ayrıca yolun başına bir ünlem işareti ekleyerek bir kuralı tersine çevirebilirsiniz.',
