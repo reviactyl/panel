@@ -25,7 +25,7 @@ class CompressFilesTest extends ClientApiIntegrationTestCase
         [$user, $server] = $this->generateTestAccount([Permission::ACTION_FILE_ARCHIVE]);
 
         $this->mock(DaemonFileRepository::class, function (MockInterface $mock) {
-            $mock->expects('setServer->compressFiles')->with('/', ['test.txt'])->andReturn([
+            $mock->expects('setServer->compressFiles')->with('/', ['test.txt'], 'tar.gz')->andReturn([
                 'name' => 'test.tar.gz',
                 'mime' => 'application/gzip',
             ]);

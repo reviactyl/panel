@@ -28,6 +28,8 @@ class SettingsServiceProviderTest extends IntegrationTestCase
 
     public function test_it_loads_trusted_proxies_from_database_settings(): void
     {
+        config()->set('panel.load_environment_only', false);
+
         $settings = $this->app->make(SettingsRepositoryInterface::class);
         $settings->set('settings::trustedproxy:proxies', '10.0.0.0/8, 192.168.1.1');
 

@@ -32,7 +32,7 @@ class DownloadLinkService
             ->setUser($user)
             ->setClaims([
                 'backup_uuid' => $backup->uuid,
-                'format' => $backup->format,
+                'format' => $backup->format ?: 'tar.gz',
                 'server_uuid' => $backup->server->uuid,
             ])
             ->setScopes(JwtScope::BackupDownload)

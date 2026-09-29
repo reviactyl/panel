@@ -31,6 +31,7 @@ class DownloadLinkServiceTest extends IntegrationTestCase
         $server = $this->createServerModel();
         $backup = Backup::factory()->for($server)->create([
             'disk' => Backup::ADAPTER_WINGS,
+            'format' => 'zip',
         ]);
 
         $url = $this->app->make(DownloadLinkService::class)->handle($backup, $server->user);
@@ -60,5 +61,10 @@ class DownloadLinkServiceTest extends IntegrationTestCase
         $this->assertSame($backup->format, $token->claims()->get('format'));
         $this->assertSame($server->uuid, $token->claims()->get('server_uuid'));
         $this->assertEquals(JwtScope::BackupDownload->value, $token->claims()->get('scope'));
+
+        $backup->format = null;
+        $legacyUrl = $this->app->make(DownloadLinkService::class)->handle($backup, $server->user);
+        $legacyToken = $config->parser()->parse(substr($legacyUrl, strlen($prefix)));
+        $this->assertSame('tar.gz', $legacyToken->claims()->get('format'));
     }
 }
