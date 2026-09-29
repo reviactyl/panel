@@ -13,6 +13,7 @@ use Filament\Navigation\NavigationGroup;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Assets\Css;
+use Filament\Support\Assets\Js;
 use Filament\Support\Colors\Color;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -41,6 +42,7 @@ class AdminPanelProvider extends PanelProvider
                 Css::make('filament-layout', resource_path('css/filament/layout.css')),
                 Css::make('filament-alert', resource_path('css/filament/alert.css')),
                 Css::make('filament-monitoring', resource_path('css/filament/monitoring.css')),
+                Js::make('admin-session-expired', resource_path('js/filament/admin-session-expired.js')),
             ])
             ->breadcrumbs(false)
             ->navigationGroups([
@@ -75,6 +77,6 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 AdminAuthenticate::class,
-            ]);
+            ], isPersistent: true);
     }
 }
