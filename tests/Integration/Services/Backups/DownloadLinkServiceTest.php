@@ -15,6 +15,13 @@ use Tests\Integration\IntegrationTestCase;
 
 class DownloadLinkServiceTest extends IntegrationTestCase
 {
+    public function test_zip_backup_uses_zip_storage_key(): void
+    {
+        $backup = Backup::factory()->for($this->createServerModel())->create(['format' => 'zip']);
+
+        $this->assertSame($backup->server->uuid.'/'.$backup->uuid.'.zip', $backup->storageKey());
+    }
+
     /**
      * Test that a valid wings URL is generated and returned to the caller when not
      * making use of an S3 driver for backups.
@@ -24,6 +31,7 @@ class DownloadLinkServiceTest extends IntegrationTestCase
         $server = $this->createServerModel();
         $backup = Backup::factory()->for($server)->create([
             'disk' => Backup::ADAPTER_WINGS,
+            'format' => 'zip',
         ]);
 
         $url = $this->app->make(DownloadLinkService::class)->handle($backup, $server->user);
@@ -50,7 +58,13 @@ class DownloadLinkServiceTest extends IntegrationTestCase
         $this->assertEquals($timestamp->subMinutes(5), $token->claims()->get('nbf'));
         $this->assertEquals($timestamp->addMinutes(15), $token->claims()->get('exp'));
         $this->assertSame($backup->uuid, $token->claims()->get('backup_uuid'));
+        $this->assertSame($backup->format, $token->claims()->get('format'));
         $this->assertSame($server->uuid, $token->claims()->get('server_uuid'));
         $this->assertEquals(JwtScope::BackupDownload->value, $token->claims()->get('scope'));
+
+        $backup->format = null;
+        $legacyUrl = $this->app->make(DownloadLinkService::class)->handle($backup, $server->user);
+        $legacyToken = $config->parser()->parse(substr($legacyUrl, strlen($prefix)));
+        $this->assertSame('tar.gz', $legacyToken->claims()->get('format'));
     }
 }

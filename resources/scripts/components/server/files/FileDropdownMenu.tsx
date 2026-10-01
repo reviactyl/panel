@@ -10,6 +10,7 @@ import {
     FaTurnUp,
     FaPen,
     FaTrash,
+    FaChevronRight,
 } from 'react-icons/fa6';
 import { IconType } from 'react-icons';
 import RenameFileModal from '@/components/server/files/RenameFileModal';
@@ -31,6 +32,7 @@ import isEqual from 'react-fast-compare';
 import ChmodFileModal from '@/components/server/files/ChmodFileModal';
 import { Dialog } from '@/reviactyl/elements/dialog';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
+import { useStoreState } from 'easy-peasy';
 
 type ModalType = 'rename' | 'move' | 'chmod';
 
@@ -60,6 +62,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
     const { t } = useTranslation('server/files');
     const onClickRef = useRef<DropdownMenu>(null);
     const [showSpinner, setShowSpinner] = useState(false);
+    const [showFormatMenu, setShowFormatMenu] = useState(false);
     const [modal, setModal] = useState<ModalType | null>(null);
     const [showConfirmation, setShowConfirmation] = useState(false);
 
@@ -70,6 +73,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
 
     useEventListener(`panel:files:ctx:${file.key}`, (e: CustomEvent) => {
         if (onClickRef.current) {
+            setShowFormatMenu(false);
             onClickRef.current.triggerMenu(e.detail);
         }
     });
@@ -109,11 +113,13 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
             .then(() => setShowSpinner(false));
     };
 
-    const doArchive = () => {
+    const archiveFormat = useStoreState((state) => state.user.data!.archiveFormat);
+
+    const doArchive = (format: 'tar.gz' | 'zip') => {
         setShowSpinner(true);
         clearFlashes('files');
 
-        compressFiles(uuid, directory, [file.name])
+        compressFiles(uuid, directory, [file.name], format)
             .then(() => mutate())
             .catch((error) => clearAndAddHttpError({ key: 'files', error }))
             .then(() => setShowSpinner(false));
@@ -162,8 +168,15 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
             <SpinnerOverlay visible={showSpinner} fixed size={'large'} />
             <DropdownMenu
                 ref={onClickRef}
+                reserveRight={184}
                 renderToggle={(onClick) => (
-                    <div className='px-4 py-2 hover:text-white' onClick={onClick}>
+                    <div
+                        className='px-4 py-2 hover:text-white'
+                        onClick={(event) => {
+                            setShowFormatMenu(false);
+                            onClick(event);
+                        }}
+                    >
                         <FaEllipsis />
                     </div>
                 )}
@@ -185,7 +198,43 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                     </Can>
                 ) : (
                     <Can action={'file.archive'}>
-                        <Row onClick={doArchive} icon={FaFileZipper} title={t('dropdown.archive')} />
+                        <div className='group relative'>
+                            <button
+                                type='button'
+                                onClick={(event) => {
+                                    if (window.matchMedia('(hover: none), (max-width: 639px)').matches) {
+                                        event.stopPropagation();
+                                        setShowFormatMenu(true);
+                                        return;
+                                    }
+                                    doArchive(archiveFormat);
+                                }}
+                                aria-haspopup='menu'
+                                className='flex w-full items-center rounded-ui p-2 text-left transition-all duration-150 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:text-gray-800'
+                            >
+                                <FaFileZipper className='text-xs inline-block w-[1.25em]' />
+                                <span className='ml-2'>{t('dropdown.archive')}</span>
+                                <FaChevronRight className='ml-auto text-xs' aria-hidden />
+                            </button>
+                            <div
+                                role='menu'
+                                style={{ display: showFormatMenu ? 'block' : undefined }}
+                                className='absolute left-[calc(100%-0.5rem)] top-[-0.5rem] z-30 hidden w-48 rounded-ui border border-gray-800 bg-gray-800 p-2 text-gray-100 shadow-lg group-hover:block group-focus-within:block max-sm:bottom-full max-sm:left-0 max-sm:top-auto'
+                            >
+                                {(['tar.gz', 'zip'] as const).map((format) => (
+                                    <button
+                                        key={format}
+                                        type='button'
+                                        onClick={() => doArchive(format)}
+                                        aria-label={t('archive-as', { format })}
+                                        role='menuitem'
+                                        className='block w-full rounded-ui p-2 text-left text-sm transition-colors duration-150 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:text-gray-800'
+                                    >
+                                        {format}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
                     </Can>
                 )}
                 {file.isFile && (

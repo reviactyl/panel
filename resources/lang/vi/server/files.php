@@ -77,4 +77,5 @@ return [
         'delete-message-files' => 'tập tin',
         'delete-message-end' => '? Đây là một hành động vĩnh viễn và các tập tin không thể phục hồi được.',
     ],
+    'archive-as' => 'Archive as {{format}}',
 ];

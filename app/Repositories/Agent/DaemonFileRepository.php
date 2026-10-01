@@ -195,7 +195,7 @@ class DaemonFileRepository extends DaemonRepository
      *
      * @throws DaemonConnectionException
      */
-    public function compressFiles(?string $root, array $files): array
+    public function compressFiles(?string $root, array $files, string $format = 'tar.gz'): array
     {
         Assert::isInstanceOf($this->server, Server::class);
 
@@ -206,6 +206,7 @@ class DaemonFileRepository extends DaemonRepository
                     'json' => [
                         'root' => $root ?? '/',
                         'files' => $files,
+                        'format' => $format,
                     ],
                     // Wait for up to 15 minutes for the archive to be completed when calling this endpoint
                     // since it will likely take quite awhile for large directories.

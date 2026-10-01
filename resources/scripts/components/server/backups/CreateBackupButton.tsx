@@ -14,11 +14,14 @@ import { ServerContext } from '@/state/server';
 import FormikSwitch from '@/reviactyl/elements/FormikSwitch';
 import Can from '@/reviactyl/elements/Can';
 import { useTranslation } from 'react-i18next';
+import { useStoreState } from 'easy-peasy';
+import { FaChevronDown } from 'react-icons/fa6';
 
 interface Values {
     name: string;
     ignored: string;
     isLocked: boolean;
+    format: 'tar.gz' | 'zip';
 }
 
 const ModalContent = ({ ...props }: RequiredModalProps) => {
@@ -31,6 +34,26 @@ const ModalContent = ({ ...props }: RequiredModalProps) => {
                 <FlashMessageRender byKey={'backups:create'} className='mb-4' />
                 <h2 className='text-2xl mb-6'>{t('create-backup')}</h2>
                 <Field name={'name'} label={t('backup-name')} description={t('name-description')} />
+                <div className='mt-6'>
+                    <label htmlFor='backup-format' className='block mb-2 text-sm'>
+                        {t('format')}
+                    </label>
+                    <div className='relative'>
+                        <FormikField
+                            as='select'
+                            id='backup-format'
+                            name='format'
+                            className='w-full appearance-none rounded-ui border border-gray-700 bg-gray-900 bg-none p-2 pr-10 text-gray-100'
+                        >
+                            <option value='tar.gz'>tar.gz</option>
+                            <option value='zip'>zip</option>
+                        </FormikField>
+                        <FaChevronDown
+                            className='pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-100'
+                            aria-hidden
+                        />
+                    </div>
+                </div>
                 <div className='mt-6'>
                     <FormikFieldWrapper name={'ignored'} label={t('ignored')} description={t('ignored-description')}>
                         <FormikField as={Textarea} name={'ignored'} rows={6} />
@@ -54,6 +77,7 @@ const ModalContent = ({ ...props }: RequiredModalProps) => {
 export default () => {
     const { t } = useTranslation('server/backups');
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const archiveFormat = useStoreState((state) => state.user.data!.archiveFormat);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const [visible, setVisible] = useState(false);
     const { mutate } = getServerBackups();
@@ -88,11 +112,12 @@ export default () => {
             {visible && (
                 <Formik
                     onSubmit={submit}
-                    initialValues={{ name: '', ignored: '', isLocked: false }}
+                    initialValues={{ name: '', ignored: '', isLocked: false, format: archiveFormat }}
                     validationSchema={object().shape({
                         name: string().max(191),
                         ignored: string(),
                         isLocked: boolean(),
+                        format: string().oneOf(['tar.gz', 'zip']).required(),
                     })}
                 >
                     <ModalContent appear visible={visible} onDismissed={() => setVisible(false)} />

@@ -6,6 +6,7 @@ export interface ServerBackup {
     isSuccessful: boolean;
     isLocked: boolean;
     name: string;
+    format: 'tar.gz' | 'zip';
     ignoredFiles: string;
     checksum: string;
     bytes: number;

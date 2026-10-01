@@ -77,4 +77,5 @@ return [
         'delete-message-files' => 'file',
         'delete-message-end' => '? Ini adalah tindakan permanen dan file tidak dapat dipulihkan.',
     ],
+    'archive-as' => 'Archive as {{format}}',
 ];

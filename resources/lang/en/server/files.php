@@ -77,4 +77,5 @@ return [
         'delete-message-files' => 'files',
         'delete-message-end' => '? This is a permanent action and the files cannot be recovered.',
     ],
+    'archive-as' => 'Archive as {{format}}',
 ];

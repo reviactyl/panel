@@ -11,6 +11,7 @@ export interface UserData {
     fileEditor: string;
     avatarStyle: string;
     avatarAnimated: boolean;
+    archiveFormat: 'tar.gz' | 'zip';
     rootAdmin: boolean;
     useTotp: boolean;
     createdAt: Date;

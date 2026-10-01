@@ -24,6 +24,7 @@ return [
     'created' => 'Dibuat',
     'create-backup' => 'Buat backup server',
     'backup-name' => 'Nama backup',
+    'format' => 'Archive format',
     'name-description' => 'Jika diberikan, nama yang harus digunakan untuk mereferensikan backup ini.',
     'ignored' => 'File & Direktori yang Diabaikan',
     'ignored-description' => 'Masukkan file atau folder yang akan diabaikan saat membuat backup ini. Biarkan kosong untuk menggunakan isi file .pteroignore di direktori root server jika ada. Pencocokan wildcard file dan folder didukung selain menegasikan aturan dengan menambahkan tanda seru di depan path.',

@@ -19,6 +19,8 @@ return [
         'customization' => 'Anpassung',
         'language' => 'Panel-Sprache',
         'editor' => 'Bevorzugter Dateieditor',
+        'archive-format' => 'Default Archive Format',
+        'archive-format-description' => 'Used for file archives and new backups across your servers.',
         'theme-toggle' => 'Theme Toggle',
         'on' => 'An',
         'off' => 'Aus',

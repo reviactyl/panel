@@ -24,6 +24,7 @@ return [
     'created' => 'Created',
     'create-backup' => 'Create server backup',
     'backup-name' => 'Backup name',
+    'format' => 'Archive format',
     'name-description' => 'If provided, the name that should be used to reference this backup.',
     'ignored' => 'Ignored Files & Directories',
     'ignored-description' => 'Enter the files or folders to ignore while generating this backup. Leave blank to use the contents of the .pteroignore file in the root of the server directory if present. Wildcard matching of files and folders is supported in addition to negating a rule by prefixing the path with an exclamation point.',

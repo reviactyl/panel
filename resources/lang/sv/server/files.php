@@ -77,4 +77,5 @@ return [
         'delete-message-files' => 'filer',
         'delete-message-end' => '? Detta är en permanent åtgärd och filerna kan inte återställas.',
     ],
+    'archive-as' => 'Archive as {{format}}',
 ];

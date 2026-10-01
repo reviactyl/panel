@@ -24,6 +24,7 @@ return [
     'created' => '已创建',
     'create-backup' => '创建服务器备份',
     'backup-name' => '备份名称',
+    'format' => 'Archive format',
     'name-description' => '如果提供，则应使用此名称作为此备份的参考。',
     'ignored' => '忽略的文件和目录',
     'ignored-description' => '在生成此备份时输入要忽略的文件夹。留空以使用内容的 .pterignored 文件中的根目录服务器目录。如果 Wildcard 匹配文件和文件夹是支持的，除了通过在路径前添加感叹号来否定规则。',

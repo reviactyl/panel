@@ -152,7 +152,7 @@ class BackupStatusController extends Controller
 
         $params = [
             'Bucket' => $adapter->getBucket(),
-            'Key' => sprintf('%s/%s.tar.gz', $backup->server->uuid, $backup->uuid),
+            'Key' => $backup->storageKey(),
             'UploadId' => $backup->upload_id,
         ];
 

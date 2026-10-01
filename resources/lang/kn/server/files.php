@@ -77,4 +77,5 @@ return [
         'delete-message-files' => 'ಕಡತಗಳು',
         'delete-message-end' => '? ಇದು ಶಾಶ್ವತ ಕ್ರಮವಾಗಿದೆ ಮತ್ತು ಫೈಲ್‌ಗಳನ್ನು ಮರುಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ.',
     ],
+    'archive-as' => 'Archive as {{format}}',
 ];

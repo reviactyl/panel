@@ -77,4 +77,5 @@ return [
         'delete-message-files' => 'dosyalar',
         'delete-message-end' => '? Bu kalıcı bir işlemdir ve dosyalar kurtarılamaz.',
     ],
+    'archive-as' => 'Archive as {{format}}',
 ];

@@ -82,6 +82,9 @@ export default ({ backup, className }: Props) => {
                             </span>
                         )}
                         <p className='truncate break-words'>{backup.name}</p>
+                        <span className='ml-2 rounded border border-gray-700 px-1 text-xs text-gray-300'>
+                            {backup.format}
+                        </span>
                         {backup.completedAt !== null && backup.isSuccessful && (
                             <span className='ml-3 hidden text-xs font-extralight text-gray-300 sm:inline'>
                                 {bytesToString(backup.bytes)}

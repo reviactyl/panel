@@ -71,7 +71,7 @@ class InitiateBackupService
      * @throws TooManyBackupsException
      * @throws TooManyRequestsHttpException
      */
-    public function handle(Server $server, ?string $name = null, bool $override = false): Backup
+    public function handle(Server $server, ?string $name = null, bool $override = false, ?string $format = null): Backup
     {
         $limit = config('backups.throttles.limit');
         $period = config('backups.throttles.period');
@@ -100,7 +100,7 @@ class InitiateBackupService
             }
         }
 
-        return $this->connection->transaction(function () use ($server, $name) {
+        return $this->connection->transaction(function () use ($server, $name, $format) {
             /** @var Backup $backup */
             $backup = $this->repository->create([
                 'server_id' => $server->id,
@@ -108,6 +108,7 @@ class InitiateBackupService
                 'name' => trim($name) ?: sprintf('Backup at %s', CarbonImmutable::now()->toDateTimeString()),
                 'ignored_files' => array_values($this->ignoredFiles),
                 'disk' => $this->backupManager->getDefaultAdapter(),
+                'format' => $format ?? $server->user->archive_format,
                 'is_locked' => $this->isLocked,
             ], true, true);
 

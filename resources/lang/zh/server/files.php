@@ -77,4 +77,5 @@ return [
         'delete-message-files' => '文件',
         'delete-message-end' => '？这是永久性操作，文件无法恢复。',
     ],
+    'archive-as' => 'Archive as {{format}}',
 ];

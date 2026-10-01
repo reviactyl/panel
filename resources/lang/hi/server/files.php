@@ -77,4 +77,5 @@ return [
         'delete-message-files' => 'फ़ाइलें',
         'delete-message-end' => '? यह एक स्थायी कार्रवाई है और फ़ाइलें पुनर्प्राप्त नहीं की जा सकतीं.',
     ],
+    'archive-as' => 'Archive as {{format}}',
 ];

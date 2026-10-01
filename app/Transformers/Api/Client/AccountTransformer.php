@@ -30,6 +30,7 @@ class AccountTransformer extends BaseClientTransformer
             'file_editor' => $model->editor,
             'avatar_style' => $model->avatar_style,
             'avatar_animated' => $model->avatar_animated,
+            'archive_format' => $model->archive_format,
         ];
     }
 }

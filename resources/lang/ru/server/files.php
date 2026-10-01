@@ -77,4 +77,5 @@ return [
         'delete-message-files' => 'файлов',
         'delete-message-end' => '? Это необратимое действие, и файлы невозможно будет восстановить.',
     ],
+    'archive-as' => 'Archive as {{format}}',
 ];
