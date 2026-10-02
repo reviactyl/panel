@@ -78,4 +78,18 @@ return [
         'delete-message-end' => '? এটি একটি স্থায়ী কাজ এবং ফাইলগুলো পুনরুদ্ধার করা যাবে না।',
     ],
     'archive-as' => 'Archive as {{format}}',
+    'move-modal' => [
+        'title-single' => '"{{name}}" সরান',
+        'title-multiple' => '{{count}}টি আইটেম সরান',
+        'current-location' => 'বর্তমান অবস্থান',
+        'destination' => 'গন্তব্য',
+        'back' => 'পেছনে',
+        'loading' => 'ফাইল লোড হচ্ছে...',
+        'empty' => 'এই ফোল্ডারটি খালি।',
+        'new-folder-label' => 'বর্তমান গন্তব্যে নতুন ফোল্ডার',
+        'folder-name' => 'ফোল্ডারের নাম',
+        'creating' => 'তৈরি করা হচ্ছে...',
+        'new-folder' => 'নতুন ফোল্ডার',
+        'self-move-blocked' => 'আপনি কোনো ফোল্ডারকে তার নিজের মধ্যে সরাতে পারবেন না।',
+    ],
 ];

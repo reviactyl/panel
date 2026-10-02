@@ -78,4 +78,18 @@ return [
         'delete-message-end' => '? Esta es una acción permanente y los archivos no se pueden recuperar.',
     ],
     'archive-as' => 'Archive as {{format}}',
+    'move-modal' => [
+        'title-single' => 'Mover "{{name}}"',
+        'title-multiple' => 'Mover {{count}} elementos',
+        'current-location' => 'Ubicación actual',
+        'destination' => 'Destino',
+        'back' => 'Atrás',
+        'loading' => 'Cargando archivos...',
+        'empty' => 'Esta carpeta está vacía.',
+        'new-folder-label' => 'Nueva carpeta en el destino actual',
+        'folder-name' => 'Nombre de la carpeta',
+        'creating' => 'Creando...',
+        'new-folder' => 'Nueva carpeta',
+        'self-move-blocked' => 'No puedes mover una carpeta dentro de sí misma.',
+    ],
 ];

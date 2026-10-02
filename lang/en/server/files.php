@@ -78,4 +78,18 @@ return [
         'delete-message-end' => '? This is a permanent action and the files cannot be recovered.',
     ],
     'archive-as' => 'Archive as {{format}}',
+    'move-modal' => [
+        'title-single' => 'Move "{{name}}"',
+        'title-multiple' => 'Move {{count}} items',
+        'current-location' => 'Current location',
+        'destination' => 'Destination',
+        'back' => 'Back',
+        'loading' => 'Loading files...',
+        'empty' => 'This folder is empty.',
+        'new-folder-label' => 'New folder in current destination',
+        'folder-name' => 'Folder name',
+        'creating' => 'Creating...',
+        'new-folder' => 'New folder',
+        'self-move-blocked' => 'You cannot move a folder into itself.',
+    ],
 ];

@@ -78,4 +78,18 @@ return [
         'delete-message-end' => '? Это необратимое действие, и файлы невозможно будет восстановить.',
     ],
     'archive-as' => 'Archive as {{format}}',
+    'move-modal' => [
+        'title-single' => 'Переместить «{{name}}»',
+        'title-multiple' => 'Переместить объектов: {{count}}',
+        'current-location' => 'Текущее расположение',
+        'destination' => 'Назначение',
+        'back' => 'Назад',
+        'loading' => 'Загрузка файлов...',
+        'empty' => 'Эта папка пуста.',
+        'new-folder-label' => 'Новая папка в текущем месте назначения',
+        'folder-name' => 'Имя папки',
+        'creating' => 'Создание...',
+        'new-folder' => 'Новая папка',
+        'self-move-blocked' => 'Нельзя переместить папку в саму себя.',
+    ],
 ];

@@ -78,4 +78,18 @@ return [
         'delete-message-end' => '? Đây là một hành động vĩnh viễn và các tập tin không thể phục hồi được.',
     ],
     'archive-as' => 'Archive as {{format}}',
+    'move-modal' => [
+        'title-single' => 'Di chuyển "{{name}}"',
+        'title-multiple' => 'Di chuyển {{count}} mục',
+        'current-location' => 'Vị trí hiện tại',
+        'destination' => 'Đích đến',
+        'back' => 'Quay lại',
+        'loading' => 'Đang tải tệp...',
+        'empty' => 'Thư mục này trống.',
+        'new-folder-label' => 'Thư mục mới tại đích hiện tại',
+        'folder-name' => 'Tên thư mục',
+        'creating' => 'Đang tạo...',
+        'new-folder' => 'Thư mục mới',
+        'self-move-blocked' => 'Bạn không thể di chuyển thư mục vào chính nó.',
+    ],
 ];

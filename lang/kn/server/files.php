@@ -78,4 +78,18 @@ return [
         'delete-message-end' => '? ಇದು ಶಾಶ್ವತ ಕ್ರಮವಾಗಿದೆ ಮತ್ತು ಫೈಲ್‌ಗಳನ್ನು ಮರುಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ.',
     ],
     'archive-as' => 'Archive as {{format}}',
+    'move-modal' => [
+        'title-single' => '"{{name}}" ಅನ್ನು ಸರಿಸಿ',
+        'title-multiple' => '{{count}} ಐಟಂಗಳನ್ನು ಸರಿಸಿ',
+        'current-location' => 'ಪ್ರಸ್ತುತ ಸ್ಥಳ',
+        'destination' => 'ಗಮ್ಯಸ್ಥಾನ',
+        'back' => 'ಹಿಂದೆ',
+        'loading' => 'ಫೈಲ್‌ಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ...',
+        'empty' => 'ಈ ಫೋಲ್ಡರ್ ಖಾಲಿಯಾಗಿದೆ.',
+        'new-folder-label' => 'ಪ್ರಸ್ತುತ ಗಮ್ಯಸ್ಥಾನದಲ್ಲಿ ಹೊಸ ಫೋಲ್ಡರ್',
+        'folder-name' => 'ಫೋಲ್ಡರ್ ಹೆಸರು',
+        'creating' => 'ರಚಿಸಲಾಗುತ್ತಿದೆ...',
+        'new-folder' => 'ಹೊಸ ಫೋಲ್ಡರ್',
+        'self-move-blocked' => 'ಫೋಲ್ಡರ್ ಅನ್ನು ಅದರೊಳಗೆ ಸರಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.',
+    ],
 ];

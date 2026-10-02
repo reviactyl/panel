@@ -78,4 +78,18 @@ return [
         'delete-message-end' => '? यह एक स्थायी कार्रवाई है और फ़ाइलें पुनर्प्राप्त नहीं की जा सकतीं.',
     ],
     'archive-as' => 'Archive as {{format}}',
+    'move-modal' => [
+        'title-single' => '"{{name}}" स्थानांतरित करें',
+        'title-multiple' => '{{count}} आइटम स्थानांतरित करें',
+        'current-location' => 'वर्तमान स्थान',
+        'destination' => 'गंतव्य',
+        'back' => 'वापस',
+        'loading' => 'फ़ाइलें लोड हो रही हैं...',
+        'empty' => 'यह फ़ोल्डर खाली है।',
+        'new-folder-label' => 'वर्तमान गंतव्य में नया फ़ोल्डर',
+        'folder-name' => 'फ़ोल्डर का नाम',
+        'creating' => 'बनाया जा रहा है...',
+        'new-folder' => 'नया फ़ोल्डर',
+        'self-move-blocked' => 'आप किसी फ़ोल्डर को उसके अंदर नहीं ले जा सकते।',
+    ],
 ];

@@ -78,4 +78,18 @@ return [
         'delete-message-end' => '؟ هذا إجراء دائم ولا يمكن استرداد الملفات.',
     ],
     'archive-as' => 'Archive as {{format}}',
+    'move-modal' => [
+        'title-single' => 'نقل "{{name}}"',
+        'title-multiple' => 'نقل {{count}} عناصر',
+        'current-location' => 'الموقع الحالي',
+        'destination' => 'الوجهة',
+        'back' => 'رجوع',
+        'loading' => 'جارٍ تحميل الملفات...',
+        'empty' => 'هذا المجلد فارغ.',
+        'new-folder-label' => 'مجلد جديد في الوجهة الحالية',
+        'folder-name' => 'اسم المجلد',
+        'creating' => 'جارٍ الإنشاء...',
+        'new-folder' => 'مجلد جديد',
+        'self-move-blocked' => 'لا يمكنك نقل مجلد إلى داخل نفسه.',
+    ],
 ];

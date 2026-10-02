@@ -78,4 +78,18 @@ return [
         'delete-message-end' => '? Il s\'agit d\'une action permanente et les fichiers ne peuvent pas être récupérés.',
     ],
     'archive-as' => 'Archive as {{format}}',
+    'move-modal' => [
+        'title-single' => 'Déplacer "{{name}}"',
+        'title-multiple' => 'Déplacer {{count}} éléments',
+        'current-location' => 'Emplacement actuel',
+        'destination' => 'Destination',
+        'back' => 'Retour',
+        'loading' => 'Chargement des fichiers...',
+        'empty' => 'Ce dossier est vide.',
+        'new-folder-label' => 'Nouveau dossier dans la destination actuelle',
+        'folder-name' => 'Nom du dossier',
+        'creating' => 'Création...',
+        'new-folder' => 'Nouveau dossier',
+        'self-move-blocked' => 'Vous ne pouvez pas déplacer un dossier dans lui-même.',
+    ],
 ];

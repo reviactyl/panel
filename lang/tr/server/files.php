@@ -78,4 +78,18 @@ return [
         'delete-message-end' => '? Bu kalıcı bir işlemdir ve dosyalar kurtarılamaz.',
     ],
     'archive-as' => 'Archive as {{format}}',
+    'move-modal' => [
+        'title-single' => '"{{name}}" taşı',
+        'title-multiple' => '{{count}} öğeyi taşı',
+        'current-location' => 'Geçerli konum',
+        'destination' => 'Hedef',
+        'back' => 'Geri',
+        'loading' => 'Dosyalar yükleniyor...',
+        'empty' => 'Bu klasör boş.',
+        'new-folder-label' => 'Geçerli hedefte yeni klasör',
+        'folder-name' => 'Klasör adı',
+        'creating' => 'Oluşturuluyor...',
+        'new-folder' => 'Yeni klasör',
+        'self-move-blocked' => 'Bir klasörü kendi içine taşıyamazsınız.',
+    ],
 ];

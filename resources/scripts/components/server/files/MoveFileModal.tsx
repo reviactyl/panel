@@ -11,6 +11,7 @@ import createDirectory from '@/api/server/files/createDirectory';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
+import { useTranslation } from 'react-i18next';
 
 interface Props extends RequiredModalProps {
     files: string[];
@@ -46,6 +47,7 @@ interface Breadcrumb {
 }
 
 const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
+    const { t } = useTranslation('server/files');
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const sourceDirectory = toAbsolutePath(ServerContext.useStoreState((state) => state.files.directory || '/'));
     const setSelectedFiles = ServerContext.useStoreActions((actions) => actions.files.setSelectedFiles);
@@ -95,11 +97,11 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
 
     const title = useMemo(() => {
         if (files.length === 1) {
-            return `Move "${files[0]}"`;
+            return t('move-modal.title-single', { name: files[0] });
         }
 
-        return `Move ${files.length} item${files.length === 1 ? '' : 's'}`;
-    }, [files]);
+        return t('move-modal.title-multiple', { count: files.length });
+    }, [files, t]);
 
     const destinationBreadcrumbs = useMemo<Breadcrumb[]>(() => {
         const parts = destinationDirectory.split('/').filter(Boolean);
@@ -179,8 +181,8 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
             <div className={`space-y-5`}>
                 <div>
                     <h2 className={`text-2xl font-semibold text-gray-50`}>{title}</h2>
-                    <p className={`text-sm text-gray-300 mt-1`}>Current location: {getDisplayPath(sourceDirectory)}</p>
-                    <p className={`text-sm text-gray-300 mt-1`}>Destination: {getDisplayPath(destinationDirectory)}</p>
+                    <p className={`text-sm text-gray-300 mt-1`}>{t('move-modal.current-location')}: {getDisplayPath(sourceDirectory)}</p>
+                    <p className={`text-sm text-gray-300 mt-1`}>{t('move-modal.destination')}: {getDisplayPath(destinationDirectory)}</p>
                 </div>
 
                 <FlashMessageRender key={'files:move-modal'} />
@@ -197,7 +199,7 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
                         >
                             <span className={`inline-flex items-center gap-2`}>
                                 <FaArrowLeft />
-                                Back
+                                {t('move-modal.back')}
                             </span>
                         </button>
                         <div className={`min-w-0 text-xs text-gray-300 flex items-center gap-1 overflow-x-auto`}>
@@ -220,13 +222,13 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
                         {isLoadingEntries ? (
                             <div className={`py-10 flex items-center justify-center text-gray-300 text-sm gap-2`}>
                                 <FaSpinner className={'animate-spin'} />
-                                Loading files...
+                                {t('move-modal.loading')}
                             </div>
                         ) : (
                             <>
                                 {entries.length === 0 ? (
                                     <div className={`py-10 text-center text-sm text-gray-300`}>
-                                        This folder is empty.
+                                        {t('move-modal.empty')}
                                     </div>
                                 ) : (
                                     entries.map((entry) =>
@@ -266,7 +268,7 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
                             htmlFor={'new_move_folder_name'}
                             className={`block text-xs font-semibold text-gray-300 mb-1`}
                         >
-                            New folder in current destination
+                            {t('move-modal.new-folder-label')}
                         </label>
                         <Input
                             id={'new_move_folder_name'}
@@ -275,7 +277,7 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                                 setNewFolderName(e.currentTarget.value)
                             }
-                            placeholder={'Folder name'}
+                            placeholder={t('move-modal.folder-name')}
                             disabled={isCreatingFolder || isSubmitting}
                         />
                     </div>
@@ -287,14 +289,14 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
                     >
                         <span className={`inline-flex items-center gap-2`}>
                             <FaFolderPlus />
-                            {isCreatingFolder ? 'Creating...' : 'New folder'}
+                            {isCreatingFolder ? t('move-modal.creating') : t('move-modal.new-folder')}
                         </span>
                     </Button>
                 </div>
 
                 <div className={`flex flex-wrap justify-end gap-3 pt-2`}>
                     {selfMoveBlocked && (
-                        <p className={`w-full text-sm text-red-300`}>You cannot move a folder into itself.</p>
+                        <p className={`w-full text-sm text-red-300`}>{t('move-modal.self-move-blocked')}</p>
                     )}
                     <Button
                         type={'button'}
@@ -302,10 +304,10 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
                         onClick={props.onDismissed}
                         disabled={isSubmitting || isCreatingFolder}
                     >
-                        Cancel
+                        {t('cancel')}
                     </Button>
                     <Button type={'button'} onClick={onMove} disabled={!canMove}>
-                        Move
+                        {t('move')}
                     </Button>
                 </div>
             </div>

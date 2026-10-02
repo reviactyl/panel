@@ -78,4 +78,18 @@ return [
         'delete-message-end' => '? Ini adalah tindakan permanen dan file tidak dapat dipulihkan.',
     ],
     'archive-as' => 'Archive as {{format}}',
+    'move-modal' => [
+        'title-single' => 'Pindahkan "{{name}}"',
+        'title-multiple' => 'Pindahkan {{count}} item',
+        'current-location' => 'Lokasi saat ini',
+        'destination' => 'Tujuan',
+        'back' => 'Kembali',
+        'loading' => 'Memuat file...',
+        'empty' => 'Folder ini kosong.',
+        'new-folder-label' => 'Folder baru di tujuan saat ini',
+        'folder-name' => 'Nama folder',
+        'creating' => 'Membuat...',
+        'new-folder' => 'Folder baru',
+        'self-move-blocked' => 'Anda tidak dapat memindahkan folder ke dalam dirinya sendiri.',
+    ],
 ];

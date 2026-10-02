@@ -78,4 +78,18 @@ return [
         'delete-message-end' => '？这是永久性操作，文件无法恢复。',
     ],
     'archive-as' => 'Archive as {{format}}',
+    'move-modal' => [
+        'title-single' => '移动“{{name}}”',
+        'title-multiple' => '移动 {{count}} 个项目',
+        'current-location' => '当前位置',
+        'destination' => '目标位置',
+        'back' => '返回',
+        'loading' => '正在加载文件...',
+        'empty' => '此文件夹为空。',
+        'new-folder-label' => '在当前目标位置新建文件夹',
+        'folder-name' => '文件夹名称',
+        'creating' => '正在创建...',
+        'new-folder' => '新建文件夹',
+        'self-move-blocked' => '不能将文件夹移动到自身内部。',
+    ],
 ];

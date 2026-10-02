@@ -78,4 +78,18 @@ return [
         'delete-message-end' => '? Detta är en permanent åtgärd och filerna kan inte återställas.',
     ],
     'archive-as' => 'Archive as {{format}}',
+    'move-modal' => [
+        'title-single' => 'Flytta "{{name}}"',
+        'title-multiple' => 'Flytta {{count}} objekt',
+        'current-location' => 'Nuvarande plats',
+        'destination' => 'Destination',
+        'back' => 'Tillbaka',
+        'loading' => 'Läser in filer...',
+        'empty' => 'Den här mappen är tom.',
+        'new-folder-label' => 'Ny mapp på den aktuella destinationen',
+        'folder-name' => 'Mappnamn',
+        'creating' => 'Skapar...',
+        'new-folder' => 'Ny mapp',
+        'self-move-blocked' => 'Du kan inte flytta en mapp till sig själv.',
+    ],
 ];

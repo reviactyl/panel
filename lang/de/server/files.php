@@ -78,4 +78,18 @@ return [
         'delete-message-end' => '? Dies ist eine dauerhafte Aktion und die Dateien können nicht wiederhergestellt werden.',
     ],
     'archive-as' => 'Archive as {{format}}',
+    'move-modal' => [
+        'title-single' => '"{{name}}" verschieben',
+        'title-multiple' => '{{count}} Elemente verschieben',
+        'current-location' => 'Aktueller Speicherort',
+        'destination' => 'Ziel',
+        'back' => 'Zurück',
+        'loading' => 'Dateien werden geladen...',
+        'empty' => 'Dieser Ordner ist leer.',
+        'new-folder-label' => 'Neuer Ordner am aktuellen Zielort',
+        'folder-name' => 'Ordnername',
+        'creating' => 'Wird erstellt...',
+        'new-folder' => 'Neuer Ordner',
+        'self-move-blocked' => 'Sie können einen Ordner nicht in sich selbst verschieben.',
+    ],
 ];

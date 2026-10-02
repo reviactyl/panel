@@ -78,4 +78,18 @@ return [
         'delete-message-end' => '? Esta é uma ação permanente e os arquivos não podem ser recuperados.',
     ],
     'archive-as' => 'Archive as {{format}}',
+    'move-modal' => [
+        'title-single' => 'Mover "{{name}}"',
+        'title-multiple' => 'Mover {{count}} itens',
+        'current-location' => 'Localização atual',
+        'destination' => 'Destino',
+        'back' => 'Voltar',
+        'loading' => 'Carregando arquivos...',
+        'empty' => 'Esta pasta está vazia.',
+        'new-folder-label' => 'Nova pasta no destino atual',
+        'folder-name' => 'Nome da pasta',
+        'creating' => 'Criando...',
+        'new-folder' => 'Nova pasta',
+        'self-move-blocked' => 'Não é possível mover uma pasta para dentro dela mesma.',
+    ],
 ];
