@@ -62,7 +62,8 @@ class EditNodeForm
                             ->icon('tabler-layout-dashboard')
                             ->schema([
                                 ViewField::make('health')
-                                    ->view('filament.components.wings-warning'),
+                                    ->view('filament.components.wings-warning')
+                                    ->dehydrated(false),
                                 Fieldset::make()
                                     ->label(trans('admin/node.sections.overview.information-label'))
                                     ->columns(4)
