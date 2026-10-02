@@ -57,6 +57,11 @@
                     const j = await r.json();
                     const rawVersion = j.version ?? '?';
                     const version = normalizeVersion(rawVersion);
+                    if (version === 'develop') {
+                        status = 'up';
+                        tooltip = 'Running developmental version.';
+                        return;
+                    }
                     const latestAgent = normalizeVersion($el.dataset.latestAgent);
 
                     tooltip = 'v' + rawVersion;
