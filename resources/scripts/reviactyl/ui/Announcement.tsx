@@ -6,28 +6,28 @@ import { FaBullhorn, FaCircleXmark, FaCircleInfo, FaTriangleExclamation, FaCircl
 
 const getAlertClass = (type: string): string =>
     type === 'info'
-        ? 'bg-blue-800/10 border-blue-500/60'
+        ? 'border-blue-500/30'
         : type === 'announcement'
-          ? 'bg-reviactyl/10 border-reviactyl/60'
+          ? 'border-reviactyl/30'
           : type === 'danger'
-            ? 'bg-danger/10 border-danger/60'
+            ? 'border-danger/30'
             : type === 'success'
-              ? 'bg-success/10 border-success/60'
+              ? 'border-success/30'
               : type === 'warning'
-                ? 'bg-yellow-800/10 border-yellow-500/60'
+                ? 'border-yellow-500/30'
                 : '';
 
 const getAlertIcon = (type: string) =>
     type === 'info' ? (
-        <FaCircleInfo className='h-5 w-5 font-bold !text-blue-500' />
+        <FaCircleInfo className='h-5 w-5 font-bold text-blue-500' />
     ) : type === 'announcement' ? (
-        <FaBullhorn className='h-5 w-5 font-bold !text-reviactyl' />
+        <FaBullhorn className='h-5 w-5 font-bold text-reviactyl' />
     ) : type === 'danger' ? (
-        <FaCircleXmark className='h-5 w-5 font-bold !text-danger/50' />
+        <FaCircleXmark className='h-5 w-5 font-bold text-danger/50' />
     ) : type === 'success' ? (
-        <FaCircleCheck className='h-5 w-5 font-bold !text-success/50' />
+        <FaCircleCheck className='h-5 w-5 font-bold text-success/50' />
     ) : type === 'warning' ? (
-        <FaTriangleExclamation className='h-5 w-5 font-bold !text-yellow-500' />
+        <FaTriangleExclamation className='h-5 w-5 font-bold text-yellow-500' />
     ) : (
         ''
     );
@@ -45,13 +45,13 @@ const Announcement = () => {
               : [];
 
     return (
-        <div className='px-2'>
+        <div className='px-2 my-2'>
             {alerts
                 .filter((alert) => alert.type !== 'disabled')
                 .map((alert, index) => (
                     <div
                         key={`${index}-${alert.type}-${alert.message.slice(0, 20)}`}
-                        className={`mx-auto mt-2 flex w-full max-w-[1200px] items-center gap-x-3 rounded-ui border p-3 text-gray-100 ${getAlertClass(
+                        className={`mx-auto mt-2 flex w-full max-w-300 items-center gap-x-3 rounded-ui border p-3 text-gray-100 bg-gray-900/80 backdrop-blur-md ${getAlertClass(
                             alert.type,
                         )}`}
                     >

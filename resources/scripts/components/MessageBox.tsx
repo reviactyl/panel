@@ -11,15 +11,15 @@ interface Props {
 const styling = (type?: FlashMessageType): string => {
     switch (type) {
         case 'error':
-            return 'bg-red-600/50 border-red-800/80';
+            return 'bg-red-600/20 border-red-800/40';
         case 'info':
-            return 'bg-primary-600/50 border-primary-800/80';
+            return 'bg-primary-600/20 border-primary-800/40';
         case 'success':
-            return 'bg-green-600/50 border-green-800/80';
+            return 'bg-green-600/20 border-green-800/40';
         case 'warning':
-            return 'bg-yellow-600/50 border-yellow-800/80';
+            return 'bg-yellow-600/20 border-yellow-800/40';
         default:
-            return 'border-gray-800/80';
+            return 'bg-gray-900/20 border-gray-800/40';
     }
 };
 
@@ -34,7 +34,7 @@ const getBackground = (type?: FlashMessageType): string => {
         case 'warning':
             return 'bg-yellow-500/60';
         default:
-            return '';
+            return 'bg-gray-700/60';
     }
 };
 
