@@ -18,7 +18,7 @@ module.exports = [
             'vendor/**',
             'public/**',
             'resources/views/**',
-            'resources/lang/**',
+            'lang/**',
             'vite.config.ts',
         ],
     },

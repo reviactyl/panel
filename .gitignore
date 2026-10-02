@@ -28,7 +28,7 @@ docker-compose.yml
 misc
 .php-cs-fixer.cache
 coverage.xml
-resources/lang/locales.js
+lang/locales.js
 .phpunit.result.cache
 
 /public/build

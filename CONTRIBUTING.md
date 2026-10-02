@@ -52,13 +52,15 @@ Once the Project Developers review your PR. It'll be merged to the `develop` bra
 
 Afterwards you can join our discord and request `Contributors` role.
 
-## Translations
+## Writing Translations
 
-For Translations, please use crowdin; https://translate.reviactyl.app/
+From your forked repository, make your own changes.
 
-You can Request Translation via joining our discord, or using crowdin to.
+When you are ready, you can submit a pull request to the reviactyl/panel repository. If you still work on your pull request or need help with something make sure to mark it as Draft.
 
-Translators get `translator` role in our discord server.
+Once the Project Developers review your PR. It'll be merged to the `develop` branch.
+
+Afterwards you can join our discord and request `Translators` role.
 
 ## Security
 
