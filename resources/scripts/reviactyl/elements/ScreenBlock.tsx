@@ -1,72 +1,69 @@
 import PageContentBlock from '@/reviactyl/elements/PageContentBlock';
-import { FaArrowLeft, FaArrowsRotate } from 'react-icons/fa6';
 import Button from '@/reviactyl/elements/Button';
-import NotFoundSvg from '@/assets/images/not_found.svg';
-import ServerErrorSvg from '@/assets/images/server_error.svg';
 import Card from '@/reviactyl/ui/Card';
 import styles from '@/reviactyl/elements/style.module.css';
+import { FaArrowLeft, FaArrowsRotate, FaCircleExclamation, FaMagnifyingGlass } from 'react-icons/fa6';
 
-interface BaseProps {
+interface ScreenBlockProps {
     title: string;
-    image: string;
     message: string;
-    onRetry?: () => void;
     onBack?: () => void;
-}
-
-interface PropsWithRetry extends BaseProps {
     onRetry?: () => void;
-    onBack?: never;
 }
 
-interface PropsWithBack extends BaseProps {
-    onBack?: () => void;
-    onRetry?: never;
-}
+const ScreenBlock = ({ title, message, onBack, onRetry }: ScreenBlockProps) => {
+    const Icon = title === '404' ? FaMagnifyingGlass : FaCircleExclamation;
 
-export type ScreenBlockProps = PropsWithBack | PropsWithRetry;
-
-const ScreenBlock = ({ title, image, message, onBack, onRetry }: ScreenBlockProps) => (
-    <PageContentBlock>
-        <div className='flex justify-center'>
-            <Card className='relative w-full p-12 sm:w-3/4 md:w-1/2 md:p-20'>
-                {(typeof onBack === 'function' || typeof onRetry === 'function') && (
-                    <div className='absolute top-0 left-0 mt-4 ml-4'>
+    return (
+        <PageContentBlock>
+            <div className='flex items-center justify-center'>
+                <Card className='relative w-full max-w-2xl p-6 sm:p-10'>
+                    {(onBack || onRetry) && (
                         <Button
-                            onClick={() => (onRetry ? onRetry() : onBack ? onBack() : null)}
-                            className={`flex h-8 w-8 items-center justify-center rounded-full p-0 ${
+                            onClick={onRetry || onBack}
+                            className={`absolute left-4 top-4 flex h-9 w-9 items-center justify-center rounded-full p-0 ${
                                 onRetry ? styles.retryButton : ''
                             }`}
                         >
                             {onRetry ? <FaArrowsRotate /> : <FaArrowLeft />}
                         </Button>
-                    </div>
-                )}
-                <div className='grid grid-rows-2 gap-x-4 items-center grid-cols-[auto,1fr]'>
-                    <img src={image} className='w-20 h-20 row-span-2 select-none' />
-                    <h2 className='text-gray-200 font-bold text-3xl'>{title}</h2>
-                    <p className='text-sm text-gray-100'>{message}</p>
-                </div>
-            </Card>
-        </div>
-    </PageContentBlock>
-);
+                    )}
 
-type ServerErrorProps = (Omit<PropsWithBack, 'image' | 'title'> | Omit<PropsWithRetry, 'image' | 'title'>) & {
-    title?: string;
+                    <div className='flex flex-col items-center gap-5 pt-8 text-center sm:flex-row sm:gap-6 sm:pt-4 sm:text-left'>
+                        <div className='flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-gray-800/60 text-gray-300'>
+                            <Icon className='h-9 w-9' aria-hidden='true' />
+                        </div>
+
+                        <div>
+                            <h2 className='text-2xl font-bold text-gray-100 sm:text-3xl'>{title}</h2>
+                            <p className='mt-2 text-sm leading-6 text-gray-400 sm:text-base'>{message}</p>
+                        </div>
+                    </div>
+                </Card>
+            </div>
+        </PageContentBlock>
+    );
 };
 
-const ServerError = ({ title, ...props }: ServerErrorProps) => (
-    <ScreenBlock title={title || 'Something went wrong'} image={ServerErrorSvg} {...props} />
+interface ServerErrorProps {
+    title?: string;
+    message: string;
+    onRetry?: () => void;
+    onBack?: () => void;
+}
+
+const ServerError = ({ title = 'Something went wrong', message, onRetry, onBack }: ServerErrorProps) => (
+    <ScreenBlock title={title} message={message} onRetry={onRetry} onBack={onBack} />
 );
 
-const NotFound = ({ title, message, onBack }: Partial<Pick<ScreenBlockProps, 'title' | 'message' | 'onBack'>>) => (
-    <ScreenBlock
-        title={title || '404'}
-        image={NotFoundSvg}
-        message={message || 'The requested resource was not found.'}
-        onBack={onBack}
-    />
+interface NotFoundProps {
+    title?: string;
+    message?: string;
+    onBack?: () => void;
+}
+
+const NotFound = ({ title = '404', message = 'The requested resource was not found.', onBack }: NotFoundProps) => (
+    <ScreenBlock title={title} message={message} onBack={onBack} />
 );
 
 export { ServerError, NotFound };
