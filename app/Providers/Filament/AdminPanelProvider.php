@@ -40,7 +40,6 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->assets([
                 Css::make('filament-layout', resource_path('css/filament/layout.css')),
-                Css::make('filament-alert', resource_path('css/filament/alert.css')),
                 Css::make('filament-monitoring', resource_path('css/filament/monitoring.css')),
                 Js::make('admin-session-expired', resource_path('js/filament/admin-session-expired.js')),
             ])
