@@ -187,9 +187,9 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
 
                 <FlashMessageRender key={'files:move-modal'} />
 
-                <div className={`border border-gray-500 rounded-ui overflow-hidden bg-gray-600/40`}>
+                <div className={`border border-gray-700 rounded-ui overflow-hidden bg-gray-800/40`}>
                     <div
-                        className={`flex items-center justify-between gap-3 px-3 py-2 border-b border-gray-500 bg-gray-600/60`}
+                        className={`flex items-center justify-between gap-3 px-3 py-2 border-b border-gray-800 bg-gray-800/80`}
                     >
                         <button
                             type={'button'}
@@ -235,7 +235,7 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
                                         entry.isFile ? (
                                             <div
                                                 key={entry.key}
-                                                className={`flex items-center gap-3 px-4 py-2 text-sm text-gray-400 border-b border-gray-500/70 last:border-b-0`}
+                                                className={`flex items-center gap-3 px-4 py-2 text-sm text-gray-400 border-b border-gray-800/70 last:border-b-0`}
                                             >
                                                 <FaFile className={`text-gray-400`} />
                                                 <span className={`truncate`}>{entry.name}</span>
@@ -244,7 +244,7 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
                                             <button
                                                 key={entry.key}
                                                 type={'button'}
-                                                className={`w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-100 border-b border-gray-500/70 last:border-b-0 hover:bg-gray-500/50 transition-colors`}
+                                                className={`w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-100 border-b border-gray-800/70 last:border-b-0 hover:bg-gray-700/50 transition-colors`}
                                                 onClick={() =>
                                                     setDestinationDirectory(
                                                         toAbsolutePath(join(destinationDirectory, entry.name)),
