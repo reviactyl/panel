@@ -10,10 +10,6 @@
 </p>
 
 <p align="center">
-  <a href="https://scorecard.dev/viewer/?uri=github.com/reviactyl/panel"><img alt="OpenSSF Scorecard" src="https://api.scorecard.dev/projects/github.com/reviactyl/panel/badge" /></a>
-</p>
-
-<p align="center">
   <img alt="release" src="https://shieldcn.dev/github/laravel/framework/release.svg?theme=red&amp;logo=laravel&amp;label=Laravel" />
   <img alt="Custom badge" src="https://shieldcn.dev/badge/TailwindCSS-abcde3.svg?logo=tailwindcss" />
   <img alt="release" src="https://shieldcn.dev/github/react/react/release.svg?theme=zinc&amp;logo=react&amp;label=React" />
