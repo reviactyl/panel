@@ -181,8 +181,12 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
             <div className={`space-y-5`}>
                 <div>
                     <h2 className={`text-2xl font-semibold text-gray-50`}>{title}</h2>
-                    <p className={`text-sm text-gray-300 mt-1`}>{t('move-modal.current-location')}: {getDisplayPath(sourceDirectory)}</p>
-                    <p className={`text-sm text-gray-300 mt-1`}>{t('move-modal.destination')}: {getDisplayPath(destinationDirectory)}</p>
+                    <p className={`text-sm text-gray-300 mt-1`}>
+                        {t('move-modal.current-location')}: {getDisplayPath(sourceDirectory)}
+                    </p>
+                    <p className={`text-sm text-gray-300 mt-1`}>
+                        {t('move-modal.destination')}: {getDisplayPath(destinationDirectory)}
+                    </p>
                 </div>
 
                 <FlashMessageRender key={'files:move-modal'} />

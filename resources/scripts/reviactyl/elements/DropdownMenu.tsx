@@ -5,7 +5,6 @@ import Fade from '@/reviactyl/elements/Fade';
 interface Props {
     children: React.ReactNode;
     renderToggle: (onClick: (e: React.MouseEvent<any, MouseEvent>) => void) => React.ReactNode;
-    reserveRight?: number;
 }
 
 export const DropdownButtonRow = ({
@@ -53,8 +52,7 @@ class DropdownMenu extends React.PureComponent<Props, State> {
                 }, 0);
             }
             const left = this.state.posX - menu.clientWidth;
-            const reserveRight = window.innerWidth >= 640 ? this.props.reserveRight || 0 : 0;
-            menu.style.left = `${Math.round(Math.max(8, Math.min(left, window.innerWidth - menu.clientWidth - reserveRight)))}px`;
+            menu.style.left = `${Math.round(Math.max(8, Math.min(left, window.innerWidth - menu.clientWidth - 8)))}px`;
             menu.style.marginTop = '0px';
             menu.style.marginTop = `${Math.min(0, window.innerHeight - menu.getBoundingClientRect().bottom - 8)}px`;
         }

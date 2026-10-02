@@ -64,6 +64,9 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
     const onClickRef = useRef<DropdownMenu>(null);
     const [showSpinner, setShowSpinner] = useState(false);
     const [showFormatMenu, setShowFormatMenu] = useState(false);
+    const archiveItemRef = useRef<HTMLDivElement>(null);
+    const formatMenuRef = useRef<HTMLDivElement>(null);
+    const [formatMenuPosition, setFormatMenuPosition] = useState<React.CSSProperties>();
     const [modal, setModal] = useState<ModalType | null>(null);
     const [showConfirmation, setShowConfirmation] = useState(false);
 
@@ -115,6 +118,31 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
     };
 
     const archiveFormat = useStoreState((state) => state.user.data!.archiveFormat);
+
+    const positionFormatMenu = () => {
+        setShowFormatMenu(true);
+        requestAnimationFrame(() => {
+            const item = archiveItemRef.current;
+            const menu = formatMenuRef.current;
+            if (!item || !menu) return;
+
+            const itemRect = item.getBoundingClientRect();
+            const menuWidth = menu.offsetWidth;
+            const menuHeight = menu.offsetHeight;
+            const gap = 8;
+            const narrow = window.innerWidth < 640;
+            const openLeft = !narrow && itemRect.right + menuWidth > window.innerWidth - gap;
+            const left = narrow
+                ? Math.max(gap, Math.min(itemRect.left, window.innerWidth - menuWidth - gap))
+                : openLeft
+                  ? Math.max(gap, itemRect.left - menuWidth + gap)
+                  : itemRect.right - gap;
+            const top = narrow
+                ? Math.max(gap, Math.min(itemRect.bottom, window.innerHeight - menuHeight - gap))
+                : Math.max(gap, Math.min(itemRect.top, window.innerHeight - menuHeight - gap));
+            setFormatMenuPosition({ position: 'fixed', left, top, display: 'block' });
+        });
+    };
 
     const doArchive = (format: 'tar.gz' | 'zip') => {
         setShowSpinner(true);
@@ -176,7 +204,6 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
             <SpinnerOverlay visible={showSpinner} fixed size={'large'} />
             <DropdownMenu
                 ref={onClickRef}
-                reserveRight={184}
                 renderToggle={(onClick) => (
                     <div
                         className='px-4 py-2 hover:text-white'
@@ -206,13 +233,19 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                     </Can>
                 ) : (
                     <Can action={'file.archive'}>
-                        <div className='group relative'>
+                        <div
+                            ref={archiveItemRef}
+                            className='group relative'
+                            onMouseEnter={positionFormatMenu}
+                            onMouseLeave={() => setShowFormatMenu(false)}
+                            onFocusCapture={positionFormatMenu}
+                        >
                             <button
                                 type='button'
                                 onClick={(event) => {
                                     if (window.matchMedia('(hover: none), (max-width: 639px)').matches) {
                                         event.stopPropagation();
-                                        setShowFormatMenu(true);
+                                        positionFormatMenu();
                                         return;
                                     }
                                     doArchive(archiveFormat);
@@ -226,8 +259,9 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                             </button>
                             <div
                                 role='menu'
-                                style={{ display: showFormatMenu ? 'block' : undefined }}
-                                className='absolute left-[calc(100%-0.5rem)] top-[-0.5rem] z-30 hidden w-48 rounded-ui border border-gray-800 bg-gray-800 p-2 text-gray-100 shadow-lg group-hover:block group-focus-within:block max-sm:bottom-full max-sm:left-0 max-sm:top-auto'
+                                ref={formatMenuRef}
+                                style={showFormatMenu ? formatMenuPosition : undefined}
+                                className='absolute left-[calc(100%-0.5rem)] top-[-0.5rem] z-30 hidden w-48 rounded-ui border border-gray-800 bg-gray-800 p-2 text-gray-100 shadow-lg group-hover:block group-focus-within:block'
                             >
                                 {(['tar.gz', 'zip'] as const).map((format) => (
                                     <button
