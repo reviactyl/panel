@@ -1,6 +1,5 @@
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import Modal, { RequiredModalProps } from '@/reviactyl/elements/Modal';
-import tw from 'twin.macro';
 import Button from '@/reviactyl/elements/Button';
 import Input from '@/reviactyl/elements/Input';
 import FlashMessageRender from '@/components/FlashMessageRender';
@@ -87,7 +86,7 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
                         }
 
                         return a.name.localeCompare(b.name);
-                    })
+                    }),
                 );
             })
             .catch((error) => clearAndAddHttpError({ key: 'files:move-modal', error }))
@@ -121,7 +120,7 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
             .map((name) => toAbsolutePath(join(sourceDirectory, name)))
             .some(
                 (directoryPath) =>
-                    destinationDirectory === directoryPath || destinationDirectory.startsWith(`${directoryPath}/`)
+                    destinationDirectory === directoryPath || destinationDirectory.startsWith(`${directoryPath}/`),
             );
     }, [directoryNames, sourceDirectory, destinationDirectory]);
 
@@ -138,7 +137,7 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
         const destinationFromSource = relative(sourceDirectory, destinationDirectory) || '.';
         const payload = files.map((file) => ({ from: file, to: join(destinationFromSource, file) }));
 
-        mutate((data) => data.filter((file) => !files.includes(file.name)), false);
+        mutate((data) => data?.filter((file) => !files.includes(file.name)) ?? [], false);
 
         renameFiles(uuid, sourceDirectory, payload)
             .then(() => mutate())
@@ -177,37 +176,37 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
             showSpinnerOverlay={isSubmitting}
             size={'lg'}
         >
-            <div css={tw`space-y-5`}>
+            <div className={`space-y-5`}>
                 <div>
-                    <h2 css={tw`text-2xl font-semibold text-gray-50`}>{title}</h2>
-                    <p css={tw`text-sm text-gray-300 mt-1`}>Current location: {getDisplayPath(sourceDirectory)}</p>
-                    <p css={tw`text-sm text-gray-300 mt-1`}>Destination: {getDisplayPath(destinationDirectory)}</p>
+                    <h2 className={`text-2xl font-semibold text-gray-50`}>{title}</h2>
+                    <p className={`text-sm text-gray-300 mt-1`}>Current location: {getDisplayPath(sourceDirectory)}</p>
+                    <p className={`text-sm text-gray-300 mt-1`}>Destination: {getDisplayPath(destinationDirectory)}</p>
                 </div>
 
                 <FlashMessageRender key={'files:move-modal'} />
 
-                <div css={tw`border border-gray-500 rounded-ui overflow-hidden bg-gray-600/40`}>
+                <div className={`border border-gray-500 rounded-ui overflow-hidden bg-gray-600/40`}>
                     <div
-                        css={tw`flex items-center justify-between gap-3 px-3 py-2 border-b border-gray-500 bg-gray-600/60`}
+                        className={`flex items-center justify-between gap-3 px-3 py-2 border-b border-gray-500 bg-gray-600/60`}
                     >
                         <button
                             type={'button'}
-                            css={tw`text-xs font-semibold text-gray-200 hover:text-gray-50 disabled:opacity-50 disabled:cursor-not-allowed`}
+                            className={`text-xs font-semibold text-gray-200 hover:text-gray-50 disabled:opacity-50 disabled:cursor-not-allowed`}
                             onClick={() => setDestinationDirectory((current) => getParentDirectory(current))}
                             disabled={destinationDirectory === '/' || isLoadingEntries}
                         >
-                            <span css={tw`inline-flex items-center gap-2`}>
+                            <span className={`inline-flex items-center gap-2`}>
                                 <FaArrowLeft />
                                 Back
                             </span>
                         </button>
-                        <div css={tw`min-w-0 text-xs text-gray-300 flex items-center gap-1 overflow-x-auto`}>
+                        <div className={`min-w-0 text-xs text-gray-300 flex items-center gap-1 overflow-x-auto`}>
                             {destinationBreadcrumbs.map((breadcrumb, index) => (
                                 <Fragment key={breadcrumb.path}>
-                                    {index > 0 && <span css={tw`text-gray-500`}>/</span>}
+                                    {index > 0 && <span className={`text-gray-500`}>/</span>}
                                     <button
                                         type={'button'}
-                                        css={tw`text-gray-200 hover:text-gray-50 whitespace-nowrap`}
+                                        className={`text-gray-200 hover:text-gray-50 whitespace-nowrap`}
                                         onClick={() => setDestinationDirectory(breadcrumb.path)}
                                     >
                                         {breadcrumb.label}
@@ -217,41 +216,43 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
                         </div>
                     </div>
 
-                    <div css={tw`max-h-72 overflow-y-auto`}>
+                    <div className={`max-h-72 overflow-y-auto`}>
                         {isLoadingEntries ? (
-                            <div css={tw`py-10 flex items-center justify-center text-gray-300 text-sm gap-2`}>
+                            <div className={`py-10 flex items-center justify-center text-gray-300 text-sm gap-2`}>
                                 <FaSpinner className={'animate-spin'} />
                                 Loading files...
                             </div>
                         ) : (
                             <>
                                 {entries.length === 0 ? (
-                                    <div css={tw`py-10 text-center text-sm text-gray-300`}>This folder is empty.</div>
+                                    <div className={`py-10 text-center text-sm text-gray-300`}>
+                                        This folder is empty.
+                                    </div>
                                 ) : (
                                     entries.map((entry) =>
                                         entry.isFile ? (
                                             <div
                                                 key={entry.key}
-                                                css={tw`flex items-center gap-3 px-4 py-2 text-sm text-gray-400 border-b border-gray-500/70 last:border-b-0`}
+                                                className={`flex items-center gap-3 px-4 py-2 text-sm text-gray-400 border-b border-gray-500/70 last:border-b-0`}
                                             >
-                                                <FaFile css={tw`text-gray-400`} />
-                                                <span css={tw`truncate`}>{entry.name}</span>
+                                                <FaFile className={`text-gray-400`} />
+                                                <span className={`truncate`}>{entry.name}</span>
                                             </div>
                                         ) : (
                                             <button
                                                 key={entry.key}
                                                 type={'button'}
-                                                css={tw`w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-100 border-b border-gray-500/70 last:border-b-0 hover:bg-gray-500/50 transition-colors`}
+                                                className={`w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-100 border-b border-gray-500/70 last:border-b-0 hover:bg-gray-500/50 transition-colors`}
                                                 onClick={() =>
                                                     setDestinationDirectory(
-                                                        toAbsolutePath(join(destinationDirectory, entry.name))
+                                                        toAbsolutePath(join(destinationDirectory, entry.name)),
                                                     )
                                                 }
                                             >
-                                                <FaFolder css={tw`text-yellow-300`} />
-                                                <span css={tw`truncate text-left`}>{entry.name}</span>
+                                                <FaFolder className={`text-yellow-300`} />
+                                                <span className={`truncate text-left`}>{entry.name}</span>
                                             </button>
-                                        )
+                                        ),
                                     )
                                 )}
                             </>
@@ -259,11 +260,11 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
                     </div>
                 </div>
 
-                <div css={tw`flex flex-wrap items-end gap-2`}>
-                    <div css={tw`flex-1 min-w-0`}>
+                <div className={`flex flex-wrap items-end gap-2`}>
+                    <div className={`flex-1 min-w-0`}>
                         <label
                             htmlFor={'new_move_folder_name'}
-                            css={tw`block text-xs font-semibold text-gray-300 mb-1`}
+                            className={`block text-xs font-semibold text-gray-300 mb-1`}
                         >
                             New folder in current destination
                         </label>
@@ -280,20 +281,20 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
                     </div>
                     <Button
                         type={'button'}
-                        css={tw`whitespace-nowrap`}
+                        className={`whitespace-nowrap`}
                         disabled={!newFolderName.trim() || isCreatingFolder || isSubmitting}
                         onClick={onCreateFolder}
                     >
-                        <span css={tw`inline-flex items-center gap-2`}>
+                        <span className={`inline-flex items-center gap-2`}>
                             <FaFolderPlus />
                             {isCreatingFolder ? 'Creating...' : 'New folder'}
                         </span>
                     </Button>
                 </div>
 
-                <div css={tw`flex flex-wrap justify-end gap-3 pt-2`}>
+                <div className={`flex flex-wrap justify-end gap-3 pt-2`}>
                     {selfMoveBlocked && (
-                        <p css={tw`w-full text-sm text-red-300`}>You cannot move a folder into itself.</p>
+                        <p className={`w-full text-sm text-red-300`}>You cannot move a folder into itself.</p>
                     )}
                     <Button
                         type={'button'}
