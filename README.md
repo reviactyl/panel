@@ -53,7 +53,6 @@ Manage Game Servers like Never Before!
 </div>
 
 - `🌩️` **Customizable Options**: Reviactyl offers various options that lets you customize the panel to your liking.
-- `🎨` **Client-side Theme Selector**: Let your clients' choose between various styles according to their liking.
 - `🖥️` **Modern UI**: Reviactyl offers a modern and sleek UI that's more accessible than other modifications on market.
 - `🌍` **Multilingual**: Reviactyl is fully translatable and can be localized to your native language.
 - `🧩` **Extensions API**: Reviactyl provides a robust Extensions API that allows developers to create and integrate custom functionality seamlessly.
