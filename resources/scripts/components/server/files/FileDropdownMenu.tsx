@@ -37,6 +37,10 @@ import { useStoreState } from 'easy-peasy';
 
 type ModalType = 'rename' | 'move' | 'chmod';
 
+export const MASS_ACTION_EVENT = 'panel:files:mass-action';
+
+export type MassAction = { type: 'move' } | { type: 'delete' } | { type: 'archive'; format: 'tar.gz' | 'zip' };
+
 interface RowProps extends React.HTMLAttributes<HTMLDivElement> {
     icon: IconType;
     title: string;
@@ -74,6 +78,11 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
     const { mutate } = useFileManagerSwr();
     const { clearAndAddHttpError, clearFlashes } = useFlash();
     const directory = ServerContext.useStoreState((state) => state.files.directory);
+    const isMultiSelected = ServerContext.useStoreState(
+        (state) => state.files.selectedFiles.length > 1 && state.files.selectedFiles.includes(file.name),
+    );
+
+    const massAction = (detail: MassAction) => window.dispatchEvent(new CustomEvent(MASS_ACTION_EVENT, { detail }));
 
     useEventListener(`panel:files:ctx:${file.key}`, (e: CustomEvent) => {
         if (onClickRef.current) {
@@ -145,6 +154,11 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
     };
 
     const doArchive = (format: 'tar.gz' | 'zip') => {
+        if (isMultiSelected) {
+            massAction({ type: 'archive', format });
+            return;
+        }
+
         setShowSpinner(true);
         clearFlashes('files');
 
@@ -219,7 +233,11 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                 <ExtensionSlot name='server:files:dropdown:start' />
                 <Can action={'file.update'}>
                     <Row onClick={() => setModal('rename')} icon={FaPen} title={t('dropdown.rename')} />
-                    <Row onClick={() => setModal('move')} icon={FaTurnUp} title={t('dropdown.move')} />
+                    <Row
+                        onClick={() => (isMultiSelected ? massAction({ type: 'move' }) : setModal('move'))}
+                        icon={FaTurnUp}
+                        title={t('dropdown.move')}
+                    />
                     <Row onClick={() => setModal('chmod')} icon={FaFileCode} title={t('dropdown.permissions')} />
                 </Can>
                 {file.isFile && (
@@ -285,7 +303,12 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                     </Can>
                 )}
                 <Can action={'file.delete'}>
-                    <Row onClick={() => setShowConfirmation(true)} icon={FaTrash} title={t('dropdown.delete')} danger />
+                    <Row
+                        onClick={() => (isMultiSelected ? massAction({ type: 'delete' }) : setShowConfirmation(true))}
+                        icon={FaTrash}
+                        title={t('dropdown.delete')}
+                        danger
+                    />
                 </Can>
                 <ExtensionSlot name='server:files:dropdown:end' />
             </DropdownMenu>
