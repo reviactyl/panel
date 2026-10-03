@@ -89,7 +89,7 @@ const MassActionsBar = () => {
 
         if (detail.type === 'move') setShowMove(true);
         else if (detail.type === 'delete') setShowConfirm(true);
-        else onClickCompress(detail.format);
+        else if (detail.type === 'archive') onClickCompress(detail.format);
     });
 
     return (

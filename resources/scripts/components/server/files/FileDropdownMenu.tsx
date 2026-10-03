@@ -78,6 +78,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
     const { mutate } = useFileManagerSwr();
     const { clearAndAddHttpError, clearFlashes } = useFlash();
     const directory = ServerContext.useStoreState((state) => state.files.directory);
+    const removeSelectedFile = ServerContext.useStoreActions((actions) => actions.files.removeSelectedFile);
     const isMultiSelected = ServerContext.useStoreState(
         (state) => state.files.selectedFiles.length > 1 && state.files.selectedFiles.includes(file.name),
     );
@@ -97,6 +98,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
         // For UI speed, immediately remove the file from the listing before calling the deletion function.
         // If the delete actually fails, we'll fetch the current directory contents again automatically.
         mutate((files) => files?.filter((f) => f.key !== file.key), false);
+        removeSelectedFile(file.name);
 
         deleteFiles(uuid, directory, [file.name]).catch((error) => {
             mutate();
