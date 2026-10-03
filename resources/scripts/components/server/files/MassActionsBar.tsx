@@ -6,6 +6,8 @@ import compressFiles from '@/api/server/files/compressFiles';
 import { ServerContext } from '@/state/server';
 import deleteFiles from '@/api/server/files/deleteFiles';
 import MoveFileModal from '@/components/server/files/MoveFileModal';
+import { MASS_ACTION_EVENT, MassAction } from '@/components/server/files/FileDropdownMenu';
+import useEventListener from '@/plugins/useEventListener';
 import { Dialog } from '@/reviactyl/elements/dialog';
 import { useTranslation } from 'react-i18next';
 import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
@@ -81,6 +83,14 @@ const MassActionsBar = () => {
             })
             .then(() => setLoading(false));
     };
+
+    useEventListener(MASS_ACTION_EVENT, ({ detail }: CustomEvent<MassAction>) => {
+        if (loading) return;
+
+        if (detail.type === 'move') setShowMove(true);
+        else if (detail.type === 'delete') setShowConfirm(true);
+        else if (detail.type === 'archive') onClickCompress(detail.format);
+    });
 
     return (
         <>
