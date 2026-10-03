@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type MouseEvent } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { FaBoxArchive, FaEllipsis, FaLock } from 'react-icons/fa6';
 import { format, formatDistanceToNow } from 'date-fns';
 import Spinner from '@/reviactyl/elements/Spinner';
@@ -22,6 +22,7 @@ interface Props {
 export default ({ backup, className }: Props) => {
     const { t } = useTranslation('server/backups');
     const { mutate } = getServerBackups();
+    const reduceMotion = useReducedMotion();
     const contextMenuRef = useRef<BackupContextMenuHandle>(null);
     const [justCompleted, setJustCompleted] = useState(false);
 
@@ -85,10 +86,10 @@ export default ({ backup, className }: Props) => {
                         <motion.div
                             className='flex'
                             key={backup.completedAt === null ? 'pending' : justCompleted ? 'check' : 'done'}
-                            initial={{ opacity: 0, scale: 0.8 }}
+                            initial={reduceMotion ? false : { opacity: 0, scale: 0.8 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.8 }}
-                            transition={{ duration: 0.15 }}
+                            exit={reduceMotion ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
+                            transition={{ duration: reduceMotion ? 0 : 0.15 }}
                         >
                             {backup.completedAt === null ? (
                                 <Spinner size={'small'} />
