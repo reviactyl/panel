@@ -2,10 +2,11 @@ import { fileBitsToString } from '@/helpers';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import Modal, { RequiredModalProps } from '@/reviactyl/elements/Modal';
 import { Form, Formik, FormikHelpers } from 'formik';
-import Field from '@/reviactyl/elements/Field';
+import FileModeInput, { isValidFileMode } from './FileModeInput';
 import chmodFiles from '@/api/server/files/chmodFiles';
 import { ServerContext } from '@/state/server';
 import Button from '@/reviactyl/elements/Button';
+import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
 import useFlash from '@/plugins/useFlash';
 import { useTranslation } from 'react-i18next';
 
@@ -53,23 +54,36 @@ const ChmodFileModal = ({ files, ...props }: OwnProps) => {
     };
 
     return (
-        <Formik onSubmit={submit} initialValues={{ mode: files.length > 1 ? '' : (files[0]?.mode ?? '') }}>
-            {({ isSubmitting }) => (
+        <Formik
+            onSubmit={submit}
+            initialValues={{ mode: files.length > 1 ? '' : (files[0]?.mode ?? '') }}
+            validate={({ mode }) => (isValidFileMode(mode) ? {} : { mode: t('permissions.invalid') })}
+        >
+            {({ isSubmitting, values }) => (
                 <Modal {...props} dismissable={!isSubmitting} showSpinnerOverlay={isSubmitting}>
                     <Form className='m-0'>
-                        <div className='flex flex-wrap items-end'>
-                            <div className='w-full sm:flex-1 sm:mr-4'>
-                                <Field
-                                    type={'string'}
-                                    id={'file_mode'}
-                                    name={'mode'}
-                                    label={t('file-mode-label')}
-                                    autoFocus
-                                />
-                            </div>
-                            <div className='w-full sm:w-auto mt-4 sm:mt-0'>
-                                <Button className='w-full'>{t('update')}</Button>
-                            </div>
+                        <FileModeInput />
+                        <div className='mt-6 flex justify-end'>
+                            <Tooltip
+                                content={t('permissions.invalid')}
+                                disabled={isValidFileMode(values.mode)}
+                                rest={150}
+                                delay={{ open: 0, close: 100 }}
+                            >
+                                <span
+                                    className='inline-flex rounded-ui focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-400'
+                                    tabIndex={isValidFileMode(values.mode) ? undefined : 0}
+                                    aria-label={isValidFileMode(values.mode) ? undefined : t('permissions.invalid')}
+                                >
+                                    <Button
+                                        type='submit'
+                                        className={!isValidFileMode(values.mode) ? 'pointer-events-none' : undefined}
+                                        disabled={isSubmitting || !isValidFileMode(values.mode)}
+                                    >
+                                        {t('update')}
+                                    </Button>
+                                </span>
+                            </Tooltip>
                         </div>
                     </Form>
                 </Modal>
