@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
@@ -143,6 +144,18 @@ class Alert extends Model
         static::deleting(function (Alert $alert) {
             $alert->interactions()->delete();
         });
+    }
+
+    /**
+     * @param  Builder<Alert>|Relation<Alert, Model, mixed>  $query
+     */
+    public function resolveRouteBindingQuery($query, $value, $field = null): Builder|Relation
+    {
+        if (($field ?? $this->getRouteKeyName()) === 'uuid' && ! Str::isUuid($value)) {
+            return $query->whereRaw('1 = 0');
+        }
+
+        return parent::resolveRouteBindingQuery($query, $value, $field);
     }
 
     /**
