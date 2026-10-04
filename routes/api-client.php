@@ -103,6 +103,9 @@ Route::group([
         Route::middleware([ResourceLimit::Database->middleware()])
             ->post('/', [Client\Servers\DatabaseController::class, 'store']);
         Route::post('/{database}/rotate-password', [Client\Servers\DatabaseController::class, 'rotatePassword']);
+        Route::get('/{database}/export', [Client\Servers\DatabaseController::class, 'export']);
+        Route::get('/{database}/import', [Client\Servers\DatabaseController::class, 'importStatus']);
+        Route::post('/{database}/import', [Client\Servers\DatabaseController::class, 'import']);
         Route::delete('/{database}', [Client\Servers\DatabaseController::class, 'delete']);
     });
 

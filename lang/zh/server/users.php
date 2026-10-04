@@ -70,6 +70,8 @@ return [
         'database_update' => '允许用户对数据库进行修改。如果用户没有“查看密码”权限，则密码将不会显示，用户也将无法修改密码。',
         'database_delete' => '允许用户删除数据库实例。',
         'database_view_password' => '允许用户查看数据库密码。',
+        'database_import' => '允许用户向数据库导入数据，并可选择先清空数据库。',
+        'database_export' => '允许用户下载数据库的导出文件。',
         'schedule_create' => '允许用户为服务器创建新的计划。',
         'schedule_read' => '允许用户查看服务器的计划。',
         'schedule_update' => '允许用户对现有服务器计划进行修改。',

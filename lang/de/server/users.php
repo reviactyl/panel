@@ -70,6 +70,8 @@ return [
         'database_update' => 'Erlaubt einem Benutzer, Änderungen an einer Datenbank vorzunehmen. Wenn der Benutzer nicht auch die Berechtigung "Passwort anzeigen" hat, kann er das Passwort nicht ändern.',
         'database_delete' => 'Erlaubt einem Benutzer, eine Datenbankinstanz zu löschen.',
         'database_view_password' => 'Erlaubt einem Benutzer, ein Datenbankpasswort im System anzuzeigen.',
+        'database_import' => 'Erlaubt einem Benutzer, Daten in eine Datenbank zu importieren und sie optional vorher zu leeren.',
+        'database_export' => 'Erlaubt einem Benutzer, einen Export einer Datenbank herunterzuladen.',
         'schedule_create' => 'Erlaubt einem Benutzer, einen neuen Zeitplan für den Server zu erstellen.',
         'schedule_read' => 'Erlaubt einem Benutzer, Zeitpläne für einen Server anzuzeigen.',
         'schedule_update' => 'Erlaubt einem Benutzer, Änderungen an einem bestehenden Serverzeitplan vorzunehmen.',

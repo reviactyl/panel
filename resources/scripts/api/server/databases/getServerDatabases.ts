@@ -1,5 +1,12 @@
 import http from '@/api/http';
 
+export interface DatabaseImportStatus {
+    state: 'running' | 'completed' | 'failed';
+    statements: number;
+    error: string | null;
+    detail: string | null;
+}
+
 export interface ServerDatabase {
     id: string;
     name: string;
@@ -7,7 +14,18 @@ export interface ServerDatabase {
     connectionString: string;
     allowConnectionsFrom: string;
     password?: string;
+    importStatus?: DatabaseImportStatus | null;
 }
+
+export const rawDataToDatabaseImportStatus = (data: any): DatabaseImportStatus | null =>
+    data
+        ? {
+              state: data.state,
+              statements: data.statements ?? 0,
+              error: data.error ?? null,
+              detail: data.detail ?? null,
+          }
+        : null;
 
 export const rawDataToServerDatabase = (data: any): ServerDatabase => ({
     id: data.id,
@@ -16,6 +34,7 @@ export const rawDataToServerDatabase = (data: any): ServerDatabase => ({
     connectionString: `${data.host.address}:${data.host.port}`,
     allowConnectionsFrom: data.connections_from,
     password: data.relationships.password?.attributes?.password,
+    importStatus: rawDataToDatabaseImportStatus(data.import),
 });
 
 export default (uuid: string, includePassword = true): Promise<ServerDatabase[]> => {

@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { FaDatabase, FaEye, FaTrash } from 'react-icons/fa6';
+import { useEffect, useRef, useState } from 'react';
+import { FaDatabase, FaEye, FaFileExport, FaFileImport, FaTrash, FaTriangleExclamation } from 'react-icons/fa6';
 import Modal from '@/reviactyl/elements/Modal';
 import { Form, Formik, FormikHelpers } from 'formik';
 import Field from '@/reviactyl/elements/Field';
@@ -10,7 +10,12 @@ import deleteServerDatabase from '@/api/server/databases/deleteServerDatabase';
 import { httpErrorToHuman } from '@/api/http';
 import RotatePasswordButton from '@/components/server/databases/RotatePasswordButton';
 import Can from '@/reviactyl/elements/Can';
-import { ServerDatabase } from '@/api/server/databases/getServerDatabases';
+import { DatabaseImportStatus, ServerDatabase } from '@/api/server/databases/getServerDatabases';
+import getDatabaseImportStatus from '@/api/server/databases/getDatabaseImportStatus';
+import ImportDatabaseModal from '@/components/server/databases/ImportDatabaseModal';
+import ExportDatabaseModal from '@/components/server/databases/ExportDatabaseModal';
+import Spinner from '@/reviactyl/elements/Spinner';
+import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
 import useFlash from '@/plugins/useFlash';
 import Button from '@/reviactyl/elements/Button';
 import Label from '@/reviactyl/elements/Label';
@@ -28,12 +33,68 @@ interface Props {
 export default ({ database, className }: Props) => {
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const { t } = useTranslation('server/databases');
-    const { addError, clearFlashes } = useFlash();
+    const { addError, addFlash, clearFlashes } = useFlash();
     const [visible, setVisible] = useState(false);
     const [connectionVisible, setConnectionVisible] = useState(false);
+    const [importVisible, setImportVisible] = useState(false);
+    const [exportVisible, setExportVisible] = useState(false);
 
     const appendDatabase = ServerContext.useStoreActions((actions) => actions.databases.appendDatabase);
     const removeDatabase = ServerContext.useStoreActions((actions) => actions.databases.removeDatabase);
+
+    const importErrorMessage = (status?: DatabaseImportStatus | null) =>
+        status?.state === 'failed'
+            ? [t(`import-error-${status.error}`, { defaultValue: t('import-error-unknown') }), status.detail]
+                  .filter(Boolean)
+                  .join(' ')
+            : null;
+
+    const importing = database.importStatus?.state === 'running';
+    const importError = importErrorMessage(database.importStatus);
+
+    const current = useRef(database);
+    current.current = database;
+
+    const onImportStatus = (status: DatabaseImportStatus | null) => {
+        appendDatabase({ ...current.current, importStatus: status });
+
+        if (status?.state === 'completed') {
+            clearFlashes('databases');
+            addFlash({
+                key: 'databases',
+                type: 'success',
+                message: t('import-completed', { name: database.name, statements: status.statements }),
+            });
+        }
+
+        if (status?.state === 'failed') {
+            clearFlashes('databases');
+            addError({ key: 'databases', message: `${t('import-failed')}: ${importErrorMessage(status)}` });
+        }
+    };
+
+    useEffect(() => {
+        if (!importing) return;
+
+        let cancelled = false;
+        let timeout: ReturnType<typeof setTimeout>;
+
+        const poll = () => {
+            timeout = setTimeout(() => {
+                getDatabaseImportStatus(uuid, database.id)
+                    .then((status) => !cancelled && onImportStatus(status))
+                    .catch((error) => console.error(error))
+                    .then(() => !cancelled && poll());
+            }, 2500);
+        };
+
+        poll();
+
+        return () => {
+            cancelled = true;
+            clearTimeout(timeout);
+        };
+    }, [importing, uuid, database.id]);
 
     const jdbcConnectionString = `jdbc:mysql://${database.username}${
         database.password ? `:${encodeURIComponent(database.password)}` : ''
@@ -142,6 +203,17 @@ export default ({ database, className }: Props) => {
                     <ExtensionSlot name={`server:databases:menu:end`} />
                 </div>
             </Modal>
+            <ImportDatabaseModal
+                database={database}
+                visible={importVisible}
+                onDismissed={() => setImportVisible(false)}
+                onImport={onImportStatus}
+            />
+            <ExportDatabaseModal
+                database={database}
+                visible={exportVisible}
+                onDismissed={() => setExportVisible(false)}
+            />
             <GreyRowBox $hoverable={false} className={`mb-2 ${className || ''}`}>
                 <div className='hidden md:block'>
                     <FaDatabase className={'inline-block w-[1.25em]'} />
@@ -150,6 +222,20 @@ export default ({ database, className }: Props) => {
                     <CopyOnClick text={database.name}>
                         <p className='text-lg'>{database.name}</p>
                     </CopyOnClick>
+                    {importing && (
+                        <p className='mt-1 flex items-center text-xs text-gray-300' role='status'>
+                            <Spinner size={'small'} className='mr-2 !h-3 !w-3' />
+                            {t('importing', { statements: database.importStatus?.statements ?? 0 })}
+                        </p>
+                    )}
+                    {importError && (
+                        <Tooltip content={importError} placement='bottom-start' className='max-w-md'>
+                            <p className='mt-1 inline-flex cursor-help items-center text-xs text-red-400'>
+                                <FaTriangleExclamation className='mr-1.5 h-3 w-3' />
+                                {t('import-failed')}
+                            </p>
+                        </Tooltip>
+                    )}
                 </div>
                 <div className='ml-8 hidden text-center md:block'>
                     <CopyOnClick text={database.connectionString}>
@@ -168,11 +254,48 @@ export default ({ database, className }: Props) => {
                     <p className='mt-1 select-none text-2xs uppercase text-muted'>{t('username')}</p>
                 </div>
                 <div className='ml-8'>
-                    <Button isSecondary className='mr-2' onClick={() => setConnectionVisible(true)}>
+                    <Button
+                        isSecondary
+                        className='mr-2'
+                        title={t('connection-title')}
+                        aria-label={t('connection-title')}
+                        onClick={() => setConnectionVisible(true)}
+                    >
                         <FaEye className={'inline-block w-[1.25em]'} />
                     </Button>
+                    <Can action={'database.import'}>
+                        <Button
+                            isSecondary
+                            className='mr-2'
+                            title={t('import-title')}
+                            aria-label={t('import-title')}
+                            disabled={importing}
+                            onClick={() => setImportVisible(true)}
+                        >
+                            <FaFileImport className={'inline-block w-[1.25em]'} />
+                        </Button>
+                    </Can>
+                    <Can action={'database.export'}>
+                        <Button
+                            isSecondary
+                            className='mr-2'
+                            title={t('export-title')}
+                            aria-label={t('export-title')}
+                            disabled={importing}
+                            onClick={() => setExportVisible(true)}
+                        >
+                            <FaFileExport className={'inline-block w-[1.25em]'} />
+                        </Button>
+                    </Can>
                     <Can action={'database.delete'}>
-                        <Button color={'red'} isSecondary onClick={() => setVisible(true)}>
+                        <Button
+                            color={'red'}
+                            isSecondary
+                            title={t('delete-database')}
+                            aria-label={t('delete-database')}
+                            disabled={importing}
+                            onClick={() => setVisible(true)}
+                        >
                             <FaTrash className={'inline-block w-[1.25em]'} />
                         </Button>
                     </Can>

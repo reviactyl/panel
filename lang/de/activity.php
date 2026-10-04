@@ -85,6 +85,8 @@ return [
             'create' => 'Neue Datenbank :name erstellt',
             'rotate-password' => 'Passwort für Datenbank :name rotiert',
             'delete' => 'Datenbank :name gelöscht',
+            'import' => 'Import in Datenbank :name gestartet',
+            'export' => 'Datenbank :name exportiert',
         ],
         'file' => [
             'compress_one' => ':directory:file komprimiert',

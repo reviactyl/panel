@@ -85,6 +85,8 @@ return [
             'create' => 'Yeni veritabanı :name oluşturuldu',
             'rotate-password' => ':name veritabanı için parola yenilendi',
             'delete' => ':name veritabanı silindi',
+            'import' => ':name veritabanına içe aktarma başlatıldı',
+            'export' => ':name veritabanı dışa aktarıldı',
         ],
         'file' => [
             'compress_one' => ':directory:file sıkıştırıldı',

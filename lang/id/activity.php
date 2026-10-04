@@ -85,6 +85,8 @@ return [
             'create' => 'Membuat database baru :name',
             'rotate-password' => 'Kata sandi dirotasi untuk database :name',
             'delete' => 'Menghapus database :name',
+            'import' => 'Memulai impor ke basis data :name',
+            'export' => 'Mengekspor basis data :name',
         ],
         'file' => [
             'compress_one' => 'Mengompres :directory:file',

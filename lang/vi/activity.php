@@ -85,6 +85,8 @@ return [
             'create' => 'Tạo cơ sở dữ liệu mới :name',
             'rotate-password' => 'Đã xoay mật khẩu cho cơ sở dữ liệu :name',
             'delete' => 'Đã xóa cơ sở dữ liệu :name',
+            'import' => 'Đã bắt đầu nhập vào cơ sở dữ liệu :name',
+            'export' => 'Đã xuất cơ sở dữ liệu :name',
         ],
         'file' => [
             'compress_one' => 'Đã nén :directory:file',

@@ -70,6 +70,8 @@ return [
         'database_update' => 'Kullanıcıya bir veritabanında değişiklik yapma izni verir. Kullanıcının ayrıca "Parolayı Görüntüle" izni yoksa parolayı değiştiremez.',
         'database_delete' => 'Kullanıcıya bir veritabanı örneğini silme izni verir.',
         'database_view_password' => 'Kullanıcıya sistemdeki bir veritabanı parolasını görüntüleme izni verir.',
+        'database_import' => 'Kullanıcının bir veritabanına veri aktarmasına ve isteğe bağlı olarak önce veritabanını temizlemesine izin verir.',
+        'database_export' => 'Kullanıcının bir veritabanının dışa aktarımını indirmesine izin verir.',
         'schedule_create' => 'Kullanıcının sunucu için yeni bir zamanlama oluşturmasına izin verir.',
         'schedule_read' => 'Kullanıcıya bir sunucu için zamanlamaları görüntüleme izni verir.',
         'schedule_update' => 'Kullanıcıya mevcut bir sunucu zamanlamasında değişiklik yapma izni verir.',

@@ -25,6 +25,8 @@ export type SubuserPermission =
     | 'database.update'
     | 'database.delete'
     | 'database.view_password'
+    | 'database.import'
+    | 'database.export'
     | 'schedule.create'
     | 'schedule.read'
     | 'schedule.update'

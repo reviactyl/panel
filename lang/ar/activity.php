@@ -85,6 +85,8 @@ return [
             'create' => 'تم إنشاء قاعدة بيانات جديدة :name',
             'rotate-password' => 'تم تدوير كلمة المرور لقاعدة البيانات :name',
             'delete' => 'تم حذف قاعدة البيانات :name',
+            'import' => 'تم بدء استيراد إلى قاعدة البيانات :name',
+            'export' => 'تم تصدير قاعدة البيانات :name',
         ],
         'file' => [
             'compress_one' => 'تم ضغط :directory:file',

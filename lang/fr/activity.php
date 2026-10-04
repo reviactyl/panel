@@ -85,6 +85,8 @@ return [
             'create' => 'Création de la base de données :name',
             'rotate-password' => 'Rotation du mot de passe pour la base de données :name',
             'delete' => 'Suppression de la base de données :name',
+            'import' => 'Importation démarrée dans la base de données :name',
+            'export' => 'Base de données :name exportée',
         ],
         'file' => [
             'compress_one' => 'Compression de :directory:file',

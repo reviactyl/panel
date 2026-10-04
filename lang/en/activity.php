@@ -85,6 +85,8 @@ return [
             'create' => 'Created new database :name',
             'rotate-password' => 'Password rotated for database :name',
             'delete' => 'Deleted database :name',
+            'import' => 'Started an import into database :name',
+            'export' => 'Exported database :name',
         ],
         'file' => [
             'compress_one' => 'Compressed :directory:files.0',

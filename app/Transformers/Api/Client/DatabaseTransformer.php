@@ -5,6 +5,7 @@ namespace App\Transformers\Api\Client;
 use App\Contracts\Extensions\HashidsInterface;
 use App\Models\Database;
 use App\Models\Permission;
+use App\Services\Databases\DatabaseImportStatusService;
 use Illuminate\Contracts\Encryption\Encrypter;
 use League\Fractal\Resource\Item;
 use League\Fractal\Resource\NullResource;
@@ -17,13 +18,16 @@ class DatabaseTransformer extends BaseClientTransformer
 
     private HashidsInterface $hashids;
 
+    private DatabaseImportStatusService $importStatus;
+
     /**
      * Handle dependency injection.
      */
-    public function handle(Encrypter $encrypter, HashidsInterface $hashids)
+    public function handle(Encrypter $encrypter, HashidsInterface $hashids, DatabaseImportStatusService $importStatus)
     {
         $this->encrypter = $encrypter;
         $this->hashids = $hashids;
+        $this->importStatus = $importStatus;
     }
 
     public function getResourceName(): string
@@ -45,6 +49,7 @@ class DatabaseTransformer extends BaseClientTransformer
             'username' => $model->username,
             'connections_from' => $model->remote,
             'max_connections' => $model->max_connections,
+            'import' => $this->importStatus->get($model),
         ];
     }
 
