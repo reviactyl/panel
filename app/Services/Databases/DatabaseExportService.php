@@ -15,7 +15,7 @@ class DatabaseExportService
 
     public const COMPRESSION_ZIP = 'zip';
 
-    private const ZIP64_THRESHOLD = 1073741824;
+    private const ZIP64_THRESHOLD = 268435456;
 
     public function __construct(
         private DatabaseConnectionFactory $connections,

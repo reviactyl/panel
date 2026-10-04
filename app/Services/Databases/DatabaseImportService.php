@@ -148,6 +148,7 @@ class DatabaseImportService
     {
         $this->dynamic->set('dynamic', $database->host);
 
+        $this->repository->createDatabase($database->database);
         $this->repository->dropDatabase($database->database);
         $this->repository->createDatabase($database->database);
 

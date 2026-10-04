@@ -13,6 +13,7 @@ use App\Services\Databases\DatabaseExportService;
 use App\Services\Databases\DatabaseImportService;
 use App\Services\Databases\DatabaseImportStatusService;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -258,6 +259,26 @@ class DatabaseTransferTest extends ClientApiIntegrationTestCase
         $this->assertSame(12, $status->get($database)['statements']);
         $this->assertFalse($status->isRunning($database));
         Storage::disk('local')->assertMissing('database-imports/dump.sql');
+    }
+
+    public function test_job_does_not_run_while_another_import_holds_the_database()
+    {
+        Storage::fake('local');
+        Storage::disk('local')->put('database-imports/dump.sql', 'SELECT 1;');
+
+        [, $server] = $this->generateTestAccount();
+        $database = $this->createDatabase($server);
+
+        $lock = Cache::lock('database:import:'.$database->id.':job', 60);
+        $this->assertTrue($lock->get());
+
+        $this->mock(DatabaseImportService::class)->shouldNotReceive('fromFile');
+
+        $this->app->call([new ImportDatabaseJob($database->id, 'database-imports/dump.sql', null, true), 'handle']);
+
+        Storage::disk('local')->assertMissing('database-imports/dump.sql');
+
+        $lock->release();
     }
 
     public function test_job_records_why_an_import_failed()

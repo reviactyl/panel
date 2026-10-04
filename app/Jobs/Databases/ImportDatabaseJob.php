@@ -11,6 +11,7 @@ use Illuminate\Contracts\Queue\ShouldBeEncrypted;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 class ImportDatabaseJob extends Job implements ShouldBeEncrypted, ShouldQueue
@@ -48,6 +49,13 @@ class ImportDatabaseJob extends Job implements ShouldBeEncrypted, ShouldQueue
             return;
         }
 
+        $lock = Cache::lock($this->lockKey(), self::TIMEOUT + 60);
+        if (! $lock->get()) {
+            $this->deleteFile();
+
+            return;
+        }
+
         $status->refresh($database);
 
         try {
@@ -65,6 +73,7 @@ class ImportDatabaseJob extends Job implements ShouldBeEncrypted, ShouldQueue
 
             $status->fail($database, DatabaseImportException::UNKNOWN);
         } finally {
+            $lock->release();
             $this->deleteFile();
         }
     }
@@ -72,11 +81,17 @@ class ImportDatabaseJob extends Job implements ShouldBeEncrypted, ShouldQueue
     public function failed(?\Throwable $exception): void
     {
         $this->deleteFile();
+        Cache::lock($this->lockKey())->forceRelease();
 
         $database = Database::query()->find($this->database);
         if (! is_null($database)) {
             app(DatabaseImportStatusService::class)->fail($database, DatabaseImportException::TIMED_OUT);
         }
+    }
+
+    private function lockKey(): string
+    {
+        return 'database:import:'.$this->database.':job';
     }
 
     private function deleteFile(): void

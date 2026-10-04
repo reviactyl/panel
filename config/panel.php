@@ -116,7 +116,7 @@ return [
             'enabled' => env('PANEL_CLIENT_DATABASES_ENABLED', true),
             'allow_random' => env('PANEL_CLIENT_DATABASES_ALLOW_RANDOM', true),
             'max_import_size' => env('PANEL_CLIENT_DATABASES_MAX_IMPORT_SIZE', 1024),
-            'allow_private_remote_import' => env('PANEL_CLIENT_DATABASES_ALLOW_PRIVATE_REMOTE_IMPORT', false),
+            'allow_private_remote_import' => filter_var(env('PANEL_CLIENT_DATABASES_ALLOW_PRIVATE_REMOTE_IMPORT', false), FILTER_VALIDATE_BOOLEAN),
         ],
 
         'schedules' => [
