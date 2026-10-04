@@ -150,10 +150,10 @@ class SqlStatementReader
         $length = strlen($buffer);
         $mask = $quote === '`' ? $quote : $quote.'\\';
 
-        while (true) {
+        while ($position < $length) {
             $position += strcspn($buffer, $mask, $position);
             if ($position >= $length) {
-                return null;
+                break;
             }
 
             if ($buffer[$position] === '\\') {
@@ -164,5 +164,7 @@ class SqlStatementReader
 
             return $position;
         }
+
+        return null;
     }
 }

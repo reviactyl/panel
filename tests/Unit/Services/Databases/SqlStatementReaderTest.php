@@ -58,6 +58,10 @@ class SqlStatementReaderTest extends TestCase
                     'SELECT 2',
                 ],
             ],
+            'escaped quote split across reads' => [
+                "INSERT INTO a VALUES ('".str_repeat('a', 65512)."\\'b; c');SELECT 1;",
+                ["INSERT INTO a VALUES ('".str_repeat('a', 65512)."\\'b; c')", 'SELECT 1'],
+            ],
             'statements larger than a single read' => [
                 "INSERT INTO a VALUES ('".str_repeat('a;', 100000)."');SELECT 1;",
                 ["INSERT INTO a VALUES ('".str_repeat('a;', 100000)."')", 'SELECT 1'],

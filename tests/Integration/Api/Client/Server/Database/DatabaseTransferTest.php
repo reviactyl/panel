@@ -122,6 +122,10 @@ class DatabaseTransferTest extends ClientApiIntegrationTestCase
             ->deleteJson($this->databaseLink($server, $database, ''))
             ->assertStatus(409);
 
+        $this->actingAs($user)
+            ->postJson($this->databaseLink($server, $database, '/rotate-password'))
+            ->assertStatus(409);
+
         Queue::assertNotPushed(ImportDatabaseJob::class);
     }
 

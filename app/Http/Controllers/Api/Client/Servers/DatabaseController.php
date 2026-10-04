@@ -87,6 +87,10 @@ class DatabaseController extends ClientApiController
      */
     public function rotatePassword(RotatePasswordRequest $request, Server $server, Database $database): array
     {
+        if ($this->importStatus->isRunning($database)) {
+            throw new DatabaseImportInProgressException();
+        }
+
         Activity::event('server:database.rotate-password')
             ->subject($database)
             ->property('name', $database->database)
