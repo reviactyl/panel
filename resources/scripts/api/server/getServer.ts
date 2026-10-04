@@ -43,6 +43,8 @@ export interface Server {
     invocation: string;
     dockerImage: string;
     description: string;
+    timezone: string | null;
+    defaultTimezone: string;
     limits: {
         memory: number;
         swap: number;
@@ -89,6 +91,8 @@ export const rawDataToServerObject = ({
         port: data.sftp_details.port,
     },
     description: data.description ? (data.description.length > 0 ? data.description : null) : null,
+    timezone: data.timezone ?? null,
+    defaultTimezone: data.default_timezone,
     limits: { ...data.limits },
     eggFeatures: data.egg_features || [],
     featureLimits: { ...data.feature_limits },

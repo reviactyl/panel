@@ -61,6 +61,8 @@ class ServerTransformer extends BaseClientTransformer
                 'port' => $server->node->daemonSFTP,
             ],
             'description' => $server->description,
+            'timezone' => $server->timezone,
+            'default_timezone' => config('app.timezone'),
             'limits' => [
                 'memory' => $server->memory,
                 'swap' => $server->swap,

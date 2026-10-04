@@ -137,6 +137,7 @@ return [
             'rename' => 'Renamed the server from :old to :new',
             'description' => 'Changed the server description from :old to :new',
             'category' => 'Changed server category',
+            'timezone' => 'Changed the server timezone from :old to :new',
         ],
         'startup' => [
             'edit' => 'Changed the :variable variable from ":old" to ":new"',

@@ -31,6 +31,7 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property int $node_id
  * @property string $name
  * @property string $description
+ * @property string|null $timezone
  * @property string|null $status
  * @property bool $skip_scripts
  * @property int $owner_id
@@ -176,6 +177,7 @@ class Server extends Model implements Identifiable
         'name' => 'required|string|min:1|max:191',
         'node_id' => 'required|exists:nodes,id',
         'description' => 'string',
+        'timezone' => 'sometimes|nullable|string|max:64|timezone:all_with_bc',
         'status' => 'nullable|string',
         'memory' => 'required|numeric|min:0',
         'swap' => 'required|numeric|min:-1',
@@ -219,6 +221,11 @@ class Server extends Model implements Identifiable
         'deleted_at' => 'datetime',
         'installed_at' => 'datetime',
     ];
+
+    public function getScheduleTimezone(): string
+    {
+        return $this->timezone ?: config('app.timezone');
+    }
 
     /**
      * Returns the format for server allocations when communicating with the Daemon.

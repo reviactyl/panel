@@ -93,6 +93,8 @@ class Permission extends Model
 
     public const ACTION_SETTINGS_REINSTALL = 'settings.reinstall';
 
+    public const ACTION_SETTINGS_TIMEZONE = 'settings.timezone';
+
     public const ACTION_ACTIVITY_READ = 'activity.read';
 
     /**
@@ -227,6 +229,7 @@ class Permission extends Model
             'keys' => [
                 'rename' => 'Allows a user to rename this server and change the description of it.',
                 'reinstall' => 'Allows a user to trigger a reinstall of this server.',
+                'timezone' => 'Allows a user to change the timezone used by this server and its schedules.',
             ],
         ],
 

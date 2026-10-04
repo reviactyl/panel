@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use App\Contracts\Extensions\HashidsInterface;
+use App\Helpers\Utilities;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
-use Cron\CronExpression;
 use Database\Factories\ScheduleFactory;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Collection;
@@ -121,9 +121,14 @@ class Schedule extends Model
      */
     public function getNextRunDate(): CarbonImmutable
     {
-        $formatted = sprintf('%s %s %s %s %s', $this->cron_minute, $this->cron_hour, $this->cron_day_of_month, $this->cron_month, $this->cron_day_of_week);
-
-        return CarbonImmutable::instance((new CronExpression($formatted))->getNextRunDate());
+        return CarbonImmutable::instance(Utilities::getScheduleNextRunDate(
+            $this->cron_minute,
+            $this->cron_hour,
+            $this->cron_day_of_month,
+            $this->cron_month,
+            $this->cron_day_of_week,
+            $this->server->getScheduleTimezone()
+        ));
     }
 
     /**

@@ -10,10 +10,13 @@ use App\Http\Requests\Api\Client\Servers\Settings\ReinstallServerRequest;
 use App\Http\Requests\Api\Client\Servers\Settings\RenameServerRequest;
 use App\Http\Requests\Api\Client\Servers\Settings\SetCategoryRequest;
 use App\Http\Requests\Api\Client\Servers\Settings\SetDockerImageRequest;
+use App\Http\Requests\Api\Client\Servers\Settings\SetTimezoneRequest;
+use App\Models\Schedule;
 use App\Models\Server;
 use App\Models\ServerCategoryAssignment;
 use App\Repositories\Eloquent\ServerRepository;
 use App\Services\Servers\ReinstallServerService;
+use Illuminate\Database\ConnectionInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -26,6 +29,7 @@ class SettingsController extends ClientApiController
     public function __construct(
         private ServerRepository $repository,
         private ReinstallServerService $reinstallServerService,
+        private ConnectionInterface $connection,
     ) {
         parent::__construct();
     }
@@ -93,6 +97,36 @@ class SettingsController extends ClientApiController
                 ->property(['old' => $original, 'new' => $request->input('docker_image')])
                 ->log();
         }
+
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+    }
+
+    public function timezone(SetTimezoneRequest $request, Server $server): JsonResponse
+    {
+        $original = $server->timezone;
+        $timezone = $request->input('timezone') ?: null;
+
+        if ($original === $timezone) {
+            return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        }
+
+        $this->connection->transaction(function () use ($server, $timezone) {
+            $server->forceFill(['timezone' => $timezone])->saveOrFail();
+
+            $server->schedules()->get()->each(function (Schedule $schedule) use ($server) {
+                try {
+                    $next = $schedule->setRelation('server', $server)->getNextRunDate();
+                } catch (\Exception) {
+                    return;
+                }
+
+                $schedule->forceFill(['next_run_at' => $next])->saveOrFail();
+            });
+        });
+
+        Activity::event('server:settings.timezone')
+            ->property(['old' => $original ?? 'default', 'new' => $timezone ?? 'default'])
+            ->log();
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

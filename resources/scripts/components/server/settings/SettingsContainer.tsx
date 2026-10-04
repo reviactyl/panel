@@ -5,6 +5,7 @@ import RenameServerBox from '@/components/server/settings/RenameServerBox';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import Can from '@/reviactyl/elements/Can';
 import ReinstallServerBox from '@/components/server/settings/ReinstallServerBox';
+import TimezoneBox from '@/components/server/settings/TimezoneBox';
 import Input from '@/reviactyl/elements/Input';
 import Label from '@/reviactyl/elements/Label';
 import ServerContentBlock from '@/reviactyl/elements/ServerContentBlock';
@@ -25,10 +26,10 @@ export default () => {
     return (
         <ServerContentBlock title={t('title')}>
             <FlashMessageRender byKey='settings' className='mb-4' />
-            <div className='md:flex'>
-                <div className='w-full md:mr-10 md:flex-1'>
+            <div className='flex flex-col gap-6 md:flex-row md:gap-10'>
+                <div className='flex w-full flex-col gap-6 md:flex-1 md:gap-10'>
                     <Can action={'file.sftp'}>
-                        <TitledGreyBox title={t('sftp.title')} className='mb-6 md:mb-10'>
+                        <TitledGreyBox title={t('sftp.title')}>
                             <div>
                                 <Label>{t('sftp.address')}</Label>
                                 <CopyOnClick text={`sftp://${ip(sftp.ip)}:${sftp.port}`}>
@@ -57,7 +58,7 @@ export default () => {
                             </div>
                         </TitledGreyBox>
                     </Can>
-                    <TitledGreyBox title={t('info.title')} className='mb-6 md:mb-10'>
+                    <TitledGreyBox title={t('info.title')}>
                         <div className='flex items-center justify-between text-sm'>
                             <p>{t('info.node')}</p>
                             <code className='rounded-ui border border-gray-800 bg-gray-900 px-2 py-1 font-mono'>
@@ -80,17 +81,20 @@ export default () => {
                         </div>
                     </TitledGreyBox>
                 </div>
-                <div className='mt-6 w-full md:mt-0 md:flex-1'>
+                <div className='flex w-full flex-col gap-6 md:flex-1 md:gap-10'>
                     <Can action={'settings.rename'}>
-                        <div className='mb-6 md:mb-10'>
-                            <RenameServerBox />
-                        </div>
+                        <RenameServerBox />
                     </Can>
-                    <Can action={'settings.reinstall'}>
-                        <ReinstallServerBox />
+                    <Can action={'settings.timezone'}>
+                        <TimezoneBox />
                     </Can>
                 </div>
             </div>
+            <Can action={'settings.reinstall'}>
+                <div className='mt-6 md:mt-10'>
+                    <ReinstallServerBox />
+                </div>
+            </Can>
         </ServerContentBlock>
     );
 };
