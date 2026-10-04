@@ -15,7 +15,7 @@ class DesignifyTest extends TestCase
             'designify:color50' => '#09090b',
             'designify:color50L' => '#fafafa',
             'designify:errors:404:title' => 'Lost in space',
-            'designify:alerts' => [['type' => 'info', 'message' => 'Hello']],
+            'designify:sidebarButtons' => [['label' => 'Docs', 'url' => '/docs', 'newTab' => false]],
             'unrelated' => 'ignored',
         ];
 
@@ -26,7 +26,7 @@ class DesignifyTest extends TestCase
             'errors' => [
                 '404' => ['title' => 'Lost in space'],
             ],
-            'alerts' => [['type' => 'info', 'message' => 'Hello']],
+            'sidebarButtons' => [['label' => 'Docs', 'url' => '/docs', 'newTab' => false]],
         ], $page->getPreviewSettings());
     }
 }

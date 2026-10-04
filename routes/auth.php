@@ -19,6 +19,8 @@ Route::get('/register', [Auth\RegisterController::class, 'index'])->name('auth.r
 Route::get('/password', [Auth\LoginController::class, 'index'])->name('auth.forgot-password');
 Route::get('/password/reset/{token}', [Auth\LoginController::class, 'index'])->name('auth.reset');
 
+Route::get('/alerts', Auth\AlertController::class)->middleware('throttle:60,1')->name('auth.alerts');
+
 // Social Login Routes
 Route::get('/login/{provider}', [Auth\SocialLoginController::class, 'redirect'])
     ->withoutMiddleware('guest')

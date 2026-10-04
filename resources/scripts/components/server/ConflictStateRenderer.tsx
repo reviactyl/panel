@@ -11,20 +11,11 @@ export default () => {
     );
 
     return status === 'installing' || status === 'install_failed' || status === 'reinstall_failed' ? (
-        <ScreenBlock
-            title={t('installer-running-title')}
-            message={t('installer-running-message')}
-        />
+        <ScreenBlock title={t('installer-running-title')} message={t('installer-running-message')} />
     ) : status === 'suspended' ? (
-        <ScreenBlock
-            title={t('server-suspended-title')}
-            message={t('server-suspended-message')}
-        />
+        <ScreenBlock title={t('server-suspended-title')} message={t('server-suspended-message')} />
     ) : isNodeUnderMaintenance ? (
-        <ScreenBlock
-            title={t('node-maintenance-title')}
-            message={t('node-maintenance-message')}
-        />
+        <ScreenBlock title={t('node-maintenance-title')} message={t('node-maintenance-message')} />
     ) : (
         <ScreenBlock
             title={isTransferring ? t('server-transferring-title') : t('server-restoring-title')}

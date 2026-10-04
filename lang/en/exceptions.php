@@ -83,6 +83,10 @@ return [
     'api' => [
         'resource_not_found' => 'The requested resource does not exist on this server.',
     ],
+    'alerts' => [
+        'not_dismissible' => 'This alert cannot be dismissed.',
+        'no_action' => 'This alert does not have any buttons.',
+    ],
     'social' => [
         'unlink_only_login' => 'You cannot unlink your only login method without setting a password first.',
     ],

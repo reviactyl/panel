@@ -1,10 +1,5 @@
 import { action, Action } from 'easy-peasy';
 
-export interface DesignifyAlert {
-    type: string;
-    message: string;
-}
-
 export interface DesignifySidebarButton {
     label: string;
     url: string;
@@ -18,9 +13,6 @@ export interface DesignifySettings {
     maintenance: string;
     sidebarLogout: boolean;
     allocationBlur: boolean;
-    alertType: string;
-    alertMessage: string;
-    alerts?: DesignifyAlert[];
     sidebarButtons?: DesignifySidebarButton[];
     alwaysShowKillButton: boolean;
     cardType: 'grid' | 'row';

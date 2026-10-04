@@ -8,6 +8,7 @@ return [
         'settings' => 'Settings',
         'api' => 'Application API',
         'activity_log' => 'Activity Log',
+        'alerts' => 'Alerts',
         'user_activity_metrics' => 'Active User Locations',
         'user_activity_description' => 'Location of active users in the past 30 days.',
         'active_users' => 'Active users',

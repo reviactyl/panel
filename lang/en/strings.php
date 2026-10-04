@@ -29,6 +29,7 @@ return [
     '2fa_token' => 'Authentication Token',
     'submit' => 'Submit',
     'close' => 'Close',
+    'dismiss' => 'Dismiss',
     'settings' => 'Settings',
     'configuration' => 'Configuration',
     'sftp' => 'SFTP',

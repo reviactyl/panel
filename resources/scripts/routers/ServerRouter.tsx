@@ -318,7 +318,7 @@ export default function ServerRouter() {
                                                     }}
                                                 />
                                             )}
-                                            <Announcement />
+                                            <Announcement placement='server' server={uuid} />
                                             <MaintenanceAlert />
 
                                             <Routes location={location}>
