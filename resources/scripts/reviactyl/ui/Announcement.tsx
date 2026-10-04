@@ -155,7 +155,7 @@ const Announcement = ({ placement = 'dashboard', server }: Props) => {
     };
 
     return (
-        <div className={isGuest && alerts.length === 0 ? 'px-2' : 'px-2 my-2'}>
+        <div className={alerts.length === 0 ? '' : 'px-2 my-2'}>
             <AnimatePresence initial={false}>
                 {alerts.map((alert) => {
                     const Icon = icons[alert.type] ?? FaCircleInfo;
