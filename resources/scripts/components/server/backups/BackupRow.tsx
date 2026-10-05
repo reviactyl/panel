@@ -5,13 +5,10 @@ import { format, formatDistanceToNow } from 'date-fns';
 import Spinner from '@/reviactyl/elements/Spinner';
 import { bytesToString } from '@/lib/formatters';
 import Can from '@/reviactyl/elements/Can';
-import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import BackupContextMenu, { BackupContextMenuHandle } from '@/components/server/backups/BackupContextMenu';
 import BackupCompletedCheck from '@/components/server/backups/BackupCompletedCheck';
 import GreyRowBox from '@/reviactyl/elements/GreyRowBox';
-import getServerBackups from '@/api/swr/getServerBackups';
 import { ServerBackup } from '@/api/server/types';
-import { SocketEvent } from '@/components/server/events';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
@@ -21,10 +18,15 @@ interface Props {
 
 export default ({ backup, className }: Props) => {
     const { t } = useTranslation('server/backups');
-    const { mutate } = getServerBackups();
     const reduceMotion = useReducedMotion();
     const contextMenuRef = useRef<BackupContextMenuHandle>(null);
+    const [wasPending, setWasPending] = useState(backup.completedAt === null);
     const [justCompleted, setJustCompleted] = useState(false);
+
+    if (wasPending && backup.completedAt !== null) {
+        setWasPending(false);
+        setJustCompleted(backup.isSuccessful);
+    }
 
     useEffect(() => {
         if (!justCompleted) return;
@@ -40,40 +42,6 @@ export default ({ backup, className }: Props) => {
         e.stopPropagation();
         contextMenuRef.current?.triggerMenu(e.clientX);
     };
-
-    useWebsocketEvent(SocketEvent.BACKUP_COMPLETED, (data) => {
-        try {
-            const parsed = JSON.parse(data);
-            if (parsed.uuid !== backup.uuid) return;
-
-            const isSuccessful = parsed.is_successful ?? true;
-            if (backup.completedAt === null && isSuccessful) {
-                setJustCompleted(true);
-            }
-
-            mutate(
-                (data) =>
-                    data && {
-                        ...data,
-                        items: data.items.map((b) =>
-                            b.uuid !== backup.uuid
-                                ? b
-                                : {
-                                      ...b,
-                                      // Older Wings versions omit this field from successful completion events.
-                                      isSuccessful,
-                                      checksum: (parsed.checksum_type || '') + ':' + (parsed.checksum || ''),
-                                      bytes: parsed.file_size || 0,
-                                      completedAt: new Date(),
-                                  },
-                        ),
-                    },
-                false,
-            );
-        } catch (e) {
-            console.warn(e);
-        }
-    });
 
     return (
         <GreyRowBox

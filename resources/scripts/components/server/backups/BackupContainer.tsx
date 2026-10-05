@@ -7,6 +7,8 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import BackupRow from '@/components/server/backups/BackupRow';
 import getServerBackups, { Context as ServerBackupContext } from '@/api/swr/getServerBackups';
 import { ServerContext } from '@/state/server';
+import useWebsocketEvent from '@/plugins/useWebsocketEvent';
+import { SocketEvent } from '@/components/server/events';
 import ServerContentBlock from '@/reviactyl/elements/ServerContentBlock';
 import Pagination from '@/reviactyl/elements/Pagination';
 import Card from '@/reviactyl/ui/Card';
@@ -18,7 +20,7 @@ const BackupContainer = () => {
     const { t } = useTranslation('server/backups');
     const { page, setPage } = useContext(ServerBackupContext);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const { data: backups, error, isValidating } = getServerBackups();
+    const { data: backups, error, isValidating, mutate } = getServerBackups();
 
     const backupLimit = ServerContext.useStoreState((state) => state.server.data!.featureLimits.backups);
 
@@ -31,6 +33,34 @@ const BackupContainer = () => {
 
         clearAndAddHttpError({ error, key: 'backups' });
     }, [error]);
+
+    useWebsocketEvent(SocketEvent.BACKUP_COMPLETED, (data) => {
+        try {
+            const parsed = JSON.parse(data);
+
+            mutate(
+                (data) =>
+                    data && {
+                        ...data,
+                        items: data.items.map((b) =>
+                            b.uuid !== parsed.uuid
+                                ? b
+                                : {
+                                      ...b,
+                                      // Older Wings versions omit this field from successful completion events.
+                                      isSuccessful: parsed.is_successful ?? true,
+                                      checksum: (parsed.checksum_type || '') + ':' + (parsed.checksum || ''),
+                                      bytes: parsed.file_size || 0,
+                                      completedAt: new Date(),
+                                  },
+                        ),
+                    },
+                false,
+            );
+        } catch (e) {
+            console.warn(e);
+        }
+    });
 
     if (!backups || (error && isValidating)) {
         return <Spinner size={'large'} centered />;
