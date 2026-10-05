@@ -49,7 +49,9 @@ const BackupContainer = () => {
                                       ...b,
                                       // Older Wings versions omit this field from successful completion events.
                                       isSuccessful: parsed.is_successful ?? true,
-                                      checksum: (parsed.checksum_type || '') + ':' + (parsed.checksum || ''),
+                                      checksum: parsed.checksum
+                                          ? [parsed.checksum_type, parsed.checksum].filter(Boolean).join(':')
+                                          : '',
                                       bytes: parsed.file_size || 0,
                                       completedAt: new Date(),
                                   },
