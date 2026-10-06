@@ -57,6 +57,7 @@ return [
     'import-error-connection' => 'Panelen kunde inte ansluta till den här databasen. Kontrollera att den tillåter anslutningar från panelen.',
     'import-error-file' => 'Den uppladdade filen kunde inte läsas.',
     'import-error-archive' => 'Arkivet innehåller ingen SQL-fil.',
+    'import-error-empty' => 'Importen innehåller inga SQL-satser.',
     'import-error-remote-access-denied' => 'Fjärrvärden nekade åtkomst. Kontrollera användarnamn och lösenord samt att användaren får ansluta från panelen.',
     'import-error-remote-not-allowed' => 'Det är inte tillåtet att importera från den här fjärrvärden.',
     'import-error-remote-unknown-database' => 'Fjärrdatabasen finns inte.',

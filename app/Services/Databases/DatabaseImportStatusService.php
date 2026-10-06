@@ -6,6 +6,7 @@ use App\Jobs\Databases\ImportDatabaseJob;
 use App\Models\Database;
 use Carbon\CarbonImmutable;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
+use Illuminate\Support\Str;
 
 class DatabaseImportStatusService
 {
@@ -32,20 +33,27 @@ class DatabaseImportStatusService
         return ($this->get($database)['state'] ?? null) === self::STATE_RUNNING;
     }
 
-    public function start(Database $database): bool
+    public function start(Database $database): ?string
     {
-        if (! $this->cache->add($this->key($database).':running', true, ImportDatabaseJob::TIMEOUT + 60)) {
-            return false;
+        $token = Str::random(32);
+
+        if (! $this->cache->add($this->key($database).':running', $token, ImportDatabaseJob::TIMEOUT + 60)) {
+            return null;
         }
 
-        $this->refresh($database);
+        $this->refresh($database, $token);
 
-        return true;
+        return $token;
     }
 
-    public function refresh(Database $database): void
+    public function owns(Database $database, string $token): bool
     {
-        $this->cache->put($this->key($database).':running', true, ImportDatabaseJob::TIMEOUT + 60);
+        return $this->cache->get($this->key($database).':running') === $token;
+    }
+
+    public function refresh(Database $database, string $token): void
+    {
+        $this->cache->put($this->key($database).':running', $token, ImportDatabaseJob::TIMEOUT + 60);
 
         $this->put($database, [
             'state' => self::STATE_RUNNING,

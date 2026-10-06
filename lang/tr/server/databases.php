@@ -57,6 +57,7 @@ return [
     'import-error-connection' => 'Panel bu veritabanına bağlanamadı. Veritabanının panelden gelen bağlantılara izin verdiğinden emin olun.',
     'import-error-file' => 'Yüklenen dosya okunamadı.',
     'import-error-archive' => 'Arşiv bir SQL dosyası içermiyor.',
+    'import-error-empty' => 'İçe aktarma herhangi bir SQL ifadesi içermiyor.',
     'import-error-remote-access-denied' => 'Uzak sunucu erişimi reddetti. Kullanıcı adını ve parolayı, ayrıca kullanıcının panelden bağlanmasına izin verildiğini kontrol edin.',
     'import-error-remote-not-allowed' => 'Bu uzak sunucudan içe aktarmaya izin verilmiyor.',
     'import-error-remote-unknown-database' => 'Uzak veritabanı mevcut değil.',

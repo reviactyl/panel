@@ -100,17 +100,21 @@ class DatabaseImportService
     }
 
     /**
-     * @param  iterable<string>  $statements
+     * @param  \Iterator<int, string>  $statements
      * @param  (\Closure(int): void)|null  $progress
      *
      * @throws DatabaseImportException
      */
-    private function import(Database $database, iterable $statements, bool $wipe, ?\Closure $progress): int
+    private function import(Database $database, \Iterator $statements, bool $wipe, ?\Closure $progress): int
     {
         try {
             $target = $this->connections->forDatabase($database);
         } catch (\PDOException $exception) {
             throw new DatabaseImportException(DatabaseImportException::CONNECTION_FAILED, previous: $exception);
+        }
+
+        if (! $statements->valid()) {
+            throw new DatabaseImportException(DatabaseImportException::SOURCE_EMPTY);
         }
 
         if ($wipe) {

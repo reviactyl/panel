@@ -57,6 +57,7 @@ return [
     'import-error-connection' => 'تعذّر على اللوحة الاتصال بقاعدة البيانات هذه. تأكد من أنها تسمح بالاتصالات من اللوحة.',
     'import-error-file' => 'تعذّرت قراءة الملف المرفوع.',
     'import-error-archive' => 'الأرشيف لا يحتوي على ملف SQL.',
+    'import-error-empty' => 'الاستيراد لا يحتوي على أي عبارات SQL.',
     'import-error-remote-access-denied' => 'رفض المضيف البعيد الوصول. تحقق من اسم المستخدم وكلمة المرور، ومن أن المستخدم مسموح له بالاتصال من اللوحة.',
     'import-error-remote-not-allowed' => 'الاستيراد من هذا المضيف البعيد غير مسموح به.',
     'import-error-remote-unknown-database' => 'قاعدة البيانات البعيدة غير موجودة.',

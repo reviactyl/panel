@@ -27,6 +27,7 @@ use App\Services\Databases\DeployServerDatabaseService;
 use App\Transformers\Api\Client\DatabaseTransformer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class DatabaseController extends ClientApiController
@@ -153,11 +154,13 @@ class DatabaseController extends ClientApiController
      */
     public function import(ImportDatabaseRequest $request, Server $server, Database $database): JsonResponse
     {
-        if (! $this->importStatus->start($database)) {
+        $token = $this->importStatus->start($database);
+        if (is_null($token)) {
             throw new DatabaseImportInProgressException();
         }
 
         $remote = $request->remote();
+        $file = null;
 
         try {
             $file = is_null($remote) ? $request->file('file')->store('database-imports', 'local') : null;
@@ -165,9 +168,13 @@ class DatabaseController extends ClientApiController
                 throw new \RuntimeException('The uploaded database import could not be stored.');
             }
 
-            ImportDatabaseJob::dispatch($database->id, $file, $remote, $request->boolean('wipe'));
+            ImportDatabaseJob::dispatch($database->id, $file, $remote, $token, $request->boolean('wipe'));
         } catch (\Throwable $exception) {
             $this->importStatus->clear($database);
+
+            if (is_string($file)) {
+                Storage::disk('local')->delete($file);
+            }
 
             throw $exception;
         }

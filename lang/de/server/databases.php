@@ -57,6 +57,7 @@ return [
     'import-error-connection' => 'Das Panel konnte keine Verbindung zu dieser Datenbank herstellen. Stellen Sie sicher, dass sie Verbindungen vom Panel zulässt.',
     'import-error-file' => 'Die hochgeladene Datei konnte nicht gelesen werden.',
     'import-error-archive' => 'Das Archiv enthält keine SQL-Datei.',
+    'import-error-empty' => 'Der Import enthält keine SQL-Anweisungen.',
     'import-error-remote-access-denied' => 'Der Remote-Host hat den Zugriff verweigert. Prüfen Sie Benutzername und Passwort und ob der Benutzer sich vom Panel aus verbinden darf.',
     'import-error-remote-not-allowed' => 'Der Import von diesem Remote-Host ist nicht erlaubt.',
     'import-error-remote-unknown-database' => 'Die Remote-Datenbank existiert nicht.',

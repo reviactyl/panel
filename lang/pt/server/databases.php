@@ -57,6 +57,7 @@ return [
     'import-error-connection' => 'O painel não conseguiu se conectar a este banco de dados. Verifique se ele permite conexões a partir do painel.',
     'import-error-file' => 'Não foi possível ler o arquivo enviado.',
     'import-error-archive' => 'O arquivo compactado não contém nenhum arquivo SQL.',
+    'import-error-empty' => 'A importação não contém nenhuma instrução SQL.',
     'import-error-remote-access-denied' => 'O host remoto negou o acesso. Verifique o usuário e a senha, e se o usuário tem permissão para se conectar a partir do painel.',
     'import-error-remote-not-allowed' => 'Não é permitido importar deste host remoto.',
     'import-error-remote-unknown-database' => 'O banco de dados remoto não existe.',

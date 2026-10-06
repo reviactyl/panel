@@ -57,6 +57,7 @@ return [
     'import-error-connection' => 'Le panel n’a pas pu se connecter à cette base de données. Assurez-vous qu’elle autorise les connexions depuis le panel.',
     'import-error-file' => 'Le fichier téléversé n’a pas pu être lu.',
     'import-error-archive' => 'L’archive ne contient aucun fichier SQL.',
+    'import-error-empty' => 'L’importation ne contient aucune instruction SQL.',
     'import-error-remote-access-denied' => 'L’hôte distant a refusé l’accès. Vérifiez le nom d’utilisateur et le mot de passe, et que l’utilisateur est autorisé à se connecter depuis le panel.',
     'import-error-remote-not-allowed' => 'L’importation depuis cet hôte distant n’est pas autorisée.',
     'import-error-remote-unknown-database' => 'La base de données distante n’existe pas.',

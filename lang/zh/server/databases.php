@@ -57,6 +57,7 @@ return [
     'import-error-connection' => '面板无法连接到此数据库。请确保它允许来自面板的连接。',
     'import-error-file' => '无法读取上传的文件。',
     'import-error-archive' => '压缩包中不包含 SQL 文件。',
+    'import-error-empty' => '导入内容中不包含任何 SQL 语句。',
     'import-error-remote-access-denied' => '远程主机拒绝访问。请检查用户名和密码，并确认该用户被允许从面板连接。',
     'import-error-remote-not-allowed' => '不允许从此远程主机导入。',
     'import-error-remote-unknown-database' => '远程数据库不存在。',

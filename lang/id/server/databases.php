@@ -57,6 +57,7 @@ return [
     'import-error-connection' => 'Panel tidak dapat terhubung ke basis data ini. Pastikan basis data mengizinkan koneksi dari panel.',
     'import-error-file' => 'File yang diunggah tidak dapat dibaca.',
     'import-error-archive' => 'Arsip tidak berisi file SQL.',
+    'import-error-empty' => 'Impor tidak berisi pernyataan SQL apa pun.',
     'import-error-remote-access-denied' => 'Host jarak jauh menolak akses. Periksa nama pengguna dan kata sandi, serta pastikan pengguna diizinkan terhubung dari panel.',
     'import-error-remote-not-allowed' => 'Mengimpor dari host jarak jauh ini tidak diizinkan.',
     'import-error-remote-unknown-database' => 'Basis data jarak jauh tidak ada.',

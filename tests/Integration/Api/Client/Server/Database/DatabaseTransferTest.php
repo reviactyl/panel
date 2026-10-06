@@ -192,7 +192,7 @@ class DatabaseTransferTest extends ClientApiIntegrationTestCase
             ->assertOk()
             ->assertJsonPath('data.0.attributes.import.state', DatabaseImportStatusService::STATE_FAILED);
 
-        $this->assertTrue($status->start($database));
+        $this->assertNotNull($status->start($database));
     }
 
     public function test_database_is_exported_as_a_download()
@@ -246,14 +246,14 @@ class DatabaseTransferTest extends ClientApiIntegrationTestCase
         $database = $this->createDatabase($server);
 
         $status = $this->app->make(DatabaseImportStatusService::class);
-        $status->start($database);
+        $token = $status->start($database);
 
         $this->mock(DatabaseImportService::class)
             ->expects('fromFile')
             ->withArgs(fn (Database $model, string $path, bool $wipe) => $model->is($database) && $wipe && str_ends_with($path, 'database-imports/dump.sql'))
             ->andReturn(12);
 
-        $this->app->call([new ImportDatabaseJob($database->id, 'database-imports/dump.sql', null, true), 'handle']);
+        $this->app->call([new ImportDatabaseJob($database->id, 'database-imports/dump.sql', null, $token, true), 'handle']);
 
         $this->assertSame(DatabaseImportStatusService::STATE_COMPLETED, $status->get($database)['state']);
         $this->assertSame(12, $status->get($database)['statements']);
@@ -269,16 +269,39 @@ class DatabaseTransferTest extends ClientApiIntegrationTestCase
         [, $server] = $this->generateTestAccount();
         $database = $this->createDatabase($server);
 
+        $token = $this->app->make(DatabaseImportStatusService::class)->start($database);
+
         $lock = Cache::lock('database:import:'.$database->id.':job', 60);
         $this->assertTrue($lock->get());
 
         $this->mock(DatabaseImportService::class)->shouldNotReceive('fromFile');
 
-        $this->app->call([new ImportDatabaseJob($database->id, 'database-imports/dump.sql', null, true), 'handle']);
+        $this->app->call([new ImportDatabaseJob($database->id, 'database-imports/dump.sql', null, $token, true), 'handle']);
 
         Storage::disk('local')->assertMissing('database-imports/dump.sql');
 
         $lock->release();
+    }
+
+    public function test_job_does_not_run_after_its_claim_on_the_database_is_lost()
+    {
+        Storage::fake('local');
+        Storage::disk('local')->put('database-imports/dump.sql', 'SELECT 1;');
+
+        [, $server] = $this->generateTestAccount();
+        $database = $this->createDatabase($server);
+
+        $status = $this->app->make(DatabaseImportStatusService::class);
+        $token = $status->start($database);
+        $status->clear($database);
+        $status->start($database);
+
+        $this->mock(DatabaseImportService::class)->shouldNotReceive('fromFile');
+
+        $this->app->call([new ImportDatabaseJob($database->id, 'database-imports/dump.sql', null, $token, true), 'handle']);
+
+        $this->assertTrue($status->isRunning($database));
+        Storage::disk('local')->assertMissing('database-imports/dump.sql');
     }
 
     public function test_job_records_why_an_import_failed()
@@ -287,18 +310,18 @@ class DatabaseTransferTest extends ClientApiIntegrationTestCase
         $database = $this->createDatabase($server);
 
         $status = $this->app->make(DatabaseImportStatusService::class);
-        $status->start($database);
+        $token = $status->start($database);
 
         $this->mock(DatabaseImportService::class)
             ->expects('fromRemote')
             ->andThrow(new DatabaseImportException(DatabaseImportException::REMOTE_ACCESS_DENIED));
 
         $remote = ['host' => 'db.example.com', 'port' => 3306, 'database' => 'source', 'username' => 'user', 'password' => null];
-        $this->app->call([new ImportDatabaseJob($database->id, null, $remote), 'handle']);
+        $this->app->call([new ImportDatabaseJob($database->id, null, $remote, $token), 'handle']);
 
         $this->assertSame(DatabaseImportStatusService::STATE_FAILED, $status->get($database)['state']);
         $this->assertSame(DatabaseImportException::REMOTE_ACCESS_DENIED, $status->get($database)['error']);
-        $this->assertTrue($status->start($database));
+        $this->assertNotNull($status->start($database));
     }
 
     private function createDatabase(Server $server): Database

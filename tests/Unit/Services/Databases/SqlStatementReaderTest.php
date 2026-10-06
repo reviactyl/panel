@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Services\Databases;
 
+use App\Exceptions\Service\Database\DatabaseImportException;
 use App\Services\Databases\Transfer\SqlStatementReader;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
@@ -29,6 +30,28 @@ class SqlStatementReaderTest extends TestCase
             $this->assertSame(['SELECT 1', 'SELECT 2'], iterator_to_array((new SqlStatementReader())->read($stream), false));
         } finally {
             unlink($path);
+        }
+    }
+
+    public function test_oversized_statements_are_rejected()
+    {
+        $stream = fopen('php://temp', 'w+');
+        fwrite($stream, 'SELECT 1; /*');
+        for ($written = 0; $written <= SqlStatementReader::MAX_STATEMENT_SIZE; $written += 1048576) {
+            fwrite($stream, str_repeat('a', 1048576));
+        }
+        rewind($stream);
+
+        $statements = (new SqlStatementReader())->read($stream);
+        $this->assertSame('SELECT 1', $statements->current());
+
+        try {
+            $statements->next();
+            $this->fail('The oversized statement was not rejected.');
+        } catch (DatabaseImportException $exception) {
+            $this->assertSame(DatabaseImportException::STATEMENT_FAILED, $exception->getReason());
+        } finally {
+            fclose($stream);
         }
     }
 

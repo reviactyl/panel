@@ -34,6 +34,7 @@ class ImportDatabaseJob extends Job implements ShouldBeEncrypted, ShouldQueue
         public int $database,
         public ?string $file,
         public ?array $remote,
+        public string $token,
         public bool $wipe = false,
     ) {
         $this->queue = 'standard';
@@ -43,7 +44,7 @@ class ImportDatabaseJob extends Job implements ShouldBeEncrypted, ShouldQueue
     {
         $database = Database::query()->with('host')->find($this->database);
 
-        if (is_null($database)) {
+        if (is_null($database) || ! $status->owns($database, $this->token)) {
             $this->deleteFile();
 
             return;
@@ -56,7 +57,7 @@ class ImportDatabaseJob extends Job implements ShouldBeEncrypted, ShouldQueue
             return;
         }
 
-        $status->refresh($database);
+        $status->refresh($database, $this->token);
 
         try {
             $progress = fn (int $statements) => $status->progress($database, $statements);
@@ -81,11 +82,13 @@ class ImportDatabaseJob extends Job implements ShouldBeEncrypted, ShouldQueue
     public function failed(?\Throwable $exception): void
     {
         $this->deleteFile();
-        Cache::lock($this->lockKey())->forceRelease();
 
+        $status = app(DatabaseImportStatusService::class);
         $database = Database::query()->find($this->database);
-        if (! is_null($database)) {
-            app(DatabaseImportStatusService::class)->fail($database, DatabaseImportException::TIMED_OUT);
+
+        if (! is_null($database) && $status->owns($database, $this->token)) {
+            Cache::lock($this->lockKey())->forceRelease();
+            $status->fail($database, DatabaseImportException::TIMED_OUT);
         }
     }
 

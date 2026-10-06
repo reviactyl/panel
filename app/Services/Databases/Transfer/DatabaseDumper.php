@@ -22,12 +22,6 @@ class DatabaseDumper
         $connection->exec('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ');
         $connection->exec('START TRANSACTION /*!40100 WITH CONSISTENT SNAPSHOT */');
 
-        yield 'SET NAMES utf8mb4';
-        yield "SET time_zone = '+00:00'";
-        yield 'SET FOREIGN_KEY_CHECKS = 0';
-        yield 'SET UNIQUE_CHECKS = 0';
-        yield "SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO'";
-
         $tables = $views = [];
         foreach ($connection->query('SHOW FULL TABLES')->fetchAll() as [$name, $type]) {
             if ($type === 'VIEW') {
@@ -37,6 +31,17 @@ class DatabaseDumper
             }
         }
 
+        $triggers = $connection->query('SHOW TRIGGERS')->fetchAll(PDO::FETCH_COLUMN, 0);
+        $procedures = $this->routines($connection, 'PROCEDURE');
+        $functions = $this->routines($connection, 'FUNCTION');
+        $events = $connection->query('SHOW EVENTS')->fetchAll(PDO::FETCH_COLUMN, 1);
+
+        yield 'SET NAMES utf8mb4';
+        yield "SET time_zone = '+00:00'";
+        yield 'SET FOREIGN_KEY_CHECKS = 0';
+        yield 'SET UNIQUE_CHECKS = 0';
+        yield "SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO'";
+
         foreach ($tables as $table) {
             yield 'DROP TABLE IF EXISTS '.$this->identifier($table);
             yield $connection->query('SHOW CREATE TABLE '.$this->identifier($table))->fetch()[1];
@@ -45,10 +50,10 @@ class DatabaseDumper
         }
 
         yield from $this->views($connection, $views);
-        yield from $this->triggers($connection);
-        yield from $this->routines($connection, 'PROCEDURE');
-        yield from $this->routines($connection, 'FUNCTION');
-        yield from $this->events($connection);
+        yield from $this->definitions($connection, 'TRIGGER', $triggers, 2);
+        yield from $this->definitions($connection, 'PROCEDURE', $procedures, 2);
+        yield from $this->definitions($connection, 'FUNCTION', $functions, 2);
+        yield from $this->definitions($connection, 'EVENT', $events, 3);
 
         yield 'SET UNIQUE_CHECKS = 1';
         yield 'SET FOREIGN_KEY_CHECKS = 1';
@@ -171,66 +176,30 @@ class DatabaseDumper
     }
 
     /**
-     * @return \Generator<int, string>
+     * @return string[]
      */
-    private function triggers(PDO $connection): \Generator
+    private function routines(PDO $connection, string $type): array
     {
-        foreach ($this->optional(fn () => $connection->query('SHOW TRIGGERS')->fetchAll(PDO::FETCH_COLUMN, 0)) as $trigger) {
-            $definition = $this->optional(
-                fn () => [$connection->query('SHOW CREATE TRIGGER '.$this->identifier($trigger))->fetch()[2] ?? null]
-            )[0] ?? null;
-
-            if (! empty($definition)) {
-                yield 'DROP TRIGGER IF EXISTS '.$this->identifier($trigger);
-                yield $this->withoutDefiner($definition);
-            }
-        }
+        return $connection->query("SHOW $type STATUS WHERE Db = DATABASE()")->fetchAll(PDO::FETCH_COLUMN, 1);
     }
 
     /**
+     * @param  string[]  $names
      * @return \Generator<int, string>
+     *
+     * @throws \PDOException
      */
-    private function routines(PDO $connection, string $type): \Generator
+    private function definitions(PDO $connection, string $type, array $names, int $column): \Generator
     {
-        $names = $this->optional(
-            fn () => $connection->query("SHOW $type STATUS WHERE Db = DATABASE()")->fetchAll(PDO::FETCH_COLUMN, 1)
-        );
-
         foreach ($names as $name) {
-            $definition = $this->optional(
-                fn () => [$connection->query("SHOW CREATE $type ".$this->identifier($name))->fetch()[2] ?? null]
-            )[0] ?? null;
+            $definition = $connection->query("SHOW CREATE $type ".$this->identifier($name))->fetch()[$column] ?? null;
 
-            if (! empty($definition)) {
-                yield "DROP $type IF EXISTS ".$this->identifier($name);
-                yield $this->withoutDefiner($definition);
+            if (empty($definition)) {
+                throw new \PDOException(sprintf('The definition of the %s %s could not be read.', strtolower($type), $name));
             }
-        }
-    }
 
-    /**
-     * @return \Generator<int, string>
-     */
-    private function events(PDO $connection): \Generator
-    {
-        foreach ($this->optional(fn () => $connection->query('SHOW EVENTS')->fetchAll(PDO::FETCH_COLUMN, 1)) as $event) {
-            $definition = $this->optional(
-                fn () => [$connection->query('SHOW CREATE EVENT '.$this->identifier($event))->fetch()[3] ?? null]
-            )[0] ?? null;
-
-            if (! empty($definition)) {
-                yield 'DROP EVENT IF EXISTS '.$this->identifier($event);
-                yield $this->withoutDefiner($definition);
-            }
-        }
-    }
-
-    private function optional(\Closure $callback): array
-    {
-        try {
-            return $callback() ?: [];
-        } catch (\PDOException) {
-            return [];
+            yield "DROP $type IF EXISTS ".$this->identifier($name);
+            yield $this->withoutDefiner($definition);
         }
     }
 

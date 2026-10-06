@@ -57,6 +57,7 @@ return [
     'import-error-connection' => 'The panel could not connect to this database. Make sure that it allows connections from the panel.',
     'import-error-file' => 'The uploaded file could not be read.',
     'import-error-archive' => 'The archive does not contain a SQL file.',
+    'import-error-empty' => 'The import does not contain any SQL statements.',
     'import-error-remote-access-denied' => 'The remote host denied access. Check the username and password, and that the user is allowed to connect from the panel.',
     'import-error-remote-not-allowed' => 'Importing from this remote host is not allowed.',
     'import-error-remote-unknown-database' => 'The remote database does not exist.',

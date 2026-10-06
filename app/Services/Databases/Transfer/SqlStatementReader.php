@@ -2,13 +2,19 @@
 
 namespace App\Services\Databases\Transfer;
 
+use App\Exceptions\Service\Database\DatabaseImportException;
+
 class SqlStatementReader
 {
+    public const MAX_STATEMENT_SIZE = 67108864;
+
     private const CHUNK_SIZE = 65536;
 
     /**
      * @param  resource  $stream
      * @return \Generator<int, string>
+     *
+     * @throws DatabaseImportException
      */
     public function read($stream): \Generator
     {
@@ -27,6 +33,13 @@ class SqlStatementReader
             }
 
             $buffer .= $chunk;
+
+            if (strlen($buffer) > self::MAX_STATEMENT_SIZE) {
+                throw new DatabaseImportException(
+                    DatabaseImportException::STATEMENT_FAILED,
+                    sprintf('A statement is larger than the %d MiB limit.', self::MAX_STATEMENT_SIZE / 1048576)
+                );
+            }
         };
 
         while (true) {

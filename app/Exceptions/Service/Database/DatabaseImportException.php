@@ -20,6 +20,8 @@ class DatabaseImportException extends \RuntimeException
 
     public const REMOTE_READ_FAILED = 'remote-read';
 
+    public const SOURCE_EMPTY = 'empty';
+
     public const STATEMENT_FAILED = 'statement';
 
     public const TIMED_OUT = 'timeout';

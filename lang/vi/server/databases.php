@@ -57,6 +57,7 @@ return [
     'import-error-connection' => 'Bảng điều khiển không thể kết nối tới cơ sở dữ liệu này. Hãy đảm bảo nó cho phép kết nối từ bảng điều khiển.',
     'import-error-file' => 'Không thể đọc tệp đã tải lên.',
     'import-error-archive' => 'Tệp nén không chứa tệp SQL nào.',
+    'import-error-empty' => 'Dữ liệu nhập không chứa câu lệnh SQL nào.',
     'import-error-remote-access-denied' => 'Máy chủ từ xa đã từ chối truy cập. Hãy kiểm tra tên người dùng, mật khẩu và việc người dùng được phép kết nối từ bảng điều khiển.',
     'import-error-remote-not-allowed' => 'Không được phép nhập từ máy chủ từ xa này.',
     'import-error-remote-unknown-database' => 'Cơ sở dữ liệu từ xa không tồn tại.',
