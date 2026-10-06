@@ -18,6 +18,19 @@ class ResolveSubuserPreview
 
     public function __construct(private readonly SubuserPreviewSimulator $simulator) {}
 
+    private function consumeTicket(string $ticket, SubuserPreviewSession $session): bool
+    {
+        $key = self::ticketKey($ticket);
+
+        if (Cache::get($key) !== $session->uuid || ! Cache::add($key.':used', true, 120)) {
+            return false;
+        }
+
+        Cache::forget($key);
+
+        return true;
+    }
+
     public static function ticketKey(string $ticket): string
     {
         return 'subuser-preview:ticket:'.hash('sha256', $ticket);
@@ -51,7 +64,7 @@ class ResolveSubuserPreview
 
         $valid = $hasToken
             ? $session?->tokenMatches($token)
-            : Cache::pull(self::ticketKey($ticket)) === $session?->uuid;
+            : $session && $this->consumeTicket($ticket, $session);
 
         if (! $session || ! $valid) {
             throw new AccessDeniedHttpException(trans('exceptions.subuser_preview.session_unavailable'));
