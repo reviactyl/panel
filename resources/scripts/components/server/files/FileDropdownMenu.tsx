@@ -45,16 +45,23 @@ interface RowProps extends React.HTMLAttributes<HTMLDivElement> {
     icon: IconType;
     title: string;
     danger?: boolean;
+    disabled?: boolean;
 }
 
-const Row = ({ icon, title, danger, className, ...props }: RowProps) => {
+const Row = ({ icon, title, danger, disabled, className, onClick, ...props }: RowProps) => {
     const ItemIcon = icon;
 
     return (
         <div
-            className={`flex w-full cursor-pointer items-center rounded-ui p-2 transition-all duration-150 ${
-                danger ? 'hover:bg-red-100 hover:text-red-700' : 'hover:bg-gray-100 hover:text-gray-800'
+            className={`flex w-full items-center rounded-ui p-2 transition-all duration-150 ${
+                disabled
+                    ? 'cursor-not-allowed opacity-50'
+                    : `cursor-pointer ${
+                          danger ? 'hover:bg-red-100 hover:text-red-700' : 'hover:bg-gray-100 hover:text-gray-800'
+                      }`
             } ${className || ''}`}
+            onClick={disabled ? undefined : onClick}
+            aria-disabled={disabled}
             {...props}
         >
             <ItemIcon className={'text-xs inline-block w-[1.25em]'} />
@@ -82,6 +89,8 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
     const isMultiSelected = ServerContext.useStoreState(
         (state) => state.files.selectedFiles.length > 1 && state.files.selectedFiles.includes(file.name),
     );
+    // The multi-file actions are unavailable while the mass actions bar is still working on the selection.
+    const massActionRunning = ServerContext.useStoreState((state) => state.files.massActionRunning) && isMultiSelected;
 
     const massAction = (detail: MassAction) => window.dispatchEvent(new CustomEvent(MASS_ACTION_EVENT, { detail }));
 
@@ -240,6 +249,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                         onClick={() => (isMultiSelected ? massAction({ type: 'move' }) : setModal('move'))}
                         icon={FaTurnUp}
                         title={t('dropdown.move')}
+                        disabled={massActionRunning}
                     />
                     <Row onClick={() => setModal('chmod')} icon={FaFileCode} title={t('dropdown.permissions')} />
                 </Can>
@@ -256,7 +266,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                     <Can action={'file.archive'}>
                         <div
                             ref={archiveItemRef}
-                            className='group relative'
+                            className={`group relative ${massActionRunning ? 'pointer-events-none opacity-50' : ''}`}
                             onMouseEnter={positionFormatMenu}
                             onMouseLeave={() => setShowFormatMenu(false)}
                             onFocusCapture={positionFormatMenu}
@@ -272,6 +282,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                                     doArchive(archiveFormat);
                                 }}
                                 aria-haspopup='menu'
+                                disabled={massActionRunning}
                                 className='flex w-full items-center rounded-ui p-2 text-left transition-all duration-150 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:text-gray-800'
                             >
                                 <FaFileZipper className='text-xs inline-block w-[1.25em]' />
@@ -289,6 +300,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                                         key={format}
                                         type='button'
                                         onClick={() => doArchive(format)}
+                                        disabled={massActionRunning}
                                         aria-label={t('archive-as', { format })}
                                         role='menuitem'
                                         className='block w-full rounded-ui p-2 text-left text-sm transition-colors duration-150 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:text-gray-800'
@@ -311,6 +323,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                         icon={FaTrash}
                         title={t('dropdown.delete')}
                         danger
+                        disabled={massActionRunning}
                     />
                 </Can>
                 <ExtensionSlot name='server:files:dropdown:end' />

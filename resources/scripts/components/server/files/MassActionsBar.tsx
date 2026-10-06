@@ -33,6 +33,7 @@ const MassActionsBar = () => {
 
     const selectedFiles = ServerContext.useStoreState((state) => state.files.selectedFiles);
     const setSelectedFiles = ServerContext.useStoreActions((actions) => actions.files.setSelectedFiles);
+    const setMassActionRunning = ServerContext.useStoreActions((actions) => actions.files.setMassActionRunning);
 
     const selectedDirectoryNames = (currentDirectoryFiles ?? [])
         .filter((file) => !file.isFile && selectedFiles.includes(file.name))
@@ -40,6 +41,15 @@ const MassActionsBar = () => {
 
     useEffect(() => {
         if (!loading) setLoadingMessage('');
+    }, [loading]);
+
+    // Lets the file context menus disable their multi-file actions while one is already running.
+    useEffect(() => {
+        setMassActionRunning(loading);
+
+        return () => {
+            setMassActionRunning(false);
+        };
     }, [loading]);
 
     useEffect(() => {
