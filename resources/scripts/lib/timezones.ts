@@ -12,6 +12,16 @@ function getBrowserTimezone(): string | null {
     }
 }
 
+function resolveTimezone(timezone: string): string | null {
+    if (!/^[A-Za-z]/.test(timezone)) return null;
+
+    try {
+        return new Intl.DateTimeFormat('en-US', { timeZone: timezone }).resolvedOptions().timeZone;
+    } catch {
+        return null;
+    }
+}
+
 function getTimezoneOffset(timezone: string, date: Date = new Date()): string {
     try {
         const offset = new Intl.DateTimeFormat('en-US', { timeZone: timezone, timeZoneName: 'longOffset' })
@@ -49,4 +59,4 @@ function formatInTimezone(date: Date, timezone?: string | null): string {
     return `${get('month')} ${get('day')} at ${get('hour')}:${get('minute')} ${get('dayPeriod')} ${zone}`;
 }
 
-export { getTimezones, getBrowserTimezone, getTimezoneOffset, formatInTimezone };
+export { getTimezones, getBrowserTimezone, resolveTimezone, getTimezoneOffset, formatInTimezone };

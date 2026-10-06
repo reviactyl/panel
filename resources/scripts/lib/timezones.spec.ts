@@ -1,10 +1,22 @@
-import { formatInTimezone, getTimezoneOffset, getTimezones } from '@/lib/timezones';
+import { formatInTimezone, getTimezoneOffset, getTimezones, resolveTimezone } from '@/lib/timezones';
 import { describe, it, expect } from 'vitest';
 
 describe('@/lib/timezones.ts', function () {
     describe('getTimezones()', function () {
         it('should always include UTC', function () {
             expect(getTimezones()).toContain('UTC');
+        });
+    });
+
+    describe('resolveTimezone()', function () {
+        it('should return the canonical name of a known timezone', function () {
+            expect(resolveTimezone('europe/berlin')).toBe('Europe/Berlin');
+        });
+
+        it('should return null for anything that is not a named timezone', function () {
+            expect(resolveTimezone('Not/AZone')).toBeNull();
+            expect(resolveTimezone('+01:00')).toBeNull();
+            expect(resolveTimezone('')).toBeNull();
         });
     });
 

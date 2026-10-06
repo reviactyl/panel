@@ -31,6 +31,8 @@ class ProcessScheduleService
         }
 
         $this->connection->transaction(function () use ($schedule, $task) {
+            $schedule->setRelation('server', $schedule->server()->sharedLock()->firstOrFail());
+
             $schedule->forceFill([
                 'is_processing' => true,
                 'next_run_at' => $schedule->getNextRunDate(),

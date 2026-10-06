@@ -148,6 +148,31 @@ class ProcessScheduleServiceTest extends IntegrationTestCase
         $this->assertDatabaseHas('tasks', ['id' => $task->id, 'is_queued' => false]);
     }
 
+    /**
+     * Test that a timezone change made after the schedule was loaded is used for the next run.
+     */
+    public function test_next_run_uses_current_server_timezone()
+    {
+        Bus::fake();
+
+        $server = $this->createServerModel();
+
+        /** @var Schedule $schedule */
+        $schedule = Schedule::factory()->create([
+            'server_id' => $server->id,
+            'cron_minute' => '0',
+            'cron_hour' => '3',
+        ]);
+        Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 1]);
+
+        $schedule->load('server');
+        $server->newQuery()->whereKey($server->id)->update(['timezone' => 'Asia/Tokyo']);
+
+        $this->getService()->handle($schedule);
+
+        $this->assertSame('03:00', $schedule->refresh()->next_run_at->setTimezone('Asia/Tokyo')->format('H:i'));
+    }
+
     public static function dispatchNowDataProvider(): array
     {
         return [[true], [false]];

@@ -13,7 +13,13 @@ import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import Label from '@/reviactyl/elements/Label';
 import { Button } from '@/reviactyl/components/button/index';
 import inputStyles from '@/reviactyl/elements/inputs/styles.module.css';
-import { formatInTimezone, getBrowserTimezone, getTimezoneOffset, getTimezones } from '@/lib/timezones';
+import {
+    formatInTimezone,
+    getBrowserTimezone,
+    getTimezoneOffset,
+    getTimezones,
+    resolveTimezone,
+} from '@/lib/timezones';
 
 interface Option {
     value: string | null;
@@ -21,6 +27,13 @@ interface Option {
     offset: string;
     search: string;
 }
+
+const toOption = (zone: string): Option => {
+    const label = zone.replace(/_/g, ' ');
+    const offset = getTimezoneOffset(zone);
+
+    return { value: zone, label, offset, search: `${zone} ${label} ${offset}`.toLowerCase() };
+};
 
 const CurrentTime = ({ timezone }: { timezone: string }) => {
     const [now, setNow] = useState(() => new Date());
@@ -48,25 +61,29 @@ export default () => {
 
     const options = useMemo<Option[]>(() => {
         const zones = getTimezones();
-        if (server.timezone && !zones.includes(server.timezone)) {
-            zones.unshift(server.timezone);
-        }
+        [selected, server.timezone].forEach((zone) => {
+            if (zone && !zones.includes(zone)) {
+                zones.unshift(zone);
+            }
+        });
 
         return [
             { value: null, label: t('timezone.default'), offset: '', search: t('timezone.default').toLowerCase() },
-            ...zones.map((zone) => {
-                const label = zone.replace(/_/g, ' ');
-                const offset = getTimezoneOffset(zone);
-
-                return { value: zone, label, offset, search: `${zone} ${label} ${offset}`.toLowerCase() };
-            }),
+            ...zones.map(toOption),
         ];
-    }, [server.timezone, t]);
+    }, [selected, server.timezone, t]);
 
     const filtered = useMemo(() => {
         const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
+        if (!terms.length) return options;
 
-        return terms.length ? options.filter((option) => terms.every((term) => option.search.includes(term))) : options;
+        const matches = options.filter((option) => terms.every((term) => option.search.includes(term)));
+        if (matches.length) return matches;
+
+        const zone = resolveTimezone(terms.join('_'));
+        if (!zone) return [];
+
+        return [options.find((option) => option.value === zone) ?? toOption(zone)];
     }, [options, query]);
 
     const browserTimezone = useMemo(getBrowserTimezone, []);
