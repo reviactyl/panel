@@ -269,7 +269,8 @@ class DatabaseTransferTest extends ClientApiIntegrationTestCase
         [, $server] = $this->generateTestAccount();
         $database = $this->createDatabase($server);
 
-        $token = $this->app->make(DatabaseImportStatusService::class)->start($database);
+        $status = $this->app->make(DatabaseImportStatusService::class);
+        $token = $status->start($database);
 
         $lock = Cache::lock('database:import:'.$database->id.':job', 60);
         $this->assertTrue($lock->get());
@@ -278,6 +279,8 @@ class DatabaseTransferTest extends ClientApiIntegrationTestCase
 
         $this->app->call([new ImportDatabaseJob($database->id, 'database-imports/dump.sql', null, $token, true), 'handle']);
 
+        $this->assertTrue($status->isRunning($database));
+        $this->assertTrue($status->owns($database, $token));
         Storage::disk('local')->assertMissing('database-imports/dump.sql');
 
         $lock->release();

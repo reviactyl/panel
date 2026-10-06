@@ -62,7 +62,6 @@ class ImportDatabaseJob extends Job implements ShouldBeEncrypted, ShouldQueue
 
         $lock = Cache::lock($this->lockKey(), self::TIMEOUT + 60);
         if (! $lock->get()) {
-            $status->fail($database, DatabaseImportException::UNKNOWN);
             $this->deleteFile();
 
             return;
