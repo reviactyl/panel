@@ -148,7 +148,7 @@ class AlertsTable
                     DeleteBulkAction::make()
                         ->after(function (Collection $records): void {
                             foreach ($records as $record) {
-                                if (! $record instanceof Alert) {
+                                if (! $record instanceof Alert || $record->exists) {
                                     continue;
                                 }
 
