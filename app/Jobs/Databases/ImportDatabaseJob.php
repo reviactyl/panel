@@ -7,6 +7,7 @@ use App\Jobs\Job;
 use App\Models\Database;
 use App\Services\Databases\DatabaseImportService;
 use App\Services\Databases\DatabaseImportStatusService;
+use Illuminate\Cache\Lock;
 use Illuminate\Contracts\Queue\ShouldBeEncrypted;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -60,9 +61,12 @@ class ImportDatabaseJob extends Job implements ShouldBeEncrypted, ShouldQueue
             return;
         }
 
-        $lock = Cache::lock($this->lockKey(), self::TIMEOUT + 60);
+        $lock = Cache::lock($this->lockKey(), self::TIMEOUT + 60, $this->token);
         if (! $lock->get()) {
-            $this->deleteFile();
+            if (! $lock instanceof Lock || ! $lock->isOwnedByCurrentProcess()) {
+                $status->fail($database, DatabaseImportException::UNKNOWN);
+                $this->deleteFile();
+            }
 
             return;
         }

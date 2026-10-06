@@ -279,9 +279,33 @@ class DatabaseTransferTest extends ClientApiIntegrationTestCase
 
         $this->app->call([new ImportDatabaseJob($database->id, 'database-imports/dump.sql', null, $token, true), 'handle']);
 
+        $this->assertSame(DatabaseImportStatusService::STATE_FAILED, $status->get($database)['state']);
+        Storage::disk('local')->assertMissing('database-imports/dump.sql');
+
+        $lock->release();
+    }
+
+    public function test_duplicate_job_leaves_the_running_import_alone()
+    {
+        Storage::fake('local');
+        Storage::disk('local')->put('database-imports/dump.sql', 'SELECT 1;');
+
+        [, $server] = $this->generateTestAccount();
+        $database = $this->createDatabase($server);
+
+        $status = $this->app->make(DatabaseImportStatusService::class);
+        $token = $status->start($database);
+
+        $lock = Cache::lock('database:import:'.$database->id.':job', 60, $token);
+        $this->assertTrue($lock->get());
+
+        $this->mock(DatabaseImportService::class)->shouldNotReceive('fromFile');
+
+        $this->app->call([new ImportDatabaseJob($database->id, 'database-imports/dump.sql', null, $token, true), 'handle']);
+
         $this->assertTrue($status->isRunning($database));
         $this->assertTrue($status->owns($database, $token));
-        Storage::disk('local')->assertMissing('database-imports/dump.sql');
+        Storage::disk('local')->assertExists('database-imports/dump.sql');
 
         $lock->release();
     }
