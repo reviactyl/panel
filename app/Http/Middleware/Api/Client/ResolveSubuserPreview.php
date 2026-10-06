@@ -6,6 +6,7 @@ use App\Models\SubuserPreviewSession;
 use App\Services\Subusers\SubuserPreviewContext;
 use App\Services\Subusers\SubuserPreviewSimulator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
@@ -16,6 +17,11 @@ class ResolveSubuserPreview
     public const PARAMETER = 'subuser_preview';
 
     public function __construct(private readonly SubuserPreviewSimulator $simulator) {}
+
+    public static function ticketKey(string $ticket): string
+    {
+        return 'subuser-preview:ticket:'.hash('sha256', $ticket);
+    }
 
     /**
      * Resolves a subuser preview session for the request and delegates it with preview context.
@@ -30,8 +36,11 @@ class ResolveSubuserPreview
      */
     public function handle(Request $request, \Closure $next): mixed
     {
-        $token = $request->header(self::HEADER) ?? ($request->isMethodSafe() ? $request->query(self::PARAMETER) : null);
-        if (! is_string($token) || $token === '') {
+        $token = $request->header(self::HEADER);
+        $ticket = $request->isMethodSafe() ? $request->query(self::PARAMETER) : null;
+
+        $hasToken = is_string($token) && $token !== '';
+        if (! $hasToken && (! is_string($ticket) || $ticket === '')) {
             return $next($request);
         }
 
@@ -40,7 +49,11 @@ class ResolveSubuserPreview
             ->where('owner_id', $request->user()->id)
             ->first();
 
-        if (! $session || ! $session->tokenMatches($token)) {
+        $valid = $hasToken
+            ? $session?->tokenMatches($token)
+            : Cache::pull(self::ticketKey($ticket)) === $session?->uuid;
+
+        if (! $session || ! $valid) {
             throw new AccessDeniedHttpException(trans('exceptions.subuser_preview.session_unavailable'));
         }
 

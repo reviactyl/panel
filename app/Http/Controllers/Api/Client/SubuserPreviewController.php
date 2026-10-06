@@ -11,6 +11,7 @@ use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -125,6 +126,25 @@ class SubuserPreviewController extends ClientApiController
             'active' => true,
             'session' => $this->serialize($context->session()),
         ]);
+    }
+
+    /**
+     * Issues a single-use ticket that carries the preview session on a request that cannot send headers.
+     *
+     * @param  Request  $request  The request containing the active preview session context.
+     * @return JsonResponse The issued ticket.
+     */
+    public function ticket(Request $request): JsonResponse
+    {
+        $context = $request->attributes->get(SubuserPreviewContext::class);
+        if (! $context instanceof SubuserPreviewContext) {
+            throw new AccessDeniedHttpException(trans('exceptions.subuser_preview.session_unavailable'));
+        }
+
+        $ticket = Str::random(64);
+        Cache::put(ResolveSubuserPreview::ticketKey($ticket), $context->session()->uuid, 60);
+
+        return response()->json(['ticket' => $ticket]);
     }
 
     /**

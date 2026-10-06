@@ -8,6 +8,7 @@ import Switch from '@/reviactyl/elements/Switch';
 import { ServerContext } from '@/state/server';
 import { ServerDatabase } from '@/api/server/databases/getServerDatabases';
 import useFlash from '@/plugins/useFlash';
+import http, { httpErrorToHuman } from '@/api/http';
 import { getPreviewToken } from '@/lib/subuserPreviewStorage';
 
 interface Props {
@@ -23,16 +24,13 @@ export default ({ database, visible, onDismissed }: Props) => {
     const [compress, setCompress] = useState(false);
     const [format, setFormat] = useState<'gz' | 'zip'>('gz');
 
-    const download = () => {
-        clearFlashes('databases');
-
+    const start = (ticket?: string) => {
         const query = new URLSearchParams();
-        const previewToken = getPreviewToken();
         if (compress) {
             query.set('compress', format);
         }
-        if (previewToken) {
-            query.set('subuser_preview', previewToken);
+        if (ticket) {
+            query.set('subuser_preview', ticket);
         }
 
         const frame = document.createElement('iframe');
@@ -55,6 +53,18 @@ export default ({ database, visible, onDismissed }: Props) => {
         setTimeout(() => frame.remove(), 5 * 60 * 1000);
         frame.src = `/api/client/servers/${uuid}/databases/${database.id}/export?${query.toString()}`;
         document.body.appendChild(frame);
+    };
+
+    const download = () => {
+        clearFlashes('databases');
+
+        if (getPreviewToken()) {
+            http.post('/api/client/subuser-preview/ticket')
+                .then(({ data }) => start(data.ticket))
+                .catch((error) => addError({ key: 'databases', message: httpErrorToHuman(error) }));
+        } else {
+            start();
+        }
 
         onDismissed();
     };

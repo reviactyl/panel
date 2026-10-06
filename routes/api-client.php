@@ -23,6 +23,7 @@ Route::get('/eggs', [Client\ClientController::class, 'eggs'])->name('api:client.
 Route::get('/extensions', [Client\ExtensionsController::class, 'index'])->name('api:client.extensions.index');
 Route::get('/subuser-preview', [Client\SubuserPreviewController::class, 'status']);
 Route::post('/subuser-preview/heartbeat', [Client\SubuserPreviewController::class, 'heartbeat']);
+Route::post('/subuser-preview/ticket', [Client\SubuserPreviewController::class, 'ticket']);
 Route::delete('/subuser-preview', [Client\SubuserPreviewController::class, 'destroy']);
 
 Route::prefix('/account')->middleware(AccountSubject::class)->group(function () {
