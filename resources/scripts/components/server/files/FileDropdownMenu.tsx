@@ -93,7 +93,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
     // working on and for any other multi-selection, since it can only run one action at a time.
     const massActionRunning = ServerContext.useStoreState(
         (state) =>
-            state.files.massActionFiles.includes(file.name) ||
+            state.files.massActionFiles.includes(join(state.files.directory, file.name)) ||
             (state.files.massActionFiles.length > 0 && isMultiSelected),
     );
 

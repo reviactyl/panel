@@ -16,6 +16,7 @@ import Spinner from '@/reviactyl/elements/Spinner';
 import { FaFileArchive } from 'react-icons/fa';
 import Can from '@/reviactyl/elements/Can';
 import { useStoreState } from 'easy-peasy';
+import { join } from 'pathe';
 
 const MassActionsBar = () => {
     const { t } = useTranslation('server/files');
@@ -43,11 +44,11 @@ const MassActionsBar = () => {
         if (!loading) setLoadingMessage('');
     }, [loading]);
 
-    // Tracks the files being worked on so their context menus can't start a conflicting action, even
-    // if the selection changes before the request finishes.
+    // Tracks the full paths of the files being worked on so their context menus can't start a conflicting
+    // action, even if the selection changes before the request finishes.
     const setRunning = (running: boolean) => {
         setLoading(running);
-        setMassActionFiles(running ? selectedFiles : []);
+        setMassActionFiles(running ? selectedFiles.map((name) => join(directory, name)) : []);
     };
 
     useEffect(() => {
