@@ -13,12 +13,14 @@ class ResolveSubuserPreview
 {
     public const HEADER = 'X-Subuser-Preview';
 
+    public const PARAMETER = 'subuser_preview';
+
     public function __construct(private readonly SubuserPreviewSimulator $simulator) {}
 
     /**
      * Resolves a subuser preview session for the request and delegates it with preview context.
      *
-     * Requests without a preview header continue unchanged. Invalid, expired, or restricted preview
+     * Requests without a preview token continue unchanged. Invalid, expired, or restricted preview
      * requests raise an HTTP exception.
      *
      * @return mixed The response from the next handler or preview simulator.
@@ -28,7 +30,7 @@ class ResolveSubuserPreview
      */
     public function handle(Request $request, \Closure $next): mixed
     {
-        $token = $request->header(self::HEADER);
+        $token = $request->header(self::HEADER) ?? ($request->isMethodSafe() ? $request->query(self::PARAMETER) : null);
         if (! is_string($token) || $token === '') {
             return $next($request);
         }

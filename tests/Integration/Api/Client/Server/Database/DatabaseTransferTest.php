@@ -304,6 +304,27 @@ class DatabaseTransferTest extends ClientApiIntegrationTestCase
         Storage::disk('local')->assertMissing('database-imports/dump.sql');
     }
 
+    public function test_job_reports_an_import_that_expired_before_it_started()
+    {
+        Storage::fake('local');
+        Storage::disk('local')->put('database-imports/dump.sql', 'SELECT 1;');
+
+        [, $server] = $this->generateTestAccount();
+        $database = $this->createDatabase($server);
+
+        $status = $this->app->make(DatabaseImportStatusService::class);
+        $token = $status->start($database);
+        $status->clear($database);
+
+        $this->mock(DatabaseImportService::class)->shouldNotReceive('fromFile');
+
+        $this->app->call([new ImportDatabaseJob($database->id, 'database-imports/dump.sql', null, $token, true), 'handle']);
+
+        $this->assertSame(DatabaseImportStatusService::STATE_FAILED, $status->get($database)['state']);
+        $this->assertSame(DatabaseImportException::TIMED_OUT, $status->get($database)['error']);
+        Storage::disk('local')->assertMissing('database-imports/dump.sql');
+    }
+
     public function test_job_records_why_an_import_failed()
     {
         [, $server] = $this->generateTestAccount();

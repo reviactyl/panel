@@ -8,7 +8,6 @@ import Switch from '@/reviactyl/elements/Switch';
 import { ServerContext } from '@/state/server';
 import { ServerDatabase } from '@/api/server/databases/getServerDatabases';
 import useFlash from '@/plugins/useFlash';
-import http from '@/api/http';
 import { getPreviewToken } from '@/lib/subuserPreviewStorage';
 
 interface Props {
@@ -27,33 +26,13 @@ export default ({ database, visible, onDismissed }: Props) => {
     const download = () => {
         clearFlashes('databases');
 
-        const url = `/api/client/servers/${uuid}/databases/${database.id}/export${compress ? `?compress=${format}` : ''}`;
-
-        if (getPreviewToken()) {
-            http.get(url, { responseType: 'blob', timeout: 0 })
-                .then(({ data, headers }) => {
-                    const link = document.createElement('a');
-                    link.href = URL.createObjectURL(data);
-                    link.download =
-                        /filename="?([^";]+)"?/.exec(headers['content-disposition'] || '')?.[1] ||
-                        `${database.name}.sql${compress ? `.${format}` : ''}`;
-                    link.click();
-                    URL.revokeObjectURL(link.href);
-                })
-                .catch(async (error) => {
-                    let message = t('export-error');
-                    try {
-                        message = JSON.parse(await error.response.data.text()).errors[0].detail || message;
-                    } catch {
-                        message = t('export-error');
-                    }
-
-                    addError({ key: 'databases', message });
-                });
-
-            onDismissed();
-
-            return;
+        const query = new URLSearchParams();
+        const previewToken = getPreviewToken();
+        if (compress) {
+            query.set('compress', format);
+        }
+        if (previewToken) {
+            query.set('subuser_preview', previewToken);
         }
 
         const frame = document.createElement('iframe');
@@ -74,7 +53,7 @@ export default ({ database, visible, onDismissed }: Props) => {
             frame.remove();
         };
         setTimeout(() => frame.remove(), 5 * 60 * 1000);
-        frame.src = url;
+        frame.src = `/api/client/servers/${uuid}/databases/${database.id}/export?${query.toString()}`;
         document.body.appendChild(frame);
 
         onDismissed();

@@ -44,7 +44,17 @@ class ImportDatabaseJob extends Job implements ShouldBeEncrypted, ShouldQueue
     {
         $database = Database::query()->with('host')->find($this->database);
 
-        if (is_null($database) || ! $status->owns($database, $this->token)) {
+        if (is_null($database)) {
+            $this->deleteFile();
+
+            return;
+        }
+
+        if (! $status->owns($database, $this->token)) {
+            if (is_null($status->get($database))) {
+                $status->fail($database, DatabaseImportException::TIMED_OUT);
+            }
+
             $this->deleteFile();
 
             return;
@@ -52,6 +62,7 @@ class ImportDatabaseJob extends Job implements ShouldBeEncrypted, ShouldQueue
 
         $lock = Cache::lock($this->lockKey(), self::TIMEOUT + 60);
         if (! $lock->get()) {
+            $status->fail($database, DatabaseImportException::UNKNOWN);
             $this->deleteFile();
 
             return;
