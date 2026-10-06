@@ -89,8 +89,13 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
     const isMultiSelected = ServerContext.useStoreState(
         (state) => state.files.selectedFiles.length > 1 && state.files.selectedFiles.includes(file.name),
     );
-    // The multi-file actions are unavailable while the mass actions bar is still working on the selection.
-    const massActionRunning = ServerContext.useStoreState((state) => state.files.massActionRunning) && isMultiSelected;
+    // These actions are unavailable while the mass actions bar is still working, both for the files it is
+    // working on and for any other multi-selection, since it can only run one action at a time.
+    const massActionRunning = ServerContext.useStoreState(
+        (state) =>
+            state.files.massActionFiles.includes(file.name) ||
+            (state.files.massActionFiles.length > 0 && isMultiSelected),
+    );
 
     const massAction = (detail: MassAction) => window.dispatchEvent(new CustomEvent(MASS_ACTION_EVENT, { detail }));
 

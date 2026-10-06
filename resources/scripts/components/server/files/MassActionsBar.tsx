@@ -33,7 +33,7 @@ const MassActionsBar = () => {
 
     const selectedFiles = ServerContext.useStoreState((state) => state.files.selectedFiles);
     const setSelectedFiles = ServerContext.useStoreActions((actions) => actions.files.setSelectedFiles);
-    const setMassActionRunning = ServerContext.useStoreActions((actions) => actions.files.setMassActionRunning);
+    const setMassActionFiles = ServerContext.useStoreActions((actions) => actions.files.setMassActionFiles);
 
     const selectedDirectoryNames = (currentDirectoryFiles ?? [])
         .filter((file) => !file.isFile && selectedFiles.includes(file.name))
@@ -43,14 +43,12 @@ const MassActionsBar = () => {
         if (!loading) setLoadingMessage('');
     }, [loading]);
 
-    // Lets the file context menus disable their multi-file actions while one is already running.
-    useEffect(() => {
-        setMassActionRunning(loading);
-
-        return () => {
-            setMassActionRunning(false);
-        };
-    }, [loading]);
+    // Tracks the files being worked on so their context menus can't start a conflicting action, even
+    // if the selection changes before the request finishes.
+    const setRunning = (running: boolean) => {
+        setLoading(running);
+        setMassActionFiles(running ? selectedFiles : []);
+    };
 
     useEffect(() => {
         if (!showFormatMenu) return;
@@ -65,7 +63,7 @@ const MassActionsBar = () => {
 
     const onClickCompress = (format: 'tar.gz' | 'zip') => {
         setShowFormatMenu(false);
-        setLoading(true);
+        setRunning(true);
         clearFlashes('files');
         setLoadingMessage(t('mass-actions.archiving'));
 
@@ -73,11 +71,11 @@ const MassActionsBar = () => {
             .then(() => mutate())
             .then(() => setSelectedFiles([]))
             .catch((error) => clearAndAddHttpError({ key: 'files', error }))
-            .then(() => setLoading(false));
+            .then(() => setRunning(false));
     };
 
     const onClickConfirmDeletion = () => {
-        setLoading(true);
+        setRunning(true);
         setShowConfirm(false);
         clearFlashes('files');
         setLoadingMessage(t('mass-actions.deleting'));
@@ -91,7 +89,7 @@ const MassActionsBar = () => {
                 mutate();
                 clearAndAddHttpError({ key: 'files', error });
             })
-            .then(() => setLoading(false));
+            .then(() => setRunning(false));
     };
 
     useEventListener(MASS_ACTION_EVENT, ({ detail }: CustomEvent<MassAction>) => {

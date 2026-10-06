@@ -11,14 +11,14 @@ export interface FileUploadData {
 export interface ServerFileStore {
     directory: string;
     selectedFiles: string[];
-    massActionRunning: boolean;
+    massActionFiles: string[];
     uploads: Record<string, FileUploadData>;
 
     setDirectory: Action<ServerFileStore, string>;
     setSelectedFiles: Action<ServerFileStore, string[]>;
     appendSelectedFile: Action<ServerFileStore, string>;
     removeSelectedFile: Action<ServerFileStore, string>;
-    setMassActionRunning: Action<ServerFileStore, boolean>;
+    setMassActionFiles: Action<ServerFileStore, string[]>;
 
     pushFileUpload: Action<ServerFileStore, { name: string; data: FileUploadData }>;
     setUploadProgress: Action<ServerFileStore, { name: string; loaded: number }>;
@@ -30,7 +30,7 @@ export interface ServerFileStore {
 const files: ServerFileStore = {
     directory: '/',
     selectedFiles: [],
-    massActionRunning: false,
+    massActionFiles: [],
     uploads: {},
 
     setDirectory: action((state, payload) => {
@@ -49,8 +49,8 @@ const files: ServerFileStore = {
         state.selectedFiles = state.selectedFiles.filter((f) => f !== payload);
     }),
 
-    setMassActionRunning: action((state, payload) => {
-        state.massActionRunning = payload;
+    setMassActionFiles: action((state, payload) => {
+        state.massActionFiles = payload;
     }),
 
     clearFileUploads: action((state) => {
