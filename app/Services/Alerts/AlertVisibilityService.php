@@ -48,9 +48,12 @@ class AlertVisibilityService
             ->values();
     }
 
-    public function isAvailableTo(Alert $alert, User $user): bool
+    public function isAvailableTo(Alert $alert, User $user, string $placement, ?Server $server = null): bool
     {
-        return $alert->status() === Alert::STATUS_ACTIVE && $this->matchesUser($alert, $user);
+        return $alert->status() === Alert::STATUS_ACTIVE
+            && $alert->hasPlacement($placement)
+            && $this->matchesUser($alert, $user)
+            && $this->matchesServers($alert, $user, $placement, $server);
     }
 
     public function dismiss(Alert $alert, User $user): void
@@ -73,6 +76,10 @@ class AlertVisibilityService
     private function record(Alert $alert, User $user, string $column): void
     {
         $now = Carbon::now();
+        $earliest = $alert->dismissals_reset_at?->copy()->addSecond();
+        if ($earliest !== null && $now->lessThan($earliest)) {
+            $now = $earliest;
+        }
 
         AlertInteraction::query()->upsert(
             [[

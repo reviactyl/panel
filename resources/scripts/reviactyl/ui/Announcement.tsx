@@ -1,4 +1,4 @@
-import { CSSProperties, MouseEvent, useCallback, useMemo, useState } from 'react';
+import { CSSProperties, useCallback, useMemo, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useSWRConfig } from 'swr';
@@ -11,7 +11,7 @@ import {
     FaRegCircleXmark,
 } from 'react-icons/fa6';
 import Md2React from '@/reviactyl/ui/Md2React';
-import { AlertButton, AlertPlacement, PanelAlert, dismissAlert, trackAlertClick, useAlerts } from '@/api/alerts';
+import { AlertPlacement, PanelAlert, dismissAlert, trackAlertClick, useAlerts } from '@/api/alerts';
 
 interface Props {
     placement?: AlertPlacement;
@@ -124,34 +124,23 @@ const Announcement = ({ placement = 'dashboard', server }: Props) => {
             return;
         }
 
-        hideWhile(alert, dismissAlert(alert.uuid));
+        hideWhile(alert, dismissAlert(alert.uuid, placement, server));
     };
 
-    const onButtonClick = (event: MouseEvent<HTMLAnchorElement>, alert: PanelAlert, button: AlertButton) => {
-        const opensElsewhere = button.newTab || event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0;
-
+    const onButtonClick = (alert: PanelAlert) => {
         if (isGuest) {
             recordForGuest(alert, 'clicked');
 
             return;
         }
 
-        if (opensElsewhere) {
-            const request = trackAlertClick(alert.uuid);
+        const request = trackAlertClick(alert.uuid, placement, server);
 
-            if (alert.dismissOnAction) {
-                hideWhile(alert, request);
-            } else {
-                request.catch(() => undefined);
-            }
-
-            return;
+        if (alert.dismissOnAction) {
+            hideWhile(alert, request);
+        } else {
+            request.catch(() => undefined);
         }
-
-        event.preventDefault();
-        trackAlertClick(alert.uuid)
-            .catch(() => undefined)
-            .then(() => window.location.assign(button.url));
     };
 
     return (
@@ -204,7 +193,7 @@ const Announcement = ({ placement = 'dashboard', server }: Props) => {
                                                     href={button.url}
                                                     target={button.newTab ? '_blank' : undefined}
                                                     rel={button.newTab ? 'noopener noreferrer' : undefined}
-                                                    onClick={(event) => onButtonClick(event, alert, button)}
+                                                    onClick={() => onButtonClick(alert)}
                                                     className={
                                                         button.style === 'secondary'
                                                             ? 'rounded-full px-3 py-1.5 text-sm font-medium text-gray-200 underline-offset-4 transition-colors hover:text-gray-50 hover:underline focus-visible:outline-2 focus-visible:outline-[var(--alert-accent)]'

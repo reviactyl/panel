@@ -62,12 +62,16 @@ const useAlerts = (placement: AlertPlacement, server?: string): SWRResponse<Pane
     });
 };
 
-const dismissAlert = async (uuid: string): Promise<void> => {
-    await http.post(`/api/client/alerts/${uuid}/dismiss`);
+const dismissAlert = async (uuid: string, placement: AlertPlacement, server?: string): Promise<void> => {
+    await http.post(`/api/client/alerts/${uuid}/dismiss`, { placement, server });
 };
 
-const trackAlertClick = async (uuid: string): Promise<void> => {
-    await http.post(`/api/client/alerts/${uuid}/click`, undefined, { timeout: 3000 });
+const trackAlertClick = async (uuid: string, placement: AlertPlacement, server?: string): Promise<void> => {
+    await http.post(
+        `/api/client/alerts/${uuid}/click`,
+        { placement, server },
+        { adapter: 'fetch', fetchOptions: { keepalive: true } },
+    );
 };
 
 export { useAlerts, getAlerts, dismissAlert, trackAlertClick };

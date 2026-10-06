@@ -22,15 +22,7 @@ class AlertController extends ClientApiController
 
     public function index(ClientApiRequest $request): array
     {
-        $this->validate($request, [
-            'placement' => ['sometimes', 'string', Rule::in([Alert::PLACEMENT_DASHBOARD, Alert::PLACEMENT_SERVER, Alert::PLACEMENT_ACCOUNT])],
-            'server' => ['required_if:placement,'.Alert::PLACEMENT_SERVER, 'nullable', 'string', 'max:36'],
-        ]);
-
-        $placement = $request->input('placement', Alert::PLACEMENT_DASHBOARD);
-        $server = $placement === Alert::PLACEMENT_SERVER
-            ? $this->findServer($request->user(), (string) $request->input('server'))
-            : null;
+        [$placement, $server] = $this->resolveContext($request);
 
         return $this->fractal->collection($this->alerts->forUser($request->user(), $placement, $server))
             ->transformWith($this->getTransformer(AlertTransformer::class))
@@ -39,7 +31,7 @@ class AlertController extends ClientApiController
 
     public function dismiss(ClientApiRequest $request, Alert $alert): JsonResponse
     {
-        $this->assertAvailable($request->user(), $alert);
+        $this->assertAvailable($request, $alert);
 
         if (! $alert->dismissible) {
             throw new BadRequestHttpException(trans('exceptions.alerts.not_dismissible'));
@@ -52,7 +44,7 @@ class AlertController extends ClientApiController
 
     public function click(ClientApiRequest $request, Alert $alert): JsonResponse
     {
-        $this->assertAvailable($request->user(), $alert);
+        $this->assertAvailable($request, $alert);
 
         if (empty($alert->publicButtons())) {
             throw new BadRequestHttpException(trans('exceptions.alerts.no_action'));
@@ -63,11 +55,31 @@ class AlertController extends ClientApiController
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
 
-    private function assertAvailable(User $user, Alert $alert): void
+    private function assertAvailable(ClientApiRequest $request, Alert $alert): void
     {
-        if (! $this->alerts->isAvailableTo($alert, $user)) {
+        [$placement, $server] = $this->resolveContext($request);
+
+        if (! $this->alerts->isAvailableTo($alert, $request->user(), $placement, $server)) {
             throw new NotFoundHttpException(trans('exceptions.api.resource_not_found'));
         }
+    }
+
+    /**
+     * @return array{string, Server|null}
+     */
+    private function resolveContext(ClientApiRequest $request): array
+    {
+        $this->validate($request, [
+            'placement' => ['sometimes', 'string', Rule::in([Alert::PLACEMENT_DASHBOARD, Alert::PLACEMENT_SERVER, Alert::PLACEMENT_ACCOUNT])],
+            'server' => ['required_if:placement,'.Alert::PLACEMENT_SERVER, 'nullable', 'string', 'max:36'],
+        ]);
+
+        $placement = $request->input('placement', Alert::PLACEMENT_DASHBOARD);
+        $server = $placement === Alert::PLACEMENT_SERVER
+            ? $this->findServer($request->user(), (string) $request->input('server'))
+            : null;
+
+        return [$placement, $server];
     }
 
     private function findServer(User $user, string $identifier): Server

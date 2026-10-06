@@ -3,6 +3,7 @@
 namespace Tests\Integration\Api\Client;
 
 use App\Exceptions\Model\DataValidationException;
+use App\Http\Middleware\RequireTwoFactorAuthentication;
 use App\Models\Alert;
 use App\Models\AlertInteraction;
 use App\Models\Permission;
@@ -239,6 +240,68 @@ class AlertControllerTest extends ClientApiIntegrationTestCase
         }
 
         $this->assertSame(0, AlertInteraction::query()->where('user_id', $user->id)->count());
+    }
+
+    public function test_interactions_follow_the_placement_and_server_the_alert_is_shown_on(): void
+    {
+        [$owner, $server] = $this->generateTestAccount();
+        $admin = User::factory()->create(['root_admin' => true]);
+        $button = [['label' => 'Claim', 'url' => '/account']];
+
+        $onNode = Alert::factory()->create(['targeting' => ['nodes' => [$server->node_id]], 'buttons' => $button]);
+        $accountOnly = Alert::factory()->create(['placements' => [Alert::PLACEMENT_ACCOUNT], 'buttons' => $button]);
+        $context = ['placement' => Alert::PLACEMENT_SERVER, 'server' => $server->uuid];
+
+        $this->actingAs($admin)->postJson("/api/client/alerts/$onNode->uuid/dismiss")->assertNotFound();
+        $this->postJson("/api/client/alerts/$onNode->uuid/click", $context)->assertNoContent();
+        $this->postJson("/api/client/alerts/$accountOnly->uuid/dismiss")->assertNotFound();
+        $this->postJson("/api/client/alerts/$accountOnly->uuid/dismiss", ['placement' => Alert::PLACEMENT_ACCOUNT])->assertNoContent();
+        $this->postJson("/api/client/alerts/$accountOnly->uuid/click", ['placement' => Alert::PLACEMENT_AUTH])->assertUnprocessable();
+
+        $this->actingAs($owner)->postJson("/api/client/alerts/$onNode->uuid/dismiss")->assertNoContent();
+        $this->assertNotContains($onNode->uuid, $this->visibleAlerts($owner));
+
+        $server->update(['owner_id' => $admin->id]);
+        $this->actingAs($owner)->postJson("/api/client/alerts/$onNode->uuid/click")->assertNotFound();
+        $this->postJson("/api/client/alerts/$onNode->uuid/click", $context)->assertNotFound();
+    }
+
+    public function test_an_interaction_right_after_a_reset_still_hides_the_alert(): void
+    {
+        $this->travelTo(CarbonImmutable::now()->startOfSecond());
+
+        $user = User::factory()->create();
+        $closed = Alert::factory()->create();
+        $followed = Alert::factory()->create([
+            'buttons' => [['label' => 'Claim', 'url' => '/account']],
+            'dismissible' => false,
+            'dismiss_on_action' => true,
+        ]);
+
+        $service = $this->app->make(AlertVisibilityService::class);
+        $service->resetDismissals($closed);
+        $service->resetDismissals($followed);
+
+        $this->actingAs($user)->postJson("/api/client/alerts/$closed->uuid/dismiss")->assertNoContent();
+        $this->postJson("/api/client/alerts/$followed->uuid/click")->assertNoContent();
+
+        $this->assertSame([], $this->visibleAlerts($user));
+    }
+
+    public function test_alerts_are_unavailable_until_required_two_factor_is_enabled(): void
+    {
+        config()->set('panel.auth.2fa_required', RequireTwoFactorAuthentication::LEVEL_ALL);
+
+        $user = User::factory()->create(['use_totp' => false]);
+        $alert = Alert::factory()->create(['buttons' => [['label' => 'Claim', 'url' => '/account']]]);
+
+        $this->actingAs($user)->getJson('/api/client/alerts')->assertStatus(400);
+        $this->postJson("/api/client/alerts/$alert->uuid/dismiss")->assertStatus(400);
+        $this->postJson("/api/client/alerts/$alert->uuid/click")->assertStatus(400);
+        $this->assertSame(0, AlertInteraction::query()->count());
+
+        $user->update(['use_totp' => true]);
+        $this->assertSame([$alert->uuid], $this->visibleAlerts($user));
     }
 
     public function test_repeated_interactions_keep_a_single_record(): void

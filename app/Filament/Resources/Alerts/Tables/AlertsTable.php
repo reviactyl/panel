@@ -19,6 +19,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 
 class AlertsTable
@@ -144,7 +145,20 @@ class AlertsTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->after(function (Collection $records): void {
+                            foreach ($records as $record) {
+                                if (! $record instanceof Alert) {
+                                    continue;
+                                }
+
+                                app(ActivityLogService::class)
+                                    ->subject($record)
+                                    ->event('alert:delete')
+                                    ->property('name', $record->name)
+                                    ->log();
+                            }
+                        }),
                 ]),
             ]);
     }
