@@ -13,7 +13,7 @@ import ServerContentBlock from '@/reviactyl/elements/ServerContentBlock';
 import { Button } from '@/reviactyl/components/button/index';
 import ScheduleTaskRow from '@/components/server/schedules/ScheduleTaskRow';
 import isEqual from 'react-fast-compare';
-import { format } from 'date-fns';
+import { formatInTimezone } from '@/lib/timezones';
 import ScheduleCronRow from '@/components/server/schedules/ScheduleCronRow';
 import RunScheduleButton from '@/components/server/schedules/RunScheduleButton';
 import Card from '@/reviactyl/ui/Card';
@@ -43,6 +43,9 @@ const ScheduleEditContainer = () => {
 
     const id = ServerContext.useStoreState((state) => state.server.data!.id);
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const timezone = ServerContext.useStoreState(
+        (state) => state.server.data!.timezone ?? state.server.data!.defaultTimezone,
+    );
 
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const [isLoading, setIsLoading] = useState(true);
@@ -103,14 +106,14 @@ const ScheduleEditContainer = () => {
                                 <p className='mt-1 text-sm text-gray-200'>
                                     Last run at:&nbsp;
                                     {schedule.lastRunAt ? (
-                                        format(schedule.lastRunAt, "MMM do 'at' h:mma")
+                                        formatInTimezone(schedule.lastRunAt, timezone)
                                     ) : (
                                         <span className='text-gray-300'>n/a</span>
                                     )}
                                     <span className='ml-4 border-l-4 border-gray-800 py-px pl-4'>
                                         Next run at:&nbsp;
                                         {schedule.nextRunAt ? (
-                                            format(schedule.nextRunAt, "MMM do 'at' h:mma")
+                                            formatInTimezone(schedule.nextRunAt, timezone)
                                         ) : (
                                             <span className='text-gray-300'>n/a</span>
                                         )}

@@ -21,6 +21,17 @@ return [
         'description' => 'Server Description',
         'button' => 'Save',
     ],
+    'timezone' => [
+        'title' => 'Server Timezone',
+        'label' => 'Timezone',
+        'placeholder' => 'Search timezones',
+        'default' => 'Panel default',
+        'no-results' => 'No timezones match your search.',
+        'current-time' => 'Current time',
+        'use-browser' => 'Use my timezone (:timezone)',
+        'button' => 'Save',
+        'saved' => 'The server timezone has been updated. Restart the server for its own clock to follow it.',
+    ],
     'reinstall' => [
         'title' => 'Reinstall Server',
         'confirm-title' => 'Confirm server reinstallation',

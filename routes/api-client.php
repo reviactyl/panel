@@ -179,6 +179,7 @@ Route::group([
         Route::post('/rename', [Client\Servers\SettingsController::class, 'rename']);
         Route::post('/reinstall', [Client\Servers\SettingsController::class, 'reinstall']);
         Route::put('/docker-image', [Client\Servers\SettingsController::class, 'dockerImage']);
+        Route::put('/timezone', [Client\Servers\SettingsController::class, 'timezone']);
         Route::put('/category', [Client\Servers\SettingsController::class, 'setCategory'])->name('api:client:server.settings.category');
     });
 });

@@ -3,8 +3,10 @@
 namespace Tests\Integration\Api\Client\Server;
 
 use App\Models\Permission;
+use App\Models\Schedule;
 use App\Models\Server;
 use App\Repositories\Agent\DaemonServerRepository;
+use App\Services\Servers\EnvironmentService;
 use Illuminate\Http\Response;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
@@ -153,9 +155,79 @@ class SettingsControllerTest extends ClientApiIntegrationTestCase
             ->assertJsonPath('attributes.skip_scripts', true);
     }
 
+    #[DataProvider('timezonePermissionsDataProvider')]
+    public function test_server_timezone_can_be_changed(array $permissions)
+    {
+        [$user, $server] = $this->generateTestAccount($permissions);
+        $environment = $this->app->make(EnvironmentService::class);
+
+        $schedule = Schedule::factory()->create([
+            'server_id' => $server->id,
+            'cron_minute' => '0',
+            'cron_hour' => '3',
+        ]);
+
+        $this->assertNull($server->timezone);
+        $this->assertArrayNotHasKey('TZ', $environment->handle($server));
+
+        $this->actingAs($user)
+            ->putJson("/api/client/servers/$server->uuid/settings/timezone", ['timezone' => 'Not/AZone'])
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonPath('errors.0.meta.rule', 'timezone');
+
+        $this->actingAs($user)
+            ->putJson("/api/client/servers/$server->uuid/settings/timezone")
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonPath('errors.0.meta.rule', 'present');
+
+        $this->assertNull($server->refresh()->timezone);
+
+        $this->actingAs($user)
+            ->putJson("/api/client/servers/$server->uuid/settings/timezone", ['timezone' => 'Asia/Tokyo'])
+            ->assertStatus(Response::HTTP_NO_CONTENT);
+
+        $server = $server->refresh();
+        $next = $schedule->refresh()->next_run_at;
+        $this->assertSame('Asia/Tokyo', $server->timezone);
+        $this->assertSame('Asia/Tokyo', $environment->handle($server)['TZ']);
+        $this->assertSame(config('app.timezone'), $next->getTimezone()->getName());
+        $this->assertSame('03:00', $next->clone()->setTimezone('Asia/Tokyo')->format('H:i'));
+
+        $this->actingAs($user)
+            ->getJson("/api/client/servers/$server->uuid")
+            ->assertOk()
+            ->assertJsonPath('attributes.timezone', 'Asia/Tokyo')
+            ->assertJsonPath('attributes.default_timezone', config('app.timezone'));
+
+        $this->actingAs($user)
+            ->putJson("/api/client/servers/$server->uuid/settings/timezone", ['timezone' => null])
+            ->assertStatus(Response::HTTP_NO_CONTENT);
+
+        $server = $server->refresh();
+        $this->assertNull($server->timezone);
+        $this->assertArrayNotHasKey('TZ', $environment->handle($server));
+        $this->assertSame('03:00', $schedule->refresh()->next_run_at->format('H:i'));
+    }
+
+    public function test_subuser_cannot_change_server_timezone_without_permission()
+    {
+        [$user, $server] = $this->generateTestAccount([Permission::ACTION_SETTINGS_RENAME]);
+
+        $this->actingAs($user)
+            ->putJson("/api/client/servers/$server->uuid/settings/timezone", ['timezone' => 'Asia/Tokyo'])
+            ->assertStatus(Response::HTTP_FORBIDDEN);
+
+        $this->assertNull($server->refresh()->timezone);
+    }
+
     public static function renamePermissionsDataProvider(): array
     {
         return [[[]], [[Permission::ACTION_SETTINGS_RENAME]]];
+    }
+
+    public static function timezonePermissionsDataProvider(): array
+    {
+        return [[[]], [[Permission::ACTION_SETTINGS_TIMEZONE]]];
     }
 
     public static function reinstallPermissionsDataProvider(): array

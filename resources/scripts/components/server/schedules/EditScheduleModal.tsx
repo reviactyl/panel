@@ -13,6 +13,7 @@ import ModalContext from '@/context/ModalContext';
 import asModal from '@/hoc/asModal';
 import Switch from '@/reviactyl/elements/Switch';
 import ScheduleCheatsheetCards from '@/components/server/schedules/ScheduleCheatsheetCards';
+import { getTimezoneOffset } from '@/lib/timezones';
 
 interface Props {
     schedule?: Schedule;
@@ -34,6 +35,9 @@ const EditScheduleModal = ({ schedule }: Props) => {
     const { dismiss } = useContext(ModalContext);
 
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const timezone = ServerContext.useStoreState(
+        (state) => state.server.data!.timezone ?? state.server.data!.defaultTimezone,
+    );
     const appendSchedule = ServerContext.useStoreActions((actions) => actions.schedules.appendSchedule);
     const [showCheatsheet, setShowCheetsheet] = useState(false);
 
@@ -105,7 +109,12 @@ const EditScheduleModal = ({ schedule }: Props) => {
                     </div>
                     <p className='text-gray-400 text-xs mt-2'>
                         The schedule system supports the use of Cronjob syntax when defining when tasks should begin
-                        running. Use the fields above to specify when these tasks should begin running.
+                        running. Use the fields above to specify when these tasks should begin running. Times are in the
+                        server&apos;s timezone,{' '}
+                        <span className='text-gray-200'>
+                            {timezone.replace(/_/g, ' ')} ({getTimezoneOffset(timezone)})
+                        </span>
+                        .
                     </p>
                     <div className='mt-6 bg-gray-900 border border-gray-900 shadow-inner p-4 rounded'>
                         <Switch

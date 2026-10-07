@@ -36,6 +36,10 @@ class EnvironmentService
             return [$variable->env_variable => $variable->server_value ?? $variable->default_value];
         });
 
+        if (! empty($server->timezone)) {
+            $variables->put('TZ', $server->timezone);
+        }
+
         // Process environment variables defined in this file. This is done first
         // in order to allow run-time and config defined variables to take
         // priority over built-in values.

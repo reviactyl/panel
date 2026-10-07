@@ -245,6 +245,10 @@ class SubuserPreviewResourceSimulator
             return $this->setDockerImage($request, $context);
         }
 
+        if (str_ends_with($path, '/settings/timezone')) {
+            return $this->setTimezone($request, $context);
+        }
+
         if (str_ends_with($path, '/settings/category')) {
             throw new AccessDeniedHttpException(trans('exceptions.subuser_preview.categories_unavailable'));
         }
@@ -733,6 +737,15 @@ class SubuserPreviewResourceSimulator
         return response()->json([], 204);
     }
 
+    private function setTimezone(Request $request, SubuserPreviewContext $context): JsonResponse
+    {
+        $this->authorize($context, Permission::ACTION_SETTINGS_TIMEZONE);
+        validator($request->all(), ['timezone' => 'present|nullable|string|max:64|timezone:all_with_bc'])->validate();
+        $this->setServerState($context, 'timezone', $request->input('timezone') ?: null);
+
+        return response()->json([], 204);
+    }
+
     /**
      * Sets the server's Docker image in the preview state.
      *
@@ -921,7 +934,7 @@ class SubuserPreviewResourceSimulator
     private function applyServerState(array &$item, SubuserPreviewContext $context): void
     {
         $state = Arr::get($context->session()->state ?? [], 'server', []);
-        foreach (['name', 'description', 'status', 'docker_image'] as $key) {
+        foreach (['name', 'description', 'timezone', 'status', 'docker_image'] as $key) {
             if (array_key_exists($key, $state)) {
                 $item['attributes'][$key] = $state[$key];
             }

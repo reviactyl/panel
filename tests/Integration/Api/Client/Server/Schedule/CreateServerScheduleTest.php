@@ -47,6 +47,27 @@ class CreateServerScheduleTest extends ClientApiIntegrationTestCase
         $response->assertJsonCount(0, 'attributes.relationships.tasks.data');
     }
 
+    public function test_schedule_uses_server_timezone()
+    {
+        [$user, $server] = $this->generateTestAccount();
+        $server->update(['timezone' => 'Asia/Tokyo']);
+
+        $response = $this->actingAs($user)->postJson("/api/client/servers/$server->uuid/schedules", [
+            'name' => 'Test Schedule',
+            'minute' => '0',
+            'hour' => '3',
+            'day_of_week' => '*',
+            'month' => '*',
+            'day_of_month' => '*',
+        ]);
+
+        $response->assertOk();
+
+        $schedule = Schedule::query()->findOrFail($response->json('attributes.id'));
+        $this->assertSame('03:00', $schedule->next_run_at->clone()->setTimezone('Asia/Tokyo')->format('H:i'));
+        $this->assertSame('03:00', $schedule->getNextRunDate()->setTimezone('Asia/Tokyo')->format('H:i'));
+    }
+
     /**
      * Test that the validation rules for scheduling work as expected.
      */
