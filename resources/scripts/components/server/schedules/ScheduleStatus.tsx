@@ -18,7 +18,7 @@ export default function ScheduleStatus({
     const phase = useScheduleAnimation(processing, requestState);
     const reduceMotion = useReducedMotion();
 
-    const status = requestState === 'unknown' || requestState === 'skipped' ? requestState : phase;
+    const status = requestState === 'unknown' ? requestState : phase;
 
     return (
         <span className='ml-4 flex shrink-0 items-center' role='status'>
