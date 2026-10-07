@@ -1,8 +1,6 @@
 import PageContentBlock from '@/reviactyl/elements/PageContentBlock';
-import Button from '@/reviactyl/elements/Button';
 import Card from '@/reviactyl/ui/Card';
-import styles from '@/reviactyl/elements/style.module.css';
-import { FaArrowLeft, FaArrowsRotate, FaCircleExclamation, FaMagnifyingGlass } from 'react-icons/fa6';
+import { FaCircleExclamation, FaMagnifyingGlass } from 'react-icons/fa6';
 
 interface ScreenBlockProps {
     title: string;
@@ -11,24 +9,13 @@ interface ScreenBlockProps {
     onRetry?: () => void;
 }
 
-const ScreenBlock = ({ title, message, onBack, onRetry }: ScreenBlockProps) => {
+const ScreenBlock = ({ title, message }: ScreenBlockProps) => {
     const Icon = title === '404' ? FaMagnifyingGlass : FaCircleExclamation;
 
     return (
         <PageContentBlock>
             <div className='flex items-center justify-center'>
                 <Card className='relative w-full max-w-2xl p-6 sm:p-10'>
-                    {(onBack || onRetry) && (
-                        <Button
-                            onClick={onRetry || onBack}
-                            className={`absolute left-4 top-4 flex h-9 w-9 items-center justify-center rounded-full p-0 ${
-                                onRetry ? styles.retryButton : ''
-                            }`}
-                        >
-                            {onRetry ? <FaArrowsRotate /> : <FaArrowLeft />}
-                        </Button>
-                    )}
-
                     <div className='flex flex-col items-center gap-5 pt-8 text-center sm:flex-row sm:gap-6 sm:pt-4 sm:text-left'>
                         <div className='flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-gray-800/60 text-gray-300'>
                             <Icon className='h-9 w-9' aria-hidden='true' />
