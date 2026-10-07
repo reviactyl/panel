@@ -8,7 +8,6 @@ use App\Repositories\Agent\DaemonConfigurationRepository;
 use App\Repositories\Agent\DaemonMonitoringRepository;
 use App\Rules\NodeFqdn;
 use App\Services\Api\KeyCreationService;
-use App\Services\Helpers\SoftwareVersionService;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -31,12 +30,27 @@ class EditNodeForm
 {
     public static function configure(Schema $schema): Schema
     {
-        $softwareVersionService = app(SoftwareVersionService::class);
-        $isLatest = $softwareVersionService->isLatestPanel();
-
         // Fetch node monitoring data at most once per request instead of once
         // per TextEntry state/color closure.
         $monitoring = null;
+        $systemInformation = null;
+        $getSystemInformation = function ($record) use (&$systemInformation): ?array {
+            if (! $record) {
+                return null;
+            }
+            if ($systemInformation === null) {
+                try {
+                    // The edit page should remain usable while an agent is booting or offline.
+                    $systemInformation = app(DaemonConfigurationRepository::class)
+                        ->setNode($record)
+                        ->getSystemInformation(timeout: 1);
+                } catch (\Throwable) {
+                    $systemInformation = [];
+                }
+            }
+
+            return $systemInformation ?: null;
+        };
         $getMonitoring = function ($record) use (&$monitoring): ?array {
             if (! $record) {
                 return null;
@@ -45,7 +59,7 @@ class EditNodeForm
                 try {
                     $monitoring = app(DaemonMonitoringRepository::class)
                         ->setNode($record)
-                        ->getSystemMonitoring();
+                        ->getSystemMonitoring(timeout: 1);
                 } catch (\Throwable) {
                     $monitoring = [];
                 }
@@ -71,14 +85,13 @@ class EditNodeForm
                                     ->schema([
                                         TextEntry::make('version')
                                             ->label(trans('admin/node.sections.overview.version-label'))
-                                            ->state(function ($record) {
+                                            ->state(function ($record) use ($getSystemInformation) {
                                                 if (! $record) {
                                                     return trans('admin/node.general.na');
                                                 }
 
                                                 try {
-                                                    $repository = app(DaemonConfigurationRepository::class);
-                                                    $data = $repository->setNode($record)->getSystemInformation();
+                                                    $data = $getSystemInformation($record) ?? [];
 
                                                     return $data['version'] ?? trans('admin/node.general.na');
                                                 } catch (\Exception $e) {
@@ -88,14 +101,13 @@ class EditNodeForm
 
                                         TextEntry::make('arch')
                                             ->label(trans('admin/node.sections.overview.architecture-label'))
-                                            ->state(function ($record) {
+                                            ->state(function ($record) use ($getSystemInformation) {
                                                 if (! $record) {
                                                     return trans('admin/node.general.na');
                                                 }
 
                                                 try {
-                                                    $repository = app(DaemonConfigurationRepository::class);
-                                                    $data = $repository->setNode($record)->getSystemInformation();
+                                                    $data = $getSystemInformation($record) ?? [];
 
                                                     return $data['architecture'] ?? trans('admin/node.general.na');
                                                 } catch (\Exception $e) {
@@ -105,14 +117,13 @@ class EditNodeForm
 
                                         TextEntry::make('kernel')
                                             ->label(trans('admin/node.sections.overview.kernel-label'))
-                                            ->state(function ($record) {
+                                            ->state(function ($record) use ($getSystemInformation) {
                                                 if (! $record) {
                                                     return trans('admin/node.general.na');
                                                 }
 
                                                 try {
-                                                    $repository = app(DaemonConfigurationRepository::class);
-                                                    $data = $repository->setNode($record)->getSystemInformation();
+                                                    $data = $getSystemInformation($record) ?? [];
 
                                                     return $data['kernel_version'] ?? trans('admin/node.general.na');
                                                 } catch (\Exception $e) {
@@ -122,14 +133,13 @@ class EditNodeForm
 
                                         TextEntry::make('cpus')
                                             ->label(trans('admin/node.sections.overview.cpus-label'))
-                                            ->state(function ($record) {
+                                            ->state(function ($record) use ($getSystemInformation) {
                                                 if (! $record) {
                                                     return trans('admin/node.general.na');
                                                 }
 
                                                 try {
-                                                    $repository = app(DaemonConfigurationRepository::class);
-                                                    $data = $repository->setNode($record)->getSystemInformation();
+                                                    $data = $getSystemInformation($record) ?? [];
 
                                                     return (int) ($data['cpu_count'] ?? 0);
                                                 } catch (\Exception $e) {
