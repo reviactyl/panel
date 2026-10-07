@@ -80,6 +80,7 @@ const ScheduleEditContainer = () => {
     return (
         <ServerContentBlock className='pt-1' title={'Schedules'}>
             <FlashMessageRender byKey='schedules' className='mb-4' />
+            <FlashMessageRender byKey='schedule-status' className='mb-4' />
             {!schedule || isLoading ? (
                 <Spinner size={'large'} centered />
             ) : (
