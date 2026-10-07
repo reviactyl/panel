@@ -6,14 +6,19 @@ import getServerSchedule from '@/api/server/schedules/getServerSchedule';
 import { ServerContext } from '@/state/server';
 import useFlash from '@/plugins/useFlash';
 import { Schedule } from '@/api/server/schedules/getServerSchedules';
+import { httpErrorToHuman } from '@/api/http';
 
 const RunScheduleButton = ({ schedule }: { schedule: Schedule }) => {
     const [loading, setLoading] = useState(false);
     const [awaitingStatus, setAwaitingStatus] = useState(false);
-    const { clearFlashes, clearAndAddHttpError } = useFlash();
+    const { addError, clearFlashes, clearAndAddHttpError } = useFlash();
 
     const id = ServerContext.useStoreState((state) => state.server.data!.id);
     const appendSchedule = ServerContext.useStoreActions((actions) => actions.schedules.appendSchedule);
+
+    useEffect(() => {
+        return () => clearFlashes('schedule-status');
+    }, [id, schedule.id, clearFlashes]);
 
     useEffect(() => {
         if (loading || (!schedule.isProcessing && !awaitingStatus)) return;
@@ -28,13 +33,16 @@ const RunScheduleButton = ({ schedule }: { schedule: Schedule }) => {
                 if (cancelled) return;
                 appendSchedule(updated);
                 setAwaitingStatus(false);
-                if (failed || awaitingStatus) clearFlashes('schedules');
+                clearFlashes('schedule-status');
                 failed = false;
                 retryDelay = 2000;
                 if (!updated.isProcessing) return;
             } catch (error) {
                 if (cancelled) return;
-                if (!failed) clearAndAddHttpError({ error, key: 'schedules' });
+                if (!failed) {
+                    clearFlashes('schedule-status');
+                    addError({ message: httpErrorToHuman(error), key: 'schedule-status' });
+                }
                 failed = true;
                 retryDelay = Math.min(retryDelay * 2, 30000);
             }
@@ -46,28 +54,23 @@ const RunScheduleButton = ({ schedule }: { schedule: Schedule }) => {
             cancelled = true;
             clearTimeout(timeout);
         };
-    }, [
-        id,
-        schedule.id,
-        schedule.isProcessing,
-        loading,
-        awaitingStatus,
-        appendSchedule,
-        clearFlashes,
-        clearAndAddHttpError,
-    ]);
+    }, [id, schedule.id, schedule.isProcessing, loading, awaitingStatus, appendSchedule, clearFlashes, addError]);
 
     const onTriggerExecute = () => {
         clearFlashes('schedules');
+        clearFlashes('schedule-status');
         setLoading(true);
         triggerScheduleExecution(id, schedule.id)
-            .then(() => {
+            .then(async () => {
                 setAwaitingStatus(true);
-                return getServerSchedule(id, schedule.id);
-            })
-            .then((updated) => {
-                appendSchedule(updated);
-                setAwaitingStatus(false);
+                try {
+                    const updated = await getServerSchedule(id, schedule.id);
+                    appendSchedule(updated);
+                    setAwaitingStatus(false);
+                } catch (error) {
+                    clearFlashes('schedule-status');
+                    addError({ message: httpErrorToHuman(error), key: 'schedule-status' });
+                }
             })
             .catch((error) => {
                 console.error(error);
