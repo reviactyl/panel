@@ -82,9 +82,6 @@ class Designify extends Page implements HasSchemas
         'designify:radius',
         'designify:allocationBlur',
         'designify:fontFamily',
-        'designify:alertType',
-        'designify:alertMessage',
-        'designify:alerts',
         'designify:site_color',
         'designify:site_title',
         'designify:site_description',
@@ -154,7 +151,7 @@ class Designify extends Page implements HasSchemas
             }
 
             // Decode JSON for fields that should be arrays
-            if (in_array($key, ['designify:alerts', 'designify:sidebarButtons'])) {
+            if ($key === 'designify:sidebarButtons') {
                 $value = is_string($value) ? json_decode($value, true) ?? [] : $value;
             }
 
@@ -197,11 +194,6 @@ class Designify extends Page implements HasSchemas
                         ->label(trans('admin/settings.designify.layout'))
                         ->icon('tabler-layout-grid')
                         ->schema($this->layoutSettings()),
-
-                    Tab::make('alerts')
-                        ->label(trans('admin/settings.designify.alerts'))
-                        ->icon('tabler-bell')
-                        ->schema($this->alertSettings()),
 
                     Tab::make('meta')
                         ->label(trans('admin/settings.designify.meta-options'))
@@ -446,43 +438,6 @@ class Designify extends Page implements HasSchemas
         ];
     }
 
-    private function alertSettings(): array
-    {
-        return [
-            Section::make(trans('admin/settings.designify.section-alerts'))
-                ->description(trans('admin/settings.designify.section-alerts-description'))
-                ->icon('tabler-bell')
-                ->schema([
-                    Repeater::make('designify:alerts')
-                        ->label(trans('admin/settings.designify.alert-messages'))
-                        ->defaultItems(1)
-                        ->minItems(1)
-                        ->schema([
-                            Select::make('type')
-                                ->label(trans('admin/settings.designify.type'))
-                                ->options([
-                                    'info' => trans('admin/settings.designify.info'),
-                                    'announcement' => trans('admin/settings.designify.announcement'),
-                                    'success' => trans('admin/settings.designify.success'),
-                                    'warning' => trans('admin/settings.designify.warning'),
-                                    'danger' => trans('admin/settings.designify.danger'),
-                                    'disabled' => trans('admin/settings.designify.disabled'),
-                                ])
-                                ->required()
-                                ->native(false),
-
-                            Textarea::make('message')
-                                ->label(trans('admin/settings.designify.message'))
-                                ->rows(4)
-                                ->required(),
-                        ])
-                        ->columns(2)
-                        ->addActionLabel(trans('admin/settings.designify.add-alert'))
-                        ->columnSpanFull(),
-                ]),
-        ];
-    }
-
     private function siteSettings(): array
     {
         return [
@@ -670,7 +625,7 @@ class Designify extends Page implements HasSchemas
 
         foreach ($data as $key => $value) {
             // JSON encode arrays for storage
-            if (in_array($key, ['designify:alerts', 'designify:sidebarButtons'])) {
+            if ($key === 'designify:sidebarButtons') {
                 $value = is_array($value) ? json_encode($value) : $value;
             }
 

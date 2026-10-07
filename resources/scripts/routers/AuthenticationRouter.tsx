@@ -7,6 +7,7 @@ import RegisterContainer from '@/components/auth/RegisterContainer';
 import { NotFound } from '@/reviactyl/elements/ScreenBlock';
 import { Navigate } from 'react-router-dom';
 import { useStoreState } from 'easy-peasy';
+import Announcement from '@/reviactyl/ui/Announcement';
 
 export default () => {
     const navigate = useNavigate();
@@ -14,6 +15,7 @@ export default () => {
 
     return (
         <div className='flex flex-col min-h-screen h-full'>
+            <Announcement placement='auth' />
             <Routes>
                 <Route path='/login' element={<LoginContainer />} />
                 <Route

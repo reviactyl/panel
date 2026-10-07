@@ -13,7 +13,10 @@ const http: AxiosInstance = axios.create({
 });
 
 const isBackgroundRequest = (url?: string): boolean =>
-    url?.endsWith('/resources') === true || url?.endsWith('/subuser-preview/heartbeat') === true;
+    url?.endsWith('/resources') === true ||
+    url?.endsWith('/subuser-preview/heartbeat') === true ||
+    url?.endsWith('/alerts') === true ||
+    url?.includes('/api/client/alerts/') === true;
 
 http.interceptors.request.use((req) => {
     const previewToken = getPreviewToken();

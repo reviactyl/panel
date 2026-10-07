@@ -199,7 +199,12 @@ function DashboardRouter() {
                                     },
                                     ...(!session ? routes.account : []).map(({ route, component: Component }) => ({
                                         path: `/account/${route}`.replace('//', '/'),
-                                        element: <Component />,
+                                        element: (
+                                            <>
+                                                <Announcement placement='account' />
+                                                <Component />
+                                            </>
+                                        ),
                                     })),
                                     ...(!session
                                         ? [

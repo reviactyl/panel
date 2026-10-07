@@ -48,9 +48,6 @@ class DesignifyComposer
             'radius' => config('designify.radius') ?? '15px',
             'allocationBlur' => config('designify.allocationBlur', true),
             'fontFamily' => config('designify.fontFamily') ?? 'Poppins',
-            'alertType' => config('designify.alertType') ?? 'info',
-            'alertMessage' => config('designify.alertMessage') ?? '**Welcome to Reviactyl!** You can modify Theme Look & Feel using [Designify](/admin/designify) at the administration area.',
-            'alerts' => $this->getAlertsConfig(),
             'site_color' => config('designify.site_color') ?? '#3b82f6',
             'site_title' => config('designify.site_title') ?? 'Reviactyl',
             'site_description' => config('designify.site_description') ?? 'Our official control panel made better with Reviactyl.',
@@ -145,42 +142,6 @@ class DesignifyComposer
         }, str_split($hex, 2));
 
         return 0.2126 * $channels[0] + 0.7152 * $channels[1] + 0.0722 * $channels[2];
-    }
-
-    private function getAlertsConfig(): array
-    {
-        $fallback = [[
-            'type' => config('designify.alertType') ?? 'info',
-            'message' => config('designify.alertMessage') ?? '**Welcome to Reviactyl!** You can modify Theme Look & Feel using [Designify](/admin/designify) at the administration area.',
-        ]];
-
-        $alerts = config('designify.alerts');
-
-        if (is_string($alerts)) {
-            $decoded = json_decode($alerts, true);
-            $alerts = is_array($decoded) ? $decoded : [];
-        }
-
-        if (! is_array($alerts) || empty($alerts)) {
-            return $fallback;
-        }
-
-        $normalized = [];
-        foreach ($alerts as $alert) {
-            if (! is_array($alert)) {
-                continue;
-            }
-
-            $type = (string) ($alert['type'] ?? 'info');
-            $message = (string) ($alert['message'] ?? '');
-
-            $normalized[] = [
-                'type' => $type,
-                'message' => $message,
-            ];
-        }
-
-        return empty($normalized) ? $fallback : $normalized;
     }
 
     private function getSidebarButtonsConfig(): array

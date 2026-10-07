@@ -49,10 +49,6 @@ return [
     'isUnderMaintenance' => false,
     'maintenance' => 'We are currently under maintenance. Kindly check back later!',
 
-    'alertType' => 'info',
-    'alertMessage' => '**Welcome to Reviactyl!** You can modify Theme Look & Feel using [Designify](/admin/designify) at the administration area.',
-    'alerts' => '[{"type":"info","message":"**Welcome to Reviactyl!** You can modify Theme Look & Feel using [Designify](/admin/designify) at the administration area."}]',
-
     'errors' => [
         '403' => [
             'title' => 'Access Forbidden',

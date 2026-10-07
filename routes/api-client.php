@@ -25,6 +25,12 @@ Route::get('/subuser-preview', [Client\SubuserPreviewController::class, 'status'
 Route::post('/subuser-preview/heartbeat', [Client\SubuserPreviewController::class, 'heartbeat']);
 Route::delete('/subuser-preview', [Client\SubuserPreviewController::class, 'destroy']);
 
+Route::prefix('/alerts')->group(function () {
+    Route::get('/', [Client\AlertController::class, 'index'])->name('api:client.alerts');
+    Route::post('/{alert}/dismiss', [Client\AlertController::class, 'dismiss'])->name('api:client.alerts.dismiss');
+    Route::post('/{alert}/click', [Client\AlertController::class, 'click'])->name('api:client.alerts.click');
+});
+
 Route::prefix('/account')->middleware(AccountSubject::class)->group(function () {
     Route::prefix('/')->withoutMiddleware(RequireTwoFactorAuthentication::class)->group(function () {
         Route::get('/', [Client\AccountController::class, 'index'])->name('api:client.account');
