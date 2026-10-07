@@ -23,7 +23,7 @@ class ProcessScheduleService
      *
      * @throws \Throwable
      */
-    public function handle(Schedule $schedule, bool $now = false): void
+    public function handle(Schedule $schedule, bool $now = false): bool
     {
         $task = $schedule->tasks()->orderBy('sequence_id')->first();
         if (is_null($task)) {
@@ -52,7 +52,7 @@ class ProcessScheduleService
                 if (in_array($state, ['offline', 'stopping'])) {
                     $job->failed();
 
-                    return;
+                    return false;
                 }
             } catch (Exception $exception) {
                 if (! $exception instanceof DaemonConnectionException) {
@@ -63,7 +63,7 @@ class ProcessScheduleService
                 }
                 $job->failed();
 
-                return;
+                return false;
             }
         }
 
@@ -82,5 +82,7 @@ class ProcessScheduleService
                 throw $exception;
             }
         }
+
+        return true;
     }
 }

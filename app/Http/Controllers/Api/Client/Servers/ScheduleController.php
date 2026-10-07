@@ -147,11 +147,11 @@ class ScheduleController extends ClientApiController
     public function execute(TriggerScheduleRequest $request, Server $server, Schedule $schedule): JsonResponse
     {
 
-        $this->service->handle($schedule, true);
+        $started = $this->service->handle($schedule, true);
 
         Activity::event('server:schedule.execute')->subject($schedule)->property('name', $schedule->name)->log();
 
-        return new JsonResponse([], JsonResponse::HTTP_ACCEPTED);
+        return new JsonResponse(['skipped' => ! $started], JsonResponse::HTTP_ACCEPTED);
     }
 
     /**

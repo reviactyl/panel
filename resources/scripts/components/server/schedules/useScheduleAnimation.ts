@@ -9,7 +9,7 @@ export default function useScheduleAnimation(processing: boolean, requestState: 
     useEffect(() => {
         const failed = requestState === 'failed' && previousRequest.current !== 'failed';
         previousRequest.current = requestState;
-        if (failed) {
+        if (failed || requestState === 'skipped' || requestState === 'unknown') {
             startedAt.current = null;
             setPhase('idle');
             return;

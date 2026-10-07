@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import Spinner from '@/reviactyl/elements/Spinner';
 import BackupCompletedCheck from '@/components/server/backups/BackupCompletedCheck';
@@ -13,21 +14,28 @@ export default function ScheduleStatus({
     processing: boolean;
     requestState: RunRequestState;
 }) {
+    const { t } = useTranslation('server/schedules');
     const phase = useScheduleAnimation(processing, requestState);
     const reduceMotion = useReducedMotion();
+
+    const status = requestState === 'unknown' || requestState === 'skipped' ? requestState : phase;
 
     return (
         <span className='ml-4 flex shrink-0 items-center' role='status'>
             <AnimatePresence mode='wait' initial={false}>
                 <motion.span
-                    key={phase}
+                    key={status}
                     className='flex items-center'
                     initial={reduceMotion ? false : { opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={reduceMotion ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
                     transition={{ duration: reduceMotion ? 0 : 0.15 }}
                 >
-                    {phase === 'spinning' ? (
+                    {status === 'unknown' || status === 'skipped' ? (
+                        <span className='rounded-ui bg-gray-700 px-2 py-px text-xs uppercase text-gray-100'>
+                            {t(status === 'unknown' ? 'status-unknown' : 'run-skipped')}
+                        </span>
+                    ) : phase === 'spinning' ? (
                         <span className='flex items-center rounded-full bg-gray-700 px-2 py-px text-xs uppercase text-white'>
                             <span className='mr-2 flex h-3.5 w-3.5 shrink-0 items-center justify-center' aria-hidden>
                                 <Spinner size='small' className='!h-3.5 !w-3.5 motion-reduce:animate-none' />
@@ -35,7 +43,10 @@ export default function ScheduleStatus({
                             Processing
                         </span>
                     ) : phase === 'check' ? (
-                        <BackupCompletedCheck />
+                        <>
+                            <BackupCompletedCheck />
+                            <span className='sr-only'>{t('run-finished')}</span>
+                        </>
                     ) : (
                         <span
                             className={`rounded-ui px-2 py-px text-xs uppercase ${
