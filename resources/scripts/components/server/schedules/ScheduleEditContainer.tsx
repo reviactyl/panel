@@ -15,7 +15,8 @@ import ScheduleTaskRow from '@/components/server/schedules/ScheduleTaskRow';
 import isEqual from 'react-fast-compare';
 import { formatInTimezone } from '@/lib/timezones';
 import ScheduleCronRow from '@/components/server/schedules/ScheduleCronRow';
-import RunScheduleButton from '@/components/server/schedules/RunScheduleButton';
+import ScheduleStatus from '@/components/server/schedules/ScheduleStatus';
+import RunScheduleButton, { RunRequestState } from '@/components/server/schedules/RunScheduleButton';
 import Card from '@/reviactyl/ui/Card';
 import { useTranslation } from 'react-i18next';
 
@@ -24,16 +25,6 @@ const CronBox = ({ title, value }: { title: string; value: string }) => (
         <p className='text-sm text-gray-300'>{title}</p>
         <p className='text-xl font-medium text-gray-100'>{value}</p>
     </div>
-);
-
-const ActivePill = ({ active }: { active: boolean }) => (
-    <span
-        className={`rounded-ui px-2 py-px text-xs ml-4 uppercase ${
-            active ? 'bg-success/20 text-success' : 'bg-danger/20 text-danger'
-        }`}
-    >
-        {active ? 'Active' : 'Inactive'}
-    </span>
 );
 
 const ScheduleEditContainer = () => {
@@ -50,6 +41,9 @@ const ScheduleEditContainer = () => {
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const [isLoading, setIsLoading] = useState(true);
     const [showEditModal, setShowEditModal] = useState(false);
+    const [requestState, setRequestState] = useState<RunRequestState>('idle');
+
+    useEffect(() => setRequestState('idle'), [scheduleId]);
 
     const schedule = ServerContext.useStoreState(
         (st) => st.schedules.data.find((s) => s.id === Number(scheduleId)),
@@ -93,16 +87,12 @@ const ScheduleEditContainer = () => {
                             <div className='flex-1'>
                                 <h3 className='flex items-center text-2xl text-gray-100'>
                                     {schedule.name}
-                                    {schedule.isProcessing ? (
-                                        <span className='ml-4 flex items-center rounded-full bg-gray-700 px-2 py-px text-xs uppercase text-white'>
-                                            <span className='mr-2 flex h-3 w-3'>
-                                                <Spinner />
-                                            </span>
-                                            Processing
-                                        </span>
-                                    ) : (
-                                        <ActivePill active={schedule.isActive} />
-                                    )}
+                                    <ScheduleStatus
+                                        key={schedule.id}
+                                        active={schedule.isActive}
+                                        processing={schedule.isProcessing}
+                                        requestState={requestState}
+                                    />
                                 </h3>
                                 <p className='mt-1 text-sm text-gray-200'>
                                     Last run at:&nbsp;
@@ -163,7 +153,11 @@ const ScheduleEditContainer = () => {
                         </Can>
                         {schedule.tasks.length > 0 && (
                             <Can action={'schedule.update'}>
-                                <RunScheduleButton schedule={schedule} />
+                                <RunScheduleButton
+                                    key={schedule.id}
+                                    schedule={schedule}
+                                    onRequestStateChange={setRequestState}
+                                />
                             </Can>
                         )}
                     </div>
