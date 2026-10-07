@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Websocket } from '@/plugins/Websocket';
 import { ServerContext } from '@/state/server';
 import getWebsocketToken from '@/api/server/getWebsocketToken';
-import ContentContainer from '@/reviactyl/elements/ContentContainer';
 import { motion } from 'framer-motion';
 import Spinner from '@/reviactyl/elements/Spinner';
 import { useTranslation } from 'react-i18next';
@@ -119,7 +118,7 @@ export default () => {
             transition={{ duration: 0.15, ease: 'easeIn' }}
             className='fixed top-4 right-4 z-50 rounded-lg border border-danger/50 bg-danger px-4 py-2 shadow-lg'
         >
-            <ContentContainer className='flex items-center justify-center'>
+            <div className='flex items-center justify-center'>
                 {error === 'connecting' ? (
                     <>
                         <Spinner size={'small'} />
@@ -131,7 +130,7 @@ export default () => {
                         <p className='ml-2 text-sm text-white'>{error}</p>
                     </>
                 )}
-            </ContentContainer>
+            </div>
         </motion.div>
     ) : null;
 };
