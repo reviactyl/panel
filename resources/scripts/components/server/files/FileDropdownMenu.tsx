@@ -37,20 +37,31 @@ import { useStoreState } from 'easy-peasy';
 
 type ModalType = 'rename' | 'move' | 'chmod';
 
+export const MASS_ACTION_EVENT = 'panel:files:mass-action';
+
+export type MassAction = { type: 'move' } | { type: 'delete' } | { type: 'archive'; format: 'tar.gz' | 'zip' };
+
 interface RowProps extends React.HTMLAttributes<HTMLDivElement> {
     icon: IconType;
     title: string;
     danger?: boolean;
+    disabled?: boolean;
 }
 
-const Row = ({ icon, title, danger, className, ...props }: RowProps) => {
+const Row = ({ icon, title, danger, disabled, className, onClick, ...props }: RowProps) => {
     const ItemIcon = icon;
 
     return (
         <div
-            className={`flex w-full cursor-pointer items-center rounded-ui p-2 transition-all duration-150 ${
-                danger ? 'hover:bg-red-100 hover:text-red-700' : 'hover:bg-gray-100 hover:text-gray-800'
+            className={`flex w-full items-center rounded-ui p-2 transition-all duration-150 ${
+                disabled
+                    ? 'cursor-not-allowed opacity-50'
+                    : `cursor-pointer ${
+                          danger ? 'hover:bg-red-100 hover:text-red-700' : 'hover:bg-gray-100 hover:text-gray-800'
+                      }`
             } ${className || ''}`}
+            onClick={disabled ? undefined : onClick}
+            aria-disabled={disabled}
             {...props}
         >
             <ItemIcon className={'text-xs inline-block w-[1.25em]'} />
@@ -74,6 +85,19 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
     const { mutate } = useFileManagerSwr();
     const { clearAndAddHttpError, clearFlashes } = useFlash();
     const directory = ServerContext.useStoreState((state) => state.files.directory);
+    const removeSelectedFile = ServerContext.useStoreActions((actions) => actions.files.removeSelectedFile);
+    const isMultiSelected = ServerContext.useStoreState(
+        (state) => state.files.selectedFiles.length > 1 && state.files.selectedFiles.includes(file.name),
+    );
+    // These actions are unavailable while the mass actions bar is still working, both for the files it is
+    // working on and for any other multi-selection, since it can only run one action at a time.
+    const massActionRunning = ServerContext.useStoreState(
+        (state) =>
+            state.files.massActionFiles.includes(join(state.files.directory, file.name)) ||
+            (state.files.massActionFiles.length > 0 && isMultiSelected),
+    );
+
+    const massAction = (detail: MassAction) => window.dispatchEvent(new CustomEvent(MASS_ACTION_EVENT, { detail }));
 
     useEventListener(`panel:files:ctx:${file.key}`, (e: CustomEvent) => {
         if (onClickRef.current) {
@@ -89,10 +113,12 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
         // If the delete actually fails, we'll fetch the current directory contents again automatically.
         mutate((files) => files?.filter((f) => f.key !== file.key), false);
 
-        deleteFiles(uuid, directory, [file.name]).catch((error) => {
-            mutate();
-            clearAndAddHttpError({ key: 'files', error });
-        });
+        deleteFiles(uuid, directory, [file.name])
+            .then(() => removeSelectedFile(file.name))
+            .catch((error) => {
+                mutate();
+                clearAndAddHttpError({ key: 'files', error });
+            });
     };
 
     const doCopy = () => {
@@ -145,6 +171,11 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
     };
 
     const doArchive = (format: 'tar.gz' | 'zip') => {
+        if (isMultiSelected) {
+            massAction({ type: 'archive', format });
+            return;
+        }
+
         setShowSpinner(true);
         clearFlashes('files');
 
@@ -219,7 +250,12 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                 <ExtensionSlot name='server:files:dropdown:start' />
                 <Can action={'file.update'}>
                     <Row onClick={() => setModal('rename')} icon={FaPen} title={t('dropdown.rename')} />
-                    <Row onClick={() => setModal('move')} icon={FaTurnUp} title={t('dropdown.move')} />
+                    <Row
+                        onClick={() => (isMultiSelected ? massAction({ type: 'move' }) : setModal('move'))}
+                        icon={FaTurnUp}
+                        title={t('dropdown.move')}
+                        disabled={massActionRunning}
+                    />
                     <Row onClick={() => setModal('chmod')} icon={FaFileCode} title={t('dropdown.permissions')} />
                 </Can>
                 {file.isFile && (
@@ -235,7 +271,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                     <Can action={'file.archive'}>
                         <div
                             ref={archiveItemRef}
-                            className='group relative'
+                            className={`group relative ${massActionRunning ? 'pointer-events-none opacity-50' : ''}`}
                             onMouseEnter={positionFormatMenu}
                             onMouseLeave={() => setShowFormatMenu(false)}
                             onFocusCapture={positionFormatMenu}
@@ -251,6 +287,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                                     doArchive(archiveFormat);
                                 }}
                                 aria-haspopup='menu'
+                                disabled={massActionRunning}
                                 className='flex w-full items-center rounded-ui p-2 text-left transition-all duration-150 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:text-gray-800'
                             >
                                 <FaFileZipper className='text-xs inline-block w-[1.25em]' />
@@ -268,6 +305,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                                         key={format}
                                         type='button'
                                         onClick={() => doArchive(format)}
+                                        disabled={massActionRunning}
                                         aria-label={t('archive-as', { format })}
                                         role='menuitem'
                                         className='block w-full rounded-ui p-2 text-left text-sm transition-colors duration-150 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:text-gray-800'
@@ -285,7 +323,13 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                     </Can>
                 )}
                 <Can action={'file.delete'}>
-                    <Row onClick={() => setShowConfirmation(true)} icon={FaTrash} title={t('dropdown.delete')} danger />
+                    <Row
+                        onClick={() => (isMultiSelected ? massAction({ type: 'delete' }) : setShowConfirmation(true))}
+                        icon={FaTrash}
+                        title={t('dropdown.delete')}
+                        danger
+                        disabled={massActionRunning}
+                    />
                 </Can>
                 <ExtensionSlot name='server:files:dropdown:end' />
             </DropdownMenu>

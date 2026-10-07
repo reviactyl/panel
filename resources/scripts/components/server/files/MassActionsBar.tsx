@@ -6,6 +6,8 @@ import compressFiles from '@/api/server/files/compressFiles';
 import { ServerContext } from '@/state/server';
 import deleteFiles from '@/api/server/files/deleteFiles';
 import MoveFileModal from '@/components/server/files/MoveFileModal';
+import { MASS_ACTION_EVENT, MassAction } from '@/components/server/files/FileDropdownMenu';
+import useEventListener from '@/plugins/useEventListener';
 import { Dialog } from '@/reviactyl/elements/dialog';
 import { useTranslation } from 'react-i18next';
 import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
@@ -14,6 +16,7 @@ import Spinner from '@/reviactyl/elements/Spinner';
 import { FaFileArchive } from 'react-icons/fa';
 import Can from '@/reviactyl/elements/Can';
 import { useStoreState } from 'easy-peasy';
+import { join } from 'pathe';
 
 const MassActionsBar = () => {
     const { t } = useTranslation('server/files');
@@ -31,6 +34,7 @@ const MassActionsBar = () => {
 
     const selectedFiles = ServerContext.useStoreState((state) => state.files.selectedFiles);
     const setSelectedFiles = ServerContext.useStoreActions((actions) => actions.files.setSelectedFiles);
+    const setMassActionFiles = ServerContext.useStoreActions((actions) => actions.files.setMassActionFiles);
 
     const selectedDirectoryNames = (currentDirectoryFiles ?? [])
         .filter((file) => !file.isFile && selectedFiles.includes(file.name))
@@ -39,6 +43,13 @@ const MassActionsBar = () => {
     useEffect(() => {
         if (!loading) setLoadingMessage('');
     }, [loading]);
+
+    // Tracks the full paths of the files being worked on so their context menus can't start a conflicting
+    // action, even if the selection changes before the request finishes.
+    const setRunning = (running: boolean) => {
+        setLoading(running);
+        setMassActionFiles(running ? selectedFiles.map((name) => join(directory, name)) : []);
+    };
 
     useEffect(() => {
         if (!showFormatMenu) return;
@@ -53,7 +64,7 @@ const MassActionsBar = () => {
 
     const onClickCompress = (format: 'tar.gz' | 'zip') => {
         setShowFormatMenu(false);
-        setLoading(true);
+        setRunning(true);
         clearFlashes('files');
         setLoadingMessage(t('mass-actions.archiving'));
 
@@ -61,11 +72,11 @@ const MassActionsBar = () => {
             .then(() => mutate())
             .then(() => setSelectedFiles([]))
             .catch((error) => clearAndAddHttpError({ key: 'files', error }))
-            .then(() => setLoading(false));
+            .then(() => setRunning(false));
     };
 
     const onClickConfirmDeletion = () => {
-        setLoading(true);
+        setRunning(true);
         setShowConfirm(false);
         clearFlashes('files');
         setLoadingMessage(t('mass-actions.deleting'));
@@ -79,8 +90,16 @@ const MassActionsBar = () => {
                 mutate();
                 clearAndAddHttpError({ key: 'files', error });
             })
-            .then(() => setLoading(false));
+            .then(() => setRunning(false));
     };
+
+    useEventListener(MASS_ACTION_EVENT, ({ detail }: CustomEvent<MassAction>) => {
+        if (loading) return;
+
+        if (detail.type === 'move') setShowMove(true);
+        else if (detail.type === 'delete') setShowConfirm(true);
+        else if (detail.type === 'archive') onClickCompress(detail.format);
+    });
 
     return (
         <>
