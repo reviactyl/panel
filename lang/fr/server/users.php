@@ -70,6 +70,8 @@ return [
         'database_update' => 'Permet à l\'utilisateur d\'apporter des modifications à une base de données. Si l\'utilisateur ne dispose pas également de \'autorisation \'Afficher le mot de passe\', il ne pourra pas modifier le mot de passe.',
         'database_delete' => 'Autorise l\'utilisateur à supprimer une instance de base de données.',
         'database_view_password' => 'Autorise l\'utilisateur d\'afficher le mot de passe d\'une base de données.',
+        'database_import' => 'Permet à un utilisateur d’importer des données dans une base de données, en la vidant au préalable s’il le souhaite.',
+        'database_export' => 'Permet à un utilisateur de télécharger une exportation d’une base de données.',
         'schedule_create' => 'Permet à l\'utilisateur de créer une nouvell tâche automatique pour le serveur.',
         'schedule_read' => 'Autorise l\'utilisateur à consulter les tâches automatiques d\'un serveur.',
         'schedule_update' => 'Autorise l\'utilisateur à apporter des modifications à une tâche automatique.',

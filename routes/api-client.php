@@ -23,6 +23,7 @@ Route::get('/eggs', [Client\ClientController::class, 'eggs'])->name('api:client.
 Route::get('/extensions', [Client\ExtensionsController::class, 'index'])->name('api:client.extensions.index');
 Route::get('/subuser-preview', [Client\SubuserPreviewController::class, 'status']);
 Route::post('/subuser-preview/heartbeat', [Client\SubuserPreviewController::class, 'heartbeat']);
+Route::post('/subuser-preview/ticket', [Client\SubuserPreviewController::class, 'ticket']);
 Route::delete('/subuser-preview', [Client\SubuserPreviewController::class, 'destroy']);
 
 Route::prefix('/alerts')->group(function () {
@@ -109,6 +110,9 @@ Route::group([
         Route::middleware([ResourceLimit::Database->middleware()])
             ->post('/', [Client\Servers\DatabaseController::class, 'store']);
         Route::post('/{database}/rotate-password', [Client\Servers\DatabaseController::class, 'rotatePassword']);
+        Route::get('/{database}/export', [Client\Servers\DatabaseController::class, 'export']);
+        Route::get('/{database}/import', [Client\Servers\DatabaseController::class, 'importStatus']);
+        Route::post('/{database}/import', [Client\Servers\DatabaseController::class, 'import']);
         Route::delete('/{database}', [Client\Servers\DatabaseController::class, 'delete']);
     });
 

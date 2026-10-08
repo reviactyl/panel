@@ -85,6 +85,8 @@ return [
             'create' => 'Создана новая база данных :name',
             'rotate-password' => 'Изменён пароль для базы данных :name',
             'delete' => 'Удалена база данных :name',
+            'import' => 'Запущен импорт в базу данных :name',
+            'export' => 'Экспортирована база данных :name',
         ],
         'file' => [
             'compress_one' => 'Сжат файл :directory:file',

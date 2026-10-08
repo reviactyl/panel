@@ -85,6 +85,8 @@ return [
             'create' => 'नया डेटाबेस :name बनाया गया',
             'rotate-password' => 'डेटाबेस :name के लिए पासवर्ड बदल दिया गया',
             'delete' => 'डेटाबेस :name हटा दिया गया',
+            'import' => 'डेटाबेस :name में आयात शुरू किया',
+            'export' => 'डेटाबेस :name निर्यात किया',
         ],
         'file' => [
             'compress_one' => ':directory:file संकुचित किया गया',

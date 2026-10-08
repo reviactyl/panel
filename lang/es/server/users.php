@@ -70,6 +70,8 @@ return [
         'database_update' => '\'Permite al usuario realizar modificaciones en una base de datos. Si el usuario no tiene también el permiso "Ver contraseña", no podrá modificar la contraseña.',
         'database_delete' => 'Permite al usuario eliminar una base de datos.',
         'database_view_password' => 'Permite al usuario ver la contraseña de una base de datos en el sistema.',
+        'database_import' => 'Permite a un usuario importar datos en una base de datos, vaciándola antes si lo desea.',
+        'database_export' => 'Permite a un usuario descargar una exportación de una base de datos.',
         'schedule_create' => 'Permite al usuario crear una nueva programación para el servidor.',
         'schedule_read' => 'Permite al usuario ver las programaciones de un servidor.',
         'schedule_update' => 'Permite al usuario realizar modificaciones en una programación existente del servidor.',

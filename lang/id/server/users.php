@@ -70,6 +70,8 @@ return [
         'database_update' => 'Mengizinkan pengguna memodifikasi database. Jika pengguna tidak memiliki izin "Lihat Kata Sandi" juga, mereka tidak akan dapat memodifikasi kata sandi.',
         'database_delete' => 'Mengizinkan pengguna menghapus instance database.',
         'database_view_password' => 'Mengizinkan pengguna melihat kata sandi database di sistem.',
+        'database_import' => 'Mengizinkan pengguna mengimpor data ke basis data, dengan opsi mengosongkannya terlebih dahulu.',
+        'database_export' => 'Mengizinkan pengguna mengunduh ekspor basis data.',
         'schedule_create' => 'Mengizinkan pengguna membuat jadwal baru untuk server.',
         'schedule_read' => 'Mengizinkan pengguna melihat jadwal untuk server.',
         'schedule_update' => 'Mengizinkan pengguna memodifikasi jadwal server yang ada.',

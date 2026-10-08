@@ -484,6 +484,31 @@ class SubuserPreviewTest extends ClientApiIntegrationTestCase
         $this->assertDatabaseCount('subuser_preview_sessions', 0);
     }
 
+    public function test_single_use_ticket_carries_the_preview_on_read_requests(): void
+    {
+        [$owner, $server, $target] = $this->models();
+        $token = $this->actingAs($owner)->postJson($this->previewEndpoint($server, $target))->json('token');
+
+        $this->postJson('/api/client/subuser-preview/ticket')->assertForbidden();
+        $ticket = $this->withPreviewToken($token)->postJson('/api/client/subuser-preview/ticket')->assertOk()->json('ticket');
+        $this->flushHeaders();
+
+        $this->getJson($this->link($server, 'databases'))->assertOk();
+        $this->getJson($this->link($server, 'databases').'?subuser_preview='.$token)->assertForbidden();
+        $this->getJson($this->link($server, 'databases').'?subuser_preview='.$ticket)
+            ->assertForbidden()
+            ->assertJsonPath('errors.0.detail', 'This action is unauthorized.');
+        $this->getJson($this->link($server, 'databases').'?subuser_preview='.$ticket)
+            ->assertForbidden()
+            ->assertJsonPath('errors.0.detail', trans('exceptions.subuser_preview.session_unavailable'));
+
+        $ticket = $this->withPreviewToken($token)->postJson('/api/client/subuser-preview/ticket')->json('ticket');
+        $this->flushHeaders();
+
+        $this->postJson($this->link($server, 'databases').'?subuser_preview='.$ticket, ['database' => 'x'])
+            ->assertUnprocessable();
+    }
+
     public function test_resource_changes_persist_only_in_the_preview_session(): void
     {
         [$owner, $server, $target] = $this->models();

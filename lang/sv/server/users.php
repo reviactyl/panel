@@ -70,6 +70,8 @@ return [
         'database_update' => 'Tillåter användarbehörighet att göra ändringar i en databas. Om användaren inte har behörigheten "Visa lösenord" kommer de inte heller att kunna ändra lösenordet.',
         'database_delete' => 'Tillåter användarbehörighet att radera en databasinstans.',
         'database_view_password' => 'Tillåter användarbehörighet att visa ett databaslösenord i systemet.',
+        'database_import' => 'Tillåter en användare att importera data till en databas och eventuellt tömma den först.',
+        'database_export' => 'Tillåter en användare att ladda ner en export av en databas.',
         'schedule_create' => 'Tillåter en användare att skapa ett nytt schema för servern.',
         'schedule_read' => 'Tillåter användarbehörighet att visa scheman för en server.',
         'schedule_update' => 'Tillåter användarbehörighet att göra ändringar i ett befintligt serverschema.',

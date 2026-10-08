@@ -70,6 +70,8 @@ return [
         'database_update' => 'Permite que o usuário faça modificações em um database. Se o usuário não tiver a permissão "View Password", ele não poderá modificar a senha.',
         'database_delete' => 'Permite que o usuário exclua uma instância de database.',
         'database_view_password' => 'Permite que o usuário visualize a senha de um database no sistema.',
+        'database_import' => 'Permite que um usuário importe dados para um banco de dados, limpando-o antes se desejar.',
+        'database_export' => 'Permite que um usuário baixe uma exportação de um banco de dados.',
         'schedule_create' => 'Permite que o usuário crie um novo schedule para o servidor.',
         'schedule_read' => 'Permite que o usuário visualize os schedules do servidor.',
         'schedule_update' => 'Permite que o usuário faça modificações em um schedule existente do servidor.',

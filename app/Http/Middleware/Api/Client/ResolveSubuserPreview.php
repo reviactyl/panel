@@ -6,6 +6,7 @@ use App\Models\SubuserPreviewSession;
 use App\Services\Subusers\SubuserPreviewContext;
 use App\Services\Subusers\SubuserPreviewSimulator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
@@ -13,12 +14,32 @@ class ResolveSubuserPreview
 {
     public const HEADER = 'X-Subuser-Preview';
 
+    public const PARAMETER = 'subuser_preview';
+
     public function __construct(private readonly SubuserPreviewSimulator $simulator) {}
+
+    private function consumeTicket(string $ticket, SubuserPreviewSession $session): bool
+    {
+        $key = self::ticketKey($ticket);
+
+        if (Cache::get($key) !== $session->uuid || ! Cache::add($key.':used', true, 120)) {
+            return false;
+        }
+
+        Cache::forget($key);
+
+        return true;
+    }
+
+    public static function ticketKey(string $ticket): string
+    {
+        return 'subuser-preview:ticket:'.hash('sha256', $ticket);
+    }
 
     /**
      * Resolves a subuser preview session for the request and delegates it with preview context.
      *
-     * Requests without a preview header continue unchanged. Invalid, expired, or restricted preview
+     * Requests without a preview token continue unchanged. Invalid, expired, or restricted preview
      * requests raise an HTTP exception.
      *
      * @return mixed The response from the next handler or preview simulator.
@@ -29,7 +50,10 @@ class ResolveSubuserPreview
     public function handle(Request $request, \Closure $next): mixed
     {
         $token = $request->header(self::HEADER);
-        if (! is_string($token) || $token === '') {
+        $ticket = $request->isMethodSafe() ? $request->query(self::PARAMETER) : null;
+
+        $hasToken = is_string($token) && $token !== '';
+        if (! $hasToken && (! is_string($ticket) || $ticket === '')) {
             return $next($request);
         }
 
@@ -38,7 +62,11 @@ class ResolveSubuserPreview
             ->where('owner_id', $request->user()->id)
             ->first();
 
-        if (! $session || ! $session->tokenMatches($token)) {
+        $valid = $hasToken
+            ? $session?->tokenMatches($token)
+            : $session && $this->consumeTicket($ticket, $session);
+
+        if (! $session || ! $valid) {
             throw new AccessDeniedHttpException(trans('exceptions.subuser_preview.session_unavailable'));
         }
 

@@ -85,6 +85,8 @@ return [
             'create' => 'Criado novo banco de dados :name',
             'rotate-password' => 'Senha rotacionada para o banco de dados :name',
             'delete' => 'Banco de dados :name excluído',
+            'import' => 'Iniciou uma importação para o banco de dados :name',
+            'export' => 'Exportou o banco de dados :name',
         ],
         'file' => [
             'compress_one' => 'Arquivo :directory:file compactado',

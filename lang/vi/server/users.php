@@ -70,6 +70,8 @@ return [
         'database_update' => 'Cho phép người dùng có quyền thực hiện sửa đổi cơ sở dữ liệu. Nếu người dùng không có quyền "Xem mật khẩu", họ sẽ không thể sửa đổi mật khẩu.',
         'database_delete' => 'Cho phép người dùng có quyền xóa một phiên bản cơ sở dữ liệu.',
         'database_view_password' => 'Cho phép người dùng có quyền xem mật khẩu cơ sở dữ liệu trong hệ thống.',
+        'database_import' => 'Cho phép người dùng nhập dữ liệu vào cơ sở dữ liệu, tùy chọn xóa sạch trước khi nhập.',
+        'database_export' => 'Cho phép người dùng tải xuống bản xuất của cơ sở dữ liệu.',
         'schedule_create' => 'Cho phép người dùng tạo lịch trình mới cho máy chủ.',
         'schedule_read' => 'Cho phép người dùng có quyền xem lịch trình của máy chủ.',
         'schedule_update' => 'Cho phép người dùng có quyền thực hiện sửa đổi lịch trình máy chủ hiện có.',

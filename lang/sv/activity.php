@@ -85,6 +85,8 @@ return [
             'create' => 'Skapat ny databas :name',
             'rotate-password' => 'Lösenord roterat för databasen :name',
             'delete' => 'Raderad databas :name',
+            'import' => 'Startade en import till databasen :name',
+            'export' => 'Exporterade databasen :name',
         ],
         'file' => [
             'compress_one' => 'Komprimerad :directory:file',

@@ -85,6 +85,8 @@ return [
             'create' => '创建了新的数据库 :name',
             'rotate-password' => '数据库 :name 的密码已轮换',
             'delete' => '删除了数据库 :name',
+            'import' => '已开始向数据库 :name 导入',
+            'export' => '已导出数据库 :name',
         ],
         'file' => [
             'compress_one' => '压缩了 :directory:files.0',
