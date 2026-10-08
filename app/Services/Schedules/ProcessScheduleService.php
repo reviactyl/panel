@@ -3,7 +3,6 @@
 namespace App\Services\Schedules;
 
 use App\Exceptions\DisplayException;
-use App\Exceptions\Http\Connection\DaemonConnectionException;
 use App\Jobs\Schedule\RunTaskJob;
 use App\Models\Schedule;
 use App\Repositories\Agent\DaemonServerRepository;
@@ -30,7 +29,19 @@ class ProcessScheduleService
             throw new DisplayException('Cannot process schedule for task execution: no tasks are registered.');
         }
 
-        $this->connection->transaction(function () use ($schedule, $task) {
+        $shouldRun = true;
+        if ($schedule->only_when_online) {
+            try {
+                $details = $this->serverRepository->setServer($schedule->server)->getDetails();
+                $shouldRun = ! in_array($details['state'] ?? 'offline', ['offline', 'stopping']);
+            } catch (Exception) {
+                $shouldRun = false;
+            }
+        }
+
+        $job = new RunTaskJob($task, $now);
+
+        $ready = $this->connection->transaction(function () use ($schedule, $task, $job, $now, $shouldRun) {
             $schedule->setRelation('server', $schedule->server()->sharedLock()->firstOrFail());
 
             $schedule->forceFill([
@@ -39,37 +50,24 @@ class ProcessScheduleService
             ])->saveOrFail();
 
             $task->update(['is_queued' => true]);
-        });
-
-        $job = new RunTaskJob($task, $now);
-        if ($schedule->only_when_online) {
-            // Check that the server is currently in a starting or running state before executing
-            // this schedule if this option has been set.
-            try {
-                $details = $this->serverRepository->setServer($schedule->server)->getDetails();
-                $state = $details['state'] ?? 'offline';
-                // If the server is stopping or offline just do nothing with this task.
-                if (in_array($state, ['offline', 'stopping'])) {
-                    $job->failed();
-
-                    return false;
-                }
-            } catch (Exception $exception) {
-                if (! $exception instanceof DaemonConnectionException) {
-                    // If we encountered some exception during this process that wasn't just an
-                    // issue connecting to Agent run the failed sequence for a job. Otherwise we
-                    // can just quietly mark the task as completed without actually running anything.
-                    $job->failed($exception);
-                }
+            if (! $shouldRun) {
                 $job->failed();
 
                 return false;
             }
+
+            if (! $now) {
+                $this->dispatcher->dispatch($job->delay($task->time_offset)->beforeCommit());
+            }
+
+            return true;
+        });
+
+        if (! $ready) {
+            return false;
         }
 
-        if (! $now) {
-            $this->dispatcher->dispatch($job->delay($task->time_offset));
-        } else {
+        if ($now) {
             // When using dispatchNow the RunTaskJob::failed() function is not called automatically
             // so we need to manually trigger it and then continue with the exception throw.
             //

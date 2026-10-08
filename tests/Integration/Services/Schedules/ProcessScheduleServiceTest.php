@@ -6,10 +6,14 @@ use App\Exceptions\DisplayException;
 use App\Jobs\Schedule\RunTaskJob;
 use App\Models\Schedule;
 use App\Models\Task;
+use App\Repositories\Agent\DaemonCommandRepository;
+use App\Repositories\Agent\DaemonServerRepository;
 use App\Services\Schedules\ProcessScheduleService;
 use Carbon\CarbonImmutable;
 use Exception;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Contracts\Bus\Dispatcher;
+use Illuminate\Database\ConnectionInterface;
 use Illuminate\Support\Facades\Bus;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Integration\IntegrationTestCase;
@@ -52,6 +56,85 @@ class ProcessScheduleServiceTest extends IntegrationTestCase
 
         $this->assertDatabaseMissing('schedules', ['id' => $schedule->id, 'is_processing' => true]);
         $this->assertDatabaseMissing('tasks', ['id' => $task->id, 'is_queued' => true]);
+    }
+
+    public function test_failed_dispatch_leaves_schedule_due_for_retry()
+    {
+        $this->swap(Dispatcher::class, $dispatcher = \Mockery::mock(Dispatcher::class));
+
+        $server = $this->createServerModel();
+        $dueAt = CarbonImmutable::now()->subMinute();
+        $schedule = Schedule::factory()->create([
+            'server_id' => $server->id,
+            'next_run_at' => $dueAt,
+            'last_run_at' => null,
+        ]);
+        $task = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 1]);
+        $failure = new \RuntimeException('Queue unavailable');
+        $dispatcher->expects('dispatch')->andThrow($failure);
+
+        try {
+            $this->getService()->handle($schedule);
+            $this->fail('Dispatch should have failed.');
+        } catch (\RuntimeException $exception) {
+            $this->assertSame($failure, $exception);
+        }
+
+        $schedule->refresh();
+        $this->assertFalse($schedule->is_processing);
+        $this->assertFalse($task->refresh()->is_queued);
+        $this->assertTrue($schedule->next_run_at->equalTo($dueAt));
+        $this->assertNull($schedule->last_run_at);
+
+        $dispatcher->expects('dispatch')->with(\Mockery::on(fn (RunTaskJob $job) => $job->task->id === $task->id && $job->afterCommit === false));
+        $this->assertTrue($this->getService()->handle($schedule));
+        $this->assertTrue($schedule->refresh()->is_processing);
+        $this->assertTrue($task->refresh()->is_queued);
+        $this->assertTrue($schedule->next_run_at->isFuture());
+    }
+
+    #[DataProvider('dispatchNowDataProvider')]
+    public function test_completed_task_is_not_left_processing(bool $now)
+    {
+        config(['queue.default' => 'sync']);
+        $server = $this->createServerModel();
+        $schedule = Schedule::factory()->create(['server_id' => $server->id, 'last_run_at' => null]);
+        $task = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 1, 'time_offset' => 0]);
+        $this->mock(DaemonCommandRepository::class, function ($mock) use ($task) {
+            $mock->expects('setServer')->andReturnSelf();
+            $mock->expects('send')->with($task->payload)->andReturn(new Response());
+        });
+
+        $this->assertTrue($this->getService()->handle($schedule, $now));
+        $this->assertFalse($schedule->refresh()->is_processing);
+        $this->assertFalse($task->refresh()->is_queued);
+        $this->assertNotNull($schedule->last_run_at);
+    }
+
+    #[DataProvider('unavailableServerDataProvider')]
+    public function test_unavailable_server_schedule_is_skipped_without_dispatching(string $state)
+    {
+        Bus::fake();
+        $server = $this->createServerModel();
+        $schedule = Schedule::factory()->create(['server_id' => $server->id, 'only_when_online' => true]);
+        $task = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 1]);
+        $this->mock(DaemonServerRepository::class, function ($mock) use ($state) {
+            $mock->expects('setServer')->andReturnSelf();
+            $mock->expects('getDetails')->andReturnUsing(function () use ($state) {
+                $this->assertSame(0, $this->app->make(ConnectionInterface::class)->transactionLevel());
+                if ($state === 'exception') {
+                    throw new \RuntimeException('Agent unavailable');
+                }
+
+                return ['state' => $state];
+            });
+        });
+
+        $this->assertFalse($this->getService()->handle($schedule));
+        Bus::assertNothingDispatched();
+        $this->assertFalse($schedule->refresh()->is_processing);
+        $this->assertFalse($task->refresh()->is_queued);
+        $this->assertTrue($schedule->next_run_at->isFuture());
     }
 
     /**
@@ -171,6 +254,11 @@ class ProcessScheduleServiceTest extends IntegrationTestCase
         $this->getService()->handle($schedule);
 
         $this->assertSame('03:00', $schedule->refresh()->next_run_at->setTimezone('Asia/Tokyo')->format('H:i'));
+    }
+
+    public static function unavailableServerDataProvider(): array
+    {
+        return [['offline'], ['stopping'], ['exception']];
     }
 
     public static function dispatchNowDataProvider(): array
