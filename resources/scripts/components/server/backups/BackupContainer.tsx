@@ -57,8 +57,7 @@ const BackupContainer = () => {
                                   },
                         ),
                     },
-                // An event that lands before the first load discards that request, so fetch again.
-                { revalidate: (data) => data === undefined },
+                { revalidate: (data) => data === undefined || parsed.is_successful === false },
             );
         } catch (e) {
             console.warn(e);
