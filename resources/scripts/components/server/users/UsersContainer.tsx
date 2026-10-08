@@ -23,6 +23,7 @@ export default () => {
     const setSubusers = ServerContext.useStoreActions((actions) => actions.subusers.setSubusers);
 
     const permissions = useStoreState((state: ApplicationStore) => state.permissions.data);
+    const [loadingPermissions, setLoadingPermissions] = useState(!Object.keys(permissions).length);
     const getPermissions = useStoreActions((actions: Actions<ApplicationStore>) => actions.permissions.getPermissions);
     const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
@@ -31,42 +32,46 @@ export default () => {
         getServerSubusers(uuid)
             .then((subusers) => {
                 setSubusers(subusers);
-                setLoading(false);
             })
             .catch((error) => {
                 console.error(error);
                 addError({ key: 'users', message: httpErrorToHuman(error) });
-            });
+            })
+            .finally(() => setLoading(false));
     }, []);
 
     useEffect(() => {
-        getPermissions().catch((error) => {
-            addError({ key: 'users', message: httpErrorToHuman(error) });
-            console.error(error);
-        });
+        getPermissions()
+            .catch((error) => {
+                addError({ key: 'users', message: httpErrorToHuman(error) });
+                console.error(error);
+            })
+            .finally(() => setLoadingPermissions(false));
     }, []);
-
-    if (!subusers.length && (loading || !Object.keys(permissions).length)) {
-        return <Spinner size={'large'} centered />;
-    }
 
     return (
         <ServerContentBlock title={t('title')}>
             <FlashMessageRender byKey={'users'} className='mb-4' />
-            {!subusers.length ? (
-                <Card>
-                    <p className='flex justify-center text-center text-sm text-gray-400'>
-                        <UsersIcon className='w-5 h-5 mr-1' /> It looks like you don&apos;t have any subusers.
-                    </p>
-                </Card>
+            {!subusers.length && (loading || loadingPermissions) ? (
+                <Spinner size={'large'} centered />
             ) : (
-                subusers.map((subuser) => <UserRow key={subuser.uuid} subuser={subuser} />)
+                <>
+                    {!subusers.length ? (
+                        <Card>
+                            <p className='flex justify-center text-center text-sm text-gray-400'>
+                                <UsersIcon className='w-5 h-5 mr-1' /> It looks like you don&apos;t have any subusers.
+                            </p>
+                        </Card>
+                    ) : (
+                        subusers.map((subuser) => <UserRow key={subuser.uuid} subuser={subuser} />)
+                    )}
+                    <Can action={'user.create'}>
+                        <div className='flex justify-end mt-2'>
+                            <AddSubuserButton disabled={!Object.keys(permissions).length} />
+                        </div>
+                    </Can>
+                </>
             )}
-            <Can action={'user.create'}>
-                <div className='flex justify-end mt-2'>
-                    <AddSubuserButton />
-                </div>
-            </Can>
         </ServerContentBlock>
     );
 };
