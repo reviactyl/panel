@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\Nests\Eggs\Pages;
 
 use App\Filament\Resources\Nests\EggResource;
+use App\Models\Egg;
+use App\Services\Eggs\EggCreationService;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateEgg extends CreateRecord
@@ -23,5 +25,10 @@ class CreateEgg extends CreateRecord
     protected function getRedirectUrl(): string
     {
         return EggResource::getUrl('edit', ['record' => $this->record]);
+    }
+
+    protected function handleRecordCreation(array $data): Egg
+    {
+        return app(EggCreationService::class)->handle($data);
     }
 }
