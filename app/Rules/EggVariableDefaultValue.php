@@ -14,6 +14,11 @@ class EggVariableDefaultValue implements ValidationRule
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
+        // An egg can omit its default and require a value when creating a server.
+        if ($value === null || $value === '') {
+            return;
+        }
+
         // Invalid rule definitions are reported by the rules field itself.
         if (Validator::make(['rules' => $this->rules], ['rules' => [new EggVariableRules()]])->fails()) {
             return;
