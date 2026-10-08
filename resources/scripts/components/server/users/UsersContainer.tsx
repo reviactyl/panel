@@ -67,7 +67,7 @@ export default () => {
                     )}
                     <Can action={'user.create'}>
                         <div className='flex justify-end mt-2'>
-                            <AddSubuserButton />
+                            <AddSubuserButton disabled={!Object.keys(permissions).length} />
                         </div>
                     </Can>
                 </>
