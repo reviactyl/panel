@@ -90,6 +90,14 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
     }
 
     /**
+     * Change the password of an existing database user without dropping the account.
+     */
+    public function updateUserPassword(string $username, string $remote, string $password): bool
+    {
+        return $this->run(sprintf('ALTER USER `%s`@`%s` IDENTIFIED BY \'%s\'', $username, $remote, $password));
+    }
+
+    /**
      * Give a specific user access to a given database.
      */
     public function assignUserToDatabase(string $database, string $username, string $remote): bool

@@ -40,6 +40,11 @@ interface DatabaseRepositoryInterface extends RepositoryInterface
     public function createUser(string $username, string $remote, string $password, ?int $max_connections): bool;
 
     /**
+     * Change the password of an existing database user without dropping the account.
+     */
+    public function updateUserPassword(string $username, string $remote, string $password): bool;
+
+    /**
      * Give a specific user access to a given database.
      */
     public function assignUserToDatabase(string $database, string $username, string $remote): bool;

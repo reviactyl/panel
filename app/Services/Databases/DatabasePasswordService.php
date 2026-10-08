@@ -37,9 +37,7 @@ class DatabasePasswordService
                 'password' => $this->encrypter->encrypt($password),
             ]);
 
-            $this->repository->dropUser($database->username, $database->remote);
-            $this->repository->createUser($database->username, $database->remote, $password, $database->max_connections);
-            $this->repository->assignUserToDatabase($database->database, $database->username, $database->remote);
+            $this->repository->updateUserPassword($database->username, $database->remote, $password);
             $this->repository->flush();
         });
 
