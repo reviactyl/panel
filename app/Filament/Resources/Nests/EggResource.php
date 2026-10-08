@@ -102,22 +102,27 @@ class EggResource extends Resource
                                             ->required()
                                             ->columnSpanFull(),
                                         Forms\Components\TextInput::make('config_stop')
-                                            ->label(trans('admin/eggs.fields.config_stop')),
+                                            ->label(trans('admin/eggs.fields.config_stop'))
+                                            ->required(fn (Get $get): bool => blank($get('config_from'))),
                                         Forms\Components\Select::make('config_from')
                                             ->label(trans('admin/eggs.fields.config_from'))
                                             ->relationship('configFrom', 'name')
+                                            ->live()
                                             ->searchable()
                                             ->preload(),
                                         Forms\Components\Textarea::make('config_startup')
                                             ->label(trans('admin/eggs.fields.config_startup'))
+                                            ->required(fn (Get $get): bool => blank($get('config_from')))
                                             ->json()
                                             ->columnSpanFull(),
                                         Forms\Components\Textarea::make('config_logs')
                                             ->label(trans('admin/eggs.fields.config_logs'))
+                                            ->required(fn (Get $get): bool => blank($get('config_from')))
                                             ->json()
                                             ->columnSpanFull(),
                                         Forms\Components\Textarea::make('config_files')
                                             ->label(trans('admin/eggs.fields.config_files'))
+                                            ->required(fn (Get $get): bool => blank($get('config_from')))
                                             ->json()
                                             ->columnSpanFull(),
                                         Forms\Components\TagsInput::make('file_denylist')
