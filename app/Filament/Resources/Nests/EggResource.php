@@ -5,6 +5,8 @@ namespace App\Filament\Resources\Nests;
 use App\Filament\Components\ImageInput;
 use App\Filament\Resources\Nests\Eggs\Pages;
 use App\Models\Egg;
+use App\Rules\EggVariableDefaultValue;
+use App\Rules\EggVariableRules;
 use App\Services\Eggs\Sharing\EggExporterService;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
@@ -17,6 +19,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -142,6 +145,7 @@ class EggResource extends Resource
                                             ->maxLength(191),
                                         Forms\Components\TextInput::make('default_value')
                                             ->label(trans('admin/eggs.fields.default_value'))
+                                            ->rules(fn (Get $get): array => [new EggVariableDefaultValue($get('rules'))])
                                             ->dehydrateStateUsing(fn ($state) => $state ?? '')
                                             ->maxLength(191),
                                         Forms\Components\Toggle::make('user_viewable')
@@ -153,6 +157,7 @@ class EggResource extends Resource
                                         Forms\Components\TagsInput::make('rules')
                                             ->label(trans('admin/eggs.fields.rules'))
                                             ->required()
+                                            ->rules([new EggVariableRules()])
                                             ->suggestions([
                                                 'required',
                                                 'nullable',
