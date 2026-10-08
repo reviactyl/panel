@@ -58,6 +58,7 @@ const VariableBox = ({ variable }: Props) => {
         (v) => v === 'boolean' || v === 'in:0,1' || v === 'in:1,0' || v === 'in:true,false' || v === 'in:false,true',
     );
     const isStringSwitch = variable.rules.some((v) => v === 'string');
+    const effectiveValue = variable.serverValue ?? variable.defaultValue;
     const selectValues = variable.rules.find((v) => v.startsWith('in:'))?.split(',') || [];
 
     return (
@@ -78,9 +79,7 @@ const VariableBox = ({ variable }: Props) => {
                         <Switch
                             readOnly={!canEdit || !variable.isEditable}
                             name={variable.envVariable}
-                            defaultChecked={
-                                isStringSwitch ? variable.serverValue === 'true' : variable.serverValue === '1'
-                            }
+                            defaultChecked={isStringSwitch ? effectiveValue === 'true' : effectiveValue === '1'}
                             onChange={(event) => {
                                 if (canEdit && variable.isEditable) {
                                     if (isStringSwitch) {
@@ -99,7 +98,7 @@ const VariableBox = ({ variable }: Props) => {
                                 <Select
                                     onChange={(e) => setVariableValue(e.target.value)}
                                     name={variable.envVariable}
-                                    defaultValue={variable.serverValue ?? variable.defaultValue}
+                                    defaultValue={effectiveValue}
                                     disabled={!canEdit || !variable.isEditable}
                                 >
                                     {selectValues.map((selectValue) => (
