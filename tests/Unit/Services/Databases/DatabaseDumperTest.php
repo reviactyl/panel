@@ -51,12 +51,19 @@ class DatabaseDumperTest extends TestCase
         $connection->shouldReceive('query')->with('SELECT `n` FROM `numbers`')->andReturn($rows);
 
         $statements = iterator_to_array((new DatabaseDumper())->statements($connection), false);
-        $position = fn (string $query): int => array_search($definitions[$query][array_key_first($definitions[$query])], $statements, true);
+        $position = function (string $query) use ($definitions, $statements): int {
+            $index = array_search($definitions[$query][array_key_first($definitions[$query])], $statements, true);
+            $this->assertNotFalse($index, 'The dump is missing the definition from '.$query);
+
+            return $index;
+        };
+        $insert = array_search("INSERT INTO `numbers` (`n`) VALUES \n(21)", $statements, true);
+        $this->assertNotFalse($insert, 'The dump is missing the table rows.');
 
         $this->assertLessThan($position('SHOW CREATE VIEW `z_function_view`'), $position('SHOW CREATE FUNCTION `double_number`'));
         $this->assertLessThan($position('SHOW CREATE PROCEDURE `read_numbers`'), $position('SHOW CREATE FUNCTION `double_number`'));
         $this->assertLessThan($position('SHOW CREATE VIEW `a_nested`'), $position('SHOW CREATE VIEW `z_function_view`'));
-        $this->assertLessThan($position('SHOW CREATE TRIGGER `numbers_trigger`'), array_search("INSERT INTO `numbers` (`n`) VALUES \n(21)", $statements, true));
+        $this->assertLessThan($position('SHOW CREATE TRIGGER `numbers_trigger`'), $insert);
         $this->assertLessThan($position('SHOW CREATE EVENT `refresh_numbers`'), $position('SHOW CREATE PROCEDURE `read_numbers`'));
     }
 }
