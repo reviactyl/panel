@@ -15,6 +15,7 @@ use App\Services\Servers\ReinstallServerService;
 use App\Services\Servers\ServerDeletionService;
 use App\Services\Servers\StartupModificationService;
 use App\Services\Servers\SuspensionService;
+use App\Services\Servers\VariableValidatorService;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
@@ -70,15 +71,11 @@ class EditServer extends EditRecord
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
         /** @var Server $record */
-        app(StartupModificationService::class)
-            ->setUserLevel(User::USER_LEVEL_ADMIN)
-            ->handle($record, [
-                'egg_id' => $data['egg_id'] ?? $record->egg_id,
-                'startup' => $data['startup'] ?? $record->startup,
-                'skip_scripts' => $data['skip_scripts'] ?? false,
-                'docker_image' => $data['image'] ?? $record->image,
-                'environment' => $data['environment'] ?? [],
-            ]);
+        if (! empty($data['environment'])) {
+            app(VariableValidatorService::class)
+                ->setUserLevel(User::USER_LEVEL_ADMIN)
+                ->handle($data['egg_id'] ?? $record->egg_id, $data['environment']);
+        }
 
         app(DetailsModificationService::class)->handle($record, Arr::only($data, [
             'external_id',
@@ -111,6 +108,16 @@ class EditServer extends EditRecord
         $buildData['remove_allocations'] = array_values(array_diff($currentAdditional, $desiredAdditional));
 
         app(BuildModificationService::class)->handle($record, $buildData);
+
+        app(StartupModificationService::class)
+            ->setUserLevel(User::USER_LEVEL_ADMIN)
+            ->handle($record, [
+                'egg_id' => $data['egg_id'] ?? $record->egg_id,
+                'startup' => $data['startup'] ?? $record->startup,
+                'skip_scripts' => $data['skip_scripts'] ?? false,
+                'docker_image' => $data['image'] ?? $record->image,
+                'environment' => $data['environment'] ?? [],
+            ]);
 
         return $record->refresh();
     }
