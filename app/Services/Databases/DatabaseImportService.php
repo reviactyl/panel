@@ -159,7 +159,11 @@ class DatabaseImportService
 
     private function usesBackslashEscapes(PDO $target): bool
     {
-        $mode = $target->query('SELECT @@SESSION.sql_mode')->fetchColumn();
+        try {
+            $mode = $target->query('SELECT @@SESSION.sql_mode')->fetchColumn();
+        } catch (\PDOException $exception) {
+            throw new DatabaseImportException(DatabaseImportException::CONNECTION_FAILED, $this->detail($exception), $exception);
+        }
 
         return ! in_array('NO_BACKSLASH_ESCAPES', explode(',', strtoupper((string) $mode)), true);
     }

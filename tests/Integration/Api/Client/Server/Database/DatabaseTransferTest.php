@@ -420,6 +420,41 @@ class DatabaseTransferTest extends ClientApiIntegrationTestCase
         }
     }
 
+    #[DataProvider('modeQueryFailureDataProvider')]
+    public function test_job_records_mode_query_errors_even_when_the_reader_advances(bool $afterFirstStatement)
+    {
+        Storage::fake('local');
+        [, $server] = $this->generateTestAccount();
+        $database = $this->createDatabase($server);
+        $path = 'database-imports/mode-error.sql';
+        Storage::disk('local')->put($path, ($afterFirstStatement ? 'SELECT 1;' : '')."SELECT 'quoted';");
+        $exception = new \PDOException('Lost connection');
+        $exception->errorInfo = ['HY000', 2006, 'MySQL server has gone away'];
+        $target = \Mockery::mock(\PDO::class);
+        if ($afterFirstStatement) {
+            $result = \Mockery::mock(\PDOStatement::class);
+            $result->expects('closeCursor')->andReturn(true);
+            $target->expects('query')->with('SELECT 1')->andReturn($result);
+        }
+        $target->expects('query')->with('SELECT @@SESSION.sql_mode')->andThrow($exception);
+        $this->mock(DatabaseConnectionFactory::class)->expects('forDatabase')->andReturn($target);
+        $status = $this->app->make(DatabaseImportStatusService::class);
+        $token = $status->start($database);
+
+        $this->app->call([new ImportDatabaseJob($database->id, $path, null, $token), 'handle']);
+
+        $this->assertSame(DatabaseImportStatusService::STATE_FAILED, $status->get($database)['state']);
+        $this->assertSame(DatabaseImportException::CONNECTION_FAILED, $status->get($database)['error']);
+        $this->assertSame('MySQL server has gone away', $status->get($database)['detail']);
+        $this->assertFalse($status->isRunning($database));
+        Storage::disk('local')->assertMissing($path);
+    }
+
+    public static function modeQueryFailureDataProvider(): array
+    {
+        return ['before first statement' => [false], 'after first statement' => [true]];
+    }
+
     private function createDatabase(Server $server): Database
     {
         return Database::factory()->create([
