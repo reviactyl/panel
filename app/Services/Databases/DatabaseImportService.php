@@ -44,7 +44,12 @@ class DatabaseImportService
         }
 
         try {
-            return $this->import($database, $this->reader->read($stream), $wipe, $progress);
+            return $this->import(
+                $database,
+                fn (PDO $target) => $this->fileStatements($stream, $target),
+                $wipe,
+                $progress
+            );
         } finally {
             fclose($stream);
             $archive?->close();
@@ -100,17 +105,21 @@ class DatabaseImportService
     }
 
     /**
-     * @param  \Iterator<int, string>  $statements
+     * @param  \Iterator<int, string>|\Closure(PDO): \Iterator<int, string>  $statements
      * @param  (\Closure(int): void)|null  $progress
      *
      * @throws DatabaseImportException
      */
-    private function import(Database $database, \Iterator $statements, bool $wipe, ?\Closure $progress): int
+    private function import(Database $database, \Iterator|\Closure $statements, bool $wipe, ?\Closure $progress): int
     {
         try {
             $target = $this->connections->forDatabase($database);
         } catch (\PDOException $exception) {
             throw new DatabaseImportException(DatabaseImportException::CONNECTION_FAILED, previous: $exception);
+        }
+
+        if ($statements instanceof \Closure) {
+            $statements = $statements($target);
         }
 
         if (! $statements->valid()) {
@@ -146,6 +155,33 @@ class DatabaseImportService
         }
 
         return $count;
+    }
+
+    private function usesBackslashEscapes(PDO $target): bool
+    {
+        $mode = $target->query('SELECT @@SESSION.sql_mode')->fetchColumn();
+
+        return ! in_array('NO_BACKSLASH_ESCAPES', explode(',', strtoupper((string) $mode)), true);
+    }
+
+    /**
+     * @param  resource  $stream
+     * @return \Generator<int, string>
+     */
+    private function fileStatements($stream, PDO $target): \Generator
+    {
+        $backslashEscapes = null;
+        $mode = function () use ($target, &$backslashEscapes): bool {
+            return $backslashEscapes ??= $this->usesBackslashEscapes($target);
+        };
+
+        foreach ($this->reader->read($stream, $mode) as $statement) {
+            yield $statement;
+
+            if (! preg_match('/\A(?:INSERT|REPLACE)\b/i', $statement)) {
+                $backslashEscapes = null;
+            }
+        }
     }
 
     private function wipe(Database $database, PDO $target): void
