@@ -100,9 +100,10 @@ jobs:
     services:
       database:
         image: ${{ matrix.database }}
-        credentials:
-          username: ${{ vars.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PAT }}
+        credentials: >-
+          ${{ vars.DOCKER_USER != '' && secrets.DOCKER_PAT != '' &&
+              fromJSON(format('{{"username":{0},"password":{1}}}',
+                toJSON(vars.DOCKER_USER), toJSON(secrets.DOCKER_PAT))) || fromJSON('{}') }}
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_DATABASE: testing
@@ -133,12 +134,12 @@ jobs:
       - name: Migration Test
         run: php artisan migrate --force --seed
         env:
-          DB_PORT: ${{ job.services.database.ports[3306] }}
+          DB_PORT: ${{ job.services.database.ports['3306'] }}
 
       - name: Migration Rollback Test
         run: php artisan migrate:rollback --force
         env:
-          DB_PORT: ${{ job.services.database.ports[3306] }}
+          DB_PORT: ${{ job.services.database.ports['3306'] }}
 
       - name: Unit tests
         run: vendor/bin/pest tests/Unit --parallel
@@ -148,7 +149,7 @@ jobs:
       - name: Integration tests
         run: vendor/bin/pest tests/Integration --parallel
         env:
-          DB_PORT: ${{ job.services.database.ports[3306] }}
+          DB_PORT: ${{ job.services.database.ports['3306'] }}
 
   mariadb:
     name: MariaDB
@@ -173,9 +174,10 @@ jobs:
     services:
       database:
         image: ${{ matrix.database }}
-        credentials:
-          username: ${{ vars.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PAT }}
+        credentials: >-
+          ${{ vars.DOCKER_USER != '' && secrets.DOCKER_PAT != '' &&
+              fromJSON(format('{{"username":{0},"password":{1}}}',
+                toJSON(vars.DOCKER_USER), toJSON(secrets.DOCKER_PAT))) || fromJSON('{}') }}
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_DATABASE: testing
@@ -206,12 +208,12 @@ jobs:
       - name: Migration Test
         run: php artisan migrate --force --seed
         env:
-          DB_PORT: ${{ job.services.database.ports[3306] }}
+          DB_PORT: ${{ job.services.database.ports['3306'] }}
 
       - name: Migration Rollback Test
         run: php artisan migrate:rollback --force
         env:
-          DB_PORT: ${{ job.services.database.ports[3306] }}
+          DB_PORT: ${{ job.services.database.ports['3306'] }}
 
       - name: Unit tests
         run: vendor/bin/pest tests/Unit --parallel
@@ -221,7 +223,7 @@ jobs:
       - name: Integration tests
         run: vendor/bin/pest tests/Integration --parallel
         env:
-          DB_PORT: ${{ job.services.database.ports[3306] }}
+          DB_PORT: ${{ job.services.database.ports['3306'] }}
 
   pgsql:
     name: PostgreSQL
@@ -246,9 +248,10 @@ jobs:
     services:
       database:
         image: ${{ matrix.database }}
-        credentials:
-          username: ${{ vars.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PAT }}
+        credentials: >-
+          ${{ vars.DOCKER_USER != '' && secrets.DOCKER_PAT != '' &&
+              fromJSON(format('{{"username":{0},"password":{1}}}',
+                toJSON(vars.DOCKER_USER), toJSON(secrets.DOCKER_PAT))) || fromJSON('{}') }}
         env:
           POSTGRES_DB: testing
           POSTGRES_USER: postgres
@@ -281,12 +284,12 @@ jobs:
       - name: Migration Test
         run: php artisan migrate --force --seed
         env:
-          DB_PORT: ${{ job.services.database.ports[5432] }}
+          DB_PORT: ${{ job.services.database.ports['5432'] }}
 
       - name: Migration Rollback Test
         run: php artisan migrate:rollback --force
         env:
-          DB_PORT: ${{ job.services.database.ports[5432] }}
+          DB_PORT: ${{ job.services.database.ports['5432'] }}
 
       - name: Unit tests
         run: vendor/bin/pest tests/Unit --parallel
@@ -296,4 +299,4 @@ jobs:
       - name: Integration tests
         run: vendor/bin/pest tests/Integration --parallel
         env:
-          DB_PORT: ${{ job.services.database.ports[5432] }}
+          DB_PORT: ${{ job.services.database.ports['5432'] }}
