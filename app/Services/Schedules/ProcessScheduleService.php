@@ -9,6 +9,7 @@ use App\Repositories\Agent\DaemonServerRepository;
 use Exception;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Database\ConnectionInterface;
+use Illuminate\Support\Str;
 use Throwable;
 
 class ProcessScheduleService
@@ -42,12 +43,14 @@ class ProcessScheduleService
 
         $job = new RunTaskJob($task, $now);
         $nextRunAt = $schedule->next_run_at;
+        $processingToken = (string) Str::uuid();
 
-        $ready = $this->connection->transaction(function () use ($schedule, $task, $job, $shouldRun) {
+        $ready = $this->connection->transaction(function () use ($schedule, $task, $job, $shouldRun, $processingToken) {
             $schedule->setRelation('server', $schedule->server()->sharedLock()->firstOrFail());
 
             $schedule->forceFill([
                 'is_processing' => true,
+                'processing_token' => $processingToken,
                 'next_run_at' => $schedule->getNextRunDate(),
             ])->saveOrFail();
 
@@ -69,14 +72,16 @@ class ProcessScheduleService
             try {
                 $this->dispatcher->dispatch($job->delay($task->time_offset));
             } catch (Throwable $exception) {
-                $this->connection->transaction(function () use ($schedule, $task, $nextRunAt) {
-                    // Sync jobs can already have completed or failed. Preserve their progress.
+                $this->connection->transaction(function () use ($schedule, $task, $nextRunAt, $processingToken) {
+                    // Only recover this execution; a newer run or a completed sync job owns its state.
                     $reset = $schedule->newQuery()->whereKey($schedule->id)
                         ->where('is_processing', true)
+                        ->where('processing_token', $processingToken)
                         ->update(['is_processing' => false, 'next_run_at' => $nextRunAt]);
 
                     if ($reset) {
                         $task->newQuery()->whereKey($task->id)->update(['is_queued' => false]);
+                        $schedule->refresh();
                     }
                 });
 

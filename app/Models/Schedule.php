@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $cron_hour
  * @property string $cron_minute
  * @property bool $is_active
+ * @property string|null $processing_token
  * @property bool $is_processing
  * @property bool $only_when_online
  * @property Carbon|null $last_run_at

@@ -72,13 +72,15 @@ class ProcessScheduleServiceTest extends IntegrationTestCase
         ]);
         $task = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 1]);
         $failure = new \RuntimeException('Queue unavailable');
-        $dispatcher->expects('dispatch')->andThrow($failure);
+        $dispatcher->expects('dispatch')->twice()->andThrow($failure);
 
-        try {
-            $this->getService()->handle($schedule);
-            $this->fail('Dispatch should have failed.');
-        } catch (\RuntimeException $exception) {
-            $this->assertSame($failure, $exception);
+        for ($attempt = 0; $attempt < 2; $attempt++) {
+            try {
+                $this->getService()->handle($schedule);
+                $this->fail('Dispatch should have failed.');
+            } catch (\RuntimeException $exception) {
+                $this->assertSame($failure, $exception);
+            }
         }
 
         $schedule->refresh();
@@ -92,6 +94,37 @@ class ProcessScheduleServiceTest extends IntegrationTestCase
         $this->assertTrue($schedule->refresh()->is_processing);
         $this->assertTrue($task->refresh()->is_queued);
         $this->assertTrue($schedule->next_run_at->isFuture());
+    }
+
+    public function test_failed_dispatch_does_not_reset_a_newer_manual_run()
+    {
+        $this->swap(Dispatcher::class, $dispatcher = \Mockery::mock(Dispatcher::class));
+        $server = $this->createServerModel();
+        $schedule = Schedule::factory()->create([
+            'server_id' => $server->id,
+            'next_run_at' => CarbonImmutable::now()->subMinute(),
+        ]);
+        $task = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 1]);
+        $failure = new \RuntimeException('Automatic submission failed');
+        $dispatcher->expects('dispatchNow')->andReturnNull();
+        $dispatcher->expects('dispatch')->andReturnUsing(function () use ($schedule, $failure) {
+            // A manual run takes over while the automatic submission is still pending.
+            // Leave its job in progress so recovery must distinguish the two executions.
+            $this->assertTrue($this->getService()->handle($schedule->fresh(), true));
+
+            throw $failure;
+        });
+
+        try {
+            $this->getService()->handle($schedule);
+            $this->fail('Dispatch should have failed.');
+        } catch (\RuntimeException $exception) {
+            $this->assertSame($failure, $exception);
+        }
+
+        $this->assertTrue($schedule->refresh()->is_processing);
+        $this->assertTrue($schedule->next_run_at->isFuture());
+        $this->assertTrue($task->refresh()->is_queued);
     }
 
     public function test_synchronous_chain_failure_does_not_replay_successful_commands()
