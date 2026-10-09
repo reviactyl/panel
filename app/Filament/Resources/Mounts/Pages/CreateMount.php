@@ -3,8 +3,10 @@
 namespace App\Filament\Resources\Mounts\Pages;
 
 use App\Filament\Resources\Mounts\MountResource;
+use App\Models\Mount;
 use App\Services\Activity\ActivityLogService;
 use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 class CreateMount extends CreateRecord
@@ -19,9 +21,16 @@ class CreateMount extends CreateRecord
             $data = $firstValue;
         }
 
-        $data['uuid'] = Str::uuid()->toString();
-
         return $data;
+    }
+
+    protected function handleRecordCreation(array $data): Model
+    {
+        $record = new Mount($data);
+        $record->uuid = Str::uuid()->toString();
+        $record->save();
+
+        return $record;
     }
 
     protected function afterCreate(): void
