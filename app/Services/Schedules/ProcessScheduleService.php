@@ -9,6 +9,7 @@ use App\Repositories\Agent\DaemonServerRepository;
 use Exception;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Database\ConnectionInterface;
+use Throwable;
 
 class ProcessScheduleService
 {
@@ -20,7 +21,7 @@ class ProcessScheduleService
     /**
      * Process a schedule and push the first task onto the queue worker.
      *
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function handle(Schedule $schedule, bool $now = false): bool
     {
@@ -40,8 +41,9 @@ class ProcessScheduleService
         }
 
         $job = new RunTaskJob($task, $now);
+        $nextRunAt = $schedule->next_run_at;
 
-        $ready = $this->connection->transaction(function () use ($schedule, $task, $job, $now, $shouldRun) {
+        $ready = $this->connection->transaction(function () use ($schedule, $task, $job, $shouldRun) {
             $schedule->setRelation('server', $schedule->server()->sharedLock()->firstOrFail());
 
             $schedule->forceFill([
@@ -56,10 +58,6 @@ class ProcessScheduleService
                 return false;
             }
 
-            if (! $now) {
-                $this->dispatcher->dispatch($job->delay($task->time_offset)->beforeCommit());
-            }
-
             return true;
         });
 
@@ -67,7 +65,24 @@ class ProcessScheduleService
             return false;
         }
 
-        if ($now) {
+        if (! $now) {
+            try {
+                $this->dispatcher->dispatch($job->delay($task->time_offset));
+            } catch (Throwable $exception) {
+                $this->connection->transaction(function () use ($schedule, $task, $nextRunAt) {
+                    // Sync jobs can already have completed or failed. Preserve their progress.
+                    $reset = $schedule->newQuery()->whereKey($schedule->id)
+                        ->where('is_processing', true)
+                        ->update(['is_processing' => false, 'next_run_at' => $nextRunAt]);
+
+                    if ($reset) {
+                        $task->newQuery()->whereKey($task->id)->update(['is_queued' => false]);
+                    }
+                });
+
+                throw $exception;
+            }
+        } else {
             // When using dispatchNow the RunTaskJob::failed() function is not called automatically
             // so we need to manually trigger it and then continue with the exception throw.
             //

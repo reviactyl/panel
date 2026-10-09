@@ -15,6 +15,7 @@ use GuzzleHttp\Psr7\Response;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\DB;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Integration\IntegrationTestCase;
 
@@ -86,11 +87,67 @@ class ProcessScheduleServiceTest extends IntegrationTestCase
         $this->assertTrue($schedule->next_run_at->equalTo($dueAt));
         $this->assertNull($schedule->last_run_at);
 
-        $dispatcher->expects('dispatch')->with(\Mockery::on(fn (RunTaskJob $job) => $job->task->id === $task->id && $job->afterCommit === false));
+        $dispatcher->expects('dispatch')->with(\Mockery::on(fn (RunTaskJob $job) => $job->task->id === $task->id && $job->afterCommit === null));
         $this->assertTrue($this->getService()->handle($schedule));
         $this->assertTrue($schedule->refresh()->is_processing);
         $this->assertTrue($task->refresh()->is_queued);
         $this->assertTrue($schedule->next_run_at->isFuture());
+    }
+
+    public function test_synchronous_chain_failure_does_not_replay_successful_commands()
+    {
+        config(['queue.default' => 'sync']);
+        $connection = $this->app->make(ConnectionInterface::class);
+        if ($connection->getDriverName() === 'sqlite') {
+            $connection->getPdo()->sqliteCreateFunction('NOW', fn () => CarbonImmutable::now()->toDateTimeString());
+        }
+        $server = $this->createServerModel();
+        $schedule = Schedule::factory()->create(['server_id' => $server->id, 'next_run_at' => CarbonImmutable::now()->subMinute()]);
+        $first = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 1, 'time_offset' => 0, 'payload' => 'first']);
+        $second = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 2, 'time_offset' => 0, 'payload' => 'second', 'continue_on_failure' => false]);
+        $commands = [];
+        $this->mock(DaemonCommandRepository::class, function ($mock) use (&$commands) {
+            $mock->shouldReceive('setServer')->andReturnSelf();
+            $mock->shouldReceive('send')->andReturnUsing(function ($command) use (&$commands) {
+                $commands[] = $command;
+                if ($command === 'second') {
+                    throw new \RuntimeException('Second task failed');
+                }
+
+                return new Response();
+            });
+        });
+
+        $this->artisan('p:schedule:process')->assertSuccessful();
+        $this->artisan('p:schedule:process')->assertSuccessful();
+
+        $this->assertSame(['first', 'second'], $commands);
+        $this->assertFalse($schedule->refresh()->is_processing);
+        $this->assertTrue($schedule->next_run_at->isFuture());
+        $this->assertNotNull($schedule->last_run_at);
+        $this->assertFalse($first->refresh()->is_queued);
+        $this->assertFalse($second->refresh()->is_queued);
+    }
+
+    public function test_worker_can_see_queued_state_when_dispatch_starts()
+    {
+        $server = $this->createServerModel();
+        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
+        $task = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 1, 'time_offset' => 0]);
+        $this->swap(Dispatcher::class, $dispatcher = \Mockery::mock(Dispatcher::class));
+        $connection = $this->app->make(ConnectionInterface::class);
+        config(['database.connections.schedule_observer' => $connection->getConfig()]);
+        $dispatcher->expects('dispatch')->andReturnUsing(function () use ($task, $schedule) {
+            $observer = DB::connection('schedule_observer');
+            $this->assertTrue((bool) $observer->table('tasks')->where('id', $task->id)->value('is_queued'));
+            $this->assertTrue((bool) $observer->table('schedules')->where('id', $schedule->id)->value('is_processing'));
+        });
+
+        try {
+            $this->assertTrue($this->getService()->handle($schedule));
+        } finally {
+            DB::purge('schedule_observer');
+        }
     }
 
     #[DataProvider('dispatchNowDataProvider')]
