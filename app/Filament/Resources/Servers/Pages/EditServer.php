@@ -34,7 +34,7 @@ class EditServer extends EditRecord
     protected function mutateFormDataBeforeFill(array $data): array
     {
         /** @var Server $server */
-        $server = $this->record->loadMissing('allocations', 'variables');
+        $server = $this->record->loadMissing('allocations');
 
         $data['allocation_additional'] = $server->allocations
             ->where('id', '!=', $server->allocation_id)
@@ -42,7 +42,7 @@ class EditServer extends EditRecord
             ->values()
             ->all();
 
-        $data['environment'] = $server->variables
+        $data['environment'] = $server->variables()->get()
             ->mapWithKeys(fn ($variable): array => [
                 $variable->env_variable => $variable->server_value ?? $variable->default_value,
             ])
