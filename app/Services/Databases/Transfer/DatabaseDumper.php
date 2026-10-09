@@ -49,10 +49,10 @@ class DatabaseDumper
             yield from $this->rows($connection, $table);
         }
 
+        yield from $this->definitions($connection, 'FUNCTION', $functions, 2);
+        yield from $this->definitions($connection, 'PROCEDURE', $procedures, 2);
         yield from $this->views($connection, $views);
         yield from $this->definitions($connection, 'TRIGGER', $triggers, 2);
-        yield from $this->definitions($connection, 'PROCEDURE', $procedures, 2);
-        yield from $this->definitions($connection, 'FUNCTION', $functions, 2);
         yield from $this->definitions($connection, 'EVENT', $events, 3);
 
         yield 'SET UNIQUE_CHECKS = 1';
