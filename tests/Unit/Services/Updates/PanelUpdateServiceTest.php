@@ -191,6 +191,49 @@ class PanelUpdateServiceTest extends TestCase
         $this->assertFileExists($backupsPath.'/failed-or-active/database.sql');
     }
 
+    public function test_failed_dependency_backup_preserves_the_live_installation(): void
+    {
+        $this->configureMysql();
+        $base = $this->baseDirectory();
+        $files = new Filesystem();
+        $files->ensureDirectoryExists($base.'/vendor');
+        $files->put($base.'/artisan', 'old artisan');
+        $files->put($base.'/composer.json', 'old composer');
+        $files->put($base.'/vendor/installed.txt', 'old vendor');
+
+        $service = $this->makeInspectableUpdater($base);
+        $service->fixture = $this->releaseArchive([
+            'artisan' => 'new artisan',
+            'composer.json' => 'new composer',
+            'new-file.php' => 'new file',
+        ]);
+        $service->blockVendorBackup = true;
+
+        // Let rename return false so the updater handles its own backup error.
+        set_error_handler(static function (int $severity, string $message): bool {
+            return $severity === E_WARNING && str_starts_with($message, 'rename(');
+        });
+        try {
+            $service->update('26.09.1');
+            $this->fail('Expected the dependency backup to fail.');
+        } catch (RuntimeException $exception) {
+            $this->assertStringContainsString('Unable to back up the current Composer dependencies.', $exception->getMessage());
+            $this->assertStringContainsString('No live files were changed.', $exception->getMessage());
+        } finally {
+            restore_error_handler();
+        }
+
+        $this->assertSame('old vendor', $files->get($base.'/vendor/installed.txt'));
+        $this->assertSame('old artisan', $files->get($base.'/artisan'));
+        $this->assertSame('old composer', $files->get($base.'/composer.json'));
+        $this->assertFileDoesNotExist($base.'/new-file.php');
+        $commands = array_map(fn (array $command): string => implode(' ', $command), $service->commands);
+        $this->commandIndex($commands, 'artisan up');
+        $this->assertFalse(in_array('composer', array_column($service->commands, 0), true));
+        $this->assertFalse(in_array('mysql', array_column($service->commands, 0), true));
+        $this->assertSame('failed', app(SoftwareUpdateStatusService::class)->get('panel')['state']);
+    }
+
     public function test_failed_dependency_install_restores_files_database_and_vendor(): void
     {
         config()->set('panel.installation_type', 'native');
@@ -562,6 +605,8 @@ class PanelUpdateServiceTest extends TestCase
 
             public bool $failComposer = false;
 
+            public bool $blockVendorBackup = false;
+
             public bool $mutateSqliteBeforeComposerFailure = false;
 
             public ?string $missingExecutable = null;
@@ -623,6 +668,10 @@ class PanelUpdateServiceTest extends TestCase
                 $this->commands[] = $command;
                 if ($command[0] === 'mysqldump' || $command[0] === 'pg_dump') {
                     file_put_contents($outputPath, 'database backup');
+                    if ($this->blockVendorBackup) {
+                        mkdir(dirname($outputPath).'/vendor');
+                        file_put_contents(dirname($outputPath).'/vendor/obstruction.txt', 'block backup rename');
+                    }
 
                     return '';
                 }
