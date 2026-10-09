@@ -62,6 +62,7 @@ const NavbarLanguageSwitcher = () => {
     return (
         <div className='relative' ref={containerRef}>
             <button
+                type='button'
                 className='flex cursor-pointer items-center gap-2 rounded-ui border border-gray-800 bg-gray-900 px-3 py-2 text-sm text-gray-200 transition-all hover:border-gray-600 hover:bg-gray-700'
                 onClick={() => setIsOpen(!isOpen)}
             >
@@ -80,6 +81,7 @@ const NavbarLanguageSwitcher = () => {
                 {Object.entries(languages).map(([code, info]) => (
                     <button
                         key={code}
+                        type='button'
                         className={`flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors hover:text-reviactyl rtl:text-right ${
                             code === currentLang
                                 ? 'bg-[rgb(var(--color-primary)/0.2)] text-[rgb(var(--color-primary)/0.1)]'
