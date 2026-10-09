@@ -2,10 +2,13 @@
 
 namespace Tests\Integration\Filament;
 
+use App\Events\ActivityLogged;
 use App\Filament\Resources\Mounts\Pages\CreateMount;
+use App\Models\ActivityLogSubject;
 use App\Models\Mount;
 use App\Models\User;
 use Filament\Facades\Filament;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
 use Tests\Integration\IntegrationTestCase;
@@ -40,7 +43,9 @@ class CreateMountTest extends IntegrationTestCase
             $this->assertSame('Mount creation regression', $mount->description);
             $this->assertSame($enabled, $mount->read_only);
             $this->assertSame($enabled, $mount->user_mountable);
-            $this->assertActivityLogged('mount:create');
+            $this->assertCount(1, Event::dispatched(ActivityLogged::class, fn (ActivityLogged $event) => $event->is('mount:create')
+                && $event->model->subjects->contains(fn (ActivityLogSubject $subject) => $subject->subject_type === $mount->getMorphClass()
+                    && $subject->subject_id === $mount->getKey())));
         }
 
         $this->assertDatabaseCount('mounts', 2);
