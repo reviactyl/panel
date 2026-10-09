@@ -247,6 +247,74 @@ class BuildModificationServiceTest extends IntegrationTestCase
         $this->assertDatabaseHas('allocations', ['id' => $allocation->id, 'server_id' => null]);
     }
 
+    public function test_changing_primary_allocation_preserves_feature_limits()
+    {
+        $server = $this->createServerModel([
+            'database_limit' => 3,
+            'allocation_limit' => 4,
+            'backup_limit' => 5,
+        ]);
+        $allocation = Allocation::factory()->create(['node_id' => $server->node_id, 'server_id' => $server->id]);
+
+        $this->daemonServerRepository->expects('setServer->sync')->andReturnUndefined();
+
+        $response = $this->getService()->handle($server, ['allocation_id' => $allocation->id]);
+
+        $this->assertSame($allocation->id, $response->allocation_id);
+        $this->assertSame(3, $response->database_limit);
+        $this->assertSame(4, $response->allocation_limit);
+        $this->assertSame(5, $response->backup_limit);
+    }
+
+    public function test_partial_build_update_preserves_null_feature_limits()
+    {
+        $server = $this->createServerModel([
+            'database_limit' => null,
+            'allocation_limit' => null,
+            'backup_limit' => 0,
+        ]);
+
+        $this->daemonServerRepository->expects('setServer->sync')->andReturnUndefined();
+
+        $response = $this->getService()->handle($server, ['memory' => 256]);
+
+        $this->assertSame(256, $response->memory);
+        $this->assertNull($response->database_limit);
+        $this->assertNull($response->allocation_limit);
+        $this->assertSame(0, $response->backup_limit);
+    }
+
+    public function test_explicit_feature_limits_can_be_cleared()
+    {
+        $server = $this->createServerModel([
+            'database_limit' => 3,
+            'allocation_limit' => 4,
+            'backup_limit' => 5,
+        ]);
+
+        $this->daemonServerRepository->expects('setServer->sync')->twice()->andReturnUndefined();
+
+        $response = $this->getService()->handle($server, [
+            'database_limit' => 0,
+            'allocation_limit' => 0,
+            'backup_limit' => 0,
+        ]);
+
+        $this->assertSame(0, $response->database_limit);
+        $this->assertSame(0, $response->allocation_limit);
+        $this->assertSame(0, $response->backup_limit);
+
+        $response = $this->getService()->handle($server, [
+            'database_limit' => null,
+            'allocation_limit' => null,
+            'backup_limit' => null,
+        ]);
+
+        $this->assertNull($response->database_limit);
+        $this->assertNull($response->allocation_limit);
+        $this->assertSame(0, $response->backup_limit);
+    }
+
     private function getService(): BuildModificationService
     {
         return $this->app->make(BuildModificationService::class);
