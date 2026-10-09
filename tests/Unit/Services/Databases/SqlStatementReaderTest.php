@@ -10,13 +10,50 @@ use Tests\TestCase;
 class SqlStatementReaderTest extends TestCase
 {
     #[DataProvider('statementDataProvider')]
-    public function test_statements_are_split_correctly(string $sql, array $expected)
+    public function test_statements_are_split_correctly(string $sql, array $expected, bool $backslashEscapes = true)
     {
         $stream = fopen('php://memory', 'w+');
         fwrite($stream, $sql);
         rewind($stream);
 
-        $this->assertSame($expected, iterator_to_array((new SqlStatementReader())->read($stream), false));
+        $this->assertSame($expected, iterator_to_array((new SqlStatementReader())->read($stream, fn () => $backslashEscapes), false));
+    }
+
+    public function test_quote_parsing_follows_mode_changes_after_statements_execute()
+    {
+        $expected = [
+            "/*!40101 SET @saved_mode = @@sql_mode, SQL_MODE = 'NO_BACKSLASH_ESCAPES' */",
+            "SELECT 'C:\\', 'it''s; literal'",
+            'SET SQL_MODE = @saved_mode',
+            "SELECT 'it\\'s; escaped'",
+        ];
+        $stream = fopen('php://memory', 'w+');
+        fwrite($stream, implode(';', $expected).';');
+        rewind($stream);
+        $backslashEscapes = true;
+        $calls = 0;
+        $mode = function () use (&$backslashEscapes, &$calls): bool {
+            $calls++;
+
+            return $backslashEscapes;
+        };
+
+        try {
+            $statements = [];
+            foreach ((new SqlStatementReader())->read($stream, $mode) as $index => $statement) {
+                $statements[] = $statement;
+                if ($index === 0) {
+                    $backslashEscapes = false;
+                } elseif ($index === 2) {
+                    $backslashEscapes = true;
+                }
+            }
+
+            $this->assertSame($expected, $statements);
+            $this->assertSame(2, $calls);
+        } finally {
+            fclose($stream);
+        }
     }
 
     public function test_statements_are_read_from_a_compressed_file()
@@ -64,6 +101,16 @@ class SqlStatementReaderTest extends TestCase
             'delimiter inside of quotes' => [
                 "INSERT INTO `a;b` VALUES ('it''s; ok', \"x\\\";y\", 'z\\\\');SELECT 2;",
                 ["INSERT INTO `a;b` VALUES ('it''s; ok', \"x\\\";y\", 'z\\\\')", 'SELECT 2'],
+            ],
+            'no backslash escapes with single and double quotes' => [
+                "SELECT 'C:\\';SELECT \"D:\\\";SELECT 'it''s; literal';SELECT `a\\`;",
+                ["SELECT 'C:\\'", 'SELECT "D:\\"', "SELECT 'it''s; literal'", 'SELECT `a\\`'],
+                false,
+            ],
+            'no backslash escapes across reads' => [
+                "SELECT '".str_repeat('a', 65526)."\\';SELECT 2;",
+                ["SELECT '".str_repeat('a', 65526)."\\'", 'SELECT 2'],
+                false,
             ],
             'line comments are removed' => [
                 "-- first\n# second\nSELECT 1; -- trailing; comment\nSELECT '-- kept', 5--2;",

@@ -12,6 +12,7 @@ use App\Models\Server;
 use App\Services\Databases\DatabaseExportService;
 use App\Services\Databases\DatabaseImportService;
 use App\Services\Databases\DatabaseImportStatusService;
+use App\Services\Databases\Transfer\DatabaseConnectionFactory;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Queue;
@@ -370,6 +371,88 @@ class DatabaseTransferTest extends ClientApiIntegrationTestCase
         $this->assertSame(DatabaseImportStatusService::STATE_FAILED, $status->get($database)['state']);
         $this->assertSame(DatabaseImportException::REMOTE_ACCESS_DENIED, $status->get($database)['error']);
         $this->assertNotNull($status->start($database));
+    }
+
+    public function test_file_import_tracks_mode_changes_without_querying_it_for_every_insert()
+    {
+        [, $server] = $this->generateTestAccount();
+        $database = $this->createDatabase($server);
+        $expected = [
+            "/*!40101 SET SQL_MODE = 'NO_BACKSLASH_ESCAPES' */",
+            'CREATE TABLE paths (value TEXT)',
+            "INSERT INTO paths VALUES ('C:\\')",
+            "INSERT INTO paths VALUES ('D:\\')",
+            "REPLACE INTO paths VALUES ('it''s; literal')",
+            "SET SQL_MODE = ''",
+            "INSERT INTO paths VALUES ('it\\'s; escaped')",
+        ];
+        $executed = [];
+        $mode = '';
+        $modeQueries = 0;
+        $target = \Mockery::mock(\PDO::class);
+        $target->shouldReceive('query')->andReturnUsing(function (string $sql) use (&$executed, &$mode, &$modeQueries) {
+            $result = \Mockery::mock(\PDOStatement::class);
+            if ($sql === 'SELECT @@SESSION.sql_mode') {
+                $modeQueries++;
+                $result->expects('fetchColumn')->andReturn($mode);
+            } else {
+                $executed[] = $sql;
+                if (str_starts_with($sql, '/*!40101 SET')) {
+                    $mode = 'NO_BACKSLASH_ESCAPES';
+                } elseif ($sql === "SET SQL_MODE = ''") {
+                    $mode = '';
+                }
+                $result->expects('closeCursor')->andReturn(true);
+            }
+
+            return $result;
+        });
+        $this->mock(DatabaseConnectionFactory::class)->expects('forDatabase')->andReturn($target);
+        $path = tempnam(sys_get_temp_dir(), 'sql');
+        file_put_contents($path, implode(';', $expected).';');
+
+        try {
+            $this->assertSame(count($expected), $this->app->make(DatabaseImportService::class)->fromFile($database, $path));
+            $this->assertSame($expected, $executed);
+            $this->assertSame(2, $modeQueries);
+        } finally {
+            unlink($path);
+        }
+    }
+
+    #[DataProvider('modeQueryFailureDataProvider')]
+    public function test_job_records_mode_query_errors_even_when_the_reader_advances(bool $afterFirstStatement)
+    {
+        Storage::fake('local');
+        [, $server] = $this->generateTestAccount();
+        $database = $this->createDatabase($server);
+        $path = 'database-imports/mode-error.sql';
+        Storage::disk('local')->put($path, ($afterFirstStatement ? 'SELECT 1;' : '')."SELECT 'quoted';");
+        $exception = new \PDOException('Lost connection');
+        $exception->errorInfo = ['HY000', 2006, 'MySQL server has gone away'];
+        $target = \Mockery::mock(\PDO::class);
+        if ($afterFirstStatement) {
+            $result = \Mockery::mock(\PDOStatement::class);
+            $result->expects('closeCursor')->andReturn(true);
+            $target->expects('query')->with('SELECT 1')->andReturn($result);
+        }
+        $target->expects('query')->with('SELECT @@SESSION.sql_mode')->andThrow($exception);
+        $this->mock(DatabaseConnectionFactory::class)->expects('forDatabase')->andReturn($target);
+        $status = $this->app->make(DatabaseImportStatusService::class);
+        $token = $status->start($database);
+
+        $this->app->call([new ImportDatabaseJob($database->id, $path, null, $token), 'handle']);
+
+        $this->assertSame(DatabaseImportStatusService::STATE_FAILED, $status->get($database)['state']);
+        $this->assertSame(DatabaseImportException::CONNECTION_FAILED, $status->get($database)['error']);
+        $this->assertSame('MySQL server has gone away', $status->get($database)['detail']);
+        $this->assertFalse($status->isRunning($database));
+        Storage::disk('local')->assertMissing($path);
+    }
+
+    public static function modeQueryFailureDataProvider(): array
+    {
+        return ['before first statement' => [false], 'after first statement' => [true]];
     }
 
     private function createDatabase(Server $server): Database

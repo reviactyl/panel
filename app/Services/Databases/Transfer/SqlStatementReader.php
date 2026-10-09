@@ -12,17 +12,19 @@ class SqlStatementReader
 
     /**
      * @param  resource  $stream
+     * @param  (\Closure(): bool)|null  $backslashEscapes
      * @return \Generator<int, string>
      *
      * @throws DatabaseImportException
      */
-    public function read($stream): \Generator
+    public function read($stream, ?\Closure $backslashEscapes = null): \Generator
     {
         $buffer = '';
         $position = 0;
         $delimiter = ';';
         $eof = false;
         $blank = true;
+        $escapeBackslashes = null;
 
         $fill = function () use ($stream, &$buffer, &$eof): void {
             $chunk = fread($stream, self::CHUNK_SIZE);
@@ -100,6 +102,8 @@ class SqlStatementReader
                     yield $statement;
                 }
 
+                $escapeBackslashes = null;
+
                 continue;
             }
 
@@ -134,7 +138,11 @@ class SqlStatementReader
             }
 
             if ($character === "'" || $character === '"' || $character === '`') {
-                $end = $this->findClosingQuote($buffer, $position, $character);
+                if ($character !== '`') {
+                    $escapeBackslashes ??= $backslashEscapes ? $backslashEscapes() : true;
+                }
+
+                $end = $this->findClosingQuote($buffer, $position, $character, $escapeBackslashes ?? false);
                 if ($end === null && ! $eof) {
                     $fill();
 
@@ -157,11 +165,11 @@ class SqlStatementReader
         }
     }
 
-    private function findClosingQuote(string $buffer, int $start, string $quote): ?int
+    private function findClosingQuote(string $buffer, int $start, string $quote, bool $backslashEscapes): ?int
     {
         $position = $start + 1;
         $length = strlen($buffer);
-        $mask = $quote === '`' ? $quote : $quote.'\\';
+        $mask = $quote === '`' || ! $backslashEscapes ? $quote : $quote.'\\';
 
         while ($position < $length) {
             $position += strcspn($buffer, $mask, $position);
