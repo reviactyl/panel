@@ -109,7 +109,7 @@ class DatabaseDumper
                         is_null($value) => 'NULL',
                         $kinds[$index] === 'numeric' => $value,
                         $kinds[$index] === 'binary' => $value === '' ? "''" : '0x'.bin2hex($value),
-                        default => $connection->quote($value),
+                        default => $this->string($value),
                     };
                 }
 
@@ -211,6 +211,20 @@ class DatabaseDumper
             $statement,
             1
         );
+    }
+
+    private function string(string $value): string
+    {
+        return "'".strtr($value, [
+            '\\' => '\\\\',
+            "\0" => '\\0',
+            "\n" => '\\n',
+            "\r" => '\\r',
+            "\t" => '\\t',
+            "\x1a" => '\\Z',
+            "'" => "\\'",
+            '"' => '\\"',
+        ])."'";
     }
 
     private function identifier(string $name): string
