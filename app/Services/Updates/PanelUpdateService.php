@@ -124,13 +124,13 @@ class PanelUpdateService
             chmod($manifestPath, 0600);
 
             $vendorPath = $this->basePath.'/vendor';
-            $changesStarted = true;
             if (is_dir($vendorPath)) {
                 if (! rename($vendorPath, $vendorBackup)) {
                     throw new RuntimeException('Unable to back up the current Composer dependencies.');
                 }
                 $vendorMoved = true;
             }
+            $changesStarted = true;
 
             $this->statuses->set($statusKey, 'installing', trans('admin/updates.status.panel_installing'), $version);
             $this->installReleaseFiles($releaseFiles, $stagingPath);
