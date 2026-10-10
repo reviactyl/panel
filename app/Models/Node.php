@@ -270,8 +270,9 @@ class Node extends Model implements Identifiable
         $memoryLimit = $this->memory * (1 + ($this->memory_overallocate / 100));
         $diskLimit = $this->disk * (1 + ($this->disk_overallocate / 100));
 
-        // @phpstan-ignore-next-line property.notFound, property.notFound
-        return ($this->sum_memory + $memory) <= $memoryLimit && ($this->sum_disk + $disk) <= $diskLimit;
+        // @phpstan-ignore-next-line property.notFound
+        return ((float) $this->memory_overallocate === -1.0 || ($this->sum_memory + $memory) <= $memoryLimit)
+            && ((float) $this->disk_overallocate === -1.0 || ($this->sum_disk + $disk) <= $diskLimit); // @phpstan-ignore property.notFound
     }
 
     public function getRouteKeyName(): string
