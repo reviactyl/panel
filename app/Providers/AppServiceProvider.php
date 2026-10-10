@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Extensions\Scramble\FractalResponseTypeInfer;
 use App\Http\Responses\AdminLogoutResponse;
 use App\Models;
+use Dedoc\Scramble\Scramble;
 use Filament\Auth\Http\Responses\Contracts\LogoutResponse as LogoutResponseContract;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Pagination\Paginator;
@@ -23,6 +25,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Scramble::registerExtension(FractalResponseTypeInfer::class);
+
+        Scramble::registerApi('client', [
+            'api_path' => 'api/client',
+            'export_path' => 'client.json',
+        ]);
+
+        Scramble::registerApi('application', [
+            'api_path' => 'api/application',
+            'export_path' => 'application.json',
+        ]);
+
         Schema::defaultStringLength(191);
 
         Sanctum::usePersonalAccessTokenModel(Models\ApiKey::class);
@@ -70,6 +84,8 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         Passkeys::ignoreRoutes();
+
+        Scramble::ignoreDefaultRoutes();
 
         $this->app->register(SettingsServiceProvider::class);
         $this->app->bind(LogoutResponseContract::class, AdminLogoutResponse::class);

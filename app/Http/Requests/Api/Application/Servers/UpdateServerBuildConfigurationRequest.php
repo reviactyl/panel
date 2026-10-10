@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Api\Application\Servers;
 
-use App\Models\Server;
 use Illuminate\Support\Collection;
 
 class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
@@ -12,7 +11,7 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
      */
     public function rules(): array
     {
-        $rules = Server::getRulesForUpdate($this->parameter('server', Server::class));
+        $rules = $this->serverUpdateRules();
 
         return [
             'allocation' => $rules['allocation_id'],
