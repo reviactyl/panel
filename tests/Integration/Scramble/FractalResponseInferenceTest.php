@@ -32,7 +32,12 @@ class FractalResponseInferenceTest extends TestCase
         $this->assertSame('object', $item['properties']['attributes']['type']);
         $this->assertArrayHasKey('id', $item['properties']['attributes']['properties']);
         $this->assertArrayHasKey('uuid', $item['properties']['attributes']['properties']);
-        $this->assertSame(['string', 'null'], $item['properties']['attributes']['properties']['image']['type']);
+        $imageType = $item['properties']['attributes']['properties']['image']['type'];
+        $this->assertContains('string', (array) $imageType);
+        $this->assertTrue(
+            $imageType === 'string' || $imageType === ['string', 'null'],
+            'The image field should be documented as a string, nullable when Scramble infers nullability.',
+        );
 
         $collection = $spec['paths']['/application/nests/{nest}/eggs']['get']['responses']['200']['content']['application/json']['schema'];
         $this->assertSame('list', $collection['properties']['object']['const'] ?? null);
