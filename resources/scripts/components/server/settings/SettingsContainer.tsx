@@ -18,7 +18,9 @@ import { useTranslation } from 'react-i18next';
 export default () => {
     const { t } = useTranslation('server/settings');
     const username = useStoreState((state) => state.user.data!.username);
-    const id = ServerContext.useStoreState((state) => state.server.data!.id);
+    // SFTP daemons require the legacy eight-character UUID, even when Panel URLs use serv_ identifiers.
+    const uuidShort = ServerContext.useStoreState((state) => state.server.data!.__deprecatedUuidShort);
+    const sftpUsername = `${username}.${uuidShort}`;
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const node = ServerContext.useStoreState((state) => state.server.data!.node);
     const sftp = ServerContext.useStoreState((state) => state.server.data!.sftpDetails, isEqual);
@@ -38,8 +40,8 @@ export default () => {
                             </div>
                             <div className='mt-6'>
                                 <Label>{t('sftp.username')}</Label>
-                                <CopyOnClick text={`${username}.${id}`}>
-                                    <Input type={'text'} value={`${username}.${id}`} readOnly />
+                                <CopyOnClick text={sftpUsername}>
+                                    <Input type={'text'} value={sftpUsername} readOnly />
                                 </CopyOnClick>
                             </div>
                             <div className='mt-6 flex items-center'>
@@ -49,7 +51,7 @@ export default () => {
                                     </div>
                                 </div>
                                 <div className='ml-4'>
-                                    <a href={`sftp://${username}.${id}@${ip(sftp.ip)}:${sftp.port}`}>
+                                    <a href={`sftp://${sftpUsername}@${ip(sftp.ip)}:${sftp.port}`}>
                                         <Button.Text variant={Button.Variants.Secondary}>
                                             {t('sftp.button')}
                                         </Button.Text>
