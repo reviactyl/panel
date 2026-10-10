@@ -2,8 +2,6 @@
 
 namespace App\Http\Requests\Api\Application\Servers;
 
-use App\Models\Server;
-
 class UpdateServerDetailsRequest extends ServerWriteRequest
 {
     /**
@@ -11,7 +9,7 @@ class UpdateServerDetailsRequest extends ServerWriteRequest
      */
     public function rules(): array
     {
-        $rules = Server::getRulesForUpdate($this->parameter('server', Server::class));
+        $rules = $this->serverUpdateRules();
 
         return [
             'external_id' => $rules['external_id'],

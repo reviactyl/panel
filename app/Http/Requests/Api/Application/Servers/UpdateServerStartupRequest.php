@@ -2,22 +2,14 @@
 
 namespace App\Http\Requests\Api\Application\Servers;
 
-use App\Http\Requests\Api\Application\ApplicationApiRequest;
-use App\Models\Server;
-use App\Services\Acl\Api\AdminAcl;
-
-class UpdateServerStartupRequest extends ApplicationApiRequest
+class UpdateServerStartupRequest extends ServerWriteRequest
 {
-    protected ?string $resource = AdminAcl::RESOURCE_SERVERS;
-
-    protected int $permission = AdminAcl::WRITE;
-
     /**
      * Validation rules to run the input against.
      */
     public function rules(): array
     {
-        $data = Server::getRulesForUpdate($this->parameter('server', Server::class));
+        $data = $this->serverUpdateRules();
 
         return [
             'startup' => $data['startup'],
