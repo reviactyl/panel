@@ -10,7 +10,7 @@ import ChangeCategoryModal from '@/components/dashboard/ChangeCategoryModal';
 import Blur from '@/reviactyl/ui/Blur';
 import Title from '@/reviactyl/ui/Title';
 
-const isAlarmState = (current: number, limit: number): boolean => limit > 0 && current / (limit * 1024 * 1024) >= 0.9;
+const isAlarmState = (current: number, limit: number): boolean => limit > 0 && current / mbToBytes(limit) >= 0.9;
 
 const Icon = memo(({ alarm, children }: { alarm: boolean; children: React.ReactNode }) => (
     <div className={alarm ? 'text-danger' : 'text-gray-200'}>{children}</div>

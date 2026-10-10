@@ -15,16 +15,16 @@ return [
         ],
         'memory' => [
             'title' => 'Arbeitsspeicher Verlauf',
-            'label' => 'Arbeitsspeicher Auslastung (MB)',
+            'label' => 'Arbeitsspeicher Auslastung (:unit)',
         ],
         'disk' => [
             'title' => 'Speicherplatz Verlauf',
-            'label' => 'Speicherplatz Nutzung (MB)',
+            'label' => 'Speicherplatz Nutzung (:unit)',
         ],
         'network' => [
             'title' => 'Netzwerk Verlauf',
-            'rx_label' => 'Empfangen (MB)',
-            'tx_label' => 'Gesendet (MB)',
+            'rx_label' => 'Empfangen (:unit)',
+            'tx_label' => 'Gesendet (:unit)',
         ],
     ],
 ];

@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Servers\Schemas;
 use App\Contracts\Repository\AllocationRepositoryInterface;
 use App\Enum\JwtScope;
 use App\Filament\Resources\Servers\ServerResource;
+use App\Helpers\StorageUnit;
 use App\Models\Allocation;
 use App\Models\Egg;
 use App\Models\EggVariable;
@@ -363,17 +364,17 @@ class EditServerForm
             TextInput::make('memory')
                 ->label(trans('admin/server.edit.fields.allocated_memory.label'))
                 ->required()
-                ->numeric()->minValue(0)->suffix('MiB')
+                ->numeric()->minValue(0)->suffix(StorageUnit::megabyte())
                 ->helperText(trans('admin/server.edit.fields.allocated_memory.helper')),
             TextInput::make('swap')
                 ->label(trans('admin/server.edit.fields.allocated_swap.label'))
                 ->required()
-                ->numeric()->minValue(-1)->suffix('MiB')
+                ->numeric()->minValue(-1)->suffix(StorageUnit::megabyte())
                 ->helperText(trans('admin/server.edit.fields.allocated_swap.helper')),
             TextInput::make('disk')
                 ->label(trans('admin/server.edit.fields.disk_space_limit.label'))
                 ->required()
-                ->numeric()->minValue(0)->suffix('MiB')
+                ->numeric()->minValue(0)->suffix(StorageUnit::megabyte())
                 ->helperText(trans('admin/server.edit.fields.disk_space_limit.helper')),
             TextInput::make('io')
                 ->label(trans('admin/server.edit.fields.block_io_proportion.label'))

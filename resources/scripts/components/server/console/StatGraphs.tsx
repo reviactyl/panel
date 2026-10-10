@@ -5,7 +5,7 @@ import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import { Line } from 'react-chartjs-2';
 import { useChart, useChartTickLabel } from '@/components/server/console/chart';
 import { hexToRgba } from '@/lib/helpers';
-import { bytesToString } from '@/lib/formatters';
+import { bytesToMb, bytesToString, megabyteLabel } from '@/lib/formatters';
 import { CloudDownloadIcon, CloudUploadIcon } from '@heroicons/react/solid';
 import ChartBlock from '@/components/server/console/ChartBlock';
 import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
@@ -18,7 +18,7 @@ export default () => {
     const previous = useRef<Record<'tx' | 'rx', number>>({ tx: -1, rx: -1 });
 
     const cpu = useChartTickLabel(t('cpu'), limits.cpu, '%', 2);
-    const memory = useChartTickLabel(t('memory'), limits.memory, 'MiB');
+    const memory = useChartTickLabel(t('memory'), limits.memory, megabyteLabel());
     const network = useChart(t('network'), {
         sets: 2,
         options: {
@@ -66,7 +66,7 @@ export default () => {
             return;
         }
         cpu.push(values.cpu_absolute);
-        memory.push(Math.floor(values.memory_bytes / 1024 / 1024));
+        memory.push(Math.floor(bytesToMb(values.memory_bytes)));
         network.push([
             previous.current.tx < 0 ? 0 : Math.max(0, values.network.tx_bytes - previous.current.tx),
             previous.current.rx < 0 ? 0 : Math.max(0, values.network.rx_bytes - previous.current.rx),

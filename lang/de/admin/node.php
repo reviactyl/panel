@@ -84,7 +84,7 @@ return [
         ],
         'memory' => [
             'label' => 'Gesamtspeicher',
-            'helper' => 'Gesamtspeicher in MiB, der auf dieser Node verfügbar ist.',
+            'helper' => 'Gesamtspeicher in :unit, der auf dieser Node verfügbar ist.',
         ],
         'memory_overallocate' => [
             'label' => 'Speicherüberbelegung',
@@ -92,7 +92,7 @@ return [
         ],
         'disk' => [
             'label' => 'Gesamter Festplattenspeicher',
-            'helper' => 'Gesamter Festplattenspeicher in MiB, der auf dieser Node verfügbar ist.',
+            'helper' => 'Gesamter Festplattenspeicher in :unit, der auf dieser Node verfügbar ist.',
         ],
         'disk_overallocate' => [
             'label' => 'Festplattenüberbelegung',

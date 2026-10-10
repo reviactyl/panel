@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Nodes\Schemas;
 
+use App\Helpers\StorageUnit;
 use App\Rules\NodeFqdn;
 use App\Services\Helpers\RandomWordService;
 use Filament\Actions\Action;
@@ -79,8 +80,8 @@ class CreateNodeForm
                                         ->required()
                                         ->numeric()
                                         ->minValue(1)
-                                        ->suffix('MiB')
-                                        ->helperText(trans('admin/node.fields.memory.helper')),
+                                        ->suffix(StorageUnit::megabyte())
+                                        ->helperText(trans('admin/node.fields.memory.helper', ['unit' => StorageUnit::megabyte()])),
 
                                     TextInput::make('memory_overallocate')
                                         ->label(trans('admin/node.fields.memory_overallocate.label'))
@@ -95,8 +96,8 @@ class CreateNodeForm
                                         ->required()
                                         ->numeric()
                                         ->minValue(1)
-                                        ->suffix('MiB')
-                                        ->helperText(trans('admin/node.fields.disk.helper')),
+                                        ->suffix(StorageUnit::megabyte())
+                                        ->helperText(trans('admin/node.fields.disk.helper', ['unit' => StorageUnit::megabyte()])),
 
                                     TextInput::make('disk_overallocate')
                                         ->label(trans('admin/node.fields.disk_overallocate.label'))
@@ -112,7 +113,7 @@ class CreateNodeForm
                                         ->numeric()
                                         ->minValue(1)
                                         ->default(100)
-                                        ->suffix('MiB')
+                                        ->suffix(StorageUnit::megabyte())
                                         ->helperText(trans('admin/node.fields.upload_size.helper')),
                                 ])
                                 ->columns(2),

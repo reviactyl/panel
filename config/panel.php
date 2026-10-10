@@ -21,6 +21,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Storage Unit
+    |--------------------------------------------------------------------------
+    |
+    | Determines if memory and disk sizes use binary prefixes (MiB/GiB, where
+    | each unit is 1024 of the previous one) or decimal prefixes (MB/GB, where
+    | each unit is 1000 of the previous one).
+    */
+
+    'use_binary_prefix' => filter_var(env('PANEL_USE_BINARY_PREFIX', true), FILTER_VALIDATE_BOOLEAN),
+
+    /*
+    |--------------------------------------------------------------------------
     | Service Author
     |--------------------------------------------------------------------------
     |

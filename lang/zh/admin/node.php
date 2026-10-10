@@ -84,7 +84,7 @@ return [
         ],
         'memory' => [
             'label' => '总内存',
-            'helper' => '节点上可用的总内存（以 MiB 为单位）。',
+            'helper' => '节点上可用的总内存（以 :unit 为单位）。',
         ],
         'memory_overallocate' => [
             'label' => '内存超分配',
@@ -92,7 +92,7 @@ return [
         ],
         'disk' => [
             'label' => '总磁盘空间',
-            'helper' => '节点上可用的总磁盘空间（以 MiB 为单位）。',
+            'helper' => '节点上可用的总磁盘空间（以 :unit 为单位）。',
         ],
         'disk_overallocate' => [
             'label' => '磁盘超分配',

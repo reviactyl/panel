@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Users\RelationManagers;
 
+use App\Helpers\StorageUnit;
 use App\Models\Server;
 use App\Services\Servers\ServerDeletionService;
 use Filament\Actions\Action;
@@ -68,11 +69,9 @@ class ServersRelationManager extends RelationManager
                     ->formatStateUsing(function ($state) {
                         if ($state === 0) {
                             return '∞';
-                        } elseif ($state >= 1024) {
-                            return round($state / 1024, 2).' GiB';
-                        } else {
-                            return $state.' MiB';
                         }
+
+                        return StorageUnit::formatMegabytes($state);
                     })
                     ->toggleable(),
 
@@ -83,11 +82,9 @@ class ServersRelationManager extends RelationManager
                     ->formatStateUsing(function ($state) {
                         if ($state === 0) {
                             return '∞';
-                        } elseif ($state >= 1024) {
-                            return round($state / 1024, 2).' GiB';
-                        } else {
-                            return $state.' MiB';
                         }
+
+                        return StorageUnit::formatMegabytes($state);
                     })
                     ->toggleable(),
 

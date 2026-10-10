@@ -18,6 +18,7 @@ import { format } from 'date-fns';
 import http from '@/api/http';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { ServerError } from '@/reviactyl/elements/ScreenBlock';
+import { bytesToMb, megabyteLabel } from '@/lib/formatters';
 import { useTranslation } from 'react-i18next';
 import Select from '@/reviactyl/elements/Select';
 
@@ -117,8 +118,8 @@ export default () => {
         labels: stats.map((s) => format(new Date(s.timestamp), timeFormat)),
         datasets: [
             {
-                label: t('charts.memory.label'),
-                data: stats.map((s) => Number((s.memory_bytes / 1024 / 1024).toFixed(2))),
+                label: t('charts.memory.label', { unit: megabyteLabel() }),
+                data: stats.map((s) => Number(bytesToMb(s.memory_bytes).toFixed(2))),
                 borderColor: 'rgb(16, 185, 129)',
                 backgroundColor: 'rgba(16, 185, 129, 0.5)',
                 tension: 0.2,
@@ -130,8 +131,8 @@ export default () => {
         labels: stats.map((s) => format(new Date(s.timestamp), timeFormat)),
         datasets: [
             {
-                label: t('charts.disk.label'),
-                data: stats.map((s) => Number((s.disk_bytes / 1024 / 1024).toFixed(2))),
+                label: t('charts.disk.label', { unit: megabyteLabel() }),
+                data: stats.map((s) => Number(bytesToMb(s.disk_bytes).toFixed(2))),
                 borderColor: 'rgb(245, 158, 11)',
                 backgroundColor: 'rgba(245, 158, 11, 0.5)',
                 tension: 0.2,
@@ -143,15 +144,15 @@ export default () => {
         labels: stats.map((s) => format(new Date(s.timestamp), timeFormat)),
         datasets: [
             {
-                label: t('charts.network.rx_label'),
-                data: stats.map((s) => Number((s.network_rx_bytes / 1024 / 1024).toFixed(2))),
+                label: t('charts.network.rx_label', { unit: megabyteLabel() }),
+                data: stats.map((s) => Number(bytesToMb(s.network_rx_bytes).toFixed(2))),
                 borderColor: 'rgb(139, 92, 246)',
                 backgroundColor: 'rgba(139, 92, 246, 0.5)',
                 tension: 0.2,
             },
             {
-                label: t('charts.network.tx_label'),
-                data: stats.map((s) => Number((s.network_tx_bytes / 1024 / 1024).toFixed(2))),
+                label: t('charts.network.tx_label', { unit: megabyteLabel() }),
+                data: stats.map((s) => Number(bytesToMb(s.network_tx_bytes).toFixed(2))),
                 borderColor: 'rgb(236, 72, 153)',
                 backgroundColor: 'rgba(236, 72, 153, 0.5)',
                 tension: 0.2,

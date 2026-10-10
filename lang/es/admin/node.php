@@ -84,7 +84,7 @@ return [
         ],
         'memory' => [
             'label' => 'Memoria Total',
-            'helper' => 'Memoria total en MiB disponible en este nodo.',
+            'helper' => 'Memoria total en :unit disponible en este nodo.',
         ],
         'memory_overallocate' => [
             'label' => 'Sobreasignación de memoria',
@@ -92,7 +92,7 @@ return [
         ],
         'disk' => [
             'label' => 'Espacio total en disco',
-            'helper' => 'Espacio total en disco en MiB disponible en este nodo.',
+            'helper' => 'Espacio total en disco en :unit disponible en este nodo.',
         ],
         'disk_overallocate' => [
             'label' => 'Sobreasignación de disco',

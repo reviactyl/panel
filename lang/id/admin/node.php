@@ -84,7 +84,7 @@ return [
         ],
         'memory' => [
             'label' => 'Jumlah Memori',
-            'helper' => 'Total memori dalam MiB tersedia pada node ini.',
+            'helper' => 'Total memori dalam :unit tersedia pada node ini.',
         ],
         'memory_overallocate' => [
             'label' => 'Alokasi Memori Secara Keseluruhan',
@@ -92,7 +92,7 @@ return [
         ],
         'disk' => [
             'label' => 'Total Ruang Disk',
-            'helper' => 'Total ruang disk di MiB tersedia di node ini.',
+            'helper' => 'Total ruang disk di :unit tersedia di node ini.',
         ],
         'disk_overallocate' => [
             'label' => 'Alokasi Disk Secara Keseluruhan',

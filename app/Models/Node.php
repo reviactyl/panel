@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Contracts\Models\Identifiable;
 use App\Exceptions\DisplayException;
+use App\Helpers\StorageUnit;
 use App\Models\Traits\HasRealtimeIdentifier;
 use App\Rules\NodeFqdn;
 use Carbon\Carbon;
@@ -176,7 +177,7 @@ class Node extends Model implements Identifiable
                     'cert' => '/etc/letsencrypt/live/'.Str::lower($this->fqdn).'/fullchain.pem',
                     'key' => '/etc/letsencrypt/live/'.Str::lower($this->fqdn).'/privkey.pem',
                 ],
-                'upload_limit' => $this->upload_size,
+                'upload_limit' => StorageUnit::toMebibytes($this->upload_size),
             ],
             'system' => [
                 'data' => $this->daemonBase,

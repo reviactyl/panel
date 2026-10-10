@@ -15,16 +15,16 @@ return [
         ],
         'memory' => [
             'title' => 'Bellek Geçmişi',
-            'label' => 'Bellek Kullanımı (MB)',
+            'label' => 'Bellek Kullanımı (:unit)',
         ],
         'disk' => [
             'title' => 'Disk Geçmişi',
-            'label' => 'Disk Kullanımı (MB)',
+            'label' => 'Disk Kullanımı (:unit)',
         ],
         'network' => [
             'title' => 'Ağ Geçmişi',
-            'rx_label' => 'Ağ RX (MB)',
-            'tx_label' => 'Ağ TX (MB)',
+            'rx_label' => 'Ağ RX (:unit)',
+            'tx_label' => 'Ağ TX (:unit)',
         ],
     ],
 ];

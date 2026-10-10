@@ -15,16 +15,16 @@ return [
         ],
         'memory' => [
             'title' => '内存历史',
-            'label' => '内存使用量(MB)',
+            'label' => '内存使用量(:unit)',
         ],
         'disk' => [
             'title' => '磁盘历史',
-            'label' => '磁盘使用量(MB)',
+            'label' => '磁盘使用量(:unit)',
         ],
         'network' => [
             'title' => '网络历史',
-            'rx_label' => '网络接收量(MB)',
-            'tx_label' => '网络发送量(MB)',
+            'rx_label' => '网络接收量(:unit)',
+            'tx_label' => '网络发送量(:unit)',
         ],
     ],
 ];

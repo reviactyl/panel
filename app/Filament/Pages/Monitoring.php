@@ -5,6 +5,7 @@ namespace App\Filament\Pages;
 use App\Filament\Widgets\MonitoringWidget;
 use App\Filament\Widgets\NodeSelectorWidget;
 use App\Filament\Widgets\ServersWidget;
+use App\Helpers\StorageUnit;
 use App\Models\Node;
 use App\Repositories\Agent\DaemonMonitoringRepository;
 use Filament\Actions\Action;
@@ -314,13 +315,7 @@ class Monitoring extends Page
 
     private function formatBytes(int $bytes): string
     {
-        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-        $bytes = max($bytes, 0);
-        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
-        $pow = min($pow, count($units) - 1);
-        $bytes /= (1 << (10 * $pow));
-
-        return round($bytes, 2).' '.$units[$pow];
+        return StorageUnit::formatBytes($bytes);
     }
 
     private function formatUptime(int $seconds): string

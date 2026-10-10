@@ -3,6 +3,7 @@
 namespace App\Http\ViewComposers;
 
 use App\Contracts\Repository\SettingsRepositoryInterface;
+use App\Helpers\StorageUnit;
 use Illuminate\Database\QueryException;
 use Illuminate\View\View;
 
@@ -31,6 +32,7 @@ class AssetComposer
             'locale' => config('app.locale') ?? 'en',
             'pwa' => config('app.pwa', false),
             'debug' => config('app.debug', false),
+            'useBinaryPrefix' => StorageUnit::isBinary(),
             'avatar' => config('app.avatar') ?? 'gravatar',
             'registrationEnabled' => config('panel.auth.registration_enabled', true),
             'captcha' => [

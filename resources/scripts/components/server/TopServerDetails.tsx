@@ -6,7 +6,7 @@ import PowerButtons from '@/components/server/console/PowerButtons';
 import CopyOnClick from '@/reviactyl/elements/CopyOnClick';
 import { ExternalLinkIcon } from '@heroicons/react/solid';
 import Can from '@/reviactyl/elements/Can';
-import { bytesToString, ip, mbToBytes } from '@/lib/formatters';
+import { bytesToString, ip, mbToBytes, megabyteLabel } from '@/lib/formatters';
 import Card from '@/reviactyl/ui/Card';
 import Title from '@/reviactyl/ui/Title';
 import { StatBlock } from '@/reviactyl/ui/StatBlock';
@@ -150,7 +150,7 @@ const TopServerDetails = () => {
 
                     <span className='text-sm text-gray-100'>
                         {status === 'offline' ? (
-                            <Limit limit={textLimits.memory}>0 MiB</Limit>
+                            <Limit limit={textLimits.memory}>0 {megabyteLabel()}</Limit>
                         ) : (
                             <Limit limit={textLimits.memory}>{bytesToString(stats.memory)}</Limit>
                         )}

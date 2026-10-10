@@ -2,6 +2,7 @@
 
 namespace App\Services\Servers;
 
+use App\Helpers\StorageUnit;
 use App\Models\Mount;
 use App\Models\Server;
 
@@ -51,12 +52,12 @@ class ServerConfigurationStructureService
             'invocation' => $server->startup,
             'skip_egg_scripts' => $server->skip_scripts,
             'build' => [
-                'memory_limit' => $server->memory,
-                'swap' => $server->swap,
+                'memory_limit' => StorageUnit::toMebibytes($server->memory),
+                'swap' => StorageUnit::toMebibytes($server->swap),
                 'io_weight' => $server->io,
                 'cpu_limit' => $server->cpu,
                 'threads' => $server->threads,
-                'disk_space' => $server->disk,
+                'disk_space' => StorageUnit::toMebibytes($server->disk),
                 'oom_disabled' => $server->oom_disabled,
             ],
             'container' => [
@@ -109,12 +110,12 @@ class ServerConfigurationStructureService
                 })->toArray(),
                 'env' => $this->environment->handle($server),
                 'oom_disabled' => $server->oom_disabled,
-                'memory' => (int) $server->memory,
-                'swap' => (int) $server->swap,
+                'memory' => StorageUnit::toMebibytes($server->memory),
+                'swap' => StorageUnit::toMebibytes($server->swap),
                 'io' => (int) $server->io,
                 'cpu' => (int) $server->cpu,
                 'threads' => $server->threads,
-                'disk' => (int) $server->disk,
+                'disk' => StorageUnit::toMebibytes($server->disk),
                 'image' => $server->image,
             ],
             'service' => [

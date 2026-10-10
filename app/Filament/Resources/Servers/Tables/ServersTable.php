@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Servers\Tables;
 
+use App\Helpers\StorageUnit;
 use App\Models\Server;
 use App\Services\Servers\ServerDeletionService;
 use Filament\Actions\BulkActionGroup;
@@ -115,13 +116,13 @@ class ServersTable
 
                 TextColumn::make('memory')
                     ->label(trans('admin/server.table.memory'))
-                    ->formatStateUsing(fn (int $state): string => self::formatLimit($state, 'MiB'))
+                    ->formatStateUsing(fn (int $state): string => self::formatLimit($state))
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('disk')
                     ->label(trans('admin/server.table.disk'))
-                    ->formatStateUsing(fn (int $state): string => self::formatLimit($state, 'MiB'))
+                    ->formatStateUsing(fn (int $state): string => self::formatLimit($state))
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
@@ -188,16 +189,12 @@ class ServersTable
             ]);
     }
 
-    private static function formatLimit(int $value, string $unit): string
+    private static function formatLimit(int $value): string
     {
         if ($value === 0) {
             return '∞';
         }
 
-        if ($value >= 1024) {
-            return round($value / 1024, 2).' GiB';
-        }
-
-        return $value.' '.$unit;
+        return StorageUnit::formatMegabytes($value);
     }
 }

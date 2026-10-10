@@ -15,16 +15,16 @@ return [
         ],
         'memory' => [
             'title' => 'Lịch sử bộ nhớ',
-            'label' => 'Mức sử dụng bộ nhớ (MB)',
+            'label' => 'Mức sử dụng bộ nhớ (:unit)',
         ],
         'disk' => [
             'title' => 'Lịch sử đĩa',
-            'label' => 'Mức sử dụng đĩa (MB)',
+            'label' => 'Mức sử dụng đĩa (:unit)',
         ],
         'network' => [
             'title' => 'Lịch sử mạng',
-            'rx_label' => 'Mạng RX (MB)',
-            'tx_label' => 'Mạng TX (MB)',
+            'rx_label' => 'Mạng RX (:unit)',
+            'tx_label' => 'Mạng TX (:unit)',
         ],
     ],
 ];

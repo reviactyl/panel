@@ -84,7 +84,7 @@ return [
         ],
         'memory' => [
             'label' => 'Totalt minne',
-            'helper' => 'Totalt minne i MiB tillgängligt på denna nod.',
+            'helper' => 'Totalt minne i :unit tillgängligt på denna nod.',
         ],
         'memory_overallocate' => [
             'label' => 'Minnesövertilldelning',
@@ -92,7 +92,7 @@ return [
         ],
         'disk' => [
             'label' => 'Totalt diskutrymme',
-            'helper' => 'Totalt diskutrymme i MiB tillgängligt på denna nod.',
+            'helper' => 'Totalt diskutrymme i :unit tillgängligt på denna nod.',
         ],
         'disk_overallocate' => [
             'label' => 'Diskövertilldelning',

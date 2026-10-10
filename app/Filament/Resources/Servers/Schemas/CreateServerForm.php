@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Servers\Schemas;
 
+use App\Helpers\StorageUnit;
 use App\Models\Allocation;
 use App\Models\Egg;
 use App\Models\EggVariable;
@@ -230,7 +231,7 @@ class CreateServerForm
                 ->required()
                 ->numeric()
                 ->minValue(0)
-                ->suffix('MiB')
+                ->suffix(StorageUnit::megabyte())
                 ->helperText(trans('admin/server.create.fields.memory.helper')),
 
             TextInput::make('swap')
@@ -239,7 +240,7 @@ class CreateServerForm
                 ->numeric()
                 ->minValue(-1)
                 ->default(0)
-                ->suffix('MiB')
+                ->suffix(StorageUnit::megabyte())
                 ->helperText(trans('admin/server.create.fields.swap.helper')),
 
             TextInput::make('disk')
@@ -247,7 +248,7 @@ class CreateServerForm
                 ->required()
                 ->numeric()
                 ->minValue(0)
-                ->suffix('MiB')
+                ->suffix(StorageUnit::megabyte())
                 ->helperText(trans('admin/server.create.fields.disk.helper')),
 
             TextInput::make('io')

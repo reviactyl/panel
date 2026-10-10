@@ -84,7 +84,7 @@ return [
         ],
         'memory' => [
             'label' => 'Mémoire totale',
-            'helper' => 'Mémoire totale en MiB disponible sur ce nœud.',
+            'helper' => 'Mémoire totale en :unit disponible sur ce nœud.',
         ],
         'memory_overallocate' => [
             'label' => 'Surallocation de mémoire',
@@ -92,7 +92,7 @@ return [
         ],
         'disk' => [
             'label' => 'Espace disque total',
-            'helper' => 'Espace disque total en MiB disponible sur ce nœud.',
+            'helper' => 'Espace disque total en :unit disponible sur ce nœud.',
         ],
         'disk_overallocate' => [
             'label' => 'Surallocation de disque',
