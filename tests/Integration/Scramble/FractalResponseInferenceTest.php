@@ -17,6 +17,7 @@ class FractalResponseInferenceTest extends TestCase
             'api.application.nests',
             'api.application.nests.eggs',
             'api.application.nests.eggs.view',
+            'api.application.users.view',
             'api:client.index',
         ], true));
 
@@ -61,5 +62,19 @@ class FractalResponseInferenceTest extends TestCase
             $client['properties']['data']['items']['properties']['attributes']['properties'],
         );
         $this->assertArrayHasKey('pagination', $client['properties']['meta']['properties']);
+
+        $user = $spec['paths']['/application/users/{user}']['get']['responses']['200']['content']['application/json']['schema'];
+        $userAttributes = $user['properties']['attributes'];
+        $this->assertArrayHasKey('relationships', $userAttributes['properties']);
+        $this->assertNotContains('relationships', $userAttributes['required']);
+
+        $relationships = $userAttributes['properties']['relationships'];
+        $this->assertArrayHasKey('servers', $relationships['properties']);
+        $this->assertNotContains('servers', $relationships['required'] ?? []);
+        $serverVariants = $relationships['properties']['servers']['anyOf'] ?? [];
+        $this->assertTrue(collect($serverVariants)->contains(
+            fn (array $variant) => ($variant['properties']['object']['const'] ?? null) === 'list'
+                && isset($variant['properties']['data']['items']['properties']['attributes']),
+        ));
     }
 }

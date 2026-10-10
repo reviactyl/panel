@@ -4,6 +4,7 @@ namespace App\Extensions\Scramble;
 
 use App\Extensions\Spatie\Fractalistic\Fractal;
 use App\Http\Controllers\Api\Application\ApplicationApiController;
+use Dedoc\Scramble\Infer\Definition\ClassDefinition;
 use Dedoc\Scramble\Infer\Extensions\Event\MethodCallEvent;
 use Dedoc\Scramble\Infer\Extensions\MethodReturnTypeExtension;
 use Dedoc\Scramble\Support\Type\ArrayItemType_;
@@ -13,11 +14,17 @@ use Dedoc\Scramble\Support\Type\GenericClassStringType;
 use Dedoc\Scramble\Support\Type\IntegerType;
 use Dedoc\Scramble\Support\Type\KeyedArrayType;
 use Dedoc\Scramble\Support\Type\Literal\LiteralStringType;
+use Dedoc\Scramble\Support\Type\NullType;
 use Dedoc\Scramble\Support\Type\ObjectType;
 use Dedoc\Scramble\Support\Type\StringType;
 use Dedoc\Scramble\Support\Type\Type;
+use Dedoc\Scramble\Support\Type\Union;
 use Dedoc\Scramble\Support\Type\UnknownType;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Str;
+use League\Fractal\Resource\Collection as FractalCollection;
+use League\Fractal\Resource\Item as FractalItem;
+use League\Fractal\Resource\NullResource as FractalNullResource;
 
 /** Infers Reviactyl's Fractal response envelope and transformer fields. */
 class FractalResponseTypeInfer implements MethodReturnTypeExtension
@@ -81,10 +88,13 @@ class FractalResponseTypeInfer implements MethodReturnTypeExtension
 
         $operation = $operationType->getValue();
         $attributes = $event->scope->index->getClass($transformer->name)?->getMethodDefinition('transform')?->getReturnType();
-        $resourceName = $event->scope->index->getClass($transformer->name)?->getMethodDefinition('getResourceName')?->getReturnType();
+        $transformerDefinition = $event->scope->index->getClass($transformer->name);
+        $resourceName = $transformerDefinition?->getMethodDefinition('getResourceName')?->getReturnType();
         if (! $attributes) {
             return null;
         }
+
+        $attributes = $this->addRelationships($attributes, $transformerDefinition, $event);
 
         $item = new KeyedArrayType([
             new ArrayItemType_('object', $resourceName instanceof LiteralStringType ? $resourceName : new StringType()),
@@ -117,5 +127,79 @@ class FractalResponseTypeInfer implements MethodReturnTypeExtension
             new ArrayItemType_('object', $resourceName instanceof LiteralStringType ? $resourceName : new StringType()),
             new ArrayItemType_('attributes', $attributes),
         ]);
+    }
+
+    private function addRelationships(Type $attributes, ?ClassDefinition $transformer, MethodCallEvent $event): Type
+    {
+        if (! $attributes instanceof KeyedArrayType || ! $transformer) {
+            return $attributes;
+        }
+
+        $includes = $transformer->getPropertyDefinition('availableIncludes')?->defaultType;
+        if (! $includes instanceof KeyedArrayType) {
+            return $attributes;
+        }
+
+        $relationshipItems = [];
+        foreach ($includes->items as $include) {
+            if (! $include->value instanceof LiteralStringType) {
+                continue;
+            }
+
+            $name = $include->value->getValue();
+            $method = $transformer->getMethodDefinition('include'.Str::studly($name), $event->scope);
+            if (! $method) {
+                continue;
+            }
+
+            $relationshipItems[] = new ArrayItemType_(
+                $name,
+                $this->includedResourceType($method->getReturnType()),
+                isOptional: true,
+            );
+        }
+
+        if (! $relationshipItems) {
+            return $attributes;
+        }
+
+        $attributes = $attributes->clone();
+        $attributes->items[] = new ArrayItemType_(
+            'relationships',
+            new KeyedArrayType($relationshipItems),
+            isOptional: true,
+        );
+
+        return $attributes;
+    }
+
+    private function includedResourceType(Type $type): Type
+    {
+        $types = $type instanceof Union ? $type->types : [$type];
+        $schemas = [];
+
+        foreach ($types as $includedType) {
+            if ($includedType->isInstanceOf(FractalCollection::class)) {
+                $schemas[] = new KeyedArrayType([
+                    new ArrayItemType_('object', new LiteralStringType('list')),
+                    new ArrayItemType_('data', new ArrayType(new KeyedArrayType([
+                        new ArrayItemType_('object', new StringType()),
+                        new ArrayItemType_('attributes', new UnknownType()),
+                    ]))),
+                ]);
+            } elseif ($includedType->isInstanceOf(FractalItem::class)) {
+                $schemas[] = new KeyedArrayType([
+                    new ArrayItemType_('object', new StringType()),
+                    new ArrayItemType_('attributes', new UnknownType()),
+                ]);
+            } elseif ($includedType->isInstanceOf(FractalNullResource::class)) {
+                $schemas[] = new KeyedArrayType([
+                    new ArrayItemType_('object', new LiteralStringType('null_resource')),
+                    new ArrayItemType_('attributes', new NullType()),
+                ]);
+            }
+        }
+
+        return $schemas ? Union::wrap($schemas) : new UnknownType();
     }
 }
