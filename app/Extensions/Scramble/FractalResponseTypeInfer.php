@@ -71,14 +71,15 @@ class FractalResponseTypeInfer implements MethodReturnTypeExtension
         }
 
         $instance = $event->getInstance();
+        $operationType = $instance instanceof Generic ? ($instance->templateTypes[0] ?? null) : null;
+        $transformer = $instance instanceof Generic ? ($instance->templateTypes[1] ?? null) : null;
         if (! $instance instanceof Generic
-            || ! ($instance->templateTypes[0] ?? null) instanceof LiteralStringType
-            || ! ($instance->templateTypes[1] ?? null) instanceof ObjectType) {
+            || ! $operationType instanceof LiteralStringType
+            || ! $transformer instanceof ObjectType) {
             return null;
         }
 
-        $operation = $instance->templateTypes[0]->getValue();
-        $transformer = $instance->templateTypes[1];
+        $operation = $operationType->getValue();
         $attributes = $event->scope->index->getClass($transformer->name)?->getMethodDefinition('transform')?->getReturnType();
         $resourceName = $event->scope->index->getClass($transformer->name)?->getMethodDefinition('getResourceName')?->getReturnType();
         if (! $attributes) {
