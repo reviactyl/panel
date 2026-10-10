@@ -76,8 +76,7 @@ class ActivityLogTest extends IntegrationTestCase
         $log->timestamp = now();
         $log->event = 'test:event';
         $log->ip = '127.0.0.1';
-        $log->actor_id = $admin->id;
-        $log->actor_type = User::class;
+        $log->actor()->associate($admin);
         $log->properties = collect();
         $log->save();
 
