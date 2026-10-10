@@ -25,6 +25,8 @@ class SettingsServiceProvider extends ServiceProvider
         'app:pwa',
         'trustedproxy:proxies',
         'mail:default',
+        'mail:from:address',
+        'mail:from:name',
         'panel:guzzle:timeout',
         'panel:guzzle:connect_timeout',
         'panel:console:count',
@@ -124,8 +126,6 @@ class SettingsServiceProvider extends ServiceProvider
         'mail:mailers:smtp:encryption',
         'mail:mailers:smtp:username',
         'mail:mailers:smtp:password',
-        'mail:from:address',
-        'mail:from:name',
     ];
 
     /**
