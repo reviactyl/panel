@@ -1,0 +1,47 @@
+<?php
+
+namespace Tests\Integration\Scramble;
+
+use Dedoc\Scramble\Generator;
+use Dedoc\Scramble\Scramble;
+use Illuminate\Routing\Route;
+use Tests\TestCase;
+
+class FractalResponseInferenceTest extends TestCase
+{
+    public function test_application_fractal_responses_include_the_serializer_envelope_and_transformer_fields(): void
+    {
+        $config = Scramble::configure();
+        $previousRoutes = $config->routes();
+        $config->routes(fn (Route $route) => in_array($route->getName(), [
+            'api.application.nests',
+            'api.application.nests.eggs',
+            'api.application.nests.eggs.view',
+        ], true));
+
+        try {
+            $spec = app(Generator::class)->generate($config)->spec();
+        } finally {
+            $config->routes($previousRoutes);
+        }
+
+        $item = $spec['paths']['/application/nests/{nest}/eggs/{egg}']['get']['responses']['200']['content']['application/json']['schema'];
+        $this->assertSame('object', $item['type']);
+        $this->assertContains('object', $item['required']);
+        $this->assertContains('attributes', $item['required']);
+        $this->assertSame('object', $item['properties']['attributes']['type']);
+        $this->assertArrayHasKey('id', $item['properties']['attributes']['properties']);
+        $this->assertArrayHasKey('uuid', $item['properties']['attributes']['properties']);
+        $this->assertSame(['string', 'null'], $item['properties']['attributes']['properties']['image']['type']);
+
+        $collection = $spec['paths']['/application/nests/{nest}/eggs']['get']['responses']['200']['content']['application/json']['schema'];
+        $this->assertSame('list', $collection['properties']['object']['const'] ?? null);
+        $this->assertSame('array', $collection['properties']['data']['type']);
+        $this->assertSame('object', $collection['properties']['data']['items']['properties']['attributes']['type']);
+        $this->assertArrayHasKey('docker_images', $collection['properties']['data']['items']['properties']['attributes']['properties']);
+
+        $paginated = $spec['paths']['/application/nests']['get']['responses']['200']['content']['application/json']['schema'];
+        $this->assertArrayHasKey('meta', $paginated['properties']);
+        $this->assertArrayHasKey('pagination', $paginated['properties']['meta']['properties']);
+    }
+}

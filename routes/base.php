@@ -42,4 +42,4 @@ Route::prefix('preview')
     });
 
 Route::get('/{react}', [Base\IndexController::class, 'index'])
-    ->where('react', '^(?!(\/)?(api|auth|admin|preview|designify|daemon)).+');
+    ->where('react', '^(?!(\/)?(api|auth|admin|preview|designify|daemon|docs)).+');

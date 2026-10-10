@@ -26,6 +26,10 @@ return $app
             Route::middleware(['installation', 'auth.session', RequireTwoFactorAuthentication::class])
                 ->group(base_path('routes/base.php'));
 
+            Route::middleware(['installation', 'auth.session', RequireTwoFactorAuthentication::class])
+                ->prefix('/docs')
+                ->group(base_path('routes/docs.php'));
+
             Route::middleware(['installation', 'guest'])
                 ->prefix('/auth')
                 ->group(base_path('routes/auth.php'));
