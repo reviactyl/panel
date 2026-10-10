@@ -52,6 +52,7 @@ class EggResource extends Resource
                                         Forms\Components\Select::make('nest_id')
                                             ->label(trans('admin/eggs.fields.nest'))
                                             ->relationship('nest', 'name')
+                                            ->default(fn () => request()->query('nest_id'))
                                             ->required()
                                             ->searchable()
                                             ->preload()
