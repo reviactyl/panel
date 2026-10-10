@@ -38,6 +38,32 @@ class UserDeletionServiceTest extends IntegrationTestCase
         $this->assertModelMissing($user);
     }
 
+    public function test_migration_rollback_preserves_subuser_cascade(): void
+    {
+        $server = $this->createServerModel();
+        $user = User::factory()->create();
+        $subuser = Subuser::withoutEvents(fn () => Subuser::factory()->create([
+            'user_id' => $user->id,
+            'server_id' => $server->id,
+        ]));
+
+        $migration = require database_path('migrations/2026_10_10_000000_cascade_subusers_on_user_deletion.php');
+        try {
+            $migration->up();
+            $migration->down();
+            $this->assertModelExists($subuser);
+
+            $user->delete();
+
+            $this->assertModelMissing($user);
+            $this->assertModelMissing($subuser);
+            $this->assertModelExists($server);
+            $this->assertModelExists($server->user);
+        } finally {
+            $migration->up();
+        }
+    }
+
     public function test_migration_allows_admin_deletion_with_existing_subuser_memberships(): void
     {
         $server = $this->createServerModel();

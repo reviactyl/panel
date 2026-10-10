@@ -18,7 +18,7 @@ return new class extends Migration
     {
         Schema::table('subusers', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
         });
     }
 };
