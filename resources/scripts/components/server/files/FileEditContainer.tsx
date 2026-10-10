@@ -26,7 +26,7 @@ import Card from '@/reviactyl/ui/Card';
 import { ApplicationStore } from '@/state';
 import { useStoreState } from 'easy-peasy';
 
-export default () => {
+const FileEditContainer = () => {
     const [error, setError] = useState('');
     const location = useLocation();
     const { hash } = location;
@@ -66,17 +66,33 @@ export default () => {
         }
         setLoading(true);
         setDirectory(dirname(path));
+        let active = true;
         getFileContents(uuid, path)
-            .then(setContent)
+            .then((content) => {
+                if (active) {
+                    setContent(content);
+                }
+            })
             .catch((error) => {
+                if (!active) {
+                    return;
+                }
                 console.error(error);
                 setError(httpErrorToHuman(error));
             })
-            .then(() => setLoading(false));
+            .then(() => {
+                if (active) {
+                    setLoading(false);
+                }
+            });
+
+        return () => {
+            active = false;
+        };
     }, [isNewFile, uuid, hash]);
 
     const save = (name?: string) => {
-        if (!fetchFileContent) {
+        if (loading || !fetchFileContent) {
             return;
         }
 
@@ -194,13 +210,17 @@ export default () => {
                 </div>
                 {!isNewFile ? (
                     <Can action={'file.update'}>
-                        <Button className='flex-1 sm:flex-none' onClick={() => save()}>
+                        <Button disabled={loading} className='flex-1 sm:flex-none' onClick={() => save()}>
                             Save Content
                         </Button>
                     </Can>
                 ) : (
                     <Can action={'file.create'}>
-                        <Button className='flex-1 sm:flex-none' onClick={() => setModalVisible(true)}>
+                        <Button
+                            disabled={loading}
+                            className='flex-1 sm:flex-none'
+                            onClick={() => setModalVisible(true)}
+                        >
                             Create File
                         </Button>
                     </Can>
@@ -208,4 +228,11 @@ export default () => {
             </Card>
         </ContentBlock>
     );
+};
+
+export default () => {
+    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const { pathname, hash } = useLocation();
+
+    return <FileEditContainer key={JSON.stringify([uuid, pathname, hash])} />;
 };
