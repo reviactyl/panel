@@ -306,12 +306,11 @@ class EditNodeForm
                                 Section::make()
                                     ->description(trans('admin/node.sections.resources.description'))
                                     ->schema([
-                                        TextInput::make('memory')
+                                        StorageUnit::megabyteInput(TextInput::make('memory'))
                                             ->label(trans('admin/node.fields.memory.label'))
                                             ->required()
                                             ->numeric()
                                             ->minValue(1)
-                                            ->suffix(StorageUnit::megabyte())
                                             ->helperText(trans('admin/node.fields.memory.helper', ['unit' => StorageUnit::megabyte()])),
 
                                         TextInput::make('memory_overallocate')
@@ -322,12 +321,11 @@ class EditNodeForm
                                             ->suffix('%')
                                             ->helperText(trans('admin/node.fields.memory_overallocate.helper')),
 
-                                        TextInput::make('disk')
+                                        StorageUnit::megabyteInput(TextInput::make('disk'))
                                             ->label(trans('admin/node.fields.disk.label'))
                                             ->required()
                                             ->numeric()
                                             ->minValue(1)
-                                            ->suffix(StorageUnit::megabyte())
                                             ->helperText(trans('admin/node.fields.disk.helper', ['unit' => StorageUnit::megabyte()])),
 
                                         TextInput::make('disk_overallocate')
@@ -338,13 +336,12 @@ class EditNodeForm
                                             ->suffix('%')
                                             ->helperText(trans('admin/node.fields.disk_overallocate.helper')),
 
-                                        TextInput::make('upload_size')
+                                        StorageUnit::megabyteInput(TextInput::make('upload_size'))
                                             ->label(trans('admin/node.fields.upload_size.label'))
                                             ->required()
                                             ->numeric()
                                             ->minValue(1)
                                             ->default(100)
-                                            ->suffix(StorageUnit::megabyte())
                                             ->helperText(trans('admin/node.fields.upload_size.helper')),
                                     ])
                                     ->columns(2),

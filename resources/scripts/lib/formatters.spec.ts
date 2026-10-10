@@ -52,8 +52,8 @@ describe('@/lib/formatters.ts', function () {
             window.SiteConfiguration = { useBinaryPrefix: false };
 
             expect(megabyteLabel()).toBe('MB');
-            expect(mbToBytes(1)).toBe(1_000_000);
-            expect(mbToBytes(1000)).toBe(1_000_000_000);
+            expect(mbToBytes(1)).toBe(1_048_576);
+            expect(bytesToString(mbToBytes(1024))).toBe('1.07 GB');
             expect(bytesToMb(1_500_000)).toBe(1.5);
             expect(bytesToString(1000)).toBe('1 KB');
             expect(bytesToString(1_048_576)).toBe('1.05 MB');

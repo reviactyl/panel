@@ -5,7 +5,7 @@ import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import { Line } from 'react-chartjs-2';
 import { useChart, useChartTickLabel } from '@/components/server/console/chart';
 import { hexToRgba } from '@/lib/helpers';
-import { bytesToMb, bytesToString, megabyteLabel } from '@/lib/formatters';
+import { bytesToMb, bytesToString, mbToBytes, megabyteLabel } from '@/lib/formatters';
 import { CloudDownloadIcon, CloudUploadIcon } from '@heroicons/react/solid';
 import ChartBlock from '@/components/server/console/ChartBlock';
 import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
@@ -18,7 +18,7 @@ export default () => {
     const previous = useRef<Record<'tx' | 'rx', number>>({ tx: -1, rx: -1 });
 
     const cpu = useChartTickLabel(t('cpu'), limits.cpu, '%', 2);
-    const memory = useChartTickLabel(t('memory'), limits.memory, megabyteLabel());
+    const memory = useChartTickLabel(t('memory'), Math.floor(bytesToMb(mbToBytes(limits.memory))), megabyteLabel());
     const network = useChart(t('network'), {
         sets: 2,
         options: {

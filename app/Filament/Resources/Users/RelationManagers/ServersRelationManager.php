@@ -71,7 +71,7 @@ class ServersRelationManager extends RelationManager
                             return '∞';
                         }
 
-                        return StorageUnit::formatMegabytes($state);
+                        return StorageUnit::formatMebibytes($state);
                     })
                     ->toggleable(),
 
@@ -84,7 +84,7 @@ class ServersRelationManager extends RelationManager
                             return '∞';
                         }
 
-                        return StorageUnit::formatMegabytes($state);
+                        return StorageUnit::formatMebibytes($state);
                     })
                     ->toggleable(),
 

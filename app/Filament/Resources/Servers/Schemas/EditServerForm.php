@@ -361,20 +361,20 @@ class EditServerForm
                 ->label(trans('admin/server.edit.fields.cpu_pinning.label'))
                 ->regex('/^[0-9-,]+$/')
                 ->helperText(trans('admin/server.edit.fields.cpu_pinning.helper')),
-            TextInput::make('memory')
+            StorageUnit::megabyteInput(TextInput::make('memory'))
                 ->label(trans('admin/server.edit.fields.allocated_memory.label'))
                 ->required()
-                ->numeric()->minValue(0)->suffix(StorageUnit::megabyte())
+                ->numeric()->minValue(0)
                 ->helperText(trans('admin/server.edit.fields.allocated_memory.helper')),
-            TextInput::make('swap')
+            StorageUnit::megabyteInput(TextInput::make('swap'))
                 ->label(trans('admin/server.edit.fields.allocated_swap.label'))
                 ->required()
-                ->numeric()->minValue(-1)->suffix(StorageUnit::megabyte())
+                ->numeric()->minValue(-1)
                 ->helperText(trans('admin/server.edit.fields.allocated_swap.helper')),
-            TextInput::make('disk')
+            StorageUnit::megabyteInput(TextInput::make('disk'))
                 ->label(trans('admin/server.edit.fields.disk_space_limit.label'))
                 ->required()
-                ->numeric()->minValue(0)->suffix(StorageUnit::megabyte())
+                ->numeric()->minValue(0)
                 ->helperText(trans('admin/server.edit.fields.disk_space_limit.helper')),
             TextInput::make('io')
                 ->label(trans('admin/server.edit.fields.block_io_proportion.label'))

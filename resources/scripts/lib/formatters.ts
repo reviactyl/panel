@@ -17,7 +17,7 @@ function megabyteLabel(): string {
  * Given a value in megabytes converts it back down into bytes.
  */
 function mbToBytes(megabytes: number): number {
-    return Math.floor(megabytes * conversionUnit() * conversionUnit());
+    return Math.floor(megabytes * 1024 * 1024);
 }
 
 function bytesToMb(bytes: number): number {

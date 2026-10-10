@@ -52,16 +52,14 @@ class NodesTable
 
                 TextColumn::make('memory')
                     ->label(trans('admin/node.table.memory'))
-                    ->numeric()
+                    ->formatStateUsing(fn (int $state): string => number_format(StorageUnit::fromMebibytes($state)).' '.StorageUnit::megabyte())
                     ->sortable()
-                    ->suffix(' '.StorageUnit::megabyte())
                     ->toggleable(),
 
                 TextColumn::make('disk')
                     ->label(trans('admin/node.table.disk'))
-                    ->numeric()
+                    ->formatStateUsing(fn (int $state): string => number_format(StorageUnit::fromMebibytes($state)).' '.StorageUnit::megabyte())
                     ->sortable()
-                    ->suffix(' '.StorageUnit::megabyte())
                     ->toggleable(),
 
                 TextColumn::make('created_at')

@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 
+use Filament\Forms\Components\TextInput;
+
 class StorageUnit
 {
     private const MEBIBYTE = 1024 * 1024;
@@ -21,18 +23,9 @@ class StorageUnit
         return self::isBinary() ? 'MiB' : 'MB';
     }
 
-    public static function gigabyte(): string
+    public static function formatMebibytes(int|float $value): string
     {
-        return self::isBinary() ? 'GiB' : 'GB';
-    }
-
-    public static function formatMegabytes(int|float $value): string
-    {
-        if ($value >= self::base()) {
-            return round($value / self::base(), 2).' '.self::gigabyte();
-        }
-
-        return $value.' '.self::megabyte();
+        return self::formatBytes($value * self::MEBIBYTE);
     }
 
     public static function formatBytes(int|float $bytes, int $decimals = 2): string
@@ -51,10 +44,27 @@ class StorageUnit
         return round($bytes / (self::base() ** $pow), $decimals).' '.$units[$pow];
     }
 
-    public static function toMebibytes(int|float $value): int
+    public static function megabyteInput(TextInput $input): TextInput
     {
-        if ($value <= 0 || self::isBinary()) {
-            return (int) $value;
+        return $input
+            ->suffix(self::megabyte())
+            ->formatStateUsing(fn ($state) => self::fromMebibytes($state))
+            ->dehydrateStateUsing(fn ($state) => self::toMebibytes($state));
+    }
+
+    public static function fromMebibytes(mixed $value): mixed
+    {
+        if (! is_numeric($value) || $value <= 0 || self::isBinary()) {
+            return $value;
+        }
+
+        return max(1, (int) round($value * self::MEBIBYTE / (1000 * 1000)));
+    }
+
+    public static function toMebibytes(mixed $value): mixed
+    {
+        if (! is_numeric($value) || $value <= 0 || self::isBinary()) {
+            return $value;
         }
 
         return max(1, (int) round($value * 1000 * 1000 / self::MEBIBYTE));

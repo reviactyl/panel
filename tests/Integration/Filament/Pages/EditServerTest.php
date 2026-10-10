@@ -12,6 +12,7 @@ use App\Models\ServerVariable;
 use App\Models\User;
 use App\Repositories\Agent\DaemonRevocationRepository;
 use App\Repositories\Agent\DaemonServerRepository;
+use App\Services\Servers\ServerConfigurationStructureService;
 use Illuminate\Validation\ValidationException;
 use Livewire\Livewire;
 use Mockery;
@@ -55,6 +56,27 @@ class EditServerTest extends IntegrationTestCase
 
         $this->assertSame($original, $server->fresh()->getAttributes());
         $this->assertSame($originalVariables, ServerVariable::query()->where('server_id', $server->id)->pluck('variable_value', 'variable_id')->all());
+    }
+
+    public function test_decimal_storage_unit_only_converts_limits_at_the_form(): void
+    {
+        config()->set('panel.use_binary_prefix', false);
+        $server = $this->createServerModel(['memory' => 2048, 'swap' => -1, 'disk' => 0]);
+        $this->actingAs(User::factory()->create(['root_admin' => true]));
+        $repository = $this->mock(DaemonServerRepository::class);
+        $repository->allows('setServer')->andReturnSelf();
+        $repository->allows('sync')->andReturnUndefined();
+
+        $page = Livewire::test(EditServer::class, ['record' => $server->id])
+            ->assertFormSet(['memory' => 2147, 'swap' => -1, 'disk' => 0]);
+
+        // Saving without touching the limits must not change what is stored or sent to Agent.
+        $page->call('save')->assertHasNoFormErrors();
+        $this->assertSame([2048, -1, 0], [$server->refresh()->memory, $server->swap, $server->disk]);
+        $this->assertSame(2048, app(ServerConfigurationStructureService::class)->handle($server)['build']['memory_limit']);
+
+        $page->fillForm(['memory' => 1000, 'disk' => 2000])->call('save')->assertHasNoFormErrors();
+        $this->assertSame([954, 1907], [$server->refresh()->memory, $server->disk]);
     }
 
     public function test_invalid_startup_values_do_not_save_details_limits_or_allocations(): void

@@ -226,29 +226,26 @@ class CreateServerForm
                 ->regex('/^[0-9-,]+$/')
                 ->helperText(trans('admin/server.create.fields.threads.helper')),
 
-            TextInput::make('memory')
+            StorageUnit::megabyteInput(TextInput::make('memory'))
                 ->label(trans('admin/server.create.fields.memory.label'))
                 ->required()
                 ->numeric()
                 ->minValue(0)
-                ->suffix(StorageUnit::megabyte())
                 ->helperText(trans('admin/server.create.fields.memory.helper')),
 
-            TextInput::make('swap')
+            StorageUnit::megabyteInput(TextInput::make('swap'))
                 ->label(trans('admin/server.create.fields.swap.label'))
                 ->required()
                 ->numeric()
                 ->minValue(-1)
                 ->default(0)
-                ->suffix(StorageUnit::megabyte())
                 ->helperText(trans('admin/server.create.fields.swap.helper')),
 
-            TextInput::make('disk')
+            StorageUnit::megabyteInput(TextInput::make('disk'))
                 ->label(trans('admin/server.create.fields.disk.label'))
                 ->required()
                 ->numeric()
                 ->minValue(0)
-                ->suffix(StorageUnit::megabyte())
                 ->helperText(trans('admin/server.create.fields.disk.helper')),
 
             TextInput::make('io')

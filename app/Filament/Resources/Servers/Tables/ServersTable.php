@@ -195,6 +195,6 @@ class ServersTable
             return '∞';
         }
 
-        return StorageUnit::formatMegabytes($value);
+        return StorageUnit::formatMebibytes($value);
     }
 }
