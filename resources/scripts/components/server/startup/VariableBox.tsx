@@ -57,7 +57,7 @@ const VariableBox = ({ variable }: Props) => {
     const useSwitch = variable.rules.some(
         (v) => v === 'boolean' || v === 'in:0,1' || v === 'in:1,0' || v === 'in:true,false' || v === 'in:false,true',
     );
-    const isStringSwitch = variable.rules.some((v) => v === 'string');
+    const isStringSwitch = variable.rules.some((v) => v === 'in:true,false' || v === 'in:false,true');
     const effectiveValue = variable.serverValue ?? variable.defaultValue;
     const selectValues = variable.rules.find((v) => v.startsWith('in:'))?.split(',') || [];
 
