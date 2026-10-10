@@ -43,7 +43,7 @@ class FractalResponseTypeInfer implements MethodReturnTypeExtension
                 return $class->type;
             }
 
-            return $class instanceof LiteralStringType ? new ObjectType($class->getValue()) : null;
+            return $class instanceof LiteralStringType ? new ObjectType($class->value) : null;
         }
 
         if (! $event->getInstance()->isInstanceOf(Fractal::class)) {
@@ -86,7 +86,7 @@ class FractalResponseTypeInfer implements MethodReturnTypeExtension
             return null;
         }
 
-        $operation = $operationType->getValue();
+        $operation = $operationType->value;
         $attributes = $event->scope->index->getClass($transformer->name)?->getMethodDefinition('transform')?->getReturnType();
         $transformerDefinition = $event->scope->index->getClass($transformer->name);
         $resourceName = $transformerDefinition?->getMethodDefinition('getResourceName')?->getReturnType();
@@ -142,11 +142,12 @@ class FractalResponseTypeInfer implements MethodReturnTypeExtension
 
         $relationshipItems = [];
         foreach ($includes->items as $include) {
-            if (! $include->value instanceof LiteralStringType) {
+            $includeName = $include->value;
+            if (! $includeName instanceof LiteralStringType) {
                 continue;
             }
 
-            $name = $include->value->getValue();
+            $name = $includeName->value;
             $method = $transformer->getMethodDefinition('include'.Str::studly($name), $event->scope);
             if (! $method) {
                 continue;
@@ -200,6 +201,6 @@ class FractalResponseTypeInfer implements MethodReturnTypeExtension
             }
         }
 
-        return $schemas ? Union::wrap($schemas) : new UnknownType();
+        return $schemas ? Union::wrap(...$schemas) : new UnknownType();
     }
 }
