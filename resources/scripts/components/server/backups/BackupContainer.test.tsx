@@ -14,11 +14,15 @@ const mocks = vi.hoisted(() => ({
 type BackupResponse = PaginatedResult<ServerBackup> & { backupCount: number };
 
 vi.mock('@/api/swr/getServerBackups', async () => {
-    const { createContext } = await import('react');
+    const { createContext, useContext } = await import('react');
     const { default: useSWR } = await import('swr');
+    const Context = createContext({ page: 1, setPage: (_page: number) => {} });
     return {
-        Context: createContext({ page: 1, setPage: vi.fn() }),
-        default: () => useSWR<BackupResponse>('backups', mocks.fetch),
+        Context,
+        default: () => {
+            const { page } = useContext(Context);
+            return useSWR<BackupResponse>(['backups', page], () => mocks.fetch(page));
+        },
     };
 });
 vi.mock('@/state/server', () => ({
@@ -44,8 +48,22 @@ vi.mock('@/reviactyl/elements/ServerContentBlock', () => ({
     default: ({ children }: { children: ReactNode }) => children,
 }));
 vi.mock('@/reviactyl/elements/Pagination', () => ({
-    default: ({ data, children }: { data: BackupResponse; children: (data: BackupResponse) => ReactNode }) =>
-        children(data),
+    default: ({
+        data,
+        children,
+        onPageSelect,
+    }: {
+        data: BackupResponse;
+        children: (data: BackupResponse) => ReactNode;
+        onPageSelect: (page: number) => void;
+    }) => (
+        <>
+            <a href='#page-3' onClick={() => onPageSelect(3)}>
+                Page 3
+            </a>
+            {children(data)}
+        </>
+    ),
 }));
 vi.mock('@/components/FlashMessageRender', () => ({ default: () => null }));
 vi.mock('@/extensions/ExtensionSlot', () => ({ ExtensionSlot: () => null }));
@@ -157,5 +175,37 @@ describe('backup completion slot count', () => {
         expect(mocks.fetch).toHaveBeenCalledTimes(2);
         expect(container.textContent).toContain('Failed');
         expect(container.querySelector('button')).not.toBeNull();
+    });
+});
+
+describe('backup pagination recovery', () => {
+    it.each([2, 1])('returns an empty page to the last available page (%s)', async (totalPages) => {
+        mocks.fetch.mockImplementation(async (page: number) => ({
+            ...response(page === 3 ? [] : [pending]),
+            pagination: { total: 21, count: page === 3 ? 0 : 1, perPage: 20, currentPage: page, totalPages },
+        }));
+        await render();
+        await act(async () => container.querySelector('a')!.click());
+        expect(mocks.fetch.mock.calls.map(([page]) => page)).toEqual([1, 3, totalPages]);
+        expect(container.textContent).toContain('Pending');
+        expect(container.textContent).not.toContain('out-of-backups');
+    });
+
+    it('keeps a nonempty later page selected', async () => {
+        mocks.fetch.mockImplementation(async (page: number) => ({
+            ...response(),
+            pagination: { total: 41, count: 1, perPage: 20, currentPage: page, totalPages: 3 },
+        }));
+        await render();
+        await act(async () => container.querySelector('a')!.click());
+        expect(mocks.fetch.mock.calls.map(([page]) => page)).toEqual([1, 3]);
+        expect(container.textContent).toContain('Pending');
+    });
+
+    it('keeps an empty first page selected without refetching', async () => {
+        mocks.fetch.mockResolvedValue(response([], 0));
+        await render();
+        expect(mocks.fetch).toHaveBeenCalledTimes(1);
+        expect(container.textContent).toContain('no-backups');
     });
 });
