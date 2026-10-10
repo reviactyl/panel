@@ -17,6 +17,7 @@ class FractalResponseInferenceTest extends TestCase
             'api.application.nests',
             'api.application.nests.eggs',
             'api.application.nests.eggs.view',
+            'api:client.index',
         ], true));
 
         try {
@@ -48,5 +49,17 @@ class FractalResponseInferenceTest extends TestCase
         $paginated = $spec['paths']['/application/nests']['get']['responses']['200']['content']['application/json']['schema'];
         $this->assertArrayHasKey('meta', $paginated['properties']);
         $this->assertArrayHasKey('pagination', $paginated['properties']['meta']['properties']);
+
+        $clientOperation = collect($spec['paths'])->first(
+            fn (array $path) => ($path['get']['operationId'] ?? null) === 'api:client.index',
+        );
+        $this->assertNotNull($clientOperation);
+        $client = $clientOperation['get']['responses']['200']['content']['application/json']['schema'];
+        $this->assertSame('array', $client['properties']['data']['type']);
+        $this->assertArrayHasKey(
+            'identifier',
+            $client['properties']['data']['items']['properties']['attributes']['properties'],
+        );
+        $this->assertArrayHasKey('pagination', $client['properties']['meta']['properties']);
     }
 }

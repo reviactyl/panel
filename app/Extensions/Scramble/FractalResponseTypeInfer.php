@@ -44,9 +44,12 @@ class FractalResponseTypeInfer implements MethodReturnTypeExtension
         }
 
         if (in_array($event->name, ['item', 'collection'], true)) {
+            $instance = $event->getInstance();
+            $transformer = $instance instanceof Generic ? ($instance->templateTypes[1] ?? new UnknownType()) : new UnknownType();
+
             return new Generic(Fractal::class, [
                 new LiteralStringType($event->name),
-                new UnknownType(),
+                $transformer,
                 $event->getArg('data', 0),
             ]);
         }
