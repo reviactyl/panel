@@ -65,7 +65,7 @@ return [
         'enabled' => env('SCRAMBLE_DEV_TOOLS', env('APP_DEBUG', false)),
     ],
 
-    'renderer' => 'scalar', // 'elements' or 'scalar'
+    'renderer' => 'elements', // 'elements' or 'scalar'
 
     'renderers' => [
         /*
