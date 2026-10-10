@@ -128,6 +128,26 @@ class SqlStatementReaderTest extends TestCase
                     'SELECT 2',
                 ],
             ],
+            'leading block comments before delimiter changes' => [
+                "/* header; */\n/* another header */\n-- line comment\nDELIMITER $$\nCREATE PROCEDURE p() BEGIN SELECT 1; SELECT 2; END$$\n/* footer */\nDELIMITER ;\nSELECT 3;",
+                ['CREATE PROCEDURE p() BEGIN SELECT 1; SELECT 2; END', 'SELECT 3'],
+            ],
+            'leading block comment across reads' => [
+                '/*'.str_repeat('a', 65533)."*/\nDELIMITER $$\nSELECT 1$$\nDELIMITER ;\nSELECT 2;",
+                ['SELECT 1', 'SELECT 2'],
+            ],
+            'leading ordinary comments are skipped' => [
+                '/* header */ SELECT 1; /* trailing */',
+                ['SELECT 1'],
+            ],
+            'special leading block comments are kept' => [
+                '/*!40101 SET NAMES utf8mb4 */;/*M! SET @a = 1 */;/*+ hint */ SELECT 1;',
+                ['/*!40101 SET NAMES utf8mb4 */', '/*M! SET @a = 1 */', '/*+ hint */ SELECT 1'],
+            ],
+            'inline block comments do not enable delimiter directives' => [
+                "SELECT 1 /* inline */\nDELIMITER $$;",
+                ["SELECT 1 /* inline */\nDELIMITER $$"],
+            ],
             'escaped quote split across reads' => [
                 "INSERT INTO a VALUES ('".str_repeat('a', 65512)."\\'b; c');SELECT 1;",
                 ["INSERT INTO a VALUES ('".str_repeat('a', 65512)."\\'b; c')", 'SELECT 1'],

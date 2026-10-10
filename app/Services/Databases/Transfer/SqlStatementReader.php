@@ -131,6 +131,15 @@ class SqlStatementReader
                     continue;
                 }
 
+                $special = in_array($buffer[$position + 2] ?? '', ['!', '+'], true)
+                    || substr($buffer, $position + 2, 2) === 'M!';
+                if ($blank && $end !== false && ! $special) {
+                    $buffer = (string) substr($buffer, $end + 2);
+                    $position = 0;
+
+                    continue;
+                }
+
                 $position = $end === false ? strlen($buffer) : $end + 2;
                 $blank = false;
 
