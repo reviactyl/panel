@@ -56,6 +56,7 @@ class Settings extends Page implements HasSchemas
         'panel:auth:registration_enabled',
         'app:debug',
         'app:pwa',
+        'panel:use_binary_prefix',
 
         'mail:default',
         'mail:mailers:smtp:host',
@@ -140,6 +141,10 @@ class Settings extends Page implements HasSchemas
 
             if ($key === 'panel:auth:2fa_required') {
                 $value = (int) $value;
+            }
+
+            if ($key === 'panel:use_binary_prefix') {
+                $value = (int) filter_var($value, FILTER_VALIDATE_BOOL);
             }
 
             if ($key === 'trustedproxy:proxies' && is_array($value)) {
@@ -327,6 +332,16 @@ class Settings extends Page implements HasSchemas
                                 ->icon('tabler-brand-cloudflare')
                                 ->action(fn (Set $set) => $this->importCloudflareTrustedProxies($set)),
                         )
+                        ->columnSpan(2),
+
+                    ToggleButtons::make('panel:use_binary_prefix')
+                        ->label(trans('admin/settings.overview.storage-unit'))
+                        ->inline()
+                        ->options([
+                            0 => trans('admin/settings.overview.storage-unit-decimal'),
+                            1 => trans('admin/settings.overview.storage-unit-binary'),
+                        ])
+                        ->required()
                         ->columnSpan(2),
                 ]),
         ];

@@ -13,7 +13,7 @@ import Blur from '@/reviactyl/ui/Blur';
 
 // Determines if the current value is in an alarm threshold so we can show it in red rather
 // than the more faded default style.
-const isAlarmState = (current: number, limit: number): boolean => limit > 0 && current / (limit * 1024 * 1024) >= 0.9;
+const isAlarmState = (current: number, limit: number): boolean => limit > 0 && current / mbToBytes(limit) >= 0.9;
 
 type Timer = ReturnType<typeof setInterval>;
 

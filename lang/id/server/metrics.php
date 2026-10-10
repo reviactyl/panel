@@ -15,16 +15,16 @@ return [
         ],
         'memory' => [
             'title' => 'Sejarah Memori',
-            'label' => 'Penggunaan Memori (MB)',
+            'label' => 'Penggunaan Memori (:unit)',
         ],
         'disk' => [
             'title' => 'Riwayat Disk',
-            'label' => 'Penggunaan Disk (MB)',
+            'label' => 'Penggunaan Disk (:unit)',
         ],
         'network' => [
             'title' => 'Sejarah Jaringan',
-            'rx_label' => 'Jaringan RX (MB)',
-            'tx_label' => 'Jaringan TX (MB)',
+            'rx_label' => 'Jaringan RX (:unit)',
+            'tx_label' => 'Jaringan TX (:unit)',
         ],
     ],
 ];

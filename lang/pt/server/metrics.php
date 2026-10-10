@@ -16,16 +16,16 @@ return [
         ],
         'memory' => [
             'title' => 'Histórico de Memória',
-            'label' => 'Uso de Memória (MB)',
+            'label' => 'Uso de Memória (:unit)',
         ],
         'disk' => [
             'title' => 'Histórico de Armazenamento',
-            'label' => 'Uso de Armazenamento (MB)',
+            'label' => 'Uso de Armazenamento (:unit)',
         ],
         'network' => [
             'title' => 'Histórico de Rede',
-            'rx_label' => 'Entrada (MB)',
-            'tx_label' => 'Saída (MB)',
+            'rx_label' => 'Entrada (:unit)',
+            'tx_label' => 'Saída (:unit)',
         ],
     ],
 ];

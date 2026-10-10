@@ -84,7 +84,7 @@ return [
         ],
         'memory' => [
             'label' => 'Tổng bộ nhớ',
-            'helper' => 'Tổng bộ nhớ trong MiB có sẵn trên nút này.',
+            'helper' => 'Tổng bộ nhớ trong :unit có sẵn trên nút này.',
         ],
         'memory_overallocate' => [
             'label' => 'Phân bổ tổng thể bộ nhớ',
@@ -92,7 +92,7 @@ return [
         ],
         'disk' => [
             'label' => 'Tổng dung lượng đĩa',
-            'helper' => 'Tổng dung lượng ổ đĩa trong MiB có sẵn trên nút này.',
+            'helper' => 'Tổng dung lượng ổ đĩa trong :unit có sẵn trên nút này.',
         ],
         'disk_overallocate' => [
             'label' => 'Phân bổ quá mức đĩa',

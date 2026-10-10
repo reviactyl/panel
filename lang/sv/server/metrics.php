@@ -15,16 +15,16 @@ return [
         ],
         'memory' => [
             'title' => 'Minneshistorik',
-            'label' => 'Minnesanvändning (MB)',
+            'label' => 'Minnesanvändning (:unit)',
         ],
         'disk' => [
             'title' => 'Diskhistorik',
-            'label' => 'Diskanvändning (MB)',
+            'label' => 'Diskanvändning (:unit)',
         ],
         'network' => [
             'title' => 'Nätverkshistorik',
-            'rx_label' => 'Nätverk RX (MB)',
-            'tx_label' => 'Nätverk TX (MB)',
+            'rx_label' => 'Nätverk RX (:unit)',
+            'tx_label' => 'Nätverk TX (:unit)',
         ],
     ],
 ];

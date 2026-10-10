@@ -84,7 +84,7 @@ return [
         ],
         'memory' => [
             'label' => 'Toplam Bellek',
-            'helper' => 'Bu düğümde kullanılabilir MiB cinsinden toplam bellek.',
+            'helper' => 'Bu düğümde kullanılabilir :unit cinsinden toplam bellek.',
         ],
         'memory_overallocate' => [
             'label' => 'Aşırı Bellek Tahsisi',
@@ -92,7 +92,7 @@ return [
         ],
         'disk' => [
             'label' => 'Toplam Disk Alanı',
-            'helper' => 'Bu düğümde kullanılabilir MiB cinsinden toplam disk alanı.',
+            'helper' => 'Bu düğümde kullanılabilir :unit cinsinden toplam disk alanı.',
         ],
         'disk_overallocate' => [
             'label' => 'Aşırı Disk Tahsisi',

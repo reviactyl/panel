@@ -1,5 +1,5 @@
-import { bytesToString, ip, mbToBytes } from '@/lib/formatters';
-import { describe, it, expect } from 'vitest';
+import { bytesToMb, bytesToString, ip, mbToBytes, megabyteLabel } from '@/lib/formatters';
+import { afterEach, describe, it, expect } from 'vitest';
 
 describe('@/lib/formatters.ts', function () {
     describe('mbToBytes()', function () {
@@ -40,6 +40,31 @@ describe('@/lib/formatters.ts', function () {
             [1_099_511_627_776, '1 TiB'],
         ])('should format %d bytes as "%s"', function (input, output) {
             expect(bytesToString(input)).toBe(output);
+        });
+    });
+
+    describe('with decimal prefixes', function () {
+        afterEach(function () {
+            delete window.SiteConfiguration;
+        });
+
+        it('should use 1000 as the divisor and decimal labels', function () {
+            window.SiteConfiguration = { useBinaryPrefix: false };
+
+            expect(megabyteLabel()).toBe('MB');
+            expect(mbToBytes(1)).toBe(1_048_576);
+            expect(bytesToString(mbToBytes(1024))).toBe('1.07 GB');
+            expect(bytesToMb(1_500_000)).toBe(1.5);
+            expect(bytesToString(1000)).toBe('1 KB');
+            expect(bytesToString(1_048_576)).toBe('1.05 MB');
+            expect(bytesToString(1_000_000_000)).toBe('1 GB');
+            expect(bytesToString(1_000_000_000_000)).toBe('1 TB');
+        });
+
+        it('should fall back to binary prefixes when not configured', function () {
+            expect(megabyteLabel()).toBe('MiB');
+            expect(bytesToMb(1_048_576)).toBe(1);
+            expect(bytesToString(1_048_576)).toBe('1 MiB');
         });
     });
 

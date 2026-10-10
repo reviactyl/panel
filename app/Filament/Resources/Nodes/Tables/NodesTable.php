@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Nodes\Tables;
 
+use App\Helpers\StorageUnit;
 use App\Models\Node;
 use Filament\Actions;
 use Filament\Tables\Columns\IconColumn;
@@ -51,16 +52,14 @@ class NodesTable
 
                 TextColumn::make('memory')
                     ->label(trans('admin/node.table.memory'))
-                    ->numeric()
+                    ->formatStateUsing(fn (int $state): string => number_format(StorageUnit::fromMebibytes($state)).' '.StorageUnit::megabyte())
                     ->sortable()
-                    ->suffix(' MiB')
                     ->toggleable(),
 
                 TextColumn::make('disk')
                     ->label(trans('admin/node.table.disk'))
-                    ->numeric()
+                    ->formatStateUsing(fn (int $state): string => number_format(StorageUnit::fromMebibytes($state)).' '.StorageUnit::megabyte())
                     ->sortable()
-                    ->suffix(' MiB')
                     ->toggleable(),
 
                 TextColumn::make('created_at')

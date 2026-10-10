@@ -15,16 +15,16 @@ return [
         ],
         'memory' => [
             'title' => 'Historique de la mémoire',
-            'label' => 'Utilisation de la mémoire (Mo)',
+            'label' => 'Utilisation de la mémoire (:unit)',
         ],
         'disk' => [
             'title' => 'Historique du disque',
-            'label' => 'Utilisation du disque (Mo)',
+            'label' => 'Utilisation du disque (:unit)',
         ],
         'network' => [
             'title' => 'Historique du réseau',
-            'rx_label' => 'Réception réseau (Mo)',
-            'tx_label' => 'Émission réseau (Mo)',
+            'rx_label' => 'Réception réseau (:unit)',
+            'tx_label' => 'Émission réseau (:unit)',
         ],
     ],
 ];

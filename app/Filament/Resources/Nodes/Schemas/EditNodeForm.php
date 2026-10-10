@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Nodes\Schemas;
 
+use App\Helpers\StorageUnit;
 use App\Models\ApiKey;
 use App\Models\Node;
 use App\Repositories\Agent\DaemonConfigurationRepository;
@@ -305,13 +306,12 @@ class EditNodeForm
                                 Section::make()
                                     ->description(trans('admin/node.sections.resources.description'))
                                     ->schema([
-                                        TextInput::make('memory')
+                                        StorageUnit::megabyteInput(TextInput::make('memory'))
                                             ->label(trans('admin/node.fields.memory.label'))
                                             ->required()
                                             ->numeric()
                                             ->minValue(1)
-                                            ->suffix('MiB')
-                                            ->helperText(trans('admin/node.fields.memory.helper')),
+                                            ->helperText(trans('admin/node.fields.memory.helper', ['unit' => StorageUnit::megabyte()])),
 
                                         TextInput::make('memory_overallocate')
                                             ->label(trans('admin/node.fields.memory_overallocate.label'))
@@ -321,13 +321,12 @@ class EditNodeForm
                                             ->suffix('%')
                                             ->helperText(trans('admin/node.fields.memory_overallocate.helper')),
 
-                                        TextInput::make('disk')
+                                        StorageUnit::megabyteInput(TextInput::make('disk'))
                                             ->label(trans('admin/node.fields.disk.label'))
                                             ->required()
                                             ->numeric()
                                             ->minValue(1)
-                                            ->suffix('MiB')
-                                            ->helperText(trans('admin/node.fields.disk.helper')),
+                                            ->helperText(trans('admin/node.fields.disk.helper', ['unit' => StorageUnit::megabyte()])),
 
                                         TextInput::make('disk_overallocate')
                                             ->label(trans('admin/node.fields.disk_overallocate.label'))
@@ -337,13 +336,12 @@ class EditNodeForm
                                             ->suffix('%')
                                             ->helperText(trans('admin/node.fields.disk_overallocate.helper')),
 
-                                        TextInput::make('upload_size')
+                                        StorageUnit::megabyteInput(TextInput::make('upload_size'))
                                             ->label(trans('admin/node.fields.upload_size.label'))
                                             ->required()
                                             ->numeric()
                                             ->minValue(1)
                                             ->default(100)
-                                            ->suffix('MiB')
                                             ->helperText(trans('admin/node.fields.upload_size.helper')),
                                     ])
                                     ->columns(2),

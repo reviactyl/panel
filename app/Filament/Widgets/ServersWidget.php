@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Helpers\StorageUnit;
 use App\Models\Node;
 use App\Models\Server;
 use App\Repositories\Agent\DaemonServerStatusRepository;
@@ -235,14 +236,7 @@ class ServersWidget extends BaseWidget
 
     private function formatBytes(int|float $bytes): string
     {
-        $bytes = max((float) $bytes, 0.0);
-        if ($bytes === 0.0) {
-            return '0 B';
-        }
-        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-        $pow = (int) min(floor(log($bytes) / log(1024)), count($units) - 1);
-
-        return round($bytes / (1024 ** $pow), 2).' '.$units[$pow];
+        return StorageUnit::formatBytes($bytes);
     }
 
     private function formatUptime(int $seconds): string
