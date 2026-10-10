@@ -92,8 +92,8 @@ class FindViableNodesService
         }
 
         $results = $query
-            ->whereRaw('(COALESCE(server_usage.sum_memory, 0) + ?) <= (nodes.memory * (1 + (nodes.memory_overallocate / 100.0)))', [$this->memory])
-            ->whereRaw('(COALESCE(server_usage.sum_disk, 0) + ?) <= (nodes.disk * (1 + (nodes.disk_overallocate / 100.0)))', [$this->disk]);
+            ->whereRaw('(nodes.memory_overallocate = -1 OR (COALESCE(server_usage.sum_memory, 0) + ?) <= (nodes.memory * (1 + (nodes.memory_overallocate / 100.0))))', [$this->memory])
+            ->whereRaw('(nodes.disk_overallocate = -1 OR (COALESCE(server_usage.sum_disk, 0) + ?) <= (nodes.disk * (1 + (nodes.disk_overallocate / 100.0))))', [$this->disk]);
 
         if (! is_null($page)) {
             $results = $results->paginate($perPage ?? 50, ['*'], 'page', $page);

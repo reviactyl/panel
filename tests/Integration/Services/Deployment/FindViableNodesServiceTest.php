@@ -9,6 +9,7 @@ use App\Models\Node;
 use App\Models\Server;
 use App\Services\Deployment\FindViableNodesService;
 use Illuminate\Support\Collection;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Integration\IntegrationTestCase;
 
 class FindViableNodesServiceTest extends IntegrationTestCase
@@ -178,6 +179,45 @@ class FindViableNodesServiceTest extends IntegrationTestCase
         $response = $base()->setMemory(640)->handle();
         $this->assertCount(1, $response);
         $this->assertSame($nodes[1]->id, $response[0]->id);
+    }
+
+    #[DataProvider('overallocationLimits')]
+    public function test_node_selection_honors_each_resource_limit(int $memoryOverallocation, int $diskOverallocation, int $memory, int $disk, bool $viable): void
+    {
+        $node = Node::factory()->create([
+            'location_id' => Location::factory()->create()->id,
+            'public' => true,
+            'memory' => 2048,
+            'disk' => 2048,
+            'memory_overallocate' => $memoryOverallocation,
+            'disk_overallocate' => $diskOverallocation,
+        ]);
+        $this->createServerModel(['node_id' => $node->id, 'memory' => 2048, 'disk' => 2048]);
+
+        if (! $viable) {
+            $this->expectException(NoViableNodeException::class);
+        }
+
+        $service = $this->getService()->setLocations([$node->location_id])->setMemory($memory)->setDisk($disk);
+        $nodes = $service->handle();
+        $this->assertSame([$node->id], $nodes->pluck('id')->all());
+        $this->assertSame([$node->id], $service->handle(50, 1)->pluck('id')->all());
+    }
+
+    public static function overallocationLimits(): array
+    {
+        return [
+            'both unlimited' => [-1, -1, 8192, 8192, true],
+            'unlimited memory' => [-1, 0, 8192, 0, true],
+            'unlimited disk' => [0, -1, 0, 8192, true],
+            'finite disk still enforced' => [-1, 0, 8192, 1, false],
+            'finite memory still enforced' => [0, -1, 1, 8192, false],
+            'zero overallocation boundary' => [0, 0, 0, 0, true],
+            'zero overallocation exceeded' => [0, 0, 1, 1, false],
+            'percentage boundary' => [50, 50, 1024, 1024, true],
+            'percentage memory exceeded' => [50, 50, 1025, 1024, false],
+            'percentage disk exceeded' => [50, 50, 1024, 1025, false],
+        ];
     }
 
     private function getService(): FindViableNodesService

@@ -24,6 +24,40 @@ class NodeTest extends TestCase
         }
     }
 
+    #[DataProvider('overallocationLimits')]
+    public function test_viability_honors_each_resource_limit(int|float|string $memoryOverallocation, int|float|string $diskOverallocation, int $memory, int $disk, bool $viable): void
+    {
+        $node = new Node([
+            'memory' => 2048,
+            'disk' => 2048,
+            'memory_overallocate' => $memoryOverallocation,
+            'disk_overallocate' => $diskOverallocation,
+        ]);
+        $node->sum_memory = 2048;
+        $node->sum_disk = 2048;
+
+        $this->assertSame($viable, $node->isViable($memory, $disk));
+    }
+
+    public static function overallocationLimits(): array
+    {
+        return [
+            'numeric strings unlimited' => ['-1', '-1', 8192, 8192, true],
+            'fractional percentage boundary' => [12.5, 12.5, 256, 256, true],
+            'fractional percentage exceeded' => [12.5, 12.5, 257, 257, false],
+            'both unlimited' => [-1, -1, 8192, 8192, true],
+            'unlimited memory' => [-1, 0, 8192, 0, true],
+            'unlimited disk' => [0, -1, 0, 8192, true],
+            'finite disk still enforced' => [-1, 0, 8192, 1, false],
+            'finite memory still enforced' => [0, -1, 1, 8192, false],
+            'zero overallocation boundary' => [0, 0, 0, 0, true],
+            'zero overallocation exceeded' => [0, 0, 1, 1, false],
+            'percentage boundary' => [50, 50, 1024, 1024, true],
+            'percentage memory exceeded' => [50, 50, 1025, 1024, false],
+            'percentage disk exceeded' => [50, 50, 1024, 1025, false],
+        ];
+    }
+
     public static function connectionHosts(): array
     {
         return [
