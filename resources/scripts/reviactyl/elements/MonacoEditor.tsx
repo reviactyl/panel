@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, lazy, Suspense } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState, lazy, Suspense } from 'react';
 import type { Monaco } from '@monaco-editor/react';
 import type { editor } from 'monaco-editor';
 import modes from '@/modes';
@@ -89,7 +89,12 @@ const mimeToMonacoLanguage = (mime: string): string => {
 
 export default ({ style, initialContent, filename, mode, fetchContent, onContentSaved, onModeChanged }: Props) => {
     const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
+    const onContentSavedRef = useRef(onContentSaved);
     const [monacoLanguage, setMonacoLanguage] = useState('plaintext');
+
+    useLayoutEffect(() => {
+        onContentSavedRef.current = onContentSaved;
+    }, [onContentSaved]);
 
     useEffect(() => {
         if (filename === undefined) {
@@ -107,7 +112,7 @@ export default ({ style, initialContent, filename, mode, fetchContent, onContent
         editorRef.current = editorInstance;
 
         editorInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
-            onContentSaved();
+            onContentSavedRef.current();
         });
 
         fetchContent(() => Promise.resolve(editorInstance.getValue()));
