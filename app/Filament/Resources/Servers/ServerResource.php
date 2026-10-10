@@ -7,6 +7,7 @@ use App\Filament\Resources\Servers\Pages\EditServer;
 use App\Filament\Resources\Servers\Pages\ListServers;
 use App\Filament\Resources\Servers\RelationManagers\AllocationsRelationManager;
 use App\Filament\Resources\Servers\RelationManagers\DatabasesRelationManager;
+use App\Filament\Resources\Servers\RelationManagers\MountsRelationManager;
 use App\Filament\Resources\Servers\Schemas\EditServerForm;
 use App\Filament\Resources\Servers\Tables\ServersTable;
 use App\Models\Server;
@@ -67,6 +68,7 @@ class ServerResource extends Resource
         return [
             AllocationsRelationManager::class,
             DatabasesRelationManager::class,
+            MountsRelationManager::class,
         ];
     }
 
