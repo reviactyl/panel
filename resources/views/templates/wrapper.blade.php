@@ -155,7 +155,7 @@ SOFTWARE.
     @vite('resources/scripts/index.tsx')
 </head>
 
-<body class="bg-gray-950 text-gray-100">
+<body class="bg-gray-950 text-gray-100 {{ $css['body'] ?? '' }}">
     @section('content')
         @yield('above-container')
         @yield('container')
