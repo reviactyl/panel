@@ -201,6 +201,10 @@ class FractalResponseTypeInfer implements MethodReturnTypeExtension
             }
         }
 
-        return $schemas ? Union::wrap(...$schemas) : new UnknownType();
+        return match (count($schemas)) {
+            0 => new UnknownType(),
+            1 => $schemas[0],
+            default => new Union($schemas),
+        };
     }
 }
