@@ -72,7 +72,7 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
                         items: data.items.filter((b) => b.uuid !== backup.uuid),
                         backupCount: backup.isSuccessful ? data.backupCount - 1 : data.backupCount,
                     };
-                }, false),
+                }),
             )
             .catch((error) => {
                 console.error(error);

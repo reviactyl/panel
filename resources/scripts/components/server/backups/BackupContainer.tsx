@@ -25,6 +25,12 @@ const BackupContainer = () => {
     const backupLimit = ServerContext.useStoreState((state) => state.server.data!.featureLimits.backups);
 
     useEffect(() => {
+        if (backups && backups.pagination.currentPage === page && page > 1 && !backups.items.length) {
+            setPage(Math.min(page - 1, Math.max(1, backups.pagination.totalPages)));
+        }
+    }, [backups, page, setPage]);
+
+    useEffect(() => {
         if (!error) {
             clearFlashes('backups');
 
