@@ -7,10 +7,10 @@ import { NotFound } from '@/reviactyl/elements/ScreenBlock';
 import Spinner from '@/reviactyl/elements/Spinner';
 import routes from '@/routers/routes';
 import { RouterContainer } from '@/reviactyl/ui/RouterContainer';
-import { ExternalLinkIcon } from '@heroicons/react/solid';
+import { XIcon, MenuIcon, ExternalLinkIcon } from '@heroicons/react/solid';
 import { ContentContainer } from '@/reviactyl/ui/ContentContainer';
 import MobileBottomBar from '@/reviactyl/ui/MobileBottomBar';
-import { Sidebar } from '@/reviactyl/components/Layout';
+import { Navbar, Sidebar } from '@/reviactyl/components/Layout';
 import { useStoreState } from 'easy-peasy';
 import Announcement from '@/reviactyl/ui/Announcement';
 import MaintenanceAlert from '@/reviactyl/ui/MaintenanceAlert';
@@ -159,6 +159,16 @@ function DashboardRouter() {
                 <Maintenance />
             ) : (
                 <RouterContainer>
+                    <Navbar>
+                        <div className='lg:hidden'>
+                            <button
+                                onClick={() => setSidebarOpen(!isSidebarOpen)}
+                                className='text-gray-600 bg-gray-900 p-2 rounded-ui'
+                            >
+                                {isSidebarOpen ? <XIcon className='w-6 h-6' /> : <MenuIcon className='w-6 h-6' />}
+                            </button>
+                        </div>
+                    </Navbar>
                     <ContentContainer>
                         {isSidebarOpen && (
                             <div

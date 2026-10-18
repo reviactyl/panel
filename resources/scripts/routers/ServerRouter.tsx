@@ -15,8 +15,8 @@ import ErrorBoundary from '@/reviactyl/elements/ErrorBoundary';
 import ConflictStateRenderer from '@/components/server/ConflictStateRenderer';
 import PermissionRoute from '@/reviactyl/elements/PermissionRoute';
 import routes from '@/routers/routes';
-import { Sidebar } from '@/reviactyl/components/Layout';
-import { ExternalLinkIcon } from '@heroicons/react/solid';
+import { Sidebar, Navbar } from '@/reviactyl/components/Layout';
+import { XIcon, MenuIcon, ExternalLinkIcon } from '@heroicons/react/solid';
 import { RouterContainer } from '@/reviactyl/ui/RouterContainer';
 import { ContentContainer } from '@/reviactyl/ui/ContentContainer';
 import MobileBottomBar from '@/reviactyl/ui/MobileBottomBar';
@@ -274,6 +274,20 @@ export default function ServerRouter() {
                         )
                     ) : (
                         <>
+                            <Navbar>
+                                <div className='lg:hidden'>
+                                    <button
+                                        onClick={() => setSidebarOpen(!isSidebarOpen)}
+                                        className='text-gray-600 bg-gray-900 p-2 rounded-ui'
+                                    >
+                                        {isSidebarOpen ? (
+                                            <XIcon className='w-6 h-6' />
+                                        ) : (
+                                            <MenuIcon className='w-6 h-6' />
+                                        )}
+                                    </button>
+                                </div>
+                            </Navbar>
                             <ContentContainer>
                                 {isSidebarOpen && (
                                     <div

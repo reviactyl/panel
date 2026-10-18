@@ -135,7 +135,8 @@ export const NavbarModern = ({ children }: NavbarProps) => {
     }, []);
 
     return (
-        <NavbarContainer className={`${blurred ? 'shadow' : ''} lg:hidden block`}>
+        // intentionally kept hidden
+        <NavbarContainer className={`${blurred ? 'shadow' : ''} hidden`}>
             <div className='w-full mt-1 flex items-center justify-between h-full px-4 sm:px-6 md:px-8 pr-2!'>
                 <div className='flex items-center gap-4'></div>
                 <div className='flex grow-0 shrink-0 items-center gap-3 order-last justify-end'>{children}</div>
