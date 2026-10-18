@@ -13,7 +13,7 @@ interface Props {
 const SpinnerOverlay = ({ size, fixed, visible, backgroundOpacity, children }: Props) => (
     <Fade timeout={150} in={visible} unmountOnExit>
         <div
-            className={`top-0 left-0 z-40 flex h-full w-full flex-col items-center justify-center rounded ${
+            className={`top-0 left-0 lg:z-40 z-30 flex h-full w-full flex-col items-center justify-center rounded ${
                 fixed ? 'fixed' : 'absolute'
             }`}
             style={{ background: `rgba(0, 0, 0, ${backgroundOpacity || 0.45})` }}
