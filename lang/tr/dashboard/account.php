@@ -1,6 +1,15 @@
 <?php
 
 return [
+    'mobile-navigation' => [
+        'navigation' => 'Mobil gezinme',
+        'home' => 'Ana sayfa',
+        'account' => 'Hesap',
+        'menu' => 'Menü',
+        'close' => 'Kapat',
+        'show-sidebar' => 'Kenar çubuğunu göster',
+        'close-sidebar' => 'Kenar çubuğunu kapat',
+    ],
     'overview' => [
         'account-overview' => 'Hesap Özeti',
         '2fa-required' => '2AD Gerekli',

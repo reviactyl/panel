@@ -1,6 +1,15 @@
 <?php
 
 return [
+    'mobile-navigation' => [
+        'navigation' => 'মোবাইল নেভিগেশন',
+        'home' => 'হোম',
+        'account' => 'অ্যাকাউন্ট',
+        'menu' => 'মেনু',
+        'close' => 'বন্ধ করুন',
+        'show-sidebar' => 'সাইডবার দেখান',
+        'close-sidebar' => 'সাইডবার বন্ধ করুন',
+    ],
     'overview' => [
         'account-overview' => 'অ্যাকাউন্ট ওভারভিউ',
         '2fa-required' => '2-Factor প্রয়োজন',

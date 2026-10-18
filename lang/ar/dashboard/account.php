@@ -1,6 +1,15 @@
 <?php
 
 return [
+    'mobile-navigation' => [
+        'navigation' => 'التنقل عبر الهاتف',
+        'home' => 'الرئيسية',
+        'account' => 'الحساب',
+        'menu' => 'القائمة',
+        'close' => 'إغلاق',
+        'show-sidebar' => 'عرض الشريط الجانبي',
+        'close-sidebar' => 'إغلاق الشريط الجانبي',
+    ],
     'overview' => [
         'account-overview' => 'نظرة عامة على الحساب',
         '2fa-required' => 'المصادقة الثنائية مطلوبة',

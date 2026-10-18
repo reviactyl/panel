@@ -61,7 +61,7 @@ export const SidebarModern = React.forwardRef<HTMLDivElement, SidebarProps>(({ c
             ref={ref}
             className={`m-2 w-56.25 self-start flex-col rounded-ui border border-gray-800 bg-gray-900 text-white 2xl:w-64 lg:fixed lg:top-(--subuser-preview-offset,0px) lg:left-0 lg:z-40 lg:flex lg:h-[calc(100dvh-15px-var(--subuser-preview-offset,0px))] lg:overflow-y-auto ${
                 isOpen
-                    ? 'fixed top-[calc(1rem+var(--subuser-preview-offset,0px))] left-0 z-40 flex h-[calc(100dvh-64px-var(--subuser-preview-offset,0px))] overflow-y-auto'
+                    ? 'fixed top-[calc(1rem+var(--subuser-preview-offset,0px))] left-0 z-40 flex h-[calc(100dvh-6rem-var(--subuser-preview-offset,0px))] overflow-y-auto'
                     : 'hidden'
             }`}
         >

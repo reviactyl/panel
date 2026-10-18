@@ -1,6 +1,15 @@
 <?php
 
 return [
+    'mobile-navigation' => [
+        'navigation' => 'Điều hướng trên di động',
+        'home' => 'Trang chủ',
+        'account' => 'Tài khoản',
+        'menu' => 'Menu',
+        'close' => 'Đóng',
+        'show-sidebar' => 'Hiện thanh bên',
+        'close-sidebar' => 'Đóng thanh bên',
+    ],
     'overview' => [
         'account-overview' => 'Tổng quan về tài khoản',
         '2fa-required' => 'Yêu cầu 2 yếu tố',

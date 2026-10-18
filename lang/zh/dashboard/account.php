@@ -1,6 +1,15 @@
 <?php
 
 return [
+    'mobile-navigation' => [
+        'navigation' => '移动导航',
+        'home' => '首页',
+        'account' => '账户',
+        'menu' => '菜单',
+        'close' => '关闭',
+        'show-sidebar' => '显示侧边栏',
+        'close-sidebar' => '关闭侧边栏',
+    ],
     'overview' => [
         'account-overview' => '账户概览',
         '2fa-required' => '需要2步验证',

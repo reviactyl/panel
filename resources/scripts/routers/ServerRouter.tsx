@@ -15,10 +15,11 @@ import ErrorBoundary from '@/reviactyl/elements/ErrorBoundary';
 import ConflictStateRenderer from '@/components/server/ConflictStateRenderer';
 import PermissionRoute from '@/reviactyl/elements/PermissionRoute';
 import routes from '@/routers/routes';
-import { Sidebar, Navbar } from '@/reviactyl/components/Layout';
-import { XIcon, MenuIcon, ExternalLinkIcon } from '@heroicons/react/solid';
+import { Sidebar } from '@/reviactyl/components/Layout';
+import { ExternalLinkIcon } from '@heroicons/react/solid';
 import { RouterContainer } from '@/reviactyl/ui/RouterContainer';
 import { ContentContainer } from '@/reviactyl/ui/ContentContainer';
+import MobileBottomBar from '@/reviactyl/ui/MobileBottomBar';
 import TopServerDetails from '@/components/server/TopServerDetails';
 import Announcement from '@/reviactyl/ui/Announcement';
 import MaintenanceAlert from '@/reviactyl/ui/MaintenanceAlert';
@@ -218,6 +219,7 @@ export default function ServerRouter() {
 
     const [error, setError] = useState('');
     const [isSidebarOpen, setSidebarOpen] = useState(false);
+    const layoutType = useStoreState((state) => state.designify.data!.layoutType);
 
     const id = ServerContext.useStoreState((state) => state.server.data?.id);
     const uuid = ServerContext.useStoreState((state) => state.server.data?.uuid);
@@ -272,21 +274,6 @@ export default function ServerRouter() {
                         )
                     ) : (
                         <>
-                            <Navbar>
-                                <div className='lg:hidden'>
-                                    <button
-                                        onClick={() => setSidebarOpen(!isSidebarOpen)}
-                                        className='text-gray-600 bg-gray-900 p-2 rounded-ui'
-                                    >
-                                        {isSidebarOpen ? (
-                                            <XIcon className='w-6 h-6' />
-                                        ) : (
-                                            <MenuIcon className='w-6 h-6' />
-                                        )}
-                                    </button>
-                                </div>
-                            </Navbar>
-
                             <ContentContainer>
                                 {isSidebarOpen && (
                                     <div
@@ -299,7 +286,9 @@ export default function ServerRouter() {
                                     <ServerNavigation />
                                 </Sidebar>
 
-                                <div className='w-full flex-1 overflow-y-auto'>
+                                <div
+                                    className={`w-full flex-1 overflow-y-auto ${layoutType === 'modern' ? 'pb-24 lg:pb-0' : ''}`}
+                                >
                                     <InstallListener />
                                     <TransferListener />
                                     <WebsocketHandler />
@@ -370,6 +359,12 @@ export default function ServerRouter() {
                                     )}
                                 </div>
                             </ContentContainer>
+                            {layoutType === 'modern' && (
+                                <MobileBottomBar
+                                    sidebarOpen={isSidebarOpen}
+                                    onShowSidebar={() => setSidebarOpen((open) => !open)}
+                                />
+                            )}
                         </>
                     )}
                 </RouterContainer>

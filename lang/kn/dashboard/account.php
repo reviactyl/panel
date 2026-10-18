@@ -1,6 +1,15 @@
 <?php
 
 return [
+    'mobile-navigation' => [
+        'navigation' => 'ಮೊಬೈಲ್ ನ್ಯಾವಿಗೇಶನ್',
+        'home' => 'ಮುಖಪುಟ',
+        'account' => 'ಖಾತೆ',
+        'menu' => 'ಮೆನು',
+        'close' => 'ಮುಚ್ಚಿ',
+        'show-sidebar' => 'ಸೈಡ್‌ಬಾರ್ ತೋರಿಸಿ',
+        'close-sidebar' => 'ಸೈಡ್‌ಬಾರ್ ಮುಚ್ಚಿ',
+    ],
     'overview' => [
         'account-overview' => 'ಖಾತೆ ಅವಲೋಕನ',
         '2fa-required' => '2-ಹಂತ ದೃಢೀಕರಣ ಅಗತ್ಯ',

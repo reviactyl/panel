@@ -1,6 +1,15 @@
 <?php
 
 return [
+    'mobile-navigation' => [
+        'navigation' => 'Мобильная навигация',
+        'home' => 'Главная',
+        'account' => 'Аккаунт',
+        'menu' => 'Меню',
+        'close' => 'Закрыть',
+        'show-sidebar' => 'Показать боковую панель',
+        'close-sidebar' => 'Закрыть боковую панель',
+    ],
     'overview' => [
         'account-overview' => 'Обзор учётной записи',
         '2fa-required' => 'Требуется двухфакторная аутентификация',

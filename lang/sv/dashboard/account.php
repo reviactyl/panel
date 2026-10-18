@@ -1,6 +1,15 @@
 <?php
 
 return [
+    'mobile-navigation' => [
+        'navigation' => 'Mobilnavigering',
+        'home' => 'Hem',
+        'account' => 'Konto',
+        'menu' => 'Meny',
+        'close' => 'Stäng',
+        'show-sidebar' => 'Visa sidofält',
+        'close-sidebar' => 'Stäng sidofält',
+    ],
     'overview' => [
         'account-overview' => 'Konto',
         '2fa-required' => '2 Steg verifikation',

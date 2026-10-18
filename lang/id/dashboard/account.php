@@ -1,6 +1,15 @@
 <?php
 
 return [
+    'mobile-navigation' => [
+        'navigation' => 'Navigasi seluler',
+        'home' => 'Beranda',
+        'account' => 'Akun',
+        'menu' => 'Menu',
+        'close' => 'Tutup',
+        'show-sidebar' => 'Tampilkan sidebar',
+        'close-sidebar' => 'Tutup sidebar',
+    ],
     'overview' => [
         'account-overview' => 'Ringkasan Akun',
         '2fa-required' => '2-Faktor Diperlukan',

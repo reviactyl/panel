@@ -1,6 +1,15 @@
 <?php
 
 return [
+    'mobile-navigation' => [
+        'navigation' => 'Mobile Navigation',
+        'home' => 'Startseite',
+        'account' => 'Konto',
+        'menu' => 'Menü',
+        'close' => 'Schließen',
+        'show-sidebar' => 'Seitenleiste anzeigen',
+        'close-sidebar' => 'Seitenleiste schließen',
+    ],
     'overview' => [
         'account-overview' => 'Kontoübersicht',
         '2fa-required' => '2FA erforderlich',

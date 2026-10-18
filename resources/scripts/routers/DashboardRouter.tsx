@@ -7,9 +7,10 @@ import { NotFound } from '@/reviactyl/elements/ScreenBlock';
 import Spinner from '@/reviactyl/elements/Spinner';
 import routes from '@/routers/routes';
 import { RouterContainer } from '@/reviactyl/ui/RouterContainer';
-import { XIcon, MenuIcon, ExternalLinkIcon } from '@heroicons/react/solid';
+import { ExternalLinkIcon } from '@heroicons/react/solid';
 import { ContentContainer } from '@/reviactyl/ui/ContentContainer';
-import { Navbar, Sidebar } from '@/reviactyl/components/Layout';
+import MobileBottomBar from '@/reviactyl/ui/MobileBottomBar';
+import { Sidebar } from '@/reviactyl/components/Layout';
 import { useStoreState } from 'easy-peasy';
 import Announcement from '@/reviactyl/ui/Announcement';
 import MaintenanceAlert from '@/reviactyl/ui/MaintenanceAlert';
@@ -144,6 +145,7 @@ const DashboardNavigation = () => {
  */
 function DashboardRouter() {
     const [isSidebarOpen, setSidebarOpen] = useState(false);
+    const layoutType = useStoreState((state) => state.designify.data!.layoutType);
     const isUnderMaintenance = useStoreState((state) => state.designify.data?.isUnderMaintenance);
     const accountRootAdmin = useStoreState((state) => state.user.data?.rootAdmin);
     const injectedRoutes = useExtensionRoutes('dashboardRouter');
@@ -157,16 +159,6 @@ function DashboardRouter() {
                 <Maintenance />
             ) : (
                 <RouterContainer>
-                    <Navbar>
-                        <div className='lg:hidden'>
-                            <button
-                                onClick={() => setSidebarOpen(!isSidebarOpen)}
-                                className='text-gray-600 bg-gray-900 p-2 rounded-ui'
-                            >
-                                {isSidebarOpen ? <XIcon className='w-6 h-6' /> : <MenuIcon className='w-6 h-6' />}
-                            </button>
-                        </div>
-                    </Navbar>
                     <ContentContainer>
                         {isSidebarOpen && (
                             <div
@@ -179,7 +171,9 @@ function DashboardRouter() {
                                 <DashboardNavigation />
                             </Sidebar>
                         </div>
-                        <div className='w-full flex-1 overflow-y-auto'>
+                        <div
+                            className={`w-full flex-1 overflow-y-auto ${layoutType === 'modern' ? 'pb-24 lg:pb-0' : ''}`}
+                        >
                             <Suspense fallback={<Spinner centered />}>
                                 <RouteTransition>
                                     {useRoutes(
@@ -224,6 +218,12 @@ function DashboardRouter() {
                             </Suspense>
                         </div>
                     </ContentContainer>
+                    {layoutType === 'modern' && (
+                        <MobileBottomBar
+                            sidebarOpen={isSidebarOpen}
+                            onShowSidebar={() => setSidebarOpen((open) => !open)}
+                        />
+                    )}
                 </RouterContainer>
             )}
         </>
