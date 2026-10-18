@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FaBars, FaHouse, FaUser, FaXmark } from 'react-icons/fa6';
+import { useSubuserPreview } from '@/context/SubuserPreviewContext';
 
 interface Props {
     onShowSidebar: () => void;
@@ -14,6 +15,7 @@ const itemClass = ({ isActive }: { isActive: boolean }) =>
 
 const MobileBottomBar = ({ onShowSidebar, sidebarOpen }: Props) => {
     const { t } = useTranslation('dashboard/account');
+    const { session } = useSubuserPreview();
 
     return (
         <nav
@@ -39,10 +41,22 @@ const MobileBottomBar = ({ onShowSidebar, sidebarOpen }: Props) => {
                     </span>
                     <span>{sidebarOpen ? t('mobile-navigation.close') : t('mobile-navigation.menu')}</span>
                 </button>
-                <NavLink to='/account' className={itemClass}>
-                    <FaUser className='h-5 w-5' aria-hidden='true' />
-                    <span>{t('mobile-navigation.account')}</span>
-                </NavLink>
+                {session ? (
+                    <button
+                        type='button'
+                        disabled
+                        aria-label={t('mobile-navigation.account')}
+                        className='flex cursor-not-allowed flex-col items-center justify-center gap-1 text-[11px] font-medium text-gray-600 opacity-40 grayscale'
+                    >
+                        <FaUser className='h-5 w-5' aria-hidden='true' />
+                        <span>{t('mobile-navigation.account')}</span>
+                    </button>
+                ) : (
+                    <NavLink to='/account' className={itemClass}>
+                        <FaUser className='h-5 w-5' aria-hidden='true' />
+                        <span>{t('mobile-navigation.account')}</span>
+                    </NavLink>
+                )}
             </div>
         </nav>
     );
