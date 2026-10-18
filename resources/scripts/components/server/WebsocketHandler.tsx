@@ -116,12 +116,12 @@ export default () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.15, ease: 'easeIn' }}
-            className='fixed top-4 right-4 z-50 rounded-lg border border-danger/50 bg-danger px-4 py-2 shadow-lg'
+            className='rounded-ui border border-danger/80 bg-danger/40 backdrop-blur-sm px-4 py-2 shadow-lg mt-2 mx-2 -mb-1'
         >
             <div className='flex items-center justify-center'>
                 {error === 'connecting' ? (
                     <>
-                        <Spinner size={'small'} />
+                        <Spinner className='not-lg:h-3 not-lg:w-4' size={'small'} />
                         <p className='ml-2 text-sm text-red-100'>{t('connection-trouble')}</p>
                     </>
                 ) : (
