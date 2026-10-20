@@ -41,10 +41,14 @@ class EggParserService
         if (! is_array($parsed['variables']) || ! array_is_list($parsed['variables'])) {
             throw new InvalidFileUploadException(trans('admin/catalog.errors.definition'));
         }
-        foreach ($parsed['variables'] as $variable) {
+        foreach ($parsed['variables'] as $index => $variable) {
             if (! is_array($variable) || ! is_string($variable['env_variable'] ?? null)) {
                 throw new InvalidFileUploadException(trans('admin/catalog.errors.definition'));
             }
+            if (array_key_exists('is_secret', $variable) && ! is_bool($variable['is_secret'])) {
+                throw new InvalidFileUploadException(trans('admin/catalog.errors.definition'));
+            }
+            $parsed['variables'][$index]['is_secret'] = $variable['is_secret'] ?? false;
         }
 
         $duplicates = Collection::make($parsed['variables'])->pluck('env_variable')->duplicatesStrict();

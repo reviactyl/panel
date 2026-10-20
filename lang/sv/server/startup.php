@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'sensitive' => 'Känslig',
+    'clear' => 'Rensa',
     'title' => 'Start',
     'read-only' => 'Endast läs',
     'startup-command' => 'Startkommando',

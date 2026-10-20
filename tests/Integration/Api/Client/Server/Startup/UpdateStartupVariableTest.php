@@ -2,12 +2,14 @@
 
 namespace Tests\Integration\Api\Client\Server\Startup;
 
+use App\Events\ActivityLogged;
 use App\Models\EggVariable;
 use App\Models\Permission;
 use App\Models\Server;
 use App\Models\User;
 use App\Services\Servers\EnvironmentService;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Event;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
@@ -196,6 +198,48 @@ class UpdateStartupVariableTest extends ClientApiIntegrationTestCase
             'key' => 'BUNGEE_VERSION', 'value' => 'updated',
         ])->assertStatus($status);
         $this->assertDatabaseMissing('server_variables', ['server_id' => $server->id]);
+    }
+
+    public function test_secret_values_are_validated_redacted_and_can_be_cleared(): void
+    {
+        [$user, $server] = $this->generateTestAccount();
+        $egg = $this->cloneEggAndVariables($server->egg);
+        $variable = $egg->variables()->where('env_variable', 'BUNGEE_VERSION')->firstOrFail();
+        $variable->update(['is_secret' => true, 'default_value' => 'default-secret', 'rules' => 'nullable|string|min:8']);
+        $server->update(['egg_id' => $egg->id, 'startup' => '{{BUNGEE_VERSION}}']);
+        $url = $this->link($server).'/startup';
+
+        $response = $this->actingAs($user)->getJson($url)->assertOk();
+        $response->assertJsonPath('meta.startup_command', '[hidden]');
+        $this->assertStringNotContainsString('default-secret', $response->getContent());
+        $secret = collect($response->json('data'))->firstWhere('attributes.env_variable', 'BUNGEE_VERSION')['attributes'];
+        $this->assertTrue($secret['is_secret']);
+        $this->assertTrue($secret['has_value']);
+        $this->assertNull($secret['server_value']);
+        $this->assertSame('', $secret['default_value']);
+
+        $this->putJson($url.'/variable', ['key' => 'BUNGEE_VERSION', 'value' => 'short'])->assertUnprocessable();
+        $response = $this->putJson($url.'/variable', ['key' => 'BUNGEE_VERSION', 'value' => 'replacement-secret'])
+            ->assertOk()->assertJsonPath('attributes.server_value', null)
+            ->assertJsonPath('attributes.has_value', true)
+            ->assertJsonPath('meta.startup_command', '[hidden]');
+        $this->assertStringNotContainsString('replacement-secret', $response->getContent());
+        $this->assertSame('replacement-secret', app(EnvironmentService::class)->handle($server->fresh())['BUNGEE_VERSION']);
+        Event::assertDispatched(ActivityLogged::class, function ($event) {
+            return $event->model->event === 'server:startup.edit'
+                && $event->model->properties['old'] === '[hidden]'
+                && $event->model->properties['new'] === '[hidden]';
+        });
+
+        $this->putJson($url.'/variable', ['key' => 'BUNGEE_VERSION', 'value' => ''])
+            ->assertOk()->assertJsonPath('attributes.has_value', false);
+        $this->assertSame('', app(EnvironmentService::class)->handle($server->fresh())['BUNGEE_VERSION']);
+        $cleared = collect($this->getJson($url)->assertOk()->json('data'))
+            ->firstWhere('attributes.env_variable', 'BUNGEE_VERSION')['attributes'];
+        $this->assertFalse($cleared['has_value']);
+        $this->assertSame('', $server->fresh()->variables->firstWhere('env_variable', 'BUNGEE_VERSION')->server_value);
+        $variable->update(['rules' => 'required|string']);
+        $this->putJson($url.'/variable', ['key' => 'BUNGEE_VERSION', 'value' => ''])->assertUnprocessable();
     }
 
     public static function effectiveVariableRestrictions(): array

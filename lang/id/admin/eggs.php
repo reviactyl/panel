@@ -29,6 +29,7 @@ return [
     ],
 
     'fields' => [
+        'is_secret' => 'Variabel rahasia',
         'nest' => 'Sarang',
         'uuid' => 'UUID',
         'name' => 'Nama',

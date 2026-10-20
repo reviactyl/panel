@@ -29,6 +29,7 @@ return [
     ],
 
     'fields' => [
+        'is_secret' => 'Secret variable',
         'nest' => 'Nest',
         'uuid' => 'UUID',
         'name' => 'Name',

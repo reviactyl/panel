@@ -9,6 +9,8 @@ use App\Models\Permission;
 use App\Models\Schedule;
 use App\Models\Server;
 use App\Models\Task;
+use App\Services\Servers\StartupCommandService;
+use App\Transformers\Api\Client\EggVariableTransformer;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -693,15 +695,8 @@ class SubuserPreviewResourceSimulator
 
             return $state;
         });
-        $attributes = [
-            'name' => $variable->name,
-            'description' => $variable->description,
-            'env_variable' => $variable->env_variable,
-            'default_value' => $variable->default_value,
-            'server_value' => $value,
-            'is_editable' => $variable->user_editable,
-            'rules' => $variable->rules,
-        ];
+        $variable->server_value = $value;
+        $attributes = (new EggVariableTransformer())->transform($variable);
 
         return response()->json(array_replace($this->item('egg_variable', $attributes), [
             'meta' => [
@@ -908,7 +903,8 @@ class SubuserPreviewResourceSimulator
             foreach ($payload['data'] as &$item) {
                 $key = Arr::get($item, 'attributes.env_variable');
                 if (is_string($key) && array_key_exists($key, $variables)) {
-                    $item['attributes']['server_value'] = $variables[$key];
+                    $item['attributes']['server_value'] = $item['attributes']['is_secret'] ? null : $variables[$key];
+                    $item['attributes']['has_value'] = $variables[$key] !== '';
                 }
             }
             unset($item);
@@ -945,7 +941,8 @@ class SubuserPreviewResourceSimulator
             foreach ($item['attributes']['relationships']['variables']['data'] as &$variable) {
                 $key = Arr::get($variable, 'attributes.env_variable');
                 if (is_string($key) && array_key_exists($key, $variableState)) {
-                    $variable['attributes']['server_value'] = $variableState[$key];
+                    $variable['attributes']['server_value'] = $variable['attributes']['is_secret'] ? null : $variableState[$key];
+                    $variable['attributes']['has_value'] = $variableState[$key] !== '';
                 }
             }
             unset($variable);
@@ -970,11 +967,18 @@ class SubuserPreviewResourceSimulator
      */
     private function startupCommand(SubuserPreviewContext $context): string
     {
-        $server = $context->session()->server;
-        $values = $server->variables->mapWithKeys(fn ($variable) => [$variable->env_variable => $variable->server_value])
-            ->merge(Arr::get($context->session()->state ?? [], 'startup.variables', []));
+        $server = clone $context->session()->server;
+        $values = Arr::get($context->session()->state ?? [], 'startup.variables', []);
+        $server->setRelation('variables', $server->variables->map(function ($variable) use ($values) {
+            $variable = clone $variable;
+            if (array_key_exists($variable->env_variable, $values)) {
+                $variable->server_value = $values[$variable->env_variable];
+            }
 
-        return preg_replace_callback('/{{([A-Z0-9_]+)}}/', fn (array $match) => (string) $values->get($match[1], $match[0]), $server->startup) ?? $server->startup;
+            return $variable;
+        }));
+
+        return app(StartupCommandService::class)->handle($server);
     }
 
     /**

@@ -76,7 +76,7 @@ class StartupController extends ClientApiController
         ]);
 
         $variable = $variable->refresh();
-        $variable->server_value = $request->input('value');
+        $variable->server_value = $variable->is_secret ? ($request->input('value') ?? '') : $request->input('value');
 
         $server->unsetRelation('variables');
         $startup = $this->startupCommandService->handle($server);
@@ -86,8 +86,8 @@ class StartupController extends ClientApiController
                 ->subject($variable)
                 ->property([
                     'variable' => $variable->env_variable,
-                    'old' => $original,
-                    'new' => $request->input('value') ?? '',
+                    'old' => $variable->is_secret ? '[hidden]' : $original,
+                    'new' => $variable->is_secret ? '[hidden]' : ($request->input('value') ?? ''),
                 ])
                 ->log();
         }

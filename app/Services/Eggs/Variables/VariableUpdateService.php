@@ -73,6 +73,7 @@ class VariableUpdateService
             'default_value' => $data['default_value'] ?? '',
             'user_viewable' => in_array('user_viewable', $options),
             'user_editable' => in_array('user_editable', $options),
+            'is_secret' => filter_var($data['is_secret'] ?? $variable->is_secret, FILTER_VALIDATE_BOOLEAN),
             'rules' => $data['rules'] ?? '',
         ]);
     }

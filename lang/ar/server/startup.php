@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'sensitive' => 'حساس',
+    'clear' => 'مسح',
     'title' => 'بدء التشغيل',
     'read-only' => 'قراءة فقط',
     'startup-command' => 'أمر بدء التشغيل',

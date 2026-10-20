@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'sensitive' => 'Sensitive',
+    'clear' => 'Clear',
     'title' => 'Startup',
     'read-only' => 'Read Only',
     'startup-command' => 'Startup Command',

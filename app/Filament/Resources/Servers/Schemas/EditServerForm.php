@@ -512,6 +512,7 @@ class EditServerForm
             ->get()
             ->map(fn (EggVariable $variable) => TextInput::make('environment.'.$variable->env_variable)
                 ->label($variable->name.($variable->required ? ' *' : ''))
+                ->password($variable->is_secret)
                 ->default($variable->server_value ?? $variable->default_value)
                 ->required((bool) $variable->required)
                 ->helperText(trim($variable->description.' Startup Command Variable: '.$variable->env_variable.'. Input Rules: '.$variable->rules)))

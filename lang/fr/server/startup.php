@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'sensitive' => 'Sensible',
+    'clear' => 'Effacer',
     'title' => 'Démarrage',
     'read-only' => 'Lecture seule',
     'startup-command' => 'Commande de démarrage',
