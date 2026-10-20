@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $env_variable
  * @property string $default_value
  * @property bool $user_viewable
+ * @property bool $is_secret
  * @property bool $user_editable
  * @property string $rules
  * @property CarbonImmutable $created_at
@@ -63,6 +64,7 @@ class EggVariable extends Model
         'egg_id' => 'integer',
         'user_viewable' => 'bool',
         'user_editable' => 'bool',
+        'is_secret' => 'bool',
     ];
 
     public static array $validationRules = [
@@ -73,10 +75,12 @@ class EggVariable extends Model
         'default_value' => 'string',
         'user_viewable' => 'boolean',
         'user_editable' => 'boolean',
+        'is_secret' => 'boolean',
         'rules' => 'required|string',
     ];
 
     protected $attributes = [
+        'is_secret' => false,
         'user_editable' => 0,
         'user_viewable' => 0,
     ];

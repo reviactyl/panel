@@ -29,6 +29,7 @@ return [
     ],
 
     'fields' => [
+        'is_secret' => 'متغير سري',
         'nest' => 'عش',
         'uuid' => 'UUID',
         'name' => 'اسم',

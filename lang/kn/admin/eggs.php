@@ -29,6 +29,7 @@ return [
     ],
 
     'fields' => [
+        'is_secret' => 'ರಹಸ್ಯ ವೇರಿಯಬಲ್',
         'nest' => 'ಗೂಡು',
         'uuid' => 'UUID',
         'name' => 'ಹೆಸರು',

@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'sensitive' => 'সংবেদনশীল',
+    'clear' => 'মুছুন',
     'title' => 'স্টার্টআপ',
     'read-only' => 'শুধুমাত্র পড়া যাবে',
     'startup-command' => 'স্টার্টআপ কমান্ড',

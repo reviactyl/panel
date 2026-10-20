@@ -29,6 +29,7 @@ return [
     ],
 
     'fields' => [
+        'is_secret' => 'Gizli değişken',
         'nest' => 'Yuva',
         'uuid' => 'UUID',
         'name' => 'İsim',

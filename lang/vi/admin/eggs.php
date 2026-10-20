@@ -29,6 +29,7 @@ return [
     ],
 
     'fields' => [
+        'is_secret' => 'Biến bí mật',
         'nest' => 'Tổ',
         'uuid' => 'UUID',
         'name' => 'Tên',

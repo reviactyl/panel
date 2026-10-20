@@ -29,6 +29,7 @@ return [
     ],
 
     'fields' => [
+        'is_secret' => '秘密变量',
         'nest' => '巢',
         'uuid' => '通用唯一标识符',
         'name' => '姓名',

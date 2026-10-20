@@ -74,5 +74,7 @@ export const rawDataToServerEggVariable = ({ attributes }: FractalResponseData):
     defaultValue: attributes.default_value,
     serverValue: attributes.server_value,
     isEditable: attributes.is_editable,
+    isSecret: attributes.is_secret,
+    hasValue: attributes.has_value,
     rules: attributes.rules.split('|'),
 });

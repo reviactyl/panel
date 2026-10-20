@@ -24,8 +24,10 @@ class EggVariableTransformer extends BaseClientTransformer
             'name' => $variable->name,
             'description' => $variable->description,
             'env_variable' => $variable->env_variable,
-            'default_value' => $variable->default_value,
-            'server_value' => $variable->server_value,
+            'default_value' => $variable->is_secret ? '' : $variable->default_value,
+            'server_value' => $variable->is_secret ? null : $variable->server_value,
+            'is_secret' => $variable->is_secret,
+            'has_value' => ($variable->server_value ?? $variable->default_value ?? '') !== '',
             'is_editable' => $variable->user_editable,
             'rules' => $variable->rules,
         ];

@@ -19,6 +19,21 @@ class EggParserServiceTest extends TestCase
         $this->service = new EggParserService();
     }
 
+    #[DataProvider('invalidSecretFlags')]
+    public function test_secret_flag_requires_a_json_boolean(mixed $flag): void
+    {
+        $this->expectException(InvalidFileUploadException::class);
+        $this->parse([
+            'meta' => ['version' => Egg::EXPORT_VERSION],
+            'variables' => [['env_variable' => 'TOKEN', 'is_secret' => $flag]],
+        ]);
+    }
+
+    public static function invalidSecretFlags(): array
+    {
+        return [[null], ['false'], [1], [[]]];
+    }
+
     public function test_it_keeps_the_docker_images_of_a_ptdl_v2_egg()
     {
         $parsed = $this->parse([

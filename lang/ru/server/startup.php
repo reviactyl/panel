@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'sensitive' => 'Конфиденциально',
+    'clear' => 'Очистить',
     'title' => 'Запуск',
     'read-only' => 'Только чтение',
     'startup-command' => 'Команда запуска',

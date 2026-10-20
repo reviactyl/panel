@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'sensitive' => '敏感',
+    'clear' => '清除',
     'title' => '启动',
     'read-only' => '只读',
     'startup-command' => '启动命令',

@@ -158,9 +158,14 @@ class EggResource extends Resource
                                             ->maxLength(191),
                                         Forms\Components\TextInput::make('default_value')
                                             ->label(trans('admin/eggs.fields.default_value'))
+                                            ->password(fn (Get $get): bool => (bool) $get('is_secret'))
                                             ->rules(fn (Get $get): array => [new EggVariableDefaultValue($get('rules'))])
                                             ->dehydrateStateUsing(fn ($state) => $state ?? '')
                                             ->maxLength(191),
+                                        Forms\Components\Toggle::make('is_secret')
+                                            ->label(trans('admin/eggs.fields.is_secret'))
+                                            ->default(false)
+                                            ->live(),
                                         Forms\Components\Toggle::make('user_viewable')
                                             ->label(trans('admin/eggs.fields.user_viewable'))
                                             ->default(true),

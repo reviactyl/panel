@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'sensitive' => 'Sensitif',
+    'clear' => 'Kosongkan',
     'title' => 'Rintisan',
     'read-only' => 'Hanya Baca',
     'startup-command' => 'Perintah Startup',

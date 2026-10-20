@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'sensitive' => 'Nhạy cảm',
+    'clear' => 'Xóa',
     'title' => 'Khởi động',
     'read-only' => 'Chỉ đọc',
     'startup-command' => 'Lệnh khởi động',

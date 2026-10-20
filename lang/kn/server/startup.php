@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'sensitive' => 'ಸೂಕ್ಷ್ಮ',
+    'clear' => 'ತೆರವುಗೊಳಿಸಿ',
     'title' => 'ಪ್ರಾರಂಭ',
     'read-only' => 'ಓದಲು ಮಾತ್ರ',
     'startup-command' => 'ಸ್ಟಾರ್ಟ್ಅಪ್ ಕಮಾಂಡ್',

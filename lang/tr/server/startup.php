@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'sensitive' => 'Hassas',
+    'clear' => 'Temizle',
     'title' => 'Başlangıç',
     'read-only' => 'Salt Okunur',
     'startup-command' => 'Başlangıç Komutu',

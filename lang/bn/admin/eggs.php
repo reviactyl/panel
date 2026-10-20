@@ -29,6 +29,7 @@ return [
     ],
 
     'fields' => [
+        'is_secret' => 'গোপন ভেরিয়েবল',
         'nest' => 'নেস্ট',
         'uuid' => 'UUID',
         'name' => 'নাম',

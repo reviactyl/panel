@@ -17,7 +17,7 @@ class StartupCommandService
 
         foreach ($server->variables->keyBy('env_variable') as $variable) {
             $find[] = '{{'.$variable->env_variable.'}}';
-            $replace[] = ($variable->user_viewable && ! $hideAllValues) ? ($variable->server_value ?? $variable->default_value) : '[hidden]';
+            $replace[] = ($variable->user_viewable && ! $variable->is_secret && ! $hideAllValues) ? ($variable->server_value ?? $variable->default_value) : '[hidden]';
         }
 
         return Str::replace($find, $replace, $server->startup);

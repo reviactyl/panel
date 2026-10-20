@@ -4,6 +4,7 @@ import TitledGreyBox from '@/reviactyl/elements/TitledGreyBox';
 import { usePermissions } from '@/plugins/usePermissions';
 import { useTranslation } from 'react-i18next';
 import InputSpinner from '@/reviactyl/elements/InputSpinner';
+import Button from '@/reviactyl/elements/Button';
 import Input from '@/reviactyl/elements/Input';
 import Switch from '@/reviactyl/elements/Switch';
 import { debounce } from 'debounce';
@@ -29,6 +30,7 @@ const VariableBox = ({ variable }: Props) => {
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const { mutate } = getServerStartup(uuid);
 
+    const secretInput = useRef<HTMLInputElement>(null);
     const revision = useRef(0);
     const saveVariableValue = useMemo(
         () =>
@@ -58,14 +60,14 @@ const VariableBox = ({ variable }: Props) => {
                     .catch((error) => {
                         if (requestRevision !== revision.current) return;
 
-                        console.error(error);
+                        if (!variable.isSecret) console.error(error);
                         clearAndAddHttpError({ error, key: FLASH_KEY });
                     })
                     .then(() => {
                         if (requestRevision === revision.current) setLoading(false);
                     });
             }, 500),
-        [uuid, variable.envVariable, mutate, clearFlashes, clearAndAddHttpError, FLASH_KEY],
+        [uuid, variable.envVariable, variable.isSecret, mutate, clearFlashes, clearAndAddHttpError, FLASH_KEY],
     );
 
     useEffect(
@@ -95,13 +97,43 @@ const VariableBox = ({ variable }: Props) => {
                     {!variable.isEditable && (
                         <span className='bg-gray-900 text-xs py-1 px-2 rounded-full mr-2 mb-1'>{t('read-only')}</span>
                     )}
+                    {variable.isSecret && (
+                        <span className='bg-gray-900 text-xs py-1 px-2 rounded-full mr-2 mb-1'>{t('sensitive')}</span>
+                    )}
                     {variable.name}
                 </p>
             }
         >
             <FlashMessageRender byKey={FLASH_KEY} className='mb-2 md:mb-4' />
             <InputSpinner visible={loading}>
-                {useSwitch ? (
+                {variable.isSecret ? (
+                    <div className='flex gap-3'>
+                        <Input
+                            ref={secretInput}
+                            type='password'
+                            className='min-w-0 flex-1'
+                            aria-label={variable.name}
+                            autoComplete='new-password'
+                            name={variable.envVariable}
+                            placeholder={variable.hasValue ? '••••••••••••' : ''}
+                            readOnly={!canEdit || !variable.isEditable}
+                            onChange={(event) => {
+                                if (canEdit && variable.isEditable) setVariableValue(event.currentTarget.value);
+                            }}
+                        />
+                        <Button
+                            type='button'
+                            isSecondary
+                            disabled={!canEdit || !variable.isEditable}
+                            onClick={() => {
+                                if (secretInput.current) secretInput.current.value = '';
+                                setVariableValue('');
+                            }}
+                        >
+                            {t('clear')}
+                        </Button>
+                    </div>
+                ) : useSwitch ? (
                     <>
                         <Switch
                             readOnly={!canEdit || !variable.isEditable}

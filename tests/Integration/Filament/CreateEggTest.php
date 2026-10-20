@@ -56,6 +56,23 @@ class CreateEggTest extends IntegrationTestCase
         }
     }
 
+    public function test_secret_variable_can_be_configured_in_the_editor(): void
+    {
+        $this->actingAs(User::factory()->create(['root_admin' => true]));
+        Filament::setCurrentPanel(Filament::getPanel('admin'));
+        $server = $this->createServerModel();
+        Livewire::test(EditEgg::class, ['record' => $server->egg_id])
+            ->fillForm(['variables' => ['secret' => [
+                'name' => 'Git Access Token', 'env_variable' => 'GIT_TOKEN',
+                'default_value' => '', 'rules' => ['nullable', 'string', 'max:100'],
+                'user_viewable' => true, 'user_editable' => true, 'is_secret' => true,
+            ]]])
+            ->call('save')->assertHasNoFormErrors();
+        $variable = $server->egg->variables()->where('env_variable', 'GIT_TOKEN')->sole();
+        $this->assertTrue($variable->is_secret);
+        $this->assertSame('nullable|string|max:100', $variable->rules);
+    }
+
     public function test_editor_rejects_duplicate_environment_names(): void
     {
         $this->actingAs(User::factory()->create(['root_admin' => true]));
