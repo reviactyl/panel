@@ -121,7 +121,7 @@ const deferred = () => {
 };
 
 describe('startup save response ordering', () => {
-    it('keeps the latest variable and invocation when responses arrive in reverse order', async () => {
+    it('serializes saves and keeps the latest variable and invocation', async () => {
         const older = deferred();
         const newer = deferred();
         mocks.update.mockReset().mockReturnValueOnce(older.promise).mockReturnValueOnce(newer.promise);
@@ -132,8 +132,10 @@ describe('startup save response ordering', () => {
         const input = await render({ serverValue: 'false' });
         await toggle(input);
         await toggle(input);
-        await act(async () => newer.resolve([{ ...variable, serverValue: 'false' }, 'newer']));
+        expect(mocks.update).toHaveBeenCalledTimes(1);
         await act(async () => older.resolve([{ ...variable, serverValue: 'true' }, 'older']));
+        expect(mocks.update).toHaveBeenCalledTimes(2);
+        await act(async () => newer.resolve([{ ...variable, serverValue: 'false' }, 'newer']));
         expect(input.checked).toBe(false);
         expect(cached.variables[0]?.serverValue).toBe('false');
         expect(cached.invocation).toBe('newer');
@@ -236,6 +238,32 @@ describe('secret variables', () => {
         await act(async () => container.querySelector<HTMLButtonElement>('button')!.click());
         await act(async () => vi.advanceTimersByTimeAsync(500));
         expect(mocks.update).toHaveBeenCalledWith('server-uuid', 'BOOLEAN_VALUE', '');
+    });
+
+    it('waits for an in-flight secret save before persisting Clear', async () => {
+        const older = deferred();
+        const cleared = deferred();
+        mocks.update.mockReset().mockReturnValueOnce(older.promise).mockReturnValueOnce(cleared.promise);
+        await render({ isSecret: true, defaultValue: '', serverValue: null });
+        const input = container.querySelector<HTMLInputElement>('input')!;
+        await act(async () => {
+            Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(
+                input,
+                'replacement-secret',
+            );
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+        await act(async () => vi.advanceTimersByTimeAsync(500));
+        expect(mocks.update).toHaveBeenCalledWith('server-uuid', 'BOOLEAN_VALUE', 'replacement-secret');
+        await act(async () => container.querySelector<HTMLButtonElement>('button')!.click());
+        await act(async () => vi.advanceTimersByTimeAsync(500));
+        expect(input.value).toBe('');
+        expect(mocks.update).toHaveBeenCalledTimes(1);
+        await act(async () => older.resolve([{ ...variable, isSecret: true, hasValue: true }, 'hidden']));
+        expect(mocks.update).toHaveBeenCalledTimes(2);
+        expect(mocks.update).toHaveBeenLastCalledWith('server-uuid', 'BOOLEAN_VALUE', '');
+        await act(async () => cleared.resolve([{ ...variable, isSecret: true, hasValue: false }, 'hidden']));
+        expect(container.querySelector('[data-loading]')?.getAttribute('data-loading')).toBe('false');
     });
 
     it('keeps a partially typed secret after autosave so typing can continue', async () => {

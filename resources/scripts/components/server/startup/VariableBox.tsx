@@ -32,14 +32,18 @@ const VariableBox = ({ variable }: Props) => {
 
     const secretInput = useRef<HTMLInputElement>(null);
     const revision = useRef(0);
+    const pendingSave = useRef(Promise.resolve());
     const saveVariableValue = useMemo(
         () =>
             debounce((value: string, requestRevision: number) => {
                 setLoading(true);
                 clearFlashes(FLASH_KEY);
 
-                updateStartupVariable(uuid, variable.envVariable, value)
-                    .then(async ([response]) => {
+                pendingSave.current = pendingSave.current
+                    .then(async () => {
+                        if (requestRevision !== revision.current) return;
+
+                        const [response] = await updateStartupVariable(uuid, variable.envVariable, value);
                         if (requestRevision !== revision.current) return;
 
                         await mutate(

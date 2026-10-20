@@ -6,6 +6,7 @@ use App\Models\Allocation;
 use App\Models\DatabaseHost;
 use App\Models\Permission;
 use App\Models\Server;
+use App\Models\ServerVariable;
 use App\Models\Subuser;
 use App\Models\SubuserPreviewSession;
 use App\Models\User;
@@ -794,6 +795,66 @@ class SubuserPreviewTest extends ClientApiIntegrationTestCase
 
         $this->assertDatabaseCount('subuser_preview_sessions', 0);
         $this->assertSame($originalName, $server->fresh()->name);
+    }
+
+    public function test_preview_keeps_secret_startup_values_masked_after_updates_and_reads(): void
+    {
+        [$owner, $server, $target] = $this->models();
+        $egg = $this->cloneEggAndVariables($server->egg);
+        $secret = $egg->variables()->where('env_variable', 'BUNGEE_VERSION')->firstOrFail();
+        $secret->update(['is_secret' => true, 'default_value' => 'default-secret', 'rules' => 'nullable|string|min:8']);
+        $plain = $egg->variables()->where('env_variable', '!=', $secret->env_variable)->firstOrFail();
+        $plain->update(['user_viewable' => true, 'user_editable' => true, 'rules' => 'nullable|string']);
+        $server->update(['egg_id' => $egg->id, 'startup' => '{{'.$secret->env_variable.'}} {{'.$plain->env_variable.'}}']);
+        ServerVariable::query()->create(['server_id' => $server->id, 'variable_id' => $secret->id, 'variable_value' => 'saved-secret']);
+        $server->subusers()->where('user_id', $target->id)->update(['permissions' => [
+            Permission::ACTION_STARTUP_READ,
+            Permission::ACTION_STARTUP_UPDATE,
+            Permission::ACTION_WEBSOCKET_CONNECT,
+        ]]);
+        $token = $this->actingAs($owner)->postJson($this->previewEndpoint($server, $target))->json('token');
+
+        $response = $this->withPreviewToken($token)->putJson($this->link($server, 'startup/variable'), [
+            'key' => $plain->env_variable, 'value' => 'visible-preview',
+        ])->assertOk()->assertJsonPath('meta.startup_command', '[hidden] visible-preview')
+            ->assertJsonPath('attributes.is_secret', false)
+            ->assertJsonPath('attributes.has_value', true);
+        $this->assertStringNotContainsString('saved-secret', $response->getContent());
+
+        $this->withPreviewToken($token)->putJson($this->link($server, 'startup/variable'), [
+            'key' => $secret->env_variable, 'value' => 'short',
+        ])->assertUnprocessable();
+
+        foreach (['preview-secret', ''] as $value) {
+            $response = $this->withPreviewToken($token)->putJson($this->link($server, 'startup/variable'), [
+                'key' => $secret->env_variable, 'value' => $value,
+            ])->assertOk()->assertJsonPath('attributes.default_value', '')
+                ->assertJsonPath('attributes.server_value', null)
+                ->assertJsonPath('attributes.is_secret', true)
+                ->assertJsonPath('attributes.has_value', $value !== '')
+                ->assertJsonPath('meta.startup_command', '[hidden] visible-preview');
+            foreach (['default-secret', 'saved-secret', 'preview-secret'] as $hidden) {
+                $this->assertStringNotContainsString($hidden, $response->getContent());
+            }
+
+            foreach ([
+                [$this->link($server, 'startup'), 'data'],
+                [$this->link($server), 'attributes.relationships.variables.data'],
+                ['/api/client', 'data.0.attributes.relationships.variables.data'],
+            ] as [$url, $path]) {
+                $response = $this->withPreviewToken($token)->getJson($url)->assertOk();
+                $attributes = collect($response->json($path))->firstWhere('attributes.env_variable', $secret->env_variable)['attributes'];
+                $this->assertSame('', $attributes['default_value']);
+                $this->assertNull($attributes['server_value']);
+                $this->assertTrue($attributes['is_secret']);
+                $this->assertSame($value !== '', $attributes['has_value']);
+                foreach (['default-secret', 'saved-secret', 'preview-secret'] as $hidden) {
+                    $this->assertStringNotContainsString($hidden, $response->getContent());
+                }
+            }
+        }
+
+        $this->assertSame('saved-secret', $server->fresh()->variables->firstWhere('id', $secret->id)->server_value);
     }
 
     private function models(): array
