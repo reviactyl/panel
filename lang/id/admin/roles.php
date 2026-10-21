@@ -54,6 +54,7 @@ return [
         'updates' => 'Pembaruan Perangkat Lunak',
     ],
     'actions' => [
+        'send_email' => 'Kirim email',
         'read' => 'Lihat',
         'create' => 'Buat',
         'update' => 'Ubah',

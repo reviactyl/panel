@@ -1,6 +1,16 @@
 <?php
 
 return [
+    'email_message' => [
+        'edit_html' => 'HTML düzenle',
+        'preview' => 'E-postayı önizle',
+        'send' => 'E-posta gönder',
+        'recipient' => 'Alıcı: :email',
+        'subject' => 'Konu',
+        'message' => 'Mesaj',
+        'sent' => 'E-posta, posta sunucusuna iletildi.',
+        'failed' => 'E-posta gönderilemedi. Tekrar denemeden önce posta ayarlarını kontrol edin.',
+    ],
     'title' => 'Kullanıcı',
     'exceptions' => [
         'delete_self' => 'Kendi hesabınızı silemezsiniz.',

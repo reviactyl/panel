@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Users\Tables;
 
+use App\Filament\Resources\Users\Actions\SendEmailAction;
 use App\Models\Role;
 use App\Models\User;
 use Filament\Actions\BulkActionGroup;
@@ -65,6 +66,7 @@ class UsersTable
             ])
             ->recordActions([
                 EditAction::make(),
+                SendEmailAction::make(),
                 DeleteAction::make(),
             ])
             ->toolbarActions([

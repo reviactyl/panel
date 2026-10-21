@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Users\Pages;
 
+use App\Filament\Resources\Users\Actions\SendEmailAction;
 use App\Filament\Resources\Users\Schemas\UserForm;
 use App\Filament\Resources\Users\UserResource;
 use App\Models\User;
@@ -17,6 +18,7 @@ class EditUser extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            SendEmailAction::make(),
             DeleteAction::make(),
         ];
     }

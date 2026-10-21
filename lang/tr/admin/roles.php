@@ -54,6 +54,7 @@ return [
         'updates' => 'Yazılım Güncellemeleri',
     ],
     'actions' => [
+        'send_email' => 'E-posta gönder',
         'read' => 'Görüntüle',
         'create' => 'Oluştur',
         'update' => 'Düzenle',

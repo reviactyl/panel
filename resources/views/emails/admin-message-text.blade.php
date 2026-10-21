@@ -1,0 +1,3 @@
+{!! config('app.name') !!}
+
+{!! $text !!}

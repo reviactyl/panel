@@ -1,6 +1,16 @@
 <?php
 
 return [
+    'email_message' => [
+        'edit_html' => 'Chỉnh sửa HTML',
+        'preview' => 'Xem trước email',
+        'send' => 'Gửi email',
+        'recipient' => 'Đến: :email',
+        'subject' => 'Tiêu đề',
+        'message' => 'Nội dung',
+        'sent' => 'Email đã được chuyển đến máy chủ thư.',
+        'failed' => 'Không thể gửi email. Kiểm tra cài đặt thư trước khi thử lại.',
+    ],
     'title' => 'người dùng',
     'exceptions' => [
         'delete_self' => 'Bạn không thể xóa tài khoản của chính mình.',
