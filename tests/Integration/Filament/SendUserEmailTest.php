@@ -29,7 +29,7 @@ class SendUserEmailTest extends IntegrationTestCase
         Notification::fake();
         $recipient = User::factory()->create();
         $other = User::factory()->create();
-        $data = ['subject' => 'Account warning', 'message' => "Hello\nPlease contact support."];
+        $data = ['subject' => 'Account warning', 'message' => '<p>Hello</p><p>Please contact support.</p>'];
 
         Livewire::test(EditUser::class, ['record' => $recipient->id])
             ->callAction('sendEmail', $data)
