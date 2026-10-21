@@ -16,6 +16,8 @@ class RolePermission
 
     public const ASSIGN = 'assign';
 
+    public const SEND_EMAIL = 'send_email';
+
     public const RESOURCE_SERVERS = 'servers';
 
     public const RESOURCE_USERS = 'users';
@@ -79,7 +81,7 @@ class RolePermission
     {
         return [
             self::RESOURCE_SERVERS => self::CRUD,
-            self::RESOURCE_USERS => self::CRUD,
+            self::RESOURCE_USERS => [...self::CRUD, self::SEND_EMAIL],
             self::RESOURCE_ROLES => [...self::CRUD, self::ASSIGN],
             self::RESOURCE_NODES => self::CRUD,
             self::RESOURCE_LOCATIONS => self::CRUD,

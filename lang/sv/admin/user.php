@@ -1,6 +1,16 @@
 <?php
 
 return [
+    'email_message' => [
+        'edit_html' => 'Redigera HTML',
+        'preview' => 'Förhandsgranska e-post',
+        'send' => 'Skicka e-post',
+        'recipient' => 'Till: :email',
+        'subject' => 'Ämne',
+        'message' => 'Meddelande',
+        'sent' => 'E-postmeddelandet har lämnats till e-postservern.',
+        'failed' => 'Det gick inte att skicka e-post. Kontrollera e-postinställningarna innan du försöker igen.',
+    ],
     'title' => 'Användare',
     'exceptions' => [
         'delete_self' => 'Du kan inte ta bort ditt eget konto.',

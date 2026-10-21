@@ -54,6 +54,7 @@ return [
         'updates' => 'Cập nhật phần mềm',
     ],
     'actions' => [
+        'send_email' => 'Gửi email',
         'read' => 'Xem',
         'create' => 'Tạo',
         'update' => 'Sửa',

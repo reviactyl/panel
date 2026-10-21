@@ -1,6 +1,16 @@
 <?php
 
 return [
+    'email_message' => [
+        'edit_html' => 'Edit HTML',
+        'preview' => 'Pratinjau email',
+        'send' => 'Kirim email',
+        'recipient' => 'Kepada: :email',
+        'subject' => 'Subjek',
+        'message' => 'Pesan',
+        'sent' => 'Email telah diserahkan ke server email.',
+        'failed' => 'Email tidak dapat dikirim. Periksa pengaturan email sebelum mencoba lagi.',
+    ],
     'title' => 'Pengguna',
     'exceptions' => [
         'delete_self' => 'Anda tidak dapat menghapus akun Anda sendiri.',

@@ -54,6 +54,7 @@ return [
         'updates' => 'Mises à jour logicielles',
     ],
     'actions' => [
+        'send_email' => 'Envoyer un e-mail',
         'read' => 'Voir',
         'create' => 'Créer',
         'update' => 'Modifier',

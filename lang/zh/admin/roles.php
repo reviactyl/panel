@@ -54,6 +54,7 @@ return [
         'updates' => '软件更新',
     ],
     'actions' => [
+        'send_email' => '发送邮件',
         'read' => '查看',
         'create' => '创建',
         'update' => '编辑',

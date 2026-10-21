@@ -54,6 +54,7 @@ return [
         'updates' => 'Software Updates',
     ],
     'actions' => [
+        'send_email' => 'Send email',
         'read' => 'View',
         'create' => 'Create',
         'update' => 'Edit',

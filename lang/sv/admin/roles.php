@@ -54,6 +54,7 @@ return [
         'updates' => 'Programuppdateringar',
     ],
     'actions' => [
+        'send_email' => 'Skicka e-post',
         'read' => 'Visa',
         'create' => 'Skapa',
         'update' => 'Redigera',

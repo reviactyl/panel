@@ -54,6 +54,7 @@ return [
         'updates' => 'সফটওয়্যার আপডেট',
     ],
     'actions' => [
+        'send_email' => 'ইমেইল পাঠান',
         'read' => 'দেখা',
         'create' => 'তৈরি',
         'update' => 'সম্পাদনা',

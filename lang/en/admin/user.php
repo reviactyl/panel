@@ -1,6 +1,16 @@
 <?php
 
 return [
+    'email_message' => [
+        'edit_html' => 'Edit HTML',
+        'preview' => 'Preview email',
+        'send' => 'Send email',
+        'recipient' => 'To: :email',
+        'subject' => 'Subject',
+        'message' => 'Message',
+        'sent' => 'Email submitted to the mail server.',
+        'failed' => 'Could not send email. Check the mail settings before trying again.',
+    ],
     'title' => 'User',
     'exceptions' => [
         'delete_self' => 'You cannot delete your own account.',

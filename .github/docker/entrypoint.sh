@@ -1,6 +1,14 @@
 #!/bin/ash -e
 cd /app
 
+mkdir -p /app/storage/app/public
+chown -R nginx:nginx /app/storage/app/public
+if [ -e /app/public/storage ] && [ ! -L /app/public/storage ]; then
+  echo "Cannot link public storage: /app/public/storage already exists and is not a symlink." >&2
+  exit 1
+fi
+ln -sfn /app/storage/app/public /app/public/storage
+
 mkdir -p /var/log/panel/logs/ /var/log/supervisord/ /var/log/nginx/ /var/log/php7/ \
   && chmod 777 /var/log/panel/logs/ \
   && ln -s /app/storage/logs/ /var/log/panel/

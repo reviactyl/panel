@@ -1,6 +1,16 @@
 <?php
 
 return [
+    'email_message' => [
+        'edit_html' => '编辑 HTML',
+        'preview' => '预览邮件',
+        'send' => '发送邮件',
+        'recipient' => '收件人：:email',
+        'subject' => '主题',
+        'message' => '正文',
+        'sent' => '邮件已提交至邮件服务器。',
+        'failed' => '无法发送邮件。请检查邮件设置后重试。',
+    ],
     'title' => '用户',
     'exceptions' => [
         'delete_self' => '您无法删除自己的账户。',

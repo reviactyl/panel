@@ -1,6 +1,16 @@
 <?php
 
 return [
+    'email_message' => [
+        'edit_html' => 'Modifier le HTML',
+        'preview' => 'Aperçu de l’e-mail',
+        'send' => 'Envoyer un e-mail',
+        'recipient' => 'À : :email',
+        'subject' => 'Objet',
+        'message' => 'Message',
+        'sent' => 'E-mail transmis au serveur de messagerie.',
+        'failed' => 'Impossible d’envoyer l’e-mail. Vérifiez les paramètres de messagerie avant de réessayer.',
+    ],
     'title' => 'Utilisateur',
     'exceptions' => [
         'delete_self' => 'Vous ne pouvez pas supprimer votre propre compte.',
