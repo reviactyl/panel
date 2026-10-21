@@ -12,6 +12,8 @@ You can provide additional settings using a custom `.env` file or by setting the
 
 ## Setup
 
+Persist `/app/storage/app/public` with a volume or bind mount, as in the Compose example, so uploaded email images remain available after container replacement. The entrypoint creates the public storage link and makes the upload directory writable by Nginx. When upgrading an existing container, copy any files in this directory to the persistent mount before replacing it. Set `APP_URL` to the public URL recipients can reach.
+
 Start the docker container and the required dependencies (either provide existing ones or start containers as well, see the [docker-compose.yml](https://github.com/reviactyl/panel/blob/develop/docker-compose.example.yml) file as an example.
 
 After the startup is complete you'll need to create a user.

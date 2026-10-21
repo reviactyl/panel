@@ -59,6 +59,7 @@ services:
       - "/srv/reviactyl/extensions/:/app/extensions/"
       - "/srv/reviactyl/public-extensions/:/app/public/extensions/"
       - "/srv/reviactyl/storage-extensions/:/app/storage/extensions/"
+      - "/srv/reviactyl/uploads/:/app/storage/app/public/"
       - "/srv/reviactyl/nginx/:/etc/nginx/http.d/"
       - "/srv/reviactyl/certs/:/etc/letsencrypt/"
       - "/srv/reviactyl/logs/:/app/storage/logs"
