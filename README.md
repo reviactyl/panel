@@ -68,12 +68,14 @@ Manage Game Servers like Never Before!
 
 ## Sponsors
 
-
 These people made Reviactyl project possible.
 
+<a href="https://github.com/sponsors/reviactyl">
 <picture><source media="(prefers-color-scheme: dark)" srcset="https://www.shieldcn.dev/badge/Sponsor-GitHub-ea4aaa.svg?logo=githubsponsors&amp;variant=secondary&amp;size=sm&amp;mode=dark"><img alt="GitHub Sponsors" src="https://www.shieldcn.dev/badge/Sponsor-GitHub-ea4aaa.svg?logo=githubsponsors&amp;variant=secondary&amp;size=sm&amp;mode=light"></picture>
+</a>
+<a href="https://ko-fi.com/reviactyl">
 <picture><source media="(prefers-color-scheme: dark)" srcset="https://www.shieldcn.dev/badge/Ko--fi-sponsor-FF5E5B.svg?logo=kofi&amp;variant=secondary&amp;size=sm&amp;mode=dark"><img alt="Ko-fi" src="https://www.shieldcn.dev/badge/Ko--fi-sponsor-FF5E5B.svg?logo=kofi&amp;variant=secondary&amp;size=sm&amp;mode=light"></picture>
-
+</a>
 
 | **Company** | **About** |
 | :---: | :---: |
