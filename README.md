@@ -22,6 +22,10 @@
   <a href="https://github.com/reviactyl/panel"><picture><source media="(prefers-color-scheme: dark)" srcset="https://shieldcn.dev/github/reviactyl/panel/license.svg?variant=ghost&amp;theme=rose" /><img alt="license" src="https://shieldcn.dev/github/reviactyl/panel/license.svg?variant=ghost&amp;theme=rose&amp;mode=light" /></picture></a>
 </p>
 
+<p align="center">
+<a href="https://trendshift.io/repositories/22760?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-22760" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/22760/daily?language=PHP" alt="reviactyl%2Fpanel | Trendshift" width="250" height="55"/></a>
+</p>
+
 <div align="center">
 
 # Reviactyl Panel
@@ -60,29 +64,27 @@ Manage Game Servers like Never Before!
 - `🔋` **Batteries Included**: Reviactyl has most of core features built-in, which means there's no need of spending money for basic features.
 - `🍀` **Open Source & Free**: Reviactyl is the free open-source game server management panel offering modern codebase, security, & improvements. Best Alternative to Pterodactyl Panel.
 
-<p align="center">
-  <img alt="sponsors" src="https://shieldcn.dev/sponsors/reviactyl.svg?title=GitHub+Sponsors&amp;preset=gradient&amp;titleAlign=center&amp;mode=dark" />
-</p>
-
 <div align="center">
 
 ## Sponsors
 
-</div>
 
-I would like to extend my sincere thanks to the following sponsors for helping fund Reviactyl's development. [Interested in becoming a sponsor?](https://github.com/sponsors/reviactyl)
+These people made Reviactyl project possible.
 
-Alternatively, [sponsor us on ko-fi](https://ko-fi.com/reviactyl)
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://www.shieldcn.dev/badge/Sponsor-GitHub-ea4aaa.svg?logo=githubsponsors&amp;variant=secondary&amp;size=sm&amp;mode=dark"><img alt="GitHub Sponsors" src="https://www.shieldcn.dev/badge/Sponsor-GitHub-ea4aaa.svg?logo=githubsponsors&amp;variant=secondary&amp;size=sm&amp;mode=light"></picture>
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://www.shieldcn.dev/badge/Ko--fi-sponsor-FF5E5B.svg?logo=kofi&amp;variant=secondary&amp;size=sm&amp;mode=dark"><img alt="Ko-fi" src="https://www.shieldcn.dev/badge/Ko--fi-sponsor-FF5E5B.svg?logo=kofi&amp;variant=secondary&amp;size=sm&amp;mode=light"></picture>
+
 
 | **Company** | **About** |
 | :---: | :---: |
 | [**Tietokettu**](https://tietokettu.net/) | Tietokettu is a company that provides network and server services founded in 2019. Our goal is to create affordable and functional solutions for old ones. |
 | [**CloudExa-Hosting**](https://cloudexa-hosting.com/) | CloudExa Provides fast, reliable cloud hosting built for gaming, delivering smooth performance and scalable solutions for game servers and enterprises. |
+  <img alt="sponsors" src="https://shieldcn.dev/sponsors/reviactyl.svg?title=GitHub+Sponsors&amp;preset=gradient&amp;titleAlign=center&amp;mode=dark" />
 
-<p align="center">
-  <a href="https://github.com/reviactyl/panel/graphs/contributors"><img alt="contributors" src="https://shieldcn.dev/contributors/reviactyl/panel.svg?preset=gradient&amp;titleAlign=center&amp;limit=30&amp;mode=dark" /></a>
-</p>
+## License
 
 Reviactyl™, Copyright © Reviactyl and contributors. (Licensed under [MIT](https://github.com/reviactyl/panel/blob/develop/LICENSE.md))
 
 ###### Copyright © 2025 - Current, Reviactyl and Contributors.
+
+</div>
