@@ -1,5 +1,7 @@
 <p align="center">
-  <img width="894" height="476" alt="image" src="https://github.com/user-attachments/assets/8dcd754f-aa57-4fad-96db-59ac1ed19a94" />
+  <a href="https://reviactyl.app">
+  <img alt="header" src="https://shieldcn.dev/header/gradient.svg?logo=false&amp;size=social&amp;mode=dark&amp;image=https%3A%2F%2Fgithub.com%2Fuser-attachments%2Fassets%2F8dcd754f-aa57-4fad-96db-59ac1ed19a94&amp;overlay=0" />
+  </a>
 </p>
 
 <p align="center">
@@ -23,7 +25,7 @@
 </p>
 
 <p align="center">
-<a href="https://trendshift.io/repositories/22760?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-22760" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/22760/daily?language=PHP" alt="reviactyl%2Fpanel | Trendshift" width="250" height="55"/></a>
+  <a href="https://trendshift.io/repositories/22760?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-22760"><img alt="reviactyl%2Fpanel | Trendshift" src="https://trendshift.io/api/badge/trendshift/repositories/22760/daily?language=PHP" width="250" /></a>
 </p>
 
 <div align="center">
@@ -70,18 +72,15 @@ Manage Game Servers like Never Before!
 
 These people made Reviactyl project possible.
 
-<a href="https://github.com/sponsors/reviactyl">
-<picture><source media="(prefers-color-scheme: dark)" srcset="https://www.shieldcn.dev/badge/Sponsor-GitHub-ea4aaa.svg?logo=githubsponsors&amp;variant=secondary&amp;size=sm&amp;mode=dark"><img alt="GitHub Sponsors" src="https://www.shieldcn.dev/badge/Sponsor-GitHub-ea4aaa.svg?logo=githubsponsors&amp;variant=secondary&amp;size=sm&amp;mode=light"></picture>
-</a>
-<a href="https://ko-fi.com/reviactyl">
-<picture><source media="(prefers-color-scheme: dark)" srcset="https://www.shieldcn.dev/badge/Ko--fi-sponsor-FF5E5B.svg?logo=kofi&amp;variant=secondary&amp;size=sm&amp;mode=dark"><img alt="Ko-fi" src="https://www.shieldcn.dev/badge/Ko--fi-sponsor-FF5E5B.svg?logo=kofi&amp;variant=secondary&amp;size=sm&amp;mode=light"></picture>
-</a>
+<a href="https://github.com/sponsors/reviactyl"><picture><source media="(prefers-color-scheme: dark)" srcset="https://shieldcn.dev/badge/Sponsor-GitHub-ea4aaa.svg?variant=secondary&amp;logo=githubsponsors" /><img alt="GitHub Sponsors" src="https://shieldcn.dev/badge/Sponsor-GitHub-ea4aaa.svg?variant=secondary&amp;mode=light&amp;logo=githubsponsors" /></picture></a>
+<a href="https://ko-fi.com/reviactyl"><picture><source media="(prefers-color-scheme: dark)" srcset="https://shieldcn.dev/badge/Ko--fi-sponsor-FF5E5B.svg?variant=secondary&amp;logo=kofi" /><img alt="Ko-fi" src="https://shieldcn.dev/badge/Ko--fi-sponsor-FF5E5B.svg?variant=secondary&amp;mode=light&amp;logo=kofi" /></picture></a>
 
 | **Company** | **About** |
 | :---: | :---: |
 | [**Tietokettu**](https://tietokettu.net/) | Tietokettu is a company that provides network and server services founded in 2019. Our goal is to create affordable and functional solutions for old ones. |
 | [**CloudExa-Hosting**](https://cloudexa-hosting.com/) | CloudExa Provides fast, reliable cloud hosting built for gaming, delivering smooth performance and scalable solutions for game servers and enterprises. |
-  <img alt="sponsors" src="https://shieldcn.dev/sponsors/reviactyl.svg?title=GitHub+Sponsors&amp;preset=gradient&amp;titleAlign=center&amp;mode=dark" />
+
+![sponsors](https://shieldcn.dev/sponsors/reviactyl.svg?title=GitHub+Sponsors&preset=gradient&titleAlign=center&mode=dark)
 
 ## License
 
