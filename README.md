@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="header" src="https://shieldcn.dev/header/gradient.svg?logo=false&amp;mode=dark&amp;image=https%3A%2F%2Fgithub.com%2Fuser-attachments%2Fassets%2Fbc4382ba-29f1-4803-80c3-2debfebb371d&amp;overlay=0" />
+  <img width="894" height="476" alt="image" src="https://github.com/user-attachments/assets/8dcd754f-aa57-4fad-96db-59ac1ed19a94" />
 </p>
 
 <p align="center">
