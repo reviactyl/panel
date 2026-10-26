@@ -124,7 +124,7 @@ class EggConfigurationService
      * side. Ensure that anything referencing those properly replaces them with the matching config
      * value.
      */
-    protected function replaceLegacyModifiers(string $key, string $value): string
+    protected function replaceLegacyModifiers(string $key): string
     {
         switch ($key) {
             case 'config.docker.interface':
@@ -147,7 +147,7 @@ class EggConfigurationService
                 $replace = $key;
         }
 
-        return Str::replace("{{{$key}}}", "{{{$replace}}}", $value);
+        return $replace;
     }
 
     protected function matchAndReplaceKeys(mixed $value, array $structure): mixed
@@ -169,7 +169,9 @@ class EggConfigurationService
                 continue;
             }
 
-            $value = $this->replaceLegacyModifiers($key, $value);
+            $replacement = $this->replaceLegacyModifiers($key);
+            $value = Str::replace("{{{$key}}}", "{{{$replacement}}}", $value);
+            $key = $replacement;
 
             // We don't want to do anything with config keys since the Daemon will need to handle
             // that. For example, the Spigot egg uses "config.docker.interface" to identify the Docker
