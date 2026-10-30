@@ -89,7 +89,7 @@ class ProcessScheduleServiceTest extends IntegrationTestCase
         $this->assertTrue($schedule->next_run_at->equalTo($dueAt));
         $this->assertNull($schedule->last_run_at);
 
-        $dispatcher->expects('dispatch')->with(\Mockery::on(fn (RunTaskJob $job) => $job->task->id === $task->id && $job->afterCommit === null));
+        $dispatcher->expects('dispatch')->with(\Mockery::on(fn (RunTaskJob $job) => $job->taskId === $task->id && $job->afterCommit === null));
         $this->assertTrue($this->getService()->handle($schedule));
         $this->assertTrue($schedule->refresh()->is_processing);
         $this->assertTrue($task->refresh()->is_queued);
@@ -247,7 +247,7 @@ class ProcessScheduleServiceTest extends IntegrationTestCase
 
         Bus::assertDispatched(RunTaskJob::class, function ($job) use ($task) {
             $this->assertInstanceOf(RunTaskJob::class, $job);
-            $this->assertSame($task->id, $job->task->id);
+            $this->assertSame($task->id, $job->taskId);
             $this->assertNull($job->delay);
 
             return true;
@@ -281,7 +281,7 @@ class ProcessScheduleServiceTest extends IntegrationTestCase
         Bus::assertDispatched(RunTaskJob::class, function (RunTaskJob $job) use ($task) {
             $this->assertNull($job->delay);
 
-            return $task->id === $job->task->id;
+            return $task->id === $job->taskId;
         });
 
         $this->assertDatabaseHas('schedules', ['id' => $schedule->id, 'is_processing' => true]);
