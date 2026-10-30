@@ -79,14 +79,19 @@ class ServerDeletionService
             });
         }
 
-        $this->connection->transaction(function () use ($server) {
-            $server = $this->lockServer($server);
+        $backupIds = $this->connection->transaction(function () use ($server) {
+            return $this->lockServer($server)->backups()->pluck('id');
+        });
 
-            if ($server->databases()->exists()) {
-                throw new DisplayException('A database was added while this server was being deleted. Please try again.');
-            }
+        foreach ($backupIds as $backupId) {
+            $this->connection->transaction(function () use ($server, $backupId) {
+                $server = $this->lockServer($server);
+                $backup = $server->backups()->find($backupId);
 
-            foreach ($server->backups()->cursor() as $backup) {
+                if (! $backup) {
+                    return;
+                }
+
                 $backup->is_locked = false;
 
                 try {
@@ -96,8 +101,21 @@ class ServerDeletionService
                         throw $exception;
                     }
 
+                    $backup->delete();
                     Log::warning($exception);
                 }
+            });
+        }
+
+        $this->connection->transaction(function () use ($server) {
+            $server = $this->lockServer($server);
+
+            if ($server->databases()->exists()) {
+                throw new DisplayException('A database was added while this server was being deleted. Please try again.');
+            }
+
+            if ($server->backups()->exists()) {
+                throw new DisplayException('A backup was added while this server was being deleted. Please try again.');
             }
 
             try {

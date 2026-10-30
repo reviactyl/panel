@@ -213,6 +213,39 @@ class ServerDeletionServiceTest extends IntegrationTestCase
         }
     }
 
+    public function test_successful_backup_cleanup_stays_committed_after_a_later_failure(): void
+    {
+        foreach ([false, true] as $failServerDeletion) {
+            $server = $this->createServerModel();
+            $first = Backup::factory()->create(['server_id' => $server->id, 'disk' => Backup::ADAPTER_WINGS]);
+            $second = Backup::factory()->create(['server_id' => $server->id, 'disk' => Backup::ADAPTER_WINGS]);
+            $exception = new DaemonConnectionException(
+                new BadResponseException('Unavailable', new Request('DELETE', '/'), new Response(500))
+            );
+            $repository = $this->mock(DaemonBackupRepository::class);
+            $repository->shouldReceive('setServer')->twice()->andReturnSelf();
+            $repository->expects('delete')->with(\Mockery::on(fn ($record) => $record->id === $first->id))
+                ->andReturn(new Response());
+            $secondDeletion = $repository->expects('delete')
+                ->with(\Mockery::on(fn ($record) => $record->id === $second->id));
+            if ($failServerDeletion) {
+                $secondDeletion->andReturn(new Response());
+                $this->daemonServerRepository->expects('setServer->delete')->andThrow($exception);
+            } else {
+                $secondDeletion->andThrow($exception);
+            }
+
+            try {
+                $this->getService()->handle($server);
+                $this->fail('Deletion should fail.');
+            } catch (DaemonConnectionException) {
+                $this->assertDatabaseHas('servers', ['id' => $server->id]);
+                $this->assertSoftDeleted('backups', ['id' => $first->id]);
+                $this->assertSame($failServerDeletion ? 0 : 1, $server->backups()->count());
+            }
+        }
+    }
+
     private function getService(): ServerDeletionService
     {
         return $this->app->make(ServerDeletionService::class);
