@@ -45,6 +45,8 @@ class LoginCheckpointControllerTest extends HttpTestCase
             'expires_at' => now()->addMinutes(5),
         ]);
 
+        Session::put('url.intended', '/admin/users?page=2');
+
         $totp = $this->app->make(Google2FA::class)->getCurrentOtp(Str::repeat('a', 16));
 
         $this->withoutExceptionHandling()->postJson(route('auth.login-checkpoint', [
@@ -54,7 +56,8 @@ class LoginCheckpointControllerTest extends HttpTestCase
             ->assertOk()
             ->assertSessionMissing('auth_confirmation_token')
             ->assertJsonPath('data.complete', true)
-            ->assertJsonPath('data.intended', '/')
+            ->assertJsonPath('data.intended', '/admin/users?page=2')
+            ->assertSessionMissing('url.intended')
             ->assertJsonPath('data.user.uuid', $user->uuid);
 
         $this->assertEquals(now(), $user->refresh()->totp_authenticated_at);

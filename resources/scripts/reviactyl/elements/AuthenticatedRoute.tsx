@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { useEffect, type ReactNode } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { useStoreState } from '@/state/hooks';
 
@@ -8,11 +8,17 @@ function AuthenticatedRoute({ children }: { children?: ReactNode }) {
 
     const location = useLocation();
 
+    useEffect(() => {
+        if (!isAuthenticated) {
+            window.location.replace(location.pathname + location.search + location.hash);
+        }
+    }, [isAuthenticated, location.pathname, location.search, location.hash]);
+
     if (isAuthenticated) {
         return <>{children}</>;
     }
 
-    return <Navigate to='/auth/login' state={{ from: location.pathname }} />;
+    return null;
 }
 
 export default AuthenticatedRoute;

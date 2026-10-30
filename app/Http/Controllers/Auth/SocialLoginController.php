@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\SocialLogin;
 use App\Models\User;
+use App\Support\LoginDestination;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Contracts\Factory;
@@ -29,7 +31,7 @@ class SocialLoginController extends Controller
         return Socialite::driver($provider)->redirect();
     }
 
-    public function callback(string $provider)
+    public function callback(Request $request, string $provider)
     {
         if (! in_array($provider, $this->supportedProviders)) {
             return redirect()->route('auth.login')->with('error', 'Provider not supported.');
@@ -86,7 +88,9 @@ class SocialLoginController extends Controller
         if ($socialLogin && $socialLogin->user instanceof User) {
             Auth::login($socialLogin->user);
 
-            return redirect('/');
+            $request->session()->regenerate();
+
+            return redirect(LoginDestination::pull($request));
         }
 
         // If a user with the same email already exists, do NOT auto-link.

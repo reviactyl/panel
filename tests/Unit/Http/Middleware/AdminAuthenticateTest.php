@@ -4,6 +4,7 @@ namespace Tests\Unit\Http\Middleware;
 
 use App\Http\Middleware\AdminAuthenticate;
 use App\Models\User;
+use Illuminate\Auth\AuthenticationException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AdminAuthenticateTest extends MiddlewareTestCase
@@ -25,7 +26,7 @@ class AdminAuthenticateTest extends MiddlewareTestCase
      */
     public function test_exception_is_thrown_if_user_does_not_exist()
     {
-        $this->expectException(AccessDeniedHttpException::class);
+        $this->expectException(AuthenticationException::class);
 
         $this->request->shouldReceive('user')->withNoArgs()->once()->andReturnNull();
 
