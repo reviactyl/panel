@@ -6,6 +6,7 @@ use App\Exceptions\DisplayException;
 use App\Exceptions\Http\Connection\DaemonConnectionException;
 use App\Models\Server;
 use App\Repositories\Agent\DaemonServerRepository;
+use App\Services\Backups\DeleteBackupService;
 use App\Services\Databases\DatabaseManagementService;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Http\Response;
@@ -22,6 +23,7 @@ class ServerDeletionService
         private ConnectionInterface $connection,
         private DaemonServerRepository $daemonServerRepository,
         private DatabaseManagementService $databaseManagementService,
+        private DeleteBackupService $deleteBackupService,
     ) {}
 
     /**
@@ -82,6 +84,20 @@ class ServerDeletionService
 
             if ($server->databases()->exists()) {
                 throw new DisplayException('A database was added while this server was being deleted. Please try again.');
+            }
+
+            foreach ($server->backups()->cursor() as $backup) {
+                $backup->is_locked = false;
+
+                try {
+                    $this->deleteBackupService->handle($backup);
+                } catch (\Exception $exception) {
+                    if (! $this->force) {
+                        throw $exception;
+                    }
+
+                    Log::warning($exception);
+                }
             }
 
             try {

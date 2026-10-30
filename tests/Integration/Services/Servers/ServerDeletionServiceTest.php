@@ -5,8 +5,10 @@ namespace Tests\Integration\Services\Servers;
 use App\Exceptions\Http\Connection\DaemonConnectionException;
 use App\Filament\Resources\Servers\Tables\ServersTable;
 use App\Filament\Resources\Users\RelationManagers\ServersRelationManager;
+use App\Models\Backup;
 use App\Models\Database;
 use App\Models\DatabaseHost;
+use App\Repositories\Agent\DaemonBackupRepository;
 use App\Repositories\Agent\DaemonServerRepository;
 use App\Services\Databases\DatabaseManagementService;
 use App\Services\Servers\ServerDeletionService;
@@ -156,6 +158,59 @@ class ServerDeletionServiceTest extends IntegrationTestCase
 
         $this->assertDatabaseMissing('servers', ['id' => $server->id]);
         $this->assertDatabaseMissing('databases', ['id' => $db->id]);
+    }
+
+    public function test_backups_are_deleted_before_the_agent_server(): void
+    {
+        $server = $this->createServerModel();
+        $backups = Backup::factory()->count(2)->create([
+            'server_id' => $server->id,
+            'disk' => Backup::ADAPTER_WINGS,
+            'is_locked' => true,
+        ]);
+        $repository = $this->mock(DaemonBackupRepository::class);
+        $repository->shouldReceive('setServer')->twice()->andReturnSelf();
+        foreach ($backups as $backup) {
+            $repository->expects('delete')->with(\Mockery::on(fn ($record) => $record->id === $backup->id))
+                ->andReturnUsing(function () use ($server): Response {
+                    $this->assertDatabaseHas('servers', ['id' => $server->id]);
+
+                    return new Response();
+                });
+        }
+        $this->daemonServerRepository->expects('setServer')->andReturnSelf();
+        $this->daemonServerRepository->expects('delete')->andReturnUsing(function () use ($server): void {
+            $this->assertSame(0, $server->backups()->count());
+        });
+
+        $this->getService()->handle($server);
+
+        $this->assertDatabaseMissing('servers', ['id' => $server->id]);
+    }
+
+    public function test_backup_cleanup_failure_retains_server_unless_forced(): void
+    {
+        foreach ([false, true] as $force) {
+            $server = $this->createServerModel();
+            Backup::factory()->create(['server_id' => $server->id, 'disk' => Backup::ADAPTER_WINGS]);
+            $repository = $this->mock(DaemonBackupRepository::class);
+            $repository->expects('setServer->delete')->andThrow(new DaemonConnectionException(
+                new BadResponseException('Unavailable', new Request('DELETE', '/'), new Response(500))
+            ));
+            if ($force) {
+                $this->daemonServerRepository->expects('setServer->delete')->andReturnUndefined();
+                $this->getService()->withForce()->handle($server);
+                $this->assertDatabaseMissing('servers', ['id' => $server->id]);
+            } else {
+                try {
+                    $this->getService()->handle($server);
+                    $this->fail('Backup cleanup should fail.');
+                } catch (DaemonConnectionException) {
+                    $this->assertDatabaseHas('servers', ['id' => $server->id]);
+                    $this->assertSame(1, $server->backups()->count());
+                }
+            }
+        }
     }
 
     private function getService(): ServerDeletionService
