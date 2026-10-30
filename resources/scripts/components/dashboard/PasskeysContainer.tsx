@@ -1,29 +1,31 @@
 import { CreatePasskeysForm, ListPasskeysForm } from '@/components/dashboard/forms/PasskeysForm';
 import ContentBox from '@/reviactyl/elements/ContentBox';
 import { useTranslation } from 'react-i18next';
-import PageContentBlock from '@/reviactyl/elements/PageContentBlock';
+import AccountContentBlock from '@/components/dashboard/AccountContentBlock';
 
 export default () => {
     const { t } = useTranslation('dashboard/account');
 
     return (
-        <PageContentBlock title={t('overview.passkeys')}>
-            <div className='md:flex flex-nowrap my-10'>
+        <AccountContentBlock title={t('overview.passkeys')}>
+            <div className='grid grid-cols-1 items-start gap-6 lg:grid-cols-2'>
                 <ContentBox
+                    insetTitle
                     title={t('passkeys.register')}
-                    className='flex-none w-full md:w-1/2'
+                    className='min-w-0'
                     showFlashes={'account:passkeys'}
                 >
                     <CreatePasskeysForm />
                 </ContentBox>
                 <ContentBox
+                    insetTitle
                     title={t('overview.passkeys')}
-                    className='flex-1 overflow-hidden mt-8 md:mt-0 md:ml-8'
+                    className='min-w-0'
                     showFlashes={'account:passkeys'}
                 >
                     <ListPasskeysForm />
                 </ContentBox>
             </div>
-        </PageContentBlock>
+        </AccountContentBlock>
     );
 };

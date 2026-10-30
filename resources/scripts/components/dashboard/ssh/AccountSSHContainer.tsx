@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import ContentBox from '@/reviactyl/elements/ContentBox';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import PageContentBlock from '@/reviactyl/elements/PageContentBlock';
+import AccountContentBlock from '@/components/dashboard/AccountContentBlock';
 import GreyRowBox from '@/reviactyl/elements/GreyRowBox';
 import { useSSHKeys } from '@/api/account/ssh-keys';
 import { useFlashKey } from '@/plugins/useFlash';
@@ -25,13 +25,13 @@ export default () => {
     }, [error]);
 
     return (
-        <PageContentBlock title={t('ssh.title')}>
+        <AccountContentBlock title={t('ssh.title')}>
             <FlashMessageRender byKey={'account'} />
-            <div className='md:flex flex-nowrap my-10'>
-                <ContentBox title={t('ssh.add-key')} className='flex-none w-full md:w-1/2'>
+            <div className='grid grid-cols-1 items-start gap-6 lg:grid-cols-2'>
+                <ContentBox insetTitle title={t('ssh.add-key')} className='min-w-0'>
                     <CreateSSHKeyForm />
                 </ContentBox>
-                <ContentBox title={t('ssh.title')} className='flex-1 overflow-hidden mt-8 md:mt-0 md:ml-8'>
+                <ContentBox insetTitle title={t('ssh.title')} className='min-w-0'>
                     <SpinnerOverlay visible={!data && isValidating} />
                     {!data || !data.length ? (
                         <p className='text-center text-sm'>{!data ? t('overview.loading') : t('ssh.not-exist')}</p>
@@ -58,6 +58,6 @@ export default () => {
                     )}
                 </ContentBox>
             </div>
-        </PageContentBlock>
+        </AccountContentBlock>
     );
 };

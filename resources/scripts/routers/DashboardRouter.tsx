@@ -169,7 +169,7 @@ function DashboardRouter() {
                             </button>
                         </div>
                     </Navbar>
-                    <ContentContainer>
+                    <ContentContainer className='pe-0! lg:ps-60.25! 2xl:ps-68!'>
                         {isSidebarOpen && (
                             <div
                                 onClick={() => setSidebarOpen(false)}
@@ -186,7 +186,7 @@ function DashboardRouter() {
                             </Sidebar>
                         </motion.div>
                         <div
-                            className={`w-full flex-1 overflow-y-auto ${layoutType === 'modern' ? 'pb-24 lg:pb-0' : ''}`}
+                            className={`w-full min-w-0 flex-1 overflow-y-auto ${layoutType === 'modern' ? 'pb-24 lg:pb-0' : ''}`}
                         >
                             <Suspense fallback={<Spinner centered />}>
                                 {useRoutes(

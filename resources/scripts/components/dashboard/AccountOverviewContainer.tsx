@@ -4,7 +4,7 @@ import UpdateEmailAddressForm from '@/components/dashboard/forms/UpdateEmailAddr
 import ConfigureTwoFactorForm from '@/components/dashboard/forms/ConfigureTwoFactorForm';
 import MessageBox from '@/components/MessageBox';
 import { useLocation } from 'react-router-dom';
-import ContentBlock from '@/reviactyl/ui/ContentBlock';
+import AccountContentBlock from '@/components/dashboard/AccountContentBlock';
 import Card from '@/reviactyl/ui/Card';
 import Gravatar from '@/reviactyl/ui/Avatar';
 import { useStoreState } from 'easy-peasy';
@@ -70,7 +70,7 @@ export default () => {
     };
 
     return (
-        <ContentBlock title={t('overview.account-overview')}>
+        <AccountContentBlock title={t('overview.account-overview')}>
             <FlashMessageRender className='mb-4' />
             <ExtensionSlot name='account:overview:above' />
             {state?.twoFactorRedirect && (
@@ -142,6 +142,6 @@ export default () => {
                 </div>
             </div>
             <ExtensionSlot name='account:overview:below' />
-        </ContentBlock>
+        </AccountContentBlock>
     );
 };
