@@ -279,7 +279,10 @@ export default () => {
 
                                                     <Select
                                                         value={selectedCategory}
-                                                        onChange={(e) => setSelectedCategory(e.target.value)}
+                                                        onChange={(e) => {
+                                                            setSelectedCategory(e.target.value);
+                                                            setPage(1);
+                                                        }}
                                                         aria-label={t('categories.all-categories')}
                                                     >
                                                         <option value='all'>{t('categories.all-categories')}</option>
