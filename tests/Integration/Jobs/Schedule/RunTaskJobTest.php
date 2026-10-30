@@ -199,7 +199,7 @@ class RunTaskJobTest extends IntegrationTestCase
             'server_id' => $server->id,
             'is_active' => true,
             'is_processing' => true,
-            'processing_token' => 'original-run',
+            'processing_token' => '00000000-0000-4000-8000-000000000001',
         ]);
         $first = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 1, 'action' => Task::ACTION_POWER, 'payload' => 'start', 'is_queued' => true]);
         $second = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 2, 'time_offset' => 120]);
@@ -208,7 +208,7 @@ class RunTaskJobTest extends IntegrationTestCase
             $mock->expects('send')->with('start')->andReturn(new Response());
         });
 
-        $this->app->call([new RunTaskJob($first, false, 'original-run'), 'handle']);
+        $this->app->call([new RunTaskJob($first, false, '00000000-0000-4000-8000-000000000001'), 'handle']);
         $job = Bus::dispatched(RunTaskJob::class)->sole();
         $this->assertSame(120, $job->delay);
         $payload = serialize($job);
@@ -224,11 +224,11 @@ class RunTaskJobTest extends IntegrationTestCase
     public function test_deleted_task_does_not_complete_a_newer_schedule_run()
     {
         $server = $this->createServerModel();
-        $schedule = Schedule::factory()->create(['server_id' => $server->id, 'is_processing' => true, 'processing_token' => 'original-run']);
+        $schedule = Schedule::factory()->create(['server_id' => $server->id, 'is_processing' => true, 'processing_token' => '00000000-0000-4000-8000-000000000001']);
         $task = Task::factory()->create(['schedule_id' => $schedule->id]);
-        $payload = serialize(new RunTaskJob($task, false, 'original-run'));
+        $payload = serialize(new RunTaskJob($task, false, '00000000-0000-4000-8000-000000000001'));
         $task->delete();
-        $schedule->forceFill(['processing_token' => 'new-run'])->save();
+        $schedule->forceFill(['processing_token' => '00000000-0000-4000-8000-000000000002'])->save();
 
         $this->app->call([unserialize($payload), 'handle']);
 
@@ -238,7 +238,7 @@ class RunTaskJobTest extends IntegrationTestCase
     public function test_legacy_queued_job_still_executes()
     {
         $server = $this->createServerModel();
-        $schedule = Schedule::factory()->create(['server_id' => $server->id, 'is_processing' => true, 'processing_token' => 'legacy-run']);
+        $schedule = Schedule::factory()->create(['server_id' => $server->id, 'is_processing' => true, 'processing_token' => '00000000-0000-4000-8000-000000000003']);
         $task = Task::factory()->create(['schedule_id' => $schedule->id, 'action' => Task::ACTION_POWER, 'payload' => 'start', 'is_queued' => true]);
         $this->mock(DaemonPowerRepository::class, function ($mock) {
             $mock->expects('setServer')->andReturnSelf();

@@ -2,15 +2,47 @@
 
 namespace Tests\Integration\Api\Client\Server\ScheduleTask;
 
+use App\Jobs\Schedule\RunTaskJob;
 use App\Models\Permission;
 use App\Models\Schedule;
 use App\Models\Task;
 use App\Models\User;
+use Illuminate\Contracts\Database\ModelIdentifier;
 use Illuminate\Http\Response;
 use Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
 class DeleteScheduleTaskTest extends ClientApiIntegrationTestCase
 {
+    public function test_deleting_a_legacy_queued_task_releases_the_schedule()
+    {
+        [$user, $server] = $this->generateTestAccount();
+        $schedule = Schedule::factory()->create(['server_id' => $server->id, 'is_processing' => true, 'processing_token' => '00000000-0000-4000-8000-000000000003']);
+        Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 1, 'is_queued' => false]);
+        $task = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 2, 'time_offset' => 120, 'is_queued' => true]);
+        $values = serialize(['task' => new ModelIdentifier(Task::class, $task->id, [], $task->getConnectionName()), 'manualRun' => false]);
+        $payload = 'O:'.strlen(RunTaskJob::class).':"'.RunTaskJob::class.'":'.substr($values, 2);
+
+        $this->actingAs($user)->deleteJson($this->link($task))->assertNoContent();
+        $this->assertFalse($schedule->refresh()->is_processing);
+        $this->assertNotNull($schedule->last_run_at);
+
+        $schedule->forceFill(['is_processing' => true, 'processing_token' => '00000000-0000-4000-8000-000000000002'])->save();
+        $this->app->call([unserialize($payload), 'handle']);
+
+        $this->assertTrue($schedule->refresh()->is_processing);
+    }
+
+    public function test_deleting_an_unqueued_task_does_not_release_the_schedule()
+    {
+        [$user, $server] = $this->generateTestAccount();
+        $schedule = Schedule::factory()->create(['server_id' => $server->id, 'is_processing' => true]);
+        $task = Task::factory()->create(['schedule_id' => $schedule->id, 'is_queued' => false]);
+
+        $this->actingAs($user)->deleteJson($this->link($task))->assertNoContent();
+
+        $this->assertTrue($schedule->refresh()->is_processing);
+    }
+
     /**
      * Test that an error is returned if the schedule does not belong to the server.
      */

@@ -165,10 +165,18 @@ class ScheduleTaskController extends ClientApiController
             throw new HttpForbiddenException('You do not have permission to perform this action.');
         }
 
-        $schedule->tasks()
-            ->where('sequence_id', '>', $task->sequence_id)
-            ->decrement('sequence_id');
-        $task->delete();
+        $this->connection->transaction(function () use ($schedule, $task) {
+            $schedule->newQuery()->whereKey($schedule->id)->lockForUpdate()->firstOrFail();
+            $task->refresh();
+            $schedule->tasks()
+                ->where('sequence_id', '>', $task->sequence_id)
+                ->decrement('sequence_id');
+            $task->delete();
+
+            if ($task->is_queued) {
+                $schedule->update(['is_processing' => false, 'last_run_at' => now()]);
+            }
+        });
 
         Activity::event('server:task.delete')->subject($schedule, $task)->property('name', $schedule->name)->log();
 
