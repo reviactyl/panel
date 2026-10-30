@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Server } from '@/api/server/getServer';
 import getServerResourceUsage, { ServerStats } from '@/api/server/getServerResourceUsage';
@@ -34,7 +34,6 @@ export default ({
     showCategory?: boolean;
 }) => {
     const { t } = useTranslation('dashboard/index');
-    const interval = useRef<Timer>(null) as React.MutableRefObject<Timer>;
     const [isSuspended, setIsSuspended] = useState(server.status === 'suspended');
     const [stats, setStats] = useState<ServerStats | null>(null);
     const [isCategoryModalVisible, setCategoryModalVisible] = useState(false);
@@ -53,12 +52,16 @@ export default ({
         // the server is suspended or the node is under maintenance.
         if (isSuspended || server.isNodeUnderMaintenance) return;
 
+        let active = true;
+        let interval: Timer | undefined;
+
         getStats().then(() => {
-            interval.current = setInterval(() => getStats(), 30000);
+            if (active) interval = setInterval(() => getStats(), 30000);
         });
 
         return () => {
-            void (interval.current && clearInterval(interval.current));
+            active = false;
+            clearInterval(interval);
         };
     }, [isSuspended, server.isNodeUnderMaintenance]);
 
