@@ -177,6 +177,8 @@ return [
         ],
     ],
     'activity' => [
+        'no-logs' => 'Henüz hesap etkinliği yok.',
+        'no-matches' => 'Filtrelerinizle eşleşen etkinlik yok.',
         'title' => 'Hesap Etkinlik Günlüğü',
         'clear-filters' => 'Filtreleri Temizle',
     ],

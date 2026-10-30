@@ -177,6 +177,8 @@ return [
         ],
     ],
     'activity' => [
+        'no-logs' => 'No account activity yet.',
+        'no-matches' => 'No activity matches your filters.',
         'title' => 'Account Activity Log',
         'clear-filters' => 'Clear Filters',
     ],

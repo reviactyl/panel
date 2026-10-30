@@ -178,6 +178,8 @@ return [
         ],
     ],
     'activity' => [
+        'no-logs' => '暂无账户活动。',
+        'no-matches' => '没有符合筛选条件的活动。',
         'title' => '账户活动日志',
         'clear-filters' => '清除过滤器',
     ],

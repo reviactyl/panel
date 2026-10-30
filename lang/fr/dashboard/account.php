@@ -177,6 +177,8 @@ return [
         ],
     ],
     'activity' => [
+        'no-logs' => 'Aucune activité sur le compte pour le moment.',
+        'no-matches' => 'Aucune activité ne correspond à vos filtres.',
         'title' => 'Journal des activités du compte',
         'clear-filters' => 'Effacer les filtres',
     ],
