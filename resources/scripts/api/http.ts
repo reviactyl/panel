@@ -44,6 +44,10 @@ http.interceptors.response.use(
             store.getActions().progress.setComplete();
         }
 
+        if (error.response?.status === 401 && !window.location.pathname.startsWith('/auth')) {
+            window.location.href = '/auth/login';
+        }
+
         throw error;
     },
 );
