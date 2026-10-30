@@ -12,6 +12,7 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Mockery\MockInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Integration\IntegrationTestCase;
 
 class BuildModificationServiceTest extends IntegrationTestCase
@@ -98,6 +99,66 @@ class BuildModificationServiceTest extends IntegrationTestCase
         ]);
     }
 
+    public static function allocationIdTypes(): array
+    {
+        return [[false, false], [false, true], [true, false], [true, true]];
+    }
+
+    #[DataProvider('allocationIdTypes')]
+    public function test_primary_allocation_removal_is_rejected_regardless_of_id_type(bool $stringPrimary, bool $stringRemoval)
+    {
+        $server = $this->createServerModel();
+        $id = $server->allocation_id;
+
+        try {
+            $this->getService()->handle($server, [
+                'allocation_id' => $stringPrimary ? (string) $id : $id,
+                'remove_allocations' => [$stringRemoval ? (string) $id : $id],
+            ]);
+            $this->fail('Primary allocation removal must be rejected without a fallback.');
+        } catch (DisplayException $exception) {
+            $this->assertSame('You are attempting to delete the default allocation for this server but there is no fallback allocation to use.', $exception->getMessage());
+        }
+
+        $this->assertSame($id, $server->refresh()->allocation_id);
+        $this->assertDatabaseHas('allocations', ['id' => $id, 'server_id' => $server->id]);
+    }
+
+    public function test_primary_in_both_add_and_remove_is_retained()
+    {
+        $server = $this->createServerModel();
+        $id = $server->allocation_id;
+        $allocation = Allocation::factory()->create(['node_id' => $server->node_id]);
+        $this->daemonServerRepository->expects('setServer->sync')->twice()->andReturnUndefined();
+
+        foreach ([[$id], [$id, $allocation->id]] as $added) {
+            $response = $this->getService()->handle($server, [
+                'add_allocations' => $added,
+                'remove_allocations' => [(string) $id],
+            ]);
+
+            $this->assertSame($id, $response->allocation_id);
+            $this->assertDatabaseHas('allocations', ['id' => $id, 'server_id' => $server->id]);
+        }
+    }
+
+    public function test_string_primary_removal_selects_a_fallback()
+    {
+        $server = $this->createServerModel();
+        $id = $server->allocation_id;
+        $fallback = Allocation::factory()->create(['node_id' => $server->node_id]);
+        $this->daemonServerRepository->expects('setServer->sync')->andReturnUndefined();
+
+        $response = $this->getService()->handle($server, [
+            'add_allocations' => [(string) $fallback->id],
+            'remove_allocations' => [(string) $id],
+        ]);
+
+        $this->assertSame($fallback->id, $response->allocation_id);
+        $this->assertDatabaseHas('allocations', ['id' => $fallback->id, 'server_id' => $server->id]);
+        $this->assertDatabaseHas('allocations', ['id' => $id, 'server_id' => null]);
+    }
+
     /**
      * Test that the build data for the server is properly passed along to the Agent instance so that
      * the server data is updated in realtime. This test also ensures that only certain fields get updated
@@ -174,10 +235,11 @@ class BuildModificationServiceTest extends IntegrationTestCase
         $this->daemonServerRepository->expects('setServer->sync')->andReturnUndefined();
 
         $this->getService()->handle($server, [
-            'remove_allocations' => [$allocation->id],
+            'remove_allocations' => [(string) $allocation->id],
         ]);
 
         $this->assertDatabaseHas('allocations', ['id' => $allocation->id, 'server_id' => null]);
+        $this->assertDatabaseHas('allocations', ['id' => $server->allocation_id, 'server_id' => $server->id]);
     }
 
     /**
