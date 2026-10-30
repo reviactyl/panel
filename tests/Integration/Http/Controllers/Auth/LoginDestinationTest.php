@@ -69,6 +69,12 @@ class LoginDestinationTest extends HttpTestCase
         $this->assertAuthenticatedAs($user);
     }
 
+    public function test_stateless_api_request_can_redirect_without_a_session(): void
+    {
+        $this->get('/api/client', ['Accept' => '*/*'])->assertRedirect('/auth/login');
+        $this->getJson('/api/client')->assertUnauthorized();
+    }
+
     public function test_authenticated_non_admin_is_denied_without_login_redirect(): void
     {
         $this->actingAs(User::factory()->create(['root_admin' => false]))

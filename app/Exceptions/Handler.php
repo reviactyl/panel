@@ -260,7 +260,7 @@ class Handler extends ExceptionHandler
             return new JsonResponse($this->convertExceptionToArray($exception), JsonResponse::HTTP_UNAUTHORIZED);
         }
 
-        if ($request->isMethod('GET')) {
+        if ($request->isMethod('GET') && $request->hasSession()) {
             $request->session()->put('url.intended', $request->getRequestUri());
         }
 
