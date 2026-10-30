@@ -13,6 +13,8 @@ export type ServerStatus = 'offline' | 'starting' | 'stopping' | 'running' | nul
 
 interface ServerDataStore {
     data?: Server;
+    requestId: number;
+    startRequest: Action<ServerDataStore>;
     inConflictState: Computed<ServerDataStore, boolean>;
     isInstalling: Computed<ServerDataStore, boolean>;
     permissions: string[];
@@ -25,6 +27,10 @@ interface ServerDataStore {
 
 const server: ServerDataStore = {
     permissions: [],
+    requestId: 0,
+    startRequest: action((state) => {
+        state.requestId += 1;
+    }),
 
     inConflictState: computed((state) => {
         if (!state.data) {
@@ -38,8 +44,12 @@ const server: ServerDataStore = {
         return state.data?.status === 'installing' || state.data?.status === 'install_failed';
     }),
 
-    getServer: thunk(async (actions, payload) => {
+    getServer: thunk(async (actions, payload, { getState }) => {
+        actions.startRequest();
+        const requestId = getState().requestId;
         const [server, permissions] = await getServer(payload);
+
+        if (getState().requestId !== requestId) return;
 
         actions.setServer(server);
         actions.setPermissions(permissions);
@@ -98,6 +108,7 @@ export const ServerContext: ReturnType<typeof createContextStore<ServerStore>> =
         subusers,
         schedules,
         clearServerState: action((state) => {
+            state.server.requestId += 1;
             state.server.data = undefined;
             state.server.permissions = [];
             state.databases.data = [];

@@ -236,14 +236,19 @@ export default function ServerRouter() {
     useEffect(() => {
         if (!params.id) return;
 
+        let active = true;
         setError('');
 
         getServer(params.id).catch((error) => {
+            if (!active) return;
             console.error(error);
             setError(httpErrorToHuman(error));
         });
 
-        return () => clearServerState();
+        return () => {
+            active = false;
+            clearServerState();
+        };
     }, [params.id]);
 
     const allRoutes = [...routes.server.control, ...routes.server.management, ...routes.server.administration];
