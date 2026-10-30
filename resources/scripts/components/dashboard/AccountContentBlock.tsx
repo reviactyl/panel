@@ -1,4 +1,3 @@
-import React from 'react';
 import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import PageContentBlock, { PageContentBlockProps } from '@/reviactyl/elements/PageContentBlock';
