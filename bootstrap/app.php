@@ -23,7 +23,7 @@ return $app
         Route::middleware('web')->group(function () {
             Route::middleware('installation')->group(base_path('routes/install.php'));
 
-            Route::middleware(['installation', 'auth.session', RequireTwoFactorAuthentication::class])
+            Route::middleware(['installation', 'auth', 'auth.session', RequireTwoFactorAuthentication::class])
                 ->group(base_path('routes/base.php'));
 
             Route::middleware(['installation', 'auth.session', RequireTwoFactorAuthentication::class])

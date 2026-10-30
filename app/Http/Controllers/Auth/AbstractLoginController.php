@@ -7,6 +7,7 @@ use App\Exceptions\DisplayException;
 use App\Facades\Activity;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Support\LoginDestination;
 use Carbon\CarbonImmutable;
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -86,7 +87,7 @@ abstract class AbstractLoginController extends Controller
         return new JsonResponse([
             'data' => [
                 'complete' => true,
-                'intended' => $this->redirectPath(),
+                'intended' => LoginDestination::pull($request),
                 'user' => $user->toVueObject(),
             ],
         ]);
