@@ -7,7 +7,7 @@ export default ({ meta }: { meta: Record<string, unknown> }) => {
     const [open, setOpen] = useState(false);
 
     return (
-        <div className={'self-center md:px-4'}>
+        <div className={'shrink-0 self-start'}>
             <Dialog open={open} onClose={() => setOpen(false)} hideCloseIcon title={'Metadata'}>
                 <pre
                     className={
@@ -21,9 +21,9 @@ export default ({ meta }: { meta: Record<string, unknown> }) => {
                 </Dialog.Footer>
             </Dialog>
             <button
-                aria-describedby={'View additional event metadata'}
+                aria-label={'View additional event metadata'}
                 className={
-                    'p-2 transition-colors duration-100 text-gray-400 group-hover:text-gray-300 group-hover:hover:text-gray-50'
+                    'rounded-ui p-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400 transition-colors duration-100 text-gray-400 group-hover:text-gray-300 group-hover:hover:text-gray-50'
                 }
                 onClick={() => setOpen(true)}
             >

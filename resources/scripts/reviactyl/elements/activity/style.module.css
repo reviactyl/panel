@@ -1,7 +1,7 @@
 @reference "#reviactyl";
 
 .icons {
-    @apply flex space-x-1 mx-2 transition-colors duration-100 text-gray-400;
+    @apply flex shrink-0 gap-1 transition-colors duration-100 text-gray-400;
 
     & svg {
         @apply px-1 py-px cursor-pointer hover:text-gray-50 h-5 w-auto;
@@ -9,7 +9,7 @@
 }
 
 .description {
-    @apply mt-1 text-sm break-words line-clamp-2 pr-4;
+    @apply break-words leading-relaxed [overflow-wrap:anywhere];
 
     & strong {
         @apply text-gray-50 font-semibold break-all;

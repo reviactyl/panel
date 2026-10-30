@@ -177,6 +177,8 @@ return [
         ],
     ],
     'activity' => [
+        'no-logs' => 'Ingen kontoaktivitet ännu.',
+        'no-matches' => 'Ingen aktivitet matchar dina filter.',
         'title' => 'Kontots aktivitetslogg',
         'clear-filters' => 'Rensa filter',
     ],

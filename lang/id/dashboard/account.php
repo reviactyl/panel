@@ -177,6 +177,8 @@ return [
         ],
     ],
     'activity' => [
+        'no-logs' => 'Belum ada aktivitas akun.',
+        'no-matches' => 'Tidak ada aktivitas yang cocok dengan filter Anda.',
         'title' => 'Log Aktivitas Akun',
         'clear-filters' => 'Bersihkan Filter',
     ],

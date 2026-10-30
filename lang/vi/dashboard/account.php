@@ -177,6 +177,8 @@ return [
         ],
     ],
     'activity' => [
+        'no-logs' => 'Chưa có hoạt động tài khoản nào.',
+        'no-matches' => 'Không có hoạt động nào khớp với bộ lọc của bạn.',
         'title' => 'Nhật ký hoạt động tài khoản',
         'clear-filters' => 'Xóa bộ lọc',
     ],
