@@ -11,7 +11,7 @@ import classNames from 'classnames';
 import ActivityLogEntry from '@/reviactyl/elements/activity/ActivityLogEntry';
 import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
 import useLocationHash from '@/plugins/useLocationHash';
-import ContentBlock from '@/reviactyl/ui/ContentBlock';
+import AccountContentBlock from '@/components/dashboard/AccountContentBlock';
 import { useTranslation } from 'react-i18next';
 
 export default () => {
@@ -33,7 +33,7 @@ export default () => {
     }, [error]);
 
     return (
-        <ContentBlock title={t('activity.title')}>
+        <AccountContentBlock title={t('activity.title')}>
             <FlashMessageRender byKey={'account'} />
             {(filters.filters?.event || filters.filters?.ip) && (
                 <div className={'flex justify-end mb-2'}>
@@ -69,6 +69,6 @@ export default () => {
                     onPageSelect={(page) => setFilters((value) => ({ ...value, page }))}
                 />
             )}
-        </ContentBlock>
+        </AccountContentBlock>
     );
 };

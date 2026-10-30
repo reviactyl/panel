@@ -7,20 +7,30 @@ import Title from '@/reviactyl/ui/Title';
 type Props = Readonly<
     React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {
         title?: string;
+        insetTitle?: boolean;
         borderColor?: string;
         showFlashes?: string | boolean;
         showLoadingOverlay?: boolean;
     }
 >;
 
-const ContentBox = ({ title, borderColor, showFlashes, showLoadingOverlay, children, ...props }: Props) => (
+const ContentBox = ({
+    title,
+    insetTitle = false,
+    borderColor,
+    showFlashes,
+    showLoadingOverlay,
+    children,
+    ...props
+}: Props) => (
     <div {...props}>
-        {title && <Title className='mb-4 px-4 text-2xl'>{title}</Title>}
+        {title && !insetTitle && <Title className='mb-4 px-4 text-2xl'>{title}</Title>}
         {showFlashes && (
             <FlashMessageRender byKey={typeof showFlashes === 'string' ? showFlashes : undefined} className='mb-4' />
         )}
         <Card className={`relative p-4! ${borderColor ? 'border-t-4!' : ''}`}>
             <SpinnerOverlay visible={showLoadingOverlay || false} />
+            {title && insetTitle && <h2 className='mb-4 text-base font-semibold text-gray-50'>{title}</h2>}
             {children}
         </Card>
     </div>

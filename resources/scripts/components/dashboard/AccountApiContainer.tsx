@@ -6,7 +6,7 @@ import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import deleteApiKey from '@/api/account/deleteApiKey';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { format } from 'date-fns';
-import PageContentBlock from '@/reviactyl/elements/PageContentBlock';
+import AccountContentBlock from '@/components/dashboard/AccountContentBlock';
 import GreyRowBox from '@/reviactyl/elements/GreyRowBox';
 import { Dialog } from '@/reviactyl/elements/dialog';
 import { useFlashKey } from '@/plugins/useFlash';
@@ -42,13 +42,13 @@ export default () => {
     };
 
     return (
-        <PageContentBlock title={t('api.title')}>
+        <AccountContentBlock title={t('api.content-title')}>
             <FlashMessageRender byKey={'account'} />
-            <div className='my-10 flex-nowrap md:flex'>
-                <ContentBox title={t('api.create-key')} className='w-full flex-none md:w-1/2'>
+            <div className='grid grid-cols-1 items-start gap-6 lg:grid-cols-2'>
+                <ContentBox insetTitle title={t('api.create-key')} className='min-w-0'>
                     <CreateApiKeyForm onKeyCreated={(key) => setKeys((s) => [...s!, key])} />
                 </ContentBox>
-                <ContentBox title={t('api.content-title')} className='mt-8 flex-1 overflow-hidden md:mt-0 md:ml-8'>
+                <ContentBox insetTitle title={t('api.content-title')} className='min-w-0'>
                     <SpinnerOverlay visible={loading} />
                     <Dialog.Confirm
                         title={t('api.delete')}
@@ -88,6 +88,6 @@ export default () => {
                     )}
                 </ContentBox>
             </div>
-        </PageContentBlock>
+        </AccountContentBlock>
     );
 };
