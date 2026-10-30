@@ -62,7 +62,13 @@ class RunTaskJob extends Job implements ShouldQueue
         InitiateBackupService $backupService,
         DaemonPowerRepository $powerRepository,
     ) {
-        $this->task = Task::query()->find($this->taskId);
+        $this->task = (new Task())->getConnection()->transaction(function () {
+            Schedule::query()->whereKey($this->scheduleId)->lockForUpdate()->first();
+            $task = Task::query()->find($this->taskId);
+            $task?->update(['is_queued' => false]);
+
+            return $task;
+        });
         if (is_null($this->task)) {
             $this->markScheduleComplete();
 

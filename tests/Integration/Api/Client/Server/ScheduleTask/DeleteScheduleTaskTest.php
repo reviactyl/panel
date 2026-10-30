@@ -7,12 +7,34 @@ use App\Models\Permission;
 use App\Models\Schedule;
 use App\Models\Task;
 use App\Models\User;
+use App\Repositories\Agent\DaemonPowerRepository;
+use GuzzleHttp\Psr7\Response as AgentResponse;
 use Illuminate\Contracts\Database\ModelIdentifier;
 use Illuminate\Http\Response;
 use Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
 class DeleteScheduleTaskTest extends ClientApiIntegrationTestCase
 {
+    public function test_deleting_a_running_task_does_not_release_the_schedule_early()
+    {
+        [$user, $server] = $this->generateTestAccount();
+        $schedule = Schedule::factory()->create(['server_id' => $server->id, 'is_active' => true, 'is_processing' => true]);
+        $task = Task::factory()->create(['schedule_id' => $schedule->id, 'action' => Task::ACTION_POWER, 'payload' => 'start', 'is_queued' => true]);
+        $this->mock(DaemonPowerRepository::class, function ($mock) use ($user, $schedule, $task) {
+            $mock->expects('setServer')->andReturnSelf();
+            $mock->expects('send')->with('start')->andReturnUsing(function () use ($user, $schedule, $task) {
+                $this->actingAs($user)->deleteJson($this->link($task))->assertNoContent();
+                $this->assertTrue($schedule->refresh()->is_processing);
+
+                return new AgentResponse();
+            });
+        });
+
+        $this->app->call([new RunTaskJob($task), 'handle']);
+
+        $this->assertFalse($schedule->refresh()->is_processing);
+    }
+
     public function test_deleting_a_legacy_queued_task_releases_the_schedule()
     {
         [$user, $server] = $this->generateTestAccount();
