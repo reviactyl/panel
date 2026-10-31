@@ -6,6 +6,7 @@ use App\Exceptions\DisplayException;
 use App\Exceptions\Http\Connection\DaemonConnectionException;
 use App\Models\Server;
 use App\Repositories\Agent\DaemonServerRepository;
+use App\Services\Backups\DeleteBackupService;
 use App\Services\Databases\DatabaseManagementService;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Http\Response;
@@ -22,6 +23,7 @@ class ServerDeletionService
         private ConnectionInterface $connection,
         private DaemonServerRepository $daemonServerRepository,
         private DatabaseManagementService $databaseManagementService,
+        private DeleteBackupService $deleteBackupService,
     ) {}
 
     /**
@@ -77,11 +79,43 @@ class ServerDeletionService
             });
         }
 
+        $backupIds = $this->connection->transaction(function () use ($server) {
+            return $this->lockServer($server)->backups()->pluck('id');
+        });
+
+        foreach ($backupIds as $backupId) {
+            $this->connection->transaction(function () use ($server, $backupId) {
+                $server = $this->lockServer($server);
+                $backup = $server->backups()->find($backupId);
+
+                if (! $backup) {
+                    return;
+                }
+
+                $backup->is_locked = false;
+
+                try {
+                    $this->deleteBackupService->handle($backup);
+                } catch (\Exception $exception) {
+                    if (! $this->force) {
+                        throw $exception;
+                    }
+
+                    $backup->delete();
+                    Log::warning($exception);
+                }
+            });
+        }
+
         $this->connection->transaction(function () use ($server) {
             $server = $this->lockServer($server);
 
             if ($server->databases()->exists()) {
                 throw new DisplayException('A database was added while this server was being deleted. Please try again.');
+            }
+
+            if ($server->backups()->exists()) {
+                throw new DisplayException('A backup was added while this server was being deleted. Please try again.');
             }
 
             try {
