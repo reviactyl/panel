@@ -13,6 +13,81 @@ use Tests\Integration\Api\Application\ApplicationApiIntegrationTestCase;
 
 class UserControllerTest extends ApplicationApiIntegrationTestCase
 {
+    public function test_social_accounts_can_be_linked_on_create_and_update(): void
+    {
+        $data = [
+            'email' => 'social@example.com', 'username' => 'social',
+            'first_name' => 'Social', 'last_name' => 'User',
+            'password' => 'StrongPassword123!',
+            'social_accounts' => [['provider' => 'discord', 'provider_user_id' => '900719925474099312345']],
+        ];
+        $response = $this->postJson('/api/application/users', $data)->assertCreated();
+        $id = $response->json('attributes.id');
+        $this->assertDatabaseHas('social_logins', [
+            'user_id' => $id, 'provider' => 'discord', 'provider_user_id' => '900719925474099312345',
+        ]);
+
+        $data['social_accounts'][] = ['provider' => 'github', 'provider_user_id' => '12345'];
+        $this->patchJson('/api/application/users/'.$id, $data)->assertOk();
+        $this->patchJson('/api/application/users/'.$id, $data)->assertOk();
+        unset($data['social_accounts']);
+        $this->patchJson('/api/application/users/'.$id, $data)->assertOk();
+        $this->assertSame(2, User::findOrFail($id)->socialLogins()->count());
+    }
+
+    public function test_social_account_conflict_rolls_back_user_and_links(): void
+    {
+        $owner = User::factory()->create();
+        $owner->socialLogins()->create(['provider' => 'discord', 'provider_user_id' => 'taken']);
+        $user = User::factory()->create();
+        $data = [
+            'email' => 'conflict@example.com', 'username' => 'conflict',
+            'first_name' => 'Test', 'last_name' => 'User', 'password' => 'StrongPassword123!',
+            'social_accounts' => [
+                ['provider' => 'github', 'provider_user_id' => 'new'],
+                ['provider' => 'discord', 'provider_user_id' => 'taken'],
+            ],
+        ];
+        $this->postJson('/api/application/users', $data)->assertUnprocessable();
+        $this->assertDatabaseMissing('users', ['email' => 'conflict@example.com']);
+        $this->patchJson('/api/application/users/'.$user->id, $data)->assertUnprocessable();
+        $this->assertSame($user->email, $user->fresh()->email);
+        $this->assertDatabaseMissing('social_logins', ['provider' => 'github', 'provider_user_id' => 'new']);
+        $this->assertDatabaseHas('social_logins', ['user_id' => $owner->id, 'provider_user_id' => 'taken']);
+    }
+
+    public function test_social_account_linking_requires_write_permission(): void
+    {
+        $this->createNewDefaultApiKey($this->getApiUser(), ['r_users' => AdminAcl::READ]);
+        $user = User::factory()->create();
+        $data = [
+            'email' => 'forbidden@example.com', 'username' => 'forbidden',
+            'first_name' => 'Test', 'last_name' => 'User',
+            'social_accounts' => [['provider' => 'google', 'provider_user_id' => '123']],
+        ];
+        $this->postJson('/api/application/users', $data)->assertForbidden();
+        $this->patchJson('/api/application/users/'.$user->id, $data)->assertForbidden();
+        $this->assertDatabaseCount('social_logins', 0);
+    }
+
+    public function test_social_account_input_requires_supported_provider_and_string_id(): void
+    {
+        $user = User::factory()->create();
+        $data = [
+            'email' => $user->email, 'username' => $user->username,
+            'first_name' => 'Test', 'last_name' => 'User',
+        ];
+        foreach ([
+            ['provider' => 'unsupported', 'provider_user_id' => '123'],
+            ['provider' => 'discord', 'provider_user_id' => 123],
+            ['provider' => 'discord', 'provider_user_id' => '123', 'user_id' => $user->id],
+        ] as $account) {
+            $this->patchJson('/api/application/users/'.$user->id, $data + ['social_accounts' => [$account]])
+                ->assertUnprocessable();
+        }
+        $this->assertSame(0, $user->socialLogins()->count());
+    }
+
     /**
      * Test the response when requesting all users on the panel.
      */

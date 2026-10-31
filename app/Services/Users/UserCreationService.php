@@ -21,6 +21,7 @@ class UserCreationService
     public function __construct(
         private ConnectionInterface $connection,
         private Hasher $hasher,
+        private SocialAccountLinkService $socialAccountLinkService,
         private PasswordBroker $passwordBroker,
         private UserRepositoryInterface $repository,
     ) {}
@@ -33,6 +34,9 @@ class UserCreationService
      */
     public function handle(array $data): User
     {
+        $accounts = $data['social_accounts'] ?? [];
+        unset($data['social_accounts']);
+
         $defaultAvatarStyle = config('designify.avatarType', 'gravatar');
         $data['avatar_style'] ??= is_string($defaultAvatarStyle) && in_array($defaultAvatarStyle, User::AVATAR_STYLES, true)
             ? $defaultAvatarStyle
@@ -42,7 +46,7 @@ class UserCreationService
             $data['password'] = $this->hasher->make($data['password']);
         }
 
-        ['user' => $user, 'token' => $token] = $this->connection->transaction(function () use ($data) {
+        ['user' => $user, 'token' => $token] = $this->connection->transaction(function () use ($data, $accounts) {
             $generateResetToken = false;
             if (! isset($data['password']) || empty($data['password'])) {
                 $generateResetToken = true;
@@ -53,6 +57,8 @@ class UserCreationService
             $user = $this->repository->create(array_merge($data, [
                 'uuid' => Uuid::uuid4()->toString(),
             ]), true, true);
+
+            $this->socialAccountLinkService->handle($user, $accounts);
 
             return [
                 'user' => $user,

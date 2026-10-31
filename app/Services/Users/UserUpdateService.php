@@ -13,7 +13,7 @@ class UserUpdateService
     /**
      * UserUpdateService constructor.
      */
-    public function __construct(private Hasher $hasher) {}
+    public function __construct(private Hasher $hasher, private SocialAccountLinkService $socialAccountLinkService) {}
 
     /**
      * Update the user model instance and return the updated model.
@@ -28,7 +28,13 @@ class UserUpdateService
             unset($data['password']);
         }
 
-        $user->forceFill($data)->saveOrFail();
+        $accounts = $data['social_accounts'] ?? [];
+        unset($data['social_accounts']);
+
+        $user->getConnection()->transaction(function () use ($user, $data, $accounts) {
+            $user->forceFill($data)->saveOrFail();
+            $this->socialAccountLinkService->handle($user, $accounts);
+        });
 
         return $user->refresh();
     }

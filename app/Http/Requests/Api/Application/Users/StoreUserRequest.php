@@ -31,6 +31,11 @@ class StoreUserRequest extends ApplicationApiRequest
         $response['first_name'] = $rules['name_first'];
         $response['last_name'] = $rules['name_last'];
 
+        $response['social_accounts'] = ['sometimes', 'array', 'max:100'];
+        $response['social_accounts.*'] = ['required', 'array:provider,provider_user_id'];
+        $response['social_accounts.*.provider'] = ['required', 'string', 'in:google,github,discord'];
+        $response['social_accounts.*.provider_user_id'] = ['required', 'string', 'max:255'];
+
         return $response;
     }
 
