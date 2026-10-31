@@ -41,9 +41,9 @@ class ProcessScheduleService
             }
         }
 
-        $job = new RunTaskJob($task, $now);
         $nextRunAt = $schedule->next_run_at;
         $processingToken = (string) Str::uuid();
+        $job = new RunTaskJob($task, $now, $processingToken);
 
         $ready = $this->connection->transaction(function () use ($schedule, $task, $job, $shouldRun, $processingToken) {
             $schedule->setRelation('server', $schedule->server()->sharedLock()->firstOrFail());

@@ -10,6 +10,7 @@ use App\Repositories\Agent\DaemonPowerRepository;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use GuzzleHttp\Psr7\Response;
+use Illuminate\Contracts\Database\ModelIdentifier;
 use Illuminate\Support\Facades\Bus;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Integration\IntegrationTestCase;
@@ -78,7 +79,7 @@ class RunTaskJobTest extends IntegrationTestCase
         $this->app->call([new RunTaskJob($first, $isManualRun), 'handle']);
 
         Bus::assertDispatched(RunTaskJob::class, function (RunTaskJob $job) use ($second, $isManualRun) {
-            return $job->task->id === $second->id && $job->delay === 120 && $job->manualRun === $isManualRun;
+            return $job->taskId === $second->id && $job->delay === 120 && $job->manualRun === $isManualRun;
         });
         $this->assertFalse($first->refresh()->is_queued);
         $this->assertTrue($second->refresh()->is_queued);
@@ -188,6 +189,69 @@ class RunTaskJobTest extends IntegrationTestCase
         $this->assertFalse($task->is_queued);
         $this->assertFalse($schedule->is_processing);
         $this->assertTrue(Carbon::now()->isSameAs(\DateTimeInterface::ATOM, $schedule->last_run_at));
+    }
+
+    public function test_deleting_delayed_task_completes_the_schedule()
+    {
+        Bus::fake();
+        $server = $this->createServerModel();
+        $schedule = Schedule::factory()->create([
+            'server_id' => $server->id,
+            'is_active' => true,
+            'is_processing' => true,
+            'processing_token' => '00000000-0000-4000-8000-000000000001',
+        ]);
+        $first = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 1, 'action' => Task::ACTION_POWER, 'payload' => 'start', 'is_queued' => true]);
+        $second = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 2, 'time_offset' => 120]);
+        $this->mock(DaemonPowerRepository::class, function ($mock) {
+            $mock->expects('setServer')->andReturnSelf();
+            $mock->expects('send')->with('start')->andReturn(new Response());
+        });
+
+        $this->app->call([new RunTaskJob($first, false, '00000000-0000-4000-8000-000000000001'), 'handle']);
+        $job = Bus::dispatched(RunTaskJob::class)->sole();
+        $this->assertSame(120, $job->delay);
+        $payload = serialize($job);
+        $second->delete();
+
+        $this->app->call([unserialize($payload), 'handle']);
+
+        $this->assertFalse($schedule->refresh()->is_processing);
+        $this->assertNotNull($schedule->last_run_at);
+        $this->assertFalse($first->refresh()->is_queued);
+    }
+
+    public function test_deleted_task_does_not_complete_a_newer_schedule_run()
+    {
+        $server = $this->createServerModel();
+        $schedule = Schedule::factory()->create(['server_id' => $server->id, 'is_processing' => true, 'processing_token' => '00000000-0000-4000-8000-000000000001']);
+        $task = Task::factory()->create(['schedule_id' => $schedule->id]);
+        $payload = serialize(new RunTaskJob($task, false, '00000000-0000-4000-8000-000000000001'));
+        $task->delete();
+        $schedule->forceFill(['processing_token' => '00000000-0000-4000-8000-000000000002'])->save();
+
+        $this->app->call([unserialize($payload), 'handle']);
+
+        $this->assertTrue($schedule->refresh()->is_processing);
+    }
+
+    public function test_legacy_queued_job_still_executes()
+    {
+        $server = $this->createServerModel();
+        $schedule = Schedule::factory()->create(['server_id' => $server->id, 'is_processing' => true, 'processing_token' => '00000000-0000-4000-8000-000000000003']);
+        $task = Task::factory()->create(['schedule_id' => $schedule->id, 'action' => Task::ACTION_POWER, 'payload' => 'start', 'is_queued' => true]);
+        $this->mock(DaemonPowerRepository::class, function ($mock) {
+            $mock->expects('setServer')->andReturnSelf();
+            $mock->expects('send')->with('start')->andReturn(new Response());
+        });
+        $values = ['task' => new ModelIdentifier(Task::class, $task->id, [], $task->getConnectionName()), 'manualRun' => false];
+        $serializedValues = serialize($values);
+        $payload = 'O:'.strlen(RunTaskJob::class).':"'.RunTaskJob::class.'":'.substr($serializedValues, 2);
+
+        $this->app->call([unserialize($payload), 'handle']);
+
+        $this->assertFalse($schedule->refresh()->is_processing);
+        $this->assertFalse($task->refresh()->is_queued);
     }
 
     public static function isManualRunDataProvider(): array
