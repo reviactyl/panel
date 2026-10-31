@@ -19,9 +19,4 @@ class SetCategoryRequest extends ClientApiRequest
             ],
         ];
     }
-
-    public function permission(): string
-    {
-        return 'settings.rename'; // Using rename permission as a proxy for "general settings"
-    }
 }

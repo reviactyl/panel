@@ -2,6 +2,8 @@ import Modal from '@/reviactyl/elements/Modal';
 import { Form, Formik, Field } from 'formik';
 import { object, string } from 'yup';
 import useFlash from '@/plugins/useFlash';
+import FlashMessageRender from '@/components/FlashMessageRender';
+import { useEffect } from 'react';
 import { Server } from '@/api/server/getServer';
 import getServerCategories from '@/api/account/getServerCategories';
 import useSWR from 'swr';
@@ -19,11 +21,16 @@ interface Props {
 
 export default ({ server, visible, onDismissed }: Props) => {
     const { t } = useTranslation('dashboard/index');
-    const { addError, clearFlashes } = useFlash();
+    const { clearAndAddHttpError, clearFlashes } = useFlash();
+    const flashKey = `server:category:${server.uuid}`;
+
+    useEffect(() => {
+        if (visible) clearFlashes(flashKey);
+    }, [visible, clearFlashes, flashKey]);
     const { data: categories } = useSWR('/api/client/account/categories', () => getServerCategories());
 
     const submit = (values: { category: string }, { setSubmitting }: any) => {
-        clearFlashes('server:category');
+        clearFlashes(flashKey);
         updateServerCategory(server.uuid, values.category)
             .then(() => {
                 setSubmitting(false);
@@ -31,13 +38,14 @@ export default ({ server, visible, onDismissed }: Props) => {
             })
             .catch((error) => {
                 setSubmitting(false);
-                addError({ key: 'server:category', message: error });
+                clearAndAddHttpError({ key: flashKey, error });
             });
     };
 
     return (
         <Modal visible={visible} onDismissed={onDismissed} showSpinnerOverlay={false}>
             <h2 className='text-2xl mb-4 font-bold'>{t('categories.assign-category')}</h2>
+            <FlashMessageRender byKey={flashKey} className='mb-4' />
             <Formik
                 onSubmit={submit}
                 initialValues={{ category: server.category?.uuid || '' }}

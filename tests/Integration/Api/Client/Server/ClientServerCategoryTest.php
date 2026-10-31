@@ -134,7 +134,7 @@ class ClientServerCategoryTest extends ClientApiIntegrationTestCase
         Subuser::query()->create([
             'user_id' => $subuser->id,
             'server_id' => $this->server->id,
-            'permissions' => [Permission::ACTION_SETTINGS_RENAME],
+            'permissions' => [Permission::ACTION_WEBSOCKET_CONNECT],
         ]);
 
         $ownerCategory = ServerCategory::factory()->create(['user_id' => $this->user->id]);
@@ -169,7 +169,7 @@ class ClientServerCategoryTest extends ClientApiIntegrationTestCase
         Subuser::query()->create([
             'user_id' => $subuser->id,
             'server_id' => $this->server->id,
-            'permissions' => [Permission::ACTION_SETTINGS_RENAME],
+            'permissions' => [Permission::ACTION_WEBSOCKET_CONNECT],
         ]);
 
         $ownerCategory = ServerCategory::factory()->create(['user_id' => $this->user->id]);
@@ -186,7 +186,7 @@ class ClientServerCategoryTest extends ClientApiIntegrationTestCase
         ]);
     }
 
-    public function test_subuser_without_permission_cannot_assign_category_or_view_owner_category(): void
+    public function test_subuser_without_rename_permission_can_assign_and_remove_own_category(): void
     {
         $subuser = User::factory()->create();
         Subuser::query()->create([
@@ -208,12 +208,42 @@ class ClientServerCategoryTest extends ClientApiIntegrationTestCase
             ->putJson("/api/client/servers/{$this->server->uuid}/settings/category", [
                 'category' => $subuserCategory->uuid,
             ])
-            ->assertForbidden();
+            ->assertNoContent();
 
         $this->actingAs($subuser)
             ->getJson("/api/client/servers/{$this->server->uuid}?include=category")
             ->assertOk()
-            ->assertJsonPath('attributes.relationships.category.object', 'null_resource')
-            ->assertJsonPath('attributes.relationships.category.attributes', null);
+            ->assertJsonPath('attributes.relationships.category.attributes.uuid', $subuserCategory->uuid);
+
+        $this->actingAs($subuser)
+            ->putJson("/api/client/servers/{$this->server->uuid}/settings/category", ['category' => null])
+            ->assertNoContent();
+
+        $this->assertDatabaseMissing('server_category_assignments', [
+            'server_id' => $this->server->id,
+            'user_id' => $subuser->id,
+        ]);
+        $this->assertDatabaseHas('server_category_assignments', [
+            'server_id' => $this->server->id,
+            'user_id' => $this->user->id,
+            'category_id' => $ownerCategory->id,
+        ]);
+    }
+
+    public function test_user_without_server_access_cannot_assign_own_category(): void
+    {
+        $user = User::factory()->create();
+        $category = ServerCategory::factory()->create(['user_id' => $user->id]);
+
+        $this->actingAs($user)
+            ->putJson("/api/client/servers/{$this->server->uuid}/settings/category", [
+                'category' => $category->uuid,
+            ])
+            ->assertNotFound();
+
+        $this->assertDatabaseMissing('server_category_assignments', [
+            'server_id' => $this->server->id,
+            'user_id' => $user->id,
+        ]);
     }
 }
