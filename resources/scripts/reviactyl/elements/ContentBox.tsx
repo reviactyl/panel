@@ -29,7 +29,11 @@ const ContentBox = ({
 
     return (
         <div {...props}>
-            {title && !showInsetTitle && <Title className='mb-4 px-4 text-2xl'>{title}</Title>}
+            {title && !showInsetTitle && (
+                <Title as='h2' className='mb-4 px-4 text-2xl'>
+                    {title}
+                </Title>
+            )}
             {showFlashes && (
                 <FlashMessageRender
                     byKey={typeof showFlashes === 'string' ? showFlashes : undefined}

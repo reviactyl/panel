@@ -405,7 +405,9 @@ const DashboardHeader = ({
     ) : (
         <div className='relative z-20 flex flex-col gap-4 py-4 md:flex-row md:items-center justify-between'>
             <div className='min-w-0'>
-                <Title className='text-4xl font-bold!'>{title}</Title>
+                <Title as='h1' className='text-4xl font-bold!'>
+                    {title}
+                </Title>
                 <p className='text-sm text-gray-200/80 hidden lg:block'>{subtitle}</p>
             </div>
             {children}
