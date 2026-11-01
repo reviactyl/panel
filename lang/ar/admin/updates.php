@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'reconnecting' => 'جارٍ إعادة الاتصال باللوحة…',
+    'taking_longer' => 'يستغرق هذا وقتًا أطول من المعتاد. ما زلنا نتحقق من اكتمال التحديث.',
     'channel' => 'Release channel',
     'stable' => 'Stable',
     'beta' => 'Beta',

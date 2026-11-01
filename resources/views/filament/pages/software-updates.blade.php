@@ -4,9 +4,26 @@
     $panelStatus = ! $panel['automatic_supported'] ? $panel['automatic_error'] : (! $panel['latest_available'] ? 'check_failed' : ($panel['outdated'] ? 'update_available' : 'up_to_date'));
     $panelStatusColor = in_array($panelStatus, ['invalid_database', 'unsupported_installation'], true) ? 'danger' : ($panelStatus === 'update_available' ? 'warning' : ($panelStatus === 'up_to_date' ? 'success' : 'gray'));
 @endphp
-<x-filament-panels::page
+<x-filament-panels::page>
+<div class="space-y-6"
     x-data="{
         panelUpdateRequested: {{ $panelBusy ? 'true' : 'false' }},
+        panelUpdateObserved: {{ $panelBusy ? 'true' : 'false' }},
+        panelUpdateBaseline: @js(collect($panel['status'] ?? [])->only(['state', 'version', 'updated_at'])->all()),
+        panelUpdateSlow: false,
+        panelUpdateMessage: @js($panelBusy ? ($panel['status']['message'] ?? trans('admin/updates.status.queued')) : trans('admin/updates.status.queued')),
+        removeUpdateInterceptor: null,
+        init() {
+            this.removeUpdateInterceptor = Livewire.interceptRequest(({ request, onError }) => {
+                if (Array.from(request.messages).some((message) => Array.from(message.actions).some((action) => ['updateAgent', 'updateAllAgents'].includes(action.name)))) return
+                onError(({ response, preventDefault }) => {
+                    if (this.panelUpdateRequested && response.status >= 500) {
+                        preventDefault()
+                        this.panelWasUnavailable = true
+                    }
+                })
+            })
+        },
         pollTimer: null,
         panelUpdatePollTimer: null,
         panelUpdatePollController: null,
@@ -39,15 +56,11 @@
         async pollPanelUpdate() {
             if (!this.panelUpdatePollingActive) return
 
-            if (Date.now() - this.panelUpdateStartedAt >= 900000) {
-                this.panelUpdatePollingActive = false
-                window.location.reload()
-                return
-            }
+            this.panelUpdateSlow = Date.now() - this.panelUpdateStartedAt >= 900000
 
-            const controller = new AbortController()
+            let controller = new AbortController()
             this.panelUpdatePollController = controller
-            const requestTimeout = setTimeout(() => controller.abort(), 5000)
+            let requestTimeout = setTimeout(() => controller.abort(), 5000)
 
             try {
                 const url = new URL('/admin/software-updates/status', window.location.origin)
@@ -64,17 +77,13 @@
                     return
                 }
 
-                if (!response.ok) {
-                    if (this.panelWasUnavailable && response.status === 404) {
-                        this.panelUpdatePollingActive = false
-                        window.location.reload()
-                    }
-
-                    return
-                }
+                if (!response.ok) return
 
                 const status = await response.json()
-                if (this.panelUpdateRequestRejected && status.state === 'idle') {
+                this.panelWasUnavailable = false
+                const changed = status.state !== this.panelUpdateBaseline?.state || status.version !== this.panelUpdateBaseline?.version || status.updated_at !== this.panelUpdateBaseline?.updated_at
+                const terminal = ['complete', 'failed'].includes(status.state)
+                if (this.panelUpdateRequestRejected && !this.panelUpdateObserved && Date.now() - this.panelUpdateStartedAt >= 10000 && (status.state === 'idle' || (terminal && !changed))) {
                     this.panelUpdateRequested = false
                     this.panelUpdateRequestRejected = false
                     this.stopPanelUpdatePolling()
@@ -83,7 +92,23 @@
                     return
                 }
 
-                if (['complete', 'failed'].includes(status.state) || this.panelWasUnavailable) {
+                const busy = ['queued', 'downloading', 'validating', 'backing_up', 'installing', 'migrating', 'restarting'].includes(status.state)
+                if (busy) {
+                    this.panelUpdateObserved = true
+                    this.panelUpdateMessage = typeof status.message === 'string' ? status.message : ''
+                }
+                if (terminal && (this.panelUpdateObserved || changed)) {
+                    clearTimeout(requestTimeout)
+                    controller = new AbortController()
+                    this.panelUpdatePollController = controller
+                    requestTimeout = setTimeout(() => controller.abort(), 30000)
+                    const page = await fetch(window.location.href, {
+                        cache: 'no-store',
+                        credentials: 'same-origin',
+                        headers: { Accept: 'text/html' },
+                        signal: controller.signal,
+                    })
+                    if (!page.ok || page.redirected) return
                     this.panelUpdatePollingActive = false
                     window.location.reload()
                 }
@@ -108,16 +133,26 @@
             this.panelUpdatePollController = null
         },
         destroy() {
+            this.removeUpdateInterceptor?.()
             this.stopPolling()
             this.stopPanelUpdatePolling()
         },
         updatePanel() {
+            this.panelUpdateBaseline = this.$wire.panel.status
+            this.panelUpdateObserved = false
+            this.panelUpdateMessage = ''
+            this.panelWasUnavailable = false
+            this.panelUpdateStartedAt = Date.now()
+            this.panelUpdateRequestRejected = false
             this.panelUpdateRequested = true
             this.stopPolling()
             this.startPanelUpdatePolling()
-
             this.$wire.updatePanel().then(() => {
-                this.panelUpdateRequested = this.$wire.panelUpdateInProgress
+                this.panelUpdateRequested = this.panelUpdateObserved || this.$wire.panelUpdateInProgress
+                if (this.panelUpdateRequested) {
+                    this.panelUpdateObserved = true
+                    this.startPanelUpdatePolling()
+                }
 
                 if (!this.panelUpdateRequested) {
                     this.stopPanelUpdatePolling()
@@ -125,6 +160,7 @@
                 }
             }).catch(() => {
                 this.panelUpdateRequestRejected = true
+                this.startPanelUpdatePolling()
             })
         },
     }"
@@ -191,26 +227,23 @@
                             @if (($panel['status']['state'] ?? null) === 'failed')<p class="mt-2 max-w-xs text-xs text-red-600 dark:text-red-400">{{ $panel['status']['message'] }}</p>@endif
                         </td>
                         <td class="px-3 py-4" style="text-align: center;">
-                            @if ($panelBusy)
-                                <x-filament::button size="sm" color="gray" disabled aria-live="polite">
-                                    <span class="software-update-button-content">
-                                        <x-filament::loading-indicator class="h-5 w-5" />
-                                        <span>{{ trans('admin/updates.status.queued') }}</span>
-                                    </span>
-                                </x-filament::button>
-                            @elseif ($panel['automatic_supported'] && $panel['outdated'] && $this::canUpdate())
-                                <x-filament::button
-                                    size="sm"
-                                    x-on:click="updatePanel()"
-                                    x-bind:disabled="panelUpdateRequested"
-                                    aria-live="polite"
-                                >
-                                    <span class="software-update-button-content">
-                                        <x-filament::icon x-show="!panelUpdateRequested" icon="heroicon-o-arrow-down-tray" class="h-5 w-5" />
-                                        <x-filament::loading-indicator x-cloak x-show="panelUpdateRequested" class="h-5 w-5" />
-                                        <span x-text="panelUpdateRequested ? @js(trans('admin/updates.status.queued')) : @js(trans('admin/updates.update'))"></span>
-                                    </span>
-                                </x-filament::button>
+                            @if ($panelBusy || ($panel['automatic_supported'] && $panel['outdated'] && $this::canUpdate()))
+                                <div wire:ignore>
+                                    <x-filament::button
+                                        size="sm"
+                                        x-on:click="if (!panelUpdateRequested) updatePanel()"
+                                        x-bind:disabled="panelUpdateRequested"
+                                        :disabled="$panelBusy"
+                                        :loading-indicator="false"
+                                        aria-live="polite"
+                                    >
+                                        <span class="software-update-button-content">
+                                            <x-filament::icon x-show="!panelUpdateRequested" icon="heroicon-o-arrow-down-tray" class="h-5 w-5 shrink-0" />
+                                            <x-filament::loading-indicator x-cloak x-show="panelUpdateRequested" class="h-5 w-5 shrink-0" />
+                                            <span x-text="panelUpdateRequested ? (panelWasUnavailable ? @js(trans('admin/updates.reconnecting')) : (panelUpdateMessage || @js(trans('admin/updates.status.queued')))) : @js(trans('admin/updates.update'))">{{ $panelBusy ? ($panel['status']['message'] ?? trans('admin/updates.status.queued')) : trans('admin/updates.update') }}</span>
+                                        </span>
+                                    </x-filament::button>
+                                </div>
                             @elseif ($panel['automatic_supported'] && $panel['latest_available'])
                                 <x-filament::button size="sm" color="gray" icon="heroicon-o-check" disabled>{{ trans('admin/updates.up_to_date') }}</x-filament::button>
                             @else
@@ -321,4 +354,5 @@
             </div>
         @endif
     </x-filament::section>
+</div>
 </x-filament-panels::page>

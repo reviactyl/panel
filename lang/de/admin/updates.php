@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'reconnecting' => 'Verbindung zum Panel wird wiederhergestellt…',
+    'taking_longer' => 'Dies dauert länger als üblich. Wir prüfen weiterhin, ob das Update abgeschlossen ist.',
     'channel' => 'Release channel',
     'stable' => 'Stable',
     'beta' => 'Beta',
