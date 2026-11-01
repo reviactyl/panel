@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'reconnecting' => 'Verbindung zum Panel wird wiederhergestellt…',
     'channel' => 'Release channel',
     'stable' => 'Stable',
     'beta' => 'Beta',

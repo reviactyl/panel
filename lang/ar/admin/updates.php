@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'reconnecting' => 'جارٍ إعادة الاتصال باللوحة…',
     'channel' => 'Release channel',
     'stable' => 'Stable',
     'beta' => 'Beta',

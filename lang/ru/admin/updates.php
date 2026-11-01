@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'reconnecting' => 'Повторное подключение к панели…',
     'channel' => 'Release channel',
     'stable' => 'Stable',
     'beta' => 'Beta',

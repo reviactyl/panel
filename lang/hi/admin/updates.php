@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'reconnecting' => 'पैनल से फिर से जुड़ रहे हैं…',
     'channel' => 'Release channel',
     'stable' => 'Stable',
     'beta' => 'Beta',

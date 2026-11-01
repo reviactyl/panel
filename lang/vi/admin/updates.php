@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'reconnecting' => 'Đang kết nối lại với bảng điều khiển…',
     'channel' => 'Release channel',
     'stable' => 'Stable',
     'beta' => 'Beta',

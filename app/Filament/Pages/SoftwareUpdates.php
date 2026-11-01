@@ -180,7 +180,6 @@ class SoftwareUpdates extends Page
             $lock->release();
         }
 
-        Notification::make()->success()->title(trans('admin/updates.panel_queued'))->send();
         $this->refreshUpdates();
     }
 

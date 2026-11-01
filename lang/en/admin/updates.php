@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'reconnecting' => 'Reconnecting to the panel…',
     'channel' => 'Release channel',
     'stable' => 'Stable',
     'beta' => 'Beta',
@@ -45,12 +46,12 @@ return [
     'empty' => 'No Agent nodes are configured yet.',
     'status' => [
         'queued' => 'Waiting for Update Worker',
-        'panel_downloading' => 'Downloading the official Panel release.',
-        'panel_validating' => 'Validating the release archive.',
-        'panel_backing_up' => 'Backing up the database and files.',
-        'panel_installing' => 'Installing Panel files and Composer dependencies.',
-        'panel_migrating' => 'Running database migrations.',
-        'panel_restarting' => 'Restarting the Reviactyl service.',
+        'panel_downloading' => 'Downloading',
+        'panel_validating' => 'Validating',
+        'panel_backing_up' => 'Backing up',
+        'panel_installing' => 'Installing',
+        'panel_migrating' => 'Migrating database',
+        'panel_restarting' => 'Restarting',
         'panel_complete' => 'Panel update completed successfully. A rollback backup was retained.',
         'panel_failed' => 'The Panel update failed.',
         'agent_installing' => 'The release is being staged and validated.',

@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'reconnecting' => 'Menghubungkan kembali ke panel…',
     'channel' => 'Release channel',
     'stable' => 'Stable',
     'beta' => 'Beta',

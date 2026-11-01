@@ -14,6 +14,7 @@ class SoftwareUpdateStatusController extends Controller
 
         return response()->json([
             'state' => $status['state'] ?? 'idle',
+            'message' => $status['message'] ?? null,
             'version' => $status['version'] ?? null,
             'updated_at' => $status['updated_at'] ?? null,
         ]);
