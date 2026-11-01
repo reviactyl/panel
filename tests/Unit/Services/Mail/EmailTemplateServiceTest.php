@@ -42,6 +42,7 @@ class EmailTemplateServiceTest extends TestCase
 
     public function test_livewire_validation_failures_return_null(): void
     {
+        $this->withoutVite();
         $user = (new User())->forceFill(['id' => 1, 'root_admin' => true]);
         foreach (['previewTemplate', 'saveTemplate'] as $method) {
             Livewire::actingAs($user)->test(EmailTemplateEditor::class)
