@@ -16,6 +16,7 @@ if (process.env.VITEST === undefined) {
             input: [
                 'resources/scripts/index.tsx',
                 'resources/scripts/admin/filePicker.ts',
+                'resources/scripts/admin/emailTemplateEditor.ts',
                 'resources/css/filament/admin/theme.css',
             ],
         }),
@@ -44,6 +45,7 @@ export default defineConfig({
 
     build: {
         chunkSizeWarningLimit: 2000,
+        rollupOptions: { preserveEntrySignatures: 'exports-only' },
     },
     
     resolve: {

@@ -7,6 +7,7 @@ use App\Events\Event;
 use App\Events\Server\Installed;
 use App\Models\Server;
 use App\Models\User;
+use App\Services\Mail\EmailTemplateService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Notifications\Dispatcher;
@@ -52,6 +53,11 @@ class ServerInstalled extends Notification implements ReceivesEvents, ShouldQueu
      * Get the mail representation of the notification.
      */
     public function toMail(): MailMessage
+    {
+        return app(EmailTemplateService::class)->apply('ServerInstalled', $this->defaultMail(), ['recipient_name' => $this->user->username, 'server_name' => $this->server->name]);
+    }
+
+    private function defaultMail(): MailMessage
     {
         return (new MailMessage())
             ->greeting('Hello '.$this->user->username.'.')

@@ -8,6 +8,10 @@
             isDirty: false,
             isDesktop: true,
             workspacePanel: 'preview',
+            editorSurface: 'panel',
+            emailDirty: false,
+            emailBusy: true,
+            emailReadOnly: @js(config('panel.load_environment_only')),
             previewMode: 'home',
             viewport: sessionStorage.getItem('designify-preview-viewport') || 'desktop',
             mediaQuery: null,
@@ -75,11 +79,13 @@
                 window.open(this.previewUrls[this.previewMode], '_blank', 'noopener,noreferrer');
             },
         }"
-        x-on:input.capture="isDirty = true"
-        x-on:change.capture="isDirty = true"
+        x-on:designify-tab-changed="editorSurface = $event.detail.emails ? 'emails' : 'panel'"
+        x-on:input.capture="if ($event.target.closest('.designify-editor__workspace')) isDirty = true"
+        x-on:change.capture="if ($event.target.closest('.designify-editor__workspace')) isDirty = true"
         x-on:designify-preview-updated.window="sendPreview($event.detail.settings); updateDirty($event.detail.settings)"
         x-on:designify-saved.window="draft = $event.detail.settings; savedSettings = JSON.parse(JSON.stringify($event.detail.settings)); isDirty = false"
         x-on:designify-reset.window="isDirty = false; window.__designifySkipBeforeUnload = true"
+        x-on:email-state.window="emailDirty = $event.detail.dirty; emailBusy = $event.detail.busy"
         x-on:reload-iframe.window="refreshPreview()"
     >
         <header class="designify-editor__header">
@@ -96,7 +102,7 @@
                 </div>
             </div>
 
-            <div class="designify-editor__mobile-switcher" aria-label="{{ trans('admin/settings.designify.editor-panel-label') }}">
+            <div x-show="editorSurface === 'panel'" class="designify-editor__mobile-switcher" aria-label="{{ trans('admin/settings.designify.editor-panel-label') }}">
                 <button
                     type="button"
                     class="designify-editor__tool-button"
@@ -117,7 +123,15 @@
                 </button>
             </div>
 
-            <div class="designify-editor__actions">
+            <div class="designify-editor__actions" x-show="editorSurface === 'emails'" x-cloak>
+                <span class="designify-editor__save-state" :data-dirty="emailDirty.toString()" aria-live="polite">
+                    <span class="designify-editor__save-state-dot" aria-hidden="true"></span>
+                    <span x-text="emailDirty ? @js(trans('admin/settings.designify.editor-unsaved')) : @js(trans('admin/settings.designify.editor-saved'))"></span>
+                </span>
+                <x-filament::button color="gray" icon="tabler-restore" wire:click="mountAction('reset')" x-bind:disabled="emailBusy || emailReadOnly">{{ trans('admin/settings.designify.editor-reset') }}</x-filament::button>
+                <x-filament::button icon="tabler-device-floppy" @click="$dispatch('email-save')" x-bind:disabled="emailBusy || !emailDirty || emailReadOnly">{{ trans('admin/settings.designify.editor-save-changes') }}</x-filament::button>
+            </div>
+            <div class="designify-editor__actions" x-show="editorSurface === 'panel'">
                 <span class="designify-editor__save-state" x-bind:data-dirty="isDirty.toString()" aria-live="polite">
                     <span class="designify-editor__save-state-dot" aria-hidden="true"></span>
                     <span x-text="isDirty ? @js(trans('admin/settings.designify.editor-unsaved')) : @js(trans('admin/settings.designify.editor-saved'))"></span>
@@ -144,11 +158,14 @@
             </div>
         </header>
 
+        <section x-show="editorSurface === 'emails'" x-cloak class="email-customization-workspace">
+            <livewire:email-template-editor />
+        </section>
         <main class="designify-editor__workspace">
             <aside
                 class="designify-editor__panel designify-editor__controls"
                 aria-label="{{ trans('admin/settings.designify.editor-settings-label') }}"
-                x-show="isDesktop || workspacePanel === 'settings'"
+                x-show="editorSurface === 'emails' || isDesktop || workspacePanel === 'settings'"
                 x-cloak
             >
                 <div class="designify-editor__controls-form">
@@ -159,7 +176,7 @@
             <section
                 class="designify-editor__panel designify-editor__preview"
                 aria-label="{{ trans('admin/settings.designify.editor-live-preview-label') }}"
-                x-show="isDesktop || workspacePanel === 'preview'"
+                x-show="editorSurface === 'panel' && (isDesktop || workspacePanel === 'preview')"
                 x-cloak
             >
                 <div class="designify-editor__preview-bar">

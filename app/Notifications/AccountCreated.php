@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\User;
+use App\Services\Mail\EmailTemplateService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -29,6 +30,11 @@ class AccountCreated extends Notification implements ShouldQueue
      * Get the mail representation of the notification.
      */
     public function toMail(): MailMessage
+    {
+        return app(EmailTemplateService::class)->apply('AccountCreated', $this->defaultMail(), ['recipient_name' => $this->user->name, 'username' => $this->user->username, 'email' => $this->user->email]);
+    }
+
+    private function defaultMail(): MailMessage
     {
         $message = (new MailMessage())
             ->greeting('Hello '.$this->user->name.'!')

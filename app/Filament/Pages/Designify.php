@@ -180,7 +180,7 @@ class Designify extends Page implements HasSchemas
                 ->live(debounce: 300)
                 ->persistTabInQueryString()
                 ->vertical()
-                ->extraAttributes(['class' => 'designify-settings-tabs'])
+                ->extraAttributes(['class' => 'designify-settings-tabs', 'x-effect' => "\$dispatch('designify-tab-changed', { emails: tab === 'emails' })"])
                 ->tabs([
                     Tab::make('general')
                         ->label(trans('admin/settings.designify.general'))
@@ -211,6 +211,12 @@ class Designify extends Page implements HasSchemas
                         ->label(trans('admin/settings.designify.error-pages'))
                         ->icon('tabler-device-imac-exclamation')
                         ->schema($this->errorSettings()),
+
+                    Tab::make('emails')
+                        ->key('emails')
+                        ->label(trans('admin/email.emails'))
+                        ->icon('tabler-mail')
+                        ->schema([]),
 
                     Tab::make('sidebar')
                         ->label(trans('admin/settings.designify.sidebar'))
@@ -664,7 +670,7 @@ class Designify extends Page implements HasSchemas
         }
 
         DB::table('settings')
-            ->where('key', 'like', 'settings::designify:%')
+            ->where(fn ($query) => $query->where('key', 'like', 'settings::designify:%')->orWhere('key', 'like', 'settings::email-template:%'))
             ->delete();
 
         try {

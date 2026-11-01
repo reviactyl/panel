@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Services\Mail\EmailTemplateService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -28,6 +29,11 @@ class SendPasswordReset extends Notification implements ShouldQueue
      * Get the mail representation of the notification.
      */
     public function toMail(mixed $notifiable): MailMessage
+    {
+        return app(EmailTemplateService::class)->apply('SendPasswordReset', $this->defaultMail($notifiable), ['recipient_name' => $notifiable->name, 'email' => $notifiable->email]);
+    }
+
+    private function defaultMail(mixed $notifiable): MailMessage
     {
         return (new MailMessage())
             ->subject('Reset Password')
