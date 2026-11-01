@@ -119,6 +119,7 @@ return [
         'border-radius-helper' => 'على سبيل المثال: 15px أو 1rem.',
         'font-family' => 'عائلة الخطوط',
         'server-card-layout' => 'تخطيط بطاقة الخادم',
+        'header-style' => 'نمط العناوين',
         'navbar-sidebar-layout' => 'تخطيط شريط التنقل والشريط الجانبي',
         'alert-messages' => 'رسائل التنبيه',
         'type' => 'يكتب',

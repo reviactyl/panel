@@ -98,6 +98,7 @@ class SettingsServiceProvider extends ServiceProvider
         'designify:alwaysShowKillButton',
         'designify:cardType',
         'designify:layoutType',
+        'designify:headerStyle',
         'designify:avatarType',
         'designify:errors:403:title',
         'designify:errors:403:message',

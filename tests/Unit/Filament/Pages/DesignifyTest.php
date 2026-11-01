@@ -11,6 +11,7 @@ class DesignifyTest extends TestCase
     {
         $page = app(Designify::class);
         $page->data = [
+            'designify:headerStyle' => 'modern',
             'designify:colorPrimary' => '#2563eb',
             'designify:color50' => '#09090b',
             'designify:color50L' => '#fafafa',
@@ -20,6 +21,7 @@ class DesignifyTest extends TestCase
         ];
 
         $this->assertSame([
+            'headerStyle' => 'modern',
             'colorPrimary' => '#2563eb',
             'color50' => '#09090b',
             'color50L' => '#fafafa',

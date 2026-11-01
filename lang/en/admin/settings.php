@@ -121,6 +121,7 @@ return [
         'border-radius-helper' => 'Example: 15px or 1rem.',
         'font-family' => 'Font Family',
         'server-card-layout' => 'Server Card Layout',
+        'header-style' => 'Header style',
         'navbar-sidebar-layout' => 'Navbar & Sidebar Layout',
         'message' => 'Message',
         'grid' => 'Grid',

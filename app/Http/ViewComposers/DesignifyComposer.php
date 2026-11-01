@@ -79,6 +79,7 @@ class DesignifyComposer
             'alwaysShowKillButton' => config('designify.alwaysShowKillButton', false),
             'cardType' => config('designify.cardType') ?? 'grid',
             'layoutType' => config('designify.layoutType') ?? 'modern',
+            'headerStyle' => config('designify.headerStyle') ?? 'classic',
         ];
 
         $this->reviactylDefaults['colorMutedText'] = $this->getAccessibleMutedText($this->reviactylDefaults);

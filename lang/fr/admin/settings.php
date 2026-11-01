@@ -119,6 +119,7 @@ return [
         'border-radius-helper' => 'Exemple : 15px ou 1rem.',
         'font-family' => 'Famille de polices',
         'server-card-layout' => 'Disposition de la carte serveur',
+        'header-style' => 'Style des en-têtes',
         'navbar-sidebar-layout' => 'Disposition de la barre de navigation et de la barre latérale',
         'alert-messages' => 'Messages d\'alerte',
         'type' => 'Taper',

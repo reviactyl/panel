@@ -43,7 +43,7 @@ export default () => {
     const hasFilters = !!(filters.filters?.event || filters.filters?.ip);
 
     return (
-        <AccountContentBlock title={t('activity.title')}>
+        <AccountContentBlock classicHeading title={t('activity.title')}>
             <FlashMessageRender byKey={'account'} />
             {hasFilters && (
                 <div className={'mb-4 flex justify-end'}>

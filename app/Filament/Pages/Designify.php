@@ -97,6 +97,7 @@ class Designify extends Page implements HasSchemas
         'designify:alwaysShowKillButton',
         'designify:cardType',
         'designify:layoutType',
+        'designify:headerStyle',
         'designify:avatarType',
         'designify:errors:403:title',
         'designify:errors:403:message',
@@ -427,6 +428,15 @@ class Designify extends Page implements HasSchemas
                         ->options([
                             'grid' => trans('admin/settings.designify.grid'),
                             'row' => trans('admin/settings.designify.row'),
+                        ])
+                        ->required()
+                        ->columnSpanFull(),
+                    ToggleButtons::make('designify:headerStyle')
+                        ->label(trans('admin/settings.designify.header-style'))
+                        ->inline()
+                        ->options([
+                            'classic' => trans('admin/settings.designify.classic'),
+                            'modern' => trans('admin/settings.designify.modern'),
                         ])
                         ->required()
                         ->columnSpanFull(),

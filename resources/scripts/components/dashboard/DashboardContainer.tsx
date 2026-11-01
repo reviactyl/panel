@@ -13,6 +13,8 @@ import Pagination from '@/reviactyl/elements/Pagination';
 import { useLocation } from 'react-router-dom';
 import Card from '@/reviactyl/ui/Card';
 import PageHeader from '@/reviactyl/ui/PageHeader';
+import Title from '@/reviactyl/ui/Title';
+import useModernHeaders from '@/reviactyl/ui/useModernHeaders';
 import { EmojiSadIcon, FilterIcon } from '@heroicons/react/solid';
 import { useTranslation } from 'react-i18next';
 import getServerCategories from '@/api/account/getServerCategories';
@@ -29,6 +31,7 @@ import SearchContainer from '@/components/dashboard/search/SearchContainer';
 import clsx from 'clsx';
 
 export default () => {
+    const modernHeaders = useModernHeaders();
     const { t } = useTranslation('dashboard/index');
     const { search } = useLocation();
     const defaultPage = Number(new URLSearchParams(search).get('page') || '1');
@@ -162,7 +165,12 @@ export default () => {
     }, [groupedServers, categories]);
 
     return (
-        <PageContentBlock inset title={t('title')} showFlashKey='dashboard'>
+        <PageContentBlock
+            inset={modernHeaders}
+            className={modernHeaders ? undefined : 'pr-2'}
+            title={t('title')}
+            showFlashKey='dashboard'
+        >
             {!session && <ExtensionSlot name='dashboard:above' />}
 
             {!session && (
@@ -176,9 +184,9 @@ export default () => {
                 />
             )}
 
-            <PageHeader
+            <DashboardHeader
                 title={showAdminServers ? t('servers-admin.title') : t('servers-user.title')}
-                className='relative z-20'
+                subtitle={showAdminServers ? t('servers-admin.subtitle') : t('servers-user.subtitle')}
             >
                 {!session && (
                     <div className='flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full md:w-auto'>
@@ -316,7 +324,7 @@ export default () => {
                         </div>
                     </div>
                 )}
-            </PageHeader>
+            </DashboardHeader>
 
             {!servers ? (
                 <Spinner centered size='large' />
@@ -381,5 +389,26 @@ export default () => {
 
             <ExtensionSlot name='dashboard:below' />
         </PageContentBlock>
+    );
+};
+
+const DashboardHeader = ({
+    title,
+    subtitle,
+    children,
+}: React.PropsWithChildren<{ title: string; subtitle: string }>) => {
+    const modernHeaders = useModernHeaders();
+    return modernHeaders ? (
+        <PageHeader title={title} className='relative z-20'>
+            {children}
+        </PageHeader>
+    ) : (
+        <div className='relative z-20 flex flex-col gap-4 py-4 md:flex-row md:items-center justify-between'>
+            <div className='min-w-0'>
+                <Title className='text-4xl font-bold!'>{title}</Title>
+                <p className='text-sm text-gray-200/80 hidden lg:block'>{subtitle}</p>
+            </div>
+            {children}
+        </div>
     );
 };

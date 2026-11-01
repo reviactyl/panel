@@ -119,6 +119,7 @@ return [
         'border-radius-helper' => 'उदाहरण: 15px या 1rem.',
         'font-family' => 'फुहारा परिवार',
         'server-card-layout' => 'सर्वर कार्ड लेआउट',
+        'header-style' => 'शीर्षक शैली',
         'navbar-sidebar-layout' => 'नेवबार और साइडबार लेआउट',
         'alert-messages' => 'चेतावनी संदेश',
         'type' => 'प्रकार',

@@ -119,6 +119,7 @@ return [
         'border-radius-helper' => 'Exempel: 15px eller 1rem.',
         'font-family' => 'Typsnittsfamilj',
         'server-card-layout' => 'Serverkortslayout',
+        'header-style' => 'Rubrikstil',
         'navbar-sidebar-layout' => 'Navbar och sidofältslayout',
         'alert-messages' => 'Varningsmeddelanden',
         'type' => 'Typ',

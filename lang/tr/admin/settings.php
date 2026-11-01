@@ -119,6 +119,7 @@ return [
         'border-radius-helper' => 'Örnek: 15px veya 1rem.',
         'font-family' => 'Yazı Tipi Ailesi',
         'server-card-layout' => 'Sunucu Kartı Düzeni',
+        'header-style' => 'Başlık stili',
         'navbar-sidebar-layout' => 'Gezinme Çubuğu ve Kenar Çubuğu Düzeni',
         'alert-messages' => 'Uyarı Mesajları',
         'type' => 'Tip',

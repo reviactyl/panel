@@ -119,6 +119,7 @@ return [
         'border-radius-helper' => 'Пример: 15px или 1rem.',
         'font-family' => 'Семейство шрифтов',
         'server-card-layout' => 'Макет карточек серверов',
+        'header-style' => 'Стиль заголовков',
         'navbar-sidebar-layout' => 'Макет навигационной и боковой панелей',
         'alert-messages' => 'Сообщения оповещений',
         'type' => 'Тип',

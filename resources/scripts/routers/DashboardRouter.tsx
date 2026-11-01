@@ -18,6 +18,7 @@ import Maintenance from '@/reviactyl/ui/Maintenance';
 import { useTranslation } from 'react-i18next';
 import { FaHouse } from 'react-icons/fa6';
 import { DesignifySidebarButton } from '@/state/designify';
+import useModernHeaders from '@/reviactyl/ui/useModernHeaders';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 import { useExtensionRoutes } from '@/extensions/useExtensionRoutes';
 import { useExtensions } from '@/extensions/useExtensions';
@@ -144,6 +145,7 @@ const DashboardNavigation = () => {
  * @returns The dashboard interface or maintenance screen.
  */
 function DashboardRouter() {
+    const modernHeaders = useModernHeaders();
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const layoutType = useStoreState((state) => state.designify.data!.layoutType);
     const isUnderMaintenance = useStoreState((state) => state.designify.data?.isUnderMaintenance);
@@ -169,7 +171,7 @@ function DashboardRouter() {
                             </button>
                         </div>
                     </Navbar>
-                    <ContentContainer className='pe-0! lg:ps-60.25! 2xl:ps-68!'>
+                    <ContentContainer className={modernHeaders ? 'pe-0! lg:ps-60.25! 2xl:ps-68!' : undefined}>
                         {isSidebarOpen && (
                             <div
                                 onClick={() => setSidebarOpen(false)}

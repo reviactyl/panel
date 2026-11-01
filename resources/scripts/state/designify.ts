@@ -16,6 +16,7 @@ export interface DesignifySettings {
     sidebarButtons?: DesignifySidebarButton[];
     alwaysShowKillButton: boolean;
     cardType: 'grid' | 'row';
+    headerStyle?: 'classic' | 'modern';
     layoutType: 'modern' | 'classic' | 'compact' | 'accent';
 }
 
