@@ -123,7 +123,7 @@
         </div>
         <div class="designify-editor__canvas">
             <div class="designify-editor__frame-shell" :data-viewport="viewport">
-                <iframe x-ref="editor" title="{{ trans('admin/email.editor') }}" sandbox="allow-same-origin" class="designify-editor__frame" @load="bindEditor()"></iframe>
+                <iframe :inert="sourcePending || !editorReady" x-ref="editor" title="{{ trans('admin/email.editor') }}" sandbox="allow-same-origin" class="designify-editor__frame" @load="bindEditor()"></iframe>
             </div>
         </div>
     </section>

@@ -2,10 +2,21 @@ import type { mountHtmlEditor } from './emailHtmlEditor';
 type Template = { subject: string; html: string };
 type Wire = {
     editorPreference: () => Promise<string>;
-    loadTemplate: (type: string) => Promise<Template>;
-    previewTemplate: (type: string, template: Template) => Promise<string>;
-    saveTemplate: (type: string, template: Template) => Promise<Template>;
+    loadTemplate: (type: string) => Promise<Template | null | undefined>;
+    previewTemplate: (type: string, template: Template) => Promise<string | null | undefined>;
+    saveTemplate: (type: string, template: Template) => Promise<Template | null | undefined>;
 };
+
+function isTemplate(value: unknown): value is Template {
+    return (
+        typeof value === 'object' &&
+        value !== null &&
+        'subject' in value &&
+        typeof value.subject === 'string' &&
+        'html' in value &&
+        typeof value.html === 'string'
+    );
+}
 
 export function extractContent(content: HTMLElement): string {
     const clone = content.cloneNode(true) as HTMLElement;
@@ -96,7 +107,9 @@ export function emailTemplateEditor(
             this.busy = true;
             this.publishState();
             try {
-                this.draft = await wire.loadTemplate(this.type);
+                const draft = await wire.loadTemplate(this.type);
+                if (!isTemplate(draft)) throw new Error('Template unavailable');
+                this.draft = draft;
                 this.selectedType = this.type;
                 this.saved = JSON.stringify(this.draft);
                 this.dirty = false;
@@ -132,6 +145,7 @@ export function emailTemplateEditor(
             const revision = this.revision;
             try {
                 const html = await wire.previewTemplate(this.type, { ...this.draft });
+                if (typeof html !== 'string') throw new Error('Preview unavailable');
                 if (revision !== this.revision) return;
                 const document = new DOMParser().parseFromString(html, 'text/html');
                 const content = document.querySelector('[data-email-content]');
@@ -146,7 +160,14 @@ export function emailTemplateEditor(
                 this.$refs.editor.srcdoc = '<!doctype html>' + document.documentElement.outerHTML;
                 this.error = '';
             } catch {
-                if (revision === this.revision) this.error = labels.preview_error!;
+                if (revision !== this.revision) return;
+                const content = this.content();
+                if (content && this.editorReady && this.sourcePending) {
+                    this.range = null;
+                    content.innerHTML = this.draft.html;
+                    this.sourcePending = false;
+                }
+                this.error = labels.preview_error!;
             }
         },
         content() {
@@ -253,6 +274,7 @@ export function emailTemplateEditor(
             });
         },
         focusSelection() {
+            if (this.sourcePending || !this.editorReady) return null;
             const document = this.$refs.editor.contentDocument;
             const content = this.content();
             if (!document || !content) return null;
@@ -394,7 +416,9 @@ export function emailTemplateEditor(
             this.busy = true;
             this.publishState();
             try {
-                this.draft = await wire.saveTemplate(this.type, { ...this.draft });
+                const draft = await wire.saveTemplate(this.type, { ...this.draft });
+                if (!isTemplate(draft)) throw new Error('Template rejected');
+                this.draft = draft;
                 this.saved = JSON.stringify(this.draft);
                 this.dirty = false;
                 this.status = labels.saved!;

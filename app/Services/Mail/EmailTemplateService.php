@@ -82,7 +82,9 @@ class EmailTemplateService
     public function save(string $type, array $template): array
     {
         $template = $this->validateTemplate($type, $template);
-        Setting::query()->updateOrCreate(['key' => 'settings::email-template:'.$type], ['value' => json_encode($template, JSON_THROW_ON_ERROR)]);
+        $value = json_encode($template, JSON_THROW_ON_ERROR);
+        validator(['html' => $value], ['html' => ['max:65535']])->validate();
+        Setting::query()->updateOrCreate(['key' => 'settings::email-template:'.$type], ['value' => $value]);
 
         return $template;
     }
@@ -153,7 +155,7 @@ class EmailTemplateService
                     continue;
                 }
                 [$property, $value] = array_map('trim', $parts);
-                if (! preg_match('/^(color|background-color|font-size|font-weight|font-family|font-style|text-align|text-decoration|line-height|width|max-width|height|padding(?:-(?:top|right|bottom|left))?|margin(?:-(?:top|right|bottom|left))?|border(?:-(?:color|width|style|radius|collapse))?)$/i', $property)) {
+                if (! preg_match('/^(color|background-color|font-size|font-weight|font-family|font-style|text-align|text-decoration(?:-line)?|line-height|width|max-width|height|padding(?:-(?:top|right|bottom|left))?|margin(?:-(?:top|right|bottom|left))?|border(?:-(?:color|width|style|radius|collapse))?)$/i', $property)) {
                     continue;
                 }
                 if (! preg_match('/^[a-z0-9#.,%\s\-]+$/i', $value) && ! (in_array(strtolower($property), ['color', 'background-color'], true) && preg_match('/^(?:rgb|rgba|hsl|hsla)\([0-9.,%\s\/]+\)$/i', $value))) {

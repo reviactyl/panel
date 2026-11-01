@@ -9,6 +9,7 @@ use App\Services\Mail\EmailTemplateService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\ValidationException;
+use Livewire\Livewire;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Tests\TestCase;
 
@@ -26,14 +27,34 @@ class EmailTemplateServiceTest extends TestCase
         $user = new User(['name_first' => 'Alex', 'name_last' => 'Example']);
         $notification = new MailTested($user);
         $original = $notification->toMail();
-        $service->save('MailTested', ['subject' => 'Custom subject', 'html' => '<p style="color:#123456">Custom {{ recipient_name }}</p>']);
+        $service->save('MailTested', ['subject' => 'Custom subject', 'html' => '<p style="color:#123456;text-decoration-line:underline">Custom {{ recipient_name }}</p>']);
         $message = $notification->toMail();
         $this->assertSame('Custom subject', $message->subject);
         $this->assertStringContainsString('Custom Alex Example', $message->viewData['content']);
         $this->assertStringContainsString('color:#123456', $message->viewData['content']);
+        $this->assertStringContainsString('text-decoration-line:underline', $service->load('MailTested')['html']);
+        $this->assertStringContainsString('text-decoration-line:underline', $message->viewData['content']);
+        $this->assertStringContainsString('Custom Alex Example', view($message->view[1], $message->viewData)->render());
         $this->assertSame($service->render($service->load('MailTested'), ['recipient_name' => $user->name])['html'], view($message->view[0], $message->viewData)->render());
         $service->reset('MailTested');
         $this->assertSame($original->subject, $notification->toMail()->subject);
+    }
+
+    public function test_livewire_validation_failures_return_null(): void
+    {
+        $user = (new User())->forceFill(['id' => 1, 'root_admin' => true]);
+        foreach (['previewTemplate', 'saveTemplate'] as $method) {
+            Livewire::actingAs($user)->test(EmailTemplateEditor::class)
+                ->call($method, 'SendPasswordReset', ['subject' => 'Reset', 'html' => '<p>Missing action link</p>'])
+                ->assertHasErrors(['html'])
+                ->assertReturned(null);
+        }
+    }
+
+    public function test_encoded_template_is_validated_against_the_settings_column_size(): void
+    {
+        $this->expectException(ValidationException::class);
+        (new EmailTemplateService())->save('MailTested', ['subject' => 'Test', 'html' => '<p>'.str_repeat('語', 12000).'</p>']);
     }
 
     public function test_guest_cannot_read_or_save_templates(): void
