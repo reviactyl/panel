@@ -20,43 +20,43 @@
 $style = [
     /* Layout ------------------------------ */
 
-    'body' => 'margin: 0; padding: 0; width: 100%; background-color: ' . $panelConfiguration['color950'] . ';',
-    'email-wrapper' => 'width: 100%; margin: 0; padding: 0; background-color: ' . $panelConfiguration['color950'] . ';',
+    'body' => 'margin: 0; padding: 0; width: 100%; background-color: '.$panelConfiguration['color950'].';',
+    'email-wrapper' => 'width: 100%; margin: 0; padding: 0; background-color: '.$panelConfiguration['color950'].';',
 
     /* Masthead ----------------------- */
 
     'email-masthead' => 'padding: 25px 0; text-align: center;',
     'email-masthead_logo' => 'height:3rem;',
 
-    'email-body' => 'width: 100%; margin: 0; padding: 0; border-top: 1px solid ' . $panelConfiguration['color800'] . '; border-bottom: 1px solid ' . $panelConfiguration['color800'] . '; background-color: ' . $panelConfiguration['color900'] . ';',
+    'email-body' => 'width: 100%; margin: 0; padding: 0; border-top: 1px solid '.$panelConfiguration['color800'].'; border-bottom: 1px solid '.$panelConfiguration['color800'].'; background-color: '.$panelConfiguration['color900'].';',
     'email-body_inner' => 'width: auto; max-width: 570px; margin: 0 auto; padding: 0;',
     'email-body_cell' => 'padding: 35px;',
 
     'email-footer' => 'width: auto; max-width: 570px; margin: 0 auto; padding: 0; text-align: center;',
-    'email-footer_cell' => 'color: ' . $panelConfiguration['color300'] . '; padding: 35px; text-align: center;',
+    'email-footer_cell' => 'color: '.$panelConfiguration['color300'].'; padding: 35px; text-align: center;',
 
     /* Body ------------------------------ */
 
     'body_action' => 'width: 100%; margin: 30px auto; padding: 0; text-align: center;',
-    'body_sub' => 'margin-top: 25px; padding-top: 25px; border-top: 1px solid ' . $panelConfiguration['color800'] . ';',
+    'body_sub' => 'margin-top: 25px; padding-top: 25px; border-top: 1px solid '.$panelConfiguration['color800'].';',
 
     /* Type ------------------------------ */
 
-    'anchor' => 'color: ' . $panelConfiguration['colorPrimary'] . ';',
-    'header-1' => 'margin-top: 0; color: ' . $panelConfiguration['color300'] . '; font-size: 19px; font-weight: bold; text-align: left;',
-    'paragraph' => 'margin-top: 0; color: ' . $panelConfiguration['color300'] . '; font-size: 16px; line-height: 1.5em;',
-    'paragraph-sub' => 'margin-top: 0; color: ' . $panelConfiguration['color500'] . '; font-size: 12px; line-height: 1.5em;',
+    'anchor' => 'color: '.$panelConfiguration['colorPrimary'].';',
+    'header-1' => 'margin-top: 0; color: '.$panelConfiguration['color300'].'; font-size: 19px; font-weight: bold; text-align: left;',
+    'paragraph' => 'margin-top: 0; color: '.$panelConfiguration['color300'].'; font-size: 16px; line-height: 1.5em;',
+    'paragraph-sub' => 'margin-top: 0; color: '.$panelConfiguration['color500'].'; font-size: 12px; line-height: 1.5em;',
     'paragraph-center' => 'text-align: center;',
 
     /* Buttons ------------------------------ */
 
     'button' => 'display: block; display: inline-block; width: 200px; min-height: 20px; padding: 10px;
-                 background-color: ' . $panelConfiguration['colorPrimary'] . '; border-radius: ' . $panelConfiguration['radius'] . '; color: #ffffff; font-size: 15px; line-height: 25px;
+                 background-color: '.$panelConfiguration['colorPrimary'].'; border-radius: '.$panelConfiguration['radius'].'; color: #ffffff; font-size: 15px; line-height: 25px;
                  text-align: center; text-decoration: none; -webkit-text-size-adjust: none;',
 
-    'button--green' => 'background-color: ' . $panelConfiguration['colorSuccess'] . ';',
-    'button--red' => 'background-color: ' . $panelConfiguration['colorDanger'] . ';',
-    'button--blue' => 'background-color: ' . $panelConfiguration['colorPrimary'] . ';',
+    'button--green' => 'background-color: '.$panelConfiguration['colorSuccess'].';',
+    'button--red' => 'background-color: '.$panelConfiguration['colorDanger'].';',
+    'button--blue' => 'background-color: '.$panelConfiguration['colorPrimary'].';',
 ];
 ?>
 
@@ -84,6 +84,9 @@ $style = [
                                 cellpadding="0" cellspacing="0">
                                 <tr>
                                     <td style="{{ $fontFamily }} {{ $style['email-body_cell'] }}">
+                                        @isset($customContent)
+                                            <div data-email-content style="{{ $style['paragraph'] }}">{!! $customContent !!}</div>
+                                        @else
                                         <!-- Greeting -->
                                         <h1 style="{{ $style['header-1'] }}">
                                             @if (!empty($greeting))
@@ -121,7 +124,7 @@ $style = [
                                                             default:
                                                                 $actionColor = 'button--blue';
                                                         }
-                                                        ?>
+?>
 
                                                         <a href="{{ $actionUrl }}"
                                                             style="{{ $fontFamily }} {{ $style['button'] }} {{ $style[$actionColor] }}"
@@ -166,6 +169,7 @@ $style = [
                                                 </tr>
                                             </table>
                                         @endif
+                                        @endisset
                                     </td>
                                 </tr>
                             </table>

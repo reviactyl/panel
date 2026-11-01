@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Services\Mail\EmailTemplateService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -33,6 +34,11 @@ class AddedToServer extends Notification implements ShouldQueue
      * Get the mail representation of the notification.
      */
     public function toMail(): MailMessage
+    {
+        return app(EmailTemplateService::class)->apply('AddedToServer', $this->defaultMail(), ['recipient_name' => $this->server->user, 'server_name' => $this->server->name]);
+    }
+
+    private function defaultMail(): MailMessage
     {
         return (new MailMessage())
             ->greeting('Hello '.$this->server->user.'!')
