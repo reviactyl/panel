@@ -119,6 +119,7 @@ return [
         'border-radius-helper' => '示例：15px 或 1rem。',
         'font-family' => '字体家族',
         'server-card-layout' => '服务器卡布局',
+        'header-style' => '标题样式',
         'navbar-sidebar-layout' => '导航栏和侧边栏布局',
         'alert-messages' => '警报信息',
         'type' => '类型',

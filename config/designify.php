@@ -79,5 +79,7 @@ return [
 
     'layoutType' => 'modern',
 
+    'headerStyle' => 'classic',
+
     'avatarType' => 'gravatar',
 ];

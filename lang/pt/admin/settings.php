@@ -119,6 +119,7 @@ return [
         'border-radius-helper' => 'Exemplo: 15px ou 1rem.',
         'font-family' => 'Família de fontes',
         'server-card-layout' => 'Layout da placa do servidor',
+        'header-style' => 'Estilo dos cabeçalhos',
         'navbar-sidebar-layout' => 'Layout da barra de navegação e barra lateral',
         'alert-messages' => 'Mensagens de alerta',
         'type' => 'Tipo',

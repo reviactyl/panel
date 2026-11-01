@@ -119,6 +119,7 @@ return [
         'border-radius-helper' => 'উদাহরণ: 15px অথবা 1rem।',
         'font-family' => 'ফন্ট ফ্যামিলি',
         'server-card-layout' => 'সার্ভার কার্ড লেআউট',
+        'header-style' => 'শিরোনামের ধরন',
         'navbar-sidebar-layout' => 'Navbar ও Sidebar লেআউট',
         'alert-messages' => 'এলার্ট বার্তা',
         'type' => 'ধরণ',

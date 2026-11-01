@@ -1,8 +1,9 @@
 import React from 'react';
 import classNames from 'classnames';
 
-interface TitleProps extends React.HTMLAttributes<HTMLDivElement> {
+interface TitleProps extends React.HTMLAttributes<HTMLElement> {
     scheme?: 'gray' | 'primary';
+    as?: 'div' | 'h1' | 'h2';
 }
 
 const gradientClasses: Record<NonNullable<TitleProps['scheme']>, string> = {
@@ -10,11 +11,11 @@ const gradientClasses: Record<NonNullable<TitleProps['scheme']>, string> = {
     gray: 'from-gray-50 via-gray-100 to-gray-200',
 };
 
-export const Title = ({ className, children, scheme = 'gray', ...props }: TitleProps) => {
+export const Title = ({ className, children, scheme = 'gray', as: Element = 'div', ...props }: TitleProps) => {
     const colorClass = gradientClasses[scheme];
 
     return (
-        <div
+        <Element
             className={classNames(
                 'leading-tight bg-linear-to-tl bg-clip-text font-semibold text-transparent',
                 colorClass,
@@ -23,7 +24,7 @@ export const Title = ({ className, children, scheme = 'gray', ...props }: TitleP
             {...props}
         >
             {children}
-        </div>
+        </Element>
     );
 };
 

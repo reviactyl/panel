@@ -70,7 +70,7 @@ export default () => {
     };
 
     return (
-        <AccountContentBlock title={t('overview.account-overview')}>
+        <AccountContentBlock classicHeading title={t('overview.account-overview')}>
             <FlashMessageRender className='mb-4' />
             <ExtensionSlot name='account:overview:above' />
             {state?.twoFactorRedirect && (

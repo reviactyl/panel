@@ -119,6 +119,7 @@ return [
         'border-radius-helper' => 'Beispiel: 15px oder 1rem.',
         'font-family' => 'Schriftfamilie',
         'server-card-layout' => 'Serverkartenlayout',
+        'header-style' => 'Überschriftenstil',
         'navbar-sidebar-layout' => 'Navigationsleisten- und Seitenleistenlayout',
         'alert-messages' => 'Warnmeldungen',
         'type' => 'Typ',

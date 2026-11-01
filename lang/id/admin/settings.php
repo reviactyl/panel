@@ -119,6 +119,7 @@ return [
         'border-radius-helper' => 'Contoh: 15px atau 1rem.',
         'font-family' => 'Keluarga Font',
         'server-card-layout' => 'Tata Letak Kartu Server',
+        'header-style' => 'Gaya judul',
         'navbar-sidebar-layout' => 'Tata Letak Bilah Nav & Bilah Sisi',
         'alert-messages' => 'Pesan Peringatan',
         'type' => 'Jenis',
