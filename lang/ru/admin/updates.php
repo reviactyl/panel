@@ -2,7 +2,6 @@
 
 return [
     'reconnecting' => 'Повторное подключение к панели…',
-    'taking_longer' => 'Это занимает больше времени, чем обычно. Мы продолжаем проверять завершение обновления.',
     'channel' => 'Release channel',
     'stable' => 'Stable',
     'beta' => 'Beta',

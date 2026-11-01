@@ -2,7 +2,6 @@
 
 return [
     'reconnecting' => 'Menghubungkan kembali ke panel…',
-    'taking_longer' => 'Proses ini memakan waktu lebih lama dari biasanya. Kami masih memeriksa apakah pembaruan sudah selesai.',
     'channel' => 'Release channel',
     'stable' => 'Stable',
     'beta' => 'Beta',

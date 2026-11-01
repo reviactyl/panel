@@ -10,10 +10,17 @@
         panelUpdateRequested: {{ $panelBusy ? 'true' : 'false' }},
         panelUpdateObserved: {{ $panelBusy ? 'true' : 'false' }},
         panelUpdateBaseline: @js(collect($panel['status'] ?? [])->only(['state', 'version', 'updated_at'])->all()),
-        panelUpdateSlow: false,
         panelUpdateMessage: @js($panelBusy ? ($panel['status']['message'] ?? trans('admin/updates.status.queued')) : trans('admin/updates.status.queued')),
         removeUpdateInterceptor: null,
         init() {
+            this.$watch('$wire.panelUpdateInProgress', (busy) => {
+                if (!busy || this.panelUpdateRequested) return
+
+                this.panelUpdateRequested = true
+                this.panelUpdateObserved = true
+                this.stopPolling()
+                this.startPanelUpdatePolling()
+            })
             this.removeUpdateInterceptor = Livewire.interceptRequest(({ request, onError }) => {
                 if (Array.from(request.messages).some((message) => Array.from(message.actions).some((action) => ['updateAgent', 'updateAllAgents'].includes(action.name)))) return
                 onError(({ response, preventDefault }) => {
@@ -55,8 +62,6 @@
         },
         async pollPanelUpdate() {
             if (!this.panelUpdatePollingActive) return
-
-            this.panelUpdateSlow = Date.now() - this.panelUpdateStartedAt >= 900000
 
             let controller = new AbortController()
             this.panelUpdatePollController = controller

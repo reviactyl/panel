@@ -2,7 +2,6 @@
 
 return [
     'reconnecting' => 'Reconectando con el panel…',
-    'taking_longer' => 'Está tardando más de lo habitual. Seguimos comprobando si la actualización ha terminado.',
     'channel' => 'Release channel',
     'stable' => 'Stable',
     'beta' => 'Beta',

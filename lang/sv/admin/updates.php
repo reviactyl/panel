@@ -2,7 +2,6 @@
 
 return [
     'reconnecting' => 'Återansluter till panelen…',
-    'taking_longer' => 'Det tar längre tid än vanligt. Vi kontrollerar fortfarande om uppdateringen är klar.',
     'channel' => 'Release channel',
     'stable' => 'Stable',
     'beta' => 'Beta',

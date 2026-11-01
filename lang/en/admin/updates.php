@@ -2,7 +2,6 @@
 
 return [
     'reconnecting' => 'Reconnecting to the panel…',
-    'taking_longer' => 'This is taking longer than usual. We are still checking for completion.',
     'channel' => 'Release channel',
     'stable' => 'Stable',
     'beta' => 'Beta',

@@ -158,3 +158,86 @@ test('a rejected retry with unchanged failure status returns to the page', async
     }, controller);
     expect(visible).toBe(false);
 });
+
+for (const externalUpdate of [false, true]) {
+    test(`button tracks update and suppresses maintenance errors (external: ${externalUpdate})`, async ({ page }) => {
+        await page.route('http://panel.test/**', (route) =>
+            route.fulfill({ contentType: 'text/html', body: '<html><body></body></html>' }),
+        );
+        await page.goto('http://panel.test/admin/software-updates');
+        await page.addScriptTag({ path: 'vendor/livewire/livewire/dist/livewire.js' });
+        const label = source
+            .match(/<span x-text="(panelUpdateRequested[^\n]+?)">/)![1]!
+            .replace(/@js\(trans\('admin\/updates.reconnecting'\)\)/g, "'Reconnecting to the panel…'")
+            .replace(/@js\(trans\('admin\/updates.status.queued'\)\)/g, "'Waiting for Update Worker'")
+            .replace(/@js\(trans\('admin\/updates.update'\)\)/g, "'Update now'");
+        await page.evaluate(
+            ({ controller, label }) => {
+                const w = window as any;
+                w.updateTestStatus = { state: 'idle', version: 'old', updated_at: 'old' };
+                w.fetch = async () => ({ ok: true, status: 200, json: async () => w.updateTestStatus });
+                w.wire = w.Alpine.reactive({
+                    panelUpdateInProgress: false,
+                    panel: { status: w.updateTestStatus },
+                    refreshUpdates() {},
+                    async updatePanel() {
+                        this.panelUpdateInProgress = true;
+                        w.updateTestStatus = { state: 'downloading', message: 'Downloading' };
+                    },
+                });
+                w.Livewire.interceptRequest = (interceptor: any) => {
+                    w.interceptor = interceptor;
+                    return () => {};
+                };
+                w.Alpine.magic('wire', () => w.wire);
+                const root = document.createElement('div');
+                root.id = 'update';
+                root.setAttribute('x-data', controller);
+                root.setAttribute('x-init', 'startPolling()');
+                const button = document.createElement('button');
+                button.setAttribute('x-on:click', 'if (!panelUpdateRequested) updatePanel()');
+                button.setAttribute('x-bind:disabled', 'panelUpdateRequested');
+                const span = document.createElement('span');
+                span.setAttribute('x-text', label);
+                button.append(span);
+                root.append(button);
+                document.body.append(root);
+                w.Alpine.start();
+            },
+            { controller, label },
+        );
+        await expect(page.getByRole('button', { name: 'Update now' })).toBeEnabled();
+        if (externalUpdate) {
+            await page.evaluate(() => {
+                const w = window as any;
+                w.updateTestStatus = { state: 'downloading', message: 'Downloading' };
+                w.wire.panelUpdateInProgress = true;
+            });
+        } else {
+            await page.getByRole('button', { name: 'Update now' }).click();
+        }
+        await expect(page.getByRole('button', { name: 'Downloading', exact: true })).toBeDisabled();
+        const suppression = await page.evaluate(() => {
+            const w = window as any;
+            const intercept = (name: string, status: number) => {
+                let suppressed = false;
+                w.interceptor({
+                    request: { messages: [{ actions: [{ name }] }] },
+                    onError(callback: any) {
+                        callback({
+                            response: { status },
+                            preventDefault() {
+                                suppressed = true;
+                            },
+                        });
+                    },
+                });
+                return suppressed;
+            };
+            return [intercept('updateAgent', 503), intercept('updatePanel', 403), intercept('updatePanel', 503)];
+        });
+        expect(suppression).toEqual([false, false, true]);
+        await expect(page.getByRole('button', { name: 'Reconnecting to the panel…' })).toBeDisabled();
+        await page.evaluate(() => (window as any).Alpine.$data(document.querySelector('#update')).destroy());
+    });
+}

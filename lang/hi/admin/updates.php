@@ -2,7 +2,6 @@
 
 return [
     'reconnecting' => 'पैनल से फिर से जुड़ रहे हैं…',
-    'taking_longer' => 'इसमें सामान्य से अधिक समय लग रहा है। हम अभी भी अपडेट पूरा होने की जाँच कर रहे हैं।',
     'channel' => 'Release channel',
     'stable' => 'Stable',
     'beta' => 'Beta',

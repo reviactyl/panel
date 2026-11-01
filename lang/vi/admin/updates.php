@@ -2,7 +2,6 @@
 
 return [
     'reconnecting' => 'Đang kết nối lại với bảng điều khiển…',
-    'taking_longer' => 'Quá trình này lâu hơn bình thường. Chúng tôi vẫn đang kiểm tra xem bản cập nhật đã hoàn tất chưa.',
     'channel' => 'Release channel',
     'stable' => 'Stable',
     'beta' => 'Beta',

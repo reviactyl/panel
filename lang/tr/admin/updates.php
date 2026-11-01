@@ -2,7 +2,6 @@
 
 return [
     'reconnecting' => 'Panele yeniden bağlanılıyor…',
-    'taking_longer' => 'Bu işlem normalden uzun sürüyor. Güncellemenin tamamlanıp tamamlanmadığını kontrol etmeye devam ediyoruz.',
     'channel' => 'Release channel',
     'stable' => 'Stable',
     'beta' => 'Beta',

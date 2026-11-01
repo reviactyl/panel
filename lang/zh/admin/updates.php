@@ -2,7 +2,6 @@
 
 return [
     'reconnecting' => '正在重新连接面板…',
-    'taking_longer' => '此次更新耗时较长。我们仍在检查更新是否完成。',
     'channel' => 'Release channel',
     'stable' => 'Stable',
     'beta' => 'Beta',
