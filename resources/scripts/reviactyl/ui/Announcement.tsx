@@ -10,7 +10,7 @@ import {
     FaCircleCheck,
     FaRegCircleXmark,
 } from 'react-icons/fa6';
-import Md2React from '@/reviactyl/ui/Md2React';
+import AlertMarkdown from '@/reviactyl/ui/AlertMarkdown';
 import { AlertPlacement, PanelAlert, dismissAlert, trackAlertClick, useAlerts } from '@/api/alerts';
 
 interface Props {
@@ -180,7 +180,7 @@ const Announcement = ({ placement = 'dashboard', server }: Props) => {
                                 <div className='relative flex min-w-0 flex-1 flex-col gap-3 sm:flex-row sm:items-center'>
                                     <div className='min-w-0 flex-1 wrap-break-word'>
                                         {alert.title && <strong className='mr-1.5 text-gray-50'>{alert.title}</strong>}
-                                        <Md2React markdown={alert.message} />
+                                        <AlertMarkdown message={alert.message} />
                                     </div>
                                     {buttons.length > 0 && (
                                         <div className='flex shrink-0 flex-wrap items-center gap-2'>
