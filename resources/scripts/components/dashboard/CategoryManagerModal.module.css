@@ -1,0 +1,14 @@
+.folderColor {
+    padding: 0 !important;
+    overflow: hidden;
+    cursor: pointer;
+}
+.folderColor::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+.folderColor::-webkit-color-swatch {
+    border: 0;
+}
+.folderColor::-moz-color-swatch {
+    border: 0;
+}

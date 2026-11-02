@@ -11,6 +11,8 @@ export default (): Promise<ServerCategory[]> => {
                     (data.data || []).map((datum: any) => ({
                         uuid: datum.attributes.uuid,
                         name: datum.attributes.name,
+                        parentUuid: datum.attributes.parent_uuid ?? null,
+                        priority: datum.attributes.priority ?? 0,
                         description: datum.attributes.description,
                         color: datum.attributes.color,
                         createdAt: new Date(datum.attributes.created_at),

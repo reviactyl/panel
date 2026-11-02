@@ -11,6 +11,9 @@ use Illuminate\Support\Carbon;
 /**
  * @property int $id
  * @property string $uuid
+ * @property int $priority
+ * @property int|null $parent_id
+ * @property ServerCategory|null $parent
  * @property int $user_id
  * @property string $name
  * @property string|null $description
@@ -31,7 +34,16 @@ class ServerCategory extends Model
         'description',
         'color',
         'position',
+        'parent_id',
+        'priority',
     ];
+
+    protected $casts = ['priority' => 'integer', 'parent_id' => 'integer'];
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'parent_id');
+    }
 
     public function user(): BelongsTo
     {

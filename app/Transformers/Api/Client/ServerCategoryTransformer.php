@@ -15,6 +15,8 @@ class ServerCategoryTransformer extends BaseClientTransformer
     {
         return [
             'uuid' => $model->uuid,
+            'priority' => (int) $model->priority,
+            'parent_uuid' => $model->parent?->uuid,
             'name' => $model->name,
             'description' => $model->description,
             'color' => $model->color,

@@ -7,7 +7,7 @@ import useFlash from '@/plugins/useFlash';
 import { useStoreState } from 'easy-peasy';
 import { usePersistedState } from '@/plugins/usePersistedState';
 import Switch from '@/reviactyl/elements/Switch';
-import useSWR from 'swr';
+import useSWR, { useSWRConfig } from 'swr';
 import { PaginatedResult } from '@/api/http';
 import Pagination from '@/reviactyl/elements/Pagination';
 import { useLocation } from 'react-router-dom';
@@ -29,9 +29,17 @@ import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 import { useSubuserPreview } from '@/context/SubuserPreviewContext';
 import SearchContainer from '@/components/dashboard/search/SearchContainer';
 import clsx from 'clsx';
+import FolderView from '@/components/dashboard/FolderView';
+import MoveServersModal from '@/components/dashboard/MoveServersModal';
+import MoveFolderModal from '@/components/dashboard/MoveFolderModal';
+import { ServerCategory } from '@/api/account/getServerCategories';
+import FolderFormModal from './FolderFormModal';
+import DeleteFolderModal from './DeleteFolderModal';
+import { folderTree, folderPath } from './folderTree';
 
 export default () => {
     const modernHeaders = useModernHeaders();
+    const { mutate: mutateCache } = useSWRConfig();
     const { t } = useTranslation('dashboard/index');
     const { search } = useLocation();
     const defaultPage = Number(new URLSearchParams(search).get('page') || '1');
@@ -47,17 +55,33 @@ export default () => {
             ),
     );
     const layoutType = useStoreState((state) => state.designify.data!.layoutType);
+    const organization = useStoreState((state) => state.designify.data!.serverOrganization);
     const { session } = useSubuserPreview();
+    const folders = organization === 'folders' && !session;
     const rootAdmin = accountRootAdmin && !session;
     const [showOnlyAdmin, setShowOnlyAdmin] = usePersistedState(`${uuid}:show_all_servers`, false);
     const showAdminServers = rootAdmin && showOnlyAdmin;
 
     const [isModalVisible, setModalVisible] = useState(false);
+    const [movingServer, setMovingServer] = useState<Server | null>(null);
+    const [movingFolder, setMovingFolder] = useState<ServerCategory | null>(null);
+    const [editingFolder, setEditingFolder] = useState<ServerCategory | null>(null);
+    const [deletingFolder, setDeletingFolder] = useState<ServerCategory | null>(null);
     const [selectedCategory, setSelectedCategory] = useState<string>('all');
     const [selectedEggId, setSelectedEggId] = useState<number | null>(null);
     const [eggFilterOpen, setEggFilterOpen] = useState(false);
     const eggFilterRef = useRef<HTMLDivElement>(null);
-    const activeCategory = showAdminServers ? 'all' : selectedCategory;
+    const {
+        data: categories,
+        mutate: mutateCategories,
+        error: categoryError,
+    } = useSWR(session ? null : '/api/client/account/categories', getServerCategories);
+    const activeCategory =
+        showAdminServers || (folders && categoryError)
+            ? 'all'
+            : folders && selectedCategory === 'all'
+              ? 'primary'
+              : selectedCategory;
     const activeEggId = showAdminServers ? null : selectedEggId;
 
     useEffect(() => {
@@ -77,11 +101,7 @@ export default () => {
     const eggsKey = showAdminServers ? ['/api/client/eggs', 'admin'] : '/api/client/eggs';
     const { data: eggs } = useSWR(eggsKey, () => getClientEggs(showAdminServers ? 'admin' : undefined));
 
-    const {
-        data: servers,
-        error,
-        mutate: mutateServers,
-    } = useSWR<PaginatedResult<Server>>(
+    const { data: servers, error } = useSWR<PaginatedResult<Server>>(
         ['/api/client/servers', showAdminServers, page, activeCategory, activeEggId],
         () =>
             getServers({
@@ -93,10 +113,8 @@ export default () => {
             }),
     );
 
-    const { data: categories, mutate: mutateCategories } = useSWR(
-        session ? null : '/api/client/account/categories',
-        getServerCategories,
-    );
+    const refreshServerLists = () =>
+        mutateCache((key) => Array.isArray(key) && key[0] === '/api/client/servers', undefined, { revalidate: true });
 
     useEffect(() => {
         if (!servers) return;
@@ -104,7 +122,7 @@ export default () => {
         if (servers.pagination.currentPage > 1 && !servers.items.length) {
             setPage(1);
         }
-    }, [servers?.pagination.currentPage]);
+    }, [servers?.pagination.currentPage, servers?.items.length]);
 
     useEffect(() => {
         setPage(1);
@@ -154,8 +172,9 @@ export default () => {
                 if (a === 'primary') return 1;
                 if (b === 'primary') return -1;
 
-                const indexA = categories.findIndex((c) => c.uuid === a);
-                const indexB = categories.findIndex((c) => c.uuid === b);
+                const ordered = folderTree(categories).map(({ folder }) => folder);
+                const indexA = ordered.findIndex((c) => c.uuid === a);
+                const indexB = ordered.findIndex((c) => c.uuid === b);
 
                 return indexA - indexB;
             });
@@ -173,13 +192,24 @@ export default () => {
         >
             {!session && <ExtensionSlot name='dashboard:above' />}
 
-            {!session && (
+            {!session && !folders && (
                 <CategoryManagerModal
                     visible={isModalVisible}
+                    folders={folders}
+                    currentFolder={selectedCategory}
                     onDismissed={() => setModalVisible(false)}
                     onCategoryChanged={() => {
-                        mutateCategories();
-                        mutateServers();
+                        setPage(1);
+                        mutateCategories().then((updated) => {
+                            if (
+                                updated &&
+                                selectedCategory !== 'all' &&
+                                selectedCategory !== 'primary' &&
+                                !updated.some((folder) => folder.uuid === selectedCategory)
+                            )
+                                setSelectedCategory('all');
+                        });
+                        refreshServerLists();
                     }}
                 />
             )}
@@ -214,17 +244,19 @@ export default () => {
                             )}
 
                             <div className='relative flex shrink-0 items-center sm:border-l sm:border-[#334155] sm:pl-4 gap-x-1'>
-                                <div>
-                                    <Button.Text
-                                        type='button'
-                                        onClick={() => setModalVisible(true)}
-                                        className='p-2!'
-                                        title={t('categories.manage')}
-                                        aria-label={t('categories.manage')}
-                                    >
-                                        <FaUserGear className='w-5 h-5 text-gray-50' />
-                                    </Button.Text>
-                                </div>
+                                {!folders && (
+                                    <div>
+                                        <Button.Text
+                                            type='button'
+                                            onClick={() => setModalVisible(true)}
+                                            className='p-2!'
+                                            title={t('categories.manage')}
+                                            aria-label={t('categories.manage')}
+                                        >
+                                            <FaUserGear className='w-5 h-5 text-gray-50' />
+                                        </Button.Text>
+                                    </div>
+                                )}
 
                                 <div>
                                     {!showOnlyAdmin && (
@@ -279,7 +311,7 @@ export default () => {
                                                 </div>
                                             ) : null}
 
-                                            {!showOnlyAdmin && (
+                                            {!showOnlyAdmin && !folders && (
                                                 <div>
                                                     <p className='text-xs text-gray-200 uppercase px-2 pb-1.5'>
                                                         {t('categories.filter-label')}
@@ -326,6 +358,68 @@ export default () => {
                 )}
             </DashboardHeader>
 
+            {folders && !showAdminServers && (
+                <FolderView
+                    categories={categories}
+                    error={!!categoryError}
+                    onRetry={() => mutateCategories()}
+                    selected={selectedCategory}
+                    onSelect={(category) => {
+                        setSelectedCategory(category);
+                        setPage(1);
+                    }}
+                    onManage={() => setModalVisible(true)}
+                    onMoveFolder={setMovingFolder}
+                    onDeleteFolder={setDeletingFolder}
+                    onEditFolder={setEditingFolder}
+                />
+            )}
+
+            {folders && !session && (isModalVisible || editingFolder) && (
+                <FolderFormModal
+                    folder={editingFolder || undefined}
+                    parent={selectedCategory}
+                    onDismissed={() => {
+                        setModalVisible(false);
+                        setEditingFolder(null);
+                    }}
+                    onSaved={async () => {
+                        await mutateCategories();
+                        await refreshServerLists();
+                    }}
+                />
+            )}
+            {deletingFolder && (
+                <DeleteFolderModal
+                    folder={deletingFolder}
+                    onDismissed={() => setDeletingFolder(null)}
+                    onDeleted={async () => {
+                        await mutateCategories();
+                        await refreshServerLists();
+                    }}
+                />
+            )}
+
+            {movingServer && folders && !showAdminServers && (
+                <MoveServersModal
+                    categories={categories}
+                    server={movingServer}
+                    onDismissed={() => {
+                        setMovingServer(null);
+                    }}
+                    onSaved={refreshServerLists}
+                />
+            )}
+
+            {movingFolder && categories && (
+                <MoveFolderModal
+                    folder={movingFolder}
+                    folders={categories}
+                    onDismissed={() => setMovingFolder(null)}
+                    onSaved={() => mutateCategories()}
+                />
+            )}
+
             {!servers ? (
                 <Spinner centered size='large' />
             ) : (
@@ -341,15 +435,21 @@ export default () => {
                                             <EmojiSadIcon className='w-5 h-5 mr-1' />{' '}
                                             {activeEggId !== null
                                                 ? t('eggs.no-servers-for-egg')
-                                                : showOnlyAdmin
+                                                : showAdminServers
                                                   ? t('no-other-servers')
-                                                  : t('no-servers')}
+                                                  : folders
+                                                    ? t(
+                                                          activeCategory === 'primary'
+                                                              ? 'folders.home-empty'
+                                                              : 'folders.folder-empty',
+                                                      )
+                                                    : t('no-servers')}
                                         </p>
                                     </Card>
                                 );
                             }
 
-                            if (showOnlyAdmin) {
+                            if (showAdminServers || folders) {
                                 return (
                                     <LayoutContainer>
                                         {items.map((server, index) => (
@@ -358,6 +458,11 @@ export default () => {
                                                 server={server}
                                                 className={index > 0 ? 'mt-2' : undefined}
                                                 showCategory={false}
+                                                onMove={
+                                                    folders && !showAdminServers
+                                                        ? () => setMovingServer(server)
+                                                        : undefined
+                                                }
                                             />
                                         ))}
                                     </LayoutContainer>
@@ -369,10 +474,13 @@ export default () => {
                                     <CategorySection
                                         key={slug}
                                         category={categories?.find((c) => c.uuid === slug) || null}
+                                        label={folderPath(categories || [], slug)
+                                            .map((folder) => folder.name)
+                                            .join(' / ')}
                                         servers={groupedServers[slug] || []}
                                         showOnlyAdmin={showOnlyAdmin || false}
                                         showCategory={!session}
-                                        onCategoryChanged={() => mutateServers()}
+                                        onCategoryChanged={refreshServerLists}
                                     />
                                 ))
                             ) : (

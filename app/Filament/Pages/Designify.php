@@ -96,6 +96,7 @@ class Designify extends Page implements HasSchemas
         'designify:site_favicon',
         'designify:alwaysShowKillButton',
         'designify:cardType',
+        'designify:serverOrganization',
         'designify:layoutType',
         'designify:headerStyle',
         'designify:avatarType',
@@ -418,6 +419,15 @@ class Designify extends Page implements HasSchemas
                 ->icon('tabler-layout-dashboard')
                 ->columns(1)
                 ->schema([
+                    ToggleButtons::make('designify:serverOrganization')
+                        ->label(trans('dashboard/index.folders.organization'))
+                        ->inline()
+                        ->options([
+                            'categories' => trans('dashboard/index.folders.categories'),
+                            'folders' => trans('dashboard/index.folders.folders'),
+                        ])
+                        ->required()
+                        ->columnSpanFull(),
                     ToggleButtons::make('designify:cardType')
                         ->label(trans('admin/settings.designify.server-card-layout'))
                         ->inline()

@@ -23,11 +23,13 @@ export default ({
     server,
     className,
     onCategoryChanged,
+    onMove,
     showCategory = true,
 }: {
     server: Server;
     className?: string;
     onCategoryChanged?: () => void;
+    onMove?: () => void;
     showCategory?: boolean;
 }) => {
     const { t } = useTranslation('dashboard/index');
@@ -101,12 +103,24 @@ export default ({
                             <Title className='block max-w-[10ch] truncate text-2xl sm:max-w-none' title={server.name}>
                                 {server.name}
                             </Title>
-                            {showCategory && (
+                            {(showCategory || onMove) && (
                                 <div
+                                    role='button'
+                                    tabIndex={0}
+                                    aria-label={onMove ? `${t('folders.move-server')}: ${server.name}` : undefined}
+                                    onKeyDown={(event) => {
+                                        if (event.key === 'Enter' || event.key === ' ') {
+                                            event.preventDefault();
+                                            event.stopPropagation();
+                                            if (onMove) onMove();
+                                            else setCategoryModalVisible(true);
+                                        }
+                                    }}
                                     onClick={(e) => {
                                         e.preventDefault();
                                         e.stopPropagation();
-                                        setCategoryModalVisible(true);
+                                        if (onMove) onMove();
+                                        else setCategoryModalVisible(true);
                                     }}
                                     className={
                                         'inline-block text-[10px] px-2 py-0.5 rounded-full mt-1 border transition hover:brightness-110 cursor-pointer'
@@ -125,7 +139,9 @@ export default ({
                                               }
                                     }
                                 >
-                                    {server.category ? server.category.name : t('categories.set-category')}
+                                    {server.category
+                                        ? server.category.name
+                                        : t(onMove ? 'folders.home' : 'categories.set-category')}
                                 </div>
                             )}
                         </div>
