@@ -70,6 +70,7 @@ return [
             'kill' => 'Giết quá trình máy chủ',
         ],
         'backup' => [
+            'preview' => 'Đã xem trước :path trong bản sao lưu :name',
             'download' => 'Đã tải xuống bản sao lưu :name',
             'delete' => 'Đã xóa bản sao lưu :name',
             'restore' => 'Đã khôi phục bản sao lưu :name (tệp đã xóa: :truncate)',

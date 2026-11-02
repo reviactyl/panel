@@ -70,6 +70,7 @@ return [
             'kill' => 'Sunucu işlemi sonlandırıldı',
         ],
         'backup' => [
+            'preview' => ':name yedeğinde :path önizlendi',
             'download' => ':name yedeği indirildi',
             'delete' => ':name yedeği silindi',
             'restore' => ':name yedeği geri yüklendi (silinen dosyalar: :truncate)',

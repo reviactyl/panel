@@ -70,6 +70,7 @@ return [
             'kill' => '强制终止了服务器进程',
         ],
         'backup' => [
+            'preview' => '预览了备份 :name 中的 :path',
             'download' => '下载了 :name 备份',
             'delete' => '删除了 :name 备份',
             'restore' => '恢复了 :name 备份（已删除文件：:truncate）',

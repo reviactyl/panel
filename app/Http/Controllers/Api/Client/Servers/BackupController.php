@@ -230,13 +230,20 @@ class BackupController extends ClientApiController
             throw new BadRequestHttpException(__('server/backups.preview-limit'));
         }
 
-        return new JsonResponse($service->preview(
+        $preview = $service->preview(
             $this->downloadLinkService->handle($backup, $request->user()),
             $backup->format ?: 'tar.gz',
             $data['path'] ?? '',
             $request->boolean('contents'),
             $backup->uuid.':'.$backup->checksum.':'.$backup->format,
-        ), headers: ['Cache-Control' => 'no-store']);
+        );
+
+        Activity::event('server:backup.preview')->subject($backup)->property([
+            'name' => $backup->name,
+            'path' => $data['path'] ?? '/',
+        ])->log();
+
+        return new JsonResponse($preview, headers: ['Cache-Control' => 'no-store']);
     }
 
     /**

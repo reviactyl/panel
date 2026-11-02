@@ -70,6 +70,7 @@ return [
             'kill' => 'Killed the server process',
         ],
         'backup' => [
+            'preview' => 'Previewed :path in the :name backup',
             'download' => 'Downloaded the :name backup',
             'delete' => 'Deleted the :name backup',
             'restore' => 'Restored the :name backup (deleted files: :truncate)',

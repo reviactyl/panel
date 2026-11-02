@@ -7,7 +7,9 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\PumpStream;
 use GuzzleHttp\Psr7\Response;
+use Illuminate\Support\Facades\Cache;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Tests\TestCase;
@@ -130,6 +132,166 @@ class BackupPreviewServiceTest extends TestCase
         $zip->setExternalAttributesName('link', ZipArchive::OPSYS_UNIX, 0120777 << 16);
         $zip->close();
         $this->assertSame([['name' => 'file', 'is_directory' => false, 'size' => 2, 'preview_status' => 'text']], (new BackupPreviewService())->inspect($file, 'zip', '', false)['entries']);
+    }
+
+    public function test_slow_download_does_not_block_another_cached_backup(): void
+    {
+        $file = $this->archive('zip', ['a.txt' => 'cached']);
+        $key = 'test-'.bin2hex(random_bytes(8));
+        $this->files[] = storage_path('framework/cache/backup-previews/').hash('sha256', $key).'.archive';
+        $cached = new BackupPreviewService(new Client(['handler' => HandlerStack::create(new MockHandler([new Response(200, [], file_get_contents($file))]))]));
+        $cached->preview('https://node.example/cached', 'zip', '', false, $key);
+        $otherKey = 'test-'.bin2hex(random_bytes(8));
+        $this->files[] = storage_path('framework/cache/backup-previews/').hash('sha256', $otherKey).'.archive';
+        $handler = new MockHandler([function () use ($cached, $key, $file) {
+            $this->assertSame(['status' => 'text', 'contents' => 'cached'], $cached->preview('https://node.example/cached', 'zip', 'a.txt', true, $key));
+
+            return new Response(200, [], file_get_contents($file));
+        }]);
+        $service = new BackupPreviewService(new Client(['handler' => HandlerStack::create($handler)]));
+        $this->assertCount(1, $service->preview('https://node.example/slow', 'zip', '', false, $otherKey)['entries']);
+    }
+
+    public function test_cleanup_does_not_remove_an_expired_archive_in_use(): void
+    {
+        $file = $this->archive('zip', ['a.txt' => 'cached']);
+        $id = hash('sha256', bin2hex(random_bytes(8)));
+        $directory = storage_path('framework/cache/backup-previews');
+        if (! is_dir($directory)) {
+            mkdir($directory, 0700, true);
+        }
+        $active = $directory.'/'.$id.'.archive';
+        copy($file, $active);
+        touch($active, time() - 600);
+        $this->files[] = $active;
+        $lock = Cache::lock('backup-preview:'.$id, 120);
+        $this->assertTrue($lock->get());
+        $key = 'test-'.bin2hex(random_bytes(8));
+        $this->files[] = $directory.'/'.hash('sha256', $key).'.archive';
+        try {
+            $service = new BackupPreviewService(new Client(['handler' => HandlerStack::create(new MockHandler([new Response(200, [], file_get_contents($file))]))]));
+            $service->preview('https://node.example/other', 'zip', '', false, $key);
+            $this->assertFileExists($active);
+        } finally {
+            $lock->release();
+        }
+    }
+
+    public static function downloadSizes(): array
+    {
+        return [[BackupPreviewService::MAX_ARCHIVE_BYTES, true], [BackupPreviewService::MAX_ARCHIVE_BYTES + 1, false]];
+    }
+
+    #[DataProvider('downloadSizes')]
+    public function test_download_limit_and_partial_cleanup(int $bytes, bool $allowed): void
+    {
+        $body = new PumpStream(function (int $length) use (&$bytes) {
+            if ($bytes === 0) {
+                return false;
+            }
+            $length = min($length, $bytes);
+            $bytes -= $length;
+
+            return str_repeat('x', $length);
+        });
+        $client = new Client(['handler' => HandlerStack::create(new MockHandler([new Response(200, [], $body)]))]);
+        $service = new class($client) extends BackupPreviewService
+        {
+            public function inspect(string $filename, string $format, string $path, bool $contents): array
+            {
+                return ['entries' => []];
+            }
+        };
+        $key = 'limit-'.bin2hex(random_bytes(8));
+        $file = storage_path('framework/cache/backup-previews/').hash('sha256', $key).'.archive';
+        $this->files[] = $file;
+        try {
+            $this->assertSame(['entries' => []], $service->preview('https://node.example/limit', 'zip', '', false, $key));
+            $this->assertTrue($allowed);
+            $this->assertSame(BackupPreviewService::MAX_ARCHIVE_BYTES, filesize($file));
+        } catch (HttpException $exception) {
+            $this->assertFalse($allowed);
+            $this->assertSame(422, $exception->getStatusCode());
+            $this->assertSame(__('server/backups.preview-limit'), $exception->getMessage());
+            $this->assertFileDoesNotExist($file);
+        }
+        $this->assertFileDoesNotExist($file.'.part');
+    }
+
+    public static function expandedSizes(): array
+    {
+        return [[BackupPreviewService::MAX_EXPANDED_BYTES, true], [BackupPreviewService::MAX_EXPANDED_BYTES + 1, false]];
+    }
+
+    #[DataProvider('expandedSizes')]
+    public function test_gzip_expansion_limit(int $bytes, bool $allowed): void
+    {
+        $file = tempnam(sys_get_temp_dir(), 'backup-expansion-');
+        $this->files[] = $file;
+        $gzip = gzopen($file, 'wb1');
+        $chunk = str_repeat("\0", 1048576);
+        while ($bytes > 0) {
+            $length = min($bytes, strlen($chunk));
+            gzwrite($gzip, substr($chunk, 0, $length));
+            $bytes -= $length;
+        }
+        gzclose($gzip);
+        try {
+            $this->assertSame(['entries' => []], (new BackupPreviewService())->inspect($file, 'tar.gz', '', false));
+            $this->assertTrue($allowed);
+        } catch (HttpException $exception) {
+            $this->assertFalse($allowed);
+            $this->assertSame(422, $exception->getStatusCode());
+            $this->assertSame(__('server/backups.preview-limit'), $exception->getMessage());
+        }
+    }
+
+    #[DataProvider('expandedSizes')]
+    public function test_zip_expansion_limit(int $bytes, bool $allowed): void
+    {
+        $source = tempnam(sys_get_temp_dir(), 'backup-expanded-source-');
+        $this->files[] = $source;
+        $handle = fopen($source, 'wb');
+        ftruncate($handle, $bytes);
+        fclose($handle);
+        $file = tempnam(sys_get_temp_dir(), 'backup-expanded-zip-');
+        $this->files[] = $file;
+        $zip = new ZipArchive();
+        $zip->open($file, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+        $zip->addFile($source, 'large.bin');
+        $zip->setCompressionName('large.bin', ZipArchive::CM_DEFLATE, 1);
+        $zip->close();
+        try {
+            $this->assertCount(1, (new BackupPreviewService())->inspect($file, 'zip', '', false)['entries']);
+            $this->assertTrue($allowed);
+        } catch (HttpException $exception) {
+            $this->assertFalse($allowed);
+            $this->assertSame(422, $exception->getStatusCode());
+            $this->assertSame(__('server/backups.preview-limit'), $exception->getMessage());
+        }
+    }
+
+    public static function entryCounts(): array
+    {
+        return [['zip', 10000, true], ['zip', 10001, false], ['tar.gz', 10000, true], ['tar.gz', 10001, false]];
+    }
+
+    #[DataProvider('entryCounts')]
+    public function test_archive_entry_limit(string $format, int $count, bool $allowed): void
+    {
+        $entries = [];
+        for ($i = 0; $i < $count; $i++) {
+            $entries['file-'.$i] = '';
+        }
+        $file = $this->archive($format, $entries);
+        try {
+            $this->assertCount($count, (new BackupPreviewService())->inspect($file, $format, '', false)['entries']);
+            $this->assertTrue($allowed);
+        } catch (HttpException $exception) {
+            $this->assertFalse($allowed);
+            $this->assertSame(422, $exception->getStatusCode());
+            $this->assertSame(__('server/backups.preview-limit'), $exception->getMessage());
+        }
     }
 
     private function archive(string $format, array $entries): string

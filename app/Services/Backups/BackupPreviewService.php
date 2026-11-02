@@ -25,35 +25,33 @@ class BackupPreviewService
     public function preview(string $url, string $format, string $path, bool $contents, string $cacheKey): array
     {
         try {
-            return Cache::lock('backup-preview-cache', 120)->block(10, function () use ($url, $format, $path, $contents, $cacheKey) {
+            $id = hash('sha256', $cacheKey);
+
+            return Cache::lock('backup-preview:'.$id, 120)->block(10, function () use ($url, $format, $path, $contents, $id) {
                 $directory = storage_path('framework/cache/backup-previews');
-                if (! is_dir($directory) && ! mkdir($directory, 0700, true) && ! is_dir($directory)) {
-                    throw new \RuntimeException('Unable to create backup preview cache.');
+                if (! is_dir($directory)) {
+                    Cache::lock('backup-preview-cleanup', 10)->block(5, function () use ($directory) {
+                        if (! is_dir($directory) && ! mkdir($directory, 0700, true)) {
+                            throw new \RuntimeException('Unable to create backup preview cache.');
+                        }
+                    });
                 }
-                foreach (glob($directory.'/*.part') as $partial) {
-                    unlink($partial);
-                }
-                $filename = $directory.'/'.hash('sha256', $cacheKey).'.archive';
-                foreach (glob($directory.'/*.archive') as $cached) {
-                    if (filemtime($cached) < time() - 300) {
-                        unlink($cached);
-                    }
-                }
-                if (! is_file($filename)) {
-                    $cached = glob($directory.'/*.archive');
-                    usort($cached, fn ($a, $b) => filemtime($a) <=> filemtime($b));
-                    while (count($cached) >= 3) {
-                        unlink(array_shift($cached));
-                    }
+                $filename = $directory.'/'.$id.'.archive';
+                if (! is_file($filename) || filemtime($filename) < time() - 300) {
+                    $this->reserve($directory, $filename);
                     try {
                         $this->download($url, $filename.'.part');
-                        if (! rename($filename.'.part', $filename)) {
-                            throw new \RuntimeException('Unable to publish backup preview cache.');
-                        }
+                        Cache::lock('backup-preview-cleanup', 10)->block(5, function () use ($filename) {
+                            if (! rename($filename.'.part', $filename)) {
+                                throw new \RuntimeException('Unable to publish backup preview cache.');
+                            }
+                        });
                     } catch (\Throwable $exception) {
-                        if (is_file($filename.'.part')) {
-                            unlink($filename.'.part');
-                        }
+                        Cache::lock('backup-preview-cleanup', 10)->block(5, function () use ($filename) {
+                            if (is_file($filename.'.part')) {
+                                unlink($filename.'.part');
+                            }
+                        });
                         throw $exception;
                     }
                 }
@@ -68,6 +66,40 @@ class BackupPreviewService
             }
             throw new HttpException(502, __('server/backups.preview-unavailable'));
         }
+    }
+
+    private function reserve(string $directory, string $filename): void
+    {
+        Cache::lock('backup-preview-cleanup', 10)->block(5, function () use ($directory, $filename) {
+            if (is_file($filename)) {
+                unlink($filename);
+            }
+            if (is_file($filename.'.part')) {
+                unlink($filename.'.part');
+            }
+            $files = glob($directory.'/*.archive*');
+            usort($files, fn ($a, $b) => filemtime($a) <=> filemtime($b));
+            $remaining = count($files);
+            foreach ($files as $file) {
+                if (! str_ends_with($file, '.part') && filemtime($file) >= time() - 300 && $remaining < 3) {
+                    continue;
+                }
+                $id = explode('.', basename($file), 2)[0];
+                $removed = Cache::lock('backup-preview:'.$id, 120)->get(function () use ($file) {
+                    return unlink($file);
+                });
+                if ($removed) {
+                    $remaining--;
+                }
+            }
+            if ($remaining >= 3) {
+                throw new HttpException(503, __('server/backups.preview-unavailable'));
+            }
+            if (file_put_contents($filename.'.part', '') === false) {
+                throw new \RuntimeException('Unable to reserve backup preview cache.');
+            }
+            chmod($filename.'.part', 0600);
+        });
     }
 
     private function download(string $url, string $filename): void
@@ -230,7 +262,7 @@ class BackupPreviewService
             $extended = [];
             $count = 0;
             while (($header = fread($tar, 512)) !== '' && $header !== str_repeat("\0", 512)) {
-                if (strlen($header) !== 512 || ++$count > self::MAX_ENTRIES) {
+                if (strlen($header) !== 512 || ++$count > self::MAX_ENTRIES || microtime(true) > $deadline) {
                     $this->limit();
                 }
                 $checksum = trim(substr($header, 148, 8), "\0 ");

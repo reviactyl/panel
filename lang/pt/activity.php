@@ -70,6 +70,7 @@ return [
             'kill' => 'Processo do servidor finalizado',
         ],
         'backup' => [
+            'preview' => 'Pré-visualizou :path no backup :name',
             'download' => 'Backup :name baixado',
             'delete' => 'Backup :name excluído',
             'restore' => 'Backup :name restaurado (arquivos excluídos: :truncate)',
