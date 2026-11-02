@@ -1,19 +1,26 @@
 import { act, type ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { MemoryRouter } from 'react-router-dom';
-import { SWRConfig, unstable_serialize } from 'swr';
+import { SWRConfig, unstable_serialize, useSWRConfig } from 'swr';
+import { folderTree } from './folderTree';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import DashboardContainer from './DashboardContainer';
 
-const mocks = vi.hoisted(() => ({ getServers: vi.fn(), organization: 'categories', categoryError: false }));
+const mocks = vi.hoisted(() => ({
+    getServers: vi.fn(),
+    organization: 'categories',
+    categoryError: false,
+    categories: [] as { uuid: string; name: string }[],
+}));
+vi.mock('./folderTree', async (importOriginal) => {
+    const actual = await importOriginal<typeof import('./folderTree')>();
+    return { ...actual, folderTree: vi.fn(actual.folderTree) };
+});
 vi.mock('@/api/getServers', () => ({ default: mocks.getServers }));
 vi.mock('@/api/account/getServerCategories', () => ({
     default: async () => {
         if (mocks.categoryError) throw new Error('Unavailable');
-        return [
-            { uuid: 'small', name: 'Small' },
-            { uuid: 'large', name: 'Large' },
-        ];
+        return mocks.categories;
     },
 }));
 vi.mock('@/api/getClientEggs', () => ({ default: async () => [] }));
@@ -81,6 +88,11 @@ describe('dashboard category pagination', () => {
         vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
         mocks.organization = 'categories';
         mocks.categoryError = false;
+        mocks.categories = [
+            { uuid: 'small', name: 'Small' },
+            { uuid: 'large', name: 'Large' },
+        ];
+        vi.mocked(folderTree).mockClear();
         mocks.getServers.mockReset().mockImplementation(async ({ page, 'filter[category_uuid]': category }) => ({
             items:
                 category === 'small' && page > 1
@@ -105,7 +117,7 @@ describe('dashboard category pagination', () => {
         vi.unstubAllGlobals();
     });
 
-    const render = async () => {
+    const render = async (controls?: ReactNode) => {
         await act(async () => {
             root.render(
                 <SWRConfig
@@ -120,6 +132,7 @@ describe('dashboard category pagination', () => {
                         },
                     }}
                 >
+                    {controls}
                     <MemoryRouter>
                         <DashboardContainer />
                     </MemoryRouter>
@@ -165,6 +178,43 @@ describe('dashboard category pagination', () => {
             expect.objectContaining({ page: 1, 'filter[category_uuid]': 'null' }),
         );
         expect(container.textContent).toContain('Small');
+    });
+
+    it('returns Home on page one when a refresh removes the folder being viewed', async () => {
+        const RefreshFolders = () => {
+            const { mutate } = useSWRConfig();
+            return <button onClick={() => mutate('/api/client/account/categories')}>Refresh Folders</button>;
+        };
+        mocks.organization = 'folders';
+        await render(<RefreshFolders />);
+        await act(async () =>
+            Array.from(container.querySelectorAll('button'))
+                .find((button) => button.textContent === 'Large')!
+                .click(),
+        );
+        await clickPageTwo();
+        expect(mocks.getServers).toHaveBeenLastCalledWith(
+            expect.objectContaining({ page: 2, 'filter[category_uuid]': 'large' }),
+        );
+        mocks.categories = mocks.categories.filter((folder) => folder.uuid !== 'large');
+        await act(async () =>
+            Array.from(container.querySelectorAll('button'))
+                .find((button) => button.textContent === 'Refresh Folders')!
+                .click(),
+        );
+        expect(container.querySelector('[aria-current="page"]')?.textContent).toBe('folders.home');
+        expect(mocks.getServers).toHaveBeenLastCalledWith(
+            expect.objectContaining({ page: 1, 'filter[category_uuid]': 'null' }),
+        );
+    });
+
+    it('reuses folder ranks when changing server pages', async () => {
+        await render();
+        const treeBuilds = vi.mocked(folderTree).mock.calls.length;
+        expect(treeBuilds).toBeGreaterThan(0);
+        await clickPageTwo();
+        expect(vi.mocked(folderTree)).toHaveBeenCalledTimes(treeBuilds);
+        expect(mocks.getServers).toHaveBeenLastCalledWith(expect.objectContaining({ page: 2 }));
     });
 
     it('invalidates the cached Home list when a server moves out of a folder', async () => {

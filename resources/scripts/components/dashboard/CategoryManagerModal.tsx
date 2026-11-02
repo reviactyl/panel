@@ -73,7 +73,7 @@ export default ({ visible, onDismissed, onCategoryChanged, folders, currentFolde
 
     return (
         <>
-            <Modal visible={visible} onDismissed={onDismissed} size='lg'>
+            <Modal visible={visible && !deleting} onDismissed={onDismissed} size='lg'>
                 <h2 className='mb-5 text-2xl font-semibold'>
                     {t(folders ? (editing ? 'folders.edit' : 'folders.create') : 'categories.manage-title')}
                 </h2>

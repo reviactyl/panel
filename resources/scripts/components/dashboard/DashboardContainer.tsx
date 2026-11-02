@@ -76,6 +76,20 @@ export default () => {
         mutate: mutateCategories,
         error: categoryError,
     } = useSWR(session ? null : '/api/client/account/categories', getServerCategories);
+    useEffect(() => {
+        if (
+            folders &&
+            categories &&
+            !categoryError &&
+            selectedCategory !== 'all' &&
+            selectedCategory !== 'primary' &&
+            !categories.some((folder) => folder.uuid === selectedCategory)
+        ) {
+            setSelectedCategory('all');
+            setPage(1);
+        }
+    }, [folders, categories, categoryError, selectedCategory]);
+
     const activeCategory =
         showAdminServers || (folders && categoryError)
             ? 'all'
@@ -163,25 +177,25 @@ export default () => {
         return groups;
     }, [servers, selectedCategory]);
 
+    const categoryRanks = useMemo(
+        () => new Map(categories ? folderTree(categories).map(({ folder }, index) => [folder.uuid, index]) : []),
+        [categories],
+    );
+
     const sortedCategorySlugs = useMemo(() => {
         const slugs = Object.keys(groupedServers);
 
-        // Sort by category position if categories are loaded
         if (categories) {
             return slugs.sort((a, b) => {
                 if (a === 'primary') return 1;
                 if (b === 'primary') return -1;
 
-                const ordered = folderTree(categories).map(({ folder }) => folder);
-                const indexA = ordered.findIndex((c) => c.uuid === a);
-                const indexB = ordered.findIndex((c) => c.uuid === b);
-
-                return indexA - indexB;
+                return (categoryRanks.get(a) ?? -1) - (categoryRanks.get(b) ?? -1);
             });
         }
 
         return slugs;
-    }, [groupedServers, categories]);
+    }, [groupedServers, categories, categoryRanks]);
 
     return (
         <PageContentBlock
