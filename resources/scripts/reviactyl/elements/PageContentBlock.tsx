@@ -8,12 +8,20 @@ import Footer from '@/reviactyl/ui/Footer';
 export interface PageContentBlockProps {
     title?: string;
     inset?: boolean;
+    animate?: boolean;
     className?: string;
     showFlashKey?: string;
     children?: React.ReactNode;
 }
 
-const PageContentBlock = ({ title, inset = false, showFlashKey, className, children }: PageContentBlockProps) => {
+const PageContentBlock = ({
+    title,
+    inset = false,
+    animate = true,
+    showFlashKey,
+    className,
+    children,
+}: PageContentBlockProps) => {
     useEffect(() => {
         if (title) {
             document.title = title;
@@ -23,7 +31,11 @@ const PageContentBlock = ({ title, inset = false, showFlashKey, className, child
     const insetClass = inset ? 'mx-auto! my-2! w-[calc(100%-1rem)]' : undefined;
 
     return (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.15, ease: 'easeIn' }}>
+        <motion.div
+            initial={animate ? { opacity: 0 } : false}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.15, ease: 'easeIn' }}
+        >
             <ContentContainer className={classNames(insetClass, className)}>
                 {showFlashKey && <FlashMessageRender byKey={showFlashKey} className='mb-4' />}
                 {children}

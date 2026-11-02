@@ -36,6 +36,7 @@ vi.mock('@/api/http', () => ({ httpErrorToHuman: (error: Error) => error.message
 vi.mock('@/components/FlashMessageRender', () => ({ default: () => null }));
 vi.mock('./FileManagerBreadcrumbs', () => ({ default: () => null }));
 vi.mock('./FileNameModal', () => ({ default: () => null }));
+vi.mock('@/reviactyl/elements/Spinner', () => ({ default: () => <span>Loading</span> }));
 vi.mock('@/reviactyl/elements/SpinnerOverlay', () => ({
     default: ({ visible }: { visible: boolean }) => (visible ? <span>Loading</span> : null),
 }));
@@ -73,6 +74,7 @@ beforeEach(() => {
     Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
     vi.clearAllMocks();
     mocks.read.mockReset();
+    mocks.shortcut = undefined;
     container = document.createElement('div');
     root = createRoot(container);
 });
@@ -99,6 +101,36 @@ describe.each(['cm', 'mo'])('file read ordering (%s)', (editor) => {
     beforeEach(() => {
         mocks.editor = editor;
     });
+    it('replaces the loading placeholder with the loaded editor without an overlay fade', async () => {
+        const read = deferred();
+        mocks.read.mockReturnValueOnce(read.promise);
+        await render();
+        expect(container.querySelector('textarea')).toBeNull();
+        expect(container.textContent).toContain('Loading');
+        await act(async () => read.resolve('loaded file'));
+        expect(content()).toBe('loaded file');
+        expect(container.textContent).not.toContain('Loading');
+        expect(save().disabled).toBe(false);
+    });
+    it('keeps the editor mounted while saving', async () => {
+        const update = deferred();
+        mocks.read.mockResolvedValueOnce('loaded file');
+        mocks.update.mockReturnValueOnce(update.promise);
+        await render();
+        const editor = container.querySelector('textarea');
+        await act(async () => save().click());
+        expect(container.querySelector('textarea')).toBe(editor);
+        expect(save().disabled).toBe(true);
+        await act(async () => update.resolve(''));
+        expect(container.querySelector('textarea')).toBe(editor);
+        expect(save().disabled).toBe(false);
+    });
+    it('keeps an empty file editable after loading', async () => {
+        mocks.read.mockResolvedValueOnce('');
+        await render();
+        expect(content()).toBe('');
+        expect(save().disabled).toBe(false);
+    });
     it('saves B contents when a delayed A response completes after B loads', async () => {
         const a = deferred();
         mocks.read.mockReturnValueOnce(a.promise).mockResolvedValueOnce('B contents');
@@ -119,7 +151,7 @@ describe.each(['cm', 'mo'])('file read ordering (%s)', (editor) => {
         expect(save().disabled).toBe(true);
         await act(async () => {
             save().click();
-            mocks.shortcut!();
+            mocks.shortcut?.();
         });
         expect(mocks.update).not.toHaveBeenCalled();
         await act(async () => b.resolve('B contents'));

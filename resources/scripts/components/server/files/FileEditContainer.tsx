@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import getFileContents from '@/api/server/files/getFileContents';
 import { httpErrorToHuman } from '@/api/http';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
+import Spinner from '@/reviactyl/elements/Spinner';
+import editorStyles from '@/reviactyl/elements/style.module.css';
 import saveFileContents from '@/api/server/files/saveFileContents';
 import updateFileContents from '@/api/server/files/updateFileContents';
 import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcrumbs';
@@ -33,7 +35,7 @@ const FileEditContainer = () => {
     // Use regex that includes # for isNewFile
     const isNewFile = /\/files\/new(\/|$|#)/.test(location.pathname);
     const [loading, setLoading] = useState(!isNewFile);
-    const [content, setContent] = useState('');
+    const [content, setContent] = useState<string | null>(isNewFile ? '' : null);
     const [modalVisible, setModalVisible] = useState(false);
     const [mode, setMode] = useState('text/plain');
 
@@ -71,6 +73,7 @@ const FileEditContainer = () => {
             .then((content) => {
                 if (active) {
                     setContent(content);
+                    setLoading(false);
                 }
             })
             .catch((error) => {
@@ -79,11 +82,7 @@ const FileEditContainer = () => {
                 }
                 console.error(error);
                 setError(httpErrorToHuman(error));
-            })
-            .then(() => {
-                if (active) {
-                    setLoading(false);
-                }
+                setLoading(false);
             });
 
         return () => {
@@ -122,7 +121,7 @@ const FileEditContainer = () => {
     }
 
     return (
-        <ContentBlock title={'File Editor'}>
+        <ContentBlock title={'File Editor'} animate={false}>
             <FlashMessageRender byKey='files:view' className='mb-4' />
             <ErrorBoundary>
                 <Card className='mt-2 mb-1 rounded-b-none! px-2! py-6!'>
@@ -160,8 +159,16 @@ const FileEditContainer = () => {
                 }}
             />
             <Card className='relative mb-1 rounded-none! p-1!'>
-                <SpinnerOverlay visible={loading} />
-                {user?.fileEditor === 'cm' && (
+                {content === null ? (
+                    <div className={editorStyles.editor}>
+                        <div className='flex items-center justify-center'>
+                            <Spinner size='large' />
+                        </div>
+                    </div>
+                ) : (
+                    <SpinnerOverlay visible={loading} />
+                )}
+                {content !== null && user?.fileEditor === 'cm' && (
                     <CodemirrorEditor
                         mode={mode}
                         filename={hash.replace(/^#/, '')}
@@ -179,7 +186,7 @@ const FileEditContainer = () => {
                         }}
                     />
                 )}
-                {user?.fileEditor === 'mo' && (
+                {content !== null && user?.fileEditor === 'mo' && (
                     <MonacoEditor
                         mode={mode}
                         filename={hash.replace(/^#/, '')}

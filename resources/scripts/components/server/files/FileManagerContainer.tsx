@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { httpErrorToHuman } from '@/api/http';
-import { motion } from 'framer-motion';
 import Spinner from '@/reviactyl/elements/Spinner';
 import FileObjectRow from '@/components/server/files/FileObjectRow';
 import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcrumbs';
@@ -356,16 +355,12 @@ export default () => {
                                 <p className={'text-sm'}>{t('no-results')}</p>
                             </div>
                         ) : (
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ duration: 0.15, ease: 'easeIn' }}
-                            >
+                            <div>
                                 {isSearching && <p className='mb-2 text-center text-xs text-muted'>{t('searching')}</p>}
                                 {recursiveResults.map((file) => (
                                     <RecursiveFileRow key={file.fullPath} file={file} serverId={id} />
                                 ))}
-                            </motion.div>
+                            </div>
                         )
                     ) : !filteredFiles.length ? (
                         <div className={'flex flex-col items-center justify-center py-10 text-muted'}>
@@ -373,11 +368,7 @@ export default () => {
                             <p className={'text-sm'}>{t('empty')}</p>
                         </div>
                     ) : (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ duration: 0.15, ease: 'easeIn' }}
-                        >
+                        <div>
                             {files.length > 250 && (
                                 <div className='mb-px rounded bg-yellow-400 p-3'>
                                     <p className='text-center text-sm text-yellow-900'>{t('too-large')}</p>
@@ -393,7 +384,7 @@ export default () => {
                                     />
                                 ))}
                             </div>
-                        </motion.div>
+                        </div>
                     )}
                 </Card>
             )}

@@ -10,12 +10,12 @@ interface Props extends PageContentBlockProps {
     children?: React.ReactNode;
 }
 
-const ServerContentBlock = ({ title, children, ...props }: Props) => {
+const ServerContentBlock = ({ title, children, animate = false, ...props }: Props) => {
     const servername = ServerContext.useStoreState((state) => state.server.data!.name);
     const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
 
     return (
-        <PageContentBlock title={`(${servername}) ${title} | ${name}`} {...props}>
+        <PageContentBlock title={`(${servername}) ${title} | ${name}`} animate={animate} {...props}>
             <Title className='text-4xl mb-2'>{title}</Title>
             {children}
         </PageContentBlock>
