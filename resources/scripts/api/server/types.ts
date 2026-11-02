@@ -27,6 +27,8 @@ export interface ServerEggVariable {
 }
 
 export interface ServerCategory {
+    parentUuid?: string | null;
+    priority?: number;
     uuid: string;
     name: string;
     description: string | null;

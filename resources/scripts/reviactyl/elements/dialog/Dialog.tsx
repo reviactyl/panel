@@ -14,6 +14,7 @@ const variants = {
             damping: 15,
             stiffness: 300,
             duration: 0.15,
+            opacity: { type: 'tween', duration: 0.15, ease: 'easeOut' },
         },
     },
     closed: {
@@ -41,6 +42,7 @@ export default ({
     children,
 }: RenderDialogProps) => {
     const container = useRef<HTMLDivElement>(null);
+    const panel = useRef<HTMLDivElement>(null);
     const [icon, setIcon] = useState<React.ReactNode>();
     const [footer, setFooter] = useState<React.ReactNode>();
     const [iconPosition, setIconPosition] = useState<IconPosition>('title');
@@ -79,7 +81,14 @@ export default ({
                                 onMouseUp={onContainerClick.bind(this, false)}
                             >
                                 <HDialog.Panel
+                                    ref={panel}
                                     as={motion.div as any}
+                                    onUpdate={(latest: { opacity?: number | string }) => {
+                                        // Keep opacity on the same frame clock as the spring to avoid a finishing flash.
+                                        if (panel.current && typeof latest.opacity === 'number') {
+                                            panel.current.style.opacity = String(latest.opacity);
+                                        }
+                                    }}
                                     initial={'closed'}
                                     animate={down ? 'bounce' : 'open'}
                                     exit={'closed'}

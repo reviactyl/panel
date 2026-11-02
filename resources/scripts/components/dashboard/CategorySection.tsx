@@ -10,13 +10,14 @@ import { FaServer } from 'react-icons/fa6';
 
 interface Props {
     category: ServerCategory | null;
+    label?: string;
     servers: Server[];
     showOnlyAdmin: boolean;
     showCategory?: boolean;
     onCategoryChanged?: () => void;
 }
 
-export default ({ category, servers, showOnlyAdmin, showCategory = true, onCategoryChanged }: Props) => {
+export default ({ category, label, servers, showOnlyAdmin, showCategory = true, onCategoryChanged }: Props) => {
     const { t } = useTranslation('dashboard/index');
     const storageKey = `server-category-${category?.uuid ?? 'primary'}`;
     const [open, setOpen] = useState(() => {
@@ -67,7 +68,7 @@ export default ({ category, servers, showOnlyAdmin, showCategory = true, onCateg
                         </span>
                         <div className='min-w-0'>
                             <span className='font-medium inline-flex gap-2' style={{ color: displayColor }}>
-                                {category ? category.name : t('categories.primary')}
+                                {category ? label || category.name : t('categories.primary')}
                                 <span
                                     className='inline-flex h-6 min-w-6 items-center justify-center rounded-full border px-2 text-xs font-semibold tabular-nums'
                                     style={{

@@ -6,22 +6,24 @@ use App\Http\Requests\Api\Client\Account\StoreServerCategoryRequest;
 use App\Http\Requests\Api\Client\Account\UpdateServerCategoryRequest;
 use App\Http\Requests\Api\Client\ClientApiRequest;
 use App\Models\ServerCategory;
+use App\Services\ServerCategories\ServerCategoryService;
 use App\Transformers\Api\Client\ServerCategoryTransformer;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class CategoryController extends ClientApiController
 {
+    public function __construct(private ServerCategoryService $categories)
+    {
+        parent::__construct();
+    }
+
     /**
      * List all categories for the authenticated user.
      */
     public function index(ClientApiRequest $request): array
     {
-        $categories = ServerCategory::query()
-            ->where('user_id', $request->user()->id)
-            ->orderBy('position', 'asc')
-            ->orderBy('id', 'asc')
-            ->get();
+        $categories = $this->categories->all($request->user()->id);
 
         return $this->fractal->collection($categories)
             ->transformWith($this->getTransformer(ServerCategoryTransformer::class))
@@ -33,13 +35,7 @@ class CategoryController extends ClientApiController
      */
     public function store(StoreServerCategoryRequest $request): array
     {
-        $category = ServerCategory::create([
-            'uuid' => Str::uuid()->toString(),
-            'user_id' => $request->user()->id,
-            'name' => $request->input('name'),
-            'description' => $request->input('description'),
-            'color' => $request->input('color'),
-        ]);
+        $category = $this->categories->save($request->user()->id, $request->validated());
 
         return $this->fractal->item($category)
             ->transformWith($this->getTransformer(ServerCategoryTransformer::class))
@@ -66,12 +62,7 @@ class CategoryController extends ClientApiController
      */
     public function update(UpdateServerCategoryRequest $request, string $uuid): array
     {
-        $category = ServerCategory::query()
-            ->where('user_id', $request->user()->id)
-            ->where('uuid', $uuid)
-            ->firstOrFail();
-
-        $category->update($request->validated());
+        $category = $this->categories->save($request->user()->id, $request->validated(), $uuid);
 
         return $this->fractal->item($category)
             ->transformWith($this->getTransformer(ServerCategoryTransformer::class))
@@ -83,14 +74,11 @@ class CategoryController extends ClientApiController
      */
     public function reorder(ClientApiRequest $request): JsonResponse
     {
-        $ids = $request->input('ids', []);
-
-        foreach ($ids as $index => $uuid) {
-            ServerCategory::query()
-                ->where('user_id', $request->user()->id)
-                ->where('uuid', $uuid)
-                ->update(['position' => $index]);
-        }
+        $validated = $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['required', 'uuid', 'distinct', Rule::exists('server_categories', 'uuid')->where('user_id', $request->user()->id)],
+        ]);
+        $this->categories->reorder($request->user()->id, $validated['ids']);
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
@@ -100,15 +88,7 @@ class CategoryController extends ClientApiController
      */
     public function delete(ClientApiRequest $request, string $uuid): JsonResponse
     {
-        $category = ServerCategory::query()
-            ->where('user_id', $request->user()->id)
-            ->where('uuid', $uuid)
-            ->firstOrFail();
-
-        // Optional: decoupling servers from this category is redundant if foreign key is set null on delete?
-        // Yes, migration used nullOnDelete().
-
-        $category->delete();
+        $this->categories->delete($request->user()->id, $uuid);
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }

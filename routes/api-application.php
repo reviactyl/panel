@@ -20,6 +20,14 @@ Route::group(['prefix' => '/users'], function () {
     Route::post('/', [Application\Users\UserController::class, 'store']);
     Route::patch('/{user:id}', [Application\Users\UserController::class, 'update']);
 
+    Route::get('/{user:id}/folders', [Application\Users\FolderController::class, 'index']);
+    Route::post('/{user:id}/folders', [Application\Users\FolderController::class, 'store']);
+    Route::get('/{user:id}/folders/{uuid}', [Application\Users\FolderController::class, 'show']);
+    Route::patch('/{user:id}/folders/{uuid}', [Application\Users\FolderController::class, 'update']);
+    Route::delete('/{user:id}/folders/{uuid}', [Application\Users\FolderController::class, 'delete']);
+    Route::get('/{user:id}/servers/{server:id}/folder', [Application\Users\FolderController::class, 'server'])->withoutScopedBindings();
+    Route::put('/{user:id}/servers/{server:id}/folder', [Application\Users\FolderController::class, 'assign'])->withoutScopedBindings();
+
     Route::delete('/{user:id}', [Application\Users\UserController::class, 'delete']);
 });
 
