@@ -70,6 +70,7 @@ return [
             'kill' => 'Proceso del servidor finalizado',
         ],
         'backup' => [
+            'preview' => 'Vio una vista previa de :path en la copia :name',
             'download' => 'Copia de seguridad :name descargada',
             'delete' => 'Copia de seguridad :name eliminada',
             'restore' => 'Copia de seguridad :name restaurada (archivos eliminados: :truncate)',

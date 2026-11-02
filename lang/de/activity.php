@@ -70,6 +70,7 @@ return [
             'kill' => 'Serverprozess gekillt',
         ],
         'backup' => [
+            'preview' => ':path im Backup :name in der Vorschau angezeigt',
             'download' => 'Backup :name heruntergeladen',
             'delete' => 'Backup :name gelöscht',
             'restore' => 'Backup :name wiederhergestellt (gelöschte Dateien: :truncate)',

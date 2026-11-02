@@ -2,11 +2,15 @@
 
 namespace Tests\Integration\Api\Client\Server\Backup;
 
+use App\Events\ActivityLogged;
 use App\Models\Backup;
 use App\Models\Subuser;
+use App\Services\Backups\BackupPreviewService;
 use App\Services\Backups\DeleteBackupService;
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Facades\Event;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
 class BackupAuthorizationTest extends ClientApiIntegrationTestCase
@@ -35,6 +39,12 @@ class BackupAuthorizationTest extends ClientApiIntegrationTestCase
             $mock->expects('handle')->andReturnUndefined();
         }
 
+        if ($endpoint === '/preview') {
+            $backup1->update(['is_successful' => true]);
+            $this->instance(BackupPreviewService::class, $preview = \Mockery::mock(BackupPreviewService::class));
+            $preview->expects('preview')->once()->andReturn(['entries' => []]);
+        }
+
         // This is the only valid call for this test, accessing the backup for the same
         // server that the API user is the owner of.
         $this->actingAs($user)->json($method, $this->link($server1, '/backups/'.$backup1->uuid.$endpoint))
@@ -53,11 +63,33 @@ class BackupAuthorizationTest extends ClientApiIntegrationTestCase
         $this->actingAs($user)->json($method, $this->link($server3, '/backups/'.$backup3->uuid.$endpoint))->assertNotFound();
     }
 
+    public function test_successful_preview_records_the_backup_and_requested_path(): void
+    {
+        [$user, $server] = $this->generateTestAccount();
+        $backup = Backup::factory()->create(['server_id' => $server->id, 'is_successful' => true, 'completed_at' => CarbonImmutable::now()]);
+        $this->instance(BackupPreviewService::class, $preview = \Mockery::mock(BackupPreviewService::class));
+        $preview->expects('preview')->once()->andReturn(['status' => 'text', 'contents' => 'archived']);
+        $this->actingAs($user)->getJson($this->link($backup, '/preview?path=config/server.properties&contents=1'))->assertOk();
+        $this->assertActivityFor('server:backup.preview', $user, [$backup, $server]);
+        Event::assertDispatched(ActivityLogged::class, fn ($event) => $event->is('server:backup.preview') && $event->model->properties['path'] === 'config/server.properties');
+    }
+
+    public function test_failed_preview_does_not_record_a_successful_access(): void
+    {
+        [$user, $server] = $this->generateTestAccount();
+        $backup = Backup::factory()->create(['server_id' => $server->id, 'is_successful' => true, 'completed_at' => CarbonImmutable::now()]);
+        $this->instance(BackupPreviewService::class, $preview = \Mockery::mock(BackupPreviewService::class));
+        $preview->expects('preview')->once()->andThrow(new UnprocessableEntityHttpException('Unavailable'));
+        $this->actingAs($user)->getJson($this->link($backup, '/preview'))->assertUnprocessable();
+        Event::assertNotDispatched(ActivityLogged::class);
+    }
+
     public static function methodDataProvider(): array
     {
         return [
             ['GET', ''],
             ['GET', '/download'],
+            ['GET', '/preview'],
             ['DELETE', ''],
         ];
     }

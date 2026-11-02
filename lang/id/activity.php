@@ -70,6 +70,7 @@ return [
             'kill' => 'Mematikan paksa proses server',
         ],
         'backup' => [
+            'preview' => 'Melihat pratinjau :path dalam cadangan :name',
             'download' => 'Mengunduh backup :name',
             'delete' => 'Menghapus backup :name',
             'restore' => 'Memulihkan backup :name (file yang dihapus: :truncate)',

@@ -70,6 +70,7 @@ return [
             'kill' => 'Dödade serverprocessen',
         ],
         'backup' => [
+            'preview' => 'Förhandsgranskade :path i säkerhetskopian :name',
             'download' => 'Laddade ner :name backup',
             'delete' => 'Raderade :name backup',
             'restore' => 'Återställde :name backup (raderade filer: :truncate)',

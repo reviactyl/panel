@@ -70,6 +70,7 @@ return [
             'kill' => 'Arrêt forcé du serveur',
         ],
         'backup' => [
+            'preview' => 'A prévisualisé :path dans la sauvegarde :name',
             'download' => 'Téléchargement de la sauvegarde :name',
             'delete' => 'Suppression de la sauvegarde :name',
             'restore' => 'Restauration de la sauvegarde :name (fichiers supprimés: :truncate)',
