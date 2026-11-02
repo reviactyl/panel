@@ -43,7 +43,7 @@ export default function BackupPreviewModal({ backup, onClose }: { backup: Server
         http.get(`/api/client/servers/${uuid}/backups/${backup.uuid}/preview`, {
             params: { path: location.path, contents: location.file ? 1 : 0 },
             signal: controller.signal,
-            timeout: 90000,
+            timeout: 120000,
         })
             .then(({ data }) => {
                 if (!controller.signal.aborted) {

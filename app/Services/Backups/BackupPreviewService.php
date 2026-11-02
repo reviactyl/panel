@@ -5,6 +5,7 @@ namespace App\Services\Backups;
 use GuzzleHttp\Client;
 use Illuminate\Contracts\Cache\LockTimeoutException;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Sleep;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -27,7 +28,7 @@ class BackupPreviewService
         try {
             $id = hash('sha256', $cacheKey);
 
-            return Cache::lock('backup-preview:'.$id, 120)->block(10, function () use ($url, $format, $path, $contents, $id) {
+            return Cache::lock('backup-preview:'.$id, 180)->block(10, function () use ($url, $format, $path, $contents, $id) {
                 $directory = storage_path('framework/cache/backup-previews');
                 if (! is_dir($directory)) {
                     Cache::lock('backup-preview-cleanup', 10)->block(5, function () use ($directory) {
@@ -70,36 +71,48 @@ class BackupPreviewService
 
     private function reserve(string $directory, string $filename): void
     {
-        Cache::lock('backup-preview-cleanup', 10)->block(5, function () use ($directory, $filename) {
-            if (is_file($filename)) {
-                unlink($filename);
-            }
-            if (is_file($filename.'.part')) {
-                unlink($filename.'.part');
-            }
-            $files = glob($directory.'/*.archive*');
-            usort($files, fn ($a, $b) => filemtime($a) <=> filemtime($b));
-            $remaining = count($files);
-            foreach ($files as $file) {
-                if (! str_ends_with($file, '.part') && filemtime($file) >= time() - 300 && $remaining < 3) {
-                    continue;
+        $deadline = microtime(true) + 30;
+        for ($attempt = 0; ; $attempt++) {
+            $reserved = Cache::lock('backup-preview-cleanup', 10)->get(function () use ($directory, $filename) {
+                if (is_file($filename)) {
+                    unlink($filename);
                 }
-                $id = explode('.', basename($file), 2)[0];
-                $removed = Cache::lock('backup-preview:'.$id, 120)->get(function () use ($file) {
-                    return unlink($file);
-                });
-                if ($removed) {
-                    $remaining--;
+                if (is_file($filename.'.part')) {
+                    unlink($filename.'.part');
                 }
+                $files = glob($directory.'/*.archive*');
+                usort($files, fn ($a, $b) => filemtime($a) <=> filemtime($b));
+                $remaining = count($files);
+                foreach ($files as $file) {
+                    if (! str_ends_with($file, '.part') && filemtime($file) >= time() - 300 && $remaining < 3) {
+                        continue;
+                    }
+                    $id = explode('.', basename($file), 2)[0];
+                    $removed = Cache::lock('backup-preview:'.$id, 120)->get(function () use ($file) {
+                        return unlink($file);
+                    });
+                    if ($removed) {
+                        $remaining--;
+                    }
+                }
+                if ($remaining >= 3) {
+                    return false;
+                }
+                if (file_put_contents($filename.'.part', '') === false) {
+                    throw new \RuntimeException('Unable to reserve backup preview cache.');
+                }
+                chmod($filename.'.part', 0600);
+
+                return true;
+            });
+            if ($reserved) {
+                return;
             }
-            if ($remaining >= 3) {
+            if ($attempt >= 120 || microtime(true) >= $deadline) {
                 throw new HttpException(503, __('server/backups.preview-unavailable'));
             }
-            if (file_put_contents($filename.'.part', '') === false) {
-                throw new \RuntimeException('Unable to reserve backup preview cache.');
-            }
-            chmod($filename.'.part', 0600);
-        });
+            Sleep::usleep(250000);
+        }
     }
 
     private function download(string $url, string $filename): void
@@ -110,14 +123,17 @@ class BackupPreviewService
         }
         chmod($filename, 0600);
         try {
+            $deadline = microtime(true) + 30;
             $response = $this->client->get($url, [
                 'stream' => true, 'timeout' => 30, 'read_timeout' => 10,
-                'connect_timeout' => 5, 'allow_redirects' => false,
+                'connect_timeout' => 5, 'allow_redirects' => false, 'decode_content' => false,
                 'verify' => app()->environment('production'),
             ]);
             $body = $response->getBody();
             try {
-                $deadline = microtime(true) + 30;
+                if ($response->getStatusCode() !== 200) {
+                    throw new \RuntimeException('Unexpected backup preview download status.');
+                }
                 $bytes = 0;
                 while (! $body->eof()) {
                     $chunk = $body->read(65536);
@@ -128,6 +144,10 @@ class BackupPreviewService
                     if (fwrite($file, $chunk) !== strlen($chunk)) {
                         throw new \RuntimeException('Unable to write backup preview temporary file.');
                     }
+                }
+                $expected = $response->getHeaderLine('Content-Length');
+                if ($expected !== '' && (int) $expected !== $bytes) {
+                    throw new \RuntimeException('Incomplete backup preview download.');
                 }
             } finally {
                 $body->close();

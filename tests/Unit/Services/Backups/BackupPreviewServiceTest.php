@@ -10,6 +10,7 @@ use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\PumpStream;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Sleep;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Tests\TestCase;
@@ -94,6 +95,29 @@ class BackupPreviewServiceTest extends TestCase
         }
     }
 
+    public static function invalidDownloads(): array
+    {
+        return [[302, false], [200, true]];
+    }
+
+    #[DataProvider('invalidDownloads')]
+    public function test_redirected_or_incomplete_downloads_are_not_cached(int $status, bool $truncated): void
+    {
+        $body = gzencode(str_repeat("\0", 1024));
+        $handler = new MockHandler([new Response($status, ['Content-Length' => strlen($body) + ($truncated ? 1 : 0)], $body)]);
+        $service = new BackupPreviewService(new Client(['handler' => HandlerStack::create($handler)]));
+        $key = 'invalid-'.bin2hex(random_bytes(8));
+        $file = storage_path('framework/cache/backup-previews/').hash('sha256', $key).'.archive';
+        try {
+            $service->preview('https://node.example/download', 'tar.gz', '', false, $key);
+            $this->fail('Expected the invalid download to be rejected.');
+        } catch (HttpException $exception) {
+            $this->assertSame(502, $exception->getStatusCode());
+            $this->assertFileDoesNotExist($file);
+            $this->assertFileDoesNotExist($file.'.part');
+        }
+    }
+
     public function test_reuses_private_cached_archive_without_refetching_signed_url(): void
     {
         $file = $this->archive('zip', ['config/a.txt' => 'archived']);
@@ -175,6 +199,86 @@ class BackupPreviewServiceTest extends TestCase
         } finally {
             $lock->release();
         }
+    }
+
+    public function test_uncached_preview_waits_for_an_active_cache_slot_to_be_released(): void
+    {
+        $locks = $this->occupyCache();
+        Sleep::fake();
+        $waits = 0;
+        Sleep::whenFakingSleep(function () use ($locks, &$waits) {
+            $cleanup = Cache::lock('backup-preview-cleanup', 10);
+            $this->assertTrue($cleanup->get());
+            $cleanup->release();
+            if (++$waits === 2) {
+                $locks[0]->release();
+            }
+        });
+        $file = $this->archive('zip', ['a.txt' => 'queued']);
+        $key = 'queued-'.bin2hex(random_bytes(8));
+        $cached = storage_path('framework/cache/backup-previews/').hash('sha256', $key).'.archive';
+        $this->files[] = $cached;
+        $handler = new MockHandler([function () use ($file) {
+            $this->assertCount(3, glob(storage_path('framework/cache/backup-previews/*.archive*')));
+
+            return new Response(200, [], file_get_contents($file));
+        }]);
+        try {
+            $service = new BackupPreviewService(new Client(['handler' => HandlerStack::create($handler)]));
+            $this->assertSame(['status' => 'text', 'contents' => 'queued'], $service->preview('https://node.example/queued', 'zip', 'a.txt', true, $key));
+            Sleep::assertSleptTimes(2);
+        } finally {
+            Sleep::fake(false);
+            foreach ($locks as $lock) {
+                $lock->release();
+            }
+        }
+    }
+
+    public function test_cache_slot_wait_is_bounded_and_does_not_start_a_download_when_full(): void
+    {
+        $locks = $this->occupyCache();
+        Sleep::fake();
+        $key = 'timeout-'.bin2hex(random_bytes(8));
+        $cached = storage_path('framework/cache/backup-previews/').hash('sha256', $key).'.archive';
+        $service = new BackupPreviewService(new Client(['handler' => HandlerStack::create(new MockHandler())]));
+        try {
+            try {
+                $service->preview('https://node.example/queued', 'zip', '', false, $key);
+                $this->fail('Expected the capacity wait to expire.');
+            } catch (HttpException $exception) {
+                $this->assertSame(503, $exception->getStatusCode());
+            }
+            Sleep::assertSleptTimes(120);
+            $this->assertFileDoesNotExist($cached);
+            $this->assertFileDoesNotExist($cached.'.part');
+            $this->assertCount(3, glob(storage_path('framework/cache/backup-previews/*.archive*')));
+        } finally {
+            Sleep::fake(false);
+            foreach ($locks as $lock) {
+                $lock->release();
+            }
+        }
+    }
+
+    private function occupyCache(): array
+    {
+        $directory = storage_path('framework/cache/backup-previews');
+        if (! is_dir($directory)) {
+            mkdir($directory, 0700, true);
+        }
+        $locks = [];
+        for ($i = 0; $i < 3; $i++) {
+            $id = hash('sha256', bin2hex(random_bytes(8)));
+            $file = $directory.'/'.$id.'.archive.part';
+            file_put_contents($file, 'active download');
+            $this->files[] = $file;
+            $lock = Cache::lock('backup-preview:'.$id, 180);
+            $this->assertTrue($lock->get());
+            $locks[] = $lock;
+        }
+
+        return $locks;
     }
 
     public static function downloadSizes(): array
