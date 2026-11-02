@@ -16,7 +16,7 @@ import FileManagerStatus from '@/components/server/files/FileManagerStatus';
 import MassActionsBar from '@/components/server/files/MassActionsBar';
 import UploadButton from '@/components/server/files/UploadButton';
 import ServerContentBlock from '@/reviactyl/elements/ServerContentBlock';
-import { useStoreActions } from '@/state/hooks';
+import { useStoreActions, useStoreState } from '@/state/hooks';
 import ErrorBoundary from '@/reviactyl/elements/ErrorBoundary';
 import { FileActionCheckbox } from '@/components/server/files/SelectFileCheckbox';
 import { hashToPath, encodePathSegments } from '@/helpers';
@@ -65,6 +65,7 @@ const RecursiveFileRow = ({ file, serverId }: { file: SearchResult; serverId: st
 
 export default () => {
     const { t } = useTranslation('server/files');
+    const grid = useStoreState((state) => state.designify.data?.fileLayout === 'grid');
     const id = ServerContext.useStoreState((state) => state.server.data!.id);
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const { hash } = useLocation();
@@ -379,9 +380,16 @@ export default () => {
                                     <p className='text-center text-sm text-yellow-900'>{t('too-large')}</p>
                                 </div>
                             )}
-                            {sortFiles(filteredFiles.slice(0, 250), sortType, sortDirection).map((file) => (
-                                <FileObjectRow key={file.key} file={file} onMediaClick={handlePreviewClick} />
-                            ))}
+                            <div className={grid ? style.file_grid : undefined}>
+                                {sortFiles(filteredFiles.slice(0, 250), sortType, sortDirection).map((file) => (
+                                    <FileObjectRow
+                                        key={file.key}
+                                        file={file}
+                                        grid={grid}
+                                        onMediaClick={handlePreviewClick}
+                                    />
+                                ))}
+                            </div>
                         </motion.div>
                     )}
                 </Card>

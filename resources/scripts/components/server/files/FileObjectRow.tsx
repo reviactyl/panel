@@ -57,14 +57,15 @@ function Clickable({
 
 interface FileObjectRowProps {
     file: FileObject;
+    grid?: boolean;
     onMediaClick?: (file: FileObject) => void;
 }
 
-const FileObjectRow = ({ file, onMediaClick }: FileObjectRowProps) => {
+const FileObjectRow = ({ file, grid = false, onMediaClick }: FileObjectRowProps) => {
     const handleMediaClick = onMediaClick ? () => onMediaClick(file) : undefined;
     return (
         <div
-            className={styles.file_row}
+            className={`${styles.file_row} ${grid ? styles.file_tile : ''}`}
             key={file.name}
             onContextMenu={(e) => {
                 e.preventDefault();
@@ -74,7 +75,9 @@ const FileObjectRow = ({ file, onMediaClick }: FileObjectRowProps) => {
         >
             <SelectFileCheckbox name={file.name} />
             <Clickable file={file} onMediaClick={handleMediaClick}>
-                <div className='flex-none text-gray-400 ml-6 mr-4 text-lg pl-3'>
+                <div
+                    className={grid ? 'text-gray-400 text-4xl mb-4' : 'flex-none text-gray-400 ml-6 mr-4 text-lg pl-3'}
+                >
                     {file.isFile ? (
                         (() => {
                             const FileIcon = file.isSymlink
@@ -92,9 +95,16 @@ const FileObjectRow = ({ file, onMediaClick }: FileObjectRowProps) => {
                         <FaFolder />
                     )}
                 </div>
-                <div className='flex-1 truncate'>{file.name}</div>
-                {file.isFile && <div className='w-1/6 text-right mr-4 hidden sm:block'>{bytesToString(file.size)}</div>}
-                <div className='w-1/5 text-right mr-4 hidden md:block' title={file.modifiedAt.toString()}>
+                <div className={grid ? 'w-full truncate text-center' : 'flex-1 truncate'} title={file.name}>
+                    {file.name}
+                </div>
+                {!grid && file.isFile && (
+                    <div className='w-1/6 text-right mr-4 hidden sm:block'>{bytesToString(file.size)}</div>
+                )}
+                <div
+                    className={grid ? 'hidden' : 'w-1/5 text-right mr-4 hidden md:block'}
+                    title={file.modifiedAt.toString()}
+                >
                     {Math.abs(differenceInHours(file.modifiedAt, new Date())) > 48
                         ? format(file.modifiedAt, 'MMM do, yyyy h:mma')
                         : formatDistanceToNow(file.modifiedAt, { addSuffix: true })}
@@ -111,5 +121,9 @@ export default memo(FileObjectRow, (prevProps, nextProps) => {
     const { isArchiveType: nextIsArchiveType, isEditable: nextIsEditable, ...nextFile } = nextProps.file;
     /* eslint-enable @typescript-eslint/no-unused-vars */
 
-    return isEqual(prevFile, nextFile);
+    return (
+        isEqual(prevFile, nextFile) &&
+        prevProps.grid === nextProps.grid &&
+        prevProps.onMediaClick === nextProps.onMediaClick
+    );
 });

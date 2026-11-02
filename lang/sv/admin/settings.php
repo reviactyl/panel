@@ -118,6 +118,8 @@ return [
         'border-radius' => 'Gränsradie',
         'border-radius-helper' => 'Exempel: 15px eller 1rem.',
         'font-family' => 'Typsnittsfamilj',
+        'file-layout' => 'Filhanterarens layout',
+        'list' => 'Lista',
         'server-card-layout' => 'Serverkortslayout',
         'header-style' => 'Rubrikstil',
         'navbar-sidebar-layout' => 'Navbar och sidofältslayout',

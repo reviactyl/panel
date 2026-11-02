@@ -118,6 +118,8 @@ return [
         'border-radius' => 'Радиус скругления',
         'border-radius-helper' => 'Пример: 15px или 1rem.',
         'font-family' => 'Семейство шрифтов',
+        'file-layout' => 'Макет файлового менеджера',
+        'list' => 'Список',
         'server-card-layout' => 'Макет карточек серверов',
         'header-style' => 'Стиль заголовков',
         'navbar-sidebar-layout' => 'Макет навигационной и боковой панелей',

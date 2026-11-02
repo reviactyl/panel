@@ -118,6 +118,8 @@ return [
         'border-radius' => 'ಗಡಿ ತ್ರಿಜ್ಯ',
         'border-radius-helper' => 'ಉದಾಹರಣೆ: 15px ಅಥವಾ 1rem.',
         'font-family' => 'ಫಾಂಟ್ ಕುಟುಂಬ',
+        'file-layout' => 'ಫೈಲ್ ನಿರ್ವಾಹಕ ವಿನ್ಯಾಸ',
+        'list' => 'ಪಟ್ಟಿ',
         'server-card-layout' => 'ಸರ್ವರ್ ಕಾರ್ಡ್ ಲೇಔಟ್',
         'header-style' => 'ಶೀರ್ಷಿಕೆ ಶೈಲಿ',
         'navbar-sidebar-layout' => 'ನವಬಾರ್ ಮತ್ತು ಪಾರ್ಶ್ವಪಟ್ಟಿ ಲೇಔಟ್',

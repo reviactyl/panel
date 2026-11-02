@@ -96,6 +96,7 @@ class Designify extends Page implements HasSchemas
         'designify:site_favicon',
         'designify:alwaysShowKillButton',
         'designify:cardType',
+        'designify:fileLayout',
         'designify:serverOrganization',
         'designify:layoutType',
         'designify:headerStyle',
@@ -438,6 +439,19 @@ class Designify extends Page implements HasSchemas
                         ->options([
                             'grid' => trans('admin/settings.designify.grid'),
                             'row' => trans('admin/settings.designify.row'),
+                        ])
+                        ->required()
+                        ->columnSpanFull(),
+                    ToggleButtons::make('designify:fileLayout')
+                        ->label(trans('admin/settings.designify.file-layout'))
+                        ->inline()
+                        ->icons([
+                            'list' => 'tabler-layout-list',
+                            'grid' => 'tabler-layout-grid',
+                        ])
+                        ->options([
+                            'list' => trans('admin/settings.designify.list'),
+                            'grid' => trans('admin/settings.designify.grid'),
                         ])
                         ->required()
                         ->columnSpanFull(),
