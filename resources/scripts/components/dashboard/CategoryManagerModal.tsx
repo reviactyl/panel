@@ -72,30 +72,31 @@ export default ({ visible, onDismissed, onCategoryChanged, folders, currentFolde
     };
 
     return (
-        <>
-            <Modal visible={visible && !deleting} onDismissed={onDismissed} size='lg'>
-                <h2 className='mb-5 text-2xl font-semibold'>
-                    {t(folders ? (editing ? 'folders.edit' : 'folders.create') : 'categories.manage-title')}
-                </h2>
-                <FlashMessageRender byKey='category-modal' />
-                <div className='grid gap-6 lg:grid-cols-2'>
-                    <Formik
-                        enableReinitialize
-                        initialValues={{
-                            name: editing?.name || '',
-                            description: editing?.description || '',
-                            color: editing?.color || '#3b82f6',
-                            priority: editing?.priority ?? 0,
-                        }}
-                        validationSchema={object({
-                            name: string().required().max(191),
-                            description: string().nullable().max(255),
-                            color: string().matches(/^#([a-f0-9]{6}|[a-f0-9]{3})$/i, t('categories.color-invalid')),
-                            priority: number().required().integer().min(-2147483648).max(2147483647),
-                        })}
-                        onSubmit={submit}
-                    >
-                        {({ isSubmitting }) => (
+        <Formik
+            key={visible ? 'open' : 'closed'}
+            enableReinitialize
+            initialValues={{
+                name: editing?.name || '',
+                description: editing?.description || '',
+                color: editing?.color || '#3b82f6',
+                priority: editing?.priority ?? 0,
+            }}
+            validationSchema={object({
+                name: string().required().max(191),
+                description: string().nullable().max(255),
+                color: string().matches(/^#([a-f0-9]{6}|[a-f0-9]{3})$/i, t('categories.color-invalid')),
+                priority: number().required().integer().min(-2147483648).max(2147483647),
+            })}
+            onSubmit={submit}
+        >
+            {({ isSubmitting }) => (
+                <>
+                    <Modal visible={visible && !deleting} onDismissed={onDismissed} size='lg'>
+                        <h2 className='mb-5 text-2xl font-semibold'>
+                            {t(folders ? (editing ? 'folders.edit' : 'folders.create') : 'categories.manage-title')}
+                        </h2>
+                        <FlashMessageRender byKey='category-modal' />
+                        <div className='grid gap-6 lg:grid-cols-2'>
                             <Form className='flex flex-col gap-4'>
                                 <Field
                                     id='category-name'
@@ -148,51 +149,53 @@ export default ({ visible, onDismissed, onCategoryChanged, folders, currentFolde
                                     )}
                                 </div>
                             </Form>
-                        )}
-                    </Formik>
-                    <div className='max-h-96 space-y-2 overflow-y-auto'>
-                        {folderTree(categories).map(({ folder, path }) => (
-                            <div
-                                key={folder.uuid}
-                                className='flex items-center gap-2 rounded-ui border border-gray-700 p-3'
-                            >
-                                <span className='min-w-0 flex-1 break-words text-sm text-gray-100'>{path}</span>
-                                <span className='text-sm tabular-nums text-gray-300'>{folder.priority ?? 0}</span>
-                                <Button
-                                    type='button'
-                                    size='xsmall'
-                                    isSecondary
-                                    onClick={() => setEditing(folder)}
-                                    aria-label={`${t('categories.edit')}: ${folder.name}`}
-                                >
-                                    <FaPen aria-hidden='true' />
-                                </Button>
-                                <Button
-                                    type='button'
-                                    size='xsmall'
-                                    isSecondary
-                                    onClick={() => setDeleting(folder)}
-                                    aria-label={`${t('categories.delete')}: ${folder.name}`}
-                                >
-                                    <FaTrash aria-hidden='true' />
-                                </Button>
+                            <div className='max-h-96 space-y-2 overflow-y-auto'>
+                                {folderTree(categories).map(({ folder, path }) => (
+                                    <div
+                                        key={folder.uuid}
+                                        className='flex items-center gap-2 rounded-ui border border-gray-700 p-3'
+                                    >
+                                        <span className='min-w-0 flex-1 break-words text-sm text-gray-100'>{path}</span>
+                                        <span className='text-sm tabular-nums text-gray-300'>
+                                            {folder.priority ?? 0}
+                                        </span>
+                                        <Button
+                                            type='button'
+                                            size='xsmall'
+                                            isSecondary
+                                            onClick={() => setEditing(folder)}
+                                            aria-label={`${t('categories.edit')}: ${folder.name}`}
+                                        >
+                                            <FaPen aria-hidden='true' />
+                                        </Button>
+                                        <Button
+                                            type='button'
+                                            size='xsmall'
+                                            isSecondary
+                                            onClick={() => setDeleting(folder)}
+                                            aria-label={`${t('categories.delete')}: ${folder.name}`}
+                                        >
+                                            <FaTrash aria-hidden='true' />
+                                        </Button>
+                                    </div>
+                                ))}
                             </div>
-                        ))}
-                    </div>
-                </div>
-            </Modal>
-            {deleting && (
-                <DeleteFolderModal
-                    folder={deleting}
-                    folders={false}
-                    onDismissed={() => setDeleting(null)}
-                    onDeleted={async () => {
-                        if (editing?.uuid === deleting.uuid) setEditing(null);
-                        await load();
-                        onCategoryChanged();
-                    }}
-                />
+                        </div>
+                    </Modal>
+                    {deleting && (
+                        <DeleteFolderModal
+                            folder={deleting}
+                            folders={false}
+                            onDismissed={() => setDeleting(null)}
+                            onDeleted={async () => {
+                                if (editing?.uuid === deleting.uuid) setEditing(null);
+                                await load();
+                                onCategoryChanged();
+                            }}
+                        />
+                    )}
+                </>
             )}
-        </>
+        </Formik>
     );
 };

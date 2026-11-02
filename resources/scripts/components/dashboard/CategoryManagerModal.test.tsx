@@ -6,6 +6,8 @@ import CategoryManagerModal from './CategoryManagerModal';
 const mocks = vi.hoisted(() => ({
     getCategories: vi.fn(),
     deleteCategory: vi.fn(),
+    createCategory: vi.fn(),
+    updateCategory: vi.fn(),
     changed: vi.fn(),
     dismissed: vi.fn(),
     clear: vi.fn(),
@@ -13,6 +15,8 @@ const mocks = vi.hoisted(() => ({
 }));
 vi.mock('@/api/account/getServerCategories', () => ({ default: mocks.getCategories }));
 vi.mock('@/api/account/deleteServerCategory', () => ({ default: mocks.deleteCategory }));
+vi.mock('@/api/account/createServerCategory', () => ({ default: mocks.createCategory }));
+vi.mock('@/api/account/updateServerCategory', () => ({ default: mocks.updateCategory }));
 vi.mock('@/plugins/useFlash', () => ({
     default: () => ({ clearFlashes: mocks.clear, clearAndAddHttpError: mocks.error }),
 }));
@@ -43,6 +47,8 @@ beforeEach(async () => {
     vi.clearAllMocks();
     mocks.getCategories.mockResolvedValue([{ uuid: 'folder', name: 'Small' }]);
     mocks.deleteCategory.mockResolvedValue(undefined);
+    mocks.createCategory.mockResolvedValue({});
+    mocks.updateCategory.mockResolvedValue({});
     container = document.createElement('div');
     document.body.appendChild(container);
     root = createRoot(container);
@@ -87,4 +93,48 @@ it('restores the manager with refreshed categories after confirming deletion', a
     expect(mocks.changed).toHaveBeenCalledOnce();
     expect(container.querySelector('[aria-label="Category Manager"]')).not.toBeNull();
     expect(container.textContent).not.toContain('Small');
+});
+
+const draft = { name: 'Unsaved Name', color: '#123456', priority: '7', description: 'Draft description' };
+const fillDraft = async () => {
+    for (const [name, value] of Object.entries(draft)) {
+        await act(async () => {
+            const input = container.querySelector<HTMLInputElement>(`input[name="${name}"]`)!;
+            Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(input, value);
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+    }
+};
+it.each(['create', 'edit'])('preserves an unsaved %s draft when deletion is canceled', async (mode) => {
+    if (mode === 'edit') {
+        await act(async () =>
+            container.querySelector<HTMLButtonElement>('[aria-label="categories.edit: Small"]')!.click(),
+        );
+    }
+    await fillDraft();
+    await openDelete();
+    await act(async () =>
+        Array.from(container.querySelectorAll('button'))
+            .find((button) => button.textContent === 'cancel')!
+            .click(),
+    );
+    for (const [name, value] of Object.entries(draft)) {
+        expect(container.querySelector<HTMLInputElement>(`input[name="${name}"]`)!.value).toBe(value);
+    }
+    await act(async () => container.querySelector<HTMLButtonElement>('button[type="submit"]')!.click());
+    const values = { ...draft, priority: 7 };
+    if (mode === 'edit') expect(mocks.updateCategory).toHaveBeenCalledWith('folder', values);
+    else expect(mocks.createCategory).toHaveBeenCalledWith(values);
+});
+it('clears a creation draft when the manager is closed and reopened', async () => {
+    await fillDraft();
+    await act(async () =>
+        root.render(
+            <CategoryManagerModal visible={false} onDismissed={mocks.dismissed} onCategoryChanged={mocks.changed} />,
+        ),
+    );
+    await act(async () =>
+        root.render(<CategoryManagerModal visible onDismissed={mocks.dismissed} onCategoryChanged={mocks.changed} />),
+    );
+    expect(container.querySelector<HTMLInputElement>('input[name="name"]')!.value).toBe('');
 });
