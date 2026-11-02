@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { httpErrorToHuman } from '@/api/http';
 import { motion } from 'framer-motion';
 import Spinner from '@/reviactyl/elements/Spinner';
@@ -179,22 +179,25 @@ export default () => {
         setSelectedFiles(e.currentTarget.checked ? (query ? [] : filteredFiles.map((file) => file.name)) : []);
     };
 
-    const handlePreviewClick = (file: FileObject) => {
-        const filePath = join(directory, file.name);
-        getFileDownloadUrl(uuid, filePath)
-            .then((url) => {
-                if (isVideoFile(file)) {
-                    setSelectedVideo({ url, name: file.name });
-                    setVideoViewerVisible(true);
-                } else {
-                    setSelectedImage({ url, name: file.name });
-                    setImageViewerVisible(true);
-                }
-            })
-            .catch((error) => {
-                console.error('Failed to get media URL:', error);
-            });
-    };
+    const handlePreviewClick = useCallback(
+        (file: FileObject) => {
+            const filePath = join(directory, file.name);
+            getFileDownloadUrl(uuid, filePath)
+                .then((url) => {
+                    if (isVideoFile(file)) {
+                        setSelectedVideo({ url, name: file.name });
+                        setVideoViewerVisible(true);
+                    } else {
+                        setSelectedImage({ url, name: file.name });
+                        setImageViewerVisible(true);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Failed to get media URL:', error);
+                });
+        },
+        [directory, uuid],
+    );
 
     const handleImageViewerClose = () => {
         setImageViewerVisible(false);
