@@ -11,6 +11,7 @@ use App\Models\Permission;
 use App\Models\Server;
 use App\Repositories\Agent\DaemonBackupRepository;
 use App\Repositories\Eloquent\BackupRepository;
+use App\Services\Backups\BackupPreviewService;
 use App\Services\Backups\DeleteBackupService;
 use App\Services\Backups\DownloadLinkService;
 use App\Services\Backups\InitiateBackupService;
@@ -214,6 +215,28 @@ class BackupController extends ClientApiController
             'object' => 'signed_url',
             'attributes' => ['url' => $url],
         ]);
+    }
+
+    public function preview(Request $request, Server $server, Backup $backup, BackupPreviewService $service): JsonResponse
+    {
+        if (! $request->user()->can(Permission::ACTION_BACKUP_DOWNLOAD, $server)) {
+            throw new AuthorizationException();
+        }
+        if (! $backup->is_successful || ! $backup->completed_at || ! in_array($backup->disk, [Backup::ADAPTER_WINGS, Backup::ADAPTER_AWS_S3], true)) {
+            throw new BadRequestHttpException(__('server/backups.preview-unavailable'));
+        }
+        $data = $request->validate(['path' => 'nullable|string|max:4096', 'contents' => 'sometimes|boolean']);
+        if ($backup->bytes > BackupPreviewService::MAX_ARCHIVE_BYTES) {
+            throw new BadRequestHttpException(__('server/backups.preview-limit'));
+        }
+
+        return new JsonResponse($service->preview(
+            $this->downloadLinkService->handle($backup, $request->user()),
+            $backup->format ?: 'tar.gz',
+            $data['path'] ?? '',
+            $request->boolean('contents'),
+            $backup->uuid.':'.$backup->checksum.':'.$backup->format,
+        ), headers: ['Cache-Control' => 'no-store']);
     }
 
     /**

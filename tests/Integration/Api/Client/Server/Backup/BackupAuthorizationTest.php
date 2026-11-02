@@ -4,6 +4,7 @@ namespace Tests\Integration\Api\Client\Server\Backup;
 
 use App\Models\Backup;
 use App\Models\Subuser;
+use App\Services\Backups\BackupPreviewService;
 use App\Services\Backups\DeleteBackupService;
 use Carbon\CarbonImmutable;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -35,6 +36,12 @@ class BackupAuthorizationTest extends ClientApiIntegrationTestCase
             $mock->expects('handle')->andReturnUndefined();
         }
 
+        if ($endpoint === '/preview') {
+            $backup1->update(['is_successful' => true]);
+            $this->instance(BackupPreviewService::class, $preview = \Mockery::mock(BackupPreviewService::class));
+            $preview->expects('preview')->once()->andReturn(['entries' => []]);
+        }
+
         // This is the only valid call for this test, accessing the backup for the same
         // server that the API user is the owner of.
         $this->actingAs($user)->json($method, $this->link($server1, '/backups/'.$backup1->uuid.$endpoint))
@@ -58,6 +65,7 @@ class BackupAuthorizationTest extends ClientApiIntegrationTestCase
         return [
             ['GET', ''],
             ['GET', '/download'],
+            ['GET', '/preview'],
             ['DELETE', ''],
         ];
     }

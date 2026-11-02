@@ -1,5 +1,5 @@
 import { useState, useRef, forwardRef, useImperativeHandle } from 'react';
-import { FaBoxOpen, FaCloudArrowDown, FaEllipsis, FaLock, FaPen, FaTrash, FaUnlock } from 'react-icons/fa6';
+import { FaEye, FaBoxOpen, FaCloudArrowDown, FaEllipsis, FaLock, FaPen, FaTrash, FaUnlock } from 'react-icons/fa6';
 import DropdownMenu, { DropdownButtonRow } from '@/reviactyl/elements/DropdownMenu';
 import getBackupDownloadUrl from '@/api/server/backups/getBackupDownloadUrl';
 import useFlash from '@/plugins/useFlash';
@@ -17,6 +17,8 @@ import { useTranslation } from 'react-i18next';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 import { renameBackup } from '@/api/server/backups';
 import RenameBackupModal from '@/components/server/backups/RenameBackupModal';
+
+import BackupPreviewModal from '@/components/server/backups/BackupPreviewModal';
 
 interface Props {
     backup: ServerBackup;
@@ -213,6 +215,8 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
                 {t('delete-message')}
             </Dialog.Confirm>
 
+            {modal === 'preview' && <BackupPreviewModal backup={backup} onClose={() => setModal('')} />}
+
             <SpinnerOverlay visible={loading} fixed />
 
             {backup.isSuccessful ? (
@@ -236,6 +240,10 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
                             </DropdownButtonRow>
                         </Can>
                         <Can action={'backup.download'}>
+                            <DropdownButtonRow onClick={() => setModal('preview')}>
+                                <FaEye className={'text-xs inline-block w-[1.25em]'} />
+                                <span className='ml-2'>{t('preview')}</span>
+                            </DropdownButtonRow>
                             <DropdownButtonRow onClick={doDownload}>
                                 <FaCloudArrowDown className={'text-xs inline-block w-[1.25em]'} />
                                 <span className='ml-2'>{t('download')}</span>
