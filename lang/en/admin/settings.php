@@ -120,6 +120,8 @@ return [
         'border-radius' => 'Border Radius',
         'border-radius-helper' => 'Example: 15px or 1rem.',
         'font-family' => 'Font Family',
+        'file-layout' => 'File Manager Layout',
+        'list' => 'List',
         'server-card-layout' => 'Server Card Layout',
         'header-style' => 'Header style',
         'navbar-sidebar-layout' => 'Navbar & Sidebar Layout',

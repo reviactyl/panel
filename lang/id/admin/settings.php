@@ -118,6 +118,8 @@ return [
         'border-radius' => 'Radius Perbatasan',
         'border-radius-helper' => 'Contoh: 15px atau 1rem.',
         'font-family' => 'Keluarga Font',
+        'file-layout' => 'Tata Letak Pengelola Berkas',
+        'list' => 'Daftar',
         'server-card-layout' => 'Tata Letak Kartu Server',
         'header-style' => 'Gaya judul',
         'navbar-sidebar-layout' => 'Tata Letak Bilah Nav & Bilah Sisi',

@@ -118,6 +118,8 @@ return [
         'border-radius' => '边界半径',
         'border-radius-helper' => '示例：15px 或 1rem。',
         'font-family' => '字体家族',
+        'file-layout' => '文件管理器布局',
+        'list' => '列表',
         'server-card-layout' => '服务器卡布局',
         'header-style' => '标题样式',
         'navbar-sidebar-layout' => '导航栏和侧边栏布局',

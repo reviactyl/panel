@@ -118,6 +118,8 @@ return [
         'border-radius' => 'نصف قطر الحدود',
         'border-radius-helper' => 'على سبيل المثال: 15px أو 1rem.',
         'font-family' => 'عائلة الخطوط',
+        'file-layout' => 'تخطيط مدير الملفات',
+        'list' => 'قائمة',
         'server-card-layout' => 'تخطيط بطاقة الخادم',
         'header-style' => 'نمط العناوين',
         'navbar-sidebar-layout' => 'تخطيط شريط التنقل والشريط الجانبي',

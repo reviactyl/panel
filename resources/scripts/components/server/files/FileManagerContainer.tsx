@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { httpErrorToHuman } from '@/api/http';
 import { motion } from 'framer-motion';
 import Spinner from '@/reviactyl/elements/Spinner';
@@ -16,7 +16,7 @@ import FileManagerStatus from '@/components/server/files/FileManagerStatus';
 import MassActionsBar from '@/components/server/files/MassActionsBar';
 import UploadButton from '@/components/server/files/UploadButton';
 import ServerContentBlock from '@/reviactyl/elements/ServerContentBlock';
-import { useStoreActions } from '@/state/hooks';
+import { useStoreActions, useStoreState } from '@/state/hooks';
 import ErrorBoundary from '@/reviactyl/elements/ErrorBoundary';
 import { FileActionCheckbox } from '@/components/server/files/SelectFileCheckbox';
 import { hashToPath, encodePathSegments } from '@/helpers';
@@ -65,6 +65,7 @@ const RecursiveFileRow = ({ file, serverId }: { file: SearchResult; serverId: st
 
 export default () => {
     const { t } = useTranslation('server/files');
+    const grid = useStoreState((state) => state.designify.data?.fileLayout === 'grid');
     const id = ServerContext.useStoreState((state) => state.server.data!.id);
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const { hash } = useLocation();
@@ -178,22 +179,25 @@ export default () => {
         setSelectedFiles(e.currentTarget.checked ? (query ? [] : filteredFiles.map((file) => file.name)) : []);
     };
 
-    const handlePreviewClick = (file: FileObject) => {
-        const filePath = join(directory, file.name);
-        getFileDownloadUrl(uuid, filePath)
-            .then((url) => {
-                if (isVideoFile(file)) {
-                    setSelectedVideo({ url, name: file.name });
-                    setVideoViewerVisible(true);
-                } else {
-                    setSelectedImage({ url, name: file.name });
-                    setImageViewerVisible(true);
-                }
-            })
-            .catch((error) => {
-                console.error('Failed to get media URL:', error);
-            });
-    };
+    const handlePreviewClick = useCallback(
+        (file: FileObject) => {
+            const filePath = join(directory, file.name);
+            getFileDownloadUrl(uuid, filePath)
+                .then((url) => {
+                    if (isVideoFile(file)) {
+                        setSelectedVideo({ url, name: file.name });
+                        setVideoViewerVisible(true);
+                    } else {
+                        setSelectedImage({ url, name: file.name });
+                        setImageViewerVisible(true);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Failed to get media URL:', error);
+                });
+        },
+        [directory, uuid],
+    );
 
     const handleImageViewerClose = () => {
         setImageViewerVisible(false);
@@ -379,9 +383,16 @@ export default () => {
                                     <p className='text-center text-sm text-yellow-900'>{t('too-large')}</p>
                                 </div>
                             )}
-                            {sortFiles(filteredFiles.slice(0, 250), sortType, sortDirection).map((file) => (
-                                <FileObjectRow key={file.key} file={file} onMediaClick={handlePreviewClick} />
-                            ))}
+                            <div className={grid ? style.file_grid : undefined}>
+                                {sortFiles(filteredFiles.slice(0, 250), sortType, sortDirection).map((file) => (
+                                    <FileObjectRow
+                                        key={file.key}
+                                        file={file}
+                                        grid={grid}
+                                        onMediaClick={handlePreviewClick}
+                                    />
+                                ))}
+                            </div>
                         </motion.div>
                     )}
                 </Card>

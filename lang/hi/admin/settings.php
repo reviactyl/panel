@@ -118,6 +118,8 @@ return [
         'border-radius' => 'सीमा त्रिज्या',
         'border-radius-helper' => 'उदाहरण: 15px या 1rem.',
         'font-family' => 'फुहारा परिवार',
+        'file-layout' => 'फ़ाइल प्रबंधक लेआउट',
+        'list' => 'सूची',
         'server-card-layout' => 'सर्वर कार्ड लेआउट',
         'header-style' => 'शीर्षक शैली',
         'navbar-sidebar-layout' => 'नेवबार और साइडबार लेआउट',

@@ -118,6 +118,8 @@ return [
         'border-radius' => 'Rayon de frontière',
         'border-radius-helper' => 'Exemple : 15px ou 1rem.',
         'font-family' => 'Famille de polices',
+        'file-layout' => 'Disposition du gestionnaire de fichiers',
+        'list' => 'Liste',
         'server-card-layout' => 'Disposition de la carte serveur',
         'header-style' => 'Style des en-têtes',
         'navbar-sidebar-layout' => 'Disposition de la barre de navigation et de la barre latérale',

@@ -118,6 +118,8 @@ return [
         'border-radius' => 'Bán kính đường viền',
         'border-radius-helper' => 'Ví dụ: 15px hoặc 1rem.',
         'font-family' => 'Họ phông chữ',
+        'file-layout' => 'Bố cục trình quản lý tệp',
+        'list' => 'Danh sách',
         'server-card-layout' => 'Bố cục thẻ máy chủ',
         'header-style' => 'Kiểu tiêu đề',
         'navbar-sidebar-layout' => 'Bố cục thanh điều hướng & thanh bên',

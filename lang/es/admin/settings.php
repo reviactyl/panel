@@ -118,6 +118,8 @@ return [
         'border-radius' => 'Radio del borde',
         'border-radius-helper' => 'Ejemplo: 15px o 1rem.',
         'font-family' => 'Familia de fuentes',
+        'file-layout' => 'Diseño del gestor de archivos',
+        'list' => 'Lista',
         'server-card-layout' => 'Diseño de tarjeta de servidor',
         'header-style' => 'Estilo de encabezados',
         'navbar-sidebar-layout' => 'Diseño de barra de navegación y barra lateral',

@@ -78,6 +78,7 @@ class DesignifyComposer
             ],
             'alwaysShowKillButton' => config('designify.alwaysShowKillButton', false),
             'cardType' => config('designify.cardType') ?? 'grid',
+            'fileLayout' => config('designify.fileLayout') ?? 'list',
             'serverOrganization' => config('designify.serverOrganization') ?? 'categories',
             'layoutType' => config('designify.layoutType') ?? 'modern',
             'headerStyle' => config('designify.headerStyle') ?? 'classic',
