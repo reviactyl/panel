@@ -232,10 +232,18 @@ class DatabaseDumper
         return sprintf('%s%02d:%02d', $offset < 0 ? '-' : '+', intdiv(abs($offset), 3600), intdiv(abs($offset) % 3600, 60));
     }
 
-    private function withoutDefiner(string $statement): string
+    public function withoutDefiner(string $statement): string
     {
+        $gap = '(?:\s|/\*(?:!|M!)\d*\s*|\*/)*';
+        $identifier = <<<'REGEX'
+(?:`(?:``|[^`])*`|"(?:""|\\.|[^"\\])*"|'(?:''|\\.|[^'\\])*'|[\w%.\-]+)
+REGEX;
+
         return preg_replace(
-            '/\sDEFINER\s*=\s*(`[^`]*`|"(?:""|[^"])*"|\'[^\']*\'|[\w%.\-]+)@(`[^`]*`|"(?:""|[^"])*"|\'[^\']*\'|[\w%.\-]+)/i',
+            '~\A'.$gap.'CREATE\b'.$gap.'(?:OR\b'.$gap.'REPLACE\b'.$gap.')?'.
+                '(?:ALGORITHM'.$gap.'='.$gap.'\w+'.$gap.')?\KDEFINER'.$gap.'='.$gap.
+                '(?:CURRENT_USER(?:'.$gap.'\('.$gap.'\))?|'.$identifier.$gap.'@'.$gap.$identifier.')\s*'.
+                '(?='.$gap.'(?:SQL'.$gap.'SECURITY\b|VIEW\b|TRIGGER\b|FUNCTION\b|PROCEDURE\b|EVENT\b))~i',
             '',
             $statement,
             1

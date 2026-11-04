@@ -545,8 +545,15 @@ class DatabaseTransferTest extends ClientApiIntegrationTestCase
                     'username' => $host->username, 'password' => $connection->getConfig('password'),
                 ]));
             } else {
-                file_put_contents($path, $sql);
-                $this->assertSame(3, $service->fromFile($database, $path));
+                $definer = '`'.$database->username.'`@`'.$database->remote.'`';
+                file_put_contents($path, str_replace('CREATE VIEW', 'CREATE DEFINER='.$definer.' SQL SECURITY DEFINER VIEW', $sql).
+                    "\nDELIMITER $$\nCREATE DEFINER=".$definer." PROCEDURE read_items() SELECT value FROM items$$\n".
+                    '/*!50106 CREATE*/ /*!50117 DEFINER='.$definer.'*/ /*!50106 EVENT imported_event ON SCHEDULE EVERY 1 DAY DISABLE DO SELECT 1 */'."$$\n");
+                $this->assertSame(5, $service->fromFile($database, $path));
+                $result = $admin->query('CALL `'.$database->database.'`.read_items()');
+                $this->assertSame(42, (int) $result->fetchColumn());
+                $result->closeCursor();
+                $this->assertSame('DISABLED', $admin->query("SELECT STATUS FROM information_schema.events WHERE EVENT_SCHEMA = '".$database->database."' AND EVENT_NAME = 'imported_event'")->fetchColumn());
             }
             $this->assertSame(42, (int) $admin->query('SELECT value FROM `'.$database->database.'`.item_view')->fetchColumn());
             $this->assertSame(['198.51.100.20'], $admin->query("SELECT Host FROM mysql.user WHERE User = '".$database->username."'")->fetchAll(\PDO::FETCH_COLUMN));

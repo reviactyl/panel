@@ -238,7 +238,7 @@ class DatabaseImportService
         };
 
         foreach ($this->reader->read($stream, $mode) as $statement) {
-            yield $statement;
+            yield $this->dumper->withoutDefiner($statement);
 
             if (! preg_match('/\A(?:INSERT|REPLACE)\b/i', $statement)) {
                 $backslashEscapes = null;
