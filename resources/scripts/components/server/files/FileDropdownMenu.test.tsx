@@ -31,9 +31,20 @@ vi.mock('@/reviactyl/elements/Can', () => ({ default: ({ children }: { children:
 vi.mock('@/reviactyl/elements/Fade', () => ({
     default: ({ children }: { children: ReactNode }) => children,
 }));
-vi.mock('@/reviactyl/elements/transitions/FadeTransition', () => ({
-    default: ({ show, children }: { show: boolean; children: ReactNode }) => (show ? children : null),
-}));
+vi.mock('@/reviactyl/elements/transitions/FadeTransition', async () => {
+    const { useEffect, useRef } = await import('react');
+    return {
+        default: ({ show, children, afterLeave }: { show: boolean; children: ReactNode; afterLeave?: () => void }) => {
+            const wasVisible = useRef(show);
+            useEffect(() => {
+                const didLeave = wasVisible.current && !show;
+                wasVisible.current = show;
+                if (didLeave) afterLeave?.();
+            }, [show, afterLeave]);
+            return show ? children : null;
+        },
+    };
+});
 vi.mock('@/api/server/files/loadDirectory', () => ({ default: () => new Promise(() => {}) }));
 vi.mock('@/components/FlashMessageRender', () => ({ default: () => null }));
 vi.mock('@/reviactyl/elements/SpinnerOverlay', () => ({ default: () => null }));
