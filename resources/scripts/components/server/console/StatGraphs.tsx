@@ -68,8 +68,8 @@ export default () => {
         cpu.push(values.cpu_absolute);
         memory.push(Math.floor(bytesToMb(values.memory_bytes)));
         network.push([
-            previous.current.tx < 0 ? 0 : Math.max(0, values.network.tx_bytes - previous.current.tx),
             previous.current.rx < 0 ? 0 : Math.max(0, values.network.rx_bytes - previous.current.rx),
+            previous.current.tx < 0 ? 0 : Math.max(0, values.network.tx_bytes - previous.current.tx),
         ]);
 
         previous.current = { tx: values.network.tx_bytes, rx: values.network.rx_bytes };
