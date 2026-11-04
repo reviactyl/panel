@@ -12,6 +12,7 @@ use App\Services\Notifications\NotificationService;
 use App\Transformers\Api\Application\NotificationTransformer;
 use Dedoc\Scramble\Attributes\Endpoint;
 use Dedoc\Scramble\Attributes\Group;
+use Illuminate\Database\Query\Grammars\PostgresGrammar;
 use Illuminate\Http\JsonResponse;
 
 #[Group('User notifications')]
@@ -30,7 +31,7 @@ class NotificationController extends ApplicationApiController
             $query->whereNull('read_at');
         }
         if ($request->filled('extension')) {
-            if ($query->getConnection()->getDriverName() === 'pgsql') {
+            if ($query->getQuery()->getGrammar() instanceof PostgresGrammar) {
                 $query->whereRaw("data::jsonb->>'extension' = ?", [$request->input('extension')]);
             } else {
                 $query->where('data->extension', $request->input('extension'));

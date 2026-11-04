@@ -4,6 +4,7 @@ namespace App\Services\Notifications;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Query\Grammars\PostgresGrammar;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -26,7 +27,7 @@ class NotificationService
     public function query(User $user): MorphMany
     {
         $query = $user->notifications();
-        if ($query->getConnection()->getDriverName() === 'pgsql') {
+        if ($query->getQuery()->getGrammar() instanceof PostgresGrammar) {
             return $query->whereRaw("(data::jsonb->>'source' = ? OR data::jsonb->>'format' = ?)", ['reviactyl', 'filament']);
         }
 
