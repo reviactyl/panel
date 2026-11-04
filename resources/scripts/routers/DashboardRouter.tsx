@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Suspense } from 'react';
 import { useLocation, useRoutes } from 'react-router-dom';
 import Navigate from '@/reviactyl/components/Navigate';
@@ -154,6 +154,10 @@ function DashboardRouter() {
     const { session } = useSubuserPreview();
     const location = useLocation();
     const rootAdmin = accountRootAdmin && !session;
+
+    useEffect(() => {
+        setSidebarOpen(false);
+    }, [location]);
 
     return (
         <>
