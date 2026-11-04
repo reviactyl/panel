@@ -196,8 +196,9 @@ class FindAssignableAllocationServiceTest extends IntegrationTestCase
     private function assertConcurrentClaimPreservesOwner(bool $createNew): void
     {
         $server = $this->createServerModel();
+        $server->allocation->update(['port' => 6000]);
         $other = $this->createServerModel(['node_id' => $server->node_id]);
-        $other->allocation->update(['ip' => $server->allocation->ip]);
+        $other->allocation->update(['ip' => $server->allocation->ip, 'port' => 6001]);
         $server->load('node', 'allocation');
         $other->load('node', 'allocation');
 
