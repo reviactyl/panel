@@ -39,7 +39,6 @@ const ScheduleEditContainer = () => {
     );
 
     const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const [isLoading, setIsLoading] = useState(true);
     const [showEditModal, setShowEditModal] = useState(false);
     const [requestState, setRequestState] = useState<RunRequestState>('idle');
 
@@ -49,23 +48,30 @@ const ScheduleEditContainer = () => {
         (st) => st.schedules.data.find((s) => s.id === Number(scheduleId)),
         isEqual,
     );
+    const store = ServerContext.useStore();
     const appendSchedule = ServerContext.useStoreActions((actions) => actions.schedules.appendSchedule);
 
     useEffect(() => {
-        if (schedule?.id === Number(scheduleId)) {
-            setIsLoading(false);
-            return;
-        }
+        let cancelled = false;
+        const cached = store.getState().schedules.data.find((s) => s.id === Number(scheduleId));
 
         clearFlashes('schedules');
         getServerSchedule(uuid, Number(scheduleId))
-            .then((schedule) => appendSchedule(schedule))
+            .then((schedule) => {
+                if (cancelled) return;
+                const current = store.getState().schedules.data.find((s) => s.id === Number(scheduleId));
+                if (current === cached) appendSchedule(schedule);
+            })
             .catch((error) => {
+                if (cancelled) return;
                 console.error(error);
                 clearAndAddHttpError({ error, key: 'schedules' });
-            })
-            .then(() => setIsLoading(false));
-    }, [scheduleId]);
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [uuid, scheduleId, store, appendSchedule, clearFlashes, clearAndAddHttpError]);
 
     const toggleEditModal = useCallback(() => {
         setShowEditModal((s) => !s);
@@ -75,7 +81,7 @@ const ScheduleEditContainer = () => {
         <ServerContentBlock className='pt-1' title={'Schedules'}>
             <FlashMessageRender byKey='schedules' className='mb-4' />
             <FlashMessageRender byKey='schedule-status' className='mb-4' />
-            {!schedule || isLoading ? (
+            {!schedule ? (
                 <Spinner size={'large'} centered />
             ) : (
                 <>
