@@ -59,7 +59,7 @@ class ResourceHistoryController extends ClientApiController
         $bucketExpression = match ($driver) {
             'sqlite' => "CAST(strftime('%s', created_at) AS INTEGER) / {$bucketSeconds}",
             'pgsql' => "FLOOR(EXTRACT(EPOCH FROM created_at) / {$bucketSeconds})",
-            default => "FLOOR(UNIX_TIMESTAMP(created_at) / {$bucketSeconds})",
+            default => "UNIX_TIMESTAMP(created_at) DIV {$bucketSeconds}",
         };
 
         $stats = ServerStatsHistory::query()
