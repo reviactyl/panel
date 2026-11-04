@@ -49,7 +49,13 @@ class FindAssignableAllocationService
 
         $allocation = $allocation ?? $this->createNewAllocation($server);
 
-        $allocation->update(['server_id' => $server->id]);
+        $claimed = Allocation::query()->whereKey($allocation->id)
+            ->whereNull('server_id')
+            ->update(['server_id' => $server->id]);
+
+        if (! $claimed) {
+            throw new NoAutoAllocationSpaceAvailableException();
+        }
 
         return $allocation->refresh();
     }

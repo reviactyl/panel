@@ -6,6 +6,7 @@ use App\Exceptions\Service\Allocation\AutoAllocationNotEnabledException;
 use App\Exceptions\Service\Allocation\NoAutoAllocationSpaceAvailableException;
 use App\Models\Allocation;
 use App\Services\Allocations\FindAssignableAllocationService;
+use Illuminate\Support\Facades\Event;
 use Tests\Integration\IntegrationTestCase;
 
 class FindAssignableAllocationServiceTest extends IntegrationTestCase
@@ -180,6 +181,59 @@ class FindAssignableAllocationServiceTest extends IntegrationTestCase
         $this->expectException(AutoAllocationNotEnabledException::class);
 
         $this->getService()->handle($server);
+    }
+
+    public function test_concurrent_claim_cannot_steal_an_existing_allocation(): void
+    {
+        $this->assertConcurrentClaimPreservesOwner(false);
+    }
+
+    public function test_concurrent_claim_cannot_steal_a_new_allocation(): void
+    {
+        $this->assertConcurrentClaimPreservesOwner(true);
+    }
+
+    private function assertConcurrentClaimPreservesOwner(bool $createNew): void
+    {
+        $server = $this->createServerModel();
+        $server->allocation->update(['port' => 6000]);
+        $other = $this->createServerModel(['node_id' => $server->node_id]);
+        $other->allocation->update(['ip' => $server->allocation->ip, 'port' => 6001]);
+        $server->load('node', 'allocation');
+        $other->load('node', 'allocation');
+
+        $port = 5000;
+        if ($createNew) {
+            config()->set('panel.client_features.allocations.range_start', $port);
+            config()->set('panel.client_features.allocations.range_end', $port);
+        } else {
+            Allocation::factory()->create([
+                'node_id' => $server->node_id,
+                'ip' => $server->allocation->ip,
+                'port' => $port,
+            ]);
+        }
+
+        $winner = null;
+        $interleaved = false;
+        Event::listen('eloquent.retrieved: '.Allocation::class, function (Allocation $allocation) use ($other, $port, &$winner, &$interleaved) {
+            if ($allocation->port !== $port || $interleaved) {
+                return;
+            }
+
+            $interleaved = true;
+            $winner = $this->getService()->handle($other);
+        });
+
+        try {
+            $this->getService()->handle($server);
+            $this->fail('Both servers successfully claimed the same allocation.');
+        } catch (NoAutoAllocationSpaceAvailableException) {
+            $this->assertTrue($interleaved);
+            $this->assertInstanceOf(Allocation::class, $winner);
+            $this->assertSame($other->id, $winner->refresh()->server_id);
+            $this->assertFalse($server->allocations()->whereKey($winner->id)->exists());
+        }
     }
 
     private function getService(): FindAssignableAllocationService
