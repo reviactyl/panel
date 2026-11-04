@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Pengelola File',
+    'unsaved-changes' => 'Ada perubahan yang belum disimpan. Tinggalkan file ini dan buang perubahan tersebut?',
     'new-file' => 'File Baru',
     'empty' => 'Direktori ini tampaknya kosong.',
     'no-results' => 'Tidak ada file yang cocok dengan pencarian Anda.',

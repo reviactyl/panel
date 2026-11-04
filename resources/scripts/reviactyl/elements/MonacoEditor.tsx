@@ -15,6 +15,7 @@ export interface Props {
     onModeChanged: (mode: string) => void;
     fetchContent: (callback: () => Promise<string>) => void;
     onContentSaved: () => void;
+    onContentChanged?: (content: string) => void;
 }
 
 const findModeByFilename = (filename: string) => {
@@ -87,7 +88,16 @@ const mimeToMonacoLanguage = (mime: string): string => {
     return mimeMap[mime] || 'plaintext';
 };
 
-export default ({ style, initialContent, filename, mode, fetchContent, onContentSaved, onModeChanged }: Props) => {
+export default ({
+    style,
+    initialContent,
+    filename,
+    mode,
+    fetchContent,
+    onContentSaved,
+    onModeChanged,
+    onContentChanged,
+}: Props) => {
     const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
     const onContentSavedRef = useRef(onContentSaved);
     const [monacoLanguage, setMonacoLanguage] = useState('plaintext');
@@ -137,6 +147,7 @@ export default ({ style, initialContent, filename, mode, fetchContent, onContent
                     value={initialContent || ''}
                     theme='vs-dark'
                     onMount={handleEditorDidMount}
+                    onChange={(value) => onContentChanged?.(value ?? '')}
                     loading={<Spinner centered size={Spinner.Size.LARGE} />}
                     options={{
                         fontSize: 14,

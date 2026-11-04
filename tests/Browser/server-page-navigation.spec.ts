@@ -128,3 +128,101 @@ test('switching server tabs keeps each page visible', async ({ page }) => {
     expect(trace.fileFrames).toBeGreaterThan(0);
     expect(trace.failures).toEqual([]);
 });
+
+for (const editor of ['cm', 'mo']) {
+    test(`unsaved file drafts are protected across navigation (${editor})`, async ({ page }) => {
+        const url = process.env.FILE_EDITOR_DEMO_URL;
+        test.skip(!url, 'Requires an isolated Panel and Agent demo.');
+        const errors: string[] = [];
+        page.on('pageerror', (error) => errors.push(error.message));
+        await page.goto(`${url}/auth/login`);
+        await page.locator('input[name=username]').fill('demo');
+        await page.locator('input[name=password]').fill('demo');
+        await page.locator('button[type=submit]').click();
+        await page.waitForURL(`${url}/`);
+        await page.evaluate(async (fileEditor) => {
+            const token = document.cookie.split('; ').find((cookie) => cookie.startsWith('XSRF-TOKEN='))!;
+            const response = await fetch('/api/client/account/file-editor', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-XSRF-TOKEN': decodeURIComponent(token.slice('XSRF-TOKEN='.length)),
+                    Accept: 'application/json',
+                },
+                body: JSON.stringify({ fileEditor }),
+            });
+            if (!response.ok) throw new Error('Could not select editor');
+        }, editor);
+        const servers = await (await page.request.get(`${url}/api/client`)).json();
+        const server = servers.data.find(
+            (item: { attributes: { name: string } }) => item.attributes.name === 'Demo Playground',
+        );
+        const base = `${url}/server/${server.attributes.identifier}`;
+        await page.goto(`${base}/files`);
+        await page.getByText('welcome.txt', { exact: true }).first().click();
+        const input = page.locator(editor === 'cm' ? '.cm-content' : '.monaco-editor');
+        await expect(input).toBeVisible();
+        const original = await (
+            await page.request.get(
+                `${base.replace('/server/', '/api/client/servers/')}/files/contents?file=/welcome.txt`,
+            )
+        ).text();
+        const draft = `REV-55 draft ${editor}`;
+        await input.click();
+        await page.keyboard.press('ControlOrMeta+A');
+        await page.keyboard.insertText(draft);
+        const dialogs: string[] = [];
+        let discard = false;
+        page.on('dialog', async (dialog) => {
+            dialogs.push(dialog.type());
+            if (discard) await dialog.accept();
+            else await dialog.dismiss();
+        });
+        const text = () => page.locator(editor === 'cm' ? '.cm-content' : '.monaco-editor .view-lines');
+        const breadcrumb = page.getByRole('link', { name: 'container', exact: true });
+        await breadcrumb.click();
+        await expect(text()).toContainText(draft);
+        await expect.poll(() => dialogs).toEqual(['confirm']);
+        await page.locator(`a[href="/server/${server.attributes.identifier}/startup"]`).first().click();
+        await expect(text()).toContainText(draft);
+        await expect.poll(() => dialogs.length).toBe(2);
+        await page.goBack();
+        await expect(text()).toContainText(draft);
+        await expect.poll(() => dialogs.length).toBe(3);
+        await page.evaluate(() => window.location.reload());
+        await expect(text()).toContainText(draft);
+        await expect.poll(() => dialogs).toEqual(['confirm', 'confirm', 'confirm', 'beforeunload']);
+        discard = true;
+        await breadcrumb.click();
+        await page.getByText('welcome.txt', { exact: true }).first().click();
+        await expect(input).toBeVisible();
+        await expect(text()).not.toContainText(draft);
+        expect(
+            await (
+                await page.request.get(
+                    `${base.replace('/server/', '/api/client/servers/')}/files/contents?file=/welcome.txt`,
+                )
+            ).text(),
+        ).toBe(original);
+        const afterDiscard = dialogs.length;
+        await input.click();
+        await page.keyboard.press('ControlOrMeta+A');
+        await page.keyboard.insertText(`REV-55 saved ${editor}`);
+        await page.getByRole('button', { name: 'Save Content', exact: true }).click();
+        await expect(page.getByRole('button', { name: 'Save Content', exact: true })).toBeEnabled();
+        await breadcrumb.click();
+        await page.getByText('welcome.txt', { exact: true }).first().waitFor();
+        expect(dialogs).toHaveLength(afterDiscard);
+        await page.getByRole('button', { name: 'New File', exact: true }).click();
+        await expect(input).toBeVisible();
+        await input.click();
+        await page.keyboard.insertText('new unsaved file');
+        discard = false;
+        await breadcrumb.click();
+        await expect(text()).toContainText('new unsaved file');
+        await expect.poll(() => dialogs.length).toBe(afterDiscard + 1);
+        discard = true;
+        await breadcrumb.click();
+        expect(errors).toEqual([]);
+    });
+}

@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Trình quản lý tệp',
+    'unsaved-changes' => 'Bạn có thay đổi chưa lưu. Rời khỏi tệp này và hủy các thay đổi?',
     'new-file' => 'Tệp mới',
     'empty' => 'Thư mục này dường như trống rỗng.',
     'no-results' => 'Không có tập tin nào phù hợp với tìm kiếm của bạn.',

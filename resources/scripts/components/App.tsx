@@ -1,5 +1,5 @@
 import { lazy, useEffect } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Route, Routes } from 'react-router-dom';
 import { StoreProvider } from 'easy-peasy';
 import { store } from '@/state';
 import { SiteSettings } from '@/state/settings';
@@ -138,6 +138,59 @@ const DesignifyPreviewBridge = () => {
     return null;
 };
 
+const router = createBrowserRouter([
+    {
+        path: '*',
+        element: (
+            <SubuserPreviewProvider>
+                <SubuserPreviewFrame>
+                    <Routes>
+                        <Route
+                            path='/auth/*'
+                            element={
+                                <Spinner.Suspense>
+                                    <AuthenticationRouter />
+                                </Spinner.Suspense>
+                            }
+                        />
+                        <Route
+                            path='/server/:id/*'
+                            element={
+                                <AuthenticatedRoute>
+                                    <Spinner.Suspense>
+                                        <ServerContext.Provider>
+                                            <ServerRouter />
+                                        </ServerContext.Provider>
+                                    </Spinner.Suspense>
+                                </AuthenticatedRoute>
+                            }
+                        />
+                        <Route
+                            path='/status/:id/*'
+                            element={
+                                <Spinner.Suspense>
+                                    <PublicServerStatus />
+                                </Spinner.Suspense>
+                            }
+                        />
+                        <Route
+                            path='/*'
+                            element={
+                                <AuthenticatedRoute>
+                                    <Spinner.Suspense>
+                                        <DashboardRouter />
+                                    </Spinner.Suspense>
+                                </AuthenticatedRoute>
+                            }
+                        />
+                        <Route path='*' element={<NotFound />} />
+                    </Routes>
+                </SubuserPreviewFrame>
+            </SubuserPreviewProvider>
+        ),
+    },
+]);
+
 /**
  * Renders the application shell, global providers, and route tree.
  *
@@ -182,53 +235,7 @@ function App() {
                 <LocaleLoader />
                 <ProgressBar />
                 <div className='mx-auto w-auto'>
-                    <BrowserRouter>
-                        <SubuserPreviewProvider>
-                            <SubuserPreviewFrame>
-                                <Routes>
-                                    <Route
-                                        path='/auth/*'
-                                        element={
-                                            <Spinner.Suspense>
-                                                <AuthenticationRouter />
-                                            </Spinner.Suspense>
-                                        }
-                                    />
-                                    <Route
-                                        path='/server/:id/*'
-                                        element={
-                                            <AuthenticatedRoute>
-                                                <Spinner.Suspense>
-                                                    <ServerContext.Provider>
-                                                        <ServerRouter />
-                                                    </ServerContext.Provider>
-                                                </Spinner.Suspense>
-                                            </AuthenticatedRoute>
-                                        }
-                                    />
-                                    <Route
-                                        path='/status/:id/*'
-                                        element={
-                                            <Spinner.Suspense>
-                                                <PublicServerStatus />
-                                            </Spinner.Suspense>
-                                        }
-                                    />
-                                    <Route
-                                        path='/*'
-                                        element={
-                                            <AuthenticatedRoute>
-                                                <Spinner.Suspense>
-                                                    <DashboardRouter />
-                                                </Spinner.Suspense>
-                                            </AuthenticatedRoute>
-                                        }
-                                    />
-                                    <Route path='*' element={<NotFound />} />
-                                </Routes>
-                            </SubuserPreviewFrame>
-                        </SubuserPreviewProvider>
-                    </BrowserRouter>
+                    <RouterProvider router={router} />
                 </div>
             </StoreProvider>
         </Theme>

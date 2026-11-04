@@ -2,6 +2,7 @@
 
 return [
     'title' => '文件管理器',
+    'unsaved-changes' => '您有未保存的更改。要离开此文件并放弃更改吗？',
     'new-file' => '新文件',
     'empty' => '此目录似乎为空。',
     'no-results' => '没有与您的搜索匹配的文件。',
