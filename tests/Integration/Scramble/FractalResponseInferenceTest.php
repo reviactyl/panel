@@ -9,6 +9,47 @@ use Tests\TestCase;
 
 class FractalResponseInferenceTest extends TestCase
 {
+    public function test_notification_docs_have_titles_distinct_write_schemas_and_response_fields(): void
+    {
+        $config = Scramble::configure();
+        $previousRoutes = $config->routes();
+        $config->routes(fn (Route $route) => str_contains($route->uri(), 'notifications') || str_contains($route->uri(), 'notification-preferences'));
+        try {
+            $spec = app(Generator::class)->generate($config)->spec();
+        } finally {
+            $config->routes($previousRoutes);
+        }
+        $count = 0;
+        foreach ($spec['paths'] as $operations) {
+            foreach ($operations as $operation) {
+                $this->assertNotEmpty($operation['summary']);
+                $count++;
+            }
+        }
+        $this->assertSame(11, $count);
+        $create = $spec['components']['schemas']['CreateNotificationRequest'];
+        $update = $spec['components']['schemas']['UpdateNotificationRequest'];
+        $this->assertContains('title', $create['required']);
+        $this->assertNotContains('title', $update['required'] ?? []);
+        foreach (['title', 'body', 'url', 'status', 'extension', 'read'] as $field) {
+            $this->assertArrayHasKey($field, $create['properties']);
+            $this->assertArrayHasKey($field, $update['properties']);
+        }
+        $path = $spec['paths']['/application/users/{user}/notifications'];
+        $this->assertStringEndsWith('/CreateNotificationRequest', $path['post']['requestBody']['content']['application/json']['schema']['$ref']);
+        $single = $spec['paths']['/application/users/{user}/notifications/{notification}'];
+        $this->assertStringEndsWith('/UpdateNotificationRequest', $single['patch']['requestBody']['content']['application/json']['schema']['$ref']);
+        $this->assertArrayNotHasKey('requestBody', $single['delete']);
+        $attributes = $path['post']['responses']['201']['content']['application/json']['schema']['properties']['attributes'];
+        $this->assertSame('object', $attributes['properties']['data']['type']);
+        foreach (['source', 'event', 'title', 'body', 'url', 'status', 'extension'] as $field) {
+            $this->assertArrayHasKey($field, $attributes['properties']['data']['properties']);
+        }
+        foreach (['id', 'data', 'read_at', 'created_at'] as $field) {
+            $this->assertArrayHasKey($field, $attributes['properties']);
+        }
+    }
+
     public function test_application_fractal_responses_include_the_serializer_envelope_and_transformer_fields(): void
     {
         $config = Scramble::configure();

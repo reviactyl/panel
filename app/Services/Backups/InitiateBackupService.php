@@ -71,9 +71,9 @@ class InitiateBackupService
      * @throws TooManyBackupsException
      * @throws TooManyRequestsHttpException
      */
-    public function handle(Server $server, ?string $name = null, bool $override = false, ?string $format = null): Backup
+    public function handle(Server $server, ?string $name = null, bool $override = false, ?string $format = null, bool $isScheduled = false): Backup
     {
-        return $this->connection->transaction(function () use ($server, $name, $override, $format) {
+        return $this->connection->transaction(function () use ($server, $name, $override, $format, $isScheduled) {
             // A no-op write serializes creation even on SQLite, where FOR UPDATE is ignored.
             $this->connection->table('servers')->where('id', $server->id)->update(['id' => $server->id]);
 
@@ -107,6 +107,7 @@ class InitiateBackupService
             /** @var Backup $backup */
             $backup = $this->repository->create([
                 'server_id' => $server->id,
+                'is_scheduled' => $isScheduled,
                 'uuid' => Uuid::uuid4()->toString(),
                 'name' => trim($name) ?: sprintf('Backup at %s', CarbonImmutable::now()->toDateTimeString()),
                 'ignored_files' => array_values($this->ignoredFiles),

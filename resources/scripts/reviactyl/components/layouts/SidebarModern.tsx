@@ -14,6 +14,7 @@ import { useSubuserPreview } from '@/context/SubuserPreviewContext';
 
 interface SidebarProps {
     isOpen?: boolean;
+    footer?: React.ReactNode;
     children?: React.ReactNode;
 }
 
@@ -37,92 +38,95 @@ export const SideNavigation = ({ children, className = '' }: React.HTMLAttribute
     </div>
 );
 
-export const SidebarModern = React.forwardRef<HTMLDivElement, SidebarProps>(({ children, isOpen = false }, ref) => {
-    const { t } = useTranslation('dashboard/account');
-    const { t: tUsers } = useTranslation('server/users');
-    const nameFirst = useStoreState((state) => state.user.data?.name_first);
-    const nameLast = useStoreState((state) => state.user.data?.name_last);
-    const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
-    const adminAccess = useStoreState((state) => state.user.data!.adminAccess);
-    const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
-    const [isLoggingOut, setIsLoggingOut] = useState(false);
-    const sidebarLogout = useStoreState((state) => state.designify.data?.sidebarLogout);
-    const { session } = useSubuserPreview();
+export const SidebarModern = React.forwardRef<HTMLDivElement, SidebarProps>(
+    ({ children, footer, isOpen = false }, ref) => {
+        const { t } = useTranslation('dashboard/account');
+        const { t: tUsers } = useTranslation('server/users');
+        const nameFirst = useStoreState((state) => state.user.data?.name_first);
+        const nameLast = useStoreState((state) => state.user.data?.name_last);
+        const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
+        const adminAccess = useStoreState((state) => state.user.data!.adminAccess);
+        const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
+        const [isLoggingOut, setIsLoggingOut] = useState(false);
+        const sidebarLogout = useStoreState((state) => state.designify.data?.sidebarLogout);
+        const { session } = useSubuserPreview();
 
-    const onLogout = () => {
-        setIsLoggingOut(true);
-        http.post('/auth/logout').finally(() => {
-            window.location.href = '/';
-        });
-    };
+        const onLogout = () => {
+            setIsLoggingOut(true);
+            http.post('/auth/logout').finally(() => {
+                window.location.href = '/';
+            });
+        };
 
-    return (
-        <div
-            ref={ref}
-            className={`m-2 w-56.25 self-start flex-col rounded-ui border border-gray-800 bg-gray-900 text-white 2xl:w-64 lg:fixed lg:top-(--subuser-preview-offset,0px) lg:left-0 lg:z-40 lg:flex lg:h-[calc(100dvh-15px-var(--subuser-preview-offset,0px))] lg:overflow-y-auto ${
-                isOpen
-                    ? 'fixed top-[calc(1rem+var(--subuser-preview-offset,0px))] left-0 z-40 flex h-[calc(100dvh-6rem-var(--subuser-preview-offset,0px))] overflow-y-auto'
-                    : 'hidden'
-            }`}
-        >
-            <SpinnerOverlay visible={isLoggingOut} />
-            <div className='sticky top-0 z-10 border-b border-gray-800 bg-gray-900'>
-                <div className='py-3 px-3'>
-                    <Logo nostyles />
+        return (
+            <div
+                ref={ref}
+                className={`m-2 w-56.25 self-start flex-col rounded-ui border border-gray-800 bg-gray-900 text-white 2xl:w-64 lg:fixed lg:top-(--subuser-preview-offset,0px) lg:left-0 lg:z-40 lg:flex lg:h-[calc(100dvh-15px-var(--subuser-preview-offset,0px))] lg:overflow-y-auto ${
+                    isOpen
+                        ? 'fixed top-[calc(1rem+var(--subuser-preview-offset,0px))] left-0 z-40 flex h-[calc(100dvh-6rem-var(--subuser-preview-offset,0px))] overflow-y-auto'
+                        : 'hidden'
+                }`}
+            >
+                <SpinnerOverlay visible={isLoggingOut} />
+                <div className='sticky top-0 z-10 border-b border-gray-800 bg-gray-900'>
+                    <div className='py-3 px-3'>
+                        <Logo nostyles />
+                    </div>
+                </div>
+
+                <div className='flex flex-1 flex-col overflow-y-auto'>
+                    {children ? <SideNavigation>{children}</SideNavigation> : null}
+                </div>
+
+                {footer && <div className='shrink-0 border-t border-gray-800 px-3 py-2'>{footer}</div>}
+                <div className='sticky bottom-0 z-10 border-t border-gray-800 bg-gray-900 p-3'>
+                    {session ? (
+                        <div className='flex min-w-0 items-center gap-3'>
+                            <span className='flex rounded-full items-center justify-center bg-amber-900/50 border-amber-800/50 h-10 w-10'>
+                                <FaEye className='h-5 w-5 shrink-0 text-amber-400' />
+                            </span>
+                            <div className='min-w-0'>
+                                <p className='text-xs font-semibold text-gray-100'>{tUsers('preview.title')}</p>
+                                <p className='truncate text-xs text-gray-400'>{session.subuserEmail}</p>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className='flex items-center gap-3'>
+                            <Link to='/account'>
+                                <Avatar className='w-10' />
+                            </Link>
+                            <div className='flex flex-col'>
+                                <div className='flex items-center gap-x-1'>
+                                    <span className='text-xs tracking-widest uppercase text-gray-500'>
+                                        {rootAdmin ? t('overview.administrator') : `${name} ${t('overview.user')}`}
+                                    </span>
+                                    {adminAccess && (
+                                        // eslint-disable-next-line react/jsx-no-target-blank
+                                        <a href={`/admin`} target={'_blank'} className='h-5 w-5 text-gray-400'>
+                                            <ExternalLinkIcon />
+                                        </a>
+                                    )}
+                                </div>
+                                <Link to='/account'>
+                                    <span className='text-sm font-semibold text-gray-400'>
+                                        {nameFirst} {nameLast}
+                                    </span>
+                                </Link>
+                            </div>
+                            {sidebarLogout && (
+                                <div onClick={onLogout}>
+                                    <Tooltip content={t('overview.logout')}>
+                                        <FaArrowRightToBracket className='h-10 text-gray-600 hover:text-danger/80 cursor-pointer' />
+                                    </Tooltip>
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
-
-            <div className='flex flex-1 flex-col overflow-y-auto'>
-                {children ? <SideNavigation>{children}</SideNavigation> : null}
-            </div>
-
-            <div className='sticky bottom-0 z-10 border-t border-gray-800 bg-gray-900 p-3'>
-                {session ? (
-                    <div className='flex min-w-0 items-center gap-3'>
-                        <span className='flex rounded-full items-center justify-center bg-amber-900/50 border-amber-800/50 h-10 w-10'>
-                            <FaEye className='h-5 w-5 shrink-0 text-amber-400' />
-                        </span>
-                        <div className='min-w-0'>
-                            <p className='text-xs font-semibold text-gray-100'>{tUsers('preview.title')}</p>
-                            <p className='truncate text-xs text-gray-400'>{session.subuserEmail}</p>
-                        </div>
-                    </div>
-                ) : (
-                    <div className='flex items-center gap-3'>
-                        <Link to='/account'>
-                            <Avatar className='w-10' />
-                        </Link>
-                        <div className='flex flex-col'>
-                            <div className='flex items-center gap-x-1'>
-                                <span className='text-xs tracking-widest uppercase text-gray-500'>
-                                    {rootAdmin ? t('overview.administrator') : `${name} ${t('overview.user')}`}
-                                </span>
-                                {adminAccess && (
-                                    // eslint-disable-next-line react/jsx-no-target-blank
-                                    <a href={`/admin`} target={'_blank'} className='h-5 w-5 text-gray-400'>
-                                        <ExternalLinkIcon />
-                                    </a>
-                                )}
-                            </div>
-                            <Link to='/account'>
-                                <span className='text-sm font-semibold text-gray-400'>
-                                    {nameFirst} {nameLast}
-                                </span>
-                            </Link>
-                        </div>
-                        {sidebarLogout && (
-                            <div onClick={onLogout}>
-                                <Tooltip content={t('overview.logout')}>
-                                    <FaArrowRightToBracket className='h-10 text-gray-600 hover:text-danger/80 cursor-pointer' />
-                                </Tooltip>
-                            </div>
-                        )}
-                    </div>
-                )}
-            </div>
-        </div>
-    );
-});
+        );
+    },
+);
 
 export const NavbarModern = ({ children }: NavbarProps) => {
     const [blurred, setBlurred] = useState(false);

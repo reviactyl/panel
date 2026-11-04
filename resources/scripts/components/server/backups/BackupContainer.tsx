@@ -1,3 +1,4 @@
+import BackupNotificationSettings from './BackupNotificationSettings';
 import { useContext, useEffect, useState } from 'react';
 import Spinner from '@/reviactyl/elements/Spinner';
 import useFlash from '@/plugins/useFlash';
@@ -113,6 +114,7 @@ const BackupContainer = () => {
                     {backupLimit > 0 && backupLimit > backups.backupCount && <CreateBackupButton />}
                 </div>
             </Can>
+            <BackupNotificationSettings />
             <ExtensionSlot name='server:backups:below' />
         </ServerContentBlock>
     );

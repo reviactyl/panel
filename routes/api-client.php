@@ -18,6 +18,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::get('/', [Client\ClientController::class, 'index'])->name('api:client.index');
+Route::prefix('/notifications')->group(function () {
+    Route::get('/', [Client\NotificationController::class, 'index']);
+    Route::post('/read-all', [Client\NotificationController::class, 'readAll']);
+    Route::patch('/{notification}', [Client\NotificationController::class, 'update']);
+    Route::delete('/{notification}', [Client\NotificationController::class, 'destroy']);
+});
 Route::get('/permissions', [Client\ClientController::class, 'permissions']);
 Route::get('/eggs', [Client\ClientController::class, 'eggs'])->name('api:client.eggs');
 Route::get('/extensions', [Client\ExtensionsController::class, 'index'])->name('api:client.extensions.index');
@@ -171,6 +177,8 @@ Route::group([
     Route::group(['prefix' => '/backups'], function () {
         Route::get('/', [Client\Servers\BackupController::class, 'index']);
         Route::post('/', [Client\Servers\BackupController::class, 'store']);
+        Route::get('/notification-preferences', [Client\Servers\BackupNotificationController::class, 'index']);
+        Route::put('/notification-preferences', [Client\Servers\BackupNotificationController::class, 'update']);
         Route::get('/{backup}', [Client\Servers\BackupController::class, 'view']);
         Route::get('/{backup}/preview', [Client\Servers\BackupController::class, 'preview'])->middleware('throttle:120,1');
         Route::get('/{backup}/download', [Client\Servers\BackupController::class, 'download']);

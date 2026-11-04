@@ -28,6 +28,12 @@ Route::group(['prefix' => '/users'], function () {
     Route::get('/{user:id}/servers/{server:id}/folder', [Application\Users\FolderController::class, 'server'])->withoutScopedBindings();
     Route::put('/{user:id}/servers/{server:id}/folder', [Application\Users\FolderController::class, 'assign'])->withoutScopedBindings();
 
+    Route::get('/{user:id}/notifications', [Application\Users\NotificationController::class, 'index']);
+    Route::post('/{user:id}/notifications', [Application\Users\NotificationController::class, 'store']);
+    Route::get('/{user:id}/notifications/{notification}', [Application\Users\NotificationController::class, 'show']);
+    Route::patch('/{user:id}/notifications/{notification}', [Application\Users\NotificationController::class, 'update']);
+    Route::delete('/{user:id}/notifications/{notification}', [Application\Users\NotificationController::class, 'delete']);
+
     Route::delete('/{user:id}', [Application\Users\UserController::class, 'delete']);
 });
 

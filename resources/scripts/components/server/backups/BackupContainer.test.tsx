@@ -74,6 +74,7 @@ vi.mock('@/reviactyl/elements/Pagination', () => ({
 }));
 vi.mock('@/components/FlashMessageRender', () => ({ default: () => null }));
 vi.mock('@/extensions/ExtensionSlot', () => ({ ExtensionSlot: () => null }));
+vi.mock('./BackupNotificationSettings', () => ({ default: () => null }));
 vi.mock('./CreateBackupButton', () => ({ default: () => <button>Create backup</button> }));
 vi.mock('@/api/server/backups/deleteBackup', () => ({ default: mocks.delete }));
 vi.mock('@/reviactyl/elements/SpinnerOverlay', () => ({ default: () => null }));

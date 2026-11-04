@@ -76,7 +76,7 @@ class ResolveSubuserPreview
             throw new ConflictHttpException(trans('exceptions.subuser_preview.session_expired'));
         }
 
-        if ($request->is('api/client/account*')) {
+        if ($request->is('api/client/account*', 'api/client/notifications*')) {
             throw new AccessDeniedHttpException(trans('exceptions.subuser_preview.account_unavailable'));
         }
 

@@ -105,9 +105,9 @@ class ExtensionResource extends Resource
                     ->action(function (Extension $record): void {
                         try {
                             app(ExtensionManager::class)->enable($record->identifier);
-                            Notification::make()->title(trans('admin/extensions.alerts.enabled'))->success()->send();
+                            Notification::make()->title(trans('admin/extensions.alerts.enabled'))->success()->sendToDatabase(auth()->user())->send();
                         } catch (\Throwable $exception) {
-                            Notification::make()->title(trans('admin/extensions.alerts.enable_failed'))->body($exception->getMessage())->danger()->send();
+                            Notification::make()->title(trans('admin/extensions.alerts.enable_failed'))->body($exception->getMessage())->danger()->sendToDatabase(auth()->user())->send();
                         }
                     }),
 
@@ -120,9 +120,9 @@ class ExtensionResource extends Resource
                     ->action(function (Extension $record): void {
                         try {
                             app(ExtensionManager::class)->disable($record->identifier);
-                            Notification::make()->title(trans('admin/extensions.alerts.disabled'))->success()->send();
+                            Notification::make()->title(trans('admin/extensions.alerts.disabled'))->success()->sendToDatabase(auth()->user())->send();
                         } catch (\Throwable $exception) {
-                            Notification::make()->title(trans('admin/extensions.alerts.disable_failed'))->body($exception->getMessage())->danger()->send();
+                            Notification::make()->title(trans('admin/extensions.alerts.disable_failed'))->body($exception->getMessage())->danger()->sendToDatabase(auth()->user())->send();
                         }
                     }),
 
@@ -132,9 +132,9 @@ class ExtensionResource extends Resource
                     ->action(function (Extension $record): void {
                         try {
                             app(ExtensionManager::class)->remove($record->identifier);
-                            Notification::make()->title(trans('admin/extensions.alerts.uninstalled'))->success()->send();
+                            Notification::make()->title(trans('admin/extensions.alerts.uninstalled'))->success()->sendToDatabase(auth()->user())->send();
                         } catch (\Throwable $exception) {
-                            Notification::make()->title(trans('admin/extensions.alerts.uninstall_failed'))->body($exception->getMessage())->danger()->send();
+                            Notification::make()->title(trans('admin/extensions.alerts.uninstall_failed'))->body($exception->getMessage())->danger()->sendToDatabase(auth()->user())->send();
                         }
                     }),
             ]);

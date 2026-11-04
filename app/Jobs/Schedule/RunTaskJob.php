@@ -106,7 +106,7 @@ class RunTaskJob extends Job implements ShouldQueue
                     $commandRepository->setServer($server)->send($this->task->payload);
                     break;
                 case Task::ACTION_BACKUP:
-                    $backupService->setIgnoredFiles(explode(PHP_EOL, $this->task->payload))->handle($server, null, true);
+                    $backupService->setIgnoredFiles(explode(PHP_EOL, $this->task->payload))->handle($server, null, true, null, true);
                     break;
                 default:
                     throw new \InvalidArgumentException('Invalid task action provided: '.$this->task->action);
