@@ -48,7 +48,7 @@ const groupUploads = (uploads: Record<string, FileUploadData>): UploadGroup[] =>
     const groups = new Map<string, UploadGroup>();
 
     Object.entries(uploads).forEach(([key, upload]) => {
-        const id = upload.group ? `group:${upload.group}` : `file:${key}`;
+        const id = upload.groupId ? `group:${upload.groupId}` : `file:${key}`;
         const existing = groups.get(id);
 
         if (existing) {
@@ -58,7 +58,7 @@ const groupUploads = (uploads: Record<string, FileUploadData>): UploadGroup[] =>
         } else {
             groups.set(id, {
                 id,
-                name: upload.group || key,
+                name: upload.group || upload.name,
                 keys: [key],
                 loaded: upload.loaded,
                 total: upload.total,

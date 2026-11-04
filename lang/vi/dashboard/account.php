@@ -36,7 +36,7 @@ return [
         'loading' => 'Đang tải...',
         'social' => [
             'title' => 'Đăng nhập xã hội',
-            'date_format' => 'MMM làm được, yyyy',
+            'date_format' => 'MMM do, yyyy',
             'unlink' => [
                 'title' => 'Hủy liên kết tài khoản',
                 'confirm' => 'Bạn có chắc chắn muốn hủy liên kết tài khoản :provider của mình không? Bạn sẽ không thể sử dụng nó để đăng nhập nữa.',

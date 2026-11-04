@@ -18,6 +18,7 @@ import i18n from '@/i18n';
 import { bytesToString } from '@/lib/formatters';
 import { FaFileArrowUp, FaFolderOpen, FaUpload } from 'react-icons/fa6';
 import { dirname, join } from 'pathe';
+import { v4 } from 'uuid';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/reviactyl/components/button';
 import { DropdownButtonRow } from '@/reviactyl/elements/DropdownMenu';
@@ -295,14 +296,23 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
         clearAndAddHttpError();
         if (files.length === 0) return addError(t('upload-empty-folder'), t('upload-error'));
 
-        const uploads = files.map(({ file, path, group }) => {
+        const batchId = v4();
+        const entries = files.map((file) => ({ ...file, id: v4() }));
+        const uploads = entries.map(({ file, path, group, id }) => {
             const controller = new AbortController();
             const destination = join(directory, path);
             const uploadDirectory = dirname(destination);
 
             pushFileUpload({
-                name: path,
-                data: { abort: controller, loaded: 0, total: file.size, group },
+                name: id,
+                data: {
+                    name: destination,
+                    abort: controller,
+                    loaded: 0,
+                    total: file.size,
+                    group: group ? join(directory, group) : undefined,
+                    groupId: group ? `${batchId}:${group}` : undefined,
+                },
             });
 
             return () =>
@@ -331,19 +341,19 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
                                     signal: controller.signal,
                                     headers: { 'Content-Type': 'multipart/form-data' },
                                     params: { directory: uploadDirectory },
-                                    onUploadProgress: (data) => onUploadProgress(data, path),
+                                    onUploadProgress: (data) => onUploadProgress(data, id),
                                 },
                             ),
                         )
                 )
-                    .then(() => setUploadProgress({ name: path, loaded: file.size }))
+                    .then(() => setUploadProgress({ name: id, loaded: file.size }))
                     .then(() => {
                         if (!group) {
-                            setTimeout(() => removeFileUpload(path), 500);
+                            setTimeout(() => removeFileUpload(id), 500);
                         }
                     })
                     .catch((error) => {
-                        removeFileUpload(path);
+                        removeFileUpload(id);
                         if (!axios.isCancel(error)) {
                             throw error;
                         }
@@ -353,9 +363,9 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
         settleUploads(uploads).then((results) => {
             mutate();
 
-            files.forEach(({ path, group }, index) => {
+            entries.forEach(({ id, group }, index) => {
                 if (group && results[index]?.status === 'fulfilled') {
-                    setTimeout(() => removeFileUpload(path), 500);
+                    setTimeout(() => removeFileUpload(id), 500);
                 }
             });
 
