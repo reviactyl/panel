@@ -157,15 +157,22 @@ describe('visible file bulk selection', () => {
     it('removes selections that move beyond the display limit after a refresh', async () => {
         await render();
         await click(selectAll());
-        mocks.files = [entries(1)[0]!, ...mocks.files.map((file) => ({ ...file, name: `new-${file.name}` }))];
+        const hidden = mocks.files[249]!;
+        const remaining = rows()
+            .map((row) => row.value)
+            .filter((name) => name !== hidden.name);
+        mocks.files = [{ ...hidden, key: 'new-file', name: 'new-file.txt' }, ...mocks.files];
+        expect(mocks.files[250]).toBe(hidden);
         await render();
+        expect(rows().map((row) => row.value)).not.toContain(hidden.name);
         expect(
             rows()
                 .filter((row) => row.checked)
                 .map((row) => row.value),
-        ).toEqual(['file-000.txt']);
+        ).toEqual(remaining);
         await click(action('archive-as'));
-        expect(mocks.compress).toHaveBeenCalledExactlyOnceWith('uuid', '/', ['file-000.txt'], 'tar.gz');
+        expect(mocks.compress).toHaveBeenCalledExactlyOnceWith('uuid', '/', remaining, 'tar.gz');
+        expect(mocks.compress.mock.calls[0]![2]).not.toContain(hidden.name);
     });
 
     it('disables select-all for an empty directory', async () => {
