@@ -9,6 +9,7 @@ use App\Models\Database;
 use App\Models\DatabaseHost;
 use App\Repositories\Eloquent\DatabaseRepository;
 use App\Services\Databases\DatabaseManagementService;
+use Illuminate\Database\DeadlockException;
 use Illuminate\Support\Str;
 use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -338,6 +339,9 @@ class DatabaseManagementServiceTest extends IntegrationTestCase
         $data = ['database_host_id' => $host->id, 'remote' => '%'];
         $sockets = stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, 0);
         $connection = $this->app->make('db')->connection();
+        $expectsSnapshotConflict = $readBeforeLock
+            && str_contains($connection->getPdo()->getAttribute(\PDO::ATTR_SERVER_VERSION), 'MariaDB')
+            && (bool) $connection->selectOne('SELECT @@innodb_snapshot_isolation AS enabled')->enabled;
         $connection->disconnect();
         $this->repository->shouldReceive('createDatabase', 'createUser', 'assignUserToDatabase', 'flush')->byDefault()->andReturn(true);
         $pid = pcntl_fork();
@@ -368,6 +372,11 @@ class DatabaseManagementServiceTest extends IntegrationTestCase
                 $result = 'created';
             } catch (TooManyDatabasesException) {
                 $result = 'limit';
+            } catch (DeadlockException $exception) {
+                $previous = $exception->getPrevious();
+                $result = $readBeforeLock && $previous instanceof \PDOException && ($previous->errorInfo[1] ?? null) === 1020
+                    ? 'snapshot_conflict'
+                    : $exception->getMessage();
             } catch (\Throwable $exception) {
                 $result = get_class($exception).': '.$exception->getMessage();
             }
@@ -398,7 +407,7 @@ class DatabaseManagementServiceTest extends IntegrationTestCase
             pcntl_waitpid($pid, $status);
         }
 
-        $this->assertSame('limit', $result);
+        $this->assertSame($expectsSnapshotConflict ? 'snapshot_conflict' : 'limit', $result);
         $this->assertSame(1, $server->databases()->count());
     }
 
