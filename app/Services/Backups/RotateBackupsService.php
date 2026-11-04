@@ -23,10 +23,8 @@ class RotateBackupsService
 
         $this->connection->transaction(function () use ($server) {
             $backups = $server->backups()
-                ->where(function ($query) {
-                    $query->whereNull('completed_at')
-                        ->orWhere('is_successful', true);
-                })
+                ->where('is_successful', true)
+                ->whereNotNull('completed_at')
                 ->lockForUpdate()
                 ->get();
 
