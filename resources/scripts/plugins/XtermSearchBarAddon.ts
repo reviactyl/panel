@@ -87,6 +87,12 @@ export class SearchBarAddon implements ITerminalAddon {
         closeBtn.addEventListener('click', () => this.hide());
 
         this.input.addEventListener('keyup', (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                this.hide();
+                this.terminal.focus();
+                return;
+            }
+
             this.searchKey = this.input!.value;
 
             this.searchAddon.findNext(this.searchKey, {
