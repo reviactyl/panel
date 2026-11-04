@@ -11,6 +11,31 @@ use Tests\TestCase;
 
 class DatabaseDumperTest extends TestCase
 {
+    #[DataProvider('definerDataProvider')]
+    public function test_only_object_header_definers_are_removed(string $sql, string $expected): void
+    {
+        $this->assertSame($expected, (new DatabaseDumper())->withoutDefiner($sql));
+    }
+
+    public static function definerDataProvider(): array
+    {
+        return [
+            'view' => ['CREATE ALGORITHM=UNDEFINED DEFINER=`game`@`198.51.100.20` SQL SECURITY DEFINER VIEW v AS SELECT 1', 'CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW v AS SELECT 1'],
+            'replace view' => ['CREATE OR REPLACE DEFINER = game @ localhost VIEW v AS SELECT 1', 'CREATE OR REPLACE VIEW v AS SELECT 1'],
+            'procedure' => ["CREATE DEFINER='game'@'host' PROCEDURE p() SELECT ' DEFINER=game@host'", "CREATE PROCEDURE p() SELECT ' DEFINER=game@host'"],
+            'function' => ['CREATE DEFINER="game"@"host" FUNCTION f() RETURNS INT RETURN 1', 'CREATE FUNCTION f() RETURNS INT RETURN 1'],
+            'current user' => ['CREATE DEFINER=CURRENT_USER() EVENT e ON SCHEDULE EVERY 1 DAY DO SELECT 1', 'CREATE EVENT e ON SCHEDULE EVERY 1 DAY DO SELECT 1'],
+            'current user spacing' => ['CREATE DEFINER = CURRENT_USER ( ) VIEW v AS SELECT 1', 'CREATE VIEW v AS SELECT 1'],
+            'quoted account' => ["CREATE DEFINER='it''s'@'host' TRIGGER t BEFORE INSERT ON items FOR EACH ROW SET NEW.value=1", 'CREATE TRIGGER t BEFORE INSERT ON items FOR EACH ROW SET NEW.value=1'],
+            'version comments' => ['/*!50003 CREATE*/ /*!50017 DEFINER=`game`@`host`*/ /*!50003 TRIGGER t BEFORE INSERT ON items FOR EACH ROW SET NEW.value=1 */', '/*!50003 CREATE*/ /*!50017 */ /*!50003 TRIGGER t BEFORE INSERT ON items FOR EACH ROW SET NEW.value=1 */'],
+            'mariadb comment' => ['/*M!100101 CREATE DEFINER=`game`@`host` VIEW v AS SELECT 1 */', '/*M!100101 CREATE VIEW v AS SELECT 1 */'],
+            'row contents' => ["INSERT INTO items VALUES (' DEFINER=game@host')", "INSERT INTO items VALUES (' DEFINER=game@host')"],
+            'view contents' => ["CREATE VIEW v AS SELECT ' DEFINER=game@host'", "CREATE VIEW v AS SELECT ' DEFINER=game@host'"],
+            'routine contents' => ["CREATE PROCEDURE p() SELECT ' DEFINER=game@host'", "CREATE PROCEDURE p() SELECT ' DEFINER=game@host'"],
+            'table contents' => ["CREATE TABLE items (value TEXT DEFAULT ' DEFINER=game@host')", "CREATE TABLE items (value TEXT DEFAULT ' DEFINER=game@host')"],
+        ];
+    }
+
     #[DataProvider('sqlModeDataProvider')]
     public function test_strings_are_escaped_for_the_dump_sql_mode(bool $noBackslashEscapes)
     {

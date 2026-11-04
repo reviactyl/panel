@@ -13,6 +13,7 @@ use App\Services\Databases\DatabaseExportService;
 use App\Services\Databases\DatabaseImportService;
 use App\Services\Databases\DatabaseImportStatusService;
 use App\Services\Databases\Transfer\DatabaseConnectionFactory;
+use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Queue;
@@ -439,7 +440,7 @@ class DatabaseTransferTest extends ClientApiIntegrationTestCase
 
             return $result;
         });
-        $this->mock(DatabaseConnectionFactory::class)->expects('forDatabase')->andReturn($target);
+        $this->mock(DatabaseConnectionFactory::class)->expects('import')->andReturnUsing(fn ($database, $import) => $import($target));
         $path = tempnam(sys_get_temp_dir(), 'sql');
         file_put_contents($path, implode(';', $expected).';');
 
@@ -469,7 +470,7 @@ class DatabaseTransferTest extends ClientApiIntegrationTestCase
             $target->expects('query')->with('SELECT 1')->andReturn($result);
         }
         $target->expects('query')->with('SELECT @@SESSION.sql_mode')->andThrow($exception);
-        $this->mock(DatabaseConnectionFactory::class)->expects('forDatabase')->andReturn($target);
+        $this->mock(DatabaseConnectionFactory::class)->expects('import')->andReturnUsing(fn ($database, $import) => $import($target));
         $status = $this->app->make(DatabaseImportStatusService::class);
         $token = $status->start($database);
 
@@ -485,6 +486,104 @@ class DatabaseTransferTest extends ClientApiIntegrationTestCase
     public static function modeQueryFailureDataProvider(): array
     {
         return ['before first statement' => [false], 'after first statement' => [true]];
+    }
+
+    #[DataProvider('restrictedImportDataProvider')]
+    public function test_imports_preserve_game_host_restrictions_and_database_boundaries(bool $remote): void
+    {
+        $connection = $this->app->make('db')->connection();
+        if (! in_array($connection->getDriverName(), ['mysql', 'mariadb'])) {
+            $this->markTestSkipped('Requires a MySQL or MariaDB host with account-management privileges.');
+        }
+
+        $encrypter = $this->app->make(Encrypter::class);
+        $host = new DatabaseHost([
+            'host' => $connection->getConfig('host'),
+            'port' => $connection->getConfig('port'),
+            'username' => $connection->getConfig('username'),
+            'password' => $encrypter->encrypt($connection->getConfig('password') ?? ''),
+        ]);
+        $suffix = bin2hex(random_bytes(8));
+        $database = new Database([
+            'database' => 'import_'.$suffix, 'username' => 'game_'.$suffix,
+            'remote' => '198.51.100.20', 'password' => $encrypter->encrypt('game-password'),
+        ]);
+        $database->setRelation('host', $host);
+        $factory = new class($encrypter) extends DatabaseConnectionFactory
+        {
+            protected function resolve(string $host): string
+            {
+                return $host;
+            }
+        };
+        $admin = $factory->forHost($host);
+        $source = 'importX'.$suffix;
+        $path = tempnam(sys_get_temp_dir(), 'restricted-import');
+        $sql = 'CREATE TABLE items (value INT); INSERT INTO items VALUES (42); CREATE VIEW item_view AS SELECT value FROM items;';
+
+        try {
+            $admin->exec('CREATE DATABASE `'.$database->database.'`');
+            $admin->exec('CREATE DATABASE `'.$source.'`');
+            $admin->exec("CREATE USER '".$database->username."'@'198.51.100.20' IDENTIFIED BY 'game-password'");
+            $admin->exec('GRANT ALL PRIVILEGES ON `'.$database->database.'`.* TO \''.$database->username."'@'198.51.100.20'");
+            $admin->exec('USE `'.$source.'`');
+            foreach (explode(';', rtrim($sql, ';')) as $statement) {
+                $admin->exec($statement);
+            }
+            try {
+                $factory->forDatabase($database);
+                $this->fail('The game account must reject the Panel source address.');
+            } catch (\PDOException $exception) {
+                $this->assertContains($exception->errorInfo[1], [1045, 1130]);
+            }
+
+            $this->app->instance(DatabaseConnectionFactory::class, $factory);
+            $service = $this->app->make(DatabaseImportService::class);
+            if ($remote) {
+                $this->assertGreaterThan(0, $service->fromRemote($database, [
+                    'host' => $host->host, 'port' => $host->port, 'database' => $source,
+                    'username' => $host->username, 'password' => $connection->getConfig('password'),
+                ]));
+            } else {
+                $definer = '`'.$database->username.'`@`'.$database->remote.'`';
+                file_put_contents($path, str_replace('CREATE VIEW', 'CREATE DEFINER='.$definer.' SQL SECURITY DEFINER VIEW', $sql).
+                    "\nDELIMITER $$\nCREATE DEFINER=".$definer." PROCEDURE read_items() SELECT value FROM items$$\n".
+                    '/*!50106 CREATE*/ /*!50117 DEFINER='.$definer.'*/ /*!50106 EVENT imported_event ON SCHEDULE EVERY 1 DAY DISABLE DO SELECT 1 */'."$$\n");
+                $this->assertSame(5, $service->fromFile($database, $path));
+                $result = $admin->query('CALL `'.$database->database.'`.read_items()');
+                $this->assertSame(42, (int) $result->fetchColumn());
+                $result->closeCursor();
+                $this->assertSame('DISABLED', $admin->query("SELECT STATUS FROM information_schema.events WHERE EVENT_SCHEMA = '".$database->database."' AND EVENT_NAME = 'imported_event'")->fetchColumn());
+            }
+            $this->assertSame(42, (int) $admin->query('SELECT value FROM `'.$database->database.'`.item_view')->fetchColumn());
+            $this->assertSame(['198.51.100.20'], $admin->query("SELECT Host FROM mysql.user WHERE User = '".$database->username."'")->fetchAll(\PDO::FETCH_COLUMN));
+            $this->assertSame('198.51.100.20', $database->remote);
+
+            try {
+                $factory->import($database, function (\PDO $target) use ($source): int {
+                    $target->exec('DROP TABLE `'.$source.'`.items');
+
+                    return 0;
+                });
+                $this->fail('Import SQL must not modify a different database.');
+            } catch (\PDOException $exception) {
+                $this->assertContains($exception->errorInfo[1], [1044, 1142]);
+            }
+            $this->assertSame(42, (int) $admin->query('SELECT value FROM `'.$source.'`.items')->fetchColumn());
+            $account = "'ri_".substr(hash('sha256', $database->username), 0, 29)."'@'%'";
+            $this->assertStringContainsString('ACCOUNT LOCK', implode(' ', $admin->query('SHOW CREATE USER '.$account)->fetch()));
+        } finally {
+            $admin->exec('DROP DATABASE IF EXISTS `'.$database->database.'`');
+            $admin->exec('DROP DATABASE IF EXISTS `'.$source.'`');
+            $factory->deleteImportUser($database);
+            $admin->exec("DROP USER IF EXISTS '".$database->username."'@'198.51.100.20'");
+            unlink($path);
+        }
+    }
+
+    public static function restrictedImportDataProvider(): array
+    {
+        return ['SQL file' => [false], 'remote database' => [true]];
     }
 
     private function createDatabase(Server $server): Database

@@ -11,6 +11,7 @@ use App\Models\Database;
 use App\Models\Server;
 use App\Repositories\Eloquent\DatabaseRepository;
 use App\Services\Activity\ActivityLogService;
+use App\Services\Databases\Transfer\DatabaseConnectionFactory;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Support\Str;
@@ -39,6 +40,7 @@ class DatabaseManagementService
         protected Encrypter $encrypter,
         protected DatabaseRepository $repository,
         protected ActivityLogService $logService,
+        protected DatabaseConnectionFactory $connections,
     ) {}
 
     /**
@@ -164,6 +166,7 @@ class DatabaseManagementService
         $this->dynamic->set('dynamic', $database->database_host_id);
 
         $this->repository->dropDatabase($database->database);
+        $this->connections->deleteImportUser($database);
         $this->repository->dropUser($database->username, $database->remote);
         $this->repository->flush();
 

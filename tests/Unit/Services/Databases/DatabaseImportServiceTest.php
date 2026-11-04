@@ -35,10 +35,10 @@ class DatabaseImportServiceTest extends TestCase
         ];
         $connections = Mockery::mock(DatabaseConnectionFactory::class);
         $connections->expects('forRemote')->with('alias.example.com', 3306, 'same_database', 'user', '')->andReturn($source);
-        $connections->expects('forDatabase')->with($database)->andReturnUsing(function () use (&$captured, $target) {
+        $connections->expects('import')->with($database, Mockery::type(\Closure::class))->andReturnUsing(function ($database, $import) use (&$captured, $target) {
             $this->assertTrue($captured);
 
-            return $target;
+            return $import($target);
         });
         $dumper = Mockery::mock(DatabaseDumper::class);
         $dumper->expects('statements')->with($source)->andReturn((function () use ($expected, &$captured) {
@@ -78,7 +78,7 @@ class DatabaseImportServiceTest extends TestCase
         $connections = Mockery::mock(DatabaseConnectionFactory::class);
         $source = Mockery::mock(PDO::class);
         $connections->expects('forRemote')->andReturn($source);
-        $connections->shouldNotReceive('forDatabase');
+        $connections->shouldNotReceive('import');
         $dumper = Mockery::mock(DatabaseDumper::class);
         $dumper->expects('statements')->with($source)->andReturn((function () {
             yield 'SET NAMES utf8mb4';
@@ -105,7 +105,7 @@ class DatabaseImportServiceTest extends TestCase
         $target = Mockery::mock(PDO::class);
         $connections = Mockery::mock(DatabaseConnectionFactory::class);
         $connections->expects('forRemote')->andReturn($source);
-        $connections->expects('forDatabase')->andReturn($target);
+        $connections->expects('import')->andReturnUsing(fn ($database, $import) => $import($target));
         $dumper = Mockery::mock(DatabaseDumper::class);
         $dumper->expects('statements')->with($source)->andReturn((function () {
             yield 'SET NAMES utf8mb4';
