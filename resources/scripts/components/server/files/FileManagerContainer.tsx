@@ -376,14 +376,16 @@ export default () => {
                                 </div>
                             )}
                             <div className={grid ? style.file_grid : undefined}>
-                                {sortFiles(filteredFiles.slice(0, 250), sortType, sortDirection).map((file) => (
-                                    <FileObjectRow
-                                        key={file.key}
-                                        file={file}
-                                        grid={grid}
-                                        onMediaClick={handlePreviewClick}
-                                    />
-                                ))}
+                                {sortFiles(filteredFiles, sortType, sortDirection)
+                                    .slice(0, 250)
+                                    .map((file) => (
+                                        <FileObjectRow
+                                            key={file.key}
+                                            file={file}
+                                            grid={grid}
+                                            onMediaClick={handlePreviewClick}
+                                        />
+                                    ))}
                             </div>
                         </div>
                     )}
