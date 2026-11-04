@@ -231,6 +231,10 @@ export default function ServerRouter() {
     const getServer = ServerContext.useStoreActions((actions) => actions.server.getServer);
     const clearServerState = ServerContext.useStoreActions((actions) => actions.clearServerState);
 
+    useEffect(() => {
+        setSidebarOpen(false);
+    }, [location]);
+
     useEffect(() => () => clearServerState(), []);
 
     useEffect(() => {
