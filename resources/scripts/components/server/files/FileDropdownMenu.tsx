@@ -79,6 +79,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
     const menuId = useId();
     const [showSpinner, setShowSpinner] = useState(false);
     const [showFormatMenu, setShowFormatMenu] = useState(false);
+    const archiveHovered = useRef(false);
     const archiveItemRef = useRef<HTMLDivElement>(null);
     const formatMenuRef = useRef<HTMLDivElement>(null);
     const [formatMenuPosition, setFormatMenuPosition] = useState<React.CSSProperties>();
@@ -110,6 +111,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
 
     useEventListener(`panel:files:ctx:${file.key}`, (e: CustomEvent) => {
         if (onClickRef.current) {
+            archiveHovered.current = false;
             setShowFormatMenu(false);
             onClickRef.current.triggerMenu(e.detail);
         }
@@ -175,7 +177,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
             const top = narrow
                 ? Math.max(gap, Math.min(itemRect.bottom, window.innerHeight - menuHeight - gap))
                 : Math.max(gap, Math.min(itemRect.top, window.innerHeight - menuHeight - gap));
-            setFormatMenuPosition({ position: 'fixed', left, top, display: 'block' });
+            setFormatMenuPosition({ position: 'fixed', left, top });
         });
     };
 
@@ -257,6 +259,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                         aria-controls={menuId}
                         className='rounded-ui px-4 py-2 hover:text-white focus-visible:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400'
                         onClick={(event) => {
+                            archiveHovered.current = false;
                             setShowFormatMenu(false);
                             onClick(event);
                         }}
@@ -289,12 +292,20 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                     <Can action={'file.archive'}>
                         <div
                             ref={archiveItemRef}
-                            className={`group relative ${massActionRunning ? 'pointer-events-none opacity-50' : ''}`}
-                            onMouseEnter={positionFormatMenu}
-                            onMouseLeave={() => setShowFormatMenu(false)}
+                            className={`relative ${massActionRunning ? 'pointer-events-none opacity-50' : ''}`}
+                            onMouseEnter={() => {
+                                archiveHovered.current = true;
+                                positionFormatMenu();
+                            }}
+                            onMouseLeave={(event) => {
+                                archiveHovered.current = false;
+                                if (!event.currentTarget.contains(document.activeElement)) setShowFormatMenu(false);
+                            }}
                             onFocusCapture={positionFormatMenu}
                             onBlur={(event) => {
-                                if (!event.currentTarget.contains(event.relatedTarget)) setShowFormatMenu(false);
+                                if (!archiveHovered.current && !event.currentTarget.contains(event.relatedTarget)) {
+                                    setShowFormatMenu(false);
+                                }
                             }}
                         >
                             <button
@@ -321,8 +332,8 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                                 role='group'
                                 aria-label={t('dropdown.archive')}
                                 ref={formatMenuRef}
-                                style={showFormatMenu ? formatMenuPosition : undefined}
-                                className='absolute left-[calc(100%-0.5rem)] -top-2 z-30 hidden w-48 rounded-ui border border-gray-800 bg-gray-800 p-2 text-gray-100 shadow-lg group-hover:block group-focus-within:block'
+                                style={{ ...formatMenuPosition, display: showFormatMenu ? 'block' : 'none' }}
+                                className='absolute left-[calc(100%-0.5rem)] -top-2 z-30 w-48 rounded-ui border border-gray-800 bg-gray-800 p-2 text-gray-100 shadow-lg'
                             >
                                 {(['tar.gz', 'zip'] as const).map((format) => (
                                     <button

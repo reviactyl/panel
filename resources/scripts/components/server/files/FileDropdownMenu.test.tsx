@@ -31,10 +31,14 @@ vi.mock('@/reviactyl/elements/Can', () => ({ default: ({ children }: { children:
 vi.mock('@/reviactyl/elements/Fade', () => ({
     default: ({ children }: { children: ReactNode }) => children,
 }));
+vi.mock('@/reviactyl/elements/transitions/FadeTransition', () => ({
+    default: ({ show, children }: { show: boolean; children: ReactNode }) => (show ? children : null),
+}));
+vi.mock('@/api/server/files/loadDirectory', () => ({ default: () => new Promise(() => {}) }));
+vi.mock('@/components/FlashMessageRender', () => ({ default: () => null }));
 vi.mock('@/reviactyl/elements/SpinnerOverlay', () => ({ default: () => null }));
 vi.mock('@/reviactyl/elements/dialog', () => ({ Dialog: { Confirm: () => null } }));
 vi.mock('@/extensions/ExtensionSlot', () => ({ ExtensionSlot: () => null }));
-vi.mock('./MoveFileModal', () => ({ default: () => null }));
 vi.mock('./ChmodFileModal', () => ({ default: () => null }));
 vi.mock('./RenameFileModal', () => ({
     default: ({ onDismissed }: { onDismissed: () => void }) => (
@@ -44,6 +48,7 @@ vi.mock('./RenameFileModal', () => ({
 
 let container: HTMLDivElement;
 let root: Root;
+let portal: HTMLDivElement;
 beforeEach(() => {
     Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
     vi.useFakeTimers();
@@ -51,11 +56,15 @@ beforeEach(() => {
     mocks.download.mockReset().mockRejectedValue(new Error('Download unavailable'));
     container = document.createElement('div');
     document.body.append(container);
+    portal = document.createElement('div');
+    portal.id = 'modal-portal';
+    document.body.append(portal);
     root = createRoot(container);
 });
 afterEach(async () => {
     await act(async () => root.unmount());
     container.remove();
+    portal.remove();
     vi.useRealTimers();
 });
 const render = async () => {
@@ -110,6 +119,20 @@ describe('file action controls', () => {
         expect(document.activeElement).toBe(toggle());
     });
 
+    it('moves focus into Move while entries load and restores it after dismissal', async () => {
+        await render();
+        await click(toggle());
+        await click(row('move'));
+        const heading = portal.querySelector('h2')!;
+        expect(heading).not.toBeNull();
+        expect(document.activeElement).toBe(heading);
+        expect(toggle().getAttribute('aria-expanded')).toBe('false');
+        expect(portal.textContent).toContain('move-modal.loading');
+        await escape(heading);
+        expect(portal.querySelector('h2')).toBeNull();
+        expect(document.activeElement).toBe(toggle());
+    });
+
     it('closes on Escape and preserves focus when tabbing away', async () => {
         await render();
         await click(toggle());
@@ -132,5 +155,39 @@ describe('file action controls', () => {
         await render();
         await click(toggle());
         for (const title of ['move', 'archive', 'delete']) expect(row(title).disabled).toBe(true);
+    });
+
+    it('keeps archive visibility and expanded state in sync when pointer and focus overlap', async () => {
+        await render();
+        await click(toggle());
+        const archive = row('archive');
+        const formats = document.getElementById(archive.getAttribute('aria-controls')!)!;
+        const hover = async (type: 'mouseover' | 'mouseout') => {
+            await act(async () =>
+                archive.dispatchEvent(
+                    new MouseEvent(type, {
+                        bubbles: true,
+                        relatedTarget: type === 'mouseover' ? null : row('download'),
+                    }),
+                ),
+            );
+            await act(async () => vi.runOnlyPendingTimers());
+        };
+        await act(async () => archive.focus());
+        await hover('mouseover');
+        await hover('mouseout');
+        expect(archive.getAttribute('aria-expanded')).toBe('true');
+        expect(formats.style.display).toBe('block');
+        await act(async () => row('download').focus());
+        expect(archive.getAttribute('aria-expanded')).toBe('false');
+        expect(formats.style.display).toBe('none');
+        await act(async () => archive.focus());
+        await hover('mouseover');
+        await act(async () => row('download').focus());
+        expect(archive.getAttribute('aria-expanded')).toBe('true');
+        expect(formats.style.display).toBe('block');
+        await hover('mouseout');
+        expect(archive.getAttribute('aria-expanded')).toBe('false');
+        expect(formats.style.display).toBe('none');
     });
 });
