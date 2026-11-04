@@ -2,10 +2,12 @@ import { action, Action } from 'easy-peasy';
 import { cleanDirectoryPath } from '@/helpers';
 
 export interface FileUploadData {
+    readonly name: string;
     loaded: number;
     readonly abort: AbortController;
     readonly total: number;
     readonly group?: string;
+    readonly groupId?: string;
 }
 
 export interface ServerFileStore {
