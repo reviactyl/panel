@@ -1,4 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
+
+export interface TurnstileHandle {
+    reset: () => void;
+}
 
 interface TurnstileProps {
     siteKey: string;
@@ -30,10 +34,18 @@ interface TurnstileRenderOptions {
     'refresh-expired'?: 'auto' | 'manual' | 'never';
 }
 
-const Turnstile = ({ siteKey, onVerify, onExpire, onError }: TurnstileProps) => {
+const Turnstile = forwardRef<TurnstileHandle, TurnstileProps>(({ siteKey, onVerify, onExpire, onError }, ref) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const widgetIdRef = useRef<string | null>(null);
     const isRenderedRef = useRef(false);
+
+    useImperativeHandle(ref, () => ({
+        reset: () => {
+            if (widgetIdRef.current !== null) {
+                window.turnstile?.reset(widgetIdRef.current);
+            }
+        },
+    }));
 
     // Store callbacks in refs to avoid re-renders
     const onVerifyRef = useRef(onVerify);
@@ -109,6 +121,8 @@ const Turnstile = ({ siteKey, onVerify, onExpire, onError }: TurnstileProps) => 
     }, [siteKey]); // Only re-run if siteKey changes
 
     return <div ref={containerRef} />;
-};
+});
+
+Turnstile.displayName = 'Turnstile';
 
 export default Turnstile;

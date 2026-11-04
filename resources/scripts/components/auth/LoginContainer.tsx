@@ -10,7 +10,7 @@ import { object, string } from 'yup';
 import Field from '@/reviactyl/elements/Field';
 import { Button } from '@/reviactyl/components/button/index';
 import Reaptcha from 'reaptcha';
-import Turnstile from '@/reviactyl/elements/Turnstile';
+import Turnstile, { type TurnstileHandle } from '@/reviactyl/elements/Turnstile';
 import useFlash from '@/plugins/useFlash';
 import Label from '@/reviactyl/elements/Label';
 import Spinner from '@/reviactyl/elements/Spinner';
@@ -27,6 +27,7 @@ function LoginContainer() {
     const { t } = useTranslation('auth');
     const primaryButtonClass = 'w-full !py-3';
     const ref = useRef<Reaptcha>(null);
+    const turnstileRef = useRef<TurnstileHandle>(null);
     const [token, setToken] = useState('');
     const [show, setShow] = useState(false);
     const [isPasskeySubmitting, setIsPasskeySubmitting] = useState(false);
@@ -108,6 +109,7 @@ function LoginContainer() {
 
                 setToken('');
                 if (ref.current) ref.current.reset();
+                turnstileRef.current?.reset();
 
                 setSubmitting(false);
                 clearAndAddHttpError({ error });
@@ -251,6 +253,7 @@ function LoginContainer() {
                     {provider === 'turnstile' && (
                         <div className='mt-4 flex justify-center'>
                             <Turnstile
+                                ref={turnstileRef}
                                 siteKey={turnstile.siteKey}
                                 onVerify={(response) => setToken(response)}
                                 onExpire={() => setToken('')}
