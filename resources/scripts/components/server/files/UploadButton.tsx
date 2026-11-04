@@ -217,7 +217,6 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
 
     const [visible, setVisible] = useState(false);
     const visibleRef = useRef(false);
-    const timeouts = useRef<NodeJS.Timeout[]>([]);
     const dragCounter = useRef(0);
     const onFileSubmissionRef = useRef<((files: UploadFile[]) => void) | null>(null);
 
@@ -287,8 +286,6 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
 
     useEffect(() => {
         folderUploadInput.current?.setAttribute('webkitdirectory', '');
-
-        return () => timeouts.current.forEach(clearTimeout);
     }, []);
 
     const onUploadProgress = (data: AxiosProgressEvent, name: string) => {
@@ -352,7 +349,7 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
                     .then(() => setUploadProgress({ name: id, loaded: file.size }))
                     .then(() => {
                         if (!group) {
-                            timeouts.current.push(setTimeout(() => removeFileUpload(id), 500));
+                            setTimeout(() => removeFileUpload(id), 500);
                         }
                     })
                     .catch((error) => {
@@ -368,7 +365,7 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
 
             entries.forEach(({ id, group }, index) => {
                 if (group && results[index]?.status === 'fulfilled') {
-                    timeouts.current.push(setTimeout(() => removeFileUpload(id), 500));
+                    setTimeout(() => removeFileUpload(id), 500);
                 }
             });
 
