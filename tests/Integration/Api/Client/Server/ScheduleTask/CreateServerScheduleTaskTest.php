@@ -229,6 +229,24 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
             ->assertForbidden();
     }
 
+    public function test_appends_and_explicit_insertion_preserve_order(): void
+    {
+        [$user, $server] = $this->generateTestAccount();
+        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
+
+        foreach ([['first', null], ['last', null], ['middle', 2], ['start', 1], ['end', 99]] as [$payload, $position]) {
+            $data = ['action' => 'command', 'payload' => $payload, 'time_offset' => 0];
+            if ($position !== null) {
+                $data['sequence_id'] = $position;
+            }
+            $this->actingAs($user)->postJson($this->link($schedule, '/tasks'), $data)->assertOk();
+        }
+
+        $tasks = $schedule->tasks()->orderBy('sequence_id')->get();
+        $this->assertSame(['start', 'first', 'middle', 'last', 'end'], $tasks->pluck('payload')->all());
+        $this->assertSame([1, 2, 3, 4, 5], $tasks->pluck('sequence_id')->all());
+    }
+
     public static function permissionsDataProvider(): array
     {
         return [[[]], [[Permission::ACTION_SCHEDULE_UPDATE, Permission::ACTION_CONTROL_CONSOLE]]];
