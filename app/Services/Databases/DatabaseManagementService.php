@@ -72,50 +72,43 @@ class DatabaseManagementService
      */
     public function create(Server $server, array $data): Database
     {
-        return $this->connection->transaction(function () use ($server, $data) {
-            // SQLite ignores FOR UPDATE, so acquire its write lock before reading the quota.
-            if ($server->getConnection()->getDriverName() === 'sqlite') {
-                $server->newQuery()->whereKey($server->id)->toBase()->update(['database_limit' => $this->connection->raw('database_limit')]);
-            }
-
-            $server = $server->newQuery()->lockForUpdate()->findOrFail($server->id);
-
-            return $this->createLocked($server, $data);
-        });
-    }
-
-    private function createLocked(Server $server, array $data): Database
-    {
-        if (! config('panel.client_features.databases.enabled')) {
-            throw new DatabaseClientFeatureNotEnabledException();
-        }
-
-        if ($this->validateDatabaseLimit) {
-            // Use a current read even if an enclosing transaction already established a snapshot.
-            if (! is_null($server->database_limit) && count($server->databases()->lockForUpdate()->get(['id'])) >= $server->database_limit) {
-                throw new TooManyDatabasesException();
-            }
-        }
-
-        // Protect against developer mistakes...
-        if (empty($data['database']) || ! preg_match(self::MATCH_NAME_REGEX, $data['database'])) {
-            throw new \InvalidArgumentException('The database name passed to DatabaseManagementService::handle MUST be prefixed with "s{server_id}_".');
-        }
-
-        $plainPassword = Utilities::randomStringWithSpecialCharacters(24);
-
-        $data = array_merge($data, [
-            'server_id' => $server->id,
-            'username' => sprintf('u%d_%s', $server->id, Str::random(10)),
-            'password' => $this->encrypter->encrypt($plainPassword),
-        ]);
-
         $database = null;
         $createdDatabase = false;
         $createdUser = false;
 
         try {
-            return $this->connection->transaction(function () use ($data, &$database, &$createdDatabase, &$createdUser, $plainPassword) {
+            return $this->connection->transaction(function () use ($server, $data, &$database, &$createdDatabase, &$createdUser) {
+                // SQLite ignores FOR UPDATE, so acquire its write lock before reading the quota.
+                if ($server->getConnection()->getDriverName() === 'sqlite') {
+                    $server->newQuery()->whereKey($server->id)->toBase()->update(['database_limit' => $this->connection->raw('database_limit')]);
+                }
+
+                $server = $server->newQuery()->lockForUpdate()->findOrFail($server->id);
+
+                if (! config('panel.client_features.databases.enabled')) {
+                    throw new DatabaseClientFeatureNotEnabledException();
+                }
+
+                if ($this->validateDatabaseLimit) {
+                    // Use a current read even if an enclosing transaction already established a snapshot.
+                    if (! is_null($server->database_limit) && count($server->databases()->lockForUpdate()->get(['id'])) >= $server->database_limit) {
+                        throw new TooManyDatabasesException();
+                    }
+                }
+
+                // Protect against developer mistakes...
+                if (empty($data['database']) || ! preg_match(self::MATCH_NAME_REGEX, $data['database'])) {
+                    throw new \InvalidArgumentException('The database name passed to DatabaseManagementService::handle MUST be prefixed with "s{server_id}_".');
+                }
+
+                $plainPassword = Utilities::randomStringWithSpecialCharacters(24);
+
+                $data = array_merge($data, [
+                    'server_id' => $server->id,
+                    'username' => sprintf('u%d_%s', $server->id, Str::random(10)),
+                    'password' => $this->encrypter->encrypt($plainPassword),
+                ]);
+
                 $database = $this->createModel($data);
 
                 $this->dynamic->set('dynamic', $data['database_host_id']);
@@ -140,7 +133,7 @@ class DatabaseManagementService
 
                 return $database;
             });
-        } catch (\Exception $exception) {
+        } catch (\Throwable $exception) {
             try {
                 // Only remove what this request created on the host.
                 if ($database instanceof Database && $createdDatabase) {
