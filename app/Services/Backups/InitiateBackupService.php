@@ -73,34 +73,37 @@ class InitiateBackupService
      */
     public function handle(Server $server, ?string $name = null, bool $override = false, ?string $format = null): Backup
     {
-        $limit = config('backups.throttles.limit');
-        $period = config('backups.throttles.period');
-        if ($period > 0) {
-            $previous = $this->repository->getBackupsGeneratedDuringTimespan($server->id, $period);
-            if ($previous->count() >= $limit) {
-                $message = sprintf('Only %d backups may be generated within a %d second span of time.', $limit, $period);
+        return $this->connection->transaction(function () use ($server, $name, $override, $format) {
+            // A no-op write serializes creation even on SQLite, where FOR UPDATE is ignored.
+            $this->connection->table('servers')->where('id', $server->id)->update(['id' => $server->id]);
 
-                throw new TooManyRequestsHttpException((int) CarbonImmutable::now()->diffInSeconds($previous->last()->created_at->addSeconds($period)), $message);
-            }
-        }
+            $limit = config('backups.throttles.limit');
+            $period = config('backups.throttles.period');
+            if ($period > 0) {
+                $previous = $this->repository->getBackupsGeneratedDuringTimespan($server->id, $period);
+                if ($previous->count() >= $limit) {
+                    $message = sprintf('Only %d backups may be generated within a %d second span of time.', $limit, $period);
 
-        // Check if the server has reached or exceeded its backup limit.
-        // completed_at == null will cover any ongoing backups, while is_successful == true will cover any completed backups.
-        $successful = $this->repository->getNonFailedBackups($server);
-        if (! $server->backup_limit || $successful->count() >= $server->backup_limit) {
-            // Do not allow the user to continue if this server is already at its limit and can't override.
-            if (! $override || $server->backup_limit <= 0) {
-                throw new TooManyBackupsException($server->backup_limit);
+                    throw new TooManyRequestsHttpException((int) CarbonImmutable::now()->diffInSeconds($previous->last()->created_at->addSeconds($period)), $message);
+                }
             }
 
-            // Ensure a backup is available for rotation. It is selected and deleted only after the
-            // replacement reports a successful completion so failed backups preserve the existing copy.
-            if (! $successful->where('is_locked', false)->exists()) {
-                throw new TooManyBackupsException($server->backup_limit);
-            }
-        }
+            // Check if the server has reached or exceeded its backup limit.
+            // completed_at == null will cover any ongoing backups, while is_successful == true will cover any completed backups.
+            $successful = $this->repository->getNonFailedBackups($server);
+            if (! $server->backup_limit || $successful->count() >= $server->backup_limit) {
+                // Do not allow the user to continue if this server is already at its limit and can't override.
+                if (! $override || $server->backup_limit <= 0) {
+                    throw new TooManyBackupsException($server->backup_limit);
+                }
 
-        return $this->connection->transaction(function () use ($server, $name, $format) {
+                // Ensure a backup is available for rotation. It is selected and deleted only after the
+                // replacement reports a successful completion so failed backups preserve the existing copy.
+                if (! $successful->where('is_locked', false)->exists()) {
+                    throw new TooManyBackupsException($server->backup_limit);
+                }
+            }
+
             /** @var Backup $backup */
             $backup = $this->repository->create([
                 'server_id' => $server->id,

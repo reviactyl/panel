@@ -81,8 +81,6 @@ class BackupController extends ClientApiController
         }
 
         $backup = Activity::event('server:backup.start')->transaction(function ($log) use ($action, $server, $request) {
-            $server->backups()->lockForUpdate();
-
             $backup = $action->handle($server, $request->input('name'), false, $request->input('format', $request->user()->archive_format));
 
             $log->subject($backup)->property([
