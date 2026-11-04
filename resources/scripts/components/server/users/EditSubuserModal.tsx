@@ -60,7 +60,7 @@ const PRESET_PERMISSIONS = {
         'user.delete',
         'file.read',
     ],
-    viewer: ['control.console', 'file.read', 'user.read'],
+    viewer: ['file.read', 'user.read'],
 };
 
 const PresetSelector = ({ editablePermissions }: { editablePermissions: string[] }) => {
