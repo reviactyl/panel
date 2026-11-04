@@ -28,23 +28,24 @@ export default () => {
         clearFlashes('account:email');
 
         updateEmail({ ...values })
-            .then(() =>
+            .then(() => {
+                resetForm({ values: { email: values.email, password: '' } });
                 addFlash({
                     type: 'success',
                     key: 'account:email',
                     message: t('email.updated'),
-                }),
-            )
-            .catch((error) =>
+                });
+            })
+            .catch((error) => {
+                resetForm();
                 addFlash({
                     type: 'error',
                     key: 'account:email',
                     title: t('email.error-title'),
                     message: httpErrorToHuman(error),
-                }),
-            )
-            .then(() => {
-                resetForm();
+                });
+            })
+            .finally(() => {
                 setSubmitting(false);
             });
     };
