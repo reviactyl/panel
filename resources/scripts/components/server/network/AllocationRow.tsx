@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import isEqual from 'react-fast-compare';
 import { FaNetworkWired } from 'react-icons/fa6';
 import InputSpinner from '@/reviactyl/elements/InputSpinner';
@@ -23,6 +23,13 @@ interface Props {
     allocation: Allocation;
 }
 
+interface NotesSaveState {
+    revision: number;
+    pendingSave: Promise<void>;
+}
+
+const notesSaves = new Map<string, NotesSaveState>();
+
 const AllocationRow = ({ allocation }: Props) => {
     const [loading, setLoading] = useState(false);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
@@ -30,40 +37,42 @@ const AllocationRow = ({ allocation }: Props) => {
     const { mutate } = getServerAllocations();
     const [canUpdate] = usePermissions(['allocation.update']);
 
-    const revision = useRef(0);
-    const pendingSave = useRef(Promise.resolve());
+    const saveKey = `${uuid}:${allocation.id}`;
     const saveAllocationNotes = useMemo(
         () =>
-            debounce((notes: string, requestRevision: number) => {
+            debounce((notes: string, state: NotesSaveState, requestRevision: number) => {
                 setLoading(true);
                 clearFlashes('server:network');
 
-                pendingSave.current = pendingSave.current
+                state.pendingSave = state.pendingSave
                     .then(async () => {
-                        if (requestRevision !== revision.current) return;
+                        if (requestRevision !== state.revision) return;
 
                         await setServerAllocationNotes(uuid, allocation.id, notes);
-                        if (requestRevision !== revision.current) return;
+                        if (requestRevision !== state.revision) return;
 
                         await mutate(
                             (data) =>
-                                requestRevision === revision.current
+                                requestRevision === state.revision
                                     ? data?.map((a) => (a.id === allocation.id ? { ...a, notes } : a))
                                     : data,
                             false,
                         );
                     })
                     .catch(async (error) => {
-                        if (requestRevision === revision.current) {
+                        if (requestRevision === state.revision) {
                             clearAndAddHttpError({ error, key: 'server:network' });
                             await mutate().catch(() => undefined);
                         }
                     })
                     .then(() => {
-                        if (requestRevision === revision.current) setLoading(false);
+                        if (requestRevision === state.revision) {
+                            setLoading(false);
+                            if (notesSaves.get(saveKey) === state) notesSaves.delete(saveKey);
+                        }
                     });
             }, 750),
-        [uuid, allocation.id, mutate, clearFlashes, clearAndAddHttpError],
+        [uuid, allocation.id, saveKey, mutate, clearFlashes, clearAndAddHttpError],
     );
 
     useEffect(
@@ -74,8 +83,13 @@ const AllocationRow = ({ allocation }: Props) => {
     );
 
     const setAllocationNotes = (notes: string) => {
-        revision.current += 1;
-        saveAllocationNotes(notes, revision.current);
+        let state = notesSaves.get(saveKey);
+        if (!state) {
+            state = { revision: 0, pendingSave: Promise.resolve() };
+            notesSaves.set(saveKey, state);
+        }
+        state.revision += 1;
+        saveAllocationNotes(notes, state, state.revision);
     };
 
     const setPrimaryAllocation = () => {

@@ -9,10 +9,11 @@ const mocks = vi.hoisted(() => ({
     mutate: vi.fn(),
     clearFlashes: vi.fn(),
     addError: vi.fn(),
+    serverUuid: 'server-uuid',
 }));
 vi.mock('@/api/server/network/setServerAllocationNotes', () => ({ default: mocks.save }));
 vi.mock('@/api/swr/getServerAllocations', () => ({ default: () => ({ mutate: mocks.mutate }) }));
-vi.mock('@/state/server', () => ({ ServerContext: { useStoreState: () => 'server-uuid' } }));
+vi.mock('@/state/server', () => ({ ServerContext: { useStoreState: () => mocks.serverUuid } }));
 vi.mock('@/plugins/usePermissions', () => ({ usePermissions: () => [true] }));
 vi.mock('@/plugins/useFlash', () => ({
     default: () => ({ clearFlashes: mocks.clearFlashes, clearAndAddHttpError: mocks.addError }),
@@ -58,6 +59,7 @@ beforeEach(async () => {
     Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
     vi.useFakeTimers();
     vi.clearAllMocks();
+    mocks.serverUuid = 'server-uuid';
     mocks.save.mockReset().mockResolvedValue(undefined);
     cached = [{ ...allocation }];
     mocks.mutate.mockReset().mockImplementation((updater) => {
@@ -161,6 +163,62 @@ describe('allocation note autosaving', () => {
         await act(async () => newer.resolve());
         expect(cached[0]?.notes).toBe('latest');
         expect(loading()).toBe('false');
+    });
+
+    it.each([0, 750])('shares save ordering across remounts with %i ms of newer debounce elapsed', async (elapsed) => {
+        const older = deferred();
+        const newer = deferred();
+        let persisted = 'initial';
+        mocks.save
+            .mockImplementationOnce(() =>
+                older.promise.then(() => {
+                    persisted = 'old';
+                }),
+            )
+            .mockImplementationOnce(() =>
+                newer.promise.then(() => {
+                    persisted = 'latest';
+                }),
+            );
+        await edit('old');
+        await debounce();
+        await edit('queued');
+        await debounce();
+        await act(async () => root.render(null));
+        await render();
+        await edit('latest');
+        await debounce(elapsed);
+        expect(mocks.save).toHaveBeenCalledTimes(1);
+        await act(async () => older.resolve());
+        expect(cached[0]?.notes).toBe('initial');
+        await debounce(750 - elapsed);
+        expect(mocks.save.mock.calls.map((args) => args[2])).toEqual(['old', 'latest']);
+        expect(loading()).toBe('true');
+        await act(async () => newer.resolve());
+        expect(persisted).toBe('latest');
+        expect(cached[0]?.notes).toBe('latest');
+        expect(loading()).toBe('false');
+    });
+
+    it.each(['server', 'allocation'])('keeps independent %s saves separate across remounts', async (identity) => {
+        const older = deferred();
+        const newer = deferred();
+        mocks.save.mockReturnValueOnce(older.promise).mockReturnValueOnce(newer.promise);
+        await edit('old');
+        await debounce();
+        await act(async () => root.render(null));
+        if (identity === 'server') mocks.serverUuid = 'other-server';
+        await render(identity === 'allocation' ? { id: 2 } : {});
+        await edit('other allocation notes');
+        await debounce();
+        expect(mocks.save).toHaveBeenCalledTimes(2);
+        expect(mocks.save).toHaveBeenLastCalledWith(
+            identity === 'server' ? 'other-server' : 'server-uuid',
+            identity === 'allocation' ? 2 : 1,
+            'other allocation notes',
+        );
+        await act(async () => newer.resolve());
+        await act(async () => older.resolve());
     });
 
     it('revalidates notes when the latest save fails after an older save succeeded', async () => {
