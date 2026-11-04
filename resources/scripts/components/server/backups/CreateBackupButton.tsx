@@ -89,16 +89,8 @@ export default () => {
     const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('backups:create');
         createServerBackup(uuid, values)
-            .then((backup) => {
-                mutate(
-                    (data) =>
-                        data && {
-                            ...data,
-                            items: data.items.concat(backup),
-                            backupCount: data.backupCount + 1,
-                        },
-                    false,
-                );
+            .then(() => {
+                mutate();
                 setVisible(false);
             })
             .catch((error) => {
