@@ -55,9 +55,12 @@ function asModal<P extends object>(
                 if (!this.state.render && !isEqual(prevState.propOverrides, this.state.propOverrides)) {
                     this.setState({ propOverrides: {} });
                 }
+                if (prevState.render && !this.state.render) {
+                    this.props.onModalDismissed?.();
+                }
             }
 
-            dismiss = () => this.setState({ visible: false });
+            dismiss = () => this.setState({ render: false, visible: false, propOverrides: {} });
 
             setPropOverrides: ModalContextValues['setPropOverrides'] = (value) =>
                 this.setState((state) => ({
@@ -71,17 +74,7 @@ function asModal<P extends object>(
                 if (!this.state.render) return null;
 
                 return (
-                    <PortaledModal
-                        appear
-                        onDismissed={() =>
-                            this.setState({ render: false }, () => {
-                                if (typeof this.props.onModalDismissed === 'function') {
-                                    this.props.onModalDismissed();
-                                }
-                            })
-                        }
-                        {...this.computedModalProps}
-                    >
+                    <PortaledModal appear onDismissed={this.dismiss} {...this.computedModalProps}>
                         <ModalContext.Provider
                             value={{
                                 dismiss: this.dismiss.bind(this),
