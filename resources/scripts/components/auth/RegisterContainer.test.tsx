@@ -116,13 +116,14 @@ describe('registration server validation', () => {
         },
     );
 
-    it.each([[], [null, {}], { username: ['The username has already been taken.'] }])(
-        'falls back to the global HTTP error for unusable validation data %j',
-        async (errors) => {
-            const error = await submit(errors);
-            expect(mocks.clearAndAddHttpError).toHaveBeenCalledExactlyOnceWith({ error });
-        },
-    );
+    it.each([
+        { errors: [] },
+        { errors: [null, {}] },
+        { errors: { username: ['The username has already been taken.'] } },
+    ])('falls back to the global HTTP error for unusable validation data $errors', async ({ errors }) => {
+        const error = await submit(errors);
+        expect(mocks.clearAndAddHttpError).toHaveBeenCalledExactlyOnceWith({ error });
+    });
 
     it('keeps other HTTP failures visible globally', async () => {
         const error = await submit([validationError('username')], 500);
