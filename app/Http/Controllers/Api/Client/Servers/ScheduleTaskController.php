@@ -41,20 +41,22 @@ class ScheduleTaskController extends ClientApiController
      */
     public function store(StoreTaskRequest $request, Server $server, Schedule $schedule): array
     {
-        $limit = config('panel.client_features.schedules.per_schedule_task_limit', 10);
-        if ($schedule->tasks()->count() >= $limit) {
-            throw new ServiceLimitExceededException("Schedules may not have more than $limit tasks associated with them. Creating this task would put this schedule over the limit.");
-        }
-
         if ($server->backup_limit === 0 && $request->action === 'backup') {
             throw new HttpForbiddenException("A backup task cannot be created when the server's backup limit is set to 0.");
         }
 
-        /** @var Task|null $lastTask */
-        $lastTask = $schedule->tasks()->orderByDesc('sequence_id')->first();
-
         /** @var Task $task */
-        $task = $this->connection->transaction(function () use ($request, $schedule, $lastTask) {
+        $task = $this->connection->transaction(function () use ($request, $schedule) {
+            $schedule->newQuery()->whereKey($schedule->id)->lockForUpdate()->firstOrFail();
+
+            $limit = config('panel.client_features.schedules.per_schedule_task_limit', 10);
+            if ($schedule->tasks()->count() >= $limit) {
+                throw new ServiceLimitExceededException("Schedules may not have more than $limit tasks associated with them. Creating this task would put this schedule over the limit.");
+            }
+
+            /** @var Task|null $lastTask */
+            $lastTask = $schedule->tasks()->orderByDesc('sequence_id')->first();
+
             $sequenceId = ($lastTask->sequence_id ?? 0) + 1;
             $requestSequenceId = $request->integer('sequence_id', $sequenceId);
 
