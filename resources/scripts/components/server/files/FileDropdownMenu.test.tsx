@@ -134,13 +134,13 @@ describe('file action controls', () => {
         await render();
         await click(toggle());
         await click(row('move'));
-        const heading = portal.querySelector('h2')!;
+        const heading = document.querySelector('[role=dialog] h2')!;
         expect(heading).not.toBeNull();
         expect(document.activeElement).toBe(heading);
         expect(toggle().getAttribute('aria-expanded')).toBe('false');
-        expect(portal.textContent).toContain('move-modal.loading');
+        expect(document.querySelector('[role=dialog]')!.textContent).toContain('move-modal.loading');
         await escape(heading);
-        expect(portal.querySelector('h2')).toBeNull();
+        expect(document.querySelector('[role=dialog] h2')).toBeNull();
         expect(document.activeElement).toBe(toggle());
     });
 

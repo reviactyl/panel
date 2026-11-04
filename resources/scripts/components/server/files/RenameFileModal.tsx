@@ -69,7 +69,12 @@ const RenameFileModal = ({ files, useMoveTerminology, ...props }: OwnProps) => {
     return (
         <Formik onSubmit={submit} initialValues={{ name: files.length > 1 ? '' : files[0] || '' }}>
             {({ isSubmitting, values }) => (
-                <Modal {...props} dismissable={!isSubmitting} showSpinnerOverlay={isSubmitting}>
+                <Modal
+                    {...props}
+                    accessibleName={t(useMoveTerminology ? 'move' : 'rename')}
+                    dismissable={!isSubmitting}
+                    showSpinnerOverlay={isSubmitting}
+                >
                     <Form className='m-0'>
                         <div className={clsx('flex flex-wrap', useMoveTerminology ? 'items-center' : 'items-end')}>
                             <div className='w-full sm:flex-1 sm:mr-4'>
