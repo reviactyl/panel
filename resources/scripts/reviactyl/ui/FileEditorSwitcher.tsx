@@ -12,7 +12,7 @@ interface FileEditorSwitcherProps {
 const FileEditorSwitcher = () => {
     const { t } = useTranslation('dashboard/account');
     const user = useStoreState((state: ApplicationStore) => state.user.data);
-    const setUserData = useStoreActions((actions: any) => actions.user.setUserData);
+    const updateUserData = useStoreActions((actions: any) => actions.user.updateUserData);
     const [editors, setEditors] = useState<Record<string, FileEditorSwitcherProps>>({});
     const [currentEditor, setCurrentEditor] = useState(user?.fileEditor || 'cm');
 
@@ -35,7 +35,7 @@ const FileEditorSwitcher = () => {
         if (user) {
             try {
                 await updateEditor({ fileEditor: newEditor });
-                setUserData({ ...user, fileEditor: newEditor });
+                updateUserData({ fileEditor: newEditor });
             } catch (error) {
                 console.error('Failed to update editor:', error);
             }

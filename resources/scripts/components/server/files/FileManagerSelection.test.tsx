@@ -34,7 +34,11 @@ vi.mock('@/api/server/files/compressFiles', () => ({ default: mocks.compress }))
 vi.mock('@/api/server/files/deleteFiles', () => ({ default: mocks.remove }));
 vi.mock('@/api/server/files/loadDirectory', () => ({ default: mocks.load }));
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
-vi.mock('react-router-dom', () => ({ useLocation: () => ({ hash: '' }), NavLink: () => null }));
+vi.mock('react-router-dom', () => ({
+    useLocation: () => ({ hash: '' }),
+    useNavigate: () => vi.fn(),
+    NavLink: () => null,
+}));
 vi.mock('@/reviactyl/elements/Can', () => ({ default: ({ children }: { children: ReactNode }) => children }));
 vi.mock('@/reviactyl/elements/ServerContentBlock', () => ({
     default: ({ children }: { children: ReactNode }) => children,

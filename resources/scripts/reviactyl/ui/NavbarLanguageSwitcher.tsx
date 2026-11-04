@@ -13,7 +13,7 @@ interface LanguageInfo {
 const NavbarLanguageSwitcher = () => {
     const user = useStoreState((state: ApplicationStore) => state.user.data);
     const serverLocale = useStoreState((state: any) => state.settings.data?.locale || 'en');
-    const setUserData = useStoreActions((actions: any) => actions.user.setUserData);
+    const updateUserData = useStoreActions((actions: any) => actions.user.updateUserData);
     const [languages, setLanguages] = useState<Record<string, LanguageInfo>>({});
     const [currentLang, setCurrentLang] = useState(
         user?.language && user.language !== 'geo' ? user.language : serverLocale,
@@ -50,7 +50,7 @@ const NavbarLanguageSwitcher = () => {
         if (user) {
             try {
                 await updateAccountLanguage({ language: code });
-                setUserData({ ...user, language: code });
+                updateUserData({ language: code });
             } catch (error) {
                 console.error('Failed to update language:', error);
             }
