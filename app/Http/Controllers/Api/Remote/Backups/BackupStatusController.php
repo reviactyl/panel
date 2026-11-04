@@ -16,6 +16,7 @@ use App\Models\Server;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class BackupStatusController extends Controller
@@ -99,9 +100,7 @@ class BackupStatusController extends Controller
     }
 
     /**
-     * Handles toggling the restoration status of a server. The server status field should be
-     * set back to null, even if the restoration failed. This is not an unsolvable state for
-     * the server, and the user can keep trying to restore, or just use the reinstall button.
+     * Clears the restoration status, even if restoration failed, without replacing a newer status.
      *
      * The only thing the successful field does is update the entry value for the audit logs
      * table tracking for this restoration.
@@ -118,7 +117,12 @@ class BackupStatusController extends Controller
             throw new HttpForbiddenException('Requesting node does not have permission to access this server.');
         }
 
-        $model->server->update(['status' => null]);
+        DB::transaction(function () use ($model) {
+            $server = $model->server()->lockForUpdate()->firstOrFail();
+            if ($server->status === Server::STATUS_RESTORING_BACKUP) {
+                $server->update(['status' => null]);
+            }
+        }, 3);
 
         Activity::event($request->boolean('successful') ? 'server:backup.restore-complete' : 'server:backup.restore-failed')
             ->subject($model, $model->server)
