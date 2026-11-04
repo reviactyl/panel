@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import isEqual from 'react-fast-compare';
 import { FaNetworkWired } from 'react-icons/fa6';
 import InputSpinner from '@/reviactyl/elements/InputSpinner';
@@ -9,7 +9,7 @@ import GreyRowBox from '@/reviactyl/elements/GreyRowBox';
 import { Allocation } from '@/api/server/getServer';
 import { debounce } from 'debounce';
 import setServerAllocationNotes from '@/api/server/network/setServerAllocationNotes';
-import { useFlashKey } from '@/plugins/useFlash';
+import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
 import CopyOnClick from '@/reviactyl/elements/CopyOnClick';
 import DeleteAllocationButton from '@/components/server/network/DeleteAllocationButton';
@@ -25,31 +25,65 @@ interface Props {
 
 const AllocationRow = ({ allocation }: Props) => {
     const [loading, setLoading] = useState(false);
-    const { clearFlashes, clearAndAddHttpError } = useFlashKey('server:network');
+    const { clearFlashes, clearAndAddHttpError } = useFlash();
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const { mutate } = getServerAllocations();
     const [canUpdate] = usePermissions(['allocation.update']);
 
-    const onNotesChanged = useCallback((id: number, notes: string) => {
-        mutate((data) => data?.map((a) => (a.id === id ? { ...a, notes } : a)), false);
-    }, []);
+    const revision = useRef(0);
+    const pendingSave = useRef(Promise.resolve());
+    const saveAllocationNotes = useMemo(
+        () =>
+            debounce((notes: string, requestRevision: number) => {
+                setLoading(true);
+                clearFlashes('server:network');
 
-    const setAllocationNotes = debounce((notes: string) => {
-        setLoading(true);
-        clearFlashes();
+                pendingSave.current = pendingSave.current
+                    .then(async () => {
+                        if (requestRevision !== revision.current) return;
 
-        setServerAllocationNotes(uuid, allocation.id, notes)
-            .then(() => onNotesChanged(allocation.id, notes))
-            .catch((error) => clearAndAddHttpError(error))
-            .then(() => setLoading(false));
-    }, 750);
+                        await setServerAllocationNotes(uuid, allocation.id, notes);
+                        if (requestRevision !== revision.current) return;
+
+                        await mutate(
+                            (data) =>
+                                requestRevision === revision.current
+                                    ? data?.map((a) => (a.id === allocation.id ? { ...a, notes } : a))
+                                    : data,
+                            false,
+                        );
+                    })
+                    .catch(async (error) => {
+                        if (requestRevision === revision.current) {
+                            clearAndAddHttpError({ error, key: 'server:network' });
+                            await mutate().catch(() => undefined);
+                        }
+                    })
+                    .then(() => {
+                        if (requestRevision === revision.current) setLoading(false);
+                    });
+            }, 750),
+        [uuid, allocation.id, mutate, clearFlashes, clearAndAddHttpError],
+    );
+
+    useEffect(
+        () => () => {
+            saveAllocationNotes.flush();
+        },
+        [saveAllocationNotes],
+    );
+
+    const setAllocationNotes = (notes: string) => {
+        revision.current += 1;
+        saveAllocationNotes(notes, revision.current);
+    };
 
     const setPrimaryAllocation = () => {
-        clearFlashes();
+        clearFlashes('server:network');
         mutate((data) => data?.map((a) => ({ ...a, isDefault: a.id === allocation.id })), false);
 
         setPrimaryServerAllocation(uuid, allocation.id).catch((error) => {
-            clearAndAddHttpError(error);
+            clearAndAddHttpError({ error, key: 'server:network' });
             mutate();
         });
     };
