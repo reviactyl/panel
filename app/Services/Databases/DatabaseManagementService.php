@@ -72,14 +72,27 @@ class DatabaseManagementService
      */
     public function create(Server $server, array $data): Database
     {
+        return $this->connection->transaction(function () use ($server, $data) {
+            // SQLite ignores FOR UPDATE, so acquire its write lock before reading the quota.
+            if ($server->getConnection()->getDriverName() === 'sqlite') {
+                $server->newQuery()->whereKey($server->id)->toBase()->update(['database_limit' => $this->connection->raw('database_limit')]);
+            }
+
+            $server = $server->newQuery()->lockForUpdate()->findOrFail($server->id);
+
+            return $this->createLocked($server, $data);
+        });
+    }
+
+    private function createLocked(Server $server, array $data): Database
+    {
         if (! config('panel.client_features.databases.enabled')) {
             throw new DatabaseClientFeatureNotEnabledException();
         }
 
         if ($this->validateDatabaseLimit) {
-            // If the server has a limit assigned and we've already reached that limit, throw back
-            // an exception and kill the process.
-            if (! is_null($server->database_limit) && $server->databases()->count() >= $server->database_limit) {
+            // Use a current read even if an enclosing transaction already established a snapshot.
+            if (! is_null($server->database_limit) && count($server->databases()->lockForUpdate()->get(['id'])) >= $server->database_limit) {
                 throw new TooManyDatabasesException();
             }
         }

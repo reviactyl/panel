@@ -65,7 +65,12 @@ class DatabaseController extends ClientApiController
     public function store(StoreDatabaseRequest $request, Server $server): array
     {
         $database = Activity::event('server:database.create')->transaction(function ($log) use ($request, $server) {
-            $server->databases()->lockForUpdate();
+            // Acquire SQLite's write lock before host selection establishes a read snapshot.
+            if ($server->getConnection()->getDriverName() === 'sqlite') {
+                $server->newQuery()->whereKey($server->id)->toBase()->update([
+                    'database_limit' => $server->getConnection()->raw('database_limit'),
+                ]);
+            }
 
             $database = $this->deployDatabaseService->handle($server, $request->validated());
 

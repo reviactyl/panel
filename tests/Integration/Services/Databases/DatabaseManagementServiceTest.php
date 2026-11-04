@@ -262,6 +262,90 @@ class DatabaseManagementServiceTest extends IntegrationTestCase
         $this->assertDatabaseMissing('databases', ['server_id' => $server->id]);
     }
 
+    public function test_sequential_creation_enforces_the_database_limit(): void
+    {
+        $server = $this->createServerModel(['database_limit' => 1]);
+        $host = DatabaseHost::factory()->create(['node_id' => $server->node_id]);
+        $this->repository->shouldReceive('createDatabase', 'createUser', 'assignUserToDatabase', 'flush')->once();
+
+        $this->getService()->create($server, [
+            'database' => "s{$server->id}_first",
+            'database_host_id' => $host->id,
+            'remote' => '%',
+        ]);
+
+        $this->assertSame(1, $server->databases()->count());
+        $this->expectException(TooManyDatabasesException::class);
+        $this->getService()->create($server, [
+            'database' => "s{$server->id}_second",
+            'database_host_id' => $host->id,
+            'remote' => '%',
+        ]);
+    }
+
+    public function test_concurrent_creation_with_one_slot_remaining(): void
+    {
+        if (! function_exists('pcntl_fork') || config('database.connections.'.config('database.default').'.database') === ':memory:') {
+            $this->markTestSkipped('Requires pcntl and a database shared between processes.');
+        }
+
+        $server = $this->createServerModel(['database_limit' => 1]);
+        $host = DatabaseHost::factory()->create(['node_id' => $server->node_id]);
+        $data = ['database_host_id' => $host->id, 'remote' => '%'];
+        $sockets = stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, 0);
+        $connection = $this->app->make('db')->connection();
+        $connection->disconnect();
+        $this->repository->shouldReceive('createDatabase', 'createUser', 'assignUserToDatabase', 'flush')->byDefault()->andReturn(true);
+        $pid = pcntl_fork();
+        $this->assertNotSame(-1, $pid);
+
+        if ($pid === 0) {
+            fclose($sockets[0]);
+            stream_set_timeout($sockets[1], 10);
+            fgets($sockets[1]);
+            $connection->beforeExecuting(function () use ($sockets) {
+                static $started = false;
+                if (! $started) {
+                    fwrite($sockets[1], "attempting\n");
+                    $started = true;
+                }
+            });
+            try {
+                $this->getService()->create($server, $data + ['database' => "s{$server->id}_second"]);
+                $result = 'created';
+            } catch (TooManyDatabasesException) {
+                $result = 'limit';
+            } catch (\Throwable $exception) {
+                $result = get_class($exception).': '.$exception->getMessage();
+            }
+            fwrite($sockets[1], $result."\n");
+            fclose($sockets[1]);
+            exit(0);
+        }
+
+        fclose($sockets[1]);
+        stream_set_timeout($sockets[0], 10);
+        $this->repository->expects('createDatabase')->andReturnUsing(function () use ($sockets) {
+            fwrite($sockets[0], "start\n");
+            $this->assertSame("attempting\n", fgets($sockets[0]));
+            usleep(300000);
+
+            return true;
+        });
+        $this->repository->shouldReceive('createUser', 'assignUserToDatabase', 'flush')->once();
+
+        try {
+            $this->getService()->create($server, $data + ['database' => "s{$server->id}_first"]);
+            $result = trim(fgets($sockets[0]));
+        } finally {
+            fclose($sockets[0]);
+            pcntl_waitpid($pid, $status);
+        }
+
+        $this->assertSame('limit', $result);
+        $this->assertSame(1, $server->databases()->count());
+    }
+
     public static function invalidDataDataProvider(): array
     {
         return [
