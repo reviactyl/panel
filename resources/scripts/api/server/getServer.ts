@@ -55,7 +55,7 @@ export interface Server {
     };
     eggFeatures: string[];
     featureLimits: {
-        databases: number;
+        databases: number | null;
         allocations: number;
         backups: number;
     };
