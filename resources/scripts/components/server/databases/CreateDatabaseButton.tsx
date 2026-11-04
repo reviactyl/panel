@@ -39,14 +39,15 @@ export default () => {
 
     const appendDatabase = ServerContext.useStoreActions((actions) => actions.databases.appendDatabase);
 
-    const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
+    const submit = (values: Values, { setSubmitting, resetForm }: FormikHelpers<Values>) => {
         clearFlashes('database:create');
-        createServerDatabase(uuid, {
+        return createServerDatabase(uuid, {
             databaseName: values.databaseName,
             connectionsFrom: values.connectionsFrom || '%',
         })
             .then((database) => {
                 appendDatabase(database);
+                resetForm();
                 setVisible(false);
             })
             .catch((error) => {
