@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useEffect, useMemo, useRef, useSyncExternalStore } from 'react';
 import { ServerEggVariable } from '@/api/server/types';
 import TitledGreyBox from '@/reviactyl/elements/TitledGreyBox';
 import { usePermissions } from '@/plugins/usePermissions';
@@ -15,6 +15,7 @@ import getServerStartup from '@/api/swr/getServerStartup';
 import Select from '@/reviactyl/elements/Select';
 import isEqual from 'react-fast-compare';
 import { ServerContext } from '@/state/server';
+import getStartupSaveState from './startupSaveState';
 
 interface Props {
     variable: ServerEggVariable;
@@ -25,16 +26,13 @@ const VariableBox = ({ variable }: Props) => {
     const { t } = useTranslation('server/startup');
 
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const [loading, setLoading] = useState(false);
     const [canEdit] = usePermissions(['startup.update']);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const { mutate } = getServerStartup(uuid);
 
     const secretInput = useRef<HTMLInputElement>(null);
-    const saveState = useMemo(
-        () => ({ revision: 0, pendingSave: Promise.resolve(), mounted: false }),
-        [uuid, variable.envVariable],
-    );
+    const saveState = useMemo(() => getStartupSaveState(uuid, variable.envVariable), [uuid, variable.envVariable]);
+    const loading = useSyncExternalStore(saveState.subscribe, saveState.getSnapshot);
     const saveVariableValue = useMemo(
         () =>
             debounce((value: string, requestRevision: number) => {
@@ -68,9 +66,7 @@ const VariableBox = ({ variable }: Props) => {
                         if (!variable.isSecret) console.error(error);
                         clearAndAddHttpError({ error, key: FLASH_KEY });
                     })
-                    .then(() => {
-                        if (requestRevision === saveState.revision && saveState.mounted) setLoading(false);
-                    });
+                    .then(() => saveState.finish(requestRevision));
             }, 500),
         [
             uuid,
@@ -84,29 +80,10 @@ const VariableBox = ({ variable }: Props) => {
         ],
     );
 
-    useEffect(() => {
-        saveState.mounted = true;
-        return () => {
-            saveState.mounted = false;
-            saveVariableValue.flush();
-        };
-    }, [saveVariableValue, saveState]);
-
-    useEffect(() => {
-        if (!loading) return;
-
-        const onBeforeUnload = (event: BeforeUnloadEvent) => {
-            event.preventDefault();
-            event.returnValue = '';
-        };
-        window.addEventListener('beforeunload', onBeforeUnload);
-        return () => window.removeEventListener('beforeunload', onBeforeUnload);
-    }, [loading]);
+    useEffect(() => () => saveVariableValue.flush(), [saveVariableValue]);
 
     const setVariableValue = (value: string) => {
-        setLoading(true);
-        saveState.revision += 1;
-        saveVariableValue(value, saveState.revision);
+        saveVariableValue(value, saveState.start());
     };
 
     const useSwitch = variable.rules.some(

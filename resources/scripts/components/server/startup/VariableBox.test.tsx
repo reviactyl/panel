@@ -65,6 +65,17 @@ const toggle = async (input: HTMLInputElement) => {
     await act(async () => input.click());
     await act(async () => vi.advanceTimersByTimeAsync(500));
 };
+const editText = async (input: HTMLInputElement, value: string) => {
+    await act(async () => {
+        Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(input, value);
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+};
+const beforeUnload = () => {
+    const event = new Event('beforeunload', { cancelable: true });
+    window.dispatchEvent(event);
+    return event.defaultPrevented;
+};
 
 describe('startup boolean switch representation', () => {
     it.each([
@@ -165,7 +176,9 @@ describe('startup save response ordering', () => {
         await toggle(inputs[0]!);
         await toggle(inputs[1]!);
         await act(async () => second.resolve([{ ...otherVariable, serverValue: 'true' }, 'true true']));
+        expect(beforeUnload()).toBe(true);
         await act(async () => first.resolve([{ ...variable, serverValue: 'true' }, 'true false']));
+        expect(beforeUnload()).toBe(false);
         expect(cached.variables.map((v) => v.serverValue)).toEqual(['true', 'true']);
         expect(cached.invocation).toBe('true true');
         expect(mocks.mutate.mock.calls.filter((args) => args.length === 0)).toHaveLength(2);
@@ -287,15 +300,47 @@ describe('startup save response ordering', () => {
         expect(mocks.update).toHaveBeenLastCalledWith('server-uuid', 'BOOLEAN_VALUE', 'false');
     });
 
+    it('keeps newer edits ordered after leaving and returning to Startup', async () => {
+        const older = deferred();
+        const newer = deferred();
+        mocks.update.mockReset().mockReturnValueOnce(older.promise).mockReturnValueOnce(newer.promise);
+        const textVariable = { rules: ['required', 'string'], serverValue: 'old.jar' };
+        await render(textVariable);
+        await editText(container.querySelector('input')!, 'first.jar');
+        await act(async () => vi.advanceTimersByTimeAsync(500));
+        await editText(container.querySelector('input')!, 'queued.jar');
+        await act(async () => root.render(null));
+        await render(textVariable);
+        await editText(container.querySelector('input')!, 'newest.jar');
+        await act(async () => vi.advanceTimersByTimeAsync(500));
+        expect(mocks.update).toHaveBeenCalledTimes(1);
+        await act(async () => older.resolve([{ ...variable, serverValue: 'first.jar' }, 'first']));
+        expect(mocks.update).toHaveBeenCalledTimes(2);
+        expect(mocks.update).toHaveBeenLastCalledWith('server-uuid', 'BOOLEAN_VALUE', 'newest.jar');
+        await act(async () => newer.resolve([{ ...variable, serverValue: 'newest.jar' }, 'newest']));
+        expect(container.querySelector('[data-loading]')?.getAttribute('data-loading')).toBe('false');
+    });
+
+    it('keeps the exit warning after navigation until in-flight and queued saves finish', async () => {
+        const older = deferred();
+        const newer = deferred();
+        mocks.update.mockReset().mockReturnValueOnce(older.promise).mockReturnValueOnce(newer.promise);
+        const input = await render({ serverValue: 'false' });
+        await toggle(input);
+        await act(async () => input.click());
+        await act(async () => root.render(<p>Server console</p>));
+        expect(beforeUnload()).toBe(true);
+        await act(async () => older.resolve([{ ...variable, serverValue: 'true' }, 'older']));
+        expect(mocks.update).toHaveBeenCalledTimes(2);
+        expect(beforeUnload()).toBe(true);
+        await act(async () => newer.resolve([{ ...variable, serverValue: 'false' }, 'newer']));
+        expect(beforeUnload()).toBe(false);
+    });
+
     it('warns before a full-page exit during debounce and saving, and removes the warning on success', async () => {
         const pending = deferred();
         mocks.update.mockReset().mockReturnValue(pending.promise);
         const input = await render({ serverValue: 'false' });
-        const beforeUnload = () => {
-            const event = new Event('beforeunload', { cancelable: true });
-            window.dispatchEvent(event);
-            return event.defaultPrevented;
-        };
         expect(beforeUnload()).toBe(false);
         await act(async () => input.click());
         expect(beforeUnload()).toBe(true);
