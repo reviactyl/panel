@@ -42,6 +42,8 @@ class SuspensionService
             throw new ConflictHttpException('Cannot toggle suspension status on a server that is currently being transferred.');
         }
 
+        $previousStatus = $server->status;
+
         // Update the server's suspension status.
         $server->update([
             'status' => $isSuspending ? Server::STATUS_SUSPENDED : null,
@@ -53,7 +55,7 @@ class SuspensionService
         } catch (\Exception $exception) {
             // Rollback the server's suspension status if agent fails to sync the server.
             $server->update([
-                'status' => $isSuspending ? null : Server::STATUS_SUSPENDED,
+                'status' => $previousStatus,
             ]);
             throw $exception;
         }
