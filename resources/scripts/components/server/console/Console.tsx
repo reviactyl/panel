@@ -74,6 +74,10 @@ export default () => {
         terminal.writeln(TERMINAL_PRELUDE + 'Server marked as ' + state + '...\u001b[0m');
 
     const handleCommandKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.nativeEvent.isComposing || e.nativeEvent.keyCode === 229) {
+            return;
+        }
+
         if (e.key === 'ArrowUp') {
             const newIndex = Math.min(historyIndex + 1, history!.length - 1);
 
