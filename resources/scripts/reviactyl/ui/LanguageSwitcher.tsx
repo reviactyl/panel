@@ -16,7 +16,7 @@ const LanguageSwitcher = () => {
     const { t } = useTranslation('dashboard/account');
     const user = useStoreState((state: ApplicationStore) => state.user.data);
     const serverLocale = useStoreState((state: any) => state.settings.data?.locale || 'en');
-    const setUserData = useStoreActions((actions: any) => actions.user.setUserData);
+    const updateUserData = useStoreActions((actions: any) => actions.user.updateUserData);
     const [languages, setLanguages] = useState<Record<string, LanguageInfo>>({});
     const [currentLang, setCurrentLang] = useState(
         user?.language && user.language !== 'geo' ? user.language : serverLocale,
@@ -41,7 +41,7 @@ const LanguageSwitcher = () => {
         if (user) {
             try {
                 await updateAccountLanguage({ language: newLang });
-                setUserData({ ...user, language: newLang });
+                updateUserData({ language: newLang });
             } catch (error) {
                 console.error('Failed to update language:', error);
             }
