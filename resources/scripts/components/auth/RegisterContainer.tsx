@@ -9,7 +9,7 @@ import useFlash from '@/plugins/useFlash';
 import Label from '@/reviactyl/elements/Label';
 import { KeyIcon, UserIcon, MailIcon, EyeIcon, EyeOffIcon } from '@heroicons/react/solid';
 import Reaptcha from 'reaptcha';
-import Turnstile from '@/reviactyl/elements/Turnstile';
+import Turnstile, { type TurnstileHandle } from '@/reviactyl/elements/Turnstile';
 import { useStoreState } from 'easy-peasy';
 
 import register from '@/api/auth/register';
@@ -27,6 +27,7 @@ interface Values {
 const RegisterContainer = () => {
     const { t } = useTranslation('auth');
     const ref = React.useRef<Reaptcha>(null);
+    const turnstileRef = React.useRef<TurnstileHandle>(null);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const [show, setShow] = useState(false);
     const [token, setToken] = useState('');
@@ -77,6 +78,7 @@ const RegisterContainer = () => {
             .catch((error) => {
                 setToken('');
                 if (ref.current) ref.current.reset();
+                turnstileRef.current?.reset();
 
                 const { response } = error;
                 if (response?.status === 422 && response?.data?.errors) {
@@ -210,6 +212,7 @@ const RegisterContainer = () => {
                     {provider === 'turnstile' && (
                         <div className='mt-4 flex justify-center'>
                             <Turnstile
+                                ref={turnstileRef}
                                 siteKey={turnstile.siteKey}
                                 onVerify={(response) => setToken(response)}
                                 onExpire={() => setToken('')}
