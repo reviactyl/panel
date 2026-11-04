@@ -6,7 +6,6 @@ import { join } from 'pathe';
 import { object, string } from 'yup';
 import createDirectory from '@/api/server/files/createDirectory';
 import { Button } from '@/reviactyl/components/button/index';
-import { FileObject } from '@/api/server/files/loadDirectory';
 import { useFlashKey } from '@/plugins/useFlash';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import { WithClassname } from '@/components/types';
@@ -24,21 +23,6 @@ interface Values {
 
 const schema = object().shape({
     directoryName: string().required('A valid directory name must be provided.'),
-});
-
-const generateDirectoryData = (name: string): FileObject => ({
-    key: `dir_${name.split('/', 1)[0] ?? name}`,
-    name: name.replace(/^(\/*)/, '').split('/', 1)[0] ?? name,
-    mode: 'drwxr-xr-x',
-    modeBits: '0755',
-    size: 0,
-    isFile: false,
-    isSymlink: false,
-    mimetype: '',
-    createdAt: new Date(),
-    modifiedAt: new Date(),
-    isArchiveType: () => false,
-    isEditable: () => false,
 });
 
 const NewDirectoryDialog = asDialog({})(() => {
@@ -62,7 +46,7 @@ const NewDirectoryDialog = asDialog({})(() => {
 
     const submit = ({ directoryName }: Values, { setSubmitting }: FormikHelpers<Values>) => {
         createDirectory(uuid, directory, directoryName)
-            .then(() => mutate((data) => data && [...data, generateDirectoryData(directoryName)], false))
+            .then(() => mutate())
             .then(() => close())
             .catch((error) => {
                 setSubmitting(false);
