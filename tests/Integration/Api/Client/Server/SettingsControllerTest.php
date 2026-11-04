@@ -168,7 +168,7 @@ class SettingsControllerTest extends ClientApiIntegrationTestCase
         ]);
 
         $this->assertNull($server->timezone);
-        $this->assertArrayNotHasKey('TZ', $environment->handle($server));
+        $this->assertSame(config('app.timezone'), $environment->handle($server)['TZ']);
 
         $this->actingAs($user)
             ->putJson("/api/client/servers/$server->uuid/settings/timezone", ['timezone' => 'Not/AZone'])
@@ -205,8 +205,27 @@ class SettingsControllerTest extends ClientApiIntegrationTestCase
 
         $server = $server->refresh();
         $this->assertNull($server->timezone);
-        $this->assertArrayNotHasKey('TZ', $environment->handle($server));
+        $this->assertSame(config('app.timezone'), $environment->handle($server)['TZ']);
         $this->assertSame('03:00', $schedule->refresh()->next_run_at->format('H:i'));
+    }
+
+    #[DataProvider('environmentTimezoneDataProvider')]
+    public function test_environment_uses_the_effective_server_timezone(?string $timezone, string $expected): void
+    {
+        config()->set('app.timezone', 'America/New_York');
+        $server = $this->createServerModel(['timezone' => $timezone]);
+
+        $this->assertSame($expected, $this->app->make(EnvironmentService::class)->handle($server)['TZ']);
+        $this->assertSame($expected, $server->getScheduleTimezone());
+    }
+
+    public static function environmentTimezoneDataProvider(): array
+    {
+        return [
+            'Panel default' => [null, 'America/New_York'],
+            'explicit timezone' => ['Asia/Tokyo', 'Asia/Tokyo'],
+            'explicit UTC' => ['UTC', 'UTC'],
+        ];
     }
 
     public function test_subuser_cannot_change_server_timezone_without_permission()
