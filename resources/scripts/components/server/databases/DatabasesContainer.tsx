@@ -61,18 +61,18 @@ export default () => {
                             <Card>
                                 <p className='flex justify-center text-center text-sm text-gray-400'>
                                     <DatabaseIcon className='w-5 h-5 mr-1' />
-                                    {databaseLimit > 0 ? t('out-of-databases') : t('no-databases')}
+                                    {databaseLimit === 0 ? t('no-databases') : t('out-of-databases')}
                                 </p>
                             </Card>
                         )}
                         <Can action={'database.create'}>
                             <div className='mt-6 flex items-center justify-end'>
-                                {databaseLimit > 0 && databases.length > 0 && (
+                                {databaseLimit !== null && databaseLimit > 0 && databases.length > 0 && (
                                     <p className='text-sm text-gray-300 mb-4 sm:mr-6 sm:mb-0'>
                                         {t('created', { count: databases.length, limit: databaseLimit })}
                                     </p>
                                 )}
-                                {databaseLimit > 0 && databaseLimit !== databases.length && (
+                                {(databaseLimit === null || databases.length < databaseLimit) && (
                                     <div className='flex justify-end mt-6'>
                                         <CreateDatabaseButton />
                                     </div>
