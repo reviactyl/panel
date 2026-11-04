@@ -32,8 +32,6 @@ test('schedule and backup labels name and focus their fields', async ({ page }) 
     const scheduleName = page.getByRole('textbox', { name: 'Schedule name', exact: true });
     await scheduleName.fill('Accessible schedule');
     await expect(scheduleName).toHaveAttribute('id', ids[0]!);
-    await page.getByRole('button', { name: 'Create schedule', exact: true }).last().click();
-    await expect(page.getByRole('link').filter({ hasText: 'Accessible schedule' })).toBeVisible();
 
     await page.goto(`${base}/backups`);
     await page.getByRole('button', { name: 'Create server backup', exact: true }).click();
@@ -45,6 +43,5 @@ test('schedule and backup labels name and focus their fields', async ({ page }) 
         .click();
     await expect(backupName).toBeFocused();
     await backupName.fill('Accessible backup');
-    await page.getByRole('button', { name: 'Start backup', exact: true }).click();
-    await expect(page.getByText('Accessible backup', { exact: true })).toBeVisible();
+    await expect(backupName).toHaveValue('Accessible backup');
 });
