@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useEffect, useMemo, useRef, useSyncExternalStore } from 'react';
 import { ServerEggVariable } from '@/api/server/types';
 import TitledGreyBox from '@/reviactyl/elements/TitledGreyBox';
 import { usePermissions } from '@/plugins/usePermissions';
@@ -15,6 +15,7 @@ import getServerStartup from '@/api/swr/getServerStartup';
 import Select from '@/reviactyl/elements/Select';
 import isEqual from 'react-fast-compare';
 import { ServerContext } from '@/state/server';
+import getStartupSaveState from './startupSaveState';
 
 interface Props {
     variable: ServerEggVariable;
@@ -25,30 +26,28 @@ const VariableBox = ({ variable }: Props) => {
     const { t } = useTranslation('server/startup');
 
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const [loading, setLoading] = useState(false);
     const [canEdit] = usePermissions(['startup.update']);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const { mutate } = getServerStartup(uuid);
 
     const secretInput = useRef<HTMLInputElement>(null);
-    const revision = useRef(0);
-    const pendingSave = useRef(Promise.resolve());
+    const saveState = useMemo(() => getStartupSaveState(uuid, variable.envVariable), [uuid, variable.envVariable]);
+    const loading = useSyncExternalStore(saveState.subscribe, saveState.getSnapshot);
     const saveVariableValue = useMemo(
         () =>
             debounce((value: string, requestRevision: number) => {
-                setLoading(true);
                 clearFlashes(FLASH_KEY);
 
-                pendingSave.current = pendingSave.current
+                saveState.pendingSave = saveState.pendingSave
                     .then(async () => {
-                        if (requestRevision !== revision.current) return;
+                        if (requestRevision !== saveState.revision) return;
 
                         const [response] = await updateStartupVariable(uuid, variable.envVariable, value);
-                        if (requestRevision !== revision.current) return;
+                        if (requestRevision !== saveState.revision) return;
 
                         await mutate(
                             (data) =>
-                                data && requestRevision === revision.current
+                                data && requestRevision === saveState.revision
                                     ? {
                                           ...data,
                                           variables: data.variables.map((v) =>
@@ -59,32 +58,32 @@ const VariableBox = ({ variable }: Props) => {
                             false,
                         );
 
-                        if (requestRevision === revision.current) await mutate();
+                        if (requestRevision === saveState.revision) await mutate();
                     })
                     .catch((error) => {
-                        if (requestRevision !== revision.current) return;
+                        if (requestRevision !== saveState.revision) return;
 
                         if (!variable.isSecret) console.error(error);
                         clearAndAddHttpError({ error, key: FLASH_KEY });
                     })
-                    .then(() => {
-                        if (requestRevision === revision.current) setLoading(false);
-                    });
+                    .then(() => saveState.finish(requestRevision));
             }, 500),
-        [uuid, variable.envVariable, variable.isSecret, mutate, clearFlashes, clearAndAddHttpError, FLASH_KEY],
+        [
+            uuid,
+            variable.envVariable,
+            variable.isSecret,
+            mutate,
+            clearFlashes,
+            clearAndAddHttpError,
+            FLASH_KEY,
+            saveState,
+        ],
     );
 
-    useEffect(
-        () => () => {
-            saveVariableValue.clear();
-            revision.current += 1;
-        },
-        [saveVariableValue],
-    );
+    useEffect(() => () => saveVariableValue.flush(), [saveVariableValue]);
 
     const setVariableValue = (value: string) => {
-        revision.current += 1;
-        saveVariableValue(value, revision.current);
+        saveVariableValue(value, saveState.start());
     };
 
     const useSwitch = variable.rules.some(
