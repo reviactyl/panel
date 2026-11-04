@@ -62,13 +62,16 @@ class RunTaskJob extends Job implements ShouldQueue
         InitiateBackupService $backupService,
         DaemonPowerRepository $powerRepository,
     ) {
-        $this->task = (new Task())->getConnection()->transaction(function () {
-            Schedule::query()->whereKey($this->scheduleId)->lockForUpdate()->first();
+        $accepted = $this->withCurrentRun(function () {
             $task = Task::query()->find($this->taskId);
             $task?->update(['is_queued' => false]);
 
-            return $task;
+            $this->task = $task;
         });
+        if (! $accepted) {
+            return;
+        }
+
         if (is_null($this->task)) {
             $this->markScheduleComplete();
 
@@ -77,8 +80,7 @@ class RunTaskJob extends Job implements ShouldQueue
 
         // Do not process a task that is not set to active, unless it's been manually triggered.
         if (! $this->task->schedule->is_active && ! $this->manualRun) {
-            $this->markTaskNotQueued();
-            $this->markScheduleComplete();
+            $this->failed();
 
             return;
         }
@@ -115,8 +117,10 @@ class RunTaskJob extends Job implements ShouldQueue
             }
         }
 
-        $this->markTaskNotQueued();
-        $this->queueNextTask();
+        $this->withCurrentRun(function () {
+            $this->markTaskNotQueued();
+            $this->queueNextTask();
+        });
     }
 
     /**
@@ -124,8 +128,24 @@ class RunTaskJob extends Job implements ShouldQueue
      */
     public function failed(?Exception $exception = null)
     {
-        $this->markTaskNotQueued();
-        $this->markScheduleComplete();
+        $this->withCurrentRun(function () {
+            $this->markTaskNotQueued();
+            $this->markScheduleComplete();
+        });
+    }
+
+    private function withCurrentRun(callable $callback): bool
+    {
+        return (new Schedule())->getConnection()->transaction(function () use ($callback) {
+            $schedule = Schedule::query()->whereKey($this->scheduleId)->lockForUpdate()->first();
+            if (is_null($schedule) || $schedule->processing_token !== $this->processingToken) {
+                return false;
+            }
+
+            $callback();
+
+            return true;
+        });
     }
 
     /**
@@ -147,7 +167,7 @@ class RunTaskJob extends Job implements ShouldQueue
 
         $nextTask->update(['is_queued' => true]);
 
-        $this->dispatch((new self($nextTask, $this->manualRun, $this->processingToken))->delay($nextTask->time_offset));
+        $this->dispatch((new self($nextTask, $this->manualRun, $this->processingToken))->delay($nextTask->time_offset)->afterCommit());
     }
 
     /**
