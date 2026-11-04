@@ -6,7 +6,7 @@ import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcr
 import loadDirectory, { FileObject } from '@/api/server/files/loadDirectory';
 import NewDirectoryButton from '@/components/server/files/NewDirectoryButton';
 import UrlDownloadButton from '@/components/server/files/UrlDownloadButton';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Can from '@/reviactyl/elements/Can';
 import { ServerError } from '@/reviactyl/elements/ScreenBlock';
 import { ServerContext } from '@/state/server';
@@ -50,6 +50,7 @@ export default () => {
     const id = ServerContext.useStoreState((state) => state.server.data!.id);
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const { hash } = useLocation();
+    const navigate = useNavigate();
     const { data: files, error, mutate } = useFileManagerSwr();
     const directory = ServerContext.useStoreState((state) => state.files.directory);
     const clearFlashes = useStoreActions((actions) => actions.flashes.clearFlashes);
@@ -215,9 +216,7 @@ export default () => {
                                 <UploadButton />
                                 <Tooltip content={t('new-file')}>
                                     <Button.Text
-                                        onClick={() => {
-                                            window.location.href = `/server/${id}/files/new${window.location.hash}`;
-                                        }}
+                                        onClick={() => navigate(`/server/${id}/files/new${hash}`)}
                                         aria-label={t('new-file')}
                                     >
                                         <FaFileCirclePlus className='h-5 w-5' />
