@@ -94,3 +94,13 @@ it('reports document edits and undo without reporting language changes as edits'
     await vi.waitFor(() => expect(view.state.facet(language)).not.toBeNull());
     expect(onContentChanged).not.toHaveBeenCalled();
 });
+
+it('reports LF content when editing and undoing a CRLF file', async () => {
+    const view = await render('first\r\nsecond');
+    expect(view.state.doc.toString()).toBe('first\nsecond');
+    view.dispatch({ changes: { from: 0, to: 5, insert: 'changed' } });
+    expect(onContentChanged).toHaveBeenLastCalledWith('changed\nsecond');
+    undo(view);
+    expect(onContentChanged).toHaveBeenLastCalledWith('first\nsecond');
+    await expect(fetchContent.mock.calls.at(-1)![0]()).resolves.toBe('first\nsecond');
+});

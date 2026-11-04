@@ -29,6 +29,8 @@ import Card from '@/reviactyl/ui/Card';
 import { ApplicationStore } from '@/state';
 import { useStoreState } from 'easy-peasy';
 
+const normalizeLineEndings = (content: string) => content.replace(/\r\n?/g, '\n');
+
 const FileEditContainer = () => {
     const [error, setError] = useState('');
     const location = useLocation();
@@ -48,8 +50,8 @@ const FileEditContainer = () => {
     const blocker = useBlocker(useCallback(() => currentContent.current !== savedContent.current, []));
 
     const onContentChanged = useCallback((value: string) => {
-        currentContent.current = value;
-        setDirty(value !== savedContent.current);
+        currentContent.current = normalizeLineEndings(value);
+        setDirty(currentContent.current !== savedContent.current);
     }, []);
 
     useEffect(() => {
@@ -104,8 +106,8 @@ const FileEditContainer = () => {
         getFileContents(uuid, path)
             .then((content) => {
                 if (active) {
-                    savedContent.current = content;
-                    currentContent.current = content;
+                    savedContent.current = normalizeLineEndings(content);
+                    currentContent.current = savedContent.current;
                     setContent(content);
                     setLoading(false);
                 }
@@ -139,8 +141,8 @@ const FileEditContainer = () => {
                 } else {
                     await updateFileContents(uuid, hashToPath(hash), content);
                 }
-                savedContent.current = content;
-                setDirty(currentContent.current !== content);
+                savedContent.current = normalizeLineEndings(content);
+                setDirty(currentContent.current !== savedContent.current);
             })
             .then(() => {
                 if (name) {

@@ -22,7 +22,7 @@ const mocks = vi.hoisted(() => ({
     navigate: undefined as NavigateFunction | undefined,
 }));
 function Editor({ initialContent, fetchContent, onContentSaved, onContentChanged }: EditorProps) {
-    const [value, setValue] = useState(initialContent || '');
+    const [value, setValue] = useState((initialContent || '').replace(/\r\n?/g, '\n'));
     useEffect(() => {
         fetchContent(() => Promise.resolve(value));
         mocks.shortcut = onContentSaved;
@@ -295,6 +295,26 @@ describe.each(['cm', 'mo'])('unsaved file navigation (%s)', (editor) => {
         await navigate('/account');
         expect(window.confirm).not.toHaveBeenCalled();
         expect(container.querySelector('textarea')).toBeNull();
+    });
+
+    it.each(['\r\n', '\r'])('does not warn after undoing edits in a file using %j line endings', async (ending) => {
+        mocks.read.mockResolvedValue(`first${ending}second`);
+        await render();
+        await edit('changed\nsecond');
+        await edit('first\nsecond');
+        expect(beforeUnload()).toBe(false);
+        await navigate('/account');
+        expect(window.confirm).not.toHaveBeenCalled();
+    });
+
+    it('does not warn after saving an untouched CRLF file as LF', async () => {
+        mocks.read.mockResolvedValue('first\r\nsecond');
+        await render();
+        await act(async () => save().click());
+        expect(mocks.update).toHaveBeenCalledWith('uuid', '/a.txt', 'first\nsecond');
+        expect(beforeUnload()).toBe(false);
+        await navigate('/account');
+        expect(window.confirm).not.toHaveBeenCalled();
     });
 
     it('retains protection after a failed save', async () => {
