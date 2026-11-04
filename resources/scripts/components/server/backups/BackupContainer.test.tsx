@@ -9,6 +9,9 @@ import BackupContainer from './BackupContainer';
 const mocks = vi.hoisted(() => ({
     fetch: vi.fn(),
     delete: vi.fn(),
+    create: vi.fn(),
+    backupLimit: 1,
+    createControls: false,
     deleteControls: false,
     completed: undefined as ((data: string) => void) | undefined,
 }));
@@ -30,7 +33,7 @@ vi.mock('@/api/swr/getServerBackups', async () => {
 vi.mock('@/state/server', () => ({
     ServerContext: {
         useStoreState: (selector: (state: unknown) => unknown) =>
-            selector({ server: { data: { uuid: 'server-uuid', featureLimits: { backups: 1 } } } }),
+            selector({ server: { data: { uuid: 'server-uuid', featureLimits: { backups: mocks.backupLimit } } } }),
         useStoreActions: () => vi.fn(),
     },
 }));
@@ -53,29 +56,47 @@ vi.mock('@/reviactyl/elements/Can', () => ({ default: ({ children }: { children:
 vi.mock('@/reviactyl/elements/ServerContentBlock', () => ({
     default: ({ children }: { children: ReactNode }) => children,
 }));
-vi.mock('@/reviactyl/elements/Pagination', () => ({
-    default: ({
-        data,
-        children,
-        onPageSelect,
-    }: {
-        data: BackupResponse;
-        children: (data: BackupResponse) => ReactNode;
-        onPageSelect: (page: number) => void;
-    }) => (
-        <>
-            <a href='#page-3' data-current-page={data.pagination.currentPage} onClick={() => onPageSelect(3)}>
-                Page 3
-            </a>
-            {mocks.deleteControls && <span>Total pages: {data.pagination.totalPages}</span>}
-            {children(data)}
-        </>
-    ),
-}));
+vi.mock('@/reviactyl/elements/Pagination', async () => {
+    const { default: Pagination } = await vi.importActual<typeof import('@/reviactyl/elements/Pagination')>(
+        '@/reviactyl/elements/Pagination',
+    );
+    return {
+        default: ({
+            data,
+            children,
+            onPageSelect,
+        }: {
+            data: BackupResponse;
+            children: (data: BackupResponse) => ReactNode;
+            onPageSelect: (page: number) => void;
+        }) =>
+            mocks.createControls ? (
+                <Pagination data={data} onPageSelect={onPageSelect}>
+                    {({ items }) => children({ ...data, items })}
+                </Pagination>
+            ) : (
+                <>
+                    <a href='#page-3' data-current-page={data.pagination.currentPage} onClick={() => onPageSelect(3)}>
+                        Page 3
+                    </a>
+                    {mocks.deleteControls && <span>Total pages: {data.pagination.totalPages}</span>}
+                    {children(data)}
+                </>
+            ),
+    };
+});
 vi.mock('@/components/FlashMessageRender', () => ({ default: () => null }));
 vi.mock('@/extensions/ExtensionSlot', () => ({ ExtensionSlot: () => null }));
 vi.mock('./BackupNotificationSettings', () => ({ default: () => null }));
-vi.mock('./CreateBackupButton', () => ({ default: () => <button>Create backup</button> }));
+vi.mock('@/api/server/backups/createServerBackup', () => ({ default: mocks.create }));
+vi.mock('easy-peasy', async (importOriginal) => ({
+    ...(await importOriginal<typeof import('easy-peasy')>()),
+    useStoreState: (selector: (state: unknown) => unknown) => selector({ user: { data: { archiveFormat: 'tar.gz' } } }),
+}));
+vi.mock('@/reviactyl/elements/Modal', () => ({
+    default: ({ visible, children }: { visible: boolean; children: ReactNode }) =>
+        visible ? <div role='dialog'>{children}</div> : null,
+}));
 vi.mock('@/api/server/backups/deleteBackup', () => ({ default: mocks.delete }));
 vi.mock('@/reviactyl/elements/SpinnerOverlay', () => ({ default: () => null }));
 vi.mock('./RenameBackupModal', () => ({ default: () => null }));
@@ -130,6 +151,9 @@ beforeEach(() => {
     Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
     mocks.fetch.mockReset();
     mocks.delete.mockReset();
+    mocks.create.mockReset();
+    mocks.backupLimit = 1;
+    mocks.createControls = false;
     mocks.deleteControls = false;
     mocks.completed = undefined;
     container = document.createElement('div');
@@ -164,7 +188,7 @@ describe('backup completion slot count', () => {
         await complete({ uuid: pending.uuid, is_successful: false });
         expect(container.textContent).toContain('Failed');
         expect(container.textContent).not.toContain('1 of 1');
-        expect(container.querySelector('button')?.textContent).toBe('Create backup');
+        expect(container.querySelector('button')?.textContent).toBe('create-backup');
         expect(mocks.fetch).toHaveBeenCalledTimes(2);
         await complete({ uuid: pending.uuid, is_successful: false });
         expect(container.querySelector('button')).not.toBeNull();
@@ -276,5 +300,87 @@ describe('backup pagination recovery', () => {
         await render();
         expect(mocks.fetch).toHaveBeenCalledTimes(1);
         expect(container.textContent).toContain('no-backups');
+    });
+});
+
+const clickButton = async (text: string) => {
+    const button = Array.from(container.querySelectorAll('button')).find((button) => button.textContent === text);
+    expect(button).toBeDefined();
+    await act(async () => button!.click());
+};
+const createBackup = async () => {
+    await clickButton('create-backup');
+    await act(async () =>
+        container.querySelector('form')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })),
+    );
+};
+
+describe('backup creation pagination', () => {
+    let items: ServerBackup[];
+    beforeEach(() => {
+        mocks.createControls = true;
+        mocks.backupLimit = 60;
+        items = Array.from({ length: 20 }, (_, index) => ({ ...pending, uuid: `backup-${index + 1}` }));
+        mocks.fetch.mockImplementation(async (page: number) => {
+            const pageItems = items.slice((page - 1) * 20, page * 20);
+            return {
+                items: pageItems,
+                backupCount: items.length,
+                pagination: {
+                    total: items.length,
+                    count: pageItems.length,
+                    perPage: 20,
+                    currentPage: page,
+                    totalPages: Math.ceil(items.length / 20),
+                },
+            };
+        });
+        mocks.create.mockImplementation(async () => {
+            const backup = { ...pending, uuid: `backup-${items.length + 1}` };
+            items.push(backup);
+            return backup;
+        });
+    });
+
+    it('makes page 2 reachable after creating backup 21 without overflowing page 1', async () => {
+        await render();
+        expect(container.querySelectorAll('[data-backup-id]')).toHaveLength(20);
+        await createBackup();
+        expect(mocks.create).toHaveBeenCalledTimes(1);
+        expect(mocks.fetch.mock.calls.map(([page]) => page)).toEqual([1, 1]);
+        expect(container.querySelectorAll('[data-backup-id]')).toHaveLength(20);
+        expect(container.querySelector('[data-backup-id="backup-21"]')).toBeNull();
+        expect(container.textContent).toContain('21 of 60');
+        expect(container.querySelector('[role="dialog"]')).toBeNull();
+
+        await clickButton('2');
+        expect(container.querySelectorAll('[data-backup-id]')).toHaveLength(1);
+        expect(container.querySelector('[data-backup-id="backup-21"]')).not.toBeNull();
+    });
+
+    it('preserves a later selected page and fetches its server-assigned rows after creation', async () => {
+        items.push(...Array.from({ length: 20 }, (_, index) => ({ ...pending, uuid: `backup-${index + 21}` })));
+        await render();
+        await clickButton('2');
+        await createBackup();
+        expect(mocks.fetch.mock.calls.map(([page]) => page)).toEqual([1, 2, 2]);
+        expect(container.querySelectorAll('[data-backup-id]')).toHaveLength(20);
+        expect(container.querySelector('[data-backup-id="backup-21"]')).not.toBeNull();
+        expect(container.querySelector('[data-backup-id="backup-41"]')).toBeNull();
+        expect(container.textContent).toContain('41 of 60');
+
+        await clickButton('3');
+        expect(container.querySelectorAll('[data-backup-id]')).toHaveLength(1);
+        expect(container.querySelector('[data-backup-id="backup-41"]')).not.toBeNull();
+    });
+
+    it('keeps the creation form open and does not change the list when creation fails', async () => {
+        mocks.create.mockRejectedValue(new Error('Backup failed'));
+        await render();
+        await createBackup();
+        expect(mocks.fetch).toHaveBeenCalledTimes(1);
+        expect(container.querySelectorAll('[data-backup-id]')).toHaveLength(20);
+        expect(container.querySelector('[role="dialog"]')).not.toBeNull();
+        expect(container.querySelector<HTMLButtonElement>('button[type="submit"]')!.disabled).toBe(false);
     });
 });

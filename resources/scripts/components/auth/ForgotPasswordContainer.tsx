@@ -9,7 +9,7 @@ import { Formik, FormikHelpers } from 'formik';
 import { object, string } from 'yup';
 import { Button } from '@/reviactyl/components/button/index';
 import Reaptcha from 'reaptcha';
-import Turnstile from '@/reviactyl/elements/Turnstile';
+import Turnstile, { type TurnstileHandle } from '@/reviactyl/elements/Turnstile';
 import useFlash from '@/plugins/useFlash';
 import { AtSymbolIcon } from '@heroicons/react/solid';
 import { useTranslation } from 'react-i18next';
@@ -21,6 +21,7 @@ interface Values {
 export default () => {
     const { t } = useTranslation('auth');
     const ref = useRef<Reaptcha>(null);
+    const turnstileRef = useRef<TurnstileHandle>(null);
     const [token, setToken] = useState('');
 
     const { clearFlashes, addFlash } = useFlash();
@@ -61,6 +62,7 @@ export default () => {
             .then(() => {
                 setToken('');
                 if (ref.current) ref.current.reset();
+                turnstileRef.current?.reset();
 
                 setSubmitting(false);
             });
@@ -106,6 +108,7 @@ export default () => {
                     {provider === 'turnstile' && (
                         <div className='mt-4 flex justify-center'>
                             <Turnstile
+                                ref={turnstileRef}
                                 siteKey={turnstile.siteKey}
                                 onVerify={(response) => setToken(response)}
                                 onExpire={() => setToken('')}
