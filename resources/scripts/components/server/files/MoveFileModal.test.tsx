@@ -28,9 +28,21 @@ vi.mock('@/plugins/useFlash', () => ({
 }));
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 vi.mock('@/components/FlashMessageRender', () => ({ default: () => null }));
-vi.mock('@/reviactyl/elements/transitions/FadeTransition', () => ({
-    default: ({ show, children }: { show: boolean; children: ReactNode }) => (show ? children : null),
-}));
+vi.mock('@/reviactyl/elements/transitions/FadeTransition', async () => {
+    const { useEffect, useRef } = await import('react');
+
+    return {
+        default: ({ show, children, afterLeave }: { show: boolean; children: ReactNode; afterLeave?: () => void }) => {
+            const wasShown = useRef(show);
+            useEffect(() => {
+                const exited = wasShown.current && !show;
+                wasShown.current = show;
+                if (exited) afterLeave?.();
+            }, [show, afterLeave]);
+            return show ? children : null;
+        },
+    };
+});
 vi.mock('@/reviactyl/elements/Button', () => ({
     default: ({
         isSecondary: _secondary,

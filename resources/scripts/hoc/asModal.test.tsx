@@ -4,9 +4,30 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import ModalContext from '@/context/ModalContext';
 import asModal from './asModal';
 
-vi.mock('@/reviactyl/elements/transitions/FadeTransition', () => ({
-    default: ({ show, children }: { show: boolean; children: ReactNode }) => (show ? children : null),
-}));
+vi.mock('@/reviactyl/elements/transitions/FadeTransition', async () => {
+    const { useEffect, useState } = await import('react');
+
+    return {
+        default: ({ show, children, afterLeave }: { show: boolean; children: ReactNode; afterLeave?: () => void }) => {
+            const [rendered, setRendered] = useState(show);
+
+            useEffect(() => {
+                if (show) {
+                    setRendered(true);
+                    return;
+                }
+                if (!rendered) return;
+                const timer = setTimeout(() => {
+                    setRendered(false);
+                    afterLeave?.();
+                }, 150);
+                return () => clearTimeout(timer);
+            }, [show, rendered, afterLeave]);
+
+            return show || rendered ? children : null;
+        },
+    };
+});
 
 const dismissed = vi.fn();
 const Content = () => {
@@ -53,6 +74,7 @@ let container: HTMLDivElement;
 let portal: HTMLDivElement;
 
 beforeEach(async () => {
+    vi.useFakeTimers();
     vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
     dismissed.mockClear();
     container = document.createElement('div');
@@ -68,6 +90,7 @@ afterEach(async () => {
     container.remove();
     portal.remove();
     vi.unstubAllGlobals();
+    vi.useRealTimers();
 });
 
 async function clickButton(label: string) {
@@ -76,11 +99,23 @@ async function clickButton(label: string) {
     await act(async () => button!.click());
 }
 
+async function finishClose(count = 1) {
+    expect(portal.textContent).toContain('Modal content');
+    expect(dismissed).toHaveBeenCalledTimes(count - 1);
+    await act(async () => vi.advanceTimersByTimeAsync(149));
+    expect(portal.textContent).toContain('Modal content');
+    expect(dismissed).toHaveBeenCalledTimes(count - 1);
+    await act(async () => vi.advanceTimersByTimeAsync(1));
+    expect(portal.textContent).not.toContain('Modal content');
+    expect(dismissed).toHaveBeenCalledTimes(count);
+}
+
 it('synchronizes a successful programmatic close and allows repeated reopening', async () => {
     for (let count = 1; count <= 2; count++) {
         await clickButton('Open');
         expect(portal.textContent).toContain('Modal content');
         await clickButton('Save');
+        await finishClose(count);
         expect(portal.textContent).not.toContain('Modal content');
         expect(container.querySelector('output')!.textContent).toBe('false');
         expect(dismissed).toHaveBeenCalledTimes(count);
@@ -92,6 +127,7 @@ it('synchronizes a successful programmatic close and allows repeated reopening',
 it('notifies once when programmatic dismissal is requested twice', async () => {
     await clickButton('Open');
     await clickButton('Save twice');
+    await finishClose();
     expect(dismissed).toHaveBeenCalledOnce();
 });
 
@@ -106,6 +142,7 @@ it.each(['escape', 'background', 'close'])('notifies once after manual %s dismis
             portal.querySelector<SVGElement>('svg')!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
         }
     });
+    await finishClose();
     expect(dismissed).toHaveBeenCalledOnce();
     expect(container.querySelector('output')!.textContent).toBe('false');
     await clickButton('Open');
@@ -117,6 +154,7 @@ it('clears overrides when a locked modal is dismissed programmatically', async (
     await clickButton('Lock');
     expect(portal.querySelector('svg')).toBeNull();
     await clickButton('Save');
+    await finishClose();
     await clickButton('Open');
     expect(portal.querySelector('svg')).not.toBeNull();
 });
