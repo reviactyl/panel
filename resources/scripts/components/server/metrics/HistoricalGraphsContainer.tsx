@@ -65,7 +65,7 @@ export default () => {
     const stats = data?.data || [];
 
     // Dynamic time format based on selected range
-    const timeFormat = days === '1' ? 'HH:00' : 'MM/dd HH:00';
+    const timeFormat = days === '1' ? 'HH:mm' : 'MM/dd HH:mm';
 
     const chartOptions = {
         responsive: true,
