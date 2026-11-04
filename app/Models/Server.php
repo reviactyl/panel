@@ -33,6 +33,7 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property string $description
  * @property string|null $timezone
  * @property string|null $status
+ * @property bool $is_reinstalling
  * @property bool $skip_scripts
  * @property int $owner_id
  * @property int $memory
@@ -159,6 +160,7 @@ class Server extends Model implements Identifiable
         'status' => self::STATUS_INSTALLING,
         'oom_disabled' => true,
         'installed_at' => null,
+        'is_reinstalling' => false,
     ];
 
     /**
@@ -191,6 +193,7 @@ class Server extends Model implements Identifiable
         'egg_id' => 'required|exists:eggs,id',
         'startup' => 'required|string',
         'skip_scripts' => 'sometimes|boolean',
+        'is_reinstalling' => 'sometimes|boolean',
         'image' => ['required', 'string', 'max:191', 'regex:/^~?[\w\.\/\-:@ ]*$/'],
         'database_limit' => 'present|nullable|integer|min:0',
         'allocation_limit' => 'sometimes|nullable|integer|min:0',
@@ -203,6 +206,7 @@ class Server extends Model implements Identifiable
     protected $casts = [
         'node_id' => 'integer',
         'skip_scripts' => 'boolean',
+        'is_reinstalling' => 'boolean',
         'owner_id' => 'integer',
         'memory' => 'integer',
         'swap' => 'integer',
@@ -239,7 +243,7 @@ class Server extends Model implements Identifiable
 
     public function isInstalled(): bool
     {
-        return $this->status !== self::STATUS_INSTALLING && $this->status !== self::STATUS_INSTALL_FAILED;
+        return ! $this->is_reinstalling && $this->status !== self::STATUS_INSTALLING && $this->status !== self::STATUS_INSTALL_FAILED;
     }
 
     public function isSuspended(): bool
@@ -249,6 +253,10 @@ class Server extends Model implements Identifiable
 
     public function getResolvedStatus(): ?string
     {
+        if ($this->is_reinstalling && ! $this->isSuspended()) {
+            return self::STATUS_INSTALLING;
+        }
+
         if (in_array($this->status, [
             self::STATUS_INSTALLING,
             self::STATUS_INSTALL_FAILED,
