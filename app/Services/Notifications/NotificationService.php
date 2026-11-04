@@ -25,7 +25,12 @@ class NotificationService
     /** @return MorphMany<DatabaseNotification, User> */
     public function query(User $user): MorphMany
     {
-        return $user->notifications()->where(fn ($query) => $query->where('data->source', 'reviactyl')->orWhere('data->format', 'filament'));
+        $query = $user->notifications();
+        if ($query->getConnection()->getDriverName() === 'pgsql') {
+            return $query->whereRaw("(data::jsonb->>'source' = ? OR data::jsonb->>'format' = ?)", ['reviactyl', 'filament']);
+        }
+
+        return $query->where(fn ($query) => $query->where('data->source', 'reviactyl')->orWhere('data->format', 'filament'));
     }
 
     public function create(User $user, array $data): DatabaseNotification

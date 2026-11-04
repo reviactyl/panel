@@ -30,7 +30,11 @@ class NotificationController extends ApplicationApiController
             $query->whereNull('read_at');
         }
         if ($request->filled('extension')) {
-            $query->where('data->extension', $request->input('extension'));
+            if ($query->getConnection()->getDriverName() === 'pgsql') {
+                $query->whereRaw("data::jsonb->>'extension' = ?", [$request->input('extension')]);
+            } else {
+                $query->where('data->extension', $request->input('extension'));
+            }
         }
 
         return $this->fractal->collection($query->orderByDesc('created_at')->orderByDesc('id')->paginate(20))

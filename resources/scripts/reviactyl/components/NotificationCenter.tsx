@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
 import {
     BellIcon,
@@ -52,14 +52,17 @@ export default function NotificationCenter() {
             (await http.get(url, { params: { unread: onlyUnread ? 1 : 0, page: currentPage } })).data,
         { refreshInterval: 30000, revalidateOnFocus: true, keepPreviousData: true },
     );
+    useEffect(() => {
+        if (data && page > data.last_page) setPage(Math.max(1, data.last_page));
+    }, [data, page]);
+
     const act = async (action: () => Promise<unknown>) => {
         setBusy(true);
         setFailure(false);
         setFailedAction(null);
         try {
             await action();
-            const refreshed = await mutate();
-            if (refreshed && page > refreshed.last_page) setPage(refreshed.last_page);
+            await mutate();
         } catch {
             setFailure(true);
             setFailedAction(() => action);

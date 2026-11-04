@@ -4,6 +4,7 @@ namespace Tests\Integration\Api\Client;
 
 use App\Events\Server\Installed;
 use App\Models\Extension;
+use App\Models\Role;
 use App\Models\Subuser;
 use App\Models\User;
 use App\Notifications\BackupCompleted;
@@ -92,6 +93,27 @@ class NotificationControllerTest extends ClientApiIntegrationTestCase
         $next->update(['completed_at' => now()]);
         Notification::assertSentToTimes($user, BackupCompleted::class, 1);
         $this->actingAs($user)->putJson($url, ['manual' => true, 'scheduled' => true, 'email' => true])->assertForbidden();
+    }
+
+    public function test_saved_backup_subscriptions_include_role_users_and_root_admins(): void
+    {
+        Notification::fake();
+        $server = $this->createServerModel();
+        $reader = User::factory()->create(['root_admin' => false]);
+        $reader->roles()->attach(Role::factory()->create(['permissions' => ['servers.read']]));
+        $admin = User::factory()->create(['root_admin' => true]);
+        $revoked = User::factory()->create(['root_admin' => false]);
+        $url = '/api/client/servers/'.$server->uuid.'/backups/notification-preferences';
+        foreach ([$reader, $admin] as $user) {
+            $this->actingAs($user)->putJson($url, ['manual' => true, 'scheduled' => false, 'email' => false])->assertOk();
+        }
+        DB::table('backup_notification_preferences')->insert(['user_id' => $revoked->id, 'server_id' => $server->id, 'manual' => true]);
+        $backup = $server->backups()->create(['uuid' => (string) Str::uuid(), 'name' => 'Subscribed', 'disk' => 'agent', 'ignored_files' => []]);
+        $backup->update(['completed_at' => now(), 'is_successful' => true]);
+        Notification::assertSentToTimes($reader, BackupCompleted::class, 1);
+        Notification::assertSentToTimes($admin, BackupCompleted::class, 1);
+        Notification::assertNotSentTo($revoked, BackupCompleted::class);
+        Notification::assertNotSentTo($server->user, BackupCompleted::class);
     }
 
     public function test_filament_notifications_are_readable_without_rendering_html(): void
