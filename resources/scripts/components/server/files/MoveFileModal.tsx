@@ -150,7 +150,12 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
             );
     }, [directoryNames, sourceDirectory, destinationDirectory]);
 
-    const canMove = destinationDirectory !== sourceDirectory && files.length > 0 && !isSubmitting && !selfMoveBlocked;
+    const canMove =
+        destinationDirectory !== sourceDirectory &&
+        files.length > 0 &&
+        !isSubmitting &&
+        !isCreatingFolder &&
+        !selfMoveBlocked;
 
     const onMove = () => {
         if (!canMove) {
