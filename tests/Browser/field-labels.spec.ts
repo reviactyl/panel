@@ -1,0 +1,50 @@
+import { expect, test } from '@playwright/test';
+
+test('schedule and backup labels name and focus their fields', async ({ page }) => {
+    const url = process.env.FIELD_LABEL_DEMO_URL;
+    test.skip(!url, 'Requires this task’s isolated Pi demo URL.');
+    await page.goto(`${url}/auth/login`);
+    await page.locator('input[name=username]').fill('demo');
+    await page.locator('input[name=password]').fill('demo');
+    await page.locator('button[type=submit]').click();
+    await page.waitForURL(`${url}/`);
+    const servers = await (await page.request.get(`${url}/api/client`)).json();
+    const server = servers.data.find(
+        (item: { attributes: { name: string } }) => item.attributes.name === 'Demo Playground',
+    );
+    expect(server).toBeTruthy();
+    const base = `${url}/server/${server.attributes.identifier}`;
+    await page.goto(`${base}/schedules`);
+    await page.getByRole('button', { name: 'Create Schedule', exact: true }).click();
+    const ids: string[] = [];
+    for (const name of ['Schedule name', 'Minute', 'Hour', 'Day of month', 'Month', 'Day of week']) {
+        const input = page.getByRole('textbox', { name, exact: true });
+        await expect(input).toBeVisible();
+        ids.push((await input.getAttribute('id'))!);
+        await page
+            .locator('label')
+            .filter({ hasText: new RegExp(`^${name}$`) })
+            .click();
+        await expect(input).toBeFocused();
+    }
+    expect(ids.every(Boolean)).toBe(true);
+    expect(new Set(ids).size).toBe(ids.length);
+    const scheduleName = page.getByRole('textbox', { name: 'Schedule name', exact: true });
+    await scheduleName.fill('Accessible schedule');
+    await expect(scheduleName).toHaveAttribute('id', ids[0]!);
+    await page.getByRole('button', { name: 'Create schedule', exact: true }).last().click();
+    await expect(page.getByRole('link').filter({ hasText: 'Accessible schedule' })).toBeVisible();
+
+    await page.goto(`${base}/backups`);
+    await page.getByRole('button', { name: 'Create server backup', exact: true }).click();
+    const backupName = page.getByRole('textbox', { name: 'Backup name', exact: true });
+    await expect(backupName).toBeVisible();
+    await page
+        .locator('label')
+        .filter({ hasText: /^Backup name$/ })
+        .click();
+    await expect(backupName).toBeFocused();
+    await backupName.fill('Accessible backup');
+    await page.getByRole('button', { name: 'Start backup', exact: true }).click();
+    await expect(page.getByText('Accessible backup', { exact: true })).toBeVisible();
+});
