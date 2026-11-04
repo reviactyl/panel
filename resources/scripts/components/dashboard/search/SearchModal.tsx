@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Modal from '@/reviactyl/elements/Modal';
 import type { RequiredModalProps } from '@/reviactyl/elements/Modal';
 import { Field, Form, Formik, useFormikContext } from 'formik';
+import type { FieldProps } from 'formik';
 import { useStoreActions, useStoreState } from 'easy-peasy';
 import type { Actions } from 'easy-peasy';
 import debounce from 'debounce';
@@ -116,9 +117,6 @@ export default ({ ...props }: Props) => {
         }
     }, [props.visible]);
 
-    // Formik does not support an innerRef on custom components.
-    const InputWithRef = (props: any) => <Input autoFocus {...props} ref={ref} />;
-
     return (
         <Formik
             onSubmit={() => Promise.resolve()}
@@ -137,7 +135,9 @@ export default ({ ...props }: Props) => {
                         >
                             <SearchWatcher onTermChanged={onTermChanged} />
                             <InputSpinner visible={isSubmitting}>
-                                <Field as={InputWithRef} name={'term'} />
+                                <Field name={'term'}>
+                                    {({ field }: FieldProps<string>) => <Input autoFocus {...field} ref={ref} />}
+                                </Field>
                             </InputSpinner>
                         </FormikFieldWrapper>
                     </Form>
