@@ -15,6 +15,67 @@ use Tests\Integration\IntegrationTestCase;
 
 class RotateBackupsJobTest extends IntegrationTestCase
 {
+    public function test_delayed_rotation_preserves_successful_backup_when_replacement_is_pending_or_fails(): void
+    {
+        $server = $this->createServerModel(['backup_limit' => 1]);
+        $existing = Backup::factory()->for($server)->create(['created_at' => CarbonImmutable::now()->subHour()]);
+        $job = new RotateBackupsJob($server->id, $existing->id);
+        $replacement = Backup::factory()->for($server)->create([
+            'is_scheduled' => true,
+            'is_successful' => false,
+            'completed_at' => null,
+        ]);
+
+        $repository = $this->mock(DaemonBackupRepository::class);
+        $repository->allows('setServer')->andReturnSelf();
+        $repository->shouldNotReceive('delete');
+
+        $job->handle($this->app->make(RotateBackupsService::class));
+
+        $this->assertNotSoftDeleted($existing);
+        $this->assertNotSoftDeleted($replacement);
+
+        $replacement->update(['completed_at' => CarbonImmutable::now()]);
+
+        $job->handle($this->app->make(RotateBackupsService::class));
+
+        $this->assertNotSoftDeleted($existing);
+        $this->assertTrue($existing->fresh()->is_successful);
+        $this->assertNotSoftDeleted($replacement);
+        $this->assertFalse($replacement->fresh()->is_successful);
+    }
+
+    public function test_delayed_rotation_waits_for_successful_replacement_before_deleting_older_backup(): void
+    {
+        $server = $this->createServerModel(['backup_limit' => 1]);
+        $existing = Backup::factory()->for($server)->create(['created_at' => CarbonImmutable::now()->subHour()]);
+        $job = new RotateBackupsJob($server->id, $existing->id);
+        $replacement = Backup::factory()->for($server)->create([
+            'is_scheduled' => true,
+            'is_successful' => false,
+            'completed_at' => null,
+        ]);
+
+        $repository = $this->mock(DaemonBackupRepository::class);
+        $repository->allows('setServer')->andReturnSelf();
+        $repository->expects('delete')->once()->with(\Mockery::on(function ($backup) use ($existing) {
+            return $backup instanceof Backup && $backup->id === $existing->id;
+        }))->andReturn(new Response());
+
+        $job->handle($this->app->make(RotateBackupsService::class));
+
+        $this->assertNotSoftDeleted($existing);
+        $this->assertNotSoftDeleted($replacement);
+
+        $replacement->update(['is_successful' => true, 'completed_at' => CarbonImmutable::now()]);
+
+        (new RotateBackupsJob($server->id, $replacement->id))
+            ->handle($this->app->make(RotateBackupsService::class));
+
+        $this->assertSoftDeleted($existing);
+        $this->assertNotSoftDeleted($replacement);
+    }
+
     public function test_deletion_failure_can_be_retried_and_then_completes_rotation(): void
     {
         $server = $this->createServerModel(['backup_limit' => 1]);
