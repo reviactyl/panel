@@ -9,6 +9,7 @@ use App\Models\Database;
 use App\Models\DatabaseHost;
 use App\Repositories\Eloquent\DatabaseRepository;
 use App\Services\Databases\DatabaseManagementService;
+use Illuminate\Database\DeadlockException;
 use Illuminate\Support\Str;
 use Mockery\MockInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -260,6 +261,154 @@ class DatabaseManagementServiceTest extends IntegrationTestCase
         }
 
         $this->assertDatabaseMissing('databases', ['server_id' => $server->id]);
+    }
+
+    public function test_sequential_creation_enforces_the_database_limit(): void
+    {
+        $server = $this->createServerModel(['database_limit' => 1]);
+        $host = DatabaseHost::factory()->create(['node_id' => $server->node_id]);
+        $this->repository->shouldReceive('createDatabase', 'createUser', 'assignUserToDatabase', 'flush')->once();
+
+        $this->getService()->create($server, [
+            'database' => "s{$server->id}_first",
+            'database_host_id' => $host->id,
+            'remote' => '%',
+        ]);
+
+        $this->assertSame(1, $server->databases()->count());
+        $this->expectException(TooManyDatabasesException::class);
+        $this->getService()->create($server, [
+            'database' => "s{$server->id}_second",
+            'database_host_id' => $host->id,
+            'remote' => '%',
+        ]);
+    }
+
+    public function test_commit_failure_cleans_up_created_host_resources(): void
+    {
+        $server = $this->createServerModel(['database_limit' => 1]);
+        $host = DatabaseHost::factory()->create(['node_id' => $server->node_id]);
+        $name = "s{$server->id}_commit_failure";
+        $connection = $this->app->make('db')->connection();
+        $pdo = $connection->getPdo();
+        $failingPdo = \Mockery::mock($pdo);
+        $failingPdo->expects('commit')->andThrow(new \PDOException('Commit failed'));
+        $connection->setPdo($failingPdo);
+        $this->repository->expects('createDatabase')->with($name, false);
+        $this->repository->expects('createUser');
+        $this->repository->expects('assignUserToDatabase');
+        $this->repository->expects('dropDatabase')->with($name);
+        $this->repository->expects('dropUser');
+        $this->repository->shouldReceive('flush')->twice();
+
+        try {
+            $this->getService()->create($server, [
+                'database' => $name, 'database_host_id' => $host->id, 'remote' => '%',
+            ]);
+            $this->fail('Expected the panel commit to fail.');
+        } catch (\PDOException $exception) {
+            $this->assertSame('Commit failed', $exception->getMessage());
+        } finally {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+            $connection->setPdo($pdo);
+        }
+
+        $this->assertDatabaseMissing('databases', ['server_id' => $server->id]);
+    }
+
+    public static function creationTransactionProvider(): array
+    {
+        return [[false], [true]];
+    }
+
+    #[DataProvider('creationTransactionProvider')]
+    public function test_concurrent_creation_with_one_slot_remaining(bool $readBeforeLock): void
+    {
+        if (! function_exists('pcntl_fork') || config('database.connections.'.config('database.default').'.database') === ':memory:') {
+            $this->markTestSkipped('Requires pcntl and a database shared between processes.');
+        }
+
+        if ($readBeforeLock && ! in_array($this->app->make('db')->connection()->getDriverName(), ['mysql', 'mariadb'])) {
+            $this->markTestSkipped('Snapshot regression requires MySQL or MariaDB repeatable reads.');
+        }
+
+        $server = $this->createServerModel(['database_limit' => 1]);
+        $host = DatabaseHost::factory()->create(['node_id' => $server->node_id]);
+        $data = ['database_host_id' => $host->id, 'remote' => '%'];
+        $sockets = stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, 0);
+        $connection = $this->app->make('db')->connection();
+        $expectsSnapshotConflict = $readBeforeLock
+            && str_contains($connection->getPdo()->getAttribute(\PDO::ATTR_SERVER_VERSION), 'MariaDB')
+            && (bool) $connection->selectOne('SELECT @@innodb_snapshot_isolation AS enabled')->enabled;
+        $connection->disconnect();
+        $this->repository->shouldReceive('createDatabase', 'createUser', 'assignUserToDatabase', 'flush')->byDefault()->andReturn(true);
+        $pid = pcntl_fork();
+        $this->assertNotSame(-1, $pid);
+
+        if ($pid === 0) {
+            fclose($sockets[0]);
+            stream_set_timeout($sockets[1], 10);
+            fgets($sockets[1]);
+            if ($readBeforeLock) {
+                $connection->statement('SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ');
+                $connection->beginTransaction();
+                $server->databases()->count();
+                fwrite($sockets[1], "snapshot\n");
+            }
+            $connection->beforeExecuting(function () use ($sockets, $readBeforeLock) {
+                static $started = false;
+                if (! $started && ! $readBeforeLock) {
+                    fwrite($sockets[1], "attempting\n");
+                    $started = true;
+                }
+            });
+            try {
+                $this->getService()->create($server, $data + ['database' => "s{$server->id}_second"]);
+                if ($readBeforeLock) {
+                    $connection->commit();
+                }
+                $result = 'created';
+            } catch (TooManyDatabasesException) {
+                $result = 'limit';
+            } catch (DeadlockException $exception) {
+                $previous = $exception->getPrevious();
+                $result = $readBeforeLock && $previous instanceof \PDOException && ($previous->errorInfo[1] ?? null) === 1020
+                    ? 'snapshot_conflict'
+                    : $exception->getMessage();
+            } catch (\Throwable $exception) {
+                $result = get_class($exception).': '.$exception->getMessage();
+            }
+            if ($connection->transactionLevel() > 0) {
+                $connection->rollBack();
+            }
+            fwrite($sockets[1], $result."\n");
+            fclose($sockets[1]);
+            exit(0);
+        }
+
+        fclose($sockets[1]);
+        stream_set_timeout($sockets[0], 10);
+        $this->repository->expects('createDatabase')->andReturnUsing(function () use ($sockets, $readBeforeLock) {
+            fwrite($sockets[0], "start\n");
+            $this->assertSame($readBeforeLock ? "snapshot\n" : "attempting\n", fgets($sockets[0]));
+            usleep(300000);
+
+            return true;
+        });
+        $this->repository->shouldReceive('createUser', 'assignUserToDatabase', 'flush')->once();
+
+        try {
+            $this->getService()->create($server, $data + ['database' => "s{$server->id}_first"]);
+            $result = trim(fgets($sockets[0]));
+        } finally {
+            fclose($sockets[0]);
+            pcntl_waitpid($pid, $status);
+        }
+
+        $this->assertSame($expectsSnapshotConflict ? 'snapshot_conflict' : 'limit', $result);
+        $this->assertSame(1, $server->databases()->count());
     }
 
     public static function invalidDataDataProvider(): array
