@@ -36,7 +36,7 @@ return [
         'loading' => 'Memuat...',
         'social' => [
             'title' => 'Login Sosial',
-            'date_format' => 'MMM lakukan, yyyy',
+            'date_format' => 'MMM do, yyyy',
             'unlink' => [
                 'title' => 'Putuskan Tautan Akun',
                 'confirm' => 'Apakah Anda yakin ingin memutuskan tautan akun :provider Anda? Anda tidak lagi dapat menggunakannya untuk masuk.',

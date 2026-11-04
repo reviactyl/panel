@@ -36,7 +36,7 @@ return [
         'loading' => 'Cargando...',
         'social' => [
             'title' => 'Inicios de sesión sociales',
-            'date_format' => 'MMM sí, yyyy',
+            'date_format' => 'MMM do, yyyy',
             'unlink' => [
                 'title' => 'Desvincular cuenta',
                 'confirm' => '¿Estás seguro de que deseas desvincular tu cuenta :provider? Ya no podrás utilizarlo para iniciar sesión.',
