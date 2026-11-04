@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import isEqual from 'react-fast-compare';
 import { FaNetworkWired } from 'react-icons/fa6';
 import InputSpinner from '@/reviactyl/elements/InputSpinner';
@@ -9,7 +9,7 @@ import GreyRowBox from '@/reviactyl/elements/GreyRowBox';
 import { Allocation } from '@/api/server/getServer';
 import { debounce } from 'debounce';
 import setServerAllocationNotes from '@/api/server/network/setServerAllocationNotes';
-import { useFlashKey } from '@/plugins/useFlash';
+import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
 import CopyOnClick from '@/reviactyl/elements/CopyOnClick';
 import DeleteAllocationButton from '@/components/server/network/DeleteAllocationButton';
@@ -23,33 +23,81 @@ interface Props {
     allocation: Allocation;
 }
 
+interface NotesSaveState {
+    revision: number;
+    pendingSave: Promise<void>;
+}
+
+const notesSaves = new Map<string, NotesSaveState>();
+
 const AllocationRow = ({ allocation }: Props) => {
     const [loading, setLoading] = useState(false);
-    const { clearFlashes, clearAndAddHttpError } = useFlashKey('server:network');
+    const { clearFlashes, clearAndAddHttpError } = useFlash();
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const { mutate } = getServerAllocations();
     const [canUpdate] = usePermissions(['allocation.update']);
 
-    const onNotesChanged = useCallback((id: number, notes: string) => {
-        mutate((data) => data?.map((a) => (a.id === id ? { ...a, notes } : a)), false);
-    }, []);
+    const saveKey = `${uuid}:${allocation.id}`;
+    const saveAllocationNotes = useMemo(
+        () =>
+            debounce((notes: string, state: NotesSaveState, requestRevision: number) => {
+                setLoading(true);
+                clearFlashes('server:network');
 
-    const setAllocationNotes = debounce((notes: string) => {
-        setLoading(true);
-        clearFlashes();
+                state.pendingSave = state.pendingSave
+                    .then(async () => {
+                        if (requestRevision !== state.revision) return;
 
-        setServerAllocationNotes(uuid, allocation.id, notes)
-            .then(() => onNotesChanged(allocation.id, notes))
-            .catch((error) => clearAndAddHttpError(error))
-            .then(() => setLoading(false));
-    }, 750);
+                        await setServerAllocationNotes(uuid, allocation.id, notes);
+                        if (requestRevision !== state.revision) return;
+
+                        await mutate(
+                            (data) =>
+                                requestRevision === state.revision
+                                    ? data?.map((a) => (a.id === allocation.id ? { ...a, notes } : a))
+                                    : data,
+                            false,
+                        );
+                    })
+                    .catch(async (error) => {
+                        if (requestRevision === state.revision) {
+                            clearAndAddHttpError({ error, key: 'server:network' });
+                            await mutate().catch(() => undefined);
+                        }
+                    })
+                    .then(() => {
+                        if (requestRevision === state.revision) {
+                            setLoading(false);
+                            if (notesSaves.get(saveKey) === state) notesSaves.delete(saveKey);
+                        }
+                    });
+            }, 750),
+        [uuid, allocation.id, saveKey, mutate, clearFlashes, clearAndAddHttpError],
+    );
+
+    useEffect(
+        () => () => {
+            saveAllocationNotes.flush();
+        },
+        [saveAllocationNotes],
+    );
+
+    const setAllocationNotes = (notes: string) => {
+        let state = notesSaves.get(saveKey);
+        if (!state) {
+            state = { revision: 0, pendingSave: Promise.resolve() };
+            notesSaves.set(saveKey, state);
+        }
+        state.revision += 1;
+        saveAllocationNotes(notes, state, state.revision);
+    };
 
     const setPrimaryAllocation = () => {
-        clearFlashes();
+        clearFlashes('server:network');
         mutate((data) => data?.map((a) => ({ ...a, isDefault: a.id === allocation.id })), false);
 
         setPrimaryServerAllocation(uuid, allocation.id).catch((error) => {
-            clearAndAddHttpError(error);
+            clearAndAddHttpError({ error, key: 'server:network' });
             mutate();
         });
     };

@@ -21,6 +21,56 @@ use Tests\Integration\IntegrationTestCase;
 
 class ProcessScheduleServiceTest extends IntegrationTestCase
 {
+    public function test_command_dispatches_overdue_and_current_schedules()
+    {
+        Bus::fake();
+        $server = $this->createServerModel();
+        $tasks = [];
+
+        foreach ([CarbonImmutable::now()->subMinute(), CarbonImmutable::now()] as $nextRunAt) {
+            $schedule = Schedule::factory()->create([
+                'server_id' => $server->id,
+                'is_active' => true,
+                'is_processing' => false,
+                'next_run_at' => $nextRunAt,
+            ]);
+            $tasks[] = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 1]);
+        }
+
+        $this->artisan('p:schedule:process')->assertSuccessful();
+
+        Bus::assertDispatchedTimes(RunTaskJob::class, 2);
+        foreach ($tasks as $task) {
+            Bus::assertDispatched(RunTaskJob::class, fn (RunTaskJob $job) => $job->taskId === $task->id);
+            $this->assertTrue($task->refresh()->is_queued);
+            $this->assertTrue($task->schedule->is_processing);
+            $this->assertTrue($task->schedule->next_run_at->isFuture());
+        }
+    }
+
+    #[DataProvider('excludedScheduleDataProvider')]
+    public function test_command_excludes_ineligible_schedules(array $attributes, ?string $serverStatus = null)
+    {
+        Bus::fake();
+        $server = $this->createServerModel(['status' => $serverStatus]);
+        $schedule = Schedule::factory()->create(array_merge([
+            'server_id' => $server->id,
+            'is_active' => true,
+            'is_processing' => false,
+            'next_run_at' => CarbonImmutable::now()->subMinute(),
+        ], $attributes));
+        $task = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 1]);
+        $nextRunAt = $schedule->next_run_at;
+        $processing = $schedule->is_processing;
+
+        $this->artisan('p:schedule:process')->assertSuccessful();
+
+        Bus::assertNothingDispatched();
+        $this->assertFalse($task->refresh()->is_queued);
+        $this->assertSame($processing, $schedule->refresh()->is_processing);
+        $this->assertEquals($nextRunAt, $schedule->next_run_at);
+    }
+
     /**
      * Test that a schedule with no tasks registered returns an error.
      */
@@ -130,10 +180,6 @@ class ProcessScheduleServiceTest extends IntegrationTestCase
     public function test_synchronous_chain_failure_does_not_replay_successful_commands()
     {
         config(['queue.default' => 'sync']);
-        $connection = $this->app->make(ConnectionInterface::class);
-        if ($connection->getDriverName() === 'sqlite') {
-            $connection->getPdo()->sqliteCreateFunction('NOW', fn () => CarbonImmutable::now()->toDateTimeString());
-        }
         $server = $this->createServerModel();
         $schedule = Schedule::factory()->create(['server_id' => $server->id, 'next_run_at' => CarbonImmutable::now()->subMinute()]);
         $first = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 1, 'time_offset' => 0, 'payload' => 'first']);
@@ -345,6 +391,18 @@ class ProcessScheduleServiceTest extends IntegrationTestCase
         $this->getService()->handle($schedule);
 
         $this->assertSame('03:00', $schedule->refresh()->next_run_at->setTimezone('Asia/Tokyo')->format('H:i'));
+    }
+
+    public static function excludedScheduleDataProvider(): array
+    {
+        return [
+            'future' => [['next_run_at' => CarbonImmutable::now()->addDay()->toDateTimeString()]],
+            'inactive' => [['is_active' => false]],
+            'processing' => [['is_processing' => true]],
+            'unscheduled' => [['next_run_at' => null]],
+            'suspended server' => [[], 'suspended'],
+            'installing server' => [[], 'installing'],
+        ];
     }
 
     public static function unavailableServerDataProvider(): array

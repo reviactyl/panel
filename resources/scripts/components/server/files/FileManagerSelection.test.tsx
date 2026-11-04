@@ -124,7 +124,7 @@ describe('visible file bulk selection', () => {
         expect(rows().every((row) => row.checked)).toBe(true);
         await click(action('archive-as'));
         expect(mocks.compress).toHaveBeenCalledExactlyOnceWith('uuid', '/', visible, 'tar.gz');
-        expect(mocks.compress.mock.calls[0]![2]).not.toContain('file-250.txt');
+        if (count > 250) expect(mocks.compress.mock.calls[0]![2]).not.toContain('file-000.txt');
     });
 
     it('allows deselecting every selected row and uses the remaining selection for delete', async () => {
@@ -143,7 +143,7 @@ describe('visible file bulk selection', () => {
         );
         expect(mocks.remove).toHaveBeenCalledExactlyOnceWith('uuid', '/', visible);
         expect(visible).not.toContain(omitted.value);
-        expect(visible).not.toContain('file-250.txt');
+        expect(visible).not.toContain('file-000.txt');
     });
 
     it('clears all selections when toggled off', async () => {
@@ -157,11 +157,11 @@ describe('visible file bulk selection', () => {
     it('removes selections that move beyond the display limit after a refresh', async () => {
         await render();
         await click(selectAll());
-        const hidden = mocks.files[249]!;
+        const hidden = mocks.files.find((file) => file.name === rows().at(-1)!.value)!;
         const remaining = rows()
             .map((row) => row.value)
             .filter((name) => name !== hidden.name);
-        mocks.files = [{ ...hidden, key: 'new-file', name: 'new-file.txt' }, ...mocks.files];
+        mocks.files = [{ ...hidden, key: 'new-file', name: 'new-file.txt', size: 0 }, ...[...mocks.files].reverse()];
         expect(mocks.files[250]).toBe(hidden);
         await render();
         expect(rows().map((row) => row.value)).not.toContain(hidden.name);

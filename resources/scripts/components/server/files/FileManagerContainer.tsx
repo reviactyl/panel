@@ -171,7 +171,7 @@ export default () => {
     }, [query]);
 
     const visibleFiles = useMemo(
-        () => (query ? [] : sortFiles((files ?? []).slice(0, 250), sortType, sortDirection)),
+        () => (query ? [] : sortFiles(files ?? [], sortType, sortDirection).slice(0, 250)),
         [files, query, sortType, sortDirection],
     );
 

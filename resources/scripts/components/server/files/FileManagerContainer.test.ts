@@ -3,12 +3,31 @@ import { readFileSync } from 'node:fs';
 import ts from 'typescript';
 import { describe, expect, it, vi } from 'vitest';
 import type { FileObject } from '@/api/server/files/loadDirectory';
+import { sortFiles, type SortDirection, type SortType } from './sortFiles';
 
 // Execute the production search effect with controlled directory responses.
 const source = readFileSync(new URL('./FileManagerContainer.tsx', import.meta.url), 'utf8');
 const tree = ts.createSourceFile('FileManagerContainer.tsx', source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
 let effect = '';
+let listing = '';
+let deriveVisibleFiles = '';
 function visit(node: ts.Node) {
+    if (
+        ts.isVariableDeclaration(node) &&
+        node.name.getText(tree) === 'visibleFiles' &&
+        node.initializer &&
+        ts.isCallExpression(node.initializer)
+    ) {
+        deriveVisibleFiles = node.initializer.arguments[0]?.getText(tree) ?? '';
+    }
+    if (
+        ts.isCallExpression(node) &&
+        ts.isPropertyAccessExpression(node.expression) &&
+        node.expression.name.text === 'map' &&
+        node.arguments[0]?.getText(tree).includes('<FileObjectRow')
+    ) {
+        listing = node.expression.expression.getText(tree);
+    }
     if (
         ts.isCallExpression(node) &&
         node.expression.getText(tree) === 'useEffect' &&
@@ -20,7 +39,46 @@ function visit(node: ts.Node) {
 }
 visit(tree);
 if (!effect) throw new Error('Search effect not found');
+if (!listing || !deriveVisibleFiles) throw new Error('File listing not found');
 const compiled = ts.transpile(`const effect = ${effect};`, { target: ts.ScriptTarget.ES2022 });
+
+const listFiles = (files: FileObject[], sortType: SortType, sortDirection: SortDirection): FileObject[] =>
+    new Function(
+        'files',
+        'sortFiles',
+        'sortType',
+        'sortDirection',
+        'query',
+        `const visibleFiles = (${deriveVisibleFiles})(); return ${listing};`,
+    )(files, sortFiles, sortType, sortDirection, '');
+
+describe('large directory sorting', () => {
+    const files = Array.from({ length: 251 }, (_, index) => ({
+        name: `file-${index}`,
+        isFile: true,
+        size: index,
+        modifiedAt: new Date(index * 1000),
+    })) as FileObject[];
+
+    it.each(['size', 'date'] as const)('includes the leading %s result from beyond entry 250', (sortType) => {
+        const visible = listFiles(files, sortType, 'desc');
+
+        expect(visible[0]?.name).toBe('file-250');
+        expect(visible).toHaveLength(250);
+        expect(files[0]?.name).toBe('file-0');
+    });
+
+    it.each(['name', 'size', 'date'] as const)('keeps directories first in both %s directions', (sortType) => {
+        const directory = { ...files[0], name: 'folder', isFile: false } as FileObject;
+
+        for (const direction of ['asc', 'desc'] as const) {
+            const visible = listFiles([...files, directory], sortType, direction);
+
+            expect(visible[0]).toBe(directory);
+            expect(visible).toHaveLength(250);
+        }
+    });
+});
 
 function harness() {
     const searchGenRef = { current: 0 };
