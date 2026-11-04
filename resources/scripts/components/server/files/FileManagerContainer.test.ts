@@ -10,7 +10,16 @@ const source = readFileSync(new URL('./FileManagerContainer.tsx', import.meta.ur
 const tree = ts.createSourceFile('FileManagerContainer.tsx', source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
 let effect = '';
 let listing = '';
+let deriveVisibleFiles = '';
 function visit(node: ts.Node) {
+    if (
+        ts.isVariableDeclaration(node) &&
+        node.name.getText(tree) === 'visibleFiles' &&
+        node.initializer &&
+        ts.isCallExpression(node.initializer)
+    ) {
+        deriveVisibleFiles = node.initializer.arguments[0]?.getText(tree) ?? '';
+    }
     if (
         ts.isCallExpression(node) &&
         ts.isPropertyAccessExpression(node.expression) &&
@@ -30,16 +39,18 @@ function visit(node: ts.Node) {
 }
 visit(tree);
 if (!effect) throw new Error('Search effect not found');
-if (!listing) throw new Error('File listing not found');
+if (!listing || !deriveVisibleFiles) throw new Error('File listing not found');
 const compiled = ts.transpile(`const effect = ${effect};`, { target: ts.ScriptTarget.ES2022 });
 
 const listFiles = (files: FileObject[], sortType: SortType, sortDirection: SortDirection): FileObject[] =>
-    new Function('filteredFiles', 'sortFiles', 'sortType', 'sortDirection', `return ${listing};`)(
-        files,
-        sortFiles,
-        sortType,
-        sortDirection,
-    );
+    new Function(
+        'files',
+        'sortFiles',
+        'sortType',
+        'sortDirection',
+        'query',
+        `const visibleFiles = (${deriveVisibleFiles})(); return ${listing};`,
+    )(files, sortFiles, sortType, sortDirection, '');
 
 describe('large directory sorting', () => {
     const files = Array.from({ length: 251 }, (_, index) => ({

@@ -79,6 +79,24 @@ async function navigateToB(a: ReturnType<typeof deferred>, b: ReturnType<typeof 
 }
 
 describe('move picker request ordering', () => {
+    it.each(['success', 'failure'])('keeps selected rows until the move request settles (%s)', async (result) => {
+        const pending = deferred();
+        mocks.load.mockResolvedValue([folder('target')]);
+        mocks.rename.mockReturnValue(pending.promise);
+        await render();
+        await click('target');
+        await click('move');
+        expect(mocks.mutate).not.toHaveBeenCalled();
+        await act(async () => {
+            if (result === 'success') pending.resolve([]);
+            else pending.reject(new Error('Move failed'));
+        });
+        expect(mocks.mutate).toHaveBeenCalledExactlyOnceWith();
+        if (result === 'failure') {
+            expect(mocks.error).toHaveBeenCalledWith({ key: 'files', error: expect.any(Error) });
+        }
+    });
+
     it('keeps B entries and moves into B after A finishes last', async () => {
         const a = deferred();
         const b = deferred();
