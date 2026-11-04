@@ -31,24 +31,25 @@ const VariableBox = ({ variable }: Props) => {
     const { mutate } = getServerStartup(uuid);
 
     const secretInput = useRef<HTMLInputElement>(null);
-    const revision = useRef(0);
-    const pendingSave = useRef(Promise.resolve());
+    const saveState = useMemo(
+        () => ({ revision: 0, pendingSave: Promise.resolve(), mounted: false }),
+        [uuid, variable.envVariable],
+    );
     const saveVariableValue = useMemo(
         () =>
             debounce((value: string, requestRevision: number) => {
-                setLoading(true);
                 clearFlashes(FLASH_KEY);
 
-                pendingSave.current = pendingSave.current
+                saveState.pendingSave = saveState.pendingSave
                     .then(async () => {
-                        if (requestRevision !== revision.current) return;
+                        if (requestRevision !== saveState.revision) return;
 
                         const [response] = await updateStartupVariable(uuid, variable.envVariable, value);
-                        if (requestRevision !== revision.current) return;
+                        if (requestRevision !== saveState.revision) return;
 
                         await mutate(
                             (data) =>
-                                data && requestRevision === revision.current
+                                data && requestRevision === saveState.revision
                                     ? {
                                           ...data,
                                           variables: data.variables.map((v) =>
@@ -59,32 +60,53 @@ const VariableBox = ({ variable }: Props) => {
                             false,
                         );
 
-                        if (requestRevision === revision.current) await mutate();
+                        if (requestRevision === saveState.revision) await mutate();
                     })
                     .catch((error) => {
-                        if (requestRevision !== revision.current) return;
+                        if (requestRevision !== saveState.revision) return;
 
                         if (!variable.isSecret) console.error(error);
                         clearAndAddHttpError({ error, key: FLASH_KEY });
                     })
                     .then(() => {
-                        if (requestRevision === revision.current) setLoading(false);
+                        if (requestRevision === saveState.revision && saveState.mounted) setLoading(false);
                     });
             }, 500),
-        [uuid, variable.envVariable, variable.isSecret, mutate, clearFlashes, clearAndAddHttpError, FLASH_KEY],
+        [
+            uuid,
+            variable.envVariable,
+            variable.isSecret,
+            mutate,
+            clearFlashes,
+            clearAndAddHttpError,
+            FLASH_KEY,
+            saveState,
+        ],
     );
 
-    useEffect(
-        () => () => {
-            saveVariableValue.clear();
-            revision.current += 1;
-        },
-        [saveVariableValue],
-    );
+    useEffect(() => {
+        saveState.mounted = true;
+        return () => {
+            saveState.mounted = false;
+            saveVariableValue.flush();
+        };
+    }, [saveVariableValue, saveState]);
+
+    useEffect(() => {
+        if (!loading) return;
+
+        const onBeforeUnload = (event: BeforeUnloadEvent) => {
+            event.preventDefault();
+            event.returnValue = '';
+        };
+        window.addEventListener('beforeunload', onBeforeUnload);
+        return () => window.removeEventListener('beforeunload', onBeforeUnload);
+    }, [loading]);
 
     const setVariableValue = (value: string) => {
-        revision.current += 1;
-        saveVariableValue(value, revision.current);
+        setLoading(true);
+        saveState.revision += 1;
+        saveVariableValue(value, saveState.revision);
     };
 
     const useSwitch = variable.rules.some(

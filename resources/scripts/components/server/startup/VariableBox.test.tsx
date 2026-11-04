@@ -1,5 +1,6 @@
 import { act, type ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
+import { Link, MemoryRouter, Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ServerEggVariable } from '@/api/server/types';
 import VariableBox from './VariableBox';
@@ -10,10 +11,11 @@ const mocks = vi.hoisted(() => ({
     canEdit: true,
     clearFlashes: vi.fn(),
     addError: vi.fn(),
+    uuid: 'server-uuid',
 }));
 vi.mock('@/api/server/updateStartupVariable', () => ({ default: mocks.update }));
 vi.mock('@/api/swr/getServerStartup', () => ({ default: () => ({ mutate: mocks.mutate }) }));
-vi.mock('@/state/server', () => ({ ServerContext: { useStoreState: () => 'server-uuid' } }));
+vi.mock('@/state/server', () => ({ ServerContext: { useStoreState: () => mocks.uuid } }));
 vi.mock('@/plugins/usePermissions', () => ({ usePermissions: () => [mocks.canEdit] }));
 vi.mock('@/plugins/useFlash', () => ({
     default: () => ({ clearFlashes: mocks.clearFlashes, clearAndAddHttpError: mocks.addError }),
@@ -46,6 +48,7 @@ beforeEach(() => {
     mocks.update.mockReset().mockResolvedValue([variable, 'startup']);
     mocks.mutate.mockReset();
     mocks.canEdit = true;
+    mocks.uuid = 'server-uuid';
     mocks.addError.mockReset();
     container = document.createElement('div');
     root = createRoot(container);
@@ -217,12 +220,89 @@ describe('startup save response ordering', () => {
         consoleError.mockRestore();
     });
 
-    it('cancels pending debounced saves on unmount', async () => {
+    it('saves a startup edit when navigating to Console before the debounce fires', async () => {
+        await act(async () =>
+            root.render(
+                <MemoryRouter initialEntries={['/startup']}>
+                    <Link to='/console'>Console</Link>
+                    <Routes>
+                        <Route
+                            path='/startup'
+                            element={
+                                <VariableBox
+                                    variable={{
+                                        ...variable,
+                                        envVariable: 'SERVER_JARFILE',
+                                        serverValue: 'old.jar',
+                                        rules: ['required', 'string'],
+                                    }}
+                                />
+                            }
+                        />
+                        <Route path='/console' element={<p>Server console</p>} />
+                    </Routes>
+                </MemoryRouter>,
+            ),
+        );
+        const input = container.querySelector<HTMLInputElement>('input')!;
+        await act(async () => {
+            Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(input, 'new.jar');
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+        expect(container.querySelector('[data-loading]')?.getAttribute('data-loading')).toBe('true');
+        await act(async () => vi.advanceTimersByTimeAsync(100));
+        expect(mocks.update).not.toHaveBeenCalled();
+        await act(async () => container.querySelector<HTMLAnchorElement>('a')!.click());
+        expect(container.textContent).toContain('Server console');
+        expect(mocks.update).toHaveBeenCalledExactlyOnceWith('server-uuid', 'SERVER_JARFILE', 'new.jar');
+        await act(async () => vi.advanceTimersByTimeAsync(600));
+        expect(mocks.update).toHaveBeenCalledTimes(1);
+    });
+
+    it('flushes only the latest edit after the in-flight save finishes on unmount', async () => {
+        const older = deferred();
+        mocks.update.mockReset().mockReturnValueOnce(older.promise).mockResolvedValue([variable, 'latest']);
         const input = await render({ serverValue: 'false' });
+        await toggle(input);
         await act(async () => input.click());
         await act(async () => root.render(null));
+        expect(mocks.update).toHaveBeenCalledTimes(1);
+        await act(async () => older.resolve([{ ...variable, serverValue: 'true' }, 'older']));
+        expect(mocks.update).toHaveBeenCalledTimes(2);
+        expect(mocks.update).toHaveBeenLastCalledWith('server-uuid', 'BOOLEAN_VALUE', 'false');
+    });
+
+    it('keeps queued saves associated with their original server when the server changes', async () => {
+        const older = deferred();
+        mocks.update.mockReset().mockReturnValueOnce(older.promise).mockResolvedValue([variable, 'latest']);
+        const input = await render({ serverValue: 'false' });
+        await toggle(input);
+        await act(async () => input.click());
+        mocks.uuid = 'other-server';
+        await render({ serverValue: 'false', description: 'Other server' });
+        await act(async () => input.click());
         await act(async () => vi.advanceTimersByTimeAsync(500));
-        expect(mocks.update).not.toHaveBeenCalled();
+        expect(mocks.update).toHaveBeenLastCalledWith('other-server', 'BOOLEAN_VALUE', 'true');
+        await act(async () => older.resolve([variable, 'older']));
+        expect(mocks.update).toHaveBeenLastCalledWith('server-uuid', 'BOOLEAN_VALUE', 'false');
+    });
+
+    it('warns before a full-page exit during debounce and saving, and removes the warning on success', async () => {
+        const pending = deferred();
+        mocks.update.mockReset().mockReturnValue(pending.promise);
+        const input = await render({ serverValue: 'false' });
+        const beforeUnload = () => {
+            const event = new Event('beforeunload', { cancelable: true });
+            window.dispatchEvent(event);
+            return event.defaultPrevented;
+        };
+        expect(beforeUnload()).toBe(false);
+        await act(async () => input.click());
+        expect(beforeUnload()).toBe(true);
+        await act(async () => vi.advanceTimersByTimeAsync(500));
+        expect(beforeUnload()).toBe(true);
+        await act(async () => pending.resolve([variable, 'saved']));
+        expect(beforeUnload()).toBe(false);
     });
 });
 
