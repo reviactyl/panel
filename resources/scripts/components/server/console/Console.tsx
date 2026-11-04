@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { SearchBarAddon } from '@/plugins/XtermSearchBarAddon';
 import { ITerminalAddon, ITerminalOptions, ITheme, Terminal } from '@xterm/xterm';
 import { FitAddon } from '@xterm/addon-fit';
@@ -9,7 +9,6 @@ import { ScrollDownHelperAddon } from '@/plugins/XtermScrollDownHelperAddon';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import { ServerContext } from '@/state/server';
 import { usePermissions } from '@/plugins/usePermissions';
-import useEventListener from '@/plugins/useEventListener';
 import { debounce } from 'debounce';
 import { usePersistedState } from '@/plugins/usePersistedState';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
@@ -39,13 +38,7 @@ export default () => {
     const containerText = ServerContext.useStoreState((state) => state.server.data?.containerText);
     const TERMINAL_PRELUDE = `\u001b[1m\u001b[33m${containerText} \u001b[0m`;
     const ref = useRef<HTMLDivElement>(null);
-    const terminal = useMemo(() => new Terminal({ ...terminalProps }), []);
-    const fitAddon = useMemo(() => new FitAddon(), []);
-    const searchAddon = new SearchAddon();
-    const searchBar = new SearchBarAddon(searchAddon);
-    const webLinksAddon = new WebLinksAddon();
-    const unicode11Addon = new Unicode11Addon();
-    const scrollDownHelperAddon = new ScrollDownHelperAddon();
+    const terminalRef = useRef<Terminal | null>(null);
     const { connected, instance } = ServerContext.useStoreState((state) => state.socket);
     const [canSendCommands] = usePermissions(['control.console']);
     const serverId = ServerContext.useStoreState((state) => state.server.data!.id);
@@ -54,24 +47,26 @@ export default () => {
     const [historyIndex, setHistoryIndex] = useState(-1);
 
     const handleConsoleOutput = (line: string, prelude = false) =>
-        terminal.writeln((prelude ? TERMINAL_PRELUDE : '') + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m');
+        terminalRef.current?.writeln(
+            (prelude ? TERMINAL_PRELUDE : '') + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
+        );
 
     const handleTransferStatus = (status: string) => {
         switch (status) {
             // Sent by either the source or target node if a failure occurs.
             case 'failure':
-                terminal.writeln(TERMINAL_PRELUDE + 'Transfer has failed.\u001b[0m');
+                terminalRef.current?.writeln(TERMINAL_PRELUDE + 'Transfer has failed.\u001b[0m');
                 return;
         }
     };
 
     const handleDaemonErrorOutput = (line: string) =>
-        terminal.writeln(
+        terminalRef.current?.writeln(
             TERMINAL_PRELUDE + '\u001b[1m\u001b[41m' + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
         );
 
     const handlePowerChangeEvent = (state: string) =>
-        terminal.writeln(TERMINAL_PRELUDE + 'Server marked as ' + state + '...\u001b[0m');
+        terminalRef.current?.writeln(TERMINAL_PRELUDE + 'Server marked as ' + state + '...\u001b[0m');
 
     const handleCommandKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.nativeEvent.isComposing || e.nativeEvent.keyCode === 229) {
@@ -107,68 +102,66 @@ export default () => {
     };
 
     useEffect(() => {
-        if (connected && ref.current && !terminal.element) {
-            terminal.loadAddon(fitAddon);
-            terminal.loadAddon(searchAddon);
-            terminal.loadAddon(searchBar as unknown as ITerminalAddon);
-            terminal.loadAddon(webLinksAddon);
-            terminal.loadAddon(unicode11Addon);
-            terminal.loadAddon(scrollDownHelperAddon);
+        const container = ref.current;
+        if (!container) return;
 
-            terminal.open(ref.current);
-            terminal.unicode.activeVersion = '11';
-            fitAddon.fit();
+        const terminal = new Terminal({ ...terminalProps });
+        const fitAddon = new FitAddon();
+        const searchAddon = new SearchAddon();
+        const searchBar = new SearchBarAddon(searchAddon);
+        terminalRef.current = terminal;
+        terminal.loadAddon(fitAddon);
+        terminal.loadAddon(searchAddon);
+        terminal.loadAddon(searchBar as unknown as ITerminalAddon);
+        terminal.loadAddon(new WebLinksAddon());
+        terminal.loadAddon(new Unicode11Addon());
+        terminal.loadAddon(new ScrollDownHelperAddon());
 
-            // Add support for capturing keys
-            terminal.attachCustomKeyEventHandler((e: KeyboardEvent) => {
-                if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
-                    document.execCommand('copy');
-                    return false;
-                } else if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
-                    e.preventDefault();
-                    searchBar.show();
-                    return false;
-                } else if (e.key === 'Escape') {
-                    searchBar.hide();
-                }
-                return true;
-            });
+        terminal.open(container);
+        terminal.unicode.activeVersion = '11';
+        fitAddon.fit();
 
-            if (ref.current) {
-                let lastY = 0;
-
-                ref.current.addEventListener(
-                    'touchstart',
-                    (e) => {
-                        lastY = e.touches[0]?.clientY ?? 0;
-                    },
-                    { passive: true },
-                );
-
-                ref.current.addEventListener(
-                    'touchmove',
-                    (e) => {
-                        const currentY = e.touches[0]?.clientY ?? lastY;
-                        const dy = lastY - currentY;
-                        lastY = currentY;
-                        const lines = Math.round(dy / (terminal.options.fontSize ?? 12));
-                        if (lines !== 0) terminal.scrollLines(lines);
-                        e.preventDefault(); // prvent scroll
-                    },
-                    { passive: false },
-                );
+        terminal.attachCustomKeyEventHandler((e: KeyboardEvent) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
+                document.execCommand('copy');
+                return false;
+            } else if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+                e.preventDefault();
+                searchBar.show();
+                return false;
+            } else if (e.key === 'Escape') {
+                searchBar.hide();
             }
-        }
-    }, [terminal, connected]);
+            return true;
+        });
 
-    useEventListener(
-        'resize',
-        debounce(() => {
-            if (terminal.element) {
-                fitAddon.fit();
-            }
-        }, 100),
-    );
+        let lastY = 0;
+        const handleTouchStart = (e: TouchEvent) => {
+            lastY = e.touches[0]?.clientY ?? 0;
+        };
+        const handleTouchMove = (e: TouchEvent) => {
+            const currentY = e.touches[0]?.clientY ?? lastY;
+            const dy = lastY - currentY;
+            lastY = currentY;
+            const lines = Math.round(dy / (terminal.options.fontSize ?? 12));
+            if (lines !== 0) terminal.scrollLines(lines);
+            e.preventDefault();
+        };
+        const handleResize = debounce(() => fitAddon.fit(), 100);
+
+        container.addEventListener('touchstart', handleTouchStart, { passive: true });
+        container.addEventListener('touchmove', handleTouchMove, { passive: false });
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+            handleResize.clear();
+            container.removeEventListener('touchstart', handleTouchStart);
+            container.removeEventListener('touchmove', handleTouchMove);
+            terminalRef.current = null;
+            terminal.dispose();
+        };
+    }, []);
 
     useEffect(() => {
         const listeners: Record<string, (s: string) => void> = {
@@ -184,7 +177,7 @@ export default () => {
         if (connected && instance) {
             // Do not clear the console if the server is being transferred.
             if (!isTransferring) {
-                terminal.clear();
+                terminalRef.current?.clear();
             }
 
             Object.entries(listeners).forEach(([key, listener]) => {
