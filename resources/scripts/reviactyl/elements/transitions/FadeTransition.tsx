@@ -8,6 +8,7 @@ interface Props {
     duration?: Duration | [Duration, Duration];
     appear?: boolean;
     unmount?: boolean;
+    afterLeave?: () => void;
     show: boolean;
     children: ReactNode;
 }

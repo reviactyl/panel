@@ -50,12 +50,11 @@ function Modal({
     }, [dismissable, showSpinnerOverlay]);
 
     useEffect(() => {
-        if (!isDismissable || !closeOnEscape) return;
+        if (!render || !isDismissable || !closeOnEscape) return;
 
         const handler = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
                 setRender(false);
-                onDismissed();
             }
         };
 
@@ -70,7 +69,14 @@ function Modal({
     }, [visible]);
 
     return (
-        <FadeTransition as={Fragment} show={render} duration='duration-150' appear={appear ?? true} unmount>
+        <FadeTransition
+            as={Fragment}
+            show={render}
+            duration='duration-150'
+            appear={appear ?? true}
+            unmount
+            afterLeave={onDismissed}
+        >
             <ModalMask
                 className='bg-gray-900/40 backdrop-blur-xs transition-all duration-300 ease-in-out'
                 onClick={(e: React.MouseEvent) => e.stopPropagation()}
@@ -80,7 +86,6 @@ function Modal({
                         e.stopPropagation();
                         if (e.target === e.currentTarget) {
                             setRender(false);
-                            onDismissed();
                         }
                     }
                 }}
@@ -95,7 +100,6 @@ function Modal({
                             className='absolute -top-10 right-0 cursor-pointer p-2 text-white opacity-50 transition-all duration-150 ease-linear hover:rotate-90 hover:opacity-100 [&>svg]:h-6 [&>svg]:w-6'
                             onClick={() => {
                                 setRender(false);
-                                onDismissed();
                             }}
                         >
                             <svg
