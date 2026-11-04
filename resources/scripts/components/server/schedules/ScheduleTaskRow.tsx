@@ -50,7 +50,9 @@ export default ({ schedule, task }: Props) => {
             .then(() =>
                 appendSchedule({
                     ...schedule,
-                    tasks: schedule.tasks.filter((t) => t.id !== task.id),
+                    tasks: schedule.tasks
+                        .filter((t) => t.id !== task.id)
+                        .map((t) => (t.sequenceId > task.sequenceId ? { ...t, sequenceId: t.sequenceId - 1 } : t)),
                 }),
             )
             .catch((error) => {
