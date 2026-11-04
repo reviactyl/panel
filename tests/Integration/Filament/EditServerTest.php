@@ -4,8 +4,10 @@ namespace Tests\Integration\Filament;
 
 use App\Filament\Resources\Servers\Pages\EditServer;
 use App\Filament\Resources\Servers\RelationManagers\MountsRelationManager;
+use App\Filament\Resources\Servers\Schemas\EditServerForm;
 use App\Filament\Resources\Servers\ServerResource;
 use App\Models\Mount;
+use App\Models\Server;
 use App\Models\ServerVariable;
 use App\Models\User;
 use Filament\Actions\Testing\TestAction;
@@ -13,10 +15,47 @@ use Filament\Facades\Filament;
 use Illuminate\Support\Str;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\DataProvider;
+use ReflectionMethod;
 use Tests\Integration\IntegrationTestCase;
 
 class EditServerTest extends IntegrationTestCase
 {
+    public static function stuckReinstallActions(): array
+    {
+        return [
+            'header ordinary' => [false, Server::STATUS_INSTALLING],
+            'form ordinary' => [true, Server::STATUS_INSTALLING],
+            'header unsuspended' => [false, null],
+            'form unsuspended' => [true, null],
+            'header suspended' => [false, Server::STATUS_SUSPENDED],
+            'form suspended' => [true, Server::STATUS_SUSPENDED],
+        ];
+    }
+
+    #[DataProvider('stuckReinstallActions')]
+    public function test_admin_can_recover_stuck_reinstall_without_clearing_suspension(bool $formAction, ?string $status): void
+    {
+        $server = $this->createServerModel(['status' => $status, 'is_reinstalling' => true]);
+        $this->actingAs(User::factory()->create(['root_admin' => true]));
+        Filament::setCurrentPanel(Filament::getPanel('admin'));
+
+        if ($formAction) {
+            (new ReflectionMethod(EditServerForm::class, 'toggleInstall'))->invoke(null, $server);
+        } else {
+            Livewire::test(EditServer::class, ['record' => $server->id])
+                ->callAction('toggle_install_status');
+        }
+
+        $server->refresh();
+        $this->assertFalse($server->is_reinstalling);
+        $this->assertTrue($server->isInstalled());
+        $this->assertSame($status === Server::STATUS_SUSPENDED ? $status : null, $server->status);
+        $server->validateTransferState();
+        if (! $server->isSuspended()) {
+            $server->validateCurrentState();
+        }
+    }
+
     public function test_admin_can_attach_and_detach_eligible_server_mounts(): void
     {
         $server = $this->createServerModel();

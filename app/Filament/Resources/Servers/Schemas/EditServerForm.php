@@ -564,7 +564,8 @@ class EditServerForm
 
         try {
             app(ServerRepository::class)->update($server->id, [
-                'status' => $server->isInstalled() ? Server::STATUS_INSTALLING : null,
+                'status' => $server->isSuspended() ? Server::STATUS_SUSPENDED : ($server->isInstalled() ? Server::STATUS_INSTALLING : null),
+                'is_reinstalling' => false,
             ], true, true);
 
             app(ActivityLogService::class)->subject($server)->event('server:toggle-install')->log();
