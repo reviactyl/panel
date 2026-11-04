@@ -94,12 +94,15 @@ afterEach(async () => {
     container.remove();
     vi.useRealTimers();
 });
-const upload = async (directory: string, folder = false) => {
+const upload = async (directory: string, folder = false, filenames = ['config.yml']) => {
     await act(async () => store.getActions().files.setDirectory(directory));
-    const file = new File(['configuration'], 'config.yml');
-    if (folder) Object.defineProperty(file, 'webkitRelativePath', { value: 'Plugin/config.yml' });
+    const files = filenames.map((name) => {
+        const file = new File(['configuration'], name);
+        if (folder) Object.defineProperty(file, 'webkitRelativePath', { value: `Plugin/${name}` });
+        return file;
+    });
     const input = container.querySelectorAll<HTMLInputElement>('input[type="file"]')[folder ? 1 : 0]!;
-    Object.defineProperty(input, 'files', { configurable: true, value: [file] });
+    Object.defineProperty(input, 'files', { configurable: true, value: files });
     await act(async () => input.dispatchEvent(new Event('change', { bubbles: true })));
 };
 const openUploads = async () => {
@@ -178,4 +181,33 @@ describe('overlapping upload identities', () => {
             expect(rows()[0]!.textContent).toContain(`${destination}/Plugin`);
         },
     );
+
+    it('aggregates all files in each folder and cancels only the selected folder submission', async () => {
+        await upload('/plugins/One', true, ['config.yml', 'settings.yml']);
+        await upload('/plugins/Two', true, ['config.yml', 'settings.yml']);
+        expect(requests.map(({ directory }) => directory)).toEqual([
+            '/plugins/One/Plugin',
+            '/plugins/One/Plugin',
+            '/plugins/Two/Plugin',
+            '/plugins/Two/Plugin',
+        ]);
+        await openUploads();
+        expect(rows()).toHaveLength(2);
+        expect(rows().map((row) => row.querySelector('code')!.textContent)).toEqual([
+            '/plugins/One/Plugin',
+            '/plugins/Two/Plugin',
+        ]);
+        await act(async () => {
+            [3, 10, 2, 4].forEach((loaded, index) => requests[index]!.progress({ loaded } as AxiosProgressEvent));
+        });
+        const progressOffset = (row: HTMLElement) =>
+            Number.parseFloat(row.querySelectorAll('circle')[1]!.style.strokeDashoffset);
+        expect(progressOffset(rows()[0]!)).toBeCloseTo(14 * Math.PI);
+        expect(progressOffset(rows()[1]!)).toBeCloseTo((1 - 6 / 26) * 28 * Math.PI);
+        await cancel(0);
+        expect(requests.map(({ signal }) => signal.aborted)).toEqual([true, true, false, false]);
+        expect(rows()).toHaveLength(1);
+        expect(rows()[0]!.textContent).toContain('/plugins/Two/Plugin');
+        expect(progressOffset(rows()[0]!)).toBeCloseTo((1 - 6 / 26) * 28 * Math.PI);
+    });
 });
