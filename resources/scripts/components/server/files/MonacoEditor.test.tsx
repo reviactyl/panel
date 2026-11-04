@@ -7,10 +7,18 @@ const editor = vi.hoisted(() => ({
     addCommand: vi.fn(),
     getValue: vi.fn(() => 'edited content'),
     focus: vi.fn(),
+    change: undefined as ((value: string | undefined) => void) | undefined,
 }));
 
 vi.mock('@monaco-editor/react', () => ({
-    default: ({ onMount }: { onMount: (instance: typeof editor, monaco: unknown) => void }) => {
+    default: ({
+        onMount,
+        onChange,
+    }: {
+        onMount: (instance: typeof editor, monaco: unknown) => void;
+        onChange: (value: string | undefined) => void;
+    }) => {
+        editor.change = onChange;
         useEffect(() => {
             onMount(editor, { KeyMod: { CtrlCmd: 2048 }, KeyCode: { KeyS: 49 } });
         }, []);
@@ -65,4 +73,29 @@ it('uses the latest save callback without registering another shortcut or remoun
     expect(editor.addCommand).toHaveBeenCalledTimes(1);
     expect(editor.focus).toHaveBeenCalledTimes(1);
     await expect(fetchContent.mock.calls.at(-1)![0]()).resolves.toBe('edited content');
+});
+
+it('reports edits and an emptied document through the current change callback', async () => {
+    const original = vi.fn();
+    const current = vi.fn();
+    const render = async (onContentChanged: (content: string) => void) => {
+        await act(async () =>
+            root.render(
+                <MonacoEditor
+                    mode='text/plain'
+                    fetchContent={vi.fn()}
+                    onModeChanged={vi.fn()}
+                    onContentSaved={vi.fn()}
+                    onContentChanged={onContentChanged}
+                />,
+            ),
+        );
+    };
+    await render(original);
+    editor.change!('draft');
+    expect(original).toHaveBeenCalledWith('draft');
+    await render(current);
+    editor.change!(undefined);
+    expect(current).toHaveBeenCalledWith('');
+    expect(original).toHaveBeenCalledOnce();
 });

@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Dateimanager',
+    'unsaved-changes' => 'Du hast ungespeicherte Änderungen. Diese Datei verlassen und die Änderungen verwerfen?',
     'new-file' => 'Neue Datei',
     'empty' => 'Dieses Verzeichnis scheint leer zu sein.',
     'no-results' => 'Keine Dateien stimmten mit Ihrer Suche überein.',

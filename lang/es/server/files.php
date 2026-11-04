@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Administrador de archivos',
+    'unsaved-changes' => 'Tienes cambios sin guardar. ¿Quieres salir de este archivo y descartarlos?',
     'new-file' => 'Nuevo archivo',
     'empty' => 'Parece que este directorio está vacío.',
     'no-results' => 'Ningún archivo coincidió con su búsqueda.',

@@ -16,6 +16,7 @@ export interface Props {
     onModeChanged: (mode: string) => void;
     fetchContent: (callback: () => Promise<string>) => void;
     onContentSaved: () => void;
+    onContentChanged?: (content: string) => void;
 }
 
 const findModeByFilename = (filename: string) => {
@@ -46,12 +47,23 @@ const findModeByFilename = (filename: string) => {
     return undefined;
 };
 
-export default ({ style, initialContent, filename, mode, fetchContent, onContentSaved, onModeChanged }: Props) => {
+export default ({
+    style,
+    initialContent,
+    filename,
+    mode,
+    fetchContent,
+    onContentSaved,
+    onModeChanged,
+    onContentChanged,
+}: Props) => {
     const container = useRef<HTMLDivElement>(null);
     const editor = useRef<EditorView | null>(null);
     const language = useRef(new Compartment());
     const save = useRef(onContentSaved);
     save.current = onContentSaved;
+    const change = useRef(onContentChanged);
+    change.current = onContentChanged;
 
     useEffect(() => {
         if (!container.current) return;
@@ -62,6 +74,9 @@ export default ({ style, initialContent, filename, mode, fetchContent, onContent
                 doc: initialContent || '',
                 extensions: [
                     basicSetup,
+                    EditorView.updateListener.of((update) => {
+                        if (update.docChanged) change.current?.(update.state.doc.toString());
+                    }),
                     EditorView.lineWrapping,
                     keymap.of([indentWithTab]),
                     EditorView.contentAttributes.of({ spellcheck: 'true', autocorrect: 'off', autocapitalize: 'off' }),

@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Dosya Yöneticisi',
+    'unsaved-changes' => 'Kaydedilmemiş değişiklikleriniz var. Bu dosyadan çıkıp değişiklikleri iptal etmek istiyor musunuz?',
     'new-file' => 'Yeni Dosya',
     'empty' => 'Bu dizin boş görünüyor.',
     'no-results' => 'Aramanızla eşleşen dosya yok.',

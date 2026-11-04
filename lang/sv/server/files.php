@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Filhanterare',
+    'unsaved-changes' => 'Du har osparade ändringar. Vill du lämna filen och kasta ändringarna?',
     'new-file' => 'Ny fil',
     'empty' => 'Denna katalog verkar vara tom.',
     'no-results' => 'Inga filer matchade din sökning.',

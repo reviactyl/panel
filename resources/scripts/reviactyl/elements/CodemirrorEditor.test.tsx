@@ -11,6 +11,7 @@ let container: HTMLDivElement;
 let root: Root;
 const fetchContent = vi.fn();
 const onModeChanged = vi.fn();
+const onContentChanged = vi.fn();
 
 beforeEach(() => {
     Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
@@ -34,6 +35,7 @@ const render = async (initialContent = 'loaded file', onContentSaved = vi.fn(), 
                 fetchContent={fetchContent}
                 onModeChanged={onModeChanged}
                 onContentSaved={onContentSaved}
+                onContentChanged={onContentChanged}
             />,
         );
     });
@@ -78,4 +80,27 @@ it('loads syntax support and removes it when the mode switches to plain text', a
 it.each(modes.filter((mode) => mode.mime !== 'text/plain'))('loads language support for $name', async ({ mime }) => {
     const view = await render('example content', vi.fn(), mime);
     await vi.waitFor(() => expect(view.state.facet(language)).not.toBeNull());
+});
+
+it('reports document edits and undo without reporting language changes as edits', async () => {
+    const view = await render();
+    expect(onContentChanged).not.toHaveBeenCalled();
+    view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: 'draft' } });
+    expect(onContentChanged).toHaveBeenLastCalledWith('draft');
+    undo(view);
+    expect(onContentChanged).toHaveBeenLastCalledWith('loaded file');
+    onContentChanged.mockClear();
+    await render('loaded file', vi.fn(), 'text/javascript');
+    await vi.waitFor(() => expect(view.state.facet(language)).not.toBeNull());
+    expect(onContentChanged).not.toHaveBeenCalled();
+});
+
+it('reports LF content when editing and undoing a CRLF file', async () => {
+    const view = await render('first\r\nsecond');
+    expect(view.state.doc.toString()).toBe('first\nsecond');
+    view.dispatch({ changes: { from: 0, to: 5, insert: 'changed' } });
+    expect(onContentChanged).toHaveBeenLastCalledWith('changed\nsecond');
+    undo(view);
+    expect(onContentChanged).toHaveBeenLastCalledWith('first\nsecond');
+    await expect(fetchContent.mock.calls.at(-1)![0]()).resolves.toBe('first\nsecond');
 });

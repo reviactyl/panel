@@ -2,6 +2,7 @@
 
 return [
     'title' => 'File Manager',
+    'unsaved-changes' => 'You have unsaved changes. Leave this file and discard them?',
     'new-file' => 'New File',
     'empty' => 'This directory seems to be empty.',
     'no-results' => 'No files matched your search.',

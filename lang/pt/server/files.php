@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Gerenciador de Arquivos',
+    'unsaved-changes' => 'Você tem alterações não salvas. Sair deste arquivo e descartá-las?',
     'new-file' => 'Novo Arquivo',
     'empty' => 'Este diretório parece estar vazio.',
     'no-results' => 'Nenhum arquivo corresponde à sua pesquisa.',

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import getFileContents from '@/api/server/files/getFileContents';
 import { httpErrorToHuman } from '@/api/http';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
@@ -7,7 +7,8 @@ import editorStyles from '@/reviactyl/elements/style.module.css';
 import saveFileContents from '@/api/server/files/saveFileContents';
 import updateFileContents from '@/api/server/files/updateFileContents';
 import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcrumbs';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useBlocker, useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import FileNameModal from '@/components/server/files/FileNameModal';
 import Can from '@/reviactyl/elements/Can';
 import FlashMessageRender from '@/components/FlashMessageRender';
@@ -28,6 +29,8 @@ import Card from '@/reviactyl/ui/Card';
 import { ApplicationStore } from '@/state';
 import { useStoreState } from 'easy-peasy';
 
+const normalizeLineEndings = (content: string) => content.replace(/\r\n?/g, '\n');
+
 const FileEditContainer = () => {
     const [error, setError] = useState('');
     const location = useLocation();
@@ -40,6 +43,37 @@ const FileEditContainer = () => {
     const [mode, setMode] = useState('text/plain');
 
     const navigate = useNavigate();
+    const { t } = useTranslation('server/files');
+    const savedContent = useRef(content);
+    const currentContent = useRef(content);
+    const [dirty, setDirty] = useState(false);
+    const blocker = useBlocker(useCallback(() => currentContent.current !== savedContent.current, []));
+
+    const onContentChanged = useCallback((value: string) => {
+        currentContent.current = normalizeLineEndings(value);
+        setDirty(currentContent.current !== savedContent.current);
+    }, []);
+
+    useEffect(() => {
+        if (blocker.state === 'blocked') {
+            if (window.confirm(t('unsaved-changes'))) {
+                blocker.proceed();
+            } else {
+                blocker.reset();
+            }
+        }
+    }, [blocker, t]);
+
+    useEffect(() => {
+        if (!dirty) return;
+
+        const onBeforeUnload = (event: BeforeUnloadEvent) => {
+            event.preventDefault();
+            event.returnValue = '';
+        };
+        window.addEventListener('beforeunload', onBeforeUnload);
+        return () => window.removeEventListener('beforeunload', onBeforeUnload);
+    }, [dirty]);
 
     const id = ServerContext.useStoreState((state) => state.server.data!.id);
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
@@ -48,7 +82,7 @@ const FileEditContainer = () => {
 
     const { addError, clearFlashes } = useFlash();
 
-    let fetchFileContent: null | (() => Promise<string>) = null;
+    const fetchFileContent = useRef<null | (() => Promise<string>)>(null);
 
     useEffect(() => {
         if (isNewFile) {
@@ -72,6 +106,8 @@ const FileEditContainer = () => {
         getFileContents(uuid, path)
             .then((content) => {
                 if (active) {
+                    savedContent.current = normalizeLineEndings(content);
+                    currentContent.current = savedContent.current;
                     setContent(content);
                     setLoading(false);
                 }
@@ -91,16 +127,23 @@ const FileEditContainer = () => {
     }, [isNewFile, uuid, hash]);
 
     const save = (name?: string) => {
-        if (loading || !fetchFileContent) {
+        if (loading || !fetchFileContent.current) {
             return;
         }
 
         setLoading(true);
         clearFlashes('files:view');
-        fetchFileContent()
-            .then((content) =>
-                name ? saveFileContents(uuid, name, content) : updateFileContents(uuid, hashToPath(hash), content),
-            )
+        fetchFileContent
+            .current()
+            .then(async (content) => {
+                if (name) {
+                    await saveFileContents(uuid, name, content);
+                } else {
+                    await updateFileContents(uuid, hashToPath(hash), content);
+                }
+                savedContent.current = normalizeLineEndings(content);
+                setDirty(currentContent.current !== savedContent.current);
+            })
             .then(() => {
                 if (name) {
                     navigate(`/server/${id}/files/edit#/${encodePathSegments(name)}`);
@@ -174,8 +217,9 @@ const FileEditContainer = () => {
                         filename={hash.replace(/^#/, '')}
                         onModeChanged={setMode}
                         initialContent={content}
+                        onContentChanged={onContentChanged}
                         fetchContent={(value) => {
-                            fetchFileContent = value;
+                            fetchFileContent.current = value;
                         }}
                         onContentSaved={() => {
                             if (isNewFile) {
@@ -192,8 +236,9 @@ const FileEditContainer = () => {
                         filename={hash.replace(/^#/, '')}
                         onModeChanged={setMode}
                         initialContent={content}
+                        onContentChanged={onContentChanged}
                         fetchContent={(value) => {
-                            fetchFileContent = value;
+                            fetchFileContent.current = value;
                         }}
                         onContentSaved={() => {
                             if (isNewFile) {

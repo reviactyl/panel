@@ -1,6 +1,14 @@
-import { act, useEffect, type ReactNode, type ButtonHTMLAttributes } from 'react';
+import { act, useEffect, useState, type ReactNode, type ButtonHTMLAttributes } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
-import { MemoryRouter, useNavigate } from 'react-router-dom';
+import {
+    createMemoryRouter,
+    RouterProvider,
+    Route,
+    Routes,
+    Link,
+    useNavigate,
+    type NavigateFunction,
+} from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import FileEditContainer from './FileEditContainer';
 import type { Props as EditorProps } from '@/reviactyl/elements/CodemirrorEditor';
@@ -11,14 +19,24 @@ const mocks = vi.hoisted(() => ({
     create: vi.fn(),
     editor: 'cm',
     shortcut: undefined as (() => void) | undefined,
-    navigate: undefined as ((path: string) => void) | undefined,
+    navigate: undefined as NavigateFunction | undefined,
 }));
-function Editor({ initialContent, fetchContent, onContentSaved }: EditorProps) {
+function Editor({ initialContent, fetchContent, onContentSaved, onContentChanged }: EditorProps) {
+    const [value, setValue] = useState((initialContent || '').replace(/\r\n?/g, '\n'));
     useEffect(() => {
-        fetchContent(() => Promise.resolve(initialContent || ''));
+        fetchContent(() => Promise.resolve(value));
         mocks.shortcut = onContentSaved;
-    }, [initialContent, fetchContent, onContentSaved]);
-    return <textarea aria-label='Content' value={initialContent || ''} readOnly />;
+    }, [value, fetchContent, onContentSaved]);
+    return (
+        <textarea
+            aria-label='Content'
+            value={value}
+            onInput={(event) => {
+                setValue(event.currentTarget.value);
+                onContentChanged?.(event.currentTarget.value);
+            }}
+        />
+    );
 }
 vi.mock('@/api/server/files/getFileContents', () => ({ default: mocks.read }));
 vi.mock('@/api/server/files/updateFileContents', () => ({ default: mocks.update }));
@@ -34,8 +52,14 @@ vi.mock('easy-peasy', () => ({ useStoreState: () => ({ fileEditor: mocks.editor 
 vi.mock('@/plugins/useFlash', () => ({ default: () => ({ addError: vi.fn(), clearFlashes: vi.fn() }) }));
 vi.mock('@/api/http', () => ({ httpErrorToHuman: (error: Error) => error.message }));
 vi.mock('@/components/FlashMessageRender', () => ({ default: () => null }));
-vi.mock('./FileManagerBreadcrumbs', () => ({ default: () => null }));
-vi.mock('./FileNameModal', () => ({ default: () => null }));
+vi.mock('./FileManagerBreadcrumbs', () => ({
+    default: () => <Link to='/server/server/files'>container</Link>,
+}));
+vi.mock('./FileNameModal', () => ({
+    default: ({ visible, onFileNamed }: { visible: boolean; onFileNamed: (name: string) => void }) =>
+        visible ? <button onClick={() => onFileNamed('/new.txt')}>Confirm name</button> : null,
+}));
+vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: () => 'Discard unsaved changes?' }) }));
 vi.mock('@/reviactyl/elements/Spinner', () => ({ default: () => <span>Loading</span> }));
 vi.mock('@/reviactyl/elements/SpinnerOverlay', () => ({
     default: ({ visible }: { visible: boolean }) => (visible ? <span>Loading</span> : null),
@@ -57,7 +81,16 @@ vi.mock('@/reviactyl/elements/MonacoEditor', () => ({ default: Editor }));
 
 function Navigation() {
     mocks.navigate = useNavigate();
-    return <FileEditContainer />;
+    return (
+        <>
+            <Link to='/account'>Account</Link>
+            <Routes>
+                <Route path='/server/server/files/edit' element={<FileEditContainer />} />
+                <Route path='/server/server/files/new' element={<FileEditContainer />} />
+                <Route path='*' element={<Link to='/server/server/files/edit#/a.txt'>Open file</Link>} />
+            </Routes>
+        </>
+    );
 }
 function deferred() {
     let resolve!: (content: string) => void;
@@ -74,6 +107,12 @@ beforeEach(() => {
     Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
     vi.clearAllMocks();
     mocks.read.mockReset();
+    mocks.update.mockReset();
+    mocks.create.mockReset();
+    vi.stubGlobal(
+        'confirm',
+        vi.fn(() => false),
+    );
     mocks.shortcut = undefined;
     container = document.createElement('div');
     root = createRoot(container);
@@ -81,13 +120,17 @@ beforeEach(() => {
 afterEach(async () => {
     await act(async () => root.unmount());
     container.remove();
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
 });
-const render = async () => {
+const render = async (path = '/server/server/files/edit#/a.txt') => {
     await act(async () => {
         root.render(
-            <MemoryRouter initialEntries={['/server/server/files/edit#/a.txt']}>
-                <Navigation />
-            </MemoryRouter>,
+            <RouterProvider
+                router={createMemoryRouter([{ path: '*', element: <Navigation /> }], {
+                    initialEntries: [path],
+                })}
+            />,
         );
     });
 };
@@ -95,7 +138,22 @@ const navigate = async (path = '/server/server/files/edit#/b.txt') => {
     await act(async () => mocks.navigate!(path));
 };
 const content = () => container.querySelector('textarea')!.value;
-const save = () => container.querySelector('button')!;
+const save = () =>
+    Array.from(container.querySelectorAll('button')).find((button) =>
+        ['Save Content', 'Create File'].includes(button.textContent || ''),
+    )!;
+const edit = async (value: string) => {
+    await act(async () => {
+        const textarea = container.querySelector('textarea')!;
+        textarea.value = value;
+        textarea.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+};
+const beforeUnload = () => {
+    const event = new Event('beforeunload', { cancelable: true });
+    window.dispatchEvent(event);
+    return event.defaultPrevented;
+};
 
 describe.each(['cm', 'mo'])('file read ordering (%s)', (editor) => {
     beforeEach(() => {
@@ -178,5 +236,135 @@ describe.each(['cm', 'mo'])('file read ordering (%s)', (editor) => {
         expect(container.textContent).not.toContain('Loading');
         expect(save().textContent).toBe('Create File');
         expect(save().disabled).toBe(false);
+    });
+});
+
+describe.each(['cm', 'mo'])('unsaved file navigation (%s)', (editor) => {
+    beforeEach(() => {
+        mocks.editor = editor;
+        mocks.read.mockResolvedValue('original');
+    });
+
+    it.each(['breadcrumb', 'panel', 'another file'])(
+        'retains the draft when %s navigation is canceled',
+        async (target) => {
+            await render();
+            await edit('unsaved draft');
+            if (target === 'breadcrumb') {
+                await act(async () =>
+                    container.querySelector<HTMLAnchorElement>('a[href="/server/server/files"]')!.click(),
+                );
+            } else {
+                await navigate(target === 'panel' ? '/account' : '/server/server/files/edit#/b.txt');
+            }
+            expect(window.confirm).toHaveBeenCalledOnce();
+            expect(content()).toBe('unsaved draft');
+            expect(mocks.read).toHaveBeenCalledOnce();
+            expect(mocks.update).not.toHaveBeenCalled();
+            expect(beforeUnload()).toBe(true);
+        },
+    );
+
+    it('discards only after confirmation and reloads the original on return', async () => {
+        await render();
+        await edit('unsaved draft');
+        vi.mocked(window.confirm).mockReturnValue(true);
+        await navigate('/server/server/files');
+        expect(container.querySelector('textarea')).toBeNull();
+        expect(beforeUnload()).toBe(false);
+        await navigate('/server/server/files/edit#/a.txt');
+        expect(content()).toBe('original');
+        expect(mocks.update).not.toHaveBeenCalled();
+    });
+
+    it('protects a new unsaved file', async () => {
+        await render('/server/server/files/new#/');
+        await edit('new draft');
+        await navigate('/account');
+        expect(window.confirm).toHaveBeenCalledOnce();
+        expect(content()).toBe('new draft');
+        expect(beforeUnload()).toBe(true);
+    });
+
+    it.each(['unchanged', 'undone', 'saved'])('does not prompt for %s content', async (state) => {
+        await render();
+        if (state !== 'unchanged') await edit('edited');
+        if (state === 'undone') await edit('original');
+        if (state === 'saved') await act(async () => save().click());
+        expect(beforeUnload()).toBe(false);
+        await navigate('/account');
+        expect(window.confirm).not.toHaveBeenCalled();
+        expect(container.querySelector('textarea')).toBeNull();
+    });
+
+    it.each(['\r\n', '\r'])('does not warn after undoing edits in a file using %j line endings', async (ending) => {
+        mocks.read.mockResolvedValue(`first${ending}second`);
+        await render();
+        await edit('changed\nsecond');
+        await edit('first\nsecond');
+        expect(beforeUnload()).toBe(false);
+        await navigate('/account');
+        expect(window.confirm).not.toHaveBeenCalled();
+    });
+
+    it('does not warn after saving an untouched CRLF file as LF', async () => {
+        mocks.read.mockResolvedValue('first\r\nsecond');
+        await render();
+        await act(async () => save().click());
+        expect(mocks.update).toHaveBeenCalledWith('uuid', '/a.txt', 'first\nsecond');
+        expect(beforeUnload()).toBe(false);
+        await navigate('/account');
+        expect(window.confirm).not.toHaveBeenCalled();
+    });
+
+    it('retains protection after a failed save', async () => {
+        vi.spyOn(console, 'error').mockImplementation(() => undefined);
+        mocks.update.mockRejectedValue(new Error('save failed'));
+        await render();
+        await edit('unsaved draft');
+        await act(async () => save().click());
+        await navigate('/account');
+        expect(window.confirm).toHaveBeenCalledOnce();
+        expect(content()).toBe('unsaved draft');
+        expect(beforeUnload()).toBe(true);
+    });
+
+    it('keeps edits made while a save is pending dirty', async () => {
+        const update = deferred();
+        mocks.update.mockReturnValueOnce(update.promise);
+        await render();
+        await edit('saved revision');
+        await act(async () => save().click());
+        await edit('later revision');
+        await act(async () => update.resolve(''));
+        await navigate('/account');
+        expect(mocks.update).toHaveBeenCalledWith('uuid', '/a.txt', 'saved revision');
+        expect(window.confirm).toHaveBeenCalledOnce();
+        expect(content()).toBe('later revision');
+    });
+
+    it('opens a newly saved file without a discard prompt', async () => {
+        await render('/server/server/files/new#/');
+        await edit('created content');
+        mocks.read.mockResolvedValue('created content');
+        await act(async () => save().click());
+        await act(async () =>
+            Array.from(container.querySelectorAll('button'))
+                .find((button) => button.textContent === 'Confirm name')!
+                .click(),
+        );
+        expect(mocks.create).toHaveBeenCalledWith('uuid', '/new.txt', 'created content');
+        expect(window.confirm).not.toHaveBeenCalled();
+        expect(content()).toBe('created content');
+        expect(beforeUnload()).toBe(false);
+    });
+
+    it('guards browser back navigation', async () => {
+        await render('/account');
+        await navigate('/server/server/files/edit#/a.txt');
+        await edit('unsaved draft');
+        await act(async () => mocks.navigate!(-1));
+        expect(window.confirm).toHaveBeenCalledOnce();
+        expect(content()).toBe('unsaved draft');
     });
 });

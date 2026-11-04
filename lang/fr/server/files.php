@@ -2,6 +2,7 @@
 
 return [
     'title' => 'Gestionnaire de fichier',
+    'unsaved-changes' => 'Vous avez des modifications non enregistrées. Quitter ce fichier et les abandonner ?',
     'new-file' => 'Nouveau fichier',
     'empty' => 'Ce répértoire semble vide.',
     'no-results' => 'Aucun fichier ne correspond à votre recherche.',
