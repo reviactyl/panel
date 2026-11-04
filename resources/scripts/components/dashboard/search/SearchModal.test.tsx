@@ -12,9 +12,6 @@ vi.mock('easy-peasy', () => ({
     useStoreActions: (selector: (actions: unknown) => unknown) => selector({ flashes: mocks }),
 }));
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
-vi.mock('@/reviactyl/elements/Modal', () => ({
-    default: ({ visible, children }: { visible: boolean; children: ReactNode }) => (visible ? children : null),
-}));
 vi.mock('@/reviactyl/elements/InputSpinner', () => ({
     default: ({ visible, children }: { visible: boolean; children: ReactNode }) => (
         <div data-loading={visible}>{children}</div>
@@ -33,8 +30,9 @@ const deferred = () => {
 
 let container: HTMLDivElement;
 let root: Root;
-const input = () => container.querySelector<HTMLInputElement>('input[name="term"]')!;
-const loading = () => container.querySelector('[data-loading]')?.getAttribute('data-loading');
+const dialog = () => document.querySelector('[role=dialog]')!;
+const input = () => dialog().querySelector<HTMLInputElement>('input[name="term"]')!;
+const loading = () => dialog().querySelector('[data-loading]')?.getAttribute('data-loading');
 const edit = async (value: string, caret = value.length) => {
     const element = input();
     await act(async () => {
@@ -70,6 +68,11 @@ afterEach(async () => {
 });
 
 describe('server search input', () => {
+    it('opens a named dialog without a content heading', () => {
+        expect(dialog().querySelector('h1, h2, h3, h4, h5, h6')).toBeNull();
+        expect(document.getElementById(dialog().getAttribute('aria-labelledby')!)?.textContent).toBe('search.label');
+        expect(document.activeElement).toBe(input());
+    });
     it('retains its node, focus, and caret through middle edits, submitting, and results with real Formik', async () => {
         const original = input();
         await edit('mine');
@@ -86,7 +89,7 @@ describe('server search input', () => {
 
         await advance(500);
 
-        expect(container.textContent).toContain('Current server');
+        expect(dialog().textContent).toContain('Current server');
         expect(loading()).toBe('false');
         expect(input()).toBe(original);
         expect(document.activeElement).toBe(original);
@@ -114,12 +117,12 @@ describe('server search input', () => {
         await edit('miXne', 3);
         const currentInput = input();
         await act(async () => older.resolve(response('Obsolete server')));
-        expect(container.textContent).not.toContain('Obsolete server');
+        expect(dialog().textContent).not.toContain('Obsolete server');
         expect(loading()).toBe('true');
         await advance(500);
         expect(mocks.getServers).toHaveBeenLastCalledWith({ query: 'miXne', type: undefined });
         await act(async () => newer.resolve(response('Latest server')));
-        expect(container.textContent).toContain('Latest server');
+        expect(dialog().textContent).toContain('Latest server');
         expect(loading()).toBe('false');
         expect(input()).toBe(currentInput);
     });

@@ -126,7 +126,7 @@ export default ({ ...props }: Props) => {
             initialValues={{ term: '' } as Values}
         >
             {({ isSubmitting }) => (
-                <Modal {...props}>
+                <Modal {...props} accessibleName={t('search.label')}>
                     <Form>
                         <FormikFieldWrapper
                             name={'term'}

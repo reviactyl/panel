@@ -14,6 +14,7 @@ export interface RequiredModalProps {
 }
 
 export interface ModalProps extends RequiredModalProps {
+    accessibleName?: string;
     dismissable?: boolean;
     closeOnEscape?: boolean;
     closeOnBackground?: boolean;
@@ -31,51 +32,56 @@ const sizes = {
     lg: 'md:max-w-[90%] lg:max-w-[80%]',
 };
 
-const ModalDialog = forwardRef<HTMLDivElement, Omit<HTMLAttributes<HTMLDivElement>, 'role'> & { onEscape: () => void }>(
-    function ModalDialog({ children, onEscape, ...props }, ref) {
-        const [title, setTitle] = useState('');
-        const [ready, setReady] = useState(false);
-        const setDialog = useCallback(
-            (node: HTMLDivElement | null) => {
-                if (typeof ref === 'function') ref(node);
-                else if (ref) ref.current = node;
-                // Activate after the portal mounts so background inertness includes the page.
-                if (node) setReady(true);
-                const heading = node?.querySelector('h1, h2, h3, h4, h5, h6');
-                if (heading) {
-                    setTitle(heading.textContent || '');
-                }
-            },
-            [ref],
-        );
+type ModalDialogProps = Omit<HTMLAttributes<HTMLDivElement>, 'role'> &
+    Pick<ModalProps, 'accessibleName'> & { onEscape: () => void };
 
-        return (
-            <Dialog
-                {...props}
-                ref={setDialog}
-                className={`fixed inset-0 z-9999 ${props.className || ''}`}
-                static
-                open={ready}
-                onClose={() => {}}
-                autoFocus={false}
-                onKeyDown={(event) => {
-                    if (event.key === 'Escape') {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        onEscape();
-                    }
-                }}
-            >
-                <Dialog.Title as='span' className='sr-only'>
-                    {title}
-                </Dialog.Title>
-                {children}
-            </Dialog>
-        );
-    },
-);
+const ModalDialog = forwardRef<HTMLDivElement, ModalDialogProps>(function ModalDialog(
+    { children, onEscape, accessibleName, ...props },
+    ref,
+) {
+    const [title, setTitle] = useState('');
+    const [ready, setReady] = useState(false);
+    const setDialog = useCallback(
+        (node: HTMLDivElement | null) => {
+            if (typeof ref === 'function') ref(node);
+            else if (ref) ref.current = node;
+            // Activate after the portal mounts so background inertness includes the page.
+            if (node) setReady(true);
+            const heading = node?.querySelector('h1, h2, h3, h4, h5, h6');
+            if (heading) {
+                setTitle(heading.textContent || '');
+            }
+        },
+        [ref],
+    );
+
+    return (
+        <Dialog
+            {...props}
+            ref={setDialog}
+            className={`fixed inset-0 z-9999 ${props.className || ''}`}
+            static
+            open={ready}
+            onClose={() => {}}
+            autoFocus={false}
+            onKeyDown={(event) => {
+                if (event.key === 'Escape') {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    onEscape();
+                }
+            }}
+        >
+            <Dialog.Title as='span' className='sr-only'>
+                {accessibleName ?? title}
+            </Dialog.Title>
+            {children}
+        </Dialog>
+    );
+});
 
 function Modal({
+    accessibleName,
     visible,
     appear,
     dismissable,
@@ -109,6 +115,7 @@ function Modal({
             afterLeave={onDismissed}
         >
             <ModalDialog
+                accessibleName={accessibleName}
                 onEscape={() => {
                     if (isDismissable && closeOnEscape) setRender(false);
                 }}

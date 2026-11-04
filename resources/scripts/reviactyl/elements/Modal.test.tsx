@@ -118,6 +118,20 @@ it('preserves a caller-selected initial focus target', async () => {
     await click(page.querySelector('button')!);
     expect(document.activeElement).toBe(document.querySelector('[role=dialog] h2'));
 });
+it('names headingless dialogs explicitly and prefers that name over content headings', async () => {
+    for (const heading of [null, <h2 key='heading'>Content section</h2>]) {
+        await act(async () =>
+            root.render(
+                <Modal visible onDismissed={() => {}} accessibleName='Find servers'>
+                    {heading}
+                    <input aria-label='Search term' />
+                </Modal>,
+            ),
+        );
+        const dialog = document.querySelector('[role=dialog]')!;
+        expect(document.getElementById(dialog.getAttribute('aria-labelledby')!)?.textContent).toBe('Find servers');
+    }
+});
 it('dismisses only the nested dialog and restores its opener before restoring the page', async () => {
     await act(async () => root.render(<Harness />));
     const trigger = page.querySelector('button')!;

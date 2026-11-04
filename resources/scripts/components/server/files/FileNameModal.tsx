@@ -39,6 +39,7 @@ export default ({ onFileNamed, onDismissed, ...props }: Props) => {
                         onDismissed();
                     }}
                     {...props}
+                    accessibleName={t('create-file')}
                 >
                     <Form>
                         <Field

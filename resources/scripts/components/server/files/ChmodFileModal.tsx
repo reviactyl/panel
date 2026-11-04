@@ -60,7 +60,12 @@ const ChmodFileModal = ({ files, ...props }: OwnProps) => {
             validate={({ mode }) => (isValidFileMode(mode) ? {} : { mode: t('permissions.invalid') })}
         >
             {({ isSubmitting, values }) => (
-                <Modal {...props} dismissable={!isSubmitting} showSpinnerOverlay={isSubmitting}>
+                <Modal
+                    {...props}
+                    accessibleName={t('file-mode-label')}
+                    dismissable={!isSubmitting}
+                    showSpinnerOverlay={isSubmitting}
+                >
                     <Form className='m-0'>
                         <FileModeInput />
                         <div className='mt-6 flex justify-end'>
