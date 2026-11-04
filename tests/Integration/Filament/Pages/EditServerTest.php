@@ -16,11 +16,64 @@ use App\Services\Servers\ServerConfigurationStructureService;
 use Illuminate\Validation\ValidationException;
 use Livewire\Livewire;
 use Mockery;
+use PHPUnit\Framework\Attributes\DataProvider;
 use ReflectionMethod;
 use Tests\Integration\IntegrationTestCase;
 
 class EditServerTest extends IntegrationTestCase
 {
+    public static function primaryAllocationChanges(): array
+    {
+        return [
+            'remove former primary' => [false, false],
+            'keep former primary as additional' => [true, false],
+            'remove former primary and add a port' => [false, true],
+            'keep former primary and add a port' => [true, true],
+        ];
+    }
+
+    #[DataProvider('primaryAllocationChanges')]
+    public function test_admin_form_can_promote_an_additional_allocation_to_primary(bool $keepFormerPrimary, bool $addPort): void
+    {
+        $server = $this->createServerModel();
+        $formerPrimary = $server->allocation_id;
+        $assigned = Allocation::factory()->count(3)->create([
+            'node_id' => $server->node_id,
+            'server_id' => $server->id,
+        ]);
+        [$primary, $retained, $removed] = $assigned->all();
+        $added = Allocation::factory()->create(['node_id' => $server->node_id]);
+        $additional = [$retained->id];
+        if ($addPort) {
+            $additional[] = $added->id;
+        }
+        if ($keepFormerPrimary) {
+            $additional[] = $formerPrimary;
+        }
+
+        $this->actingAs(User::factory()->create(['root_admin' => true]));
+        $repository = $this->mock(DaemonServerRepository::class);
+        $repository->expects('setServer')->with(Mockery::on(fn (Server $updated): bool => $updated->allocation_id === $primary->id))->andReturnSelf();
+        $repository->expects('sync')->andReturnUndefined();
+
+        Livewire::test(EditServer::class, ['record' => $server->id])
+            ->fillForm([
+                'allocation_id' => (string) $primary->id,
+                'allocation_additional' => array_map('strval', $additional),
+            ])
+            ->call('save')
+            ->assertHasNoFormErrors();
+
+        $this->assertSame($primary->id, $server->fresh()->allocation_id);
+        $this->assertEqualsCanonicalizing(
+            [$primary->id, ...$additional],
+            $server->allocations()->pluck('id')->all(),
+        );
+        $this->assertNull($removed->fresh()->server_id);
+        $this->assertSame($addPort ? $server->id : null, $added->fresh()->server_id);
+        $this->assertSame($keepFormerPrimary ? $server->id : null, Allocation::query()->findOrFail($formerPrimary)->server_id);
+    }
+
     public function test_duplicate_external_identifier_does_not_save_startup_changes(): void
     {
         $server = $this->createServerModel();

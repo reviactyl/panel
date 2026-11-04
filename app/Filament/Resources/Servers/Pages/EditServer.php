@@ -87,8 +87,8 @@ class EditServer extends EditRecord
         ]));
 
         $desiredAdditional = array_map('intval', $data['allocation_additional'] ?? []);
-        $currentAdditional = $record->allocations()
-            ->where('id', '!=', $record->allocation_id)
+        $desiredAllocations = [(int) ($data['allocation_id'] ?? $record->allocation_id), ...$desiredAdditional];
+        $currentAllocations = $record->allocations()
             ->pluck('id')
             ->map(fn ($id): int => (int) $id)
             ->all();
@@ -106,8 +106,8 @@ class EditServer extends EditRecord
             'backup_limit',
             'oom_disabled',
         ]);
-        $buildData['add_allocations'] = array_values(array_diff($desiredAdditional, $currentAdditional));
-        $buildData['remove_allocations'] = array_values(array_diff($currentAdditional, $desiredAdditional));
+        $buildData['add_allocations'] = array_values(array_diff($desiredAdditional, $currentAllocations));
+        $buildData['remove_allocations'] = array_values(array_diff($currentAllocations, $desiredAllocations));
 
         app(BuildModificationService::class)->handle($record, $buildData);
 
