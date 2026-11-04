@@ -4,10 +4,17 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { FileObject } from '@/api/server/files/loadDirectory';
 import MoveFileModal from './MoveFileModal';
 
-const mocks = vi.hoisted(() => ({ load: vi.fn(), rename: vi.fn(), error: vi.fn(), mutate: vi.fn() }));
+const mocks = vi.hoisted(() => ({
+    load: vi.fn(),
+    rename: vi.fn(),
+    create: vi.fn(),
+    error: vi.fn(),
+    mutate: vi.fn(),
+    dismissed: vi.fn(),
+}));
 vi.mock('@/api/server/files/loadDirectory', () => ({ default: mocks.load }));
 vi.mock('@/api/server/files/renameFiles', () => ({ default: mocks.rename }));
-vi.mock('@/api/server/files/createDirectory', () => ({ default: vi.fn() }));
+vi.mock('@/api/server/files/createDirectory', () => ({ default: mocks.create }));
 vi.mock('@/state/server', () => ({
     ServerContext: {
         useStoreState: (selector: (state: unknown) => unknown) =>
@@ -21,8 +28,8 @@ vi.mock('@/plugins/useFlash', () => ({
 }));
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 vi.mock('@/components/FlashMessageRender', () => ({ default: () => null }));
-vi.mock('@/reviactyl/elements/Modal', () => ({
-    default: ({ visible, children }: { visible: boolean; children: ReactNode }) => (visible ? children : null),
+vi.mock('@/reviactyl/elements/transitions/FadeTransition', () => ({
+    default: ({ show, children }: { show: boolean; children: ReactNode }) => (show ? children : null),
 }));
 vi.mock('@/reviactyl/elements/Button', () => ({
     default: ({
@@ -46,10 +53,13 @@ beforeEach(() => {
     Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
     vi.clearAllMocks();
     mocks.load.mockReset();
+    mocks.create.mockReset();
     mocks.rename.mockResolvedValue(undefined);
     mocks.mutate.mockResolvedValue(undefined);
     container = document.createElement('div');
-    root = createRoot(container);
+    container.id = 'modal-portal';
+    document.body.appendChild(container);
+    root = createRoot(document.createElement('div'));
 });
 afterEach(async () => {
     await act(async () => root.unmount());
@@ -57,7 +67,7 @@ afterEach(async () => {
 });
 const render = async (visible = true) => {
     await act(async () =>
-        root.render(<MoveFileModal visible={visible} files={['config.txt']} onDismissed={vi.fn()} />),
+        root.render(<MoveFileModal visible={visible} files={['config.txt']} onDismissed={mocks.dismissed} />),
     );
 };
 const button = (label: string) =>
@@ -143,4 +153,55 @@ describe('move picker request ordering', () => {
         expect(button('obsolete')).toBeUndefined();
         expect(button('current')).toBeDefined();
     });
+});
+
+describe('move picker folder creation', () => {
+    const closeIcon = () => container.querySelector<HTMLDivElement>('.cursor-pointer');
+    const dismiss = async (control: string) => {
+        await act(async () => {
+            if (control === 'Escape') {
+                window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+            } else if (control === 'background') {
+                container.querySelector('.fixed')!.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+            } else {
+                closeIcon()?.click();
+            }
+        });
+    };
+
+    it.each(['Escape', 'background', 'close icon'])(
+        'blocks %s while creating a folder and restores it after success',
+        async (control) => {
+            let resolve!: () => void;
+            mocks.create.mockReturnValue(new Promise<void>((done) => (resolve = done)));
+            mocks.load.mockResolvedValue([]);
+            await render();
+            expect(closeIcon()).not.toBeNull();
+
+            await act(async () => {
+                const input = container.querySelector<HTMLInputElement>('#new_move_folder_name')!;
+                Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(input, 'destination');
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+            });
+            await click('move-modal.new-folder');
+            expect(mocks.create).toHaveBeenCalledWith('uuid', '/', 'destination');
+            expect(button('cancel')!.disabled).toBe(true);
+
+            await dismiss(control);
+            expect(mocks.dismissed).not.toHaveBeenCalled();
+            expect(container.textContent).toContain('move-modal.creating');
+            expect(closeIcon()).toBeNull();
+
+            await act(async () => resolve());
+            expect(mocks.load).toHaveBeenLastCalledWith('uuid', '/destination');
+            expect(container.textContent).toContain('move-modal.destination: /home/container/destination');
+            expect(button('cancel')!.disabled).toBe(false);
+            expect(button('move')!.disabled).toBe(false);
+            expect(closeIcon()).not.toBeNull();
+
+            await dismiss(control);
+            expect(mocks.dismissed).toHaveBeenCalledOnce();
+            expect(container.textContent).toBe('');
+        },
+    );
 });
