@@ -6,7 +6,7 @@ import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcr
 import loadDirectory, { FileObject } from '@/api/server/files/loadDirectory';
 import NewDirectoryButton from '@/components/server/files/NewDirectoryButton';
 import UrlDownloadButton from '@/components/server/files/UrlDownloadButton';
-import { NavLink, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import Can from '@/reviactyl/elements/Can';
 import { ServerError } from '@/reviactyl/elements/ScreenBlock';
 import { ServerContext } from '@/state/server';
@@ -18,9 +18,9 @@ import ServerContentBlock from '@/reviactyl/elements/ServerContentBlock';
 import { useStoreActions, useStoreState } from '@/state/hooks';
 import ErrorBoundary from '@/reviactyl/elements/ErrorBoundary';
 import { FileActionCheckbox } from '@/components/server/files/SelectFileCheckbox';
-import { hashToPath, encodePathSegments } from '@/helpers';
+import { hashToPath } from '@/helpers';
 import style from './style.module.css';
-import { SearchIcon, FolderIcon, FolderOpenIcon, DocumentIcon } from '@heroicons/react/solid';
+import { SearchIcon, FolderOpenIcon } from '@heroicons/react/solid';
 import Card from '@/reviactyl/ui/Card';
 import { useTranslation } from 'react-i18next';
 import ImageViewerModal from '@/components/server/files/ImageViewerModal';
@@ -28,7 +28,7 @@ import VideoViewerModal from '@/components/server/files/VideoViewerModal';
 import { isVideoFile } from '@/api/server/files/isVideoFile';
 import getFileDownloadUrl from '@/api/server/files/getFileDownloadUrl';
 import { join } from 'pathe';
-import { bytesToString } from '@/lib/formatters';
+import RecursiveFileRow, { SearchResult } from '@/components/server/files/RecursiveFileRow';
 import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 import Input from '@/reviactyl/elements/Input';
@@ -43,24 +43,6 @@ import {
 } from 'react-icons/fa6';
 import { Button } from '@/reviactyl/components/button';
 import { sortFiles, SortDirection, SortType } from '@/components/server/files/sortFiles';
-
-type SearchResult = FileObject & { fullPath: string };
-
-const RecursiveFileRow = ({ file, serverId }: { file: SearchResult; serverId: string }) => {
-    const to = file.isFile
-        ? `/server/${serverId}/files/edit#${encodePathSegments(file.fullPath)}`
-        : `/server/${serverId}/files#${encodePathSegments(file.fullPath)}`;
-    const Icon = file.isFile ? DocumentIcon : FolderIcon;
-    return (
-        <div className='flex items-center py-2 px-2 border-b border-gray-800 last:border-0 hover:bg-gray-900 rounded-ui'>
-            <Icon className='w-4 h-4 mr-3 flex-none text-gray-400' aria-hidden='true' />
-            <NavLink to={to} className='flex-1 text-sm text-gray-200 truncate hover:text-primary-400 min-w-0'>
-                {file.fullPath}
-            </NavLink>
-            {file.isFile && <span className='text-xs text-muted ml-3 flex-none'>{bytesToString(file.size)}</span>}
-        </div>
-    );
-};
 
 export default () => {
     const { t } = useTranslation('server/files');
@@ -186,8 +168,7 @@ export default () => {
     };
 
     const handlePreviewClick = useCallback(
-        (file: FileObject) => {
-            const filePath = join(directory, file.name);
+        (file: FileObject, filePath = join(directory, file.name)) => {
             getFileDownloadUrl(uuid, filePath)
                 .then((url) => {
                     if (isVideoFile(file)) {
@@ -369,7 +350,17 @@ export default () => {
                             <div>
                                 {isSearching && <p className='mb-2 text-center text-xs text-muted'>{t('searching')}</p>}
                                 {recursiveResults.map((file) => (
-                                    <RecursiveFileRow key={file.fullPath} file={file} serverId={id} />
+                                    <RecursiveFileRow
+                                        key={file.fullPath}
+                                        file={file}
+                                        serverId={id}
+                                        onMediaClick={handlePreviewClick}
+                                        onNavigate={() => {
+                                            setInputValue('');
+                                            setQuery('');
+                                            setSearchExpanded(false);
+                                        }}
+                                    />
                                 ))}
                             </div>
                         )
