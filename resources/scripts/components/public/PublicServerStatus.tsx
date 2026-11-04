@@ -39,21 +39,43 @@ export default () => {
     const { clearFlashes } = useStoreActions((actions) => actions.flashes);
 
     useEffect(() => {
+        const controller = new AbortController();
+        let timeout: ReturnType<typeof setTimeout>;
+
         clearFlashes();
+        setStatus(null);
         setLoading(true);
         setError(null);
 
-        axios
-            .get(`/api/public/servers/${id}`)
-            .then((response) => {
-                setStatus(response.data);
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.error(error);
-                setError(httpErrorToHuman(error));
-                setLoading(false);
-            });
+        const refresh = () => {
+            axios
+                .get(`/api/public/servers/${id}`, { signal: controller.signal, timeout: 10000 })
+                .then((response) => {
+                    if (!controller.signal.aborted) {
+                        setStatus(response.data);
+                        setError(null);
+                    }
+                })
+                .catch((error) => {
+                    if (!controller.signal.aborted) {
+                        console.error(error);
+                        setError(httpErrorToHuman(error));
+                    }
+                })
+                .finally(() => {
+                    if (!controller.signal.aborted) {
+                        setLoading(false);
+                        timeout = setTimeout(refresh, 10000);
+                    }
+                });
+        };
+
+        refresh();
+
+        return () => {
+            controller.abort();
+            clearTimeout(timeout);
+        };
     }, [id]);
 
     return (
