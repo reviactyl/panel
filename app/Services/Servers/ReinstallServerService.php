@@ -31,7 +31,11 @@ class ReinstallServerService
         }
 
         return $this->connection->transaction(function () use ($server) {
-            $server->fill(['status' => Server::STATUS_INSTALLING])->save();
+            if (! $server->isSuspended()) {
+                $server->fill(['status' => Server::STATUS_INSTALLING]);
+            }
+
+            $server->fill(['is_reinstalling' => true])->save();
 
             $this->daemonServerRepository->setServer($server)->reinstall();
 

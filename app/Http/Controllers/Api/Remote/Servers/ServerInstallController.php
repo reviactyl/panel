@@ -74,7 +74,7 @@ class ServerInstallController extends Controller
             $status = Server::STATUS_SUSPENDED;
         }
 
-        $fields = ['status' => $status];
+        $fields = ['status' => $status, 'is_reinstalling' => false];
         if ($successful) {
             $fields['installed_at'] = CarbonImmutable::now();
         }
