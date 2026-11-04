@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useMemo, useState } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import Modal, { RequiredModalProps } from '@/reviactyl/elements/Modal';
 import Button from '@/reviactyl/elements/Button';
 import Input from '@/reviactyl/elements/Input';
@@ -58,6 +58,12 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [newFolderName, setNewFolderName] = useState('');
     const [isCreatingFolder, setIsCreatingFolder] = useState(false);
+    const headingRef = useCallback(
+        (heading: HTMLHeadingElement | null) => {
+            if (props.visible) heading?.focus();
+        },
+        [props.visible],
+    );
 
     const { mutate } = useFileManagerSwr();
     const { clearFlashes, clearAndAddHttpError } = useFlash();
@@ -196,7 +202,9 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
         >
             <div className={`space-y-5`}>
                 <div>
-                    <h2 className={`text-2xl font-semibold text-gray-50`}>{title}</h2>
+                    <h2 ref={headingRef} tabIndex={-1} className={`text-2xl font-semibold text-gray-50`}>
+                        {title}
+                    </h2>
                     <p className={`text-sm text-gray-300 mt-1`}>
                         {t('move-modal.current-location')}: {getDisplayPath(sourceDirectory)}
                     </p>

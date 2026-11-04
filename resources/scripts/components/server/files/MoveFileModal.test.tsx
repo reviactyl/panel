@@ -101,6 +101,21 @@ async function navigateToB(a: ReturnType<typeof deferred>, b: ReturnType<typeof 
 }
 
 describe('move picker request ordering', () => {
+    it('focuses the heading on opening, including while entries load and after reopening', async () => {
+        mocks.load.mockReturnValue(new Promise(() => {}));
+        const trigger = document.createElement('button');
+        document.body.append(trigger);
+        trigger.focus();
+        await render();
+        expect(document.activeElement).toBe(container.querySelector('h2'));
+        expect(container.textContent).toContain('move-modal.loading');
+        await render(false);
+        trigger.focus();
+        await render();
+        expect(document.activeElement).toBe(container.querySelector('h2'));
+        trigger.remove();
+    });
+
     it.each(['success', 'failure'])('keeps selected rows until the move request settles (%s)', async (result) => {
         const pending = deferred();
         mocks.load.mockResolvedValue([folder('target')]);
