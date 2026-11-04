@@ -114,6 +114,7 @@ class ConcurrentScheduleTaskTest extends ClientApiIntegrationTestCase
                 return new Response();
             });
         });
+        $schedule->update(['is_processing' => true]);
         Bus::dispatchSync(new RunTaskJob($tasks->first(), true));
         $this->assertSame($tasks->pluck('payload')->all(), $commands);
         $this->assertFalse($schedule->refresh()->is_processing);
