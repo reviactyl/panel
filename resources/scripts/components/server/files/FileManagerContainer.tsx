@@ -118,13 +118,14 @@ export default () => {
     }, [isSearchExpanded]);
 
     useEffect(() => {
+        const gen = ++searchGenRef.current;
+
         if (!query) {
             setRecursiveResults([]);
             setIsSearching(false);
             return;
         }
 
-        const gen = ++searchGenRef.current;
         setIsSearching(true);
         setRecursiveResults([]);
 
