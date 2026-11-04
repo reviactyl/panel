@@ -45,7 +45,7 @@ import { Button } from '@/reviactyl/components/button';
 import { sortFiles, SortDirection, SortType } from '@/components/server/files/sortFiles';
 
 export default () => {
-    const { t } = useTranslation('server/files');
+    const { t } = useTranslation(['server/files', 'strings']);
     const grid = useStoreState((state) => state.designify.data?.fileLayout === 'grid');
     const id = ServerContext.useStoreState((state) => state.server.data!.id);
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
@@ -256,7 +256,8 @@ export default () => {
                                 renderLeft={
                                     <FileActionCheckbox
                                         type={'checkbox'}
-                                        className='mx-4 block md:hidden'
+                                        className='mx-4 block'
+                                        aria-label={t('strings:select_all')}
                                         checked={
                                             visibleFiles.length > 0 &&
                                             visibleFiles.every((file) => selectedFiles.includes(file.name))

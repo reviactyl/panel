@@ -108,6 +108,14 @@ const click = async (element: HTMLElement) => {
 const action = (label: string) => container.querySelector<HTMLButtonElement>(`button[aria-label="${label}"]`)!;
 
 describe('visible file bulk selection', () => {
+    it('renders one named select-all control without hiding it at a breakpoint', async () => {
+        await render();
+        expect(selectAll().className).not.toMatch(/(?:^|\s)(?:\S+:)?hidden(?:\s|$)/);
+        const controls = container.querySelectorAll('input[aria-label="strings:select_all"]');
+        expect(controls).toHaveLength(1);
+        expect(selectAll()).toBe(controls[0]);
+    });
+
     it.each([
         { count: 2, grid: false },
         { count: 250, grid: false },
