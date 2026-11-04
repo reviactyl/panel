@@ -23,6 +23,12 @@ class ServerInstalled extends Notification implements ReceivesEvents, ShouldQueu
 
     public User $user;
 
+    public bool $sendEmail = true;
+
+    public bool $successful = true;
+
+    public bool $initialInstall = true;
+
     /**
      * Handle a direct call to this notification from the server installed event. This is configured
      * in the event service provider.
@@ -35,6 +41,9 @@ class ServerInstalled extends Notification implements ReceivesEvents, ShouldQueu
 
         $this->server = $event->server;
         $this->user = $event->server->user;
+        $this->sendEmail = $event->sendEmail;
+        $this->successful = $event->successful;
+        $this->initialInstall = $event->initialInstall;
 
         // Since we are calling this notification directly from an event listener we need to fire off the dispatcher
         // to send the email now. Don't use send() or you'll end up firing off two different events.
@@ -46,7 +55,7 @@ class ServerInstalled extends Notification implements ReceivesEvents, ShouldQueu
      */
     public function via(): array
     {
-        return ['mail'];
+        return $this->sendEmail && $this->successful ? ['database', 'mail'] : ['database'];
     }
 
     /**
@@ -55,6 +64,18 @@ class ServerInstalled extends Notification implements ReceivesEvents, ShouldQueu
     public function toMail(): MailMessage
     {
         return app(EmailTemplateService::class)->apply('ServerInstalled', $this->defaultMail(), ['recipient_name' => $this->user->username, 'server_name' => $this->server->name]);
+    }
+
+    public function toDatabase(): array
+    {
+        return [
+            'source' => 'reviactyl',
+            'event' => $this->successful
+                ? ($this->initialInstall ? 'installed' : 'reinstalled')
+                : ($this->initialInstall ? 'install-failed' : 'reinstall-failed'),
+            'server' => $this->server->name,
+            'url' => '/server/'.$this->server->uuidShort,
+        ];
     }
 
     private function defaultMail(): MailMessage

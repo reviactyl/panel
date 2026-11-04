@@ -10,7 +10,7 @@ use Tests\Integration\IntegrationTestCase;
 
 class ServerInstallControllerTest extends IntegrationTestCase
 {
-    public function test_failed_initial_install_does_not_mark_server_installed_or_dispatch_event(): void
+    public function test_failed_initial_install_records_a_failure_event_without_marking_server_installed(): void
     {
         Event::fake(ServerInstalled::class);
         $server = $this->createServerModel();
@@ -21,7 +21,7 @@ class ServerInstallControllerTest extends IntegrationTestCase
 
         $this->assertSame(Server::STATUS_INSTALL_FAILED, $server->status);
         $this->assertNull($server->installed_at);
-        Event::assertNotDispatched(ServerInstalled::class);
+        Event::assertDispatched(ServerInstalled::class, fn ($event) => ! $event->successful);
     }
 
     public function test_successful_retry_after_failed_initial_install_uses_initial_install_notification(): void
@@ -38,10 +38,10 @@ class ServerInstallControllerTest extends IntegrationTestCase
 
         $this->assertNull($server->status);
         $this->assertNotNull($server->installed_at);
-        Event::assertDispatchedTimes(ServerInstalled::class, 1);
+        Event::assertDispatchedTimes(ServerInstalled::class, 2);
     }
 
-    public function test_failed_reinstall_preserves_installed_at_and_does_not_dispatch_event(): void
+    public function test_failed_reinstall_preserves_installed_at_and_records_a_failure_event(): void
     {
         Event::fake(ServerInstalled::class);
         $installedAt = CarbonImmutable::parse('2026-08-18 12:00:00');
@@ -53,7 +53,21 @@ class ServerInstallControllerTest extends IntegrationTestCase
 
         $this->assertSame(Server::STATUS_REINSTALL_FAILED, $server->status);
         $this->assertTrue($installedAt->equalTo($server->installed_at));
-        Event::assertNotDispatched(ServerInstalled::class);
+        Event::assertDispatched(ServerInstalled::class, fn ($event) => ! $event->successful);
+    }
+
+    public function test_disabling_install_email_keeps_the_inbox_notification(): void
+    {
+        Event::fake(ServerInstalled::class);
+        config()->set('panel.email.send_install_notification', false);
+        $server = $this->createServerModel();
+        $notification = new \App\Notifications\ServerInstalled();
+        $notification->server = $server;
+        $notification->sendEmail = false;
+        $this->assertSame(['database'], $notification->via());
+
+        $this->sendInstallStatus($server, true, false)->assertNoContent();
+        Event::assertDispatched(ServerInstalled::class, fn ($event) => $event->sendEmail === false);
     }
 
     private function sendInstallStatus(Server $server, bool $successful, bool $reinstall)

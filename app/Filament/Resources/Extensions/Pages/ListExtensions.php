@@ -47,7 +47,7 @@ class ListExtensions extends ListRecords
                         Notification::make()
                             ->title(trans('admin/extensions.alerts.could_not_locate_file'))
                             ->danger()
-                            ->send();
+                            ->sendToDatabase(auth()->user())->send();
 
                         return;
                     }
@@ -60,7 +60,7 @@ class ListExtensions extends ListRecords
                         Notification::make()
                             ->title(trans('admin/extensions.alerts.invalid_file_type'))
                             ->danger()
-                            ->send();
+                            ->sendToDatabase(auth()->user())->send();
 
                         return;
                     }
@@ -80,15 +80,17 @@ class ListExtensions extends ListRecords
                         $extension = $manager->installFromArchive($archivePath, $clientName);
 
                         Notification::make()
-                            ->title(trans('admin/extensions.alerts.install_success', ['name' => $extension->name, 'version' => $extension->version]))
+                            ->title($extension->wasRecentlyCreated
+                                ? trans('admin/extensions.alerts.install_success', ['name' => $extension->name, 'version' => $extension->version])
+                                : trans('notifications.events.extension-updated').' — '.$extension->name.' '.$extension->version)
                             ->success()
-                            ->send();
+                            ->sendToDatabase(auth()->user())->send();
                     } catch (\Throwable $exception) {
                         Notification::make()
                             ->title(trans('admin/extensions.alerts.install_failed'))
                             ->body($exception->getMessage())
                             ->danger()
-                            ->send();
+                            ->sendToDatabase(auth()->user())->send();
                     } finally {
                         if ($needsCopy && is_file($archivePath)) {
                             @unlink($archivePath);

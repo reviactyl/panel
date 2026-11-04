@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use App\Exceptions\Repository\RecordNotFoundException;
+use App\Services\Extensions\ExtensionFailureReporter;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
@@ -77,6 +78,10 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     {
+        $this->reportable(function (\Throwable $error) {
+            app(ExtensionFailureReporter::class)->report($error);
+        });
+
         if (config('app.exceptions.report_all', false)) {
             $this->dontReport = [];
         }

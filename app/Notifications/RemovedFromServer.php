@@ -20,6 +20,7 @@ class RemovedFromServer extends Notification implements ShouldQueue
     public function __construct(array $server)
     {
         $this->server = (object) $server;
+        $this->afterCommit();
     }
 
     /**
@@ -27,7 +28,7 @@ class RemovedFromServer extends Notification implements ShouldQueue
      */
     public function via(): array
     {
-        return ['mail'];
+        return ['database', 'mail'];
     }
 
     /**
@@ -36,6 +37,16 @@ class RemovedFromServer extends Notification implements ShouldQueue
     public function toMail(): MailMessage
     {
         return app(EmailTemplateService::class)->apply('RemovedFromServer', $this->defaultMail(), ['recipient_name' => $this->server->user, 'server_name' => $this->server->name]);
+    }
+
+    public function toDatabase(): array
+    {
+        return [
+            'source' => 'reviactyl',
+            'event' => 'removed',
+            'server' => $this->server->name,
+            'url' => '/',
+        ];
     }
 
     private function defaultMail(): MailMessage

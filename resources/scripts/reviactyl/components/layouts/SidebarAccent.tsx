@@ -14,6 +14,7 @@ import { useSubuserPreview } from '@/context/SubuserPreviewContext';
 
 interface SidebarProps {
     isOpen?: boolean;
+    footer?: React.ReactNode;
     children?: React.ReactNode;
 }
 
@@ -37,22 +38,25 @@ export const SideNavigation = ({ children, className = '' }: React.HTMLAttribute
     </div>
 );
 
-export const SidebarAccent = React.forwardRef<HTMLDivElement, SidebarProps>(({ children, isOpen = false }, ref) => {
-    return (
-        <div
-            ref={ref}
-            className={`w-56.25 self-start flex-col bg-gray-900 text-white transition-transform duration-300 ease-in-out 2xl:w-64 lg:fixed lg:top-[calc(4rem+var(--subuser-preview-offset,0px))] lg:left-0 lg:z-40 lg:flex lg:h-[calc(100dvh-4rem-var(--subuser-preview-offset,0px))] lg:overflow-y-auto lg:bg-transparent ${
-                isOpen
-                    ? 'fixed top-[calc(4rem+var(--subuser-preview-offset,0px))] left-0 z-40 flex h-[calc(100dvh-4rem-var(--subuser-preview-offset,0px))] overflow-y-auto'
-                    : 'hidden'
-            }`}
-        >
-            <div className='flex flex-1 flex-col overflow-y-auto'>
-                {children ? <SideNavigation>{children}</SideNavigation> : null}
+export const SidebarAccent = React.forwardRef<HTMLDivElement, SidebarProps>(
+    ({ children, footer, isOpen = false }, ref) => {
+        return (
+            <div
+                ref={ref}
+                className={`w-56.25 self-start flex-col bg-gray-900 text-white transition-transform duration-300 ease-in-out 2xl:w-64 lg:fixed lg:top-[calc(4rem+var(--subuser-preview-offset,0px))] lg:left-0 lg:z-40 lg:flex lg:h-[calc(100dvh-4rem-var(--subuser-preview-offset,0px))] lg:overflow-y-auto lg:bg-transparent ${
+                    isOpen
+                        ? 'fixed top-[calc(4rem+var(--subuser-preview-offset,0px))] left-0 z-40 flex h-[calc(100dvh-4rem-var(--subuser-preview-offset,0px))] overflow-y-auto'
+                        : 'hidden'
+                }`}
+            >
+                <div className='flex flex-1 flex-col overflow-y-auto'>
+                    {children ? <SideNavigation>{children}</SideNavigation> : null}
+                </div>
+                {footer && <div className='shrink-0 border-t border-gray-800 px-3 py-2'>{footer}</div>}
             </div>
-        </div>
-    );
-});
+        );
+    },
+);
 
 export const NavbarAccent = ({ children }: NavbarProps) => {
     const { t } = useTranslation('dashboard/account');

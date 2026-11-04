@@ -1,3 +1,4 @@
+import NotificationCenter from '@/reviactyl/components/NotificationCenter';
 import React from 'react';
 import { NavbarModern, SidebarModern } from '@/reviactyl/components/layouts/SidebarModern';
 import { NavbarClassic, SidebarClassic } from '@/reviactyl/components/layouts/SidebarClassic';
@@ -13,13 +14,21 @@ export const Sidebar: React.FC<Props> = ({ ...props }) => {
     return (
         <>
             {layoutType === 'modern' ? (
-                <SidebarModern {...props} />
+                <SidebarModern {...props} footer={<NotificationCenter />}>
+                    {props.children}
+                </SidebarModern>
             ) : layoutType === 'compact' ? (
-                <SidebarCompact {...props} />
+                <SidebarCompact {...props} footer={<NotificationCenter />}>
+                    {props.children}
+                </SidebarCompact>
             ) : layoutType === 'accent' ? (
-                <SidebarAccent {...props} />
+                <SidebarAccent {...props} footer={<NotificationCenter />}>
+                    {props.children}
+                </SidebarAccent>
             ) : (
-                <SidebarClassic {...props} />
+                <SidebarClassic {...props} footer={<NotificationCenter />}>
+                    {props.children}
+                </SidebarClassic>
             )}
         </>
     );

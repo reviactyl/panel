@@ -5,11 +5,13 @@ namespace App\Providers;
 use App\Events\Server\Installed as ServerInstalledEvent;
 use App\Listeners\Auth\AuthenticationListener;
 use App\Listeners\Webhooks\DispatchWebhooks;
+use App\Models\Backup;
 use App\Models\EggVariable;
 use App\Models\Server;
 use App\Models\Subuser;
 use App\Models\User;
 use App\Notifications\ServerInstalled as ServerInstalledNotification;
+use App\Observers\BackupObserver;
 use App\Observers\EggVariableObserver;
 use App\Observers\ServerObserver;
 use App\Observers\SubuserObserver;
@@ -37,6 +39,7 @@ class EventServiceProvider extends ServiceProvider
     {
         parent::boot();
 
+        Backup::observe(BackupObserver::class);
         User::observe(UserObserver::class);
         Server::observe(ServerObserver::class);
         Subuser::observe(SubuserObserver::class);
