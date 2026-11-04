@@ -38,6 +38,47 @@ class DatabaseConnectionFactory
     }
 
     /**
+     * @param  \Closure(PDO): int  $import
+     */
+    public function import(Database $database, \Closure $import): int
+    {
+        $host = $database->host;
+        $admin = $this->forHost($host);
+        $username = $this->importUsername($database);
+        $account = $admin->quote($username)."@'%'";
+        $password = bin2hex(random_bytes(32));
+        $admin->exec('CREATE USER IF NOT EXISTS '.$account.' ACCOUNT LOCK');
+
+        try {
+            $schema = $database->database;
+            $partialRevokes = $admin->query("SHOW VARIABLES LIKE 'partial_revokes'")->fetchColumn(1);
+            if (strtoupper((string) $partialRevokes) !== 'ON') {
+                $schema = str_replace(['\\', '_', '%'], ['\\\\', '\\_', '\\%'], $schema);
+            }
+            $admin->exec('GRANT ALL PRIVILEGES ON `'.str_replace('`', '``', $schema).'`.* TO '.$account);
+            $admin->exec('ALTER USER '.$account.' IDENTIFIED BY '.$admin->quote($password).' ACCOUNT UNLOCK');
+
+            $target = $this->connect($host->host, $host->port, $database->database, $username, $password);
+        } finally {
+            // Keep the locked account as the definer of imported views, routines, triggers, and events.
+            $admin->exec('ALTER USER '.$account.' ACCOUNT LOCK');
+        }
+
+        return $import($target);
+    }
+
+    public function deleteImportUser(Database $database): void
+    {
+        $admin = $this->forHost($database->host);
+        $admin->exec('DROP USER IF EXISTS '.$admin->quote($this->importUsername($database))."@'%'");
+    }
+
+    private function importUsername(Database $database): string
+    {
+        return 'ri_'.substr(hash('sha256', $database->username), 0, 29);
+    }
+
+    /**
      * @throws DatabaseImportException
      */
     public function forRemote(string $host, int $port, string $database, string $username, string $password): PDO

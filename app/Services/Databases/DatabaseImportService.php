@@ -164,11 +164,18 @@ class DatabaseImportService
     private function import(Database $database, \Iterator|\Closure $statements, bool $wipe, ?\Closure $progress): int
     {
         try {
-            $target = $this->connections->forDatabase($database);
+            return $this->connections->import($database, fn (PDO $target) => $this->apply($database, $target, $statements, $wipe, $progress));
         } catch (\PDOException $exception) {
             throw new DatabaseImportException(DatabaseImportException::CONNECTION_FAILED, previous: $exception);
         }
+    }
 
+    /**
+     * @param  \Iterator<int, string>|\Closure(PDO): \Iterator<int, string>  $statements
+     * @param  (\Closure(int): void)|null  $progress
+     */
+    private function apply(Database $database, PDO $target, \Iterator|\Closure $statements, bool $wipe, ?\Closure $progress): int
+    {
         if ($statements instanceof \Closure) {
             $statements = $statements($target);
         }

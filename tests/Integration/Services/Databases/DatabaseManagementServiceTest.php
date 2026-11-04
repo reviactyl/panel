@@ -9,6 +9,7 @@ use App\Models\Database;
 use App\Models\DatabaseHost;
 use App\Repositories\Eloquent\DatabaseRepository;
 use App\Services\Databases\DatabaseManagementService;
+use App\Services\Databases\Transfer\DatabaseConnectionFactory;
 use Illuminate\Database\DeadlockException;
 use Illuminate\Support\Str;
 use Mockery\MockInterface;
@@ -39,6 +40,21 @@ class DatabaseManagementServiceTest extends IntegrationTestCase
         $this->assertSame('s1_example', DatabaseManagementService::generateUniqueDatabaseName('example', 1));
         $this->assertSame('s123_something_else', DatabaseManagementService::generateUniqueDatabaseName('something_else', 123));
         $this->assertSame('s123_'.Str::repeat('a', 43), DatabaseManagementService::generateUniqueDatabaseName(Str::repeat('a', 100), 123));
+    }
+
+    public function test_deleting_a_database_removes_its_import_account(): void
+    {
+        $server = $this->createServerModel();
+        $host = DatabaseHost::factory()->create(['node_id' => $server->node_id]);
+        $database = Database::factory()->create(['server_id' => $server->id, 'database_host_id' => $host->id]);
+        $this->repository->expects('dropDatabase')->with($database->database)->ordered();
+        $this->mock(DatabaseConnectionFactory::class)->expects('deleteImportUser')->with($database);
+        $this->repository->expects('dropUser')->with($database->username, $database->remote)->ordered();
+        $this->repository->expects('flush');
+
+        $this->getService()->delete($database);
+
+        $this->assertModelMissing($database);
     }
 
     /**
