@@ -183,6 +183,47 @@ describe('move picker request ordering', () => {
 });
 
 describe('move picker folder creation', () => {
+    it.each(['success', 'failure'])('blocks Move until folder creation settles (%s)', async (result) => {
+        const pending = deferred();
+        mocks.create.mockReturnValue(pending.promise);
+        mocks.load.mockImplementation((_uuid: string, directory: string) =>
+            Promise.resolve(directory === '/' ? [folder('target')] : []),
+        );
+        await render();
+        await click('target');
+        expect(button('move')!.disabled).toBe(false);
+
+        await act(async () => {
+            const input = container.querySelector<HTMLInputElement>('#new_move_folder_name')!;
+            Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(input, 'new-config');
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+        await click('move-modal.new-folder');
+        expect(mocks.create).toHaveBeenCalledExactlyOnceWith('uuid', '/target', 'new-config');
+        await click('move');
+        expect(mocks.rename).not.toHaveBeenCalled();
+        expect(button('move')!.disabled).toBe(true);
+
+        const error = new Error('Folder creation failed');
+        await act(async () => {
+            if (result === 'success') pending.resolve([]);
+            else pending.reject(error);
+        });
+        const destination = result === 'success' ? '/target/new-config' : '/target';
+        expect(container.textContent).toContain(`move-modal.destination: /home/container${destination}`);
+        expect(mocks.load).toHaveBeenLastCalledWith('uuid', destination);
+        expect(button('move')!.disabled).toBe(false);
+        expect(mocks.rename).not.toHaveBeenCalled();
+        if (result === 'failure') {
+            expect(mocks.error).toHaveBeenCalledWith({ key: 'files:move-modal', error });
+        }
+
+        await click('move');
+        expect(mocks.rename).toHaveBeenCalledExactlyOnceWith('uuid', '/', [
+            { from: 'config.txt', to: `${destination.slice(1)}/config.txt` },
+        ]);
+    });
+
     const closeIcon = () => container.querySelector<HTMLDivElement>('.cursor-pointer');
     const dismiss = async (control: string) => {
         await act(async () => {
