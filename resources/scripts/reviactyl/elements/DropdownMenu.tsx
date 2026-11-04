@@ -4,7 +4,9 @@ import Fade from '@/reviactyl/elements/Fade';
 
 interface Props {
     children: React.ReactNode;
-    renderToggle: (onClick: (e: React.MouseEvent<any, MouseEvent>) => void) => React.ReactNode;
+    renderToggle: (onClick: (e: React.MouseEvent<any, MouseEvent>) => void, visible: boolean) => React.ReactNode;
+    manageFocus?: boolean;
+    id?: string;
 }
 
 export const DropdownButtonRow = ({
@@ -29,6 +31,8 @@ interface State {
 
 class DropdownMenu extends React.PureComponent<Props, State> {
     menu = createRef<HTMLDivElement>();
+    container = createRef<HTMLDivElement>();
+    listenerTimer?: ReturnType<typeof setTimeout>;
 
     override state: State = {
         posX: 0,
@@ -41,14 +45,16 @@ class DropdownMenu extends React.PureComponent<Props, State> {
 
     override componentDidUpdate(_prevProps: Readonly<Props>, prevState: Readonly<State>) {
         const menu = this.menu.current;
+        if (this.props.manageFocus && menu) menu.inert = !this.state.visible;
 
         if (this.state.visible && menu && (!prevState.visible || prevState.posX !== this.state.posX)) {
             if (!prevState.visible) {
                 // Delay by one tick so the event that opened this menu finishes
                 // propagating before we register listeners that can close it.
-                setTimeout(() => {
+                this.listenerTimer = setTimeout(() => {
                     document.addEventListener('click', this.windowListener);
                     document.addEventListener('contextmenu', this.contextMenuListener);
+                    if (this.props.manageFocus) document.addEventListener('keydown', this.keyListener);
                 }, 0);
             }
             const left = this.state.posX - menu.clientWidth;
@@ -63,13 +69,32 @@ class DropdownMenu extends React.PureComponent<Props, State> {
     }
 
     removeListeners = () => {
+        clearTimeout(this.listenerTimer);
         document.removeEventListener('click', this.windowListener);
         document.removeEventListener('contextmenu', this.contextMenuListener);
+        document.removeEventListener('keydown', this.keyListener);
     };
 
     onClickHandler = (e: React.MouseEvent<any, MouseEvent>) => {
         e.preventDefault();
-        this.toggleMenu(e.clientX);
+        this.toggleMenu(e.detail === 0 ? e.currentTarget.getBoundingClientRect().right : e.clientX);
+    };
+
+    restoreFocus = () => {
+        if (this.props.manageFocus) this.container.current?.querySelector('button')?.focus();
+    };
+
+    closeMenu = (restoreFocus = true) => {
+        if (restoreFocus) this.restoreFocus();
+        this.setState({ visible: false });
+    };
+
+    keyListener = (e: KeyboardEvent) => {
+        if (e.key === 'Escape' && this.state.visible) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.closeMenu();
+        }
     };
 
     contextMenuListener = (e: MouseEvent) => {
@@ -83,7 +108,7 @@ class DropdownMenu extends React.PureComponent<Props, State> {
             return;
         }
 
-        this.setState({ visible: false });
+        this.closeMenu(false);
     };
 
     windowListener = (e: MouseEvent) => {
@@ -98,7 +123,7 @@ class DropdownMenu extends React.PureComponent<Props, State> {
         }
 
         if (e.target !== menu && !menu.contains(e.target as Node)) {
-            this.setState({ visible: false });
+            this.closeMenu();
         }
     };
 
@@ -116,14 +141,23 @@ class DropdownMenu extends React.PureComponent<Props, State> {
 
     override render() {
         return (
-            <div>
-                {this.props.renderToggle(this.onClickHandler)}
+            <div
+                ref={this.container}
+                onBlur={(e) => {
+                    if (this.props.manageFocus && this.state.visible && !e.currentTarget.contains(e.relatedTarget)) {
+                        this.closeMenu(false);
+                    }
+                }}
+            >
+                {this.props.renderToggle(this.onClickHandler, this.state.visible)}
                 <Fade timeout={150} in={this.state.visible} unmountOnExit>
                     <div
                         ref={this.menu}
+                        id={this.props.id}
+                        inert={this.props.manageFocus && !this.state.visible}
                         onClick={(e) => {
                             e.stopPropagation();
-                            this.setState({ visible: false });
+                            this.closeMenu();
                         }}
                         style={{ width: '12rem' }}
                         className='absolute z-50 rounded-ui border border-gray-800 bg-gray-800 p-2 text-gray-100 shadow-lg'

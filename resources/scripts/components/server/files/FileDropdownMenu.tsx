@@ -1,4 +1,4 @@
-import React, { memo, useRef, useState } from 'react';
+import React, { memo, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
     FaBoxOpen,
@@ -41,7 +41,7 @@ export const MASS_ACTION_EVENT = 'panel:files:mass-action';
 
 export type MassAction = { type: 'move' } | { type: 'delete' } | { type: 'archive'; format: 'tar.gz' | 'zip' };
 
-interface RowProps extends React.HTMLAttributes<HTMLDivElement> {
+interface RowProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     icon: IconType;
     title: string;
     danger?: boolean;
@@ -52,27 +52,31 @@ const Row = ({ icon, title, danger, disabled, className, onClick, ...props }: Ro
     const ItemIcon = icon;
 
     return (
-        <div
-            className={`flex w-full items-center rounded-ui p-2 transition-all duration-150 ${
+        <button
+            type='button'
+            className={`flex w-full items-center rounded-ui p-2 text-left transition-all duration-150 ${
                 disabled
                     ? 'cursor-not-allowed opacity-50'
                     : `cursor-pointer ${
-                          danger ? 'hover:bg-red-100 hover:text-red-700' : 'hover:bg-gray-100 hover:text-gray-800'
+                          danger
+                              ? 'hover:bg-red-100 hover:text-red-700 focus-visible:bg-red-100 focus-visible:text-red-700'
+                              : 'hover:bg-gray-100 hover:text-gray-800 focus-visible:bg-gray-100 focus-visible:text-gray-800'
                       }`
             } ${className || ''}`}
             onClick={disabled ? undefined : onClick}
-            aria-disabled={disabled}
+            disabled={disabled}
             {...props}
         >
             <ItemIcon className={'text-xs inline-block w-[1.25em]'} />
             <span className='ml-2'>{title}</span>
-        </div>
+        </button>
     );
 };
 
 const FileDropdownMenu = ({ file }: { file: FileObject }) => {
     const { t } = useTranslation('server/files');
     const onClickRef = useRef<DropdownMenu>(null);
+    const menuId = useId();
     const [showSpinner, setShowSpinner] = useState(false);
     const [showFormatMenu, setShowFormatMenu] = useState(false);
     const archiveItemRef = useRef<HTMLDivElement>(null);
@@ -80,6 +84,11 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
     const [formatMenuPosition, setFormatMenuPosition] = useState<React.CSSProperties>();
     const [modal, setModal] = useState<ModalType | null>(null);
     const [showConfirmation, setShowConfirmation] = useState(false);
+
+    const dismissModal = () => {
+        setModal(null);
+        onClickRef.current?.restoreFocus();
+    };
 
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const { mutate } = useFileManagerSwr();
@@ -199,7 +208,10 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
         <>
             <Dialog.Confirm
                 open={showConfirmation}
-                onClose={() => setShowConfirmation(false)}
+                onClose={() => {
+                    setShowConfirmation(false);
+                    onClickRef.current?.restoreFocus();
+                }}
                 title={`${t(file.isFile ? 'dropdown.delete-file' : 'dropdown.delete-directory')}`}
                 confirm={t('dropdown.delete')}
                 onConfirmed={doDeletion}
@@ -213,13 +225,13 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                     visible
                     appear
                     files={[{ file: file.name, mode: file.modeBits }]}
-                    onDismissed={() => setModal(null)}
+                    onDismissed={dismissModal}
                 />
             )}
             {(modal === 'rename' || modal === 'move') && (
                 <>
                     {modal === 'rename' && (
-                        <RenameFileModal visible appear files={[file.name]} onDismissed={() => setModal(null)} />
+                        <RenameFileModal visible appear files={[file.name]} onDismissed={dismissModal} />
                     )}
                     {modal === 'move' && (
                         <MoveFileModal
@@ -227,7 +239,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                             appear
                             files={[file.name]}
                             directoryNames={file.isFile ? [] : [file.name]}
-                            onDismissed={() => setModal(null)}
+                            onDismissed={dismissModal}
                         />
                     )}
                 </>
@@ -235,16 +247,22 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
             <SpinnerOverlay visible={showSpinner} fixed size={'large'} />
             <DropdownMenu
                 ref={onClickRef}
-                renderToggle={(onClick) => (
-                    <div
-                        className='px-4 py-2 hover:text-white'
+                id={menuId}
+                manageFocus
+                renderToggle={(onClick, visible) => (
+                    <button
+                        type='button'
+                        aria-label={`${t('strings:action')}: ${file.name}`}
+                        aria-expanded={visible}
+                        aria-controls={menuId}
+                        className='rounded-ui px-4 py-2 hover:text-white focus-visible:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400'
                         onClick={(event) => {
                             setShowFormatMenu(false);
                             onClick(event);
                         }}
                     >
                         <FaEllipsis />
-                    </div>
+                    </button>
                 )}
             >
                 <ExtensionSlot name='server:files:dropdown:start' />
@@ -275,6 +293,9 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                             onMouseEnter={positionFormatMenu}
                             onMouseLeave={() => setShowFormatMenu(false)}
                             onFocusCapture={positionFormatMenu}
+                            onBlur={(event) => {
+                                if (!event.currentTarget.contains(event.relatedTarget)) setShowFormatMenu(false);
+                            }}
                         >
                             <button
                                 type='button'
@@ -286,7 +307,8 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                                     }
                                     doArchive(archiveFormat);
                                 }}
-                                aria-haspopup='menu'
+                                aria-expanded={showFormatMenu}
+                                aria-controls={`${menuId}-formats`}
                                 disabled={massActionRunning}
                                 className='flex w-full items-center rounded-ui p-2 text-left transition-all duration-150 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:text-gray-800'
                             >
@@ -295,7 +317,9 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                                 <FaChevronRight className='ml-auto text-xs' aria-hidden />
                             </button>
                             <div
-                                role='menu'
+                                id={`${menuId}-formats`}
+                                role='group'
+                                aria-label={t('dropdown.archive')}
                                 ref={formatMenuRef}
                                 style={showFormatMenu ? formatMenuPosition : undefined}
                                 className='absolute left-[calc(100%-0.5rem)] -top-2 z-30 hidden w-48 rounded-ui border border-gray-800 bg-gray-800 p-2 text-gray-100 shadow-lg group-hover:block group-focus-within:block'
@@ -307,7 +331,6 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                                         onClick={() => doArchive(format)}
                                         disabled={massActionRunning}
                                         aria-label={t('archive-as', { format })}
-                                        role='menuitem'
                                         className='block w-full rounded-ui p-2 text-left text-sm transition-colors duration-150 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:text-gray-800'
                                     >
                                         {format}
