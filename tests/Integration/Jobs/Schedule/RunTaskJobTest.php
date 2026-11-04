@@ -68,7 +68,7 @@ class RunTaskJobTest extends IntegrationTestCase
     {
         Bus::fake();
         $server = $this->createServerModel();
-        $schedule = Schedule::factory()->create(['server_id' => $server->id, 'is_active' => true, 'is_processing' => true, 'processing_token' => 'current-run']);
+        $schedule = Schedule::factory()->create(['server_id' => $server->id, 'is_active' => true, 'is_processing' => true, 'processing_token' => '00000000-0000-4000-8000-000000000004']);
         $first = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 1, 'action' => Task::ACTION_POWER, 'payload' => 'start', 'is_queued' => true]);
         $second = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 2, 'time_offset' => 120, 'action' => Task::ACTION_POWER, 'payload' => 'stop']);
         $this->mock(DaemonPowerRepository::class, function ($mock) {
@@ -77,7 +77,7 @@ class RunTaskJobTest extends IntegrationTestCase
             $mock->expects('send')->with('stop')->ordered()->andReturn(new Response());
         });
 
-        $this->app->call([new RunTaskJob($first, $isManualRun, 'current-run'), 'handle']);
+        $this->app->call([new RunTaskJob($first, $isManualRun, '00000000-0000-4000-8000-000000000004'), 'handle']);
 
         Bus::assertDispatched(RunTaskJob::class, function (RunTaskJob $job) use ($second, $isManualRun) {
             return $job->taskId === $second->id && $job->delay === 120 && $job->afterCommit === true && $job->manualRun === $isManualRun;
@@ -245,11 +245,11 @@ class RunTaskJobTest extends IntegrationTestCase
     {
         Bus::fake();
         $server = $this->createServerModel();
-        $schedule = Schedule::factory()->create(['server_id' => $server->id, 'is_processing' => true, 'processing_token' => 'old-run', 'last_run_at' => null]);
+        $schedule = Schedule::factory()->create(['server_id' => $server->id, 'is_processing' => true, 'processing_token' => '00000000-0000-4000-8000-000000000005', 'last_run_at' => null]);
         $task = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 2, 'action' => Task::ACTION_POWER, 'payload' => 'start', 'is_queued' => true, 'time_offset' => 120]);
         $next = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 3, 'is_queued' => false]);
-        $payload = serialize((new RunTaskJob($task, true, 'old-run'))->delay(120));
-        $schedule->forceFill(['processing_token' => 'new-run'])->save();
+        $payload = serialize((new RunTaskJob($task, true, '00000000-0000-4000-8000-000000000005'))->delay(120));
+        $schedule->forceFill(['processing_token' => '00000000-0000-4000-8000-000000000006'])->save();
         $this->mock(DaemonPowerRepository::class)->shouldNotReceive('setServer');
 
         $this->app->call([unserialize($payload), 'handle']);
@@ -266,20 +266,20 @@ class RunTaskJobTest extends IntegrationTestCase
     {
         Bus::fake();
         $server = $this->createServerModel();
-        $schedule = Schedule::factory()->create(['server_id' => $server->id, 'is_active' => true, 'is_processing' => true, 'processing_token' => 'old-run']);
+        $schedule = Schedule::factory()->create(['server_id' => $server->id, 'is_active' => true, 'is_processing' => true, 'processing_token' => '00000000-0000-4000-8000-000000000005']);
         $task = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 1, 'action' => Task::ACTION_POWER, 'payload' => 'start', 'is_queued' => true]);
         $next = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 2, 'is_queued' => false]);
         $this->mock(DaemonPowerRepository::class, function ($mock) use ($schedule, $task) {
             $mock->expects('setServer')->andReturnSelf();
             $mock->expects('send')->with('start')->andReturnUsing(function () use ($schedule, $task) {
-                $schedule->forceFill(['processing_token' => 'new-run'])->save();
+                $schedule->forceFill(['processing_token' => '00000000-0000-4000-8000-000000000006'])->save();
                 $task->refresh()->update(['is_queued' => true]);
 
                 return new Response();
             });
         });
 
-        $this->app->call([new RunTaskJob($task, true, 'old-run'), 'handle']);
+        $this->app->call([new RunTaskJob($task, true, '00000000-0000-4000-8000-000000000005'), 'handle']);
 
         $this->assertTrue($task->refresh()->is_queued);
         $this->assertFalse($next->refresh()->is_queued);
