@@ -29,6 +29,8 @@ vi.mock('@/reviactyl/elements/transitions/FadeTransition', async () => {
     };
 });
 
+vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
+
 const dismissed = vi.fn();
 const Content = () => {
     const { dismiss, setPropOverrides } = useContext(ModalContext);
@@ -100,28 +102,28 @@ async function clickButton(label: string) {
 }
 
 async function finishClose(count = 1) {
-    expect(portal.textContent).toContain('Modal content');
+    expect(document.querySelector('[role=dialog]')?.textContent || '').toContain('Modal content');
     expect(dismissed).toHaveBeenCalledTimes(count - 1);
     await act(async () => vi.advanceTimersByTimeAsync(149));
-    expect(portal.textContent).toContain('Modal content');
+    expect(document.querySelector('[role=dialog]')?.textContent || '').toContain('Modal content');
     expect(dismissed).toHaveBeenCalledTimes(count - 1);
     await act(async () => vi.advanceTimersByTimeAsync(1));
-    expect(portal.textContent).not.toContain('Modal content');
+    expect(document.querySelector('[role=dialog]')?.textContent || '').not.toContain('Modal content');
     expect(dismissed).toHaveBeenCalledTimes(count);
 }
 
 it('synchronizes a successful programmatic close and allows repeated reopening', async () => {
     for (let count = 1; count <= 2; count++) {
         await clickButton('Open');
-        expect(portal.textContent).toContain('Modal content');
+        expect(document.querySelector('[role=dialog]')?.textContent || '').toContain('Modal content');
         await clickButton('Save');
         await finishClose(count);
-        expect(portal.textContent).not.toContain('Modal content');
+        expect(document.querySelector('[role=dialog]')?.textContent || '').not.toContain('Modal content');
         expect(container.querySelector('output')!.textContent).toBe('false');
         expect(dismissed).toHaveBeenCalledTimes(count);
     }
     await clickButton('Open');
-    expect(portal.textContent).toContain('Modal content');
+    expect(document.querySelector('[role=dialog]')?.textContent || '').toContain('Modal content');
 });
 
 it('notifies once when programmatic dismissal is requested twice', async () => {
@@ -135,26 +137,30 @@ it.each(['escape', 'background', 'close'])('notifies once after manual %s dismis
     await clickButton('Open');
     await act(async () => {
         if (method === 'escape') {
-            window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+            document
+                .querySelector('[role=dialog]')!
+                .dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
         } else if (method === 'background') {
-            portal.firstElementChild!.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+            document
+                .querySelector('[role=dialog] .fixed')!
+                .dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
         } else {
-            portal.querySelector<SVGElement>('svg')!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+            document.querySelector<SVGElement>('svg')!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
         }
     });
     await finishClose();
     expect(dismissed).toHaveBeenCalledOnce();
     expect(container.querySelector('output')!.textContent).toBe('false');
     await clickButton('Open');
-    expect(portal.textContent).toContain('Modal content');
+    expect(document.querySelector('[role=dialog]')?.textContent || '').toContain('Modal content');
 });
 
 it('clears overrides when a locked modal is dismissed programmatically', async () => {
     await clickButton('Open');
     await clickButton('Lock');
-    expect(portal.querySelector('svg')).toBeNull();
+    expect(document.querySelector('svg')).toBeNull();
     await clickButton('Save');
     await finishClose();
     await clickButton('Open');
-    expect(portal.querySelector('svg')).not.toBeNull();
+    expect(document.querySelector('svg')).not.toBeNull();
 });

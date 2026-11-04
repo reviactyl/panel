@@ -83,7 +83,7 @@ const render = async (visible = true) => {
     );
 };
 const button = (label: string) =>
-    Array.from(container.querySelectorAll('button')).find((element) => element.textContent === label);
+    Array.from(document.querySelectorAll('button')).find((element) => element.textContent === label);
 const click = async (label: string) => {
     expect(button(label)).toBeDefined();
     await act(async () => button(label)!.click());
@@ -107,12 +107,12 @@ describe('move picker request ordering', () => {
         document.body.append(trigger);
         trigger.focus();
         await render();
-        expect(document.activeElement).toBe(container.querySelector('h2'));
-        expect(container.textContent).toContain('move-modal.loading');
+        expect(document.activeElement).toBe(document.querySelector('h2'));
+        expect(document.querySelector('[role=dialog]')?.textContent || '').toContain('move-modal.loading');
         await render(false);
         trigger.focus();
         await render();
-        expect(document.activeElement).toBe(container.querySelector('h2'));
+        expect(document.activeElement).toBe(document.querySelector('h2'));
         trigger.remove();
     });
 
@@ -154,7 +154,7 @@ describe('move picker request ordering', () => {
             if (result === 'success') a.resolve([folder('a-child')]);
             else a.reject(new Error('A failed'));
         });
-        expect(container.textContent).toContain('move-modal.loading');
+        expect(document.querySelector('[role=dialog]')?.textContent || '').toContain('move-modal.loading');
         expect(button('a-child')).toBeUndefined();
         expect(mocks.error).not.toHaveBeenCalled();
         await act(async () => b.resolve([folder('b-child')]));
@@ -167,7 +167,7 @@ describe('move picker request ordering', () => {
         const error = new Error('B failed');
         await act(async () => b.reject(error));
         expect(button('a')).toBeUndefined();
-        expect(container.textContent).not.toContain('move-modal.loading');
+        expect(document.querySelector('[role=dialog]')?.textContent || '').not.toContain('move-modal.loading');
         expect(mocks.error).toHaveBeenCalledWith({ key: 'files:move-modal', error });
     });
     it('ignores a request from a dismissed modal after reopening', async () => {
@@ -194,7 +194,7 @@ describe('move picker folder creation', () => {
         expect(button('move')!.disabled).toBe(false);
 
         await act(async () => {
-            const input = container.querySelector<HTMLInputElement>('#new_move_folder_name')!;
+            const input = document.querySelector<HTMLInputElement>('#new_move_folder_name')!;
             Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(input, 'new-config');
             input.dispatchEvent(new Event('input', { bubbles: true }));
         });
@@ -210,7 +210,9 @@ describe('move picker folder creation', () => {
             else pending.reject(error);
         });
         const destination = result === 'success' ? '/target/new-config' : '/target';
-        expect(container.textContent).toContain(`move-modal.destination: /home/container${destination}`);
+        expect(document.querySelector('[role=dialog]')?.textContent || '').toContain(
+            `move-modal.destination: /home/container${destination}`,
+        );
         expect(mocks.load).toHaveBeenLastCalledWith('uuid', destination);
         expect(button('move')!.disabled).toBe(false);
         expect(mocks.rename).not.toHaveBeenCalled();
@@ -224,13 +226,17 @@ describe('move picker folder creation', () => {
         ]);
     });
 
-    const closeIcon = () => container.querySelector<HTMLDivElement>('.cursor-pointer');
+    const closeIcon = () => document.querySelector<HTMLDivElement>('.cursor-pointer');
     const dismiss = async (control: string) => {
         await act(async () => {
             if (control === 'Escape') {
-                window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+                document
+                    .querySelector('[role=dialog]')!
+                    .dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
             } else if (control === 'background') {
-                container.querySelector('.fixed')!.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+                document
+                    .querySelector('[role=dialog] > .fixed')!
+                    .dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
             } else {
                 closeIcon()?.click();
             }
@@ -247,7 +253,7 @@ describe('move picker folder creation', () => {
             expect(closeIcon()).not.toBeNull();
 
             await act(async () => {
-                const input = container.querySelector<HTMLInputElement>('#new_move_folder_name')!;
+                const input = document.querySelector<HTMLInputElement>('#new_move_folder_name')!;
                 Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(input, 'destination');
                 input.dispatchEvent(new Event('input', { bubbles: true }));
             });
@@ -257,19 +263,21 @@ describe('move picker folder creation', () => {
 
             await dismiss(control);
             expect(mocks.dismissed).not.toHaveBeenCalled();
-            expect(container.textContent).toContain('move-modal.creating');
+            expect(document.querySelector('[role=dialog]')?.textContent || '').toContain('move-modal.creating');
             expect(closeIcon()).toBeNull();
 
             await act(async () => resolve());
             expect(mocks.load).toHaveBeenLastCalledWith('uuid', '/destination');
-            expect(container.textContent).toContain('move-modal.destination: /home/container/destination');
+            expect(document.querySelector('[role=dialog]')?.textContent || '').toContain(
+                'move-modal.destination: /home/container/destination',
+            );
             expect(button('cancel')!.disabled).toBe(false);
             expect(button('move')!.disabled).toBe(false);
             expect(closeIcon()).not.toBeNull();
 
             await dismiss(control);
             expect(mocks.dismissed).toHaveBeenCalledOnce();
-            expect(container.textContent).toBe('');
+            expect(document.querySelector('[role=dialog]')?.textContent || '').toBe('');
         },
     );
 });
