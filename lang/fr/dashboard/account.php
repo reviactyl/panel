@@ -36,7 +36,7 @@ return [
         'loading' => 'Chargement...',
         'social' => [
             'title' => 'Connexions sociales',
-            'date_format' => 'MMM fais, aaaa',
+            'date_format' => 'MMM do, yyyy',
             'unlink' => [
                 'title' => 'Dissocier le compte',
                 'confirm' => 'Êtes-vous sûr de vouloir dissocier votre compte :provider ? Vous ne pourrez plus l\'utiliser pour vous connecter.',

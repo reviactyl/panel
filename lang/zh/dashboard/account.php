@@ -36,7 +36,7 @@ return [
         'loading' => '加载中……',
         'social' => [
             'title' => '社交登录',
-            'date_format' => '嗯嗯，yyyy',
+            'date_format' => 'MMM do, yyyy',
             'unlink' => [
                 'title' => '解除账户关联',
                 'confirm' => '确定要解除关联你的 :provider 账户吗？
