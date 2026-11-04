@@ -157,8 +157,6 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
         const destinationFromSource = relative(sourceDirectory, destinationDirectory) || '.';
         const payload = files.map((file) => ({ from: file, to: join(destinationFromSource, file) }));
 
-        mutate((data) => data?.filter((file) => !files.includes(file.name)) ?? [], false);
-
         renameFiles(uuid, sourceDirectory, payload)
             .then(() => mutate())
             .then(() => setSelectedFiles([]))

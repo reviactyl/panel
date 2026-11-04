@@ -74,7 +74,7 @@ export default () => {
     const setDirectory = ServerContext.useStoreActions((actions) => actions.files.setDirectory);
 
     const setSelectedFiles = ServerContext.useStoreActions((actions) => actions.files.setSelectedFiles);
-    const selectedFilesLength = ServerContext.useStoreState((state) => state.files.selectedFiles.length);
+    const selectedFiles = ServerContext.useStoreState((state) => state.files.selectedFiles);
 
     // Media viewer state
     const [imageViewerVisible, setImageViewerVisible] = useState(false);
@@ -170,13 +170,19 @@ export default () => {
         });
     }, [query]);
 
-    const filteredFiles = useMemo(() => {
-        if (!files) return [];
-        return files;
-    }, [files]);
+    const visibleFiles = useMemo(
+        () => (query ? [] : sortFiles((files ?? []).slice(0, 250), sortType, sortDirection)),
+        [files, query, sortType, sortDirection],
+    );
+
+    useEffect(() => {
+        const visibleNames = new Set(visibleFiles.map((file) => file.name));
+        const selection = selectedFiles.filter((name) => visibleNames.has(name));
+        if (selection.length !== selectedFiles.length) setSelectedFiles(selection);
+    }, [visibleFiles, selectedFiles, setSelectedFiles]);
 
     const onSelectAllClick = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSelectedFiles(e.currentTarget.checked ? (query ? [] : filteredFiles.map((file) => file.name)) : []);
+        setSelectedFiles(e.currentTarget.checked ? visibleFiles.map((file) => file.name) : []);
     };
 
     const handlePreviewClick = useCallback(
@@ -239,7 +245,7 @@ export default () => {
                                 <ExtensionSlot name={`server:files:actions:end`} />
                             </div>
                         </Can>
-                        {selectedFilesLength > 0 && <MassActionsBar />}
+                        {selectedFiles.length > 0 && <MassActionsBar />}
                         <div className='order-2 md:order-0 md:ml-auto flex items-center gap-1 w-full md:w-auto'>
                             <Input
                                 ref={searchInputRef}
@@ -270,7 +276,11 @@ export default () => {
                                     <FileActionCheckbox
                                         type={'checkbox'}
                                         className='mx-4 block md:hidden'
-                                        checked={selectedFilesLength === (files?.length === 0 ? -1 : files?.length)}
+                                        checked={
+                                            visibleFiles.length > 0 &&
+                                            visibleFiles.every((file) => selectedFiles.includes(file.name))
+                                        }
+                                        disabled={!visibleFiles.length}
                                         onChange={onSelectAllClick}
                                     />
                                 }
@@ -363,7 +373,7 @@ export default () => {
                                 ))}
                             </div>
                         )
-                    ) : !filteredFiles.length ? (
+                    ) : !files.length ? (
                         <div className={'flex flex-col items-center justify-center py-10 text-muted'}>
                             <FolderOpenIcon className={'w-12 h-12 mb-2 opacity-40'} />
                             <p className={'text-sm'}>{t('empty')}</p>
@@ -376,7 +386,7 @@ export default () => {
                                 </div>
                             )}
                             <div className={grid ? style.file_grid : undefined}>
-                                {sortFiles(filteredFiles.slice(0, 250), sortType, sortDirection).map((file) => (
+                                {visibleFiles.map((file) => (
                                     <FileObjectRow
                                         key={file.key}
                                         file={file}
