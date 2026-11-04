@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
-import { Formik, FormikHelpers } from 'formik';
+import { Formik, FormikErrors, FormikHelpers } from 'formik';
 import { object, string, ref as yupRef } from 'yup';
 import Field from '@/reviactyl/elements/Field';
 import { Button } from '@/reviactyl/components/button/index';
@@ -24,11 +24,22 @@ interface Values {
     passwordConfirmation: string;
 }
 
+const validationFields = new Map<string, keyof Values>([
+    ['email', 'email'],
+    ['username', 'username'],
+    ['first_name', 'firstName'],
+    ['name_first', 'firstName'],
+    ['last_name', 'lastName'],
+    ['name_last', 'lastName'],
+    ['password', 'password'],
+    ['password_confirmation', 'passwordConfirmation'],
+]);
+
 const RegisterContainer = () => {
     const { t } = useTranslation('auth');
     const ref = React.useRef<Reaptcha>(null);
     const turnstileRef = React.useRef<TurnstileHandle>(null);
-    const { clearFlashes, clearAndAddHttpError } = useFlash();
+    const { clearFlashes, clearAndAddHttpError, addError } = useFlash();
     const [show, setShow] = useState(false);
     const [token, setToken] = useState('');
 
@@ -81,21 +92,26 @@ const RegisterContainer = () => {
                 turnstileRef.current?.reset();
 
                 const { response } = error;
-                if (response?.status === 422 && response?.data?.errors) {
-                    const errors: Record<string, string> = {};
-                    Object.keys(response.data.errors).forEach((key) => {
-                        const message = response.data.errors[key][0];
-                        if (key === 'name_first' || key === 'first_name') {
-                            errors.firstName = message;
-                        } else if (key === 'name_last' || key === 'last_name') {
-                            errors.lastName = message;
-                        } else if (key === 'password_confirmation') {
-                            errors.passwordConfirmation = message;
+                if (response?.status === 422 && Array.isArray(response?.data?.errors)) {
+                    const errors: FormikErrors<Values> = {};
+                    const unmapped: string[] = [];
+                    for (const validationError of response.data.errors) {
+                        const field = validationFields.get(validationError?.meta?.source_field);
+                        const message = validationError?.detail;
+                        if (typeof message !== 'string' || !message.trim()) continue;
+
+                        if (field) {
+                            errors[field] ??= message;
                         } else {
-                            errors[key] = message;
+                            unmapped.push(message);
                         }
-                    });
+                    }
                     setErrors(errors);
+                    if (unmapped.length) {
+                        addError({ message: unmapped.join(' ') });
+                    } else if (!Object.keys(errors).length) {
+                        clearAndAddHttpError({ error });
+                    }
                 } else {
                     clearAndAddHttpError({ error });
                 }

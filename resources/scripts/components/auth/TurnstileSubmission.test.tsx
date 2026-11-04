@@ -107,7 +107,19 @@ it('renews Turnstile after a mistyped password and submits corrected credentials
 });
 
 it('renews Turnstile after rejected registration and sends the new token on retry', async () => {
-    mocks.register.mockRejectedValue(new Error('Registration failed'));
+    mocks.register.mockRejectedValue({
+        response: {
+            status: 422,
+            data: {
+                errors: [
+                    {
+                        detail: 'The username has already been taken.',
+                        meta: { source_field: 'username' },
+                    },
+                ],
+            },
+        },
+    });
     await render(<RegisterContainer />);
     await fill({
         email: 'demo@example.com',
@@ -121,6 +133,9 @@ it('renews Turnstile after rejected registration and sends the new token on retr
     await submit();
 
     expect(reset).toHaveBeenCalledWith('widget-1');
+    expect(container.querySelector('input[name=username]')?.parentElement?.parentElement?.textContent).toContain(
+        'The username has already been taken.',
+    );
     await completeChallenge('second-token');
     await submit();
 
