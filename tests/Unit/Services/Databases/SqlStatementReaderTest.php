@@ -95,6 +95,22 @@ class SqlStatementReaderTest extends TestCase
     public static function statementDataProvider(): array
     {
         return [
+            'UTF-8 BOM before CREATE TABLE' => [
+                "\xEF\xBB\xBFCREATE TABLE items (id INT); INSERT INTO items VALUES (82);",
+                ['CREATE TABLE items (id INT)', 'INSERT INTO items VALUES (82)'],
+            ],
+            'ordinary UTF-8 CREATE TABLE' => [
+                "CREATE TABLE items (name TEXT); INSERT INTO items VALUES ('café');",
+                ['CREATE TABLE items (name TEXT)', "INSERT INTO items VALUES ('café')"],
+            ],
+            'BOM inside literals is preserved' => [
+                "\xEF\xBB\xBFSELECT '\xEF\xBB\xBF'; SELECT '\xEF\xBB\xBF';",
+                ["SELECT '\xEF\xBB\xBF'", "SELECT '\xEF\xBB\xBF'"],
+            ],
+            'BOM only' => ["\xEF\xBB\xBF", []],
+            'empty file' => ['', []],
+            'short file' => ['1', ['1']],
+            'partial BOM is preserved' => ["\xEF\xBB", ["\xEF\xBB"]],
             'simple statements' => ["SELECT 1;\nSELECT 2;", ['SELECT 1', 'SELECT 2']],
             'missing final delimiter' => ["SELECT 1;\nSELECT 2", ['SELECT 1', 'SELECT 2']],
             'empty statements are skipped' => [";;\n SELECT 1;;", ['SELECT 1']],
