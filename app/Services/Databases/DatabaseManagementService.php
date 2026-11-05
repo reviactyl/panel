@@ -50,8 +50,7 @@ class DatabaseManagementService
      */
     public static function generateUniqueDatabaseName(string $name, int $serverId): string
     {
-        // Max of 48 characters, including the s123_ that we append to the front.
-        return sprintf('s%d_%s', $serverId, substr($name, 0, 48 - strlen("s{$serverId}_")));
+        return sprintf('s%d_%s', $serverId, mb_strcut($name, 0, 48 - strlen("s{$serverId}_"), 'UTF-8'));
     }
 
     /**

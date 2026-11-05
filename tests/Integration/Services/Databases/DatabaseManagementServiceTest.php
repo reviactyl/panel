@@ -9,6 +9,7 @@ use App\Models\Database;
 use App\Models\DatabaseHost;
 use App\Repositories\Eloquent\DatabaseRepository;
 use App\Services\Databases\DatabaseManagementService;
+use App\Services\Databases\DeployServerDatabaseService;
 use App\Services\Databases\Transfer\DatabaseConnectionFactory;
 use Illuminate\Database\DeadlockException;
 use Illuminate\Support\Str;
@@ -40,6 +41,48 @@ class DatabaseManagementServiceTest extends IntegrationTestCase
         $this->assertSame('s1_example', DatabaseManagementService::generateUniqueDatabaseName('example', 1));
         $this->assertSame('s123_something_else', DatabaseManagementService::generateUniqueDatabaseName('something_else', 123));
         $this->assertSame('s123_'.Str::repeat('a', 43), DatabaseManagementService::generateUniqueDatabaseName(Str::repeat('a', 100), 123));
+    }
+
+    #[DataProvider('unicodeDatabaseNames')]
+    public function test_generated_names_preserve_utf8_within_the_byte_limit(string $name, string $expected): void
+    {
+        $generated = DatabaseManagementService::generateUniqueDatabaseName($name, 123);
+
+        $this->assertSame('s123_'.$expected, $generated);
+        $this->assertTrue(mb_check_encoding($generated, 'UTF-8'));
+        $this->assertLessThanOrEqual(48, strlen($generated));
+    }
+
+    public static function unicodeDatabaseNames(): array
+    {
+        return [
+            'two-byte boundary' => [str_repeat('é', 24), str_repeat('é', 21)],
+            'three-byte boundary' => [str_repeat('世', 16), str_repeat('世', 14)],
+            'four-byte boundary' => [str_repeat('𐐀', 12), str_repeat('𐐀', 10)],
+            'exact fit' => [str_repeat('a', 40).'世', str_repeat('a', 40).'世'],
+            'mixed boundary' => [str_repeat('a', 41).'世', str_repeat('a', 41)],
+            'short name' => ['世界庫', '世界庫'],
+        ];
+    }
+
+    public function test_unicode_database_creation_uses_a_complete_generated_name(): void
+    {
+        $server = $this->createServerModel(['id' => 123]);
+        DatabaseHost::factory()->create(['node_id' => $server->node_id]);
+        $name = 's123_'.str_repeat('世', 14);
+
+        $this->repository->expects('createDatabase')->with($name, false);
+        $this->repository->expects('createUser')->withAnyArgs();
+        $this->repository->expects('assignUserToDatabase')->with($name, \Mockery::type('string'), '%');
+        $this->repository->expects('flush');
+
+        $database = $this->app->make(DeployServerDatabaseService::class)->handle($server, [
+            'database' => str_repeat('世', 16),
+            'remote' => '%',
+        ]);
+
+        $this->assertSame($name, $database->fresh()->database);
+        $this->assertDatabaseHas('databases', ['id' => $database->id, 'database' => $name]);
     }
 
     public function test_deleting_a_database_removes_its_import_account(): void

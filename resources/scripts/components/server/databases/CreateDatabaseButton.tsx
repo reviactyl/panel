@@ -16,14 +16,15 @@ interface Values {
     connectionsFrom: string;
 }
 
-const schema = object().shape({
+export const databaseCreationSchema = object().shape({
     databaseName: string()
         .required('A database name must be provided.')
-        .min(3, 'Database name must be at least 3 characters.')
-        .max(48, 'Database name must not exceed 48 characters.')
-        .matches(
-            /^[\w\-.]{3,48}$/,
-            'Database name should only contain alphanumeric characters, underscores, dashes, and/or periods.',
+        .test('min', 'Database name must be at least 3 characters.', (value) => Array.from(value).length >= 3)
+        .test('max', 'Database name must not exceed 48 characters.', (value) => Array.from(value).length <= 48)
+        .test(
+            'alpha-dash',
+            'Database name should only contain alphanumeric characters, underscores, and/or dashes.',
+            (value) => !/[^\p{L}\p{M}\p{N}_-]/u.test(value),
         ),
     connectionsFrom: string().matches(/^[\w\-/.%:]+$/, {
         message: 'A valid host address must be provided.',
@@ -61,7 +62,7 @@ export default () => {
             <Formik
                 onSubmit={submit}
                 initialValues={{ databaseName: '', connectionsFrom: '' }}
-                validationSchema={schema}
+                validationSchema={databaseCreationSchema}
             >
                 {({ isSubmitting, resetForm }) => (
                     <Modal
