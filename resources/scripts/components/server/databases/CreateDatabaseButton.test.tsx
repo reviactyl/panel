@@ -2,7 +2,8 @@ import { act, type ButtonHTMLAttributes, type ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ServerDatabase } from '@/api/server/databases/getServerDatabases';
-import CreateDatabaseButton from './CreateDatabaseButton';
+import CreateDatabaseButton, { databaseCreationSchema } from './CreateDatabaseButton';
+import databaseNames from '../../../../../tests/Fixtures/database-names.json';
 
 const mocks = vi.hoisted(() => ({ create: vi.fn(), append: vi.fn(), addError: vi.fn(), clearFlashes: vi.fn() }));
 vi.mock('@/api/server/databases/createServerDatabase', () => ({ default: mocks.create }));
@@ -122,6 +123,11 @@ describe('database creation form lifecycle', () => {
     it.each([
         ['databaseName', 'ab', 'Database name must be at least 3 characters.'],
         ['connectionsFrom', 'invalid host', 'A valid host address must be provided.'],
+        [
+            'databaseName',
+            'minecraft.world',
+            'Database name should only contain alphanumeric characters, underscores, and/or dashes.',
+        ],
     ])('allows correcting %s after validation fails', async (name, invalid, message) => {
         await click('new-database');
         await fill('databaseName', 'valid');
@@ -156,6 +162,24 @@ describe('database creation form lifecycle', () => {
         });
         expect(mocks.clearFlashes).toHaveBeenNthCalledWith(2, 'database:create');
         expect(mocks.append).toHaveBeenCalledTimes(1);
+        expect(dialog()).toBeNull();
+    });
+});
+
+describe('database naming requirements shared with StoreDatabaseRequest', () => {
+    it.each(databaseNames)('validates "$name" as $valid', ({ name, valid }) => {
+        expect(databaseCreationSchema.isValidSync({ databaseName: name, connectionsFrom: '' })).toBe(valid);
+    });
+
+    it.each(['minecraft_world', 'minecraft-world'])('creates the valid name %s', async (name) => {
+        await click('new-database');
+        await fill('databaseName', name);
+        await submit();
+
+        expect(mocks.create).toHaveBeenCalledWith('server-uuid', {
+            databaseName: name,
+            connectionsFrom: '%',
+        });
         expect(dialog()).toBeNull();
     });
 });

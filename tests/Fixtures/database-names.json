@@ -1,0 +1,102 @@
+[
+    {
+        "name": "",
+        "valid": false
+    },
+    {
+        "name": "ab",
+        "valid": false
+    },
+    {
+        "name": "abc",
+        "valid": true
+    },
+    {
+        "name": "minecraft.world",
+        "valid": false
+    },
+    {
+        "name": "minecraft_world",
+        "valid": true
+    },
+    {
+        "name": "minecraft-world",
+        "valid": true
+    },
+    {
+        "name": "world123",
+        "valid": true
+    },
+    {
+        "name": "world space",
+        "valid": false
+    },
+    {
+        "name": "world/one",
+        "valid": false
+    },
+    {
+        "name": "world\\one",
+        "valid": false
+    },
+    {
+        "name": "world%",
+        "valid": false
+    },
+    {
+        "name": "world:one",
+        "valid": false
+    },
+    {
+        "name": "abc\n",
+        "valid": false
+    },
+    {
+        "name": " abc",
+        "valid": false
+    },
+    {
+        "name": "abc ",
+        "valid": false
+    },
+    {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "valid": true
+    },
+    {
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "valid": false
+    },
+    {
+        "name": "世界庫",
+        "valid": true
+    },
+    {
+        "name": "café",
+        "valid": true
+    },
+    {
+        "name": "café",
+        "valid": true
+    },
+    {
+        "name": "𐐀𐐁",
+        "valid": false
+    },
+    {
+        "name": "𐐀𐐁𐐂",
+        "valid": true
+    },
+    {
+        "name": "𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀",
+        "valid": true
+    },
+    {
+        "name": "𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀𐐀",
+        "valid": false
+    },
+    {
+        "name": "world🙂",
+        "valid": false
+    }
+]
