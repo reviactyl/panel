@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useRef, useSyncExternalStore } from 'react';
+import { memo, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { ServerEggVariable } from '@/api/server/types';
 import TitledGreyBox from '@/reviactyl/elements/TitledGreyBox';
 import { usePermissions } from '@/plugins/usePermissions';
@@ -82,7 +82,13 @@ const VariableBox = ({ variable }: Props) => {
 
     useEffect(() => () => saveVariableValue.flush(), [saveVariableValue]);
 
+    const [input, setInput] = useState({ saveState, serverValue: variable.serverValue, value: variable.serverValue });
+    if (input.saveState !== saveState || (!loading && input.serverValue !== variable.serverValue)) {
+        setInput({ saveState, serverValue: variable.serverValue, value: variable.serverValue });
+    }
+
     const setVariableValue = (value: string) => {
+        setInput({ saveState, serverValue: variable.serverValue, value });
         saveVariableValue(value, saveState.start());
     };
 
@@ -90,7 +96,7 @@ const VariableBox = ({ variable }: Props) => {
         (v) => v === 'boolean' || v === 'in:0,1' || v === 'in:1,0' || v === 'in:true,false' || v === 'in:false,true',
     );
     const isStringSwitch = variable.rules.some((v) => v === 'in:true,false' || v === 'in:false,true');
-    const effectiveValue = variable.serverValue ?? variable.defaultValue;
+    const effectiveValue = input.value ?? variable.defaultValue;
     const selectValues = variable.rules.find((v) => v.startsWith('in:'))?.split(',') || [];
 
     return (
@@ -112,6 +118,7 @@ const VariableBox = ({ variable }: Props) => {
                 {variable.isSecret ? (
                     <div className='flex gap-3'>
                         <Input
+                            key={JSON.stringify([uuid, variable.envVariable])}
                             ref={secretInput}
                             type='password'
                             className='min-w-0 flex-1'
@@ -141,7 +148,7 @@ const VariableBox = ({ variable }: Props) => {
                         <Switch
                             readOnly={!canEdit || !variable.isEditable}
                             name={variable.envVariable}
-                            defaultChecked={isStringSwitch ? effectiveValue === 'true' : effectiveValue === '1'}
+                            checked={isStringSwitch ? effectiveValue === 'true' : effectiveValue === '1'}
                             onChange={(event) => {
                                 if (canEdit && variable.isEditable) {
                                     if (isStringSwitch) {
@@ -160,7 +167,7 @@ const VariableBox = ({ variable }: Props) => {
                                 <Select
                                     onChange={(e) => setVariableValue(e.target.value)}
                                     name={variable.envVariable}
-                                    defaultValue={effectiveValue}
+                                    value={effectiveValue}
                                     disabled={!canEdit || !variable.isEditable}
                                 >
                                     {selectValues.map((selectValue) => (
@@ -183,7 +190,7 @@ const VariableBox = ({ variable }: Props) => {
                                     }}
                                     readOnly={!canEdit || !variable.isEditable}
                                     name={variable.envVariable}
-                                    defaultValue={variable.serverValue ?? ''}
+                                    value={input.value ?? ''}
                                     placeholder={variable.defaultValue}
                                 />
                             </>

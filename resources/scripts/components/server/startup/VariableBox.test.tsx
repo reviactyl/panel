@@ -134,6 +134,78 @@ const deferred = () => {
     return { promise, resolve, reject };
 };
 
+describe('startup value refresh', () => {
+    it.each([
+        ['text', ['required', 'string'], 'old', 'new'],
+        ['select', ['required', 'in:old,new,local'], 'old', 'new'],
+        ['boolean', ['required', 'boolean'], '0', '1'],
+    ])('updates an idle %s control from refreshed props', async (kind, rules, oldValue, newValue) => {
+        await render({ rules, serverValue: oldValue });
+        const control = container.querySelector<HTMLInputElement | HTMLSelectElement>('input, select')!;
+        await render({ rules, serverValue: newValue });
+        expect(container.querySelector('input, select')).toBe(control);
+        expect(kind === 'boolean' ? (control as HTMLInputElement).checked : control.value).toBe(
+            kind === 'boolean' ? true : newValue,
+        );
+        expect(mocks.update).not.toHaveBeenCalled();
+    });
+
+    it.each([
+        ['text', ['required', 'string'], 'old', 'remote', 'local'],
+        ['select', ['required', 'in:old,remote,local'], 'old', 'remote', 'local'],
+        ['boolean', ['required', 'boolean'], '0', '0', '1'],
+    ])(
+        'preserves a pending %s edit through debounce and an in-flight refresh',
+        async (kind, rules, oldValue, remoteValue, localValue) => {
+            const pending = deferred();
+            mocks.update.mockReturnValue(pending.promise);
+            await render({ rules, serverValue: oldValue });
+            const control = container.querySelector<HTMLInputElement | HTMLSelectElement>('input, select')!;
+            if (kind === 'boolean') {
+                await act(async () => control.click());
+            } else if (kind === 'select') {
+                await act(async () => {
+                    control.value = localValue;
+                    control.dispatchEvent(new Event('change', { bubbles: true }));
+                });
+            } else {
+                await editText(control as HTMLInputElement, localValue);
+            }
+            await render({ rules, serverValue: remoteValue });
+            expect(kind === 'boolean' ? (control as HTMLInputElement).checked : control.value).toBe(
+                kind === 'boolean' ? true : localValue,
+            );
+            await act(async () => vi.advanceTimersByTimeAsync(500));
+            expect(mocks.update).toHaveBeenCalledExactlyOnceWith('server-uuid', 'BOOLEAN_VALUE', localValue);
+            await render({ rules, serverValue: oldValue });
+            expect(kind === 'boolean' ? (control as HTMLInputElement).checked : control.value).toBe(
+                kind === 'boolean' ? true : localValue,
+            );
+            await render({ rules, serverValue: localValue });
+            await act(async () => pending.resolve([{ ...variable, serverValue: localValue }, 'saved']));
+            await render({ rules, serverValue: remoteValue });
+            expect(kind === 'boolean' ? (control as HTMLInputElement).checked : control.value).toBe(
+                kind === 'boolean' ? false : remoteValue,
+            );
+        },
+    );
+
+    it.each(['server', 'variable'])('resets the displayed value when the %s identity changes', async (identity) => {
+        const rules = ['required', 'string'];
+        await render({ rules, serverValue: 'first' });
+        await editText(container.querySelector('input')!, 'pending');
+        if (identity === 'server') mocks.uuid = 'other-server';
+        await render({
+            rules,
+            envVariable: identity === 'variable' ? 'OTHER' : variable.envVariable,
+            serverValue: 'second',
+        });
+        expect(container.querySelector('input')!.value).toBe('second');
+        await act(async () => vi.advanceTimersByTimeAsync(500));
+        expect(mocks.update).toHaveBeenCalledExactlyOnceWith('server-uuid', 'BOOLEAN_VALUE', 'pending');
+    });
+});
+
 describe('startup save response ordering', () => {
     it('serializes saves and keeps the latest variable and invocation', async () => {
         const older = deferred();
