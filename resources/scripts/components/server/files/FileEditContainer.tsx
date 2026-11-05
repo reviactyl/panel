@@ -87,9 +87,7 @@ const FileEditContainer = () => {
     useEffect(() => {
         if (isNewFile) {
             const path = hashToPath(hash);
-            if (path && path !== '/') {
-                setDirectory(path);
-            }
+            setDirectory(path || '/');
             return;
         }
 

@@ -17,6 +17,9 @@ const mocks = vi.hoisted(() => ({
     read: vi.fn(),
     update: vi.fn(),
     create: vi.fn(),
+    list: vi.fn(),
+    directory: '/',
+    setDirectory: vi.fn(),
     editor: 'cm',
     shortcut: undefined as (() => void) | undefined,
     navigate: undefined as NavigateFunction | undefined,
@@ -41,11 +44,12 @@ function Editor({ initialContent, fetchContent, onContentSaved, onContentChanged
 vi.mock('@/api/server/files/getFileContents', () => ({ default: mocks.read }));
 vi.mock('@/api/server/files/updateFileContents', () => ({ default: mocks.update }));
 vi.mock('@/api/server/files/saveFileContents', () => ({ default: mocks.create }));
+vi.mock('@/api/server/files/loadDirectory', () => ({ default: mocks.list }));
 vi.mock('@/state/server', () => ({
     ServerContext: {
         useStoreState: (selector: (state: unknown) => unknown) =>
-            selector({ server: { data: { id: 'server', uuid: 'uuid' } } }),
-        useStoreActions: () => vi.fn(),
+            selector({ server: { data: { id: 'server', uuid: 'uuid' } }, files: { directory: mocks.directory } }),
+        useStoreActions: () => mocks.setDirectory,
     },
 }));
 vi.mock('easy-peasy', () => ({ useStoreState: () => ({ fileEditor: mocks.editor }) }));
@@ -55,11 +59,16 @@ vi.mock('@/components/FlashMessageRender', () => ({ default: () => null }));
 vi.mock('./FileManagerBreadcrumbs', () => ({
     default: () => <Link to='/server/server/files'>container</Link>,
 }));
-vi.mock('./FileNameModal', () => ({
-    default: ({ visible, onFileNamed }: { visible: boolean; onFileNamed: (name: string) => void }) =>
-        visible ? <button onClick={() => onFileNamed('/new.txt')}>Confirm name</button> : null,
+vi.mock('@/reviactyl/elements/Modal', () => ({
+    default: ({ visible, children }: { visible: boolean; children: ReactNode }) =>
+        visible ? <div role='dialog'>{children}</div> : null,
 }));
-vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: () => 'Discard unsaved changes?' }) }));
+vi.mock('react-i18next', () => ({
+    useTranslation: () => ({
+        t: (key: string, options?: { attribute: string }) =>
+            key === 'validation:unique' ? `The ${options?.attribute || '{{attribute}}'} has already been taken.` : key,
+    }),
+}));
 vi.mock('@/reviactyl/elements/Spinner', () => ({ default: () => <span>Loading</span> }));
 vi.mock('@/reviactyl/elements/SpinnerOverlay', () => ({
     default: ({ visible }: { visible: boolean }) => (visible ? <span>Loading</span> : null),
@@ -109,11 +118,16 @@ beforeEach(() => {
     mocks.read.mockReset();
     mocks.update.mockReset();
     mocks.create.mockReset();
+    mocks.list.mockReset().mockResolvedValue([]);
     vi.stubGlobal(
         'confirm',
         vi.fn(() => false),
     );
     mocks.shortcut = undefined;
+    mocks.directory = '/';
+    mocks.setDirectory.mockImplementation((directory: string) => {
+        mocks.directory = directory;
+    });
     container = document.createElement('div');
     root = createRoot(container);
 });
@@ -148,6 +162,16 @@ const edit = async (value: string) => {
         textarea.value = value;
         textarea.dispatchEvent(new Event('input', { bubbles: true }));
     });
+};
+const nameFile = async (name: string) => {
+    await act(async () => {
+        const input = container.querySelector<HTMLInputElement>('input[name="fileName"]')!;
+        Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(input, name);
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    await act(async () =>
+        container.querySelector('form')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })),
+    );
 };
 const beforeUnload = () => {
     const event = new Event('beforeunload', { cancelable: true });
@@ -348,11 +372,7 @@ describe.each(['cm', 'mo'])('unsaved file navigation (%s)', (editor) => {
         await edit('created content');
         mocks.read.mockResolvedValue('created content');
         await act(async () => save().click());
-        await act(async () =>
-            Array.from(container.querySelectorAll('button'))
-                .find((button) => button.textContent === 'Confirm name')!
-                .click(),
-        );
+        await nameFile('new.txt');
         expect(mocks.create).toHaveBeenCalledWith('uuid', '/new.txt', 'created content');
         expect(window.confirm).not.toHaveBeenCalled();
         expect(content()).toBe('created content');
@@ -366,5 +386,99 @@ describe.each(['cm', 'mo'])('unsaved file navigation (%s)', (editor) => {
         await act(async () => mocks.navigate!(-1));
         expect(window.confirm).toHaveBeenCalledOnce();
         expect(content()).toBe('unsaved draft');
+    });
+});
+
+describe.each(['cm', 'mo'])('new file name collisions (%s)', (editor) => {
+    beforeEach(() => {
+        mocks.editor = editor;
+    });
+
+    it.each(['server.properties', 'nested/../server.properties', 'nested/server.properties'])(
+        'rejects the existing target %s and saves the same draft under another name',
+        async (name) => {
+            mocks.list.mockResolvedValue([{ name: 'server.properties', isFile: true }]);
+            await render('/server/server/files/new#/');
+            await edit('new draft');
+            await act(async () => save().click());
+            await nameFile(name);
+            expect(mocks.list).toHaveBeenCalledWith('uuid', name === 'nested/server.properties' ? '/nested' : '/');
+            expect(mocks.create).not.toHaveBeenCalled();
+            expect(container.textContent).toContain('The file-name has already been taken.');
+            expect(container.querySelector('[role="dialog"]')).not.toBeNull();
+            expect(content()).toBe('new draft');
+            expect(beforeUnload()).toBe(true);
+
+            mocks.read.mockResolvedValue('new draft');
+            await nameFile('different.txt');
+            expect(mocks.create).toHaveBeenCalledExactlyOnceWith('uuid', '/different.txt', 'new draft');
+            expect(content()).toBe('new draft');
+            expect(window.confirm).not.toHaveBeenCalled();
+            expect(beforeUnload()).toBe(false);
+        },
+    );
+
+    it('keeps the draft and name dialog when the directory cannot be checked', async () => {
+        mocks.list.mockRejectedValue(new Error('Directory unavailable'));
+        await render('/server/server/files/new#/');
+        await edit('new draft');
+        await act(async () => save().click());
+        await nameFile('new.txt');
+        expect(mocks.create).not.toHaveBeenCalled();
+        expect(container.textContent).toContain('Directory unavailable');
+        expect(container.querySelector('[role="dialog"]')).not.toBeNull();
+        expect(content()).toBe('new draft');
+    });
+});
+
+describe('new file target directory', () => {
+    it('checks the root after previously browsing a subdirectory', async () => {
+        mocks.directory = '/old-directory';
+        mocks.list.mockResolvedValue([{ name: 'server.properties' }]);
+        await render('/server/server/files/new#/');
+        await edit('draft');
+        await act(async () => save().click());
+        await nameFile('server.properties');
+        expect(mocks.list).toHaveBeenCalledWith('uuid', '/');
+        expect(mocks.create).not.toHaveBeenCalled();
+    });
+
+    it('checks the full target directory, including entries after the display limit', async () => {
+        mocks.list.mockResolvedValue([
+            ...Array.from({ length: 250 }, (_, index) => ({ name: `file-${index}` })),
+            { name: 'server.properties' },
+        ]);
+        await render('/server/server/files/new#/configs');
+        await edit('draft');
+        await act(async () => save().click());
+        await nameFile('server.properties');
+        expect(mocks.list).toHaveBeenCalledWith('uuid', '/configs');
+        expect(mocks.create).not.toHaveBeenCalled();
+    });
+
+    it('also rejects a directory occupying the requested name', async () => {
+        mocks.list.mockResolvedValue([{ name: 'configs', isFile: false }]);
+        await render('/server/server/files/new#/');
+        await edit('draft');
+        await act(async () => save().click());
+        await nameFile('configs');
+        expect(mocks.create).not.toHaveBeenCalled();
+        expect(container.textContent).toContain('has already been taken');
+    });
+
+    it('disables creation until the directory lookup completes', async () => {
+        let loaded!: (files: never[]) => void;
+        mocks.list.mockReturnValue(new Promise<never[]>((resolve) => (loaded = resolve)));
+        await render('/server/server/files/new#/');
+        await edit('draft');
+        await act(async () => save().click());
+        await nameFile('new.txt');
+        const dialog = container.querySelector('[role="dialog"]')!;
+        expect(dialog.querySelector('button')!.disabled).toBe(true);
+        expect(dialog.querySelector('input')!.disabled).toBe(true);
+        expect(mocks.create).not.toHaveBeenCalled();
+        mocks.read.mockResolvedValue('draft');
+        await act(async () => loaded([]));
+        expect(mocks.create).toHaveBeenCalledExactlyOnceWith('uuid', '/new.txt', 'draft');
     });
 });
