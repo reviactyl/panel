@@ -8,12 +8,13 @@ export interface SwitchProps {
     label?: string;
     description?: string;
     defaultChecked?: boolean;
+    checked?: boolean;
     readOnly?: boolean;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     children?: React.ReactNode;
 }
 
-const Switch = ({ name, label, description, defaultChecked, readOnly, onChange, children }: SwitchProps) => {
+const Switch = ({ name, label, description, defaultChecked, checked, readOnly, onChange, children }: SwitchProps) => {
     const uuid = useMemo(() => v4(), []);
 
     return (
@@ -27,6 +28,7 @@ const Switch = ({ name, label, description, defaultChecked, readOnly, onChange, 
                         className='peer sr-only'
                         onChange={(e) => onChange && onChange(e)}
                         defaultChecked={defaultChecked}
+                        checked={checked}
                         disabled={readOnly}
                     />
                 )}
