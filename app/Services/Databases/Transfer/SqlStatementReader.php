@@ -44,6 +44,14 @@ class SqlStatementReader
             }
         };
 
+        while (strlen($buffer) < 3 && ! $eof) {
+            $fill();
+        }
+
+        if (str_starts_with($buffer, "\xEF\xBB\xBF")) {
+            $buffer = substr($buffer, 3);
+        }
+
         while (true) {
             if ($blank) {
                 $position += strspn($buffer, " \t\r\n", $position);
