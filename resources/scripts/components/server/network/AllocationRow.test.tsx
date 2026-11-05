@@ -6,12 +6,14 @@ import AllocationRow from './AllocationRow';
 
 const mocks = vi.hoisted(() => ({
     save: vi.fn(),
+    primary: vi.fn(),
     mutate: vi.fn(),
     clearFlashes: vi.fn(),
     addError: vi.fn(),
     serverUuid: 'server-uuid',
 }));
 vi.mock('@/api/server/network/setServerAllocationNotes', () => ({ default: mocks.save }));
+vi.mock('@/api/server/network/setPrimaryServerAllocation', () => ({ default: mocks.primary }));
 vi.mock('@/api/swr/getServerAllocations', () => ({ default: () => ({ mutate: mocks.mutate }) }));
 vi.mock('@/state/server', () => ({ ServerContext: { useStoreState: () => mocks.serverUuid } }));
 vi.mock('@/plugins/usePermissions', () => ({ usePermissions: () => [true] }));
@@ -61,6 +63,7 @@ beforeEach(async () => {
     vi.clearAllMocks();
     mocks.serverUuid = 'server-uuid';
     mocks.save.mockReset().mockResolvedValue(undefined);
+    mocks.primary.mockReset().mockImplementation(async (_uuid, id) => ({ ...allocation, id, isDefault: true }));
     cached = [{ ...allocation }];
     mocks.mutate.mockReset().mockImplementation((updater) => {
         if (updater) cached = updater(cached);
@@ -276,5 +279,179 @@ describe('allocation note autosaving', () => {
         await act(async () => older.resolve());
         expect(mocks.save.mock.calls.map((args) => args[2])).toEqual(['old', 'queued']);
         expect(cached[0]?.notes).toBe('queued');
+    });
+});
+
+describe('primary allocation saving', () => {
+    const renderRows = async () => {
+        await act(async () =>
+            root.render(
+                <>
+                    {cached.map((item) => (
+                        <div key={item.id} data-allocation={item.id}>
+                            <AllocationRow allocation={item} />
+                        </div>
+                    ))}
+                </>,
+            ),
+        );
+    };
+    const choose = async (id: number) => {
+        await act(async () => {
+            const button = Array.from(container.querySelectorAll(`[data-allocation="${id}"] button`)).find(
+                (button) => button.textContent === 'Make Primary',
+            ) as HTMLButtonElement;
+            button.click();
+        });
+        await renderRows();
+    };
+    const primaryId = () => cached.find((item) => item.isDefault)?.id;
+
+    beforeEach(async () => {
+        cached = [
+            allocation,
+            { ...allocation, id: 2, port: 25566, isDefault: false },
+            { ...allocation, id: 3, port: 25567, isDefault: false },
+        ];
+        await renderRows();
+    });
+
+    it('serializes overlapping successful choices and preserves the latest primary and displayed address', async () => {
+        const older = deferred();
+        const newer = deferred();
+        let persisted = 1;
+        mocks.primary.mockImplementation((_uuid, id) =>
+            (id === 2 ? older : newer).promise.then(() => {
+                persisted = id;
+                return { ...allocation, id, isDefault: true };
+            }),
+        );
+        await choose(2);
+        await choose(3);
+        const callsWhilePending = mocks.primary.mock.calls.length;
+        expect(primaryId()).toBe(3);
+        await act(async () => newer.resolve());
+        await act(async () => older.resolve());
+        await renderRows();
+        expect(persisted).toBe(3);
+        expect(primaryId()).toBe(persisted);
+        expect(callsWhilePending).toBe(1);
+        expect(container.querySelector('[data-allocation="3"] button')?.textContent).toBe('Primary');
+    });
+
+    it('shares ordering across rows remounted while a request is pending', async () => {
+        const older = deferred();
+        mocks.primary.mockImplementationOnce(() => older.promise.then(() => ({ ...allocation, id: 2 })));
+        await choose(2);
+        await act(async () => root.render(null));
+        await renderRows();
+        await choose(3);
+        expect(mocks.primary).toHaveBeenCalledTimes(1);
+        await act(async () => older.resolve());
+        expect(mocks.primary.mock.calls.map((args) => args[1])).toEqual([2, 3]);
+        expect(primaryId()).toBe(3);
+    });
+
+    it('confirms an ordinary successful change without overwriting newer notes', async () => {
+        const request = deferred();
+        mocks.primary.mockImplementationOnce(() =>
+            request.promise.then(() => ({ ...allocation, id: 2, notes: 'stale response notes', isDefault: true })),
+        );
+        await choose(2);
+        cached[1] = { ...cached[1]!, notes: 'new notes' };
+        await act(async () => request.resolve());
+        expect(primaryId()).toBe(2);
+        expect(cached[1]?.notes).toBe('new notes');
+        expect(mocks.primary).toHaveBeenCalledExactlyOnceWith('server-uuid', 2);
+        expect(mocks.addError).not.toHaveBeenCalled();
+    });
+
+    it('continues after an obsolete failure without reverting the newer choice', async () => {
+        const older = deferred();
+        mocks.primary.mockReturnValueOnce(older.promise);
+        await choose(2);
+        await choose(3);
+        await act(async () => older.reject(new Error('obsolete')));
+        expect(primaryId()).toBe(3);
+        expect(mocks.addError).not.toHaveBeenCalled();
+        expect(mocks.mutate.mock.calls.every((args) => args.length > 0)).toBe(true);
+        expect(mocks.primary.mock.calls.map((args) => args[1])).toEqual([2, 3]);
+    });
+
+    it('revalidates after the latest failure and accepts another choice', async () => {
+        const error = new Error('failed primary save');
+        mocks.primary.mockRejectedValueOnce(error);
+        mocks.mutate.mockImplementation((updater) => {
+            cached = updater ? updater(cached) : cached.map((item) => ({ ...item, isDefault: item.id === 1 }));
+            return Promise.resolve(cached);
+        });
+        await choose(2);
+        expect(primaryId()).toBe(1);
+        expect(mocks.mutate).toHaveBeenCalledWith();
+        expect(mocks.addError).toHaveBeenCalledWith({ error, key: 'server:network' });
+        await choose(3);
+        expect(primaryId()).toBe(3);
+    });
+
+    it('recovers the persisted primary when the latest queued change fails', async () => {
+        const older = deferred();
+        const newer = deferred();
+        let persisted = 1;
+        mocks.primary
+            .mockImplementationOnce(() =>
+                older.promise.then(() => {
+                    persisted = 2;
+                    return { ...allocation, id: 2, isDefault: true };
+                }),
+            )
+            .mockReturnValueOnce(newer.promise);
+        mocks.mutate.mockImplementation((updater) => {
+            cached = updater ? updater(cached) : cached.map((item) => ({ ...item, isDefault: item.id === persisted }));
+            return Promise.resolve(cached);
+        });
+        await choose(2);
+        await choose(3);
+        await act(async () => older.resolve());
+        expect(primaryId()).toBe(3);
+        await act(async () => newer.reject(new Error('latest failed')));
+        expect(primaryId()).toBe(2);
+        expect(mocks.addError).toHaveBeenCalledTimes(1);
+        await choose(1);
+        expect(primaryId()).toBe(1);
+    });
+
+    it('skips replaced queued choices and retains only the latest choice', async () => {
+        const older = deferred();
+        mocks.primary.mockImplementationOnce(() => older.promise.then(() => ({ ...allocation, id: 2 })));
+        await choose(2);
+        await choose(3);
+        await choose(1);
+        await act(async () => older.resolve());
+        expect(mocks.primary.mock.calls.map((args) => args[1])).toEqual([2, 1]);
+        expect(primaryId()).toBe(1);
+    });
+
+    it('continues saving after both a request and failure revalidation fail', async () => {
+        const request = deferred();
+        mocks.primary.mockReturnValueOnce(request.promise);
+        await choose(2);
+        mocks.mutate.mockRejectedValueOnce(new Error('refresh failed'));
+        await act(async () => request.reject(new Error('save failed')));
+        await choose(3);
+        expect(primaryId()).toBe(3);
+        expect(mocks.primary.mock.calls.map((args) => args[1])).toEqual([2, 3]);
+    });
+
+    it('keeps different servers independent', async () => {
+        const older = deferred();
+        mocks.primary.mockImplementationOnce(() => older.promise.then(() => ({ ...allocation, id: 2 })));
+        await choose(2);
+        await act(async () => root.render(null));
+        mocks.serverUuid = 'other-server';
+        cached = cached.map((item) => ({ ...item, isDefault: item.id === 1 }));
+        await renderRows();
+        await choose(3);
+        expect(mocks.primary).toHaveBeenLastCalledWith('other-server', 3);
+        await act(async () => older.resolve());
     });
 });
