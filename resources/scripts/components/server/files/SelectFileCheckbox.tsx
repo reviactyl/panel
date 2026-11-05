@@ -13,6 +13,7 @@ export default ({ name }: { name: string }) => {
         <label className='absolute z-30 flex-none cursor-pointer self-center px-4 py-2'>
             <FileActionCheckbox
                 name='selectedFiles'
+                aria-label={name}
                 value={name}
                 checked={isChecked}
                 type='checkbox'

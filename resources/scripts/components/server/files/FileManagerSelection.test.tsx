@@ -1,6 +1,7 @@
 import { act, type ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { getByRole } from '@testing-library/dom';
 import { ServerContext } from '@/state/server';
 import type { FileObject } from '@/api/server/files/loadDirectory';
 import SelectFileCheckbox from './SelectFileCheckbox';
@@ -112,6 +113,30 @@ const click = async (element: HTMLElement) => {
 const action = (label: string) => container.querySelector<HTMLButtonElement>(`button[aria-label="${label}"]`)!;
 
 describe('visible file bulk selection', () => {
+    it.each([false, true])('identifies individual files by accessible name (grid: %s)', async (grid) => {
+        mocks.grid = grid;
+        mocks.files = entries(3).map((file, index) => ({
+            ...file,
+            name: ['server.properties', 'world backup.zip', '日本語 & settings.txt'][index]!,
+        }));
+        await render();
+
+        for (const file of mocks.files) {
+            const checkbox = getByRole<HTMLInputElement>(container, 'checkbox', { name: file.name });
+            expect(checkbox.value).toBe(file.name);
+            await click(checkbox);
+            expect(checkbox.checked).toBe(true);
+        }
+        expect(getByRole(container, 'checkbox', { name: 'strings:select_all' })).toBe(selectAll());
+        await click(action('archive-as'));
+        expect(mocks.compress).toHaveBeenCalledExactlyOnceWith(
+            'uuid',
+            '/',
+            mocks.files.map((file) => file.name),
+            'tar.gz',
+        );
+    });
+
     it('renders one named select-all control without hiding it at a breakpoint', async () => {
         await render();
         expect(selectAll().className).not.toMatch(/(?:^|\s)(?:\S+:)?hidden(?:\s|$)/);
