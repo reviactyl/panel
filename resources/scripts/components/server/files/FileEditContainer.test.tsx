@@ -389,86 +389,59 @@ describe.each(['cm', 'mo'])('unsaved file navigation (%s)', (editor) => {
     });
 });
 
-describe.each(['cm', 'mo'])('new file name collisions (%s)', (editor) => {
+describe.each(['cm', 'mo'])('new file creation (%s)', (editor) => {
     beforeEach(() => {
         mocks.editor = editor;
     });
 
     it.each(['server.properties', 'nested/../server.properties', 'nested/server.properties'])(
-        'rejects the existing target %s and saves the same draft under another name',
+        'retains the draft and name after the server rejects %s',
         async (name) => {
-            mocks.list.mockResolvedValue([{ name: 'server.properties', isFile: true }]);
+            mocks.create.mockRejectedValueOnce(new Error('A file or directory with this name already exists.'));
             await render('/server/server/files/new#/');
             await edit('new draft');
             await act(async () => save().click());
             await nameFile(name);
-            expect(mocks.list).toHaveBeenCalledWith('uuid', name === 'nested/server.properties' ? '/nested' : '/');
-            expect(mocks.create).not.toHaveBeenCalled();
-            expect(container.textContent).toContain('The file-name has already been taken.');
+            expect(mocks.list).not.toHaveBeenCalled();
+            expect(mocks.create).toHaveBeenCalledWith(
+                'uuid',
+                name === 'nested/server.properties' ? '/nested/server.properties' : '/server.properties',
+                'new draft',
+            );
+            expect(container.textContent).toContain('already exists');
             expect(container.querySelector('[role="dialog"]')).not.toBeNull();
             expect(content()).toBe('new draft');
             expect(beforeUnload()).toBe(true);
-
+            mocks.create.mockResolvedValueOnce(undefined);
             mocks.read.mockResolvedValue('new draft');
             await nameFile('different.txt');
-            expect(mocks.create).toHaveBeenCalledExactlyOnceWith('uuid', '/different.txt', 'new draft');
-            expect(content()).toBe('new draft');
+            expect(mocks.create).toHaveBeenLastCalledWith('uuid', '/different.txt', 'new draft');
             expect(window.confirm).not.toHaveBeenCalled();
             expect(beforeUnload()).toBe(false);
         },
     );
-
-    it('keeps the draft and name dialog when the directory cannot be checked', async () => {
-        mocks.list.mockRejectedValue(new Error('Directory unavailable'));
+    it('creates without directory-read access', async () => {
+        mocks.list.mockRejectedValue(new Error('Forbidden'));
         await render('/server/server/files/new#/');
-        await edit('new draft');
+        await edit('draft');
         await act(async () => save().click());
         await nameFile('new.txt');
-        expect(mocks.create).not.toHaveBeenCalled();
-        expect(container.textContent).toContain('Directory unavailable');
+        expect(mocks.list).not.toHaveBeenCalled();
+        expect(mocks.create).toHaveBeenCalledWith('uuid', '/new.txt', 'draft');
+    });
+    it('keeps the name dialog and draft on a failed creation', async () => {
+        mocks.create.mockRejectedValue(new Error('Creation unavailable'));
+        await render('/server/server/files/new#/');
+        await edit('draft');
+        await act(async () => save().click());
+        await nameFile('new.txt');
+        expect(container.textContent).toContain('Creation unavailable');
         expect(container.querySelector('[role="dialog"]')).not.toBeNull();
-        expect(content()).toBe('new draft');
+        expect(content()).toBe('draft');
     });
-});
-
-describe('new file target directory', () => {
-    it('checks the root after previously browsing a subdirectory', async () => {
-        mocks.directory = '/old-directory';
-        mocks.list.mockResolvedValue([{ name: 'server.properties' }]);
-        await render('/server/server/files/new#/');
-        await edit('draft');
-        await act(async () => save().click());
-        await nameFile('server.properties');
-        expect(mocks.list).toHaveBeenCalledWith('uuid', '/');
-        expect(mocks.create).not.toHaveBeenCalled();
-    });
-
-    it('checks the full target directory, including entries after the display limit', async () => {
-        mocks.list.mockResolvedValue([
-            ...Array.from({ length: 250 }, (_, index) => ({ name: `file-${index}` })),
-            { name: 'server.properties' },
-        ]);
-        await render('/server/server/files/new#/configs');
-        await edit('draft');
-        await act(async () => save().click());
-        await nameFile('server.properties');
-        expect(mocks.list).toHaveBeenCalledWith('uuid', '/configs');
-        expect(mocks.create).not.toHaveBeenCalled();
-    });
-
-    it('also rejects a directory occupying the requested name', async () => {
-        mocks.list.mockResolvedValue([{ name: 'configs', isFile: false }]);
-        await render('/server/server/files/new#/');
-        await edit('draft');
-        await act(async () => save().click());
-        await nameFile('configs');
-        expect(mocks.create).not.toHaveBeenCalled();
-        expect(container.textContent).toContain('has already been taken');
-    });
-
-    it('disables creation until the directory lookup completes', async () => {
-        let loaded!: (files: never[]) => void;
-        mocks.list.mockReturnValue(new Promise<never[]>((resolve) => (loaded = resolve)));
+    it('disables the name controls until the create operation completes', async () => {
+        const pending = deferred();
+        mocks.create.mockReturnValueOnce(pending.promise);
         await render('/server/server/files/new#/');
         await edit('draft');
         await act(async () => save().click());
@@ -476,9 +449,8 @@ describe('new file target directory', () => {
         const dialog = container.querySelector('[role="dialog"]')!;
         expect(dialog.querySelector('button')!.disabled).toBe(true);
         expect(dialog.querySelector('input')!.disabled).toBe(true);
-        expect(mocks.create).not.toHaveBeenCalled();
         mocks.read.mockResolvedValue('draft');
-        await act(async () => loaded([]));
+        await act(async () => pending.resolve(''));
         expect(mocks.create).toHaveBeenCalledExactlyOnceWith('uuid', '/new.txt', 'draft');
     });
 });

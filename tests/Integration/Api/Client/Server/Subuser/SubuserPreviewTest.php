@@ -150,6 +150,22 @@ class SubuserPreviewTest extends ClientApiIntegrationTestCase
         $this->withPreviewToken($token)->putJson($this->link($server, 'backups/notification-preferences'), ['manual' => true, 'scheduled' => true, 'email' => true])->assertStatus(409);
     }
 
+    public function test_create_only_preview_refuses_a_duplicate_without_writing_live_files(): void
+    {
+        [$owner, $server, $target] = $this->models();
+        $token = $this->actingAs($owner)->postJson($this->previewEndpoint($server, $target))->json('token');
+        $this->mock(DaemonFileRepository::class, function (MockInterface $mock) {
+            $mock->shouldReceive('setServer')->once()->andReturnSelf();
+            $mock->shouldReceive('getDirectory')->once()->with('/')->andReturn([]);
+            $mock->shouldNotReceive('putContent', 'createContent');
+        });
+
+        $this->withPreviewToken($token)->call('POST', $this->link($server, 'files/create').'?file=/draft.txt', [], [], [], ['CONTENT_TYPE' => 'text/plain', 'HTTP_X_SUBUSER_PREVIEW' => $token, 'HTTP_ACCEPT' => 'application/json'], 'original')->assertNoContent();
+        $this->call('POST', $this->link($server, 'files/create').'?file=/draft.txt', [], [], [], ['CONTENT_TYPE' => 'text/plain', 'HTTP_X_SUBUSER_PREVIEW' => $token, 'HTTP_ACCEPT' => 'application/json'], 'replacement')->assertConflict();
+        $entry = SubuserPreviewSession::query()->firstOrFail()->state['files']['/draft.txt'];
+        $this->assertSame('original', base64_decode($entry['content'], true));
+    }
+
     public function test_power_and_file_changes_are_isolated_and_persist_in_the_preview(): void
     {
         [$owner, $server, $target] = $this->models();

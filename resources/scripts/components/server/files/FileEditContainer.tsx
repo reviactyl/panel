@@ -131,7 +131,7 @@ const FileEditContainer = () => {
 
         setLoading(true);
         clearFlashes('files:view');
-        fetchFileContent
+        return fetchFileContent
             .current()
             .then(async (content) => {
                 if (name) {
@@ -151,10 +151,13 @@ const FileEditContainer = () => {
                 return Promise.resolve();
             })
             .catch((error) => {
+                if (name) {
+                    throw error;
+                }
                 console.error(error);
                 addError({ message: httpErrorToHuman(error), key: 'files:view' });
             })
-            .then(() => setLoading(false));
+            .finally(() => setLoading(false));
     };
 
     if (error) {
@@ -194,9 +197,9 @@ const FileEditContainer = () => {
             <FileNameModal
                 visible={modalVisible}
                 onDismissed={() => setModalVisible(false)}
-                onFileNamed={(name) => {
+                onFileNamed={async (name) => {
+                    await save(name);
                     setModalVisible(false);
-                    save(name);
                 }}
             />
             <Card className='relative mb-1 rounded-none! p-1!'>

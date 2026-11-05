@@ -129,6 +129,7 @@ Route::group([
         Route::put('/rename', [Client\Servers\FileController::class, 'rename']);
         Route::post('/copy', [Client\Servers\FileController::class, 'copy']);
         Route::post('/write', [Client\Servers\FileController::class, 'write']);
+        Route::post('/create', [Client\Servers\FileController::class, 'createFile']);
         Route::put('/write', [Client\Servers\FileController::class, 'update']);
         Route::post('/compress', [Client\Servers\FileController::class, 'compress']);
         Route::post('/decompress', [Client\Servers\FileController::class, 'decompress']);
