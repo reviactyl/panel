@@ -23,12 +23,13 @@ interface Props {
     allocation: Allocation;
 }
 
-interface NotesSaveState {
+interface AllocationSaveState {
     revision: number;
     pendingSave: Promise<void>;
 }
 
-const notesSaves = new Map<string, NotesSaveState>();
+const notesSaves = new Map<string, AllocationSaveState>();
+const primarySaves = new Map<string, AllocationSaveState>();
 
 const AllocationRow = ({ allocation }: Props) => {
     const [loading, setLoading] = useState(false);
@@ -40,7 +41,7 @@ const AllocationRow = ({ allocation }: Props) => {
     const saveKey = `${uuid}:${allocation.id}`;
     const saveAllocationNotes = useMemo(
         () =>
-            debounce((notes: string, state: NotesSaveState, requestRevision: number) => {
+            debounce((notes: string, state: AllocationSaveState, requestRevision: number) => {
                 setLoading(true);
                 clearFlashes('server:network');
 
@@ -93,13 +94,42 @@ const AllocationRow = ({ allocation }: Props) => {
     };
 
     const setPrimaryAllocation = () => {
+        let state = primarySaves.get(uuid);
+        if (!state) {
+            state = { revision: 0, pendingSave: Promise.resolve() };
+            primarySaves.set(uuid, state);
+        }
+        const requestRevision = ++state.revision;
+        const saveState = state;
         clearFlashes('server:network');
         mutate((data) => data?.map((a) => ({ ...a, isDefault: a.id === allocation.id })), false);
 
-        setPrimaryServerAllocation(uuid, allocation.id).catch((error) => {
-            clearAndAddHttpError({ error, key: 'server:network' });
-            mutate();
-        });
+        saveState.pendingSave = saveState.pendingSave
+            .then(async () => {
+                if (requestRevision !== saveState.revision) return;
+
+                const saved = await setPrimaryServerAllocation(uuid, allocation.id);
+                if (requestRevision !== saveState.revision) return;
+
+                await mutate(
+                    (data) =>
+                        requestRevision === saveState.revision
+                            ? data?.map((a) => ({ ...a, isDefault: a.id === saved.id }))
+                            : data,
+                    false,
+                );
+            })
+            .catch(async (error) => {
+                if (requestRevision === saveState.revision) {
+                    clearAndAddHttpError({ error, key: 'server:network' });
+                    await mutate().catch(() => undefined);
+                }
+            })
+            .then(() => {
+                if (requestRevision === saveState.revision && primarySaves.get(uuid) === saveState) {
+                    primarySaves.delete(uuid);
+                }
+            });
     };
 
     return (
