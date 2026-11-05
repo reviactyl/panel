@@ -150,6 +150,51 @@ class SubuserPreviewTest extends ClientApiIntegrationTestCase
         $this->withPreviewToken($token)->putJson($this->link($server, 'backups/notification-preferences'), ['manual' => true, 'scheduled' => true, 'email' => true])->assertStatus(409);
     }
 
+    public function test_create_only_preview_refuses_a_duplicate_without_writing_live_files(): void
+    {
+        [$owner, $server, $target] = $this->models();
+        $token = $this->actingAs($owner)->postJson($this->previewEndpoint($server, $target))->json('token');
+        $this->mock(DaemonFileRepository::class, function (MockInterface $mock) {
+            $mock->shouldReceive('setServer')->once()->andReturnSelf();
+            $mock->shouldReceive('getDirectory')->once()->with('/')->andReturn([]);
+            $mock->shouldNotReceive('putContent', 'createContent');
+        });
+
+        $this->withPreviewToken($token)->call('POST', $this->link($server, 'files/create').'?file=/draft.txt', [], [], [], ['CONTENT_TYPE' => 'text/plain', 'HTTP_X_SUBUSER_PREVIEW' => $token, 'HTTP_ACCEPT' => 'application/json'], 'original')->assertNoContent();
+        $this->call('POST', $this->link($server, 'files/create').'?file=/draft.txt', [], [], [], ['CONTENT_TYPE' => 'text/plain', 'HTTP_X_SUBUSER_PREVIEW' => $token, 'HTTP_ACCEPT' => 'application/json'], 'replacement')->assertConflict();
+        $entry = SubuserPreviewSession::query()->firstOrFail()->state['files']['/draft.txt'];
+        $this->assertSame('original', base64_decode($entry['content'], true));
+    }
+
+    public function test_create_only_files_in_preview_folders_stay_isolated_and_preserve_collisions(): void
+    {
+        [$owner, $server, $target] = $this->models();
+        $token = $this->actingAs($owner)->postJson($this->previewEndpoint($server, $target))->json('token');
+        $this->mock(DaemonFileRepository::class, function (MockInterface $mock) {
+            $mock->shouldNotReceive('setServer', 'getDirectory', 'putContent', 'createContent');
+        });
+
+        $this->withPreviewToken($token)->postJson($this->link($server, 'files/create-folder'), [
+            'root' => '/', 'name' => 'preview',
+        ])->assertNoContent();
+        $this->postJson($this->link($server, 'files/create-folder'), [
+            'root' => '/preview', 'name' => 'nested',
+        ])->assertNoContent();
+
+        foreach (['/preview/draft.txt', '/preview/nested/draft.txt'] as $path) {
+            $url = $this->link($server, 'files/create').'?file='.$path;
+            $headers = ['CONTENT_TYPE' => 'text/plain', 'HTTP_X_SUBUSER_PREVIEW' => $token, 'HTTP_ACCEPT' => 'application/json'];
+            $this->call('POST', $url, [], [], [], $headers, 'original')->assertNoContent();
+            $this->call('POST', $url, [], [], [], $headers, 'replacement')->assertConflict();
+            $this->get($this->link($server, 'files/contents').'?file='.$path)->assertOk()->assertContent('original');
+            $entry = SubuserPreviewSession::query()->firstOrFail()->state['files'][$path];
+            $this->assertSame('original', base64_decode($entry['content'], true));
+        }
+
+        $this->getJson($this->link($server, 'files/list').'?directory=/preview/nested')
+            ->assertOk()->assertJsonPath('data.0.attributes.name', 'draft.txt');
+    }
+
     public function test_power_and_file_changes_are_isolated_and_persist_in_the_preview(): void
     {
         [$owner, $server, $target] = $this->models();
@@ -346,9 +391,9 @@ class SubuserPreviewTest extends ClientApiIntegrationTestCase
             'modified' => $timestamp,
         ];
         $this->mock(DaemonFileRepository::class, function (MockInterface $mock) use ($directory, $liveFile, $server) {
-            $mock->expects('setServer')->times(4)->withArgs(fn (Server $value) => $value->id === $server->id)->andReturnSelf();
+            $mock->expects('setServer')->times(6)->withArgs(fn (Server $value) => $value->id === $server->id)->andReturnSelf();
             $mock->expects('getDirectory')->once()->with('/')->andReturn([$directory]);
-            $mock->expects('getDirectory')->twice()->with('/live-dir')->andReturn([$liveFile]);
+            $mock->expects('getDirectory')->times(4)->with('/live-dir')->andReturn([$liveFile]);
             $mock->expects('getContent')->once()->with('/live-dir/live.txt', config('panel.files.max_edit_size'))->andReturn('live data');
             $mock->shouldNotReceive('putContent');
         });
@@ -372,6 +417,11 @@ class SubuserPreviewTest extends ClientApiIntegrationTestCase
                 'root' => '/',
                 'files' => [['from' => 'live-dir', 'to' => 'renamed']],
             ])
+            ->assertNoContent();
+        $headers = ['CONTENT_TYPE' => 'text/plain', 'HTTP_X_SUBUSER_PREVIEW' => $token, 'HTTP_ACCEPT' => 'application/json'];
+        $this->call('POST', $this->link($server, 'files/create').'?file=/renamed/live.txt', [], [], [], $headers, 'replacement')
+            ->assertConflict();
+        $this->call('POST', $this->link($server, 'files/create').'?file=/renamed/new.txt', [], [], [], $headers, 'new preview data')
             ->assertNoContent();
         $this->withPreviewToken($token)
             ->getJson($this->link($server, 'files/list').'?directory=/renamed')

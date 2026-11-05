@@ -6,9 +6,10 @@ import { ServerContext } from '@/state/server';
 import { join } from 'pathe';
 import Button from '@/reviactyl/elements/Button';
 import { useTranslation } from 'react-i18next';
+import { httpErrorToHuman } from '@/api/http';
 
 type Props = RequiredModalProps & {
-    onFileNamed: (name: string) => void;
+    onFileNamed: (name: string) => Promise<void>;
 };
 
 interface Values {
@@ -17,11 +18,16 @@ interface Values {
 
 export default ({ onFileNamed, onDismissed, ...props }: Props) => {
     const directory = ServerContext.useStoreState((state) => state.files.directory);
-    const { t } = useTranslation('strings');
+    const { t } = useTranslation(['strings', 'validation']);
 
-    const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
-        onFileNamed(join(directory, values.fileName));
-        setSubmitting(false);
+    const submit = async (values: Values, { setFieldError, setSubmitting }: FormikHelpers<Values>) => {
+        try {
+            await onFileNamed(join(directory, values.fileName));
+        } catch (error) {
+            setFieldError('fileName', httpErrorToHuman(error));
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     return (
@@ -32,7 +38,7 @@ export default ({ onFileNamed, onDismissed, ...props }: Props) => {
                 fileName: string().required().min(1),
             })}
         >
-            {({ resetForm }) => (
+            {({ resetForm, isSubmitting }) => (
                 <Modal
                     onDismissed={() => {
                         resetForm();
@@ -40,6 +46,7 @@ export default ({ onFileNamed, onDismissed, ...props }: Props) => {
                     }}
                     {...props}
                     accessibleName={t('create-file')}
+                    dismissable={!isSubmitting}
                 >
                     <Form>
                         <Field
@@ -48,9 +55,10 @@ export default ({ onFileNamed, onDismissed, ...props }: Props) => {
                             label={t('file-name')}
                             description={t('file-name-description')}
                             autoFocus
+                            disabled={isSubmitting}
                         />
                         <div className='mt-6 text-right'>
-                            <Button>{t('create-file')}</Button>
+                            <Button disabled={isSubmitting}>{t('create-file')}</Button>
                         </div>
                     </Form>
                 </Modal>

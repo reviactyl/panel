@@ -72,6 +72,20 @@ class DaemonFileRepository extends DaemonRepository
         }
     }
 
+    public function createContent(string $path, string $content): ResponseInterface
+    {
+        Assert::isInstanceOf($this->server, Server::class);
+
+        try {
+            return $this->getHttpClient()->post(
+                sprintf('/api/servers/%s/files/create', $this->server->uuid),
+                ['query' => ['file' => $path], 'body' => $content]
+            );
+        } catch (TransferException $exception) {
+            throw new DaemonConnectionException($exception);
+        }
+    }
+
     /**
      * Return a directory listing for a given path.
      *

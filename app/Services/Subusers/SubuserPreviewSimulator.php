@@ -232,7 +232,7 @@ class SubuserPreviewSimulator
             return response()->json([], 204);
         }
 
-        if (str_ends_with($path, '/files/write')) {
+        if (str_ends_with($path, '/files/write') || str_ends_with($path, '/files/create')) {
             $permission = $request->isMethod('post') ? Permission::ACTION_FILE_CREATE : Permission::ACTION_FILE_UPDATE;
             $this->authorize($context, $permission);
             validator($request->query(), ['file' => 'required|string'])->validate();
@@ -244,7 +244,7 @@ class SubuserPreviewSimulator
                 throw new BadRequestHttpException(trans('exceptions.subuser_preview.file_too_large'));
             }
 
-            $this->putFile($context, $file, true, $content);
+            $this->putFile($context, $file, true, $content, str_ends_with($path, '/files/create'));
 
             return response()->json([], 204);
         }
@@ -533,9 +533,16 @@ class SubuserPreviewSimulator
      * @param  bool  $isFile  Whether the entry is a file rather than a directory.
      * @param  string|null  $content  The file content to store.
      */
-    private function putFile(SubuserPreviewContext $context, string $path, bool $isFile, ?string $content = null): void
+    private function putFile(SubuserPreviewContext $context, string $path, bool $isFile, ?string $content = null, bool $createOnly = false): void
     {
-        $this->updateState($context, function (array $state) use ($path, $isFile, $content) {
+        $this->updateState($context, function (array $state) use ($context, $path, $isFile, $content, $createOnly) {
+            if ($createOnly) {
+                try {
+                    $this->resolveFileEntry($context, $state, $path);
+                    throw new ConflictHttpException(trans('validation.unique', ['attribute' => basename($path)]));
+                } catch (NotFoundHttpException) {
+                }
+            }
             $now = Carbon::now()->toAtomString();
             $existing = $state['files'][$path] ?? [];
             $state['files'][$path] = array_replace($existing, [
@@ -633,6 +640,15 @@ class SubuserPreviewSimulator
             }
 
             return $entry;
+        }
+
+        $parent = $state['files'][$this->parentPath($path)] ?? null;
+        if (is_array($parent)
+            && ($parent['deleted'] ?? false) === false
+            && ($parent['is_file'] ?? true) === false
+            && ! array_key_exists('source_path', $parent)
+        ) {
+            throw new NotFoundHttpException(trans('exceptions.subuser_preview.file_not_found'));
         }
 
         $livePath = $this->livePathForPreviewPath($state, $path);

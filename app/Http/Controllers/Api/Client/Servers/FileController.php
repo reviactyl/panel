@@ -114,6 +114,15 @@ class FileController extends ClientApiController
         return $this->writeContent($request, $server);
     }
 
+    public function createFile(WriteFileContentRequest $request, Server $server): JsonResponse
+    {
+        $this->fileRepository->setServer($server)->createContent($request->get('file'), $request->getContent());
+
+        Activity::event('server:file.write')->property('file', $request->get('file'))->log();
+
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+    }
+
     /**
      * Updates the contents of the specified file on the server.
      *
