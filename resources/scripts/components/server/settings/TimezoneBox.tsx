@@ -50,7 +50,7 @@ const CurrentTime = ({ timezone }: { timezone: string }) => {
 export default () => {
     const { t } = useTranslation('server/settings');
     const server = ServerContext.useStoreState((state) => state.server.data!);
-    const setServer = ServerContext.useStoreActions((actions) => actions.server.setServer);
+    const setServerFromState = ServerContext.useStoreActions((actions) => actions.server.setServerFromState);
     const setSchedules = ServerContext.useStoreActions((actions) => actions.schedules.setSchedules);
     const { addFlash, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
@@ -93,7 +93,7 @@ export default () => {
         clearFlashes('settings');
         setServerTimezone(server.uuid, selected)
             .then(() => {
-                setServer({ ...server, timezone: selected });
+                setServerFromState((current) => ({ ...current, timezone: selected }));
                 setSchedules([]);
                 addFlash({ key: 'settings', type: 'success', message: t('timezone.saved') });
             })
