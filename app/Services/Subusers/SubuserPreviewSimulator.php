@@ -642,6 +642,15 @@ class SubuserPreviewSimulator
             return $entry;
         }
 
+        $parent = $state['files'][$this->parentPath($path)] ?? null;
+        if (is_array($parent)
+            && ($parent['deleted'] ?? false) === false
+            && ($parent['is_file'] ?? true) === false
+            && ! array_key_exists('source_path', $parent)
+        ) {
+            throw new NotFoundHttpException(trans('exceptions.subuser_preview.file_not_found'));
+        }
+
         $livePath = $this->livePathForPreviewPath($state, $path);
         $entry = collect($this->fileRepository
             ->setServer($context->session()->server)
