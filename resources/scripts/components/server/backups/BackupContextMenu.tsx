@@ -251,7 +251,12 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
                         </Can>
 
                         <Can action={'backup.restore'}>
-                            <DropdownButtonRow onClick={() => setModal('restore')}>
+                            <DropdownButtonRow
+                                onClick={() => {
+                                    setTruncate(false);
+                                    setModal('restore');
+                                }}
+                            >
                                 <FaBoxOpen className={'text-xs inline-block w-[1.25em]'} />
                                 <span className='ml-2'>{t('restore')}</span>
                             </DropdownButtonRow>
