@@ -1,3 +1,4 @@
+import { ExtensionLayout } from '@/extensions/ExtensionLayout';
 import { Fragment, useEffect, useState } from 'react';
 import { Route, Routes, useParams, useLocation } from 'react-router-dom';
 import Navigate from '@/reviactyl/components/Navigate';
@@ -222,6 +223,7 @@ export default function ServerRouter() {
     const layoutType = useStoreState((state) => state.designify.data!.layoutType);
 
     const id = ServerContext.useStoreState((state) => state.server.data?.id);
+    const server = ServerContext.useStoreState((state) => state.server.data);
     const uuid = ServerContext.useStoreState((state) => state.server.data?.uuid);
     const inConflictState = ServerContext.useStoreState((state) => state.server.inConflictState);
 
@@ -310,9 +312,21 @@ export default function ServerRouter() {
                                     animate={{ opacity: 1 }}
                                     transition={{ duration: 0.15, ease: 'easeIn' }}
                                 >
-                                    <Sidebar isOpen={isSidebarOpen}>
-                                        <ServerNavigation />
-                                    </Sidebar>
+                                    <ExtensionLayout
+                                        name='server:sidebar'
+                                        disabled={!!session}
+                                        fallback={
+                                            <Sidebar isOpen={isSidebarOpen}>
+                                                <ServerNavigation />
+                                            </Sidebar>
+                                        }
+                                        componentProps={{
+                                            isOpen: isSidebarOpen,
+                                            onClose: () => setSidebarOpen(false),
+                                            children: <ServerNavigation />,
+                                        }}
+                                        context={{ eggId: serverEggId, nestId: serverNestId }}
+                                    />
                                 </motion.div>
 
                                 <div
@@ -327,7 +341,13 @@ export default function ServerRouter() {
                                         <ConflictStateRenderer />
                                     ) : (
                                         <ErrorBoundary>
-                                            <TopServerDetails />
+                                            <ExtensionLayout
+                                                name='server:details'
+                                                disabled={!!session}
+                                                fallback={<TopServerDetails />}
+                                                context={{ eggId: serverEggId, nestId: serverNestId }}
+                                                componentProps={{ server }}
+                                            />
                                             {!session && (
                                                 <ExtensionSlot
                                                     name='server:router:above'

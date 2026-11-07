@@ -1,3 +1,4 @@
+import { ExtensionLayout } from '@/extensions/ExtensionLayout';
 import { useEffect, useState } from 'react';
 import { Suspense } from 'react';
 import { useLocation, useRoutes } from 'react-router-dom';
@@ -187,9 +188,20 @@ function DashboardRouter() {
                             animate={{ opacity: 1 }}
                             transition={{ duration: 0.15, ease: 'easeIn' }}
                         >
-                            <Sidebar isOpen={isSidebarOpen}>
-                                <DashboardNavigation />
-                            </Sidebar>
+                            <ExtensionLayout
+                                name='dashboard:sidebar'
+                                disabled={!!session}
+                                fallback={
+                                    <Sidebar isOpen={isSidebarOpen}>
+                                        <DashboardNavigation />
+                                    </Sidebar>
+                                }
+                                componentProps={{
+                                    isOpen: isSidebarOpen,
+                                    onClose: () => setSidebarOpen(false),
+                                    children: <DashboardNavigation />,
+                                }}
+                            />
                         </motion.div>
                         <div
                             className={`w-full min-w-0 flex-1 overflow-y-auto ${layoutType === 'modern' ? 'pb-24 lg:pb-0' : ''}`}

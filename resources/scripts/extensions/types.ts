@@ -27,7 +27,17 @@ export interface ExtensionRouteDefinition extends ExtensionRouteGuard {
     icon?: string;
 }
 
+export type ExtensionLayoutName = 'dashboard:sidebar' | 'server:sidebar' | 'dashboard:server-card' | 'server:details';
+
+export interface ExtensionLayoutDefinition extends ExtensionRouteGuard {
+    name: ExtensionLayoutName;
+    module: string;
+    export?: string;
+    order?: number;
+}
+
 export interface ExtensionFrontendDefinition {
+    layouts?: ExtensionLayoutDefinition[];
     build_strategy?: 'precompiled' | 'source';
     entry_points?: string[];
     slots?: ExtensionSlotDefinition[];

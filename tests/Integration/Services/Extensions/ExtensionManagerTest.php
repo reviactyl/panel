@@ -137,6 +137,9 @@ class ExtensionManagerTest extends IntegrationTestCase
                         ['path' => '/server/extensions', 'module' => 'frontend/src/server.ts'],
                     ],
                 ],
+                'layouts' => [
+                    ['name' => 'server:details', 'module' => 'frontend/src/layout.tsx', 'export' => 'Details', 'egg_ids' => [1]],
+                ],
                 'slots' => [
                     ['name' => 'dashboard.after-cards', 'module' => 'frontend/src/slot.tsx'],
                 ],
@@ -145,6 +148,7 @@ class ExtensionManagerTest extends IntegrationTestCase
             'frontend/dist/main.js' => 'export default function Main() { return null; }',
             'frontend/dist/dashboard.js' => 'export default function Dashboard() { return null; }',
             'frontend/dist/server.js' => 'export default function ServerView() { return null; }',
+            'frontend/dist/layout.js' => 'export function Details() { return null; }',
             'frontend/dist/slot.js' => 'export default function Slot() { return null; }',
         ]);
 
@@ -159,6 +163,11 @@ class ExtensionManagerTest extends IntegrationTestCase
 
         $this->assertSame($identifier, $record['id']);
         $this->assertSame('frontend/dist/main.js', $record['frontend']['entry_points'][0]);
+        $this->assertStringStartsWith('frontend/dist/layout.js?v=', $record['frontend']['layouts'][0]['module']);
+        $this->assertFileExists($this->publicPath.'/'.$identifier.'/frontend/dist/layout.js');
+        $this->assertSame('export function Details() { return null; }', File::get($this->publicPath.'/'.$identifier.'/frontend/dist/layout.js'));
+        $this->assertSame('Details', $record['frontend']['layouts'][0]['export']);
+        $this->assertSame([1], $record['frontend']['layouts'][0]['egg_ids']);
         $this->assertStringStartsWith('frontend/dist/slot.js?v=', $record['frontend']['slots'][0]['module']);
         $this->assertStringStartsWith('frontend/dist/dashboard.js?v=', $record['frontend']['routes']['dashboardRouter'][0]['module']);
         $this->assertStringStartsWith('frontend/dist/server.js?v=', $record['frontend']['routes']['serverRouter'][0]['module']);
