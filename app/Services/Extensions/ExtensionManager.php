@@ -221,6 +221,23 @@ class ExtensionManager
                 ->values()
                 ->all();
 
+            $layouts = collect(Arr::wrap(Arr::get($frontend, 'layouts', [])))
+                ->map(function ($layout) use ($extension) {
+                    if (! is_array($layout)) {
+                        return $layout;
+                    }
+
+                    $module = Arr::get($layout, 'module');
+                    if (is_string($module)) {
+                        $normalized = $this->normalizeFrontendModulePath($module);
+                        $layout['module'] = $this->versionedFrontendModulePath($normalized, $extension);
+                    }
+
+                    return $layout;
+                })
+                ->values()
+                ->all();
+
             $dashboardRoutes = collect(Arr::wrap(Arr::get($frontend, 'routes.dashboardRouter', [])))
                 ->map(function ($route) use ($extension) {
                     if (! is_array($route)) {
@@ -265,6 +282,7 @@ class ExtensionManager
                     'build_strategy' => Arr::get($frontend, 'build_strategy', 'precompiled'),
                     'entry_points' => $this->resolveFrontendEntryPoints($manifest),
                     'slots' => $slots,
+                    'layouts' => $layouts,
                     'routes' => [
                         'dashboardRouter' => $dashboardRoutes,
                         'serverRouter' => $serverRoutes,

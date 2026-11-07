@@ -1,3 +1,5 @@
+import { ExtensionLayout } from '@/extensions/ExtensionLayout';
+import { useSubuserPreview } from '@/context/SubuserPreviewContext';
 import React from 'react';
 import ServerGrid from '@/reviactyl/components/layouts/ServerGrid';
 import ServerRow from '@/reviactyl/components/layouts/ServerRow';
@@ -8,7 +10,18 @@ type Props = React.ComponentProps<typeof ServerGrid> & React.ComponentProps<type
 
 export const ServerLayout: React.FC<Props> = ({ ...props }) => {
     const cardType = useStoreState((state: ApplicationStore) => state.designify.data!.cardType);
-    return <div>{cardType === 'grid' ? <ServerGrid {...props} /> : <ServerRow {...props} />}</div>;
+    const { session } = useSubuserPreview();
+    return (
+        <div>
+            <ExtensionLayout
+                name='dashboard:server-card'
+                disabled={!!session}
+                fallback={cardType === 'grid' ? <ServerGrid {...props} /> : <ServerRow {...props} />}
+                context={{ eggId: props.server.eggId, nestId: props.server.nestId }}
+                componentProps={{ ...props, cardType }}
+            />
+        </div>
+    );
 };
 
 export const LayoutContainer = ({ children }: { children: React.ReactNode }) => {

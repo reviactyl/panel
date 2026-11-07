@@ -45,6 +45,9 @@ class ExtensionsControllerTest extends ClientApiIntegrationTestCase
                 'feature_flags' => ['feature-a'],
                 'frontend' => [
                     'entry_points' => ['frontend/dist/entry.js'],
+                    'layouts' => [
+                        ['name' => 'dashboard:sidebar', 'module' => 'frontend/dist/sidebar.js', 'order' => 2],
+                    ],
                     'slots' => [
                         ['name' => 'dashboard.after-cards', 'module' => 'frontend/dist/slot.js'],
                     ],
@@ -88,6 +91,8 @@ class ExtensionsControllerTest extends ClientApiIntegrationTestCase
         $response->assertJsonPath('data.0.permissions.0', 'extensions.use');
         $response->assertJsonPath('data.0.feature_flags.0', 'feature-a');
         $response->assertJsonPath('data.0.frontend.entry_points.0', 'frontend/dist/entry.js');
+        $response->assertJsonPath('data.0.frontend.layouts.0.module', 'frontend/dist/sidebar.js');
+        $response->assertJsonPath('data.0.frontend.layouts.0.order', 2);
         $response->assertJsonPath('data.0.frontend.slots.0.module', 'frontend/dist/slot.js');
         $response->assertJsonPath('data.0.frontend.routes.dashboardRouter.0.module', 'frontend/dist/dashboard.js');
         $response->assertJsonPath('data.0.frontend.routes.serverRouter.0.module', 'frontend/dist/server.js');
