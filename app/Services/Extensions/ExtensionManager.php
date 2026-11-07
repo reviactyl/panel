@@ -442,7 +442,12 @@ class ExtensionManager
         $sourceEntry = Arr::get($manifest, 'frontend.source.entry');
         $sourceEntries = Arr::wrap(Arr::get($manifest, 'frontend.source.entries', []));
 
-        $candidates = collect([...$entryPoints, $sourceEntry, ...$sourceEntries])
+        $layoutModules = collect(Arr::wrap(Arr::get($manifest, 'frontend.layouts', [])))
+            ->filter(fn ($layout) => is_array($layout))
+            ->pluck('module')
+            ->all();
+
+        $candidates = collect([...$entryPoints, $sourceEntry, ...$sourceEntries, ...$layoutModules])
             ->filter(fn ($value) => is_string($value) && trim($value) !== '')
             ->map(fn (string $value): string => $this->normalizeFrontendModulePath($value))
             ->unique()

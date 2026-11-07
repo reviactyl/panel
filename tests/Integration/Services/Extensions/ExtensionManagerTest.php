@@ -164,6 +164,8 @@ class ExtensionManagerTest extends IntegrationTestCase
         $this->assertSame($identifier, $record['id']);
         $this->assertSame('frontend/dist/main.js', $record['frontend']['entry_points'][0]);
         $this->assertStringStartsWith('frontend/dist/layout.js?v=', $record['frontend']['layouts'][0]['module']);
+        $this->assertFileExists($this->publicPath.'/'.$identifier.'/frontend/dist/layout.js');
+        $this->assertSame('export function Details() { return null; }', File::get($this->publicPath.'/'.$identifier.'/frontend/dist/layout.js'));
         $this->assertSame('Details', $record['frontend']['layouts'][0]['export']);
         $this->assertSame([1], $record['frontend']['layouts'][0]['egg_ids']);
         $this->assertStringStartsWith('frontend/dist/slot.js?v=', $record['frontend']['slots'][0]['module']);
