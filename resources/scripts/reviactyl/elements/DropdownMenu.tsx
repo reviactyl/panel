@@ -49,12 +49,12 @@ class DropdownMenu extends React.PureComponent<Props, State> {
 
         if (this.state.visible && menu && (!prevState.visible || prevState.posX !== this.state.posX)) {
             if (!prevState.visible) {
+                if (this.props.manageFocus) document.addEventListener('keydown', this.keyListener);
                 // Delay by one tick so the event that opened this menu finishes
                 // propagating before we register listeners that can close it.
                 this.listenerTimer = setTimeout(() => {
                     document.addEventListener('click', this.windowListener);
                     document.addEventListener('contextmenu', this.contextMenuListener);
-                    if (this.props.manageFocus) document.addEventListener('keydown', this.keyListener);
                 }, 0);
             }
             const left = this.state.posX - menu.clientWidth;

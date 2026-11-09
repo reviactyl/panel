@@ -53,6 +53,17 @@ for (const key of ['Enter', 'Space']) {
         await page.keyboard.press('Tab');
         await expect(toggle).toBeFocused();
         await page.keyboard.press(key);
+        await expect(page.getByRole('button', { name: 'Rename', exact: true })).toBeVisible();
+        await page.keyboard.press('Escape');
+        await expect(page.getByRole('button', { name: 'Rename', exact: true })).not.toBeVisible();
+        await expect(toggle).toBeFocused();
+        await page.keyboard.press(key);
+        await page.keyboard.press('Tab');
+        await expect(page.getByRole('button', { name: 'Rename', exact: true })).toBeFocused();
+        await page.keyboard.press('Escape');
+        await expect(page.getByRole('button', { name: 'Rename', exact: true })).not.toBeVisible();
+        await expect(toggle).toBeFocused();
+        await page.keyboard.press(key);
         await page.keyboard.press('Tab');
         await expect(page.getByRole('button', { name: 'Rename', exact: true })).toBeFocused();
         for (const label of ['Preview', 'Download', 'Restore', 'Lock', 'Delete']) {
@@ -65,5 +76,28 @@ for (const key of ['Enter', 'Space']) {
         await page.keyboard.press(key);
         await expect(dialog).not.toBeVisible();
         await expect(toggle).toBeVisible();
+
+        await toggle.click();
+        await expect(page.getByRole('button', { name: 'Rename', exact: true })).toBeVisible();
+        await page.getByText(completedName, { exact: true }).click();
+        await expect(page.getByRole('button', { name: 'Rename', exact: true })).not.toBeVisible();
+        await page.getByText(completedName, { exact: true }).click({ button: 'right' });
+        await expect(page.getByRole('button', { name: 'Rename', exact: true })).toBeVisible();
+        await page.keyboard.press('Escape');
+        await expect(page.getByRole('button', { name: 'Rename', exact: true })).not.toBeVisible();
+        await expect(toggle).toBeFocused();
+        await toggle.click();
+        await page.getByRole('button', { name: 'Delete', exact: true }).click();
+        await expect(dialog).toContainText(completedName);
+        await expect(page.getByRole('button', { name: 'Rename', exact: true })).not.toBeVisible();
+        await dialog.getByRole('button', { name: 'Cancel', exact: true }).click();
+        await expect(dialog).not.toBeVisible();
+        await expect(toggle).toBeVisible();
+        const backups = await (await page.request.get(api)).json();
+        for (const name of [failedName, completedName]) {
+            expect(backups.data.some((item: { attributes: { name: string } }) => item.attributes.name === name)).toBe(
+                true,
+            );
+        }
     });
 }

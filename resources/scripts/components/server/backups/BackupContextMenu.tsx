@@ -222,6 +222,7 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
             {backup.isSuccessful ? (
                 <DropdownMenu
                     ref={dropdownRef}
+                    manageFocus
                     renderToggle={(onClick) => (
                         <button
                             aria-label={t('backup-actions', { name: backup.name })}
