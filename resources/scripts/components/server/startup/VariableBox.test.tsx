@@ -2,6 +2,7 @@ import { act, type ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { Link, MemoryRouter, Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { getByLabelText, getByRole } from '@testing-library/dom';
 import type { ServerEggVariable } from '@/api/server/types';
 import VariableBox from './VariableBox';
 
@@ -51,10 +52,12 @@ beforeEach(() => {
     mocks.uuid = 'server-uuid';
     mocks.addError.mockReset();
     container = document.createElement('div');
+    document.body.appendChild(container);
     root = createRoot(container);
 });
 afterEach(async () => {
     await act(async () => root.unmount());
+    container.remove();
     vi.useRealTimers();
 });
 const render = async (overrides: Partial<ServerEggVariable>) => {
@@ -76,6 +79,55 @@ const beforeUnload = () => {
     window.dispatchEvent(event);
     return event.defaultPrevented;
 };
+
+describe('startup variable labels', () => {
+    const controls = [
+        { name: 'Server message', rules: ['required', 'string'], role: 'textbox' },
+        { name: 'Server mode', rules: ['required', 'in:easy,normal,hard'], role: 'combobox' },
+        { name: 'Enable feature', rules: ['required', 'boolean'], role: 'checkbox' },
+        { name: 'String feature', rules: ['required', 'in:true,false'], role: 'checkbox' },
+        { name: 'Server token', rules: ['nullable', 'string'], isSecret: true },
+    ];
+
+    it.each(controls)('associates $name with its control', async ({ name, rules, role, isSecret }) => {
+        await render({ name, rules, isSecret });
+        const control = getByLabelText(container, name) as HTMLInputElement | HTMLSelectElement;
+        if (role) expect(getByRole(container, role, { name })).toBe(control);
+        const label = Array.from(control.labels!).find((label) => label.textContent === name);
+        expect(label?.control).toBe(control);
+        expect(mocks.update).not.toHaveBeenCalled();
+    });
+
+    it.each(
+        controls.flatMap((control) => ['permission', 'variable'].map((restriction) => ({ ...control, restriction }))),
+    )('keeps $name read-only when restricted by $restriction', async ({ name, rules, role, isSecret, restriction }) => {
+        mocks.canEdit = restriction !== 'permission';
+        await render({ name, rules, isSecret, isEditable: restriction !== 'variable' });
+        const control = getByLabelText(container, name) as HTMLInputElement | HTMLSelectElement;
+        if (role === 'combobox' || role === 'checkbox') expect(control.disabled).toBe(true);
+        else expect((control as HTMLInputElement).readOnly).toBe(true);
+        if (role === 'checkbox') await toggle(control as HTMLInputElement);
+        expect(mocks.update).not.toHaveBeenCalled();
+    });
+
+    it('keeps label ids stable and unique for multiple variable boxes', async () => {
+        const boxes = (description: string) => (
+            <>
+                <VariableBox variable={{ ...variable, name: 'First feature', description }} />
+                <VariableBox variable={{ ...variable, name: 'Second feature', description }} />
+            </>
+        );
+        await act(async () => root.render(boxes('Initial')));
+        const first = getByLabelText(container, 'First feature') as HTMLInputElement;
+        const second = getByLabelText(container, 'Second feature') as HTMLInputElement;
+        expect(first.id).not.toBe(second.id);
+        const ids = [first.id, second.id];
+        await act(async () => root.render(boxes('Updated')));
+        expect([first.id, second.id]).toEqual(ids);
+        expect(getByLabelText(container, 'First feature')).toBe(first);
+        expect(getByLabelText(container, 'Second feature')).toBe(second);
+    });
+});
 
 describe('startup boolean switch representation', () => {
     it.each([
