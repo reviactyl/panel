@@ -16,7 +16,8 @@ const FileEditorSwitcher = () => {
     const savePreference = useAccountPreference();
     const [editors, setEditors] = useState<Record<string, FileEditorSwitcherProps>>({});
     const [guestEditor, setGuestEditor] = useState('cm');
-    const currentEditor = user?.fileEditor || guestEditor;
+    const [pendingEditor, setPendingEditor] = useState<string | null>(null);
+    const currentEditor = pendingEditor ?? user?.fileEditor ?? guestEditor;
 
     useEffect(() => {
         fetch('/file-editors/list.json')
@@ -34,9 +35,12 @@ const FileEditorSwitcher = () => {
         const newEditor = e.target.value;
 
         if (user) {
+            setPendingEditor(newEditor);
             try {
                 await savePreference('fileEditor', newEditor);
+                setPendingEditor(null);
             } catch (error) {
+                setPendingEditor(null);
                 console.error('Failed to update editor:', error);
             }
         } else {

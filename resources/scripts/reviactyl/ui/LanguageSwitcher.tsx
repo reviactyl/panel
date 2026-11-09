@@ -19,9 +19,8 @@ const LanguageSwitcher = () => {
     const serverLocale = useStoreState((state: any) => state.settings.data?.locale || 'en');
     const savePreference = useAccountPreference();
     const [languages, setLanguages] = useState<Record<string, LanguageInfo>>({});
-    const [currentLang, setCurrentLang] = useState(
-        user?.language && user.language !== 'geo' ? user.language : serverLocale,
-    );
+    const [pendingLang, setPendingLang] = useState<string | null>(null);
+    const currentLang = pendingLang ?? (user?.language && user.language !== 'geo' ? user.language : serverLocale);
 
     useEffect(() => {
         fetch('/locales/list.json')
@@ -29,7 +28,7 @@ const LanguageSwitcher = () => {
             .then((langs) => setLanguages(langs))
             .catch(() => setLanguages({ en: { name: 'English', flag: 'us' } }));
 
-        const onLangChanged = (lng: string) => setCurrentLang(lng);
+        const onLangChanged = () => setPendingLang(null);
         i18n.on('languageChanged', onLangChanged);
         return () => i18n.off('languageChanged', onLangChanged);
     }, []);
@@ -37,14 +36,17 @@ const LanguageSwitcher = () => {
     const handleChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const newLang = e.target.value;
 
+        setPendingLang(newLang);
         if (user) {
             try {
-                if (await savePreference('language', newLang)) setCurrentLang(newLang);
+                await savePreference('language', newLang);
+                setPendingLang(null);
             } catch (error) {
+                setPendingLang(null);
                 console.error('Failed to update language:', error);
             }
         } else {
-            setCurrentLang(newLang);
+            setPendingLang(null);
             i18n.changeLanguage(newLang);
         }
     };
