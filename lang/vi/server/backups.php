@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'backup-actions' => 'Thao tác với {{name}}',
     'title' => 'Sao lưu',
     'out-of-backups' => 'Có vẻ như chúng tôi đã hết bản sao lưu để hiển thị cho bạn, hãy thử quay lại một trang.',
     'no-backups' => 'Có vẻ như hiện không có bản sao lưu nào được lưu trữ cho máy chủ này.',

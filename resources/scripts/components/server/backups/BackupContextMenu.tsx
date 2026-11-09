@@ -224,6 +224,7 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
                     ref={dropdownRef}
                     renderToggle={(onClick) => (
                         <button
+                            aria-label={t('backup-actions', { name: backup.name })}
                             onClick={onClick}
                             className='text-gray-200 transition-colors duration-150 hover:text-gray-100 p-2'
                         >
@@ -288,6 +289,7 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
             ) : (
                 <Can action={'backup.delete'}>
                     <button
+                        aria-label={t('delete-backup', { name: backup.name })}
                         onClick={() => setModal('delete')}
                         className='text-gray-200 transition-colors duration-150 hover:text-gray-100 p-2'
                     >

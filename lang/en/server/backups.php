@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'backup-actions' => 'Actions for {{name}}',
     'title' => 'Backups',
     'out-of-backups' => 'Looks like we\'ve run out of backups to show you, try going back a page.',
     'no-backups' => 'It looks like there are no backups currently stored for this server.',
