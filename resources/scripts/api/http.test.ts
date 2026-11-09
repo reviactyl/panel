@@ -1,10 +1,13 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
 import { AxiosError, AxiosHeaders } from 'axios';
 import http from './http';
 
+const progress = vi.hoisted(() => ({ startContinuous: vi.fn(), setComplete: vi.fn() }));
+beforeEach(() => vi.clearAllMocks());
+
 vi.mock('@/state', () => ({
     store: {
-        getActions: () => ({ progress: { startContinuous: vi.fn(), setComplete: vi.fn() } }),
+        getActions: () => ({ progress }),
     },
 }));
 
@@ -53,5 +56,29 @@ describe('session expiry', () => {
 
         expect(response.data).toEqual({ id: 1 });
         expect(location.href).toBe('/server/example');
+    });
+});
+
+describe('historical metrics background requests', () => {
+    it.each([false, true])('leaves progress untouched when history rejects: %s', async (reject) => {
+        const request = http.get('/api/client/servers/example/resources/history', {
+            params: { days: 1 },
+            adapter: async (config) => {
+                if (reject) throw new AxiosError('Offline', undefined, config);
+                return { config, status: 200, statusText: 'OK', headers: {}, data: { data: [] } };
+            },
+        });
+        if (reject) await expect(request).rejects.toThrow('Offline');
+        else await expect(request).resolves.toMatchObject({ data: { data: [] } });
+        expect(progress.startContinuous).not.toHaveBeenCalled();
+        expect(progress.setComplete).not.toHaveBeenCalled();
+    });
+
+    it('still shows progress for foreground requests', async () => {
+        await http.get('/api/client/servers/example/backups', {
+            adapter: async (config) => ({ config, status: 200, statusText: 'OK', headers: {}, data: {} }),
+        });
+        expect(progress.startContinuous).toHaveBeenCalledOnce();
+        expect(progress.setComplete).toHaveBeenCalledOnce();
     });
 });
