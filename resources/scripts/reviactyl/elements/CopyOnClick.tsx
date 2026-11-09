@@ -26,14 +26,38 @@ const CopyOnClick = ({ text, showInNotification = true, children }: CopyOnClickP
         };
     }, []);
 
-    if (!React.isValidElement(children)) {
+    if (!React.isValidElement<React.HTMLAttributes<HTMLElement>>(children)) {
         throw new Error('Component passed to <CopyOnClick/> must be a valid React element.');
     }
 
+    const keyboardAction =
+        typeof children.type === 'string' &&
+        ['p', 'span', 'div', 'pre', 'code'].includes(children.type) &&
+        !children.props.contentEditable;
+
     const child = !text
         ? React.Children.only(children)
-        : React.cloneElement(React.Children.only(children) as React.ReactElement<any>, {
-              className: classNames((children.props as any).className || '', 'cursor-pointer'),
+        : React.cloneElement(React.Children.only(children), {
+              ...(keyboardAction && {
+                  role: 'button',
+                  tabIndex: children.props.tabIndex ?? 0,
+                  onKeyDown: (e: React.KeyboardEvent<HTMLElement>) => {
+                      children.props.onKeyDown?.(e);
+                      if (e.target !== e.currentTarget || e.defaultPrevented) {
+                          return;
+                      }
+                      if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          if (!e.repeat) {
+                              e.currentTarget.click();
+                          }
+                      }
+                  },
+              }),
+              className: classNames(children.props.className, 'cursor-pointer', {
+                  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary':
+                      keyboardAction,
+              }),
               onClick: (e: React.MouseEvent<HTMLElement>) => {
                   copy(String(text));
 
@@ -66,9 +90,7 @@ const CopyOnClick = ({ text, showInNotification = true, children }: CopyOnClickP
                       }, 2500),
                   );
 
-                  if (typeof (children.props as any).onClick === 'function') {
-                      (children.props as any).onClick(e);
-                  }
+                  children.props.onClick?.(e);
               },
           });
 
