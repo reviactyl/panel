@@ -52,6 +52,7 @@ export default () => {
             });
             return data;
         },
+        { refreshInterval: 60_000 },
     );
 
     if (error) {
