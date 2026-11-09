@@ -45,3 +45,39 @@ test('schedule and backup labels name and focus their fields', async ({ page }) 
     await backupName.fill('Accessible backup');
     await expect(backupName).toHaveValue('Accessible backup');
 });
+
+for (const width of [1280, 390]) {
+    test(`account form labels name and focus their fields at ${width}px`, async ({ page }) => {
+        const url = process.env.ACCOUNT_FORM_DEMO_URL;
+        test.skip(!url, 'Requires this task’s isolated Pi demo URL.');
+        await page.setViewportSize({ width, height: 900 });
+        await page.goto(`${url}/auth/login`);
+        await page.locator('input[name=username]').fill('demo');
+        await page.locator('input[name=password]').fill('demo');
+        await page.getByRole('button', { name: 'Login', exact: true }).click();
+        await page.waitForURL(`${url}/`);
+        for (const [route, names] of [
+            ['api', ['Description', 'Allowed IPS']],
+            ['ssh', ['SSH Key Name', 'Public Key']],
+        ] as const) {
+            await page.goto(`${url}/account/${route}`);
+            const ids: string[] = [];
+            for (const name of names) {
+                const input = page.getByRole('textbox', { name, exact: true });
+                await expect(input).toBeVisible();
+                const id = (await input.getAttribute('id'))!;
+                expect(id).toBeTruthy();
+                ids.push(id);
+                await page
+                    .getByText(name, { exact: true })
+                    .filter({ hasNot: page.locator('input') })
+                    .click();
+                await expect(input).toBeFocused();
+                await input.fill(`${name} value`);
+                await expect(input).toHaveAttribute('id', id);
+                await expect(input).toHaveValue(`${name} value`);
+            }
+            expect(new Set(ids).size).toBe(ids.length);
+        }
+    });
+}
