@@ -252,6 +252,58 @@ describe.each(['account', 'navbar', 'editor'] as const)('%s delayed saves', (con
     );
 });
 
+describe.each(['account', 'navbar'] as const)('%s three-selection language saves', (control) => {
+    it('keeps the newest selection visible while earlier saves settle', async () => {
+        const store = createStore({ user, settings: { data: { locale: 'en' } } });
+        store.getActions().user.setUserData(initialUser);
+        const first = deferred();
+        const second = deferred();
+        const third = deferred();
+        vi.mocked(updateAccountLanguage)
+            .mockReturnValueOnce(first.promise)
+            .mockReturnValueOnce(second.promise)
+            .mockReturnValueOnce(third.promise);
+
+        await act(async () => {
+            root.render(
+                <StoreProvider store={store}>
+                    <LocaleLoader />
+                    {control === 'account' ? <LanguageSwitcher /> : <NavbarLanguageSwitcher />}
+                </StoreProvider>,
+            );
+        });
+
+        const choose = async (value: string) => {
+            if (control === 'account') return select(container.querySelector('select')!, value);
+            await act(async () => container.querySelector('button')!.click());
+            await act(async () => {
+                Array.from(container.querySelectorAll('button'))
+                    .find((button) => button.textContent === (value === 'fr' ? 'French' : 'English'))!
+                    .click();
+            });
+        };
+        const displayed = () =>
+            control === 'account'
+                ? container.querySelector('select')!.value
+                : container.querySelector('button')!.getAttribute('aria-label');
+
+        await choose('fr');
+        await choose('en');
+        await choose('fr');
+        expect(displayed()).toBe(control === 'account' ? 'fr' : 'overview.language: French');
+
+        await act(async () => first.resolve());
+        await act(async () => second.resolve());
+        expect(updateAccountLanguage).toHaveBeenCalledTimes(3);
+        expect(displayed()).toBe(control === 'account' ? 'fr' : 'overview.language: French');
+        await act(async () => third.resolve());
+
+        expect(store.getState().user.data?.language).toBe('fr');
+        expect(i18n.language).toBe('fr');
+        expect(displayed()).toBe(control === 'account' ? 'fr' : 'overview.language: French');
+    });
+});
+
 it('serializes language saves across selectors and remounts without blocking editor saves', async () => {
     const store = createStore({ user, settings: { data: { locale: 'en' } } });
     store.getActions().user.setUserData(initialUser);
