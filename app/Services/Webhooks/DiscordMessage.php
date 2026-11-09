@@ -87,7 +87,7 @@ class DiscordMessage
             $footer .= ' · Log #'.self::escapeCode((string) $payload['data']['id']);
         }
 
-        $footer = Str::limit('-# '.$footer, 300);
+        $footer = '-# '.$footer;
         $available = max(0, self::MESSAGE_TEXT_LIMIT - mb_strlen($headerLabel) - mb_strlen($headerTitle));
         $reserved = min($available, mb_strlen($details) + mb_strlen($footer));
         $templateBudget = max(0, $available - $reserved);
