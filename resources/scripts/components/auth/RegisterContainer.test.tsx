@@ -96,6 +96,71 @@ afterEach(async () => {
     container.remove();
 });
 
+describe('registration password fields', () => {
+    it.each([
+        ['password', 'register.password-label'],
+        ['passwordConfirmation', 'register.confirm-label'],
+    ])('associates the visible label with %s', (name, text) => {
+        const input = container.querySelector<HTMLInputElement>(`input[name=${name}]`)!;
+        const label = Array.from(container.querySelectorAll('label')).find((label) => label.textContent === text)!;
+        expect(label.htmlFor).toBe(input.id);
+        expect(label.control).toBe(input);
+        expect(Array.from(input.labels!)).toEqual([label]);
+    });
+
+    it('preserves password values and label associations when revealing and hiding both fields', async () => {
+        const inputs = ['password', 'passwordConfirmation'].map((name) =>
+            container.querySelector<HTMLInputElement>(`input[name=${name}]`)!,
+        );
+        const ids = inputs.map((input) => input.id);
+        for (const type of ['text', 'password']) {
+            await act(async () => container.querySelector<HTMLButtonElement>('button[type=button]')!.click());
+            inputs.forEach((input, index) => {
+                expect(input.type).toBe(type);
+                expect(input.value).toBe(values.password);
+                expect(input.id).toBe(ids[index]);
+                expect(input.labels).toHaveLength(1);
+            });
+        }
+        expect(new Set(ids).size).toBe(2);
+        expect(mocks.register).not.toHaveBeenCalled();
+    });
+
+    it.each([
+        ['password', 'short', 'Password must be at least 8 characters'],
+        ['passwordConfirmation', 'DifferentPassword123!', 'Register.no-match'],
+    ])('blocks submission for invalid %s', async (name, value, message) => {
+        await act(async () => {
+            const input = container.querySelector<HTMLInputElement>(`input[name=${name}]`)!;
+            Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(input, value);
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+        await act(async () => {
+            container.querySelector('form')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+        });
+        expect(fieldMessage(name)?.textContent).toContain(message);
+        expect(mocks.register).not.toHaveBeenCalled();
+        expect(container.querySelector('button[type=submit]')?.hasAttribute('disabled')).toBe(false);
+    });
+
+    it('submits the unchanged registration payload', async () => {
+        mocks.register.mockResolvedValueOnce({ complete: false });
+        await act(async () => {
+            container.querySelector('form')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+        });
+        expect(mocks.register).toHaveBeenCalledExactlyOnceWith({
+            email: values.email,
+            username: values.username,
+            first_name: values.firstName,
+            last_name: values.lastName,
+            password: values.password,
+            password_confirmation: values.passwordConfirmation,
+            'g-recaptcha-response': undefined,
+            'cf-turnstile-response': undefined,
+        });
+    });
+});
+
 describe('registration server validation', () => {
     it.each([
         ['username', 'username'],
