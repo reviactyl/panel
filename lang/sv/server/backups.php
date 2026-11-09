@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'backup-actions' => 'Åtgärder för {{name}}',
     'title' => 'Säkerhetskopior',
     'out-of-backups' => 'Det verkar som att vi har slut på säkerhetskopior att visa dig, försök att gå tillbaka en sida.',
     'no-backups' => 'Det verkar inte finnas några säkerhetskopior lagrade för denna server för närvarande.',

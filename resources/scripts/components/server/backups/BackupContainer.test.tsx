@@ -1,4 +1,5 @@
 import { act, type ReactNode } from 'react';
+import { getByRole } from '@testing-library/dom';
 import { createRoot, type Root } from 'react-dom/client';
 import { SWRConfig } from 'swr';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -47,8 +48,8 @@ vi.mock('@/plugins/useFlash', () => ({
 }));
 vi.mock('react-i18next', () => ({
     useTranslation: () => ({
-        t: (key: string, options?: { count: number; limit: number }) =>
-            options ? `${options.count} of ${options.limit}` : key,
+        t: (key: string, options?: { count?: number; limit?: number; name?: string }) =>
+            options?.name ? `${key}: ${options.name}` : options ? `${options.count} of ${options.limit}` : key,
     }),
 }));
 vi.mock('@/reviactyl/elements/Spinner', () => ({ default: () => <span>Loading</span> }));
@@ -98,6 +99,9 @@ vi.mock('@/reviactyl/elements/Modal', () => ({
         visible ? <div role='dialog'>{children}</div> : null,
 }));
 vi.mock('@/api/server/backups/deleteBackup', () => ({ default: mocks.delete }));
+vi.mock('@/reviactyl/elements/Fade', () => ({
+    default: ({ children, in: visible }: { children: ReactNode; in: boolean }) => (visible ? children : null),
+}));
 vi.mock('@/reviactyl/elements/SpinnerOverlay', () => ({ default: () => null }));
 vi.mock('./RenameBackupModal', () => ({ default: () => null }));
 vi.mock('@/reviactyl/elements/dialog', () => ({
@@ -382,5 +386,30 @@ describe('backup creation pagination', () => {
         expect(container.querySelectorAll('[data-backup-id]')).toHaveLength(20);
         expect(container.querySelector('[role="dialog"]')).not.toBeNull();
         expect(container.querySelector<HTMLButtonElement>('button[type="submit"]')!.disabled).toBe(false);
+    });
+});
+
+describe('backup action names', () => {
+    it.each([true, false])('names the action for a completed backup (successful: %s)', async (isSuccessful) => {
+        mocks.deleteControls = true;
+        mocks.delete.mockResolvedValue(undefined);
+        mocks.fetch.mockResolvedValue(
+            response([{ ...pending, name: 'Nightly backup', isSuccessful, completedAt: new Date() }]),
+        );
+        await render();
+
+        const action = getByRole(container, 'button', {
+            name: `${isSuccessful ? 'backup-actions' : 'delete-backup'}: Nightly backup`,
+        });
+        expect(action.tagName).toBe('BUTTON');
+        expect(action.tabIndex).toBe(0);
+        await act(async () => action.click());
+        expect(mocks.delete).not.toHaveBeenCalled();
+
+        if (isSuccessful) {
+            await act(async () => getByRole(container, 'button', { name: 'delete' }).click());
+        }
+        await act(async () => getByRole(container, 'button', { name: 'Confirm deletion' }).click());
+        expect(mocks.delete).toHaveBeenCalledWith('server-uuid', 'backup-1');
     });
 });

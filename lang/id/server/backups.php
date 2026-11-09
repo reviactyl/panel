@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'backup-actions' => 'Tindakan untuk {{name}}',
     'title' => 'Backup',
     'out-of-backups' => 'Sepertinya kami kehabisan backup untuk ditampilkan, coba kembali ke halaman sebelumnya.',
     'no-backups' => 'Sepertinya tidak ada backup yang tersimpan saat ini untuk server ini.',

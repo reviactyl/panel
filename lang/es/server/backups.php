@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'backup-actions' => 'Acciones para {{name}}',
     'title' => 'Copias de seguridad',
     'out-of-backups' => 'Parece que no hay más copias de seguridad para mostrar, intenta volver una página atrás.',
     'no-backups' => 'Parece que actualmente no hay copias de seguridad almacenadas para este servidor.',
