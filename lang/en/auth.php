@@ -85,5 +85,6 @@ return [
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
     'password_requirements' => 'Password must be at least 8 characters in length and should be unique to this site.',
     '2fa_must_be_enabled' => 'The administrator has required that 2-Factor Authentication be enabled for your account in order to use the Panel.',
+    'captcha-failed' => 'Unable to complete the captcha challenge. Please try again.',
     'captcha-required' => 'Please complete the captcha challenge to continue.',
 ];

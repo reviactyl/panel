@@ -5,6 +5,11 @@ import RegisterContainer from './RegisterContainer';
 
 const mocks = vi.hoisted(() => ({
     register: vi.fn(),
+    provider: 'disable',
+    missingWidget: false,
+    execute: vi.fn(),
+    reset: vi.fn(),
+    captcha: {} as { onVerify: (token: string) => void; onError: () => void; onExpire: () => void },
     clearFlashes: vi.fn(),
     clearAndAddHttpError: vi.fn(),
     addError: vi.fn(),
@@ -13,8 +18,20 @@ const mocks = vi.hoisted(() => ({
 vi.mock('@/api/auth/register', () => ({ default: mocks.register }));
 vi.mock('@/plugins/useFlash', () => ({ default: () => mocks }));
 vi.mock('easy-peasy', () => ({
-    useStoreState: () => ({ provider: 'disable', recaptcha: {}, turnstile: {} }),
+    useStoreState: () => ({ provider: mocks.provider, recaptcha: {}, turnstile: {} }),
 }));
+vi.mock('reaptcha', async () => {
+    const { forwardRef, useImperativeHandle } = await import('react');
+    return {
+        default: forwardRef((props: typeof mocks.captcha, ref) => {
+            mocks.captcha = props;
+            useImperativeHandle(ref, () =>
+                mocks.missingWidget ? null : { execute: mocks.execute, reset: mocks.reset },
+            );
+            return null;
+        }),
+    };
+});
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 vi.mock('react-router-dom', () => ({ Link: ({ children }: { children: ReactNode }) => <a>{children}</a> }));
 vi.mock('@/components/auth/LoginFormContainer', async () => {
@@ -56,7 +73,11 @@ const fieldMessage = (name: string) => container.querySelector(`input[name=${nam
 
 beforeEach(async () => {
     Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
-    vi.clearAllMocks();
+    vi.resetAllMocks();
+    mocks.provider = 'disable';
+    mocks.missingWidget = false;
+    mocks.execute.mockResolvedValue(undefined);
+    mocks.reset.mockResolvedValue(undefined);
     container = document.createElement('div');
     document.body.appendChild(container);
     root = createRoot(container);
@@ -145,4 +166,84 @@ describe('registration server validation', () => {
         expect(mocks.register).toHaveBeenCalledTimes(2);
         expect(fieldMessage('username')?.textContent).not.toContain('The username has already been taken.');
     });
+});
+
+describe('invisible registration reCAPTCHA', () => {
+    const enableCaptcha = async () => {
+        mocks.provider = 'recaptcha';
+        await act(async () => root.render(<RegisterContainer />));
+    };
+    const submitForm = async () => {
+        await act(async () => {
+            container.querySelector('form')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+        });
+    };
+    const expectRecovery = () => {
+        expect(container.querySelector('button[type=submit]')?.hasAttribute('disabled')).toBe(false);
+        expect(container.querySelector('input[name=username]')?.hasAttribute('disabled')).toBe(false);
+        expect(mocks.addError).toHaveBeenLastCalledWith({ message: 'captcha-failed' });
+        expect(mocks.register).not.toHaveBeenCalled();
+    };
+
+    it('recovers from rejected execution and submits once after a successful retry', async () => {
+        await enableCaptcha();
+        mocks.execute.mockRejectedValueOnce(new Error('Widget is not ready.'));
+        mocks.reset.mockRejectedValueOnce(new Error('Widget did not render.'));
+        await submitForm();
+        expectRecovery();
+        await submitForm();
+        expect(container.querySelector('button[type=submit]')?.hasAttribute('disabled')).toBe(true);
+        mocks.register.mockReturnValue(new Promise(() => {}));
+        await act(async () => {
+            mocks.captcha.onVerify('verified-token');
+            mocks.captcha.onVerify('verified-token');
+        });
+        expect(mocks.register).toHaveBeenCalledExactlyOnceWith(
+            expect.objectContaining({
+                username: values.username,
+                'g-recaptcha-response': 'verified-token',
+            }),
+        );
+        await act(async () => {
+            mocks.captcha.onError();
+            mocks.captcha.onExpire();
+        });
+        expect(container.querySelector('button[type=submit]')?.hasAttribute('disabled')).toBe(true);
+        expect(mocks.addError).toHaveBeenCalledTimes(1);
+    });
+
+    it('recovers when the widget ref is missing', async () => {
+        mocks.missingWidget = true;
+        await enableCaptcha();
+        await submitForm();
+        expectRecovery();
+    });
+
+    it('recovers from a synchronous execution failure', async () => {
+        await enableCaptcha();
+        mocks.execute.mockImplementationOnce(() => {
+            throw new Error('Provider unavailable.');
+        });
+        await submitForm();
+        expectRecovery();
+    });
+
+    it.each(['onError', 'onExpire'] as const)('recovers when the provider calls %s', async (event) => {
+        await enableCaptcha();
+        await submitForm();
+        await act(async () => mocks.captcha[event]());
+        expectRecovery();
+        await act(async () => mocks.captcha.onVerify('stale-token'));
+        expect(mocks.register).not.toHaveBeenCalled();
+    });
+
+    it.each(['', '   ', undefined])(
+        'rejects a missing verification token %j without submitting registration',
+        async (token) => {
+            await enableCaptcha();
+            await submitForm();
+            await act(async () => mocks.captcha.onVerify(token as string));
+            expectRecovery();
+        },
+    );
 });

@@ -85,5 +85,6 @@ return [
     'throttle' => 'Trop de tentatives de connexion. Veuillez réessayer dans :seconds secondes.',
     'password_requirements' => 'Le mot de passe doit comporter au moins 8 caractères et être unique à ce site.',
     '2fa_must_be_enabled' => 'L\'administrateur a exigé que l\'authentification à deux facteurs soit activée pour votre compte afin de pouvoir utiliser le panel.',
+    'captcha-failed' => 'Impossible de terminer le captcha. Veuillez réessayer.',
     'captcha-required' => 'Veuillez répondre au test CAPTCHA pour continuer.',
 ];
