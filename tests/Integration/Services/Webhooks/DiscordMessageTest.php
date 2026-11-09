@@ -97,16 +97,22 @@ class DiscordMessageTest extends IntegrationTestCase
     }
 
 
-    public function test_invalid_utf8_in_custom_text_is_replaced_before_rendering(): void
+    public function test_invalid_utf8_in_payload_is_replaced_before_rendering(): void
     {
         $webhook = Webhook::factory()->create([
             'type' => Webhook::TYPE_DISCORD,
-            'message' => ['content' => "Bad \xC3\x28 text"],
+            'message' => ['content' => '{{data.name}}'],
         ]);
+
         $message = DiscordMessage::render($webhook, [
             'event' => 'model:user.updated',
             'timestamp' => '2026-11-09T04:04:00+06:00',
-            'data' => ['id' => 1, 'username' => 'tasfiq', 'changes' => ['last_seen']],
+            'data' => [
+                'id' => 1,
+                'username' => 'tasfiq',
+                'name' => "Bad \xC3\x28 text",
+                'changes' => ['last_seen'],
+            ],
         ]);
 
         $json = json_encode($message, JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
