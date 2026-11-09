@@ -133,12 +133,18 @@ export default ({ ...props }: Props) => {
                             label={t('search.form-label')}
                             description={t('search.form-description')}
                         >
-                            <SearchWatcher onTermChanged={onTermChanged} />
-                            <InputSpinner visible={isSubmitting}>
-                                <Field name={'term'}>
-                                    {({ field }: FieldProps<string>) => <Input autoFocus {...field} ref={ref} />}
-                                </Field>
-                            </InputSpinner>
+                            {({ id }) => (
+                                <>
+                                    <SearchWatcher onTermChanged={onTermChanged} />
+                                    <InputSpinner visible={isSubmitting}>
+                                        <Field name={'term'}>
+                                            {({ field }: FieldProps<string>) => (
+                                                <Input id={id} autoFocus {...field} ref={ref} />
+                                            )}
+                                        </Field>
+                                    </InputSpinner>
+                                </>
+                            )}
                         </FormikFieldWrapper>
                     </Form>
                     {servers.length > 0 && (
