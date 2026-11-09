@@ -17,6 +17,7 @@ export default () => {
     const { session } = useSubuserPreview();
     let updatingToken = false;
     const acquiringToken = useRef<string | null>(null);
+    const connectionGeneration = useRef(0);
     const [error, setError] = useState<'connecting' | string>('');
     const { connected, instance } = ServerContext.useStoreState((state) => state.socket);
     const uuid = ServerContext.useStoreState((state) => state.server.data?.uuid);
@@ -38,6 +39,7 @@ export default () => {
     const connect = (uuid: string) => {
         if (acquiringToken.current === uuid) return;
         acquiringToken.current = uuid;
+        const generation = connectionGeneration.current;
 
         const socket = session ? new PreviewWebsocket(uuid) : new Websocket();
 
@@ -87,6 +89,7 @@ export default () => {
 
         getWebsocketToken(uuid)
             .then((data) => {
+                if (generation !== connectionGeneration.current) return;
                 // Connect and then set the authentication token.
                 socket.setToken(data.token).connect(data.socket);
 
@@ -94,12 +97,15 @@ export default () => {
                 setInstance(socket);
             })
             .catch((error) => {
+                if (generation !== connectionGeneration.current) return;
                 console.error(error);
                 setError('token');
                 setConnectionState(false);
             })
             .finally(() => {
-                if (acquiringToken.current === uuid) acquiringToken.current = null;
+                if (generation === connectionGeneration.current && acquiringToken.current === uuid) {
+                    acquiringToken.current = null;
+                }
             });
     };
 
@@ -114,13 +120,17 @@ export default () => {
     }, [instance]);
 
     useEffect(() => {
+        setError('');
         // If there is already an instance or there is no server, just exit out of this process
         // since we don't need to make a new connection.
-        if (instance || !uuid) {
-            return;
+        if (!instance && uuid) {
+            connect(uuid);
         }
 
-        connect(uuid);
+        return () => {
+            connectionGeneration.current += 1;
+            acquiringToken.current = null;
+        };
     }, [uuid, session?.uuid]);
 
     return error ? (

@@ -6,6 +6,7 @@ import WebsocketHandler from './WebsocketHandler';
 
 const mocks = vi.hoisted(() => ({
     getToken: vi.fn(),
+    uuid: 'server-uuid',
     socket: { connected: false, instance: null as unknown },
     setInstance: vi.fn(),
     setConnectionState: vi.fn(),
@@ -32,7 +33,7 @@ vi.mock('@/context/SubuserPreviewContext', () => ({ useSubuserPreview: () => ({ 
 vi.mock('@/state/server', () => ({
     ServerContext: {
         useStoreState: (selector: (state: unknown) => unknown) =>
-            selector({ socket: mocks.socket, server: { data: { uuid: 'server-uuid' } } }),
+            selector({ socket: mocks.socket, server: { data: { uuid: mocks.uuid } } }),
         useStoreActions: (selector: (actions: unknown) => unknown) =>
             selector({
                 socket: { setInstance: mocks.setInstance, setConnectionState: mocks.setConnectionState },
@@ -55,6 +56,7 @@ beforeEach(() => {
     Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
     vi.clearAllMocks();
     sockets.length = 0;
+    mocks.uuid = 'server-uuid';
     mocks.socket.connected = false;
     mocks.socket.instance = null;
     vi.spyOn(console, 'error').mockImplementation(() => {});
@@ -67,6 +69,42 @@ afterEach(async () => {
 });
 
 describe('initial websocket token recovery', () => {
+    it.each(['server change', 'remount'])('ignores stale token failures after %s', async (navigation) => {
+        let rejectOld!: (error: Error) => void;
+        mocks.getToken.mockReturnValueOnce(
+            new Promise((_, reject) => {
+                rejectOld = reject;
+            }),
+        );
+        await act(async () => root.render(<WebsocketHandler key='first' />));
+        mocks.uuid = 'new-server';
+        mocks.getToken.mockResolvedValueOnce({ token: 'new-token', socket: 'wss://new.test' });
+        await act(async () => root.render(<WebsocketHandler key={navigation === 'remount' ? 'second' : 'first'} />));
+        const socket = sockets[1]!;
+        await act(async () => socket.emit('auth success'));
+        mocks.setConnectionState.mockClear();
+        await act(async () => rejectOld(new Error('Old server failed')));
+        expect(mocks.setConnectionState).not.toHaveBeenCalled();
+        expect(mocks.setInstance).toHaveBeenCalledExactlyOnceWith(socket);
+        expect(container.textContent).toBe('');
+    });
+
+    it('does not connect a stale successful token request after changing servers', async () => {
+        let resolveOld!: (value: { token: string; socket: string }) => void;
+        mocks.getToken.mockReturnValueOnce(
+            new Promise((resolve) => {
+                resolveOld = resolve;
+            }),
+        );
+        await act(async () => root.render(<WebsocketHandler />));
+        mocks.uuid = 'new-server';
+        mocks.getToken.mockResolvedValueOnce({ token: 'new-token', socket: 'wss://new.test' });
+        await act(async () => root.render(<WebsocketHandler />));
+        await act(async () => resolveOld({ token: 'old-token', socket: 'wss://old.test' }));
+        expect(sockets[0]!.connect).not.toHaveBeenCalled();
+        expect(mocks.setInstance).toHaveBeenCalledExactlyOnceWith(sockets[1]);
+    });
+
     it('shows an error, retries without reloading, and clears feedback after authentication', async () => {
         mocks.getToken.mockRejectedValueOnce(new Error('Unavailable'));
         await act(async () => root.render(<WebsocketHandler />));
