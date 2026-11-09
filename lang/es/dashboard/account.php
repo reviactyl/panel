@@ -140,6 +140,7 @@ return [
         'password-required' => 'Debes introducir la contraseña de tu cuenta para continuar.',
     ],
     'api' => [
+        'retry' => 'Reintentar',
         'title' => 'API de la cuenta',
         'create-key' => 'Crear clave API',
         'content-title' => 'Claves API',

@@ -140,6 +140,7 @@ return [
         'password-required' => 'Bitte geben Sie Ihr Passwort ein, um fortzufahren.',
     ],
     'api' => [
+        'retry' => 'Erneut versuchen',
         'title' => 'Konto-API',
         'create-key' => 'API-Schlüssel erstellen',
         'content-title' => 'API-Schlüssel',
