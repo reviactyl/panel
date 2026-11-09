@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Websocket } from '@/plugins/Websocket';
 import { ServerContext } from '@/state/server';
 import getWebsocketToken from '@/api/server/getWebsocketToken';
 import { motion } from 'framer-motion';
 import Spinner from '@/reviactyl/elements/Spinner';
+import Button from '@/reviactyl/elements/Button';
 import { useTranslation } from 'react-i18next';
 import { FaTriangleExclamation } from 'react-icons/fa6';
 import { useSubuserPreview } from '@/context/SubuserPreviewContext';
@@ -15,6 +16,7 @@ export default () => {
     const { t } = useTranslation('server/console');
     const { session } = useSubuserPreview();
     let updatingToken = false;
+    const acquiringToken = useRef<string | null>(null);
     const [error, setError] = useState<'connecting' | string>('');
     const { connected, instance } = ServerContext.useStoreState((state) => state.socket);
     const uuid = ServerContext.useStoreState((state) => state.server.data?.uuid);
@@ -34,6 +36,9 @@ export default () => {
     };
 
     const connect = (uuid: string) => {
+        if (acquiringToken.current === uuid) return;
+        acquiringToken.current = uuid;
+
         const socket = session ? new PreviewWebsocket(uuid) : new Websocket();
 
         socket.on('auth success', () => setConnectionState(true));
@@ -88,7 +93,14 @@ export default () => {
                 // Once that is done, set the instance.
                 setInstance(socket);
             })
-            .catch((error) => console.error(error));
+            .catch((error) => {
+                console.error(error);
+                setError('token');
+                setConnectionState(false);
+            })
+            .finally(() => {
+                if (acquiringToken.current === uuid) acquiringToken.current = null;
+            });
     };
 
     useEffect(() => {
@@ -116,9 +128,10 @@ export default () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.15, ease: 'easeIn' }}
+            role={error === 'connecting' ? 'status' : 'alert'}
             className='rounded-ui border border-danger/80 bg-danger/40 backdrop-blur-sm px-4 py-2 shadow-lg mt-2 mx-2 -mb-1'
         >
-            <div className='flex items-center justify-center'>
+            <div className='flex flex-wrap items-center justify-center gap-y-2'>
                 {error === 'connecting' ? (
                     <>
                         <Spinner className='not-lg:h-3 not-lg:w-4' size={'small'} />
@@ -127,7 +140,20 @@ export default () => {
                 ) : (
                     <>
                         <FaTriangleExclamation className='text-red-400' />
-                        <p className='ml-2 text-sm text-white'>{error}</p>
+                        <p className='ml-2 text-sm text-white'>{error === 'token' ? t('connection-error') : error}</p>
+                        {error === 'token' && uuid && (
+                            <Button
+                                type='button'
+                                size='xsmall'
+                                className='ml-3'
+                                onClick={() => {
+                                    setError('connecting');
+                                    connect(uuid);
+                                }}
+                            >
+                                {t('retry')}
+                            </Button>
+                        )}
                     </>
                 )}
             </div>
