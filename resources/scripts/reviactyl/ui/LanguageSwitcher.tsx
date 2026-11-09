@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useId } from 'react';
 import i18n from '@/i18n';
 import Select from '@/reviactyl/elements/Select';
 import { useTranslation } from 'react-i18next';
@@ -13,6 +13,7 @@ interface LanguageInfo {
 }
 
 const LanguageSwitcher = () => {
+    const id = useId();
     const { t } = useTranslation('dashboard/account');
     const user = useStoreState((state: ApplicationStore) => state.user.data);
     const serverLocale = useStoreState((state: any) => state.settings.data?.locale || 'en');
@@ -50,8 +51,10 @@ const LanguageSwitcher = () => {
 
     return (
         <div className='flex flex-col gap-2 mb-2 sm:flex-row sm:justify-between sm:items-center'>
-            <p className='min-w-0 flex-1'>{t('overview.language')}</p>
-            <Select className='pr-15! w-full min-w-0 sm:w-auto!' value={currentLang} onChange={handleChange}>
+            <label htmlFor={id} className='min-w-0 flex-1'>
+                {t('overview.language')}
+            </label>
+            <Select id={id} className='pr-15! w-full min-w-0 sm:w-auto!' value={currentLang} onChange={handleChange}>
                 {Object.entries(languages).map(([code, info]) => (
                     <option key={code} value={code}>
                         {info.name}
