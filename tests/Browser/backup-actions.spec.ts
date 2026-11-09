@@ -30,17 +30,10 @@ for (const key of ['Enter', 'Space']) {
         const dialog = page.getByRole('dialog');
         await expect(dialog).toContainText(failedName);
         await expect(failed).toBeVisible();
-        await dialog.getByRole('button', { name: 'Continue', exact: true }).focus();
+        await dialog.getByRole('button', { name: 'Cancel', exact: true }).focus();
         await page.keyboard.press(key);
-        await expect(failed).toHaveCount(0);
-        await expect
-            .poll(async () => {
-                const backups = await (await page.request.get(api)).json();
-                return backups.data.some(
-                    (item: { attributes: { name: string } }) => item.attributes.name === failedName,
-                );
-            })
-            .toBe(false);
+        await expect(dialog).not.toBeVisible();
+        await expect(failed).toBeVisible();
 
         const completedName = `REV-103 completed ${key}`;
         await expect
@@ -68,16 +61,9 @@ for (const key of ['Enter', 'Space']) {
         }
         await page.keyboard.press(key);
         await expect(dialog).toContainText(completedName);
-        await dialog.getByRole('button', { name: 'Continue', exact: true }).focus();
+        await dialog.getByRole('button', { name: 'Cancel', exact: true }).focus();
         await page.keyboard.press(key);
-        await expect(toggle).toHaveCount(0);
-        await expect
-            .poll(async () => {
-                const backups = await (await page.request.get(api)).json();
-                return backups.data.some(
-                    (item: { attributes: { name: string } }) => item.attributes.name === completedName,
-                );
-            })
-            .toBe(false);
+        await expect(dialog).not.toBeVisible();
+        await expect(toggle).toBeVisible();
     });
 }
