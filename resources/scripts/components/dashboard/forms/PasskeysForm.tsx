@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useId, useState } from 'react';
 import useSWR from 'swr';
 import Label from '@/reviactyl/elements/Label';
 import Input from '@/reviactyl/elements/Input';
@@ -14,6 +14,7 @@ import { FaFingerprint, FaGoogle, FaTrash } from 'react-icons/fa6';
 
 export const ListPasskeysForm = () => {
     const { t } = useTranslation('dashboard/account');
+    const deletePasswordId = useId();
     const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string | null } | null>(null);
     const [deletePassword, setDeletePassword] = useState('');
     const { clearAndAddHttpError, clearFlashes } = useFlashKey('account:passkeys');
@@ -69,8 +70,9 @@ export const ListPasskeysForm = () => {
                     <p>{t('passkeys.delete-confirm')}</p>
                     {deleteTarget && <Code>{deleteTarget.name || deleteTarget.id}</Code>}
                     <div>
-                        <Label>{t('passkeys.password')}</Label>
+                        <Label htmlFor={deletePasswordId}>{t('passkeys.password')}</Label>
                         <Input
+                            id={deletePasswordId}
                             type={'password'}
                             value={deletePassword}
                             autoComplete={'current-password'}
@@ -128,6 +130,8 @@ export const ListPasskeysForm = () => {
 
 export const CreatePasskeysForm = () => {
     const { t } = useTranslation('dashboard/account');
+    const nameId = useId();
+    const passwordId = useId();
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const [isRegistering, setIsRegistering] = useState(false);
@@ -165,8 +169,9 @@ export const CreatePasskeysForm = () => {
             <form className='mt-6' onSubmit={onRegister}>
                 <div className='space-y-3'>
                     <div>
-                        <Label>{t('passkeys.name')}</Label>
+                        <Label htmlFor={nameId}>{t('passkeys.name')}</Label>
                         <Input
+                            id={nameId}
                             value={name}
                             maxLength={191}
                             disabled={isRegistering}
@@ -175,8 +180,9 @@ export const CreatePasskeysForm = () => {
                         />
                     </div>
                     <div>
-                        <Label>{t('passkeys.password')}</Label>
+                        <Label htmlFor={passwordId}>{t('passkeys.password')}</Label>
                         <Input
+                            id={passwordId}
                             type={'password'}
                             value={password}
                             required
