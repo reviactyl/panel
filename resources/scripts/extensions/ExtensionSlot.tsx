@@ -16,18 +16,20 @@ interface Props {
 const isAllowedByGuard = (slot: ExtensionSlotDefinition, context?: SlotContext): boolean => {
     const eggId = context?.eggId;
     const nestId = context?.nestId;
+    const slotEggId = slot.eggId ?? slot.egg_id;
+    const slotEggIds = slot.eggIds ?? slot.egg_ids;
 
     const hasGuards =
-        slot.egg_id !== undefined ||
+        slotEggId !== undefined ||
         slot.nest_id !== undefined ||
-        Array.isArray(slot.egg_ids) ||
+        Array.isArray(slotEggIds) ||
         Array.isArray(slot.nest_ids);
 
     if (!hasGuards) {
         return true;
     }
 
-    if (slot.egg_id !== undefined && slot.egg_id === eggId) {
+    if (slotEggId !== undefined && slotEggId === eggId) {
         return true;
     }
 
@@ -35,7 +37,7 @@ const isAllowedByGuard = (slot: ExtensionSlotDefinition, context?: SlotContext):
         return true;
     }
 
-    if (Array.isArray(slot.egg_ids) && eggId !== undefined && slot.egg_ids.includes(eggId)) {
+    if (Array.isArray(slotEggIds) && eggId !== undefined && slotEggIds.includes(eggId)) {
         return true;
     }
 
