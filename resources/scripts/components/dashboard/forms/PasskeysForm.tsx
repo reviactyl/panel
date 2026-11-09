@@ -113,6 +113,8 @@ export const ListPasskeysForm = () => {
                         </div>
                         <div>
                             <button
+                                type='button'
+                                aria-label={`${t('passkeys.remove')}: ${passkey.name || passkey.id}`}
                                 className='ml-4 p-2 text-sm'
                                 onClick={() => setDeleteTarget({ id: passkey.id, name: passkey.name })}
                             >
