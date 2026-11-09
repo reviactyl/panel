@@ -2,8 +2,8 @@ import React, { useState, useEffect, useId } from 'react';
 import i18n from '@/i18n';
 import Select from '@/reviactyl/elements/Select';
 import { useTranslation } from 'react-i18next';
-import { useStoreActions, useStoreState } from 'easy-peasy';
-import updateAccountLanguage from '@/api/account/updateAccountLanguage';
+import { useStoreState } from 'easy-peasy';
+import useAccountPreference from '@/plugins/useAccountPreference';
 import { ApplicationStore } from '@/state';
 import { applyDocumentDirection } from '@/lib/rtl';
 
@@ -17,11 +17,10 @@ const LanguageSwitcher = () => {
     const { t } = useTranslation('dashboard/account');
     const user = useStoreState((state: ApplicationStore) => state.user.data);
     const serverLocale = useStoreState((state: any) => state.settings.data?.locale || 'en');
-    const updateUserData = useStoreActions((actions: any) => actions.user.updateUserData);
+    const savePreference = useAccountPreference();
     const [languages, setLanguages] = useState<Record<string, LanguageInfo>>({});
-    const [currentLang, setCurrentLang] = useState(
-        user?.language && user.language !== 'geo' ? user.language : serverLocale,
-    );
+    const [pendingLang, setPendingLang] = useState<string | null>(null);
+    const currentLang = pendingLang ?? (user?.language && user.language !== 'geo' ? user.language : serverLocale);
 
     useEffect(() => {
         fetch('/locales/list.json')
@@ -29,23 +28,26 @@ const LanguageSwitcher = () => {
             .then((langs) => setLanguages(langs))
             .catch(() => setLanguages({ en: { name: 'English', flag: 'us' } }));
 
-        const onLangChanged = (lng: string) => setCurrentLang(lng);
+        const onLangChanged = () => setPendingLang(null);
         i18n.on('languageChanged', onLangChanged);
         return () => i18n.off('languageChanged', onLangChanged);
     }, []);
 
     const handleChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const newLang = e.target.value;
-        setCurrentLang(newLang);
-        i18n.changeLanguage(newLang);
 
+        setPendingLang(newLang);
         if (user) {
             try {
-                await updateAccountLanguage({ language: newLang });
-                updateUserData({ language: newLang });
+                await savePreference('language', newLang);
+                setPendingLang(null);
             } catch (error) {
+                setPendingLang(null);
                 console.error('Failed to update language:', error);
             }
+        } else {
+            setPendingLang(null);
+            i18n.changeLanguage(newLang);
         }
     };
 

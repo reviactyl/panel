@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApplicationStore } from '@/state';
-import { useStoreActions, useStoreState } from 'easy-peasy';
-import updateEditor from '@/api/account/updateAccountEditor';
+import { useStoreState } from 'easy-peasy';
+import useAccountPreference from '@/plugins/useAccountPreference';
 import Select from '@/reviactyl/elements/Select';
 
 interface FileEditorSwitcherProps {
@@ -13,9 +13,11 @@ const FileEditorSwitcher = () => {
     const id = useId();
     const { t } = useTranslation('dashboard/account');
     const user = useStoreState((state: ApplicationStore) => state.user.data);
-    const updateUserData = useStoreActions((actions: any) => actions.user.updateUserData);
+    const savePreference = useAccountPreference();
     const [editors, setEditors] = useState<Record<string, FileEditorSwitcherProps>>({});
-    const [currentEditor, setCurrentEditor] = useState(user?.fileEditor || 'cm');
+    const [guestEditor, setGuestEditor] = useState('cm');
+    const [pendingEditor, setPendingEditor] = useState<string | null>(null);
+    const currentEditor = pendingEditor ?? user?.fileEditor ?? guestEditor;
 
     useEffect(() => {
         fetch('/file-editors/list.json')
@@ -31,15 +33,18 @@ const FileEditorSwitcher = () => {
 
     const handleChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const newEditor = e.target.value;
-        setCurrentEditor(newEditor);
 
         if (user) {
+            setPendingEditor(newEditor);
             try {
-                await updateEditor({ fileEditor: newEditor });
-                updateUserData({ fileEditor: newEditor });
+                await savePreference('fileEditor', newEditor);
+                setPendingEditor(null);
             } catch (error) {
+                setPendingEditor(null);
                 console.error('Failed to update editor:', error);
             }
+        } else {
+            setGuestEditor(newEditor);
         }
     };
 

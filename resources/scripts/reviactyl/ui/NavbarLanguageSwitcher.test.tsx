@@ -13,12 +13,19 @@ const mocks = vi.hoisted(() => ({
     off: vi.fn(),
 }));
 
+const mockStore = {
+    getState: () => mocks.state,
+    getActions: () => ({ user: { updateUserData: mocks.updateUserData } }),
+};
+
 vi.mock('easy-peasy', () => ({
+    useStore: () => mockStore,
     useStoreState: (select: (state: typeof mocks.state) => unknown) => select(mocks.state),
     useStoreActions: (select: (actions: unknown) => unknown) =>
         select({ user: { updateUserData: mocks.updateUserData } }),
 }));
 vi.mock('@/api/account/updateAccountLanguage', () => ({ default: mocks.updateAccountLanguage }));
+vi.mock('@/api/account/updateAccountEditor', () => ({ default: vi.fn() }));
 vi.mock('@/i18n', () => ({
     default: { changeLanguage: mocks.changeLanguage, on: mocks.on, off: mocks.off },
 }));
