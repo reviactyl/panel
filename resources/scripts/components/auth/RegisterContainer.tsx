@@ -6,7 +6,6 @@ import { object, string, ref as yupRef } from 'yup';
 import Field from '@/reviactyl/elements/Field';
 import { Button } from '@/reviactyl/components/button/index';
 import useFlash from '@/plugins/useFlash';
-import Label from '@/reviactyl/elements/Label';
 import { KeyIcon, UserIcon, MailIcon, EyeIcon, EyeOffIcon } from '@heroicons/react/solid';
 import Reaptcha from 'reaptcha';
 import Turnstile, { type TurnstileHandle } from '@/reviactyl/elements/Turnstile';
@@ -201,8 +200,8 @@ const RegisterContainer = () => {
                         />
                     </div>
                     <div className='relative mt-3'>
-                        <Label>{t('register.password-label')}</Label>
                         <Field
+                            label={t('register.password-label')}
                             icon={KeyIcon}
                             type={show ? 'text' : 'password'}
                             name={'password'}
@@ -219,8 +218,8 @@ const RegisterContainer = () => {
                         </button>
                     </div>
                     <div className='relative mt-3'>
-                        <Label>{t('register.confirm-label')}</Label>
                         <Field
+                            label={t('register.confirm-label')}
                             icon={KeyIcon}
                             type={show ? 'text' : 'password'}
                             placeholder={'••••••••'}
