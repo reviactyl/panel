@@ -16,6 +16,8 @@ import { Link } from 'react-router-dom';
 import Input from '@/reviactyl/elements/Input';
 import { ip } from '@/lib/formatters';
 import { useTranslation } from 'react-i18next';
+import FlashMessageRender from '@/components/FlashMessageRender';
+import Button from '@/reviactyl/elements/Button';
 
 type Props = RequiredModalProps;
 
@@ -61,7 +63,6 @@ export default ({ ...props }: Props) => {
             debounce((term: string, generation: number, setSubmitting: (submitting: boolean) => void) => {
                 clearFlashes('search');
 
-                // if (ref.current) ref.current.focus();
                 getServers({ query: term, type: isAdmin ? 'admin-all' : undefined })
                     .then((response) => {
                         if (generation === searchGeneration.current) {
@@ -119,7 +120,7 @@ export default ({ ...props }: Props) => {
 
     return (
         <Formik
-            onSubmit={() => Promise.resolve()}
+            onSubmit={({ term }, { setSubmitting }) => onTermChanged(term, setSubmitting)}
             validationSchema={object().shape({
                 term: string().min(3, t('search.string-min')),
             })}
@@ -127,6 +128,7 @@ export default ({ ...props }: Props) => {
         >
             {({ isSubmitting }) => (
                 <Modal {...props} accessibleName={t('search.label')}>
+                    <FlashMessageRender byKey={'search'} className={'mb-4'} />
                     <Form>
                         <FormikFieldWrapper
                             name={'term'}
@@ -146,6 +148,9 @@ export default ({ ...props }: Props) => {
                                 </>
                             )}
                         </FormikFieldWrapper>
+                        <Button type={'submit'} className={'mt-4'} disabled={isSubmitting}>
+                            {t('strings:search')}
+                        </Button>
                     </Form>
                     {servers.length > 0 && (
                         <div className='mt-6'>
