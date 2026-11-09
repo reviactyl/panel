@@ -114,11 +114,16 @@ export const SidebarModern = React.forwardRef<HTMLDivElement, SidebarProps>(
                                 </Link>
                             </div>
                             {sidebarLogout && (
-                                <div onClick={onLogout}>
-                                    <Tooltip content={t('overview.logout')}>
-                                        <FaArrowRightToBracket className='h-10 text-gray-600 hover:text-danger/80 cursor-pointer' />
-                                    </Tooltip>
-                                </div>
+                                <Tooltip content={t('overview.logout')}>
+                                    <button
+                                        type='button'
+                                        onClick={onLogout}
+                                        aria-label={t('overview.logout')}
+                                        className='rounded-ui text-gray-600 hover:text-danger/80 cursor-pointer focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-reviactyl'
+                                    >
+                                        <FaArrowRightToBracket aria-hidden='true' className='h-10' />
+                                    </button>
+                                </Tooltip>
                             )}
                         </div>
                     )}
