@@ -14,6 +14,7 @@ import Title from '@/reviactyl/ui/Title';
 import { ExternalLinkIcon } from '@heroicons/react/solid';
 import { LogoutIcon } from '@heroicons/react/outline';
 import logout from '@/api/auth/logout';
+import { httpErrorToHuman } from '@/api/http';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '@/reviactyl/ui/LanguageSwitcher';
@@ -63,10 +64,16 @@ export default () => {
     }, []);
 
     const onTriggerLogout = () => {
+        clearFlashes('account:logout');
         setIsLoggingOut(true);
-        logout().finally(() => {
-            window.location.href = '/';
-        });
+        logout()
+            .then(() => {
+                window.location.href = '/';
+            })
+            .catch((error) => {
+                addFlash({ key: 'account:logout', type: 'error', message: httpErrorToHuman(error) });
+            })
+            .finally(() => setIsLoggingOut(false));
     };
 
     return (
@@ -101,7 +108,11 @@ export default () => {
                                 )}
                             </div>
                             <div className='mt-1'>
-                                <button className='flex items-center space-x-1' onClick={onTriggerLogout}>
+                                <button
+                                    className='flex items-center space-x-1'
+                                    onClick={onTriggerLogout}
+                                    disabled={isLoggingOut}
+                                >
                                     <span className='text-danger/80'>{t('overview.logout')}</span>{' '}
                                     <LogoutIcon className='w-5 h-5 text-danger/80' strokeWidth={2} />
                                 </button>
