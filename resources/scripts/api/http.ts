@@ -14,6 +14,7 @@ const http: AxiosInstance = axios.create({
 
 const isBackgroundRequest = (url?: string): boolean =>
     url?.endsWith('/resources') === true ||
+    url?.endsWith('/resources/history') === true ||
     url?.endsWith('/subuser-preview/heartbeat') === true ||
     url?.endsWith('/alerts') === true ||
     url?.includes('/api/client/alerts/') === true;
@@ -33,7 +34,7 @@ http.interceptors.request.use((req) => {
 
 http.interceptors.response.use(
     (resp) => {
-        if (!isBackgroundRequest(resp.request?.url)) {
+        if (!isBackgroundRequest(resp.config?.url ?? resp.request?.url)) {
             store.getActions().progress.setComplete();
         }
 
