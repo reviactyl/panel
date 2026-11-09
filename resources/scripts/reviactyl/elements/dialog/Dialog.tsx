@@ -4,6 +4,7 @@ import { Button } from '@/reviactyl/components/button/index';
 import { XIcon } from '@heroicons/react/solid';
 import { AnimatePresence, motion } from 'framer-motion';
 import { DialogContext, IconPosition, RenderDialogProps, styles } from './';
+import { useTranslation } from 'react-i18next';
 
 const variants = {
     open: {
@@ -41,6 +42,7 @@ export default ({
     preventExternalClose,
     children,
 }: RenderDialogProps) => {
+    const { t } = useTranslation('strings');
     const container = useRef<HTMLDivElement>(null);
     const panel = useRef<HTMLDivElement>(null);
     const [icon, setIcon] = useState<React.ReactNode>();
@@ -121,6 +123,7 @@ export default ({
                                                 size={Button.Sizes.Small}
                                                 shape={Button.Shapes.IconSquare}
                                                 onClick={onClose}
+                                                aria-label={t('close')}
                                                 className={'group'}
                                             >
                                                 <XIcon className={styles.close_icon} />
