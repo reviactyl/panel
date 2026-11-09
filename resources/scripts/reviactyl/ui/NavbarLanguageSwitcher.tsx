@@ -76,7 +76,7 @@ const NavbarLanguageSwitcher = () => {
         <div className='relative' ref={containerRef}>
             <button
                 type='button'
-                aria-label={`${t('overview.language')}: ${currentLanguage?.name || currentLang}`}
+                aria-label={`${t('overview.language')}: ${currentLanguage?.name || selectedLang}`}
                 aria-expanded={isOpen}
                 className='flex cursor-pointer items-center gap-2 rounded-ui border border-gray-800 bg-gray-900 px-3 py-2 text-sm text-gray-200 transition-all hover:border-gray-600 hover:bg-gray-700'
                 onClick={() => setIsOpen(!isOpen)}
