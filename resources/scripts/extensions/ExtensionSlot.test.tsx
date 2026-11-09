@@ -3,6 +3,7 @@ import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ExtensionSlotDefinition } from '@/extensions/types';
 import { ExtensionSlot } from './ExtensionSlot';
+import { ServerContext } from '@/state/server';
 
 const mocks = vi.hoisted(() => ({ slots: [] as ExtensionSlotDefinition[] }));
 
@@ -71,6 +72,66 @@ describe('extension slot egg guards', () => {
         await renderSlot({ egg_id: 1, ...guard }, 2, 4);
         expect(container.textContent).toBe('restricted-content');
         await renderSlot({ egg_id: 1, ...guard }, 2, 5);
+        expect(container.textContent).toBe('');
+    });
+});
+
+let store: ReturnType<typeof ServerContext.useStore>;
+const CaptureStore = () => {
+    store = ServerContext.useStore();
+    return null;
+};
+
+const renderWithPermissions = async (permission: string | string[], permissions: string[]) => {
+    mocks.slots = [{ name: 'server:router:above', module: 'restricted-content', permission }];
+    await act(async () => {
+        root.render(
+            <ServerContext.Provider>
+                <CaptureStore />
+                <ExtensionSlot name='server:router:above' />
+            </ServerContext.Provider>,
+        );
+    });
+    await act(async () => store.getActions().server.setPermissions(permissions));
+};
+
+describe('extension slot permissions', () => {
+    it('does not mount a declared permission without a server context', async () => {
+        await renderSlot({ permission: 'backup.create' });
+        expect(container.textContent).toBe('');
+    });
+
+    it('updates string permission visibility when permissions change', async () => {
+        await renderWithPermissions('backup.create', []);
+        expect(container.textContent).toBe('');
+        await act(async () => store.getActions().server.setPermissions(['backup.create']));
+        expect(container.textContent).toBe('restricted-content');
+        await act(async () => store.getActions().server.setPermissions(['backup.read']));
+        expect(container.textContent).toBe('');
+    });
+
+    it.each([
+        { permission: ['backup.create', 'backup.read'], permissions: ['backup.read'], visible: true },
+        { permission: ['backup.create', 'backup.read'], permissions: ['file.read'], visible: false },
+        { permission: [], permissions: ['*'], visible: false },
+        { permission: 'backup.create', permissions: ['*'], visible: true },
+        { permission: 'backup.*', permissions: ['backup.read'], visible: true },
+    ])('uses extension route match-any semantics for %j', async ({ permission, permissions, visible }) => {
+        await renderWithPermissions(permission, permissions);
+        expect(container.textContent).toBe(visible ? 'restricted-content' : '');
+    });
+
+    it('still requires egg guards when the permission is granted', async () => {
+        await renderWithPermissions('backup.create', ['backup.create']);
+        mocks.slots[0]!.eggId = 1;
+        await act(async () => {
+            root.render(
+                <ServerContext.Provider>
+                    <CaptureStore />
+                    <ExtensionSlot name='server:router:above' context={{ eggId: 2 }} />
+                </ServerContext.Provider>,
+            );
+        });
         expect(container.textContent).toBe('');
     });
 });

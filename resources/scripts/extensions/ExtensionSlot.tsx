@@ -1,4 +1,6 @@
-import { Fragment } from 'react';
+import { Fragment, type ReactNode } from 'react';
+import Can from '@/reviactyl/elements/Can';
+import { ServerContext } from '@/state/server';
 import { ExtensionModule } from '@/extensions/ExtensionModule';
 import { useExtensions } from '@/extensions/useExtensions';
 import type { ExtensionSlotDefinition } from '@/extensions/types';
@@ -12,6 +14,16 @@ interface Props {
     name: string;
     context?: SlotContext;
 }
+
+const SlotPermissionGuard = ({ permission, children }: { permission: string | string[]; children: ReactNode }) => {
+    const store = ServerContext.useStore();
+
+    return store ? (
+        <Can action={permission} matchAny>
+            {children}
+        </Can>
+    ) : null;
+};
 
 const isAllowedByGuard = (slot: ExtensionSlotDefinition, context?: SlotContext): boolean => {
     const eggId = context?.eggId;
@@ -70,14 +82,20 @@ export const ExtensionSlot = ({ name, context }: Props) => {
 
     return (
         <Fragment>
-            {renderedSlots.map(({ extensionId, slot }, index) => (
-                <ExtensionModule
-                    key={`${extensionId}:${slot.name}:${slot.module}:${index}`}
-                    extensionId={extensionId}
-                    modulePath={slot.module}
-                    exportName={slot.export}
-                />
-            ))}
+            {renderedSlots.map(({ extensionId, slot }, index) => {
+                const module = (
+                    <ExtensionModule extensionId={extensionId} modulePath={slot.module} exportName={slot.export} />
+                );
+                const key = `${extensionId}:${slot.name}:${slot.module}:${index}`;
+
+                return slot.permission ? (
+                    <SlotPermissionGuard key={key} permission={slot.permission}>
+                        {module}
+                    </SlotPermissionGuard>
+                ) : (
+                    <Fragment key={key}>{module}</Fragment>
+                );
+            })}
         </Fragment>
     );
 };
