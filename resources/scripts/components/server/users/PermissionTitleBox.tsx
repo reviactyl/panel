@@ -34,7 +34,8 @@ function PermissionTitleBox({ isEditable, title, permissions, className, childre
                     {isEditable && (
                         <Input
                             type={'checkbox'}
-                            checked={permissions.every((p) => value.includes(p))}
+                            checked={permissions.length > 0 && permissions.every((p) => value.includes(p))}
+                            disabled={permissions.length === 0}
                             onChange={onCheckboxClicked}
                         />
                     )}
