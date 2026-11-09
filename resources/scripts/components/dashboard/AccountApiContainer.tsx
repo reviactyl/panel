@@ -117,6 +117,8 @@ export default () => {
                                       </code>
                                   </p>
                                   <button
+                                      type='button'
+                                      aria-label={`${t('api.delete')}: ${key.description || key.identifier}`}
                                       className='ml-4 p-2 text-sm'
                                       onClick={() => setDeleteIdentifier(key.identifier)}
                                   >
