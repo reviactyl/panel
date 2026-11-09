@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Portal from '@/reviactyl/elements/Portal';
 import copy from 'copy-to-clipboard';
 import classNames from 'classnames';
+import Blur from '@/reviactyl/ui/Blur';
 
 interface CopyOnClickProps {
     text: string | number | null | undefined;
@@ -31,8 +32,8 @@ const CopyOnClick = ({ text, showInNotification = true, children }: CopyOnClickP
     }
 
     const keyboardAction =
-        typeof children.type === 'string' &&
-        ['p', 'span', 'div', 'pre', 'code'].includes(children.type) &&
+        (children.type === Blur ||
+            (typeof children.type === 'string' && ['p', 'span', 'div', 'pre', 'code'].includes(children.type))) &&
         !children.props.contentEditable;
 
     const child = !text

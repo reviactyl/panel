@@ -4,6 +4,8 @@ import { fireEvent, getByRole } from '@testing-library/dom';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import CopyOnClick from './CopyOnClick';
 import Input from './Input';
+import Blur from '@/reviactyl/ui/Blur';
+import { createStore, StoreProvider } from 'easy-peasy';
 
 const copy = vi.hoisted(() => vi.fn());
 vi.mock('copy-to-clipboard', () => ({ default: copy }));
@@ -165,4 +167,24 @@ it('does not add copy behavior when text is absent', async () => {
     expect(container.querySelector('p')!.tabIndex).toBe(-1);
     await act(async () => fireEvent.click(container.querySelector('p')!));
     expect(copy).not.toHaveBeenCalled();
+});
+
+it('copies the server address rendered through Blur with Enter and Space', async () => {
+    const store = createStore({ designify: { data: { allocationBlur: true } } });
+    await act(async () =>
+        root.render(
+            <StoreProvider store={store}>
+                <CopyOnClick text='example.test:25565'>
+                    <Blur>example.test:25565</Blur>
+                </CopyOnClick>
+            </StoreProvider>,
+        ),
+    );
+    const action = getByRole(container, 'button', { name: 'example.test:25565' });
+    expect(action.tabIndex).toBe(0);
+    for (const key of ['Enter', ' ']) {
+        await act(async () => fireEvent.keyDown(action, { key }));
+    }
+    expect(copy).toHaveBeenCalledTimes(2);
+    expect(copy).toHaveBeenLastCalledWith('example.test:25565');
 });
