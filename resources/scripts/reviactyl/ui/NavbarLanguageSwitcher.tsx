@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
-import { useStoreActions, useStoreState } from 'easy-peasy';
-import updateAccountLanguage from '@/api/account/updateAccountLanguage';
+import { useStoreState } from 'easy-peasy';
+import useAccountPreference from '@/plugins/useAccountPreference';
 import { ApplicationStore } from '@/state';
 import 'flag-icons/css/flag-icons.min.css';
 
@@ -15,7 +15,7 @@ const NavbarLanguageSwitcher = () => {
     const { t } = useTranslation('dashboard/account');
     const user = useStoreState((state: ApplicationStore) => state.user.data);
     const serverLocale = useStoreState((state: any) => state.settings.data?.locale || 'en');
-    const updateUserData = useStoreActions((actions: any) => actions.user.updateUserData);
+    const savePreference = useAccountPreference();
     const [languages, setLanguages] = useState<Record<string, LanguageInfo>>({});
     const [currentLang, setCurrentLang] = useState(
         user?.language && user.language !== 'geo' ? user.language : serverLocale,
@@ -45,17 +45,17 @@ const NavbarLanguageSwitcher = () => {
     }, []);
 
     const handleSelect = async (code: string) => {
-        setCurrentLang(code);
         setIsOpen(false);
-        i18n.changeLanguage(code);
 
         if (user) {
             try {
-                await updateAccountLanguage({ language: code });
-                updateUserData({ language: code });
+                if (await savePreference('language', code)) setCurrentLang(code);
             } catch (error) {
                 console.error('Failed to update language:', error);
             }
+        } else {
+            setCurrentLang(code);
+            i18n.changeLanguage(code);
         }
     };
 
