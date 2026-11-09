@@ -28,7 +28,7 @@ const ProviderIcon = ({ provider }: { provider: string }) => {
 };
 
 export default () => {
-    const { t } = useTranslation('dashboard/account');
+    const { t } = useTranslation(['dashboard/account', 'notifications']);
     const [logins, setLogins] = useState<SocialLogin[] | null>(null);
     const [loading, setLoading] = useState(true);
     const [unlinkProvider, setUnlinkProvider] = useState<string | null>(null);
