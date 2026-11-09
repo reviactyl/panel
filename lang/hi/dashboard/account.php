@@ -137,6 +137,7 @@ return [
         'password-required' => 'जारी रखने के लिए आपको अपना खाता पासवर्ड प्रदान करना होगा।',
     ],
     'api' => [
+        'retry' => 'पुनः प्रयास करें',
         'title' => 'खाता API',
         'create-key' => 'API कुंजी बनाएँ',
         'content-title' => 'API कुंजी',

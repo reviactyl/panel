@@ -137,6 +137,7 @@ return [
         'password-required' => 'Anda harus memasukkan kata sandi akun Anda untuk melanjutkan.',
     ],
     'api' => [
+        'retry' => 'Coba lagi',
         'title' => 'API Akun',
         'create-key' => 'Buat Kunci API',
         'content-title' => 'Kunci API',

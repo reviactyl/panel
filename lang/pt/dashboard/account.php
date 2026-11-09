@@ -137,6 +137,7 @@ return [
         'password-required' => 'Você precisa inserir a senha da sua conta para continuar.',
     ],
     'api' => [
+        'retry' => 'Tentar novamente',
         'title' => 'API da Conta',
         'create-key' => 'Criar Chave de API',
         'content-title' => 'Chaves API',

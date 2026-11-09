@@ -137,6 +137,7 @@ return [
         'password-required' => 'Devam etmek için hesap şifrenizi girmeniz gerekmektedir.',
     ],
     'api' => [
+        'retry' => 'Tekrar dene',
         'title' => 'Hesap API',
         'create-key' => 'API Anahtarı Oluştur',
         'content-title' => 'API Anahtarları',

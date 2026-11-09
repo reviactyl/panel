@@ -13,20 +13,40 @@ import { useFlashKey } from '@/plugins/useFlash';
 import Code from '@/reviactyl/elements/Code';
 import { useTranslation } from 'react-i18next';
 import { FaKey, FaTrash } from 'react-icons/fa6';
+import Button from '@/reviactyl/elements/Button';
 
 export default () => {
     const { t } = useTranslation('dashboard/account');
     const [deleteIdentifier, setDeleteIdentifier] = useState('');
     const [keys, setKeys] = useState<ApiKey[]>([]);
     const [loading, setLoading] = useState(true);
+    const [loadFailed, setLoadFailed] = useState(false);
+    const [loadAttempt, setLoadAttempt] = useState(0);
     const { clearAndAddHttpError } = useFlashKey('account');
 
     useEffect(() => {
+        let cancelled = false;
+        setLoading(true);
+        setLoadFailed(false);
         getApiKeys()
-            .then((keys) => setKeys(keys))
-            .then(() => setLoading(false))
-            .catch((error) => clearAndAddHttpError(error));
-    }, []);
+            .then((keys) => {
+                if (cancelled) return;
+                setKeys(keys);
+                clearAndAddHttpError();
+            })
+            .catch((error) => {
+                if (cancelled) return;
+                setLoadFailed(true);
+                clearAndAddHttpError(error);
+            })
+            .finally(() => {
+                if (!cancelled) setLoading(false);
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [loadAttempt]);
 
     const doDeletion = (identifier: string) => {
         setLoading(true);
@@ -59,7 +79,13 @@ export default () => {
                     >
                         {t('api.info')} (<Code>{deleteIdentifier}</Code>)
                     </Dialog.Confirm>
-                    {keys.length === 0 ? (
+                    {loadFailed ? (
+                        <div className='text-center'>
+                            <Button type='button' onClick={() => setLoadAttempt((attempt) => attempt + 1)}>
+                                {t('api.retry')}
+                            </Button>
+                        </div>
+                    ) : keys.length === 0 ? (
                         <p className='text-center text-sm'>{loading ? t('overview.loading') : t('api.not-exist')}</p>
                     ) : (
                         keys.map((key, index) => (

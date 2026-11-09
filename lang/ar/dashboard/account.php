@@ -137,6 +137,7 @@ return [
         'password-required' => 'يجب عليك إدخال كلمة مرور حسابك للمتابعة.',
     ],
     'api' => [
+        'retry' => 'إعادة المحاولة',
         'title' => 'API الحساب',
         'create-key' => 'إنشاء مفتاح API',
         'content-title' => 'مفاتيح API',

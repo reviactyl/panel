@@ -138,6 +138,7 @@ return [
         'password-required' => '您必须输入账户密码才能继续。',
     ],
     'api' => [
+        'retry' => '重试',
         'title' => '账户 API',
         'create-key' => '创建 API 密钥',
         'content-title' => 'API 密钥',

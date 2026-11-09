@@ -137,6 +137,7 @@ return [
         'password-required' => 'Du måste ange lösenordet till ditt konto för att kunna fortsätta.',
     ],
     'api' => [
+        'retry' => 'Försök igen',
         'title' => 'Kontots API',
         'create-key' => 'Skapa API-nyckel',
         'content-title' => 'API-Nycklar',

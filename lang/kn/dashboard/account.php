@@ -137,6 +137,7 @@ return [
         'password-required' => 'You must provide your account password to continue.',
     ],
     'api' => [
+        'retry' => 'ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ',
         'title' => 'ಖಾತೆ API',
         'create-key' => 'API ಕೀ ರಚಿಸಿ',
         'content-title' => 'API ಕೀಗಳು',

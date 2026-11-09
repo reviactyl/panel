@@ -137,6 +137,7 @@ return [
         'password-required' => 'Bạn phải nhập mật khẩu tài khoản của mình để tiếp tục.',
     ],
     'api' => [
+        'retry' => 'Thử lại',
         'title' => 'API tài khoản',
         'create-key' => 'Tạo khóa API',
         'content-title' => 'API Keys',

@@ -137,6 +137,7 @@ return [
         'password-required' => 'You must provide your account password to continue.',
     ],
     'api' => [
+        'retry' => 'Retry',
         'title' => 'Account API',
         'create-key' => 'Create API Key',
         'content-title' => 'API Keys',
