@@ -6,6 +6,14 @@ import getApiKeys, { type ApiKey } from '@/api/account/getApiKeys';
 import flashes from '@/state/flashes';
 import AccountApiContainer from './AccountApiContainer';
 
+const key: ApiKey = {
+    identifier: 'demo-key',
+    description: 'Recovered API key',
+    allowedIps: [],
+    createdAt: null,
+    lastUsedAt: null,
+};
+
 vi.mock('@/api/account/getApiKeys', () => ({ default: vi.fn() }));
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 vi.mock('@/components/dashboard/AccountContentBlock', () => ({
@@ -14,7 +22,11 @@ vi.mock('@/components/dashboard/AccountContentBlock', () => ({
 vi.mock('@/reviactyl/elements/ContentBox', () => ({
     default: ({ children }: { children: ReactNode }) => <section>{children}</section>,
 }));
-vi.mock('@/components/dashboard/forms/CreateApiKeyForm', () => ({ default: () => null }));
+vi.mock('@/components/dashboard/forms/CreateApiKeyForm', () => ({
+    default: ({ onKeyCreated }: { onKeyCreated: (key: ApiKey) => void }) => (
+        <button onClick={() => onKeyCreated(key)}>Create key</button>
+    ),
+}));
 vi.mock('@/components/MessageBox', () => ({
     default: ({ children }: { children: ReactNode }) => <div role='alert'>{children}</div>,
 }));
@@ -25,14 +37,6 @@ vi.mock('@/reviactyl/elements/dialog', () => ({ Dialog: { Confirm: () => null } 
 
 let container: HTMLDivElement;
 let root: Root;
-
-const key: ApiKey = {
-    identifier: 'demo-key',
-    description: 'Recovered API key',
-    allowedIps: [],
-    createdAt: null,
-    lastUsedAt: null,
-};
 
 beforeEach(() => {
     Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
@@ -56,12 +60,36 @@ const render = async () => {
             </StoreProvider>,
         );
     });
+    return store;
 };
 
 const retry = () =>
     Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'api.retry');
 
 describe('API key list loading', () => {
+    it('keeps a newly created key visible alongside retry after a load failure', async () => {
+        vi.mocked(getApiKeys).mockRejectedValueOnce(new Error('List failed'));
+        await render();
+        await act(async () => container.querySelector<HTMLButtonElement>('button')!.click());
+        expect(container.textContent).toContain(key.description);
+        expect(container.textContent).toContain(key.identifier);
+        expect(retry()).toBeDefined();
+        expect(container.querySelectorAll('button')).toHaveLength(3);
+    });
+
+    it('preserves creation errors when a pending list retry succeeds', async () => {
+        vi.mocked(getApiKeys).mockRejectedValueOnce(new Error('List failed'));
+        const store = await render();
+        let resolve!: (keys: ApiKey[]) => void;
+        vi.mocked(getApiKeys).mockImplementationOnce(() => new Promise((done) => (resolve = done)));
+        await act(async () => retry()!.click());
+        await act(async () => store.getActions().flashes.addError({ key: 'account', message: 'Creation failed' }));
+        await act(async () => resolve([]));
+        expect(container.textContent).toContain('Creation failed');
+        expect(container.textContent).not.toContain('List failed');
+        expect(retry()).toBeUndefined();
+    });
+
     it('clears the initial error spinner, shows the error, and recovers through retry', async () => {
         vi.mocked(getApiKeys).mockRejectedValueOnce(new Error('API keys unavailable'));
         await render();

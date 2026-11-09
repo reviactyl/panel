@@ -14,6 +14,7 @@ import Code from '@/reviactyl/elements/Code';
 import { useTranslation } from 'react-i18next';
 import { FaKey, FaTrash } from 'react-icons/fa6';
 import Button from '@/reviactyl/elements/Button';
+import { httpErrorToHuman } from '@/api/http';
 
 export default () => {
     const { t } = useTranslation('dashboard/account');
@@ -23,6 +24,7 @@ export default () => {
     const [loadFailed, setLoadFailed] = useState(false);
     const [loadAttempt, setLoadAttempt] = useState(0);
     const { clearAndAddHttpError } = useFlashKey('account');
+    const { clearFlashes: clearListError, addError: addListError } = useFlashKey('api-key-list');
 
     useEffect(() => {
         let cancelled = false;
@@ -32,12 +34,13 @@ export default () => {
             .then((keys) => {
                 if (cancelled) return;
                 setKeys(keys);
-                clearAndAddHttpError();
+                clearListError();
             })
             .catch((error) => {
                 if (cancelled) return;
                 setLoadFailed(true);
-                clearAndAddHttpError(error);
+                clearListError();
+                addListError(httpErrorToHuman(error));
             })
             .finally(() => {
                 if (!cancelled) setLoading(false);
@@ -69,6 +72,7 @@ export default () => {
                     <CreateApiKeyForm onKeyCreated={(key) => setKeys((s) => [...s!, key])} />
                 </ContentBox>
                 <ContentBox insetTitle title={t('api.content-title')} className='min-w-0'>
+                    <FlashMessageRender byKey={'api-key-list'} />
                     <SpinnerOverlay visible={loading} />
                     <Dialog.Confirm
                         title={t('api.delete')}
@@ -79,39 +83,47 @@ export default () => {
                     >
                         {t('api.info')} (<Code>{deleteIdentifier}</Code>)
                     </Dialog.Confirm>
-                    {loadFailed ? (
+                    {loadFailed && (
                         <div className='text-center'>
                             <Button type='button' onClick={() => setLoadAttempt((attempt) => attempt + 1)}>
                                 {t('api.retry')}
                             </Button>
                         </div>
-                    ) : keys.length === 0 ? (
-                        <p className='text-center text-sm'>{loading ? t('overview.loading') : t('api.not-exist')}</p>
-                    ) : (
-                        keys.map((key, index) => (
-                            <GreyRowBox key={key.identifier} className={`flex items-center ${index > 0 ? 'mt-2' : ''}`}>
-                                <FaKey className='text-gray-300' />
-                                <div className='ml-4 flex-1 overflow-hidden'>
-                                    <p className='wrap-break-word text-sm'>{key.description}</p>
-                                    <p className='text-2xs uppercase text-gray-300'>
-                                        {t('api.last-used')}:&nbsp;
-                                        {key.lastUsedAt
-                                            ? format(key.lastUsedAt, 'MMM do, yyyy HH:mm')
-                                            : t('api.never-used')}
-                                    </p>
-                                </div>
-                                <p className='ml-4 hidden text-sm md:block'>
-                                    <code className='rounded-md bg-gray-950 px-2 py-1 font-mono'>{key.identifier}</code>
-                                </p>
-                                <button
-                                    className='ml-4 p-2 text-sm'
-                                    onClick={() => setDeleteIdentifier(key.identifier)}
-                                >
-                                    <FaTrash className='text-gray-400 transition-colors duration-150 hover:text-red-400' />
-                                </button>
-                            </GreyRowBox>
-                        ))
                     )}
+                    {keys.length === 0
+                        ? !loadFailed && (
+                              <p className='text-center text-sm'>
+                                  {loading ? t('overview.loading') : t('api.not-exist')}
+                              </p>
+                          )
+                        : keys.map((key, index) => (
+                              <GreyRowBox
+                                  key={key.identifier}
+                                  className={`flex items-center ${index > 0 ? 'mt-2' : ''}`}
+                              >
+                                  <FaKey className='text-gray-300' />
+                                  <div className='ml-4 flex-1 overflow-hidden'>
+                                      <p className='wrap-break-word text-sm'>{key.description}</p>
+                                      <p className='text-2xs uppercase text-gray-300'>
+                                          {t('api.last-used')}:&nbsp;
+                                          {key.lastUsedAt
+                                              ? format(key.lastUsedAt, 'MMM do, yyyy HH:mm')
+                                              : t('api.never-used')}
+                                      </p>
+                                  </div>
+                                  <p className='ml-4 hidden text-sm md:block'>
+                                      <code className='rounded-md bg-gray-950 px-2 py-1 font-mono'>
+                                          {key.identifier}
+                                      </code>
+                                  </p>
+                                  <button
+                                      className='ml-4 p-2 text-sm'
+                                      onClick={() => setDeleteIdentifier(key.identifier)}
+                                  >
+                                      <FaTrash className='text-gray-400 transition-colors duration-150 hover:text-red-400' />
+                                  </button>
+                              </GreyRowBox>
+                          ))}
                 </ContentBox>
             </div>
         </AccountContentBlock>
