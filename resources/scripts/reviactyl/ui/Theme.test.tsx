@@ -6,13 +6,16 @@ import { Theme, ThemeToggle } from './Theme';
 
 vi.mock('react-i18next', () => ({
     useTranslation: () => ({
-        t: (key: string) =>
-            ({
+        t: (key: string) => {
+            const translations: Record<string, string> = {
                 'overview.theme-toggle': 'Theme Toggle',
                 'overview.theme-light': 'Light',
                 'overview.theme-dark': 'Dark',
                 'overview.theme-system': 'System',
-            })[key] ?? key,
+            };
+
+            return translations[key] ?? key;
+        },
     }),
 }));
 
