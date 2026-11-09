@@ -33,7 +33,7 @@ function Clickable({
         return (
             <button
                 type='button'
-                className={`${styles.details} text-left`}
+                className={`${styles.details} text-left focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-400`}
                 onClick={(e) => {
                     e.preventDefault();
                     onMediaClick();
