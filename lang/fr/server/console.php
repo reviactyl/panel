@@ -7,6 +7,8 @@ return [
     'server-transferring' => 'Ce serveur est actuellement transféré vers un autre nœud et toutes les actions sont indisponibles.',
     'run-command' => 'Tapez une commande...',
     'connection-trouble' => 'Nous rencontrons des difficultés pour nous connecter à votre serveur, veuillez patienter...',
+    'connection-error' => 'Impossible de se connecter à votre serveur. Veuillez réessayer.',
+    'retry' => 'Réessayer',
     'address' => 'Adresse',
     'uptime' => 'Temps de disponibilité',
     'network-inbound' => 'Réseau (entrant)',
