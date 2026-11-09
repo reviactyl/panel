@@ -85,5 +85,6 @@ return [
     'throttle' => 'Muitas tentativas de login. Por favor, tente novamente em :seconds segundos.',
     'password_requirements' => 'A senha deve ter no mínimo 8 caracteres e deve ser exclusiva para este site.',
     '2fa_must_be_enabled' => 'O administrador exige que a Autenticação em 2 Fatores esteja ativada na sua conta para usar o Painel.',
+    'captcha-failed' => 'Não foi possível concluir o captcha. Tente novamente.',
     'captcha-required' => 'Por favor, responda ao desafio do captcha para continuar.',
 ];

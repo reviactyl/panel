@@ -85,5 +85,6 @@ return [
     'throttle' => 'Demasiados intentos de inicio de sesión. Por favor, intenta de nuevo en :seconds segundos.',
     'password_requirements' => 'La contraseña debe tener al menos 8 caracteres y ser única para este sitio.',
     '2fa_must_be_enabled' => 'El administrador ha requerido que la autenticación de 2 factores esté habilitada para tu cuenta para usar el Panel.',
+    'captcha-failed' => 'No se pudo completar el captcha. Inténtalo de nuevo.',
     'captcha-required' => 'Por favor, completa el captcha para continuar.',
 ];

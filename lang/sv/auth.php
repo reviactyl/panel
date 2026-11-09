@@ -85,5 +85,6 @@ return [
     'throttle' => 'För många inloggningsförsök. Vänligen försök igen om :seconds sekunder.',
     'password_requirements' => 'Lösenordet måste vara minst 8 tecken långt och bör vara unikt för denna webbplats.',
     '2fa_must_be_enabled' => 'Administratören har krävt att tvåfaktorsautentisering aktiveras för ditt konto för att kunna använda panelen.',
+    'captcha-failed' => 'Det gick inte att slutföra captcha-kontrollen. Försök igen.',
     'captcha-required' => 'Vänligen lös captcha-utmaningen för att fortsätta.',
 ];

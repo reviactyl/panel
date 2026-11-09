@@ -38,6 +38,7 @@ const validationFields = new Map<string, keyof Values>([
 const RegisterContainer = () => {
     const { t } = useTranslation('auth');
     const ref = React.useRef<Reaptcha>(null);
+    const pendingCaptcha = React.useRef<((token: string) => void) | null>(null);
     const turnstileRef = React.useRef<TurnstileHandle>(null);
     const { clearFlashes, clearAndAddHttpError, addError } = useFlash();
     const [show, setShow] = useState(false);
@@ -61,15 +62,20 @@ const RegisterContainer = () => {
         return () => clearInterval(interval);
     }, []);
 
-    const onSubmit = (values: Values, { setSubmitting, setErrors }: FormikHelpers<Values>) => {
-        clearFlashes();
+    const failCaptcha = (setSubmitting: (submitting: boolean) => void) => {
+        if (!pendingCaptcha.current) return;
+        pendingCaptcha.current = null;
+        setToken('');
+        setSubmitting(false);
+        addError({ message: t('captcha-failed') });
+        ref.current?.reset().catch(() => {});
+    };
 
-        // If using reCAPTCHA and no token yet, execute captcha
-        if (provider === 'recaptcha' && !token) {
-            ref.current?.execute();
-            return;
-        }
-
+    const performRegistration = (
+        values: Values,
+        { setSubmitting, setErrors }: FormikHelpers<Values>,
+        captchaToken: string,
+    ) => {
         register({
             email: values.email,
             username: values.username,
@@ -77,7 +83,7 @@ const RegisterContainer = () => {
             last_name: values.lastName,
             password: values.password,
             password_confirmation: values.passwordConfirmation,
-            'g-recaptcha-response': provider === 'recaptcha' ? token : undefined,
+            'g-recaptcha-response': provider === 'recaptcha' ? captchaToken : undefined,
             'cf-turnstile-response': provider === 'turnstile' ? token : undefined,
         })
             .then((response) => {
@@ -88,7 +94,7 @@ const RegisterContainer = () => {
             })
             .catch((error) => {
                 setToken('');
-                if (ref.current) ref.current.reset();
+                ref.current?.reset().catch(() => {});
                 turnstileRef.current?.reset();
 
                 const { response } = error;
@@ -120,6 +126,23 @@ const RegisterContainer = () => {
             });
     };
 
+    const onSubmit = (values: Values, helpers: FormikHelpers<Values>) => {
+        clearFlashes();
+
+        if (provider === 'recaptcha') {
+            pendingCaptcha.current = (response) => performRegistration(values, helpers, response);
+            Promise.resolve()
+                .then(() => {
+                    if (!ref.current) throw new Error('reCAPTCHA is unavailable.');
+                    return ref.current.execute();
+                })
+                .catch(() => failCaptcha(helpers.setSubmitting));
+            return;
+        }
+
+        performRegistration(values, helpers, token);
+    };
+
     return (
         <Formik
             onSubmit={onSubmit}
@@ -142,7 +165,7 @@ const RegisterContainer = () => {
                     .oneOf([yupRef('password')], t('register.no-match')),
             })}
         >
-            {({ isSubmitting, setSubmitting, submitForm }) => (
+            {({ isSubmitting, setSubmitting }) => (
                 <LoginFormContainer title={'Create Account'} className='flex w-full'>
                     <div className='grid grid-cols-2 gap-4'>
                         <Field
@@ -216,13 +239,17 @@ const RegisterContainer = () => {
                             size={'invisible'}
                             sitekey={recaptcha.siteKey || '_invalid_key'}
                             onVerify={(response) => {
-                                setToken(response);
-                                submitForm();
+                                const submit = pendingCaptcha.current;
+                                if (!submit) return;
+                                if (!response?.trim()) {
+                                    failCaptcha(setSubmitting);
+                                    return;
+                                }
+                                pendingCaptcha.current = null;
+                                submit(response);
                             }}
-                            onExpire={() => {
-                                setSubmitting(false);
-                                setToken('');
-                            }}
+                            onError={() => failCaptcha(setSubmitting)}
+                            onExpire={() => failCaptcha(setSubmitting)}
                         />
                     )}
                     {provider === 'turnstile' && (
