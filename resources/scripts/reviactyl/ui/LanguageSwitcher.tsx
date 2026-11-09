@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useId } from 'react';
+import React, { useState, useEffect, useId, useRef } from 'react';
 import i18n from '@/i18n';
 import Select from '@/reviactyl/elements/Select';
 import { useTranslation } from 'react-i18next';
@@ -20,6 +20,8 @@ const LanguageSwitcher = () => {
     const savePreference = useAccountPreference();
     const [languages, setLanguages] = useState<Record<string, LanguageInfo>>({});
     const [pendingLang, setPendingLang] = useState<string | null>(null);
+    const pendingLangRef = useRef<string | null>(null);
+    const requestGeneration = useRef(0);
     const currentLang = pendingLang ?? (user?.language && user.language !== 'geo' ? user.language : serverLocale);
 
     useEffect(() => {
@@ -28,24 +30,38 @@ const LanguageSwitcher = () => {
             .then((langs) => setLanguages(langs))
             .catch(() => setLanguages({ en: { name: 'English', flag: 'us' } }));
 
-        const onLangChanged = () => setPendingLang(null);
+        const onLangChanged = (lng: string) => {
+            if (pendingLangRef.current === lng) {
+                pendingLangRef.current = null;
+                setPendingLang(null);
+            }
+        };
         i18n.on('languageChanged', onLangChanged);
         return () => i18n.off('languageChanged', onLangChanged);
     }, []);
 
     const handleChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const newLang = e.target.value;
+        const generation = ++requestGeneration.current;
 
+        pendingLangRef.current = newLang;
         setPendingLang(newLang);
         if (user) {
             try {
                 await savePreference('language', newLang);
-                setPendingLang(null);
+                if (generation === requestGeneration.current) {
+                    pendingLangRef.current = null;
+                    setPendingLang(null);
+                }
             } catch (error) {
-                setPendingLang(null);
+                if (generation === requestGeneration.current) {
+                    pendingLangRef.current = null;
+                    setPendingLang(null);
+                }
                 console.error('Failed to update language:', error);
             }
         } else {
+            pendingLangRef.current = null;
             setPendingLang(null);
             i18n.changeLanguage(newLang);
         }

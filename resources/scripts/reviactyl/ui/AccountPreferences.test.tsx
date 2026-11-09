@@ -233,6 +233,8 @@ describe.each(['account', 'navbar', 'editor'] as const)('%s delayed saves', (con
                 else first.resolve();
             });
             expect(api).toHaveBeenCalledTimes(2);
+            if (control === 'account') expect(displayed()).toBe(original);
+            if (control === 'navbar') expect(displayed()).toBe('overview.language: English');
             await act(async () => {
                 if (outcome === 'second fails') second.reject(new Error('second rejected'));
                 else second.resolve();
