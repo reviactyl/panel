@@ -33,6 +33,7 @@ describe('navbar language trigger accessibility', () => {
     let root: Root;
 
     beforeEach(() => {
+        vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
         vi.clearAllMocks();
         mocks.state.user.data.language = 'en';
         mocks.state.settings.data.locale = 'en';
