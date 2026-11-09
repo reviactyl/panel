@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
 import { useStoreActions, useStoreState } from 'easy-peasy';
 import updateAccountLanguage from '@/api/account/updateAccountLanguage';
@@ -11,6 +12,7 @@ interface LanguageInfo {
 }
 
 const NavbarLanguageSwitcher = () => {
+    const { t } = useTranslation('dashboard/account');
     const user = useStoreState((state: ApplicationStore) => state.user.data);
     const serverLocale = useStoreState((state: any) => state.settings.data?.locale || 'en');
     const updateUserData = useStoreActions((actions: any) => actions.user.updateUserData);
@@ -63,6 +65,8 @@ const NavbarLanguageSwitcher = () => {
         <div className='relative' ref={containerRef}>
             <button
                 type='button'
+                aria-label={`${t('overview.language')}: ${currentLanguage?.name || currentLang}`}
+                aria-expanded={isOpen}
                 className='flex cursor-pointer items-center gap-2 rounded-ui border border-gray-800 bg-gray-900 px-3 py-2 text-sm text-gray-200 transition-all hover:border-gray-600 hover:bg-gray-700'
                 onClick={() => setIsOpen(!isOpen)}
             >
