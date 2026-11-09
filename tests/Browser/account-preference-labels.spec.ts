@@ -1,4 +1,40 @@
 import { expect, test } from '@playwright/test';
+import { build } from 'vite';
+import { resolve } from 'node:path';
+
+test('local account preference labels focus the production selects', async ({ page }) => {
+    const fixture = resolve('tests/Browser/fixtures/account-preferences');
+    const result = await build({
+        configFile: false,
+        logLevel: 'silent',
+        define: { 'process.env.NODE_ENV': JSON.stringify('production') },
+        resolve: {
+            alias: [
+                { find: 'react-i18next', replacement: `${fixture}/translation.ts` },
+                { find: '@/i18n', replacement: `${fixture}/translation.ts` },
+                { find: /^@\/api\/account\/updateAccount(Language|Editor)$/, replacement: `${fixture}/save.ts` },
+                { find: '@', replacement: resolve('resources/scripts') },
+            ],
+        },
+        build: { write: false, lib: { entry: `${fixture}/main.tsx`, name: 'Preferences', formats: ['iife'] } },
+    });
+    const outputs = Array.isArray(result) ? result : [result];
+    const chunk = outputs
+        .flatMap((output) => ('output' in output ? output.output : []))
+        .find((output) => output.type === 'chunk');
+    if (!chunk || chunk.type !== 'chunk') throw new Error('Missing fixture bundle');
+    await page.setContent('<div id="root"></div>');
+    await page.addScriptTag({ content: chunk.code });
+    for (const name of ['Panel Language', 'Preferred File Editor']) {
+        const select = page.getByRole('combobox', { name, exact: true });
+        await expect(select).toBeVisible();
+        await page
+            .locator('label')
+            .filter({ hasText: new RegExp(`^${name}$`) })
+            .click();
+        await expect(select).toBeFocused();
+    }
+});
 
 test('account preference labels focus their selects and preserve keyboard and pointer saving', async ({ page }) => {
     const url = process.env.ACCOUNT_PREFERENCE_DEMO_URL;

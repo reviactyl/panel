@@ -14,7 +14,12 @@ vi.mock('@/i18n', () => ({ default: { on: vi.fn(), off: vi.fn(), changeLanguage:
 vi.mock('react-i18next', () => ({
     useTranslation: () => ({
         t: (key: string) =>
-            ({ 'overview.language': 'Panel Language', 'overview.editor': 'Preferred File Editor' })[key] || key,
+            (
+                ({ 'overview.language': 'Panel Language', 'overview.editor': 'Preferred File Editor' }) as Record<
+                    string,
+                    string
+                >
+            )[key] || key,
     }),
 }));
 
