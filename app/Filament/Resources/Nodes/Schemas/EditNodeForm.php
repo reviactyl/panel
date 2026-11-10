@@ -9,6 +9,7 @@ use App\Models\Node;
 use App\Repositories\Agent\DaemonConfigurationRepository;
 use App\Repositories\Agent\DaemonMonitoringRepository;
 use App\Rules\NodeFqdn;
+use App\Services\Acl\Api\AdminAcl;
 use App\Services\Acl\RolePermission;
 use App\Services\Api\KeyCreationService;
 use Filament\Actions\Action;
@@ -491,15 +492,7 @@ class EditNodeForm
                                                             ->where('user_id', $user->id)
                                                             ->where('key_type', ApiKey::TYPE_APPLICATION)
                                                             ->get()
-                                                            ->filter(function (ApiKey $key) {
-                                                                foreach ($key->getAttributes() as $permission => $value) {
-                                                                    if ($permission === 'r_nodes' && $value === 1) {
-                                                                        return true;
-                                                                    }
-                                                                }
-
-                                                                return false;
-                                                            })
+                                                            ->filter(fn (ApiKey $key): bool => AdminAcl::check($key, AdminAcl::RESOURCE_NODES, AdminAcl::WRITE))
                                                             ->first();
 
                                                         // Create a Deployment Key if one doesn't exist
@@ -509,7 +502,7 @@ class EditNodeForm
                                                                 'user_id' => $user->id,
                                                                 'memo' => trans('admin/node.deployment.auto_generated_key'),
                                                                 'allowed_ips' => [],
-                                                            ], ['r_nodes' => 1]);
+                                                            ], ['r_nodes' => AdminAcl::READ | AdminAcl::WRITE]);
                                                         }
 
                                                         $encrypter = app(Encrypter::class);
