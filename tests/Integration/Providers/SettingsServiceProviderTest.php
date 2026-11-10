@@ -4,6 +4,7 @@ namespace Tests\Integration\Providers;
 
 use App\Contracts\Repository\SettingsRepositoryInterface;
 use App\Providers\SettingsServiceProvider;
+use App\Services\Servers\RecycleBinService;
 use App\Support\InstallationState;
 use Illuminate\Mail\Events\MessageSending;
 use Illuminate\Support\Facades\Event;
@@ -104,5 +105,16 @@ class SettingsServiceProviderTest extends IntegrationTestCase
         );
 
         $this->assertSame('10.0.0.0/8, 192.168.1.1', config('trustedproxy.proxies'));
+    }
+
+    public function test_it_loads_admin_recycle_bin_retention(): void
+    {
+        config()->set('panel.load_environment_only', false);
+        $settings = $this->app->make(SettingsRepositoryInterface::class);
+        $settings->set('settings::panel:files:recycle_bin_retention_days', 7);
+        (new SettingsServiceProvider($this->app))->boot(config(), $this->app->make(InstallationState::class), $settings);
+        $this->assertSame(7, RecycleBinService::retentionDays());
+        config()->set('panel.files.recycle_bin_retention_days', 0);
+        $this->assertSame(31, RecycleBinService::retentionDays());
     }
 }

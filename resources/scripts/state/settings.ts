@@ -6,6 +6,7 @@ export interface SiteSettings {
     locale: string;
     registrationEnabled: boolean;
     useBinaryPrefix?: boolean;
+    recycleBinRetentionDays?: number;
     captcha: {
         provider: 'none' | 'recaptcha' | 'turnstile';
         recaptcha: {

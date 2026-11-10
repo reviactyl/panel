@@ -1,3 +1,5 @@
+import { isRecyclePath } from './recyclePaths';
+import RecycleBin, { RecycleBinRow } from './RecycleBin';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { httpErrorToHuman } from '@/api/http';
 import Spinner from '@/reviactyl/elements/Spinner';
@@ -45,7 +47,7 @@ import { Button } from '@/reviactyl/components/button';
 import { sortFiles, SortDirection, SortType } from '@/components/server/files/sortFiles';
 
 export default () => {
-    const { t } = useTranslation(['server/files', 'strings']);
+    const { t } = useTranslation(['server/files', 'strings', 'server/recycle']);
     const grid = useStoreState((state) => state.designify.data?.fileLayout === 'grid');
     const id = ServerContext.useStoreState((state) => state.server.data!.id);
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
@@ -196,6 +198,13 @@ export default () => {
         setVideoViewerVisible(false);
         setSelectedVideo(null);
     };
+
+    if (isRecyclePath(hashToPath(hash)))
+        return (
+            <ServerContentBlock title={t('title')} showFlashKey='files'>
+                <RecycleBin />
+            </ServerContentBlock>
+        );
 
     if (error) {
         return <ServerError message={httpErrorToHuman(error)} onRetry={() => mutate()} />;
@@ -364,7 +373,7 @@ export default () => {
                                 ))}
                             </div>
                         )
-                    ) : !files.length ? (
+                    ) : !files.length && directory !== '/' ? (
                         <div className={'flex flex-col items-center justify-center py-10 text-muted'}>
                             <FolderOpenIcon className={'w-12 h-12 mb-2 opacity-40'} />
                             <p className={'text-sm'}>{t('empty')}</p>
@@ -377,6 +386,15 @@ export default () => {
                                 </div>
                             )}
                             <div className={grid ? style.file_grid : undefined}>
+                                {directory === '/' && (
+                                    <Can action='file.read'>
+                                        <RecycleBinRow
+                                            grid={grid}
+                                            files={files}
+                                            onOpen={() => navigate(`/server/${id}/files#/.recycle-bin`)}
+                                        />
+                                    </Can>
+                                )}
                                 {visibleFiles.map((file) => (
                                     <FileObjectRow
                                         key={file.key}

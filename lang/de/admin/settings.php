@@ -2,6 +2,8 @@
 
 return [
     'overview' => [
+        'recycle-bin-retention' => 'Papierkorb-Aufbewahrung (Tage)',
+        'recycle-bin-retention-hint' => 'Dateien im Papierkorb nach dieser Anzahl von Tagen endgültig löschen.',
         'title' => 'Einstellungen',
         'general-title' => 'Allgemein',
         'app-name' => 'Anwendungs-Name',

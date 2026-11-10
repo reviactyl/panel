@@ -90,6 +90,9 @@ return [
             'export' => 'تم تصدير قاعدة البيانات :name',
         ],
         'file' => [
+            'recycle_one' => 'نقل إلى سلة المحذوفات · :directory:files.0',
+            'recycle_other' => 'نقل إلى سلة المحذوفات · :count · :directory',
+            'restore' => 'استعادة · :id',
             'compress_one' => 'تم ضغط :directory:file',
             'compress_other' => 'تم ضغط :count ملف في :directory',
             'read' => 'تم عرض محتويات :file',

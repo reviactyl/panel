@@ -50,11 +50,11 @@ vi.mock('@/reviactyl/elements/tooltip/Tooltip', () => ({
     default: ({ children }: { children: ReactNode }) => children,
 }));
 vi.mock('@/reviactyl/elements/dialog', () => ({
-    Dialog: {
-        Confirm: ({ open, onConfirmed }: { open: boolean; onConfirmed: () => void }) =>
-            open ? <button onClick={onConfirmed}>confirm delete</button> : null,
-    },
+    Dialog: Object.assign(({ children }: { children: ReactNode }) => <div role='dialog'>{children}</div>, {
+        Footer: ({ children }: { children: ReactNode }) => <div>{children}</div>,
+    }),
 }));
+vi.mock('./RecycleBin', () => ({ default: () => null, RecycleBinRow: () => null }));
 vi.mock('@/extensions/ExtensionSlot', () => ({ ExtensionSlot: () => null }));
 vi.mock('./FileObjectRow', () => ({
     default: ({ file }: { file: FileObject }) => <SelectFileCheckbox name={file.name} />,
@@ -176,11 +176,30 @@ describe('visible file bulk selection', () => {
         expect(visible).toHaveLength(249);
         await click(action('delete'));
         await click(
-            Array.from(container.querySelectorAll('button')).find((button) => button.textContent === 'confirm delete')!,
+            Array.from(container.querySelectorAll('button')).find(
+                (button) => button.textContent === 'server/files:delete',
+            )!,
         );
-        expect(mocks.remove).toHaveBeenCalledExactlyOnceWith('uuid', '/', visible);
+        expect(mocks.remove).toHaveBeenCalledExactlyOnceWith('uuid', '/', visible, false);
         expect(visible).not.toContain(omitted.value);
         expect(visible).not.toContain('file-000.txt');
+    });
+
+    it('requires a second permanent deletion confirmation and can go back', async () => {
+        await render();
+        await click(rows()[0]!);
+        await click(action('delete'));
+        const textButton = (text: string) =>
+            Array.from(container.querySelectorAll('button')).find((button) => button.textContent === text)!;
+        await click(textButton('permanent'));
+        expect(container.textContent).toContain('irreversible');
+        expect(mocks.remove).not.toHaveBeenCalled();
+        await click(textButton('back'));
+        expect(container.textContent).toContain('delete-message');
+        expect(mocks.remove).not.toHaveBeenCalled();
+        await click(textButton('permanent'));
+        await click(textButton('permanent'));
+        expect(mocks.remove).toHaveBeenCalledExactlyOnceWith('uuid', '/', [rows()[0]!.value], true);
     });
 
     it('clears all selections when toggled off', async () => {

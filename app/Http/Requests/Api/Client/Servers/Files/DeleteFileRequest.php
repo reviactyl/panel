@@ -17,7 +17,8 @@ class DeleteFileRequest extends ClientApiRequest implements ClientPermissionsReq
     {
         return [
             'root' => 'required|nullable|string',
-            'files' => 'required|array',
+            'permanent' => 'sometimes|boolean',
+            'files' => 'required|array|min:1|max:1000',
             'files.*' => 'string',
         ];
     }

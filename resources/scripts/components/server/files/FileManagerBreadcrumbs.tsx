@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+import { isRecyclePath } from './recyclePaths';
 import React, { useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import { NavLink, useLocation } from 'react-router-dom';
@@ -10,6 +12,7 @@ interface Props {
 }
 
 export default ({ renderLeft, withinFileEditor, isNewFile }: Props) => {
+    const { t } = useTranslation('server/recycle');
     const [file, setFile] = useState<string | null>(null);
     const id = ServerContext.useStoreState((state) => state.server.data!.id);
     const directory = ServerContext.useStoreState((state) => state.files.directory);
@@ -29,6 +32,10 @@ export default ({ renderLeft, withinFileEditor, isNewFile }: Props) => {
             .split('/')
             .filter((directory) => !!directory)
             .map((directory, index, dirs) => {
+                if (isRecyclePath('/' + dirs.join('/'))) {
+                    if (index === 1) return { name: '' };
+                    if (index === 0) return { name: t('title'), path: '/.recycle-bin' };
+                }
                 if (!withinFileEditor && index === dirs.length - 1) {
                     return { name: directory };
                 }
@@ -43,23 +50,25 @@ export default ({ renderLeft, withinFileEditor, isNewFile }: Props) => {
                 container
             </NavLink>
             /
-            {breadcrumbs().map((crumb, index) =>
-                crumb.path ? (
-                    <React.Fragment key={index}>
-                        <NavLink
-                            to={`/server/${id}/files#${encodePathSegments(crumb.path)}`}
-                            className='px-1 text-gray-200 no-underline hover:text-gray-100'
-                        >
+            {breadcrumbs()
+                .filter((crumb) => crumb.name)
+                .map((crumb, index) =>
+                    crumb.path ? (
+                        <React.Fragment key={index}>
+                            <NavLink
+                                to={`/server/${id}/files#${encodePathSegments(crumb.path)}`}
+                                className='px-1 text-gray-200 no-underline hover:text-gray-100'
+                            >
+                                {crumb.name}
+                            </NavLink>
+                            /
+                        </React.Fragment>
+                    ) : (
+                        <span key={index} className='px-1 text-gray-300'>
                             {crumb.name}
-                        </NavLink>
-                        /
-                    </React.Fragment>
-                ) : (
-                    <span key={index} className='px-1 text-gray-300'>
-                        {crumb.name}
-                    </span>
-                ),
-            )}
+                        </span>
+                    ),
+                )}
             {file && (
                 <React.Fragment>
                     <span className='px-1 text-gray-300'>{file}</span>
