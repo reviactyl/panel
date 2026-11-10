@@ -141,7 +141,13 @@ class FileController extends ClientApiController
 
     private function writeContent(WriteFileContentRequest $request, Server $server): JsonResponse
     {
-        $this->fileRepository->setServer($server)->putContent($request->get('file'), $request->getContent());
+        try {
+            $this->fileRepository->setServer($server)->putContent($request->get('file'), $request->getContent());
+        } finally {
+            if (str_starts_with(ltrim($request->get('file'), '/'), RecycleBinService::DIRECTORY.'/')) {
+                RecycleBinService::invalidateListing($server);
+            }
+        }
 
         Activity::event('server:file.write')->property('file', $request->get('file'))->log();
 

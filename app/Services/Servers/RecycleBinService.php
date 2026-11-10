@@ -5,6 +5,7 @@ namespace App\Services\Servers;
 use App\Models\Server;
 use App\Repositories\Agent\DaemonFileRepository;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -42,34 +43,43 @@ class RecycleBinService
         return '/'.implode('/', $parts);
     }
 
-    public function listing(Server $server): array
+    public static function invalidateListing(Server $server): void
     {
-        $this->files->setServer($server);
-        $entries = DB::table('recycled_files')->where('server_id', $server->id)->orderByDesc('created_at')->get();
-        $data = [];
-        foreach ($entries as $entry) {
-            $path = $this->storagePath($entry->id);
-            $available = $this->exists($path);
-            $size = $available ? $this->size($path) : null;
-            $data[] = [
-                'id' => $entry->id,
-                'original_path' => $entry->original_path,
-                'storage_path' => $path,
-                'created_at' => Carbon::parse($entry->created_at)->toIso8601String(),
-                'size' => $size,
-                'is_file' => $available ? (collect($this->files->getDirectory(dirname($path)))->firstWhere('name', 'file')['file'] ?? true) : true,
-            ];
-        }
-
-        return ['data' => $data, 'size' => array_sum(array_column($data, 'size')), 'retention_days' => self::retentionDays()];
+        Cache::forever('recycle-bin:listing-version:'.$server->id, (string) Str::uuid());
     }
 
-    private function size(string $path): int
+    public function listing(Server $server): array
     {
-        $entry = collect($this->files->getDirectory(dirname($path)))->firstWhere('name', basename($path));
-        if (! $entry) {
-            return 0;
-        }
+        $version = Cache::get('recycle-bin:listing-version:'.$server->id, 'initial');
+
+        $listing = Cache::remember('recycle-bin:listing:'.$server->id.':'.$version, 60, function () use ($server) {
+            $this->files->setServer($server);
+            $entries = DB::table('recycled_files')->where('server_id', $server->id)->orderByDesc('created_at')->get();
+            $data = [];
+            $directories = [];
+            foreach ($entries as $entry) {
+                $path = $this->storagePath($entry->id);
+                $available = $this->exists($path, $directories);
+                $payload = $available ? collect($directories[dirname($path)])->firstWhere('name', 'file') : null;
+                $size = $payload ? $this->size($path, $payload) : null;
+                $data[] = [
+                    'id' => $entry->id,
+                    'original_path' => $entry->original_path,
+                    'storage_path' => $path,
+                    'created_at' => Carbon::parse($entry->created_at)->toIso8601String(),
+                    'size' => $size,
+                    'is_file' => $payload['file'] ?? true,
+                ];
+            }
+
+            return ['data' => $data, 'size' => array_sum(array_column($data, 'size'))];
+        });
+
+        return $listing + ['retention_days' => self::retentionDays()];
+    }
+
+    private function size(string $path, array $entry): int
+    {
         if (($entry['file'] ?? true) || ($entry['symlink'] ?? false)) {
             return (int) ($entry['size'] ?? 0);
         }
@@ -91,71 +101,92 @@ class RecycleBinService
 
     public function recycle(Server $server, string $path): void
     {
-        $path = $this->path($path);
-        $this->files->setServer($server);
-        if (! $this->exists($path)) {
-            throw new ConflictHttpException('The selected file no longer exists. Refresh and try again.');
+        try {
+            $path = $this->path($path);
+            $this->files->setServer($server);
+            if (! $this->exists($path)) {
+                throw new ConflictHttpException('The selected file no longer exists. Refresh and try again.');
+            }
+            $id = (string) Str::uuid();
+            $this->exists($this->storagePath($id));
+            // Persist recovery information before moving data, including when Agent times out.
+            DB::table('recycled_files')->insert([
+                'id' => $id, 'server_id' => $server->id, 'original_path' => $path, 'created_at' => now(),
+            ]);
+            $this->files->createDirectory($id, '/'.self::DIRECTORY);
+            $this->move($path, $this->storagePath($id));
+        } finally {
+            self::invalidateListing($server);
         }
-        $id = (string) Str::uuid();
-        $this->exists($this->storagePath($id));
-        // Persist recovery information before moving data, including when Agent times out.
-        DB::table('recycled_files')->insert([
-            'id' => $id, 'server_id' => $server->id, 'original_path' => $path, 'created_at' => now(),
-        ]);
-        $this->files->createDirectory($id, '/'.self::DIRECTORY);
-        $this->move($path, $this->storagePath($id));
     }
 
     public function restore(Server $server, string $id, bool $replace, bool $preview = false, string $relativePath = ''): array
     {
-        $entry = DB::table('recycled_files')->where('server_id', $server->id)->where('id', $id)->first();
-        abort_unless($entry !== null, 404);
-        $this->files->setServer($server);
-        $relativePath = $this->relativePath($relativePath);
-        $path = $this->path($entry->original_path.$relativePath);
-        $source = $this->storagePath($id).$relativePath;
-        if (! $this->exists($source)) {
-            throw new ConflictHttpException('The recycled file is missing. It may have been moved outside the panel.');
-        }
-        $exists = $this->exists($path);
-        if ($preview) {
-            return ['conflict' => $exists ? $path : null];
-        }
-        if ($exists) {
-            if (! $replace) {
-                return ['conflict' => $path];
+        try {
+            $entry = DB::table('recycled_files')->where('server_id', $server->id)->where('id', $id)->first();
+            abort_unless($entry !== null, 404);
+            $this->files->setServer($server);
+            $relativePath = $this->relativePath($relativePath);
+            $path = $this->path($entry->original_path.$relativePath);
+            $source = $this->storagePath($id).$relativePath;
+            if (! $this->exists($source)) {
+                throw new ConflictHttpException('The recycled file is missing. It may have been moved outside the panel.');
             }
-            $this->recycle($server, $path);
-        }
-        if (dirname($path) !== '/') {
-            $this->files->createDirectory(basename(dirname($path)), dirname(dirname($path)));
-        }
-        $this->move($source, $path);
-        if ($relativePath === '') {
-            DB::table('recycled_files')->where('id', $id)->delete();
-        }
+            $exists = $this->exists($path);
+            if ($preview) {
+                return ['conflict' => $exists ? $path : null];
+            }
+            if ($exists) {
+                if (! $replace) {
+                    return ['conflict' => $path];
+                }
+                $this->recycle($server, $path);
+            }
+            if (dirname($path) !== '/') {
+                $this->files->createDirectory(basename(dirname($path)), dirname(dirname($path)));
+            }
+            $this->move($source, $path);
+            if ($relativePath === '') {
+                if ($this->files->getDirectory(dirname($source)) !== []) {
+                    throw new ConflictHttpException('The restored entry still contains files. Refresh and try again.');
+                }
+                $this->files->deleteFiles('/'.self::DIRECTORY, [$id]);
+                if ($this->exists(dirname($source))) {
+                    throw new ConflictHttpException('The restored entry could not be cleaned up. Refresh and try again.');
+                }
+                DB::table('recycled_files')->where('id', $id)->delete();
+            }
 
-        return [];
+            return [];
+        } finally {
+            if (! $preview) {
+                self::invalidateListing($server);
+            }
+        }
     }
 
     public function purge(Server $server, string $id, string $relativePath = ''): void
     {
-        $entry = DB::table('recycled_files')->where('server_id', $server->id)->where('id', $id)->first();
-        abort_unless($entry !== null, 404);
-        $this->files->setServer($server);
-        $relativePath = $this->relativePath($relativePath);
-        $source = $this->storagePath($id).$relativePath;
-        $this->exists($source);
-        if ($relativePath === '') {
-            $this->files->deleteFiles('/'.self::DIRECTORY, [$id]);
-        } else {
-            $this->files->deleteFiles(dirname($source), [basename($source)]);
-        }
-        if ($this->exists($source)) {
-            throw new ConflictHttpException('The recycled file could not be deleted. Try again.');
-        }
-        if ($relativePath === '') {
-            DB::table('recycled_files')->where('id', $id)->delete();
+        try {
+            $entry = DB::table('recycled_files')->where('server_id', $server->id)->where('id', $id)->first();
+            abort_unless($entry !== null, 404);
+            $this->files->setServer($server);
+            $relativePath = $this->relativePath($relativePath);
+            $source = $this->storagePath($id).$relativePath;
+            $this->exists($source);
+            if ($relativePath === '') {
+                $this->files->deleteFiles('/'.self::DIRECTORY, [$id]);
+            } else {
+                $this->files->deleteFiles(dirname($source), [basename($source)]);
+            }
+            if ($this->exists($source)) {
+                throw new ConflictHttpException('The recycled file could not be deleted. Try again.');
+            }
+            if ($relativePath === '') {
+                DB::table('recycled_files')->where('id', $id)->delete();
+            }
+        } finally {
+            self::invalidateListing($server);
         }
     }
 
@@ -188,11 +219,12 @@ class RecycleBinService
         return '/'.self::DIRECTORY.'/'.$id.'/file';
     }
 
-    private function exists(string $path): bool
+    private function exists(string $path, array &$directories = []): bool
     {
         $directory = '/';
         foreach (explode('/', ltrim($path, '/')) as $part) {
-            $entry = collect($this->files->getDirectory($directory))->firstWhere('name', $part);
+            $directories[$directory] ??= $this->files->getDirectory($directory);
+            $entry = collect($directories[$directory])->firstWhere('name', $part);
             if (! $entry) {
                 return false;
             }

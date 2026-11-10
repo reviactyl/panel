@@ -4,14 +4,18 @@ namespace Tests\Integration\Api\Client\Server\Files;
 
 use App\Models\Permission;
 use App\Repositories\Agent\DaemonFileRepository;
+use App\Services\Servers\RecycleBinService;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Mockery\MockInterface;
 use Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
 class RecycleBinTest extends ClientApiIntegrationTestCase
 {
     private array $disk = [];
+
+    private array $directoryReads = [];
 
     private ?string $failedDeletePath = null;
 
@@ -22,6 +26,7 @@ class RecycleBinTest extends ClientApiIntegrationTestCase
         $this->mock(DaemonFileRepository::class, function (MockInterface $mock) {
             $mock->shouldReceive('setServer')->andReturnSelf();
             $mock->shouldReceive('getDirectory')->andReturnUsing(function ($path) {
+                $this->directoryReads[] = $path;
                 $items = [];
                 foreach ($this->disk as $name => $content) {
                     if (dirname($name) === $path) {
@@ -91,6 +96,7 @@ class RecycleBinTest extends ClientApiIntegrationTestCase
         $this->postJson($this->link($server, '/files/recycle-bin/restore'), ['id' => $entry->id])->assertNoContent();
         $this->assertArrayHasKey('/folder', $this->disk);
         $this->assertSame('original', $this->disk['/folder/file.txt']);
+        $this->assertArrayNotHasKey('/.recycle-bin/'.$entry->id, $this->disk);
         $this->assertDatabaseCount('recycled_files', 0);
     }
 
@@ -226,6 +232,7 @@ class RecycleBinTest extends ClientApiIntegrationTestCase
         $this->getJson($this->link($server, '/files/list').'?'.http_build_query(['directory' => $entry['storage_path']]))->assertOk()->assertJsonPath('data.0.attributes.name', 'file.txt');
         $this->get($this->link($server, '/files/contents').'?'.http_build_query(['file' => $path]))->assertOk()->assertContent('original');
         $this->call('PUT', $this->link($server, '/files/write').'?'.http_build_query(['file' => $path]), [], [], [], ['CONTENT_TYPE' => 'text/plain'], 'edited in bin')->assertNoContent();
+        $this->getJson($this->link($server, '/files/recycle-bin'))->assertJsonPath('size', strlen('edited in bin'));
         $this->postJson($this->link($server, '/files/recycle-bin/restore'), ['id' => $entry['id']])->assertNoContent();
         $this->assertSame('edited in bin', $this->disk['/folder/file.txt']);
     }
@@ -362,6 +369,79 @@ class RecycleBinTest extends ClientApiIntegrationTestCase
         $this->assertSame('original', $this->disk[$this->failedDeletePath.'/file/file.txt']);
         $this->failedDeletePath = null;
         $this->artisan('p:maintenance:prune-recycle-bin')->assertSuccessful();
+        $this->assertDatabaseCount('recycled_files', 0);
+    }
+
+    public function test_large_bin_listing_reuses_directory_results_and_cached_scans_expire(): void
+    {
+        [$user, $server] = $this->generateTestAccount();
+        $this->disk['/.recycle-bin'] = null;
+        $entries = [];
+        for ($index = 0; $index < 1000; $index++) {
+            $id = (string) Str::uuid();
+            $entries[] = ['id' => $id, 'server_id' => $server->id, 'original_path' => '/'.$index.'.txt', 'created_at' => now()];
+            $this->disk['/.recycle-bin/'.$id] = null;
+            $this->disk['/.recycle-bin/'.$id.'/file'] = 'x';
+        }
+        DB::table('recycled_files')->insert($entries);
+        $url = $this->link($server, '/files/recycle-bin');
+        $this->actingAs($user)->getJson($url)->assertOk()->assertJsonPath('size', 1000);
+        $this->assertCount(1002, $this->directoryReads);
+        $this->assertCount(1002, array_unique($this->directoryReads));
+        $this->directoryReads = [];
+        config()->set('panel.files.recycle_bin_retention_days', 7);
+        $this->getJson($url)->assertOk()->assertJsonPath('size', 1000)->assertJsonPath('retention_days', 7);
+        $this->assertSame([], $this->directoryReads);
+        $this->disk['/.recycle-bin/'.$id.'/file'] = 'changed externally';
+        $this->travel(61)->seconds();
+        $this->getJson($url)->assertOk()->assertJsonPath('size', 999 + strlen('changed externally'));
+        $this->assertCount(1002, $this->directoryReads);
+        $this->travelBack();
+    }
+
+    public function test_cached_listing_updates_after_recycling_restoring_and_purging(): void
+    {
+        [$user, $server] = $this->generateTestAccount();
+        $url = $this->link($server, '/files/recycle-bin');
+        $this->actingAs($user)->getJson($url)->assertJsonPath('data', []);
+        $this->postJson($this->link($server, '/files/delete'), ['root' => '/', 'files' => ['folder']])->assertNoContent();
+        $id = $this->getJson($url)->assertJsonPath('size', strlen('original'))->json('data.0.id');
+        $this->postJson($url.'/restore', ['id' => $id, 'path' => 'file.txt'])->assertNoContent();
+        $this->getJson($url)->assertJsonPath('size', 0)->assertJsonCount(1, 'data');
+        $this->postJson($url.'/delete', ['id' => $id])->assertNoContent();
+        $this->getJson($url)->assertJsonPath('data', []);
+    }
+
+    public function test_full_restore_does_not_delete_unexpected_wrapper_contents(): void
+    {
+        [$user, $server] = $this->generateTestAccount();
+        $this->actingAs($user)->postJson($this->link($server, '/files/delete'), ['root' => '/', 'files' => ['folder']])->assertNoContent();
+        $id = DB::table('recycled_files')->value('id');
+        $this->disk['/.recycle-bin/'.$id.'/extra.txt'] = 'preserve me';
+        $this->postJson($this->link($server, '/files/recycle-bin/restore'), ['id' => $id])->assertStatus(409);
+        $this->assertSame('original', $this->disk['/folder/file.txt']);
+        $this->assertSame('preserve me', $this->disk['/.recycle-bin/'.$id.'/extra.txt']);
+        $this->assertDatabaseCount('recycled_files', 1);
+    }
+
+    public function test_failed_wrapper_cleanup_keeps_metadata_for_a_later_purge(): void
+    {
+        [$user, $server] = $this->generateTestAccount();
+        $this->actingAs($user)->postJson($this->link($server, '/files/delete'), ['root' => '/', 'files' => ['folder']])->assertNoContent();
+        $id = DB::table('recycled_files')->value('id');
+        $this->failedDeletePath = '/.recycle-bin/'.$id;
+        try {
+            app(RecycleBinService::class)->restore($server, $id, false);
+            $this->fail('The cleanup failure must be reported.');
+        } catch (\RuntimeException $exception) {
+            $this->assertSame('Agent unavailable', $exception->getMessage());
+        }
+        $this->assertSame('original', $this->disk['/folder/file.txt']);
+        $this->assertDatabaseCount('recycled_files', 1);
+        $this->failedDeletePath = null;
+        $this->postJson($this->link($server, '/files/recycle-bin/delete'), ['id' => $id])->assertNoContent();
+        $this->assertArrayNotHasKey('/.recycle-bin/'.$id, $this->disk);
+        $this->assertSame('original', $this->disk['/folder/file.txt']);
         $this->assertDatabaseCount('recycled_files', 0);
     }
 }
