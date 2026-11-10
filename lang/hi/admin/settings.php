@@ -2,6 +2,8 @@
 
 return [
     'overview' => [
+        'recycle-bin-retention' => 'रीसायकल बिन में रखने की अवधि (दिन)',
+        'recycle-bin-retention-hint' => 'इतने दिनों के बाद रीसायकल बिन की फ़ाइलें स्थायी रूप से हटा दें।',
         'title' => 'सेटिंग्स',
         'general-title' => 'सामान्य',
         'app-name' => 'ऐप का नाम',

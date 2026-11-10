@@ -123,6 +123,10 @@ Route::group([
     });
 
     Route::group(['prefix' => '/files'], function () {
+        Route::post('/recycle-bin/empty', [Client\Servers\RecycleBinController::class, 'empty']);
+        Route::get('/recycle-bin', [Client\Servers\RecycleBinController::class, 'index']);
+        Route::post('/recycle-bin/restore', [Client\Servers\RecycleBinController::class, 'restore'])->name('server.files.recycle.restore');
+        Route::post('/recycle-bin/delete', [Client\Servers\RecycleBinController::class, 'destroy']);
         Route::get('/list', [Client\Servers\FileController::class, 'directory']);
         Route::get('/contents', [Client\Servers\FileController::class, 'contents']);
         Route::get('/download', [Client\Servers\FileController::class, 'download']);

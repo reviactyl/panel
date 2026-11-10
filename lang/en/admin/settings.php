@@ -2,6 +2,8 @@
 
 return [
     'overview' => [
+        'recycle-bin-retention' => 'Recycle Bin retention (days)',
+        'recycle-bin-retention-hint' => 'Permanently delete recycled files after this many days.',
         'title' => 'Settings',
         'general-title' => 'General',
         'app-name' => 'App Name',

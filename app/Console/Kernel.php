@@ -5,6 +5,7 @@ namespace App\Console;
 use App\Console\Commands\Eggs\RefreshEggCatalogCommand;
 use App\Console\Commands\Maintenance\CleanServiceBackupFilesCommand;
 use App\Console\Commands\Maintenance\PruneOrphanedBackupsCommand;
+use App\Console\Commands\Maintenance\PruneRecycleBinCommand;
 use App\Console\Commands\Schedule\ProcessRunnableCommand;
 use App\Exceptions\Model\DataValidationException;
 use App\Jobs\Administration\RefreshUserActivityLocationsJob;
@@ -42,6 +43,7 @@ class Kernel extends ConsoleKernel
         // Execute scheduled commands for servers every minute, as if there was a normal cron running.
         $schedule->command(ProcessRunnableCommand::class)->everyMinute()->withoutOverlapping();
         $schedule->command(CleanServiceBackupFilesCommand::class)->daily();
+        $schedule->command(PruneRecycleBinCommand::class)->hourly()->withoutOverlapping();
 
         if (config('backups.prune_age')) {
             // Every 30 minutes, run the backup pruning command so that any abandoned backups can be deleted.

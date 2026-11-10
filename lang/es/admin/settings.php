@@ -2,6 +2,8 @@
 
 return [
     'overview' => [
+        'recycle-bin-retention' => 'Retención de la papelera (días)',
+        'recycle-bin-retention-hint' => 'Eliminar permanentemente los archivos de la papelera después de este número de días.',
         'title' => 'Configuración',
         'general-title' => 'General',
         'app-name' => 'Nombre de la App',

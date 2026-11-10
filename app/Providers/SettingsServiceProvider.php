@@ -34,6 +34,7 @@ class SettingsServiceProvider extends ServiceProvider
         'panel:auth:2fa_required',
         'panel:auth:registration_enabled',
         'panel:use_binary_prefix',
+        'panel:files:recycle_bin_retention_days',
         'panel:client_features:allocations:enabled',
         'panel:client_features:allocations:range_start',
         'panel:client_features:allocations:range_end',

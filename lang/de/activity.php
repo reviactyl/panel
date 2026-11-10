@@ -90,6 +90,9 @@ return [
             'export' => 'Datenbank :name exportiert',
         ],
         'file' => [
+            'recycle_one' => 'In den Papierkorb verschieben · :directory:files.0',
+            'recycle_other' => 'In den Papierkorb verschieben · :count · :directory',
+            'restore' => 'Wiederherstellen · :id',
             'compress_one' => ':directory:file komprimiert',
             'compress_other' => ':count Dateien in :directory komprimiert',
             'read' => 'Inhalt von :file angesehen',

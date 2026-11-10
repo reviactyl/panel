@@ -2,6 +2,8 @@
 
 return [
     'overview' => [
+        'recycle-bin-retention' => 'مدة الاحتفاظ في سلة المحذوفات (بالأيام)',
+        'recycle-bin-retention-hint' => 'حذف الملفات من سلة المحذوفات نهائيًا بعد هذا العدد من الأيام.',
         'title' => 'الإعدادات',
         'general-title' => 'عام',
         'app-name' => 'اسم التطبيق',

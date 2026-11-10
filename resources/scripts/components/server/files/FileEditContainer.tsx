@@ -1,3 +1,4 @@
+import { recycleStoragePath } from './recyclePaths';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import getFileContents from '@/api/server/files/getFileContents';
 import { httpErrorToHuman } from '@/api/http';
@@ -101,7 +102,7 @@ const FileEditContainer = () => {
         setLoading(true);
         setDirectory(dirname(path));
         let active = true;
-        getFileContents(uuid, path)
+        getFileContents(uuid, recycleStoragePath(path))
             .then((content) => {
                 if (active) {
                     savedContent.current = normalizeLineEndings(content);
@@ -137,7 +138,7 @@ const FileEditContainer = () => {
                 if (name) {
                     await saveFileContents(uuid, name, content);
                 } else {
-                    await updateFileContents(uuid, hashToPath(hash), content);
+                    await updateFileContents(uuid, recycleStoragePath(hashToPath(hash)), content);
                 }
                 savedContent.current = normalizeLineEndings(content);
                 setDirty(currentContent.current !== savedContent.current);

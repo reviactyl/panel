@@ -2,6 +2,8 @@
 
 return [
     'overview' => [
+        'recycle-bin-retention' => 'Lagringstid i papperskorgen (dagar)',
+        'recycle-bin-retention-hint' => 'Radera filer i papperskorgen permanent efter detta antal dagar.',
         'title' => 'Inställningar',
         'general-title' => 'Allmänt',
         'app-name' => 'Appnamn',

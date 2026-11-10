@@ -2,6 +2,8 @@
 
 return [
     'overview' => [
+        'recycle-bin-retention' => 'Thời gian lưu trong thùng rác (ngày)',
+        'recycle-bin-retention-hint' => 'Xóa vĩnh viễn các tệp trong thùng rác sau số ngày này.',
         'title' => 'Cài đặt',
         'general-title' => 'Tổng quan',
         'app-name' => 'Tên ứng dụng',

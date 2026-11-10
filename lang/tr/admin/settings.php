@@ -2,6 +2,8 @@
 
 return [
     'overview' => [
+        'recycle-bin-retention' => 'Geri dönüşüm kutusunda saklama süresi (gün)',
+        'recycle-bin-retention-hint' => 'Geri dönüşüm kutusundaki dosyaları bu kadar gün sonra kalıcı olarak sil.',
         'title' => 'Ayarlar',
         'general-title' => 'Genel',
         'app-name' => 'Uygulama Adı',

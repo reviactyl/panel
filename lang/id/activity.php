@@ -90,6 +90,9 @@ return [
             'export' => 'Mengekspor basis data :name',
         ],
         'file' => [
+            'recycle_one' => 'Pindahkan ke tempat sampah · :directory:files.0',
+            'recycle_other' => 'Pindahkan ke tempat sampah · :count · :directory',
+            'restore' => 'Pulihkan · :id',
             'compress_one' => 'Mengompres :directory:file',
             'compress_other' => 'Mengompres :count file di :directory',
             'read' => 'Melihat isi dari :file',

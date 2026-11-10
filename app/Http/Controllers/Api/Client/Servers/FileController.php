@@ -22,10 +22,12 @@ use App\Http\Requests\Api\Client\Servers\Files\WriteFileContentRequest;
 use App\Models\Server;
 use App\Repositories\Agent\DaemonFileRepository;
 use App\Services\Nodes\NodeJWTService;
+use App\Services\Servers\RecycleBinService;
 use App\Transformers\Api\Client\FileObjectTransformer;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cache;
 
 class FileController extends ClientApiController
 {
@@ -49,6 +51,10 @@ class FileController extends ClientApiController
         $contents = $this->fileRepository
             ->setServer($server)
             ->getDirectory($request->get('directory') ?? '/');
+
+        if (trim($request->get('directory') ?? '/', '/') === '') {
+            $contents = array_values(array_filter($contents, fn ($file) => $file['name'] !== RecycleBinService::DIRECTORY));
+        }
 
         return $this->fractal->collection($contents)
             ->transformWith($this->getTransformer(FileObjectTransformer::class))
@@ -242,14 +248,20 @@ class FileController extends ClientApiController
      *
      * @throws DaemonConnectionException
      */
-    public function delete(DeleteFileRequest $request, Server $server): JsonResponse
+    public function delete(DeleteFileRequest $request, Server $server, RecycleBinService $bin): JsonResponse
     {
-        $this->fileRepository->setServer($server)->deleteFiles(
-            $request->input('root'),
-            $request->input('files')
-        );
+        Cache::lock('recycle-bin:'.$server->id, 300)->block(5, function () use ($request, $server, $bin) {
+            $paths = array_map(fn ($file) => $bin->path(($request->input('root') ?? '/').'/'.$file), $request->input('files'));
+            foreach (array_unique($paths) as $path) {
+                if ($request->boolean('permanent')) {
+                    $this->fileRepository->setServer($server)->deleteFiles(dirname($path), [basename($path)]);
+                } else {
+                    $bin->recycle($server, $path);
+                }
+            }
+        });
 
-        Activity::event('server:file.delete')
+        Activity::event($request->boolean('permanent') ? 'server:file.delete' : 'server:file.recycle')
             ->property('directory', $request->input('root'))
             ->property('files', $request->input('files'))
             ->log();
