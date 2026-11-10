@@ -43,6 +43,46 @@ class RecycleBinService
         return '/'.implode('/', $parts);
     }
 
+    public function write(Server $server, string $path, string $content, bool $create = false): void
+    {
+        $parts = [];
+        foreach (explode('/', $path) as $part) {
+            if ($part === '' || $part === '.') {
+                continue;
+            }
+            if ($part === '..' || str_contains($part, "\0")) {
+                throw new BadRequestHttpException('Invalid file path.');
+            }
+            $parts[] = $part;
+        }
+        $path = '/'.implode('/', $parts);
+        $this->files->setServer($server);
+        $write = function () use ($path, $content, $create) {
+            if ($create) {
+                $this->files->createContent($path, $content);
+            } else {
+                $this->files->putContent($path, $content);
+            }
+        };
+        if (($parts[0] ?? '') !== self::DIRECTORY) {
+            $write();
+
+            return;
+        }
+        Cache::lock('recycle-bin:'.$server->id, 300)->block(5, function () use ($server, $parts, $path, $write) {
+            if (($parts[2] ?? '') !== 'file'
+                || ! DB::table('recycled_files')->where('server_id', $server->id)->where('id', $parts[1] ?? '')->exists()
+                || ! $this->exists($path)) {
+                throw new ConflictHttpException('The recycled file has moved or been deleted. Reopen it before saving.');
+            }
+            try {
+                $write();
+            } finally {
+                self::invalidateListing($server);
+            }
+        });
+    }
+
     public static function invalidateListing(Server $server): void
     {
         Cache::forever('recycle-bin:listing-version:'.$server->id, (string) Str::uuid());

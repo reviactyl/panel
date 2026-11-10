@@ -6,6 +6,7 @@ use App\Models\Permission;
 use App\Repositories\Agent\DaemonFileRepository;
 use App\Services\Servers\RecycleBinService;
 use GuzzleHttp\Psr7\Response;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Mockery\MockInterface;
@@ -18,6 +19,8 @@ class RecycleBinTest extends ClientApiIntegrationTestCase
     private array $directoryReads = [];
 
     private ?string $failedDeletePath = null;
+
+    private ?int $writeLockServerId = null;
 
     protected function setUp(): void
     {
@@ -38,6 +41,9 @@ class RecycleBinTest extends ClientApiIntegrationTestCase
             });
             $mock->shouldReceive('getContent')->andReturnUsing(fn ($path) => $this->disk[$path]);
             $mock->shouldReceive('putContent')->andReturnUsing(function ($path, $content) {
+                if ($this->writeLockServerId !== null) {
+                    $this->assertFalse(Cache::lock('recycle-bin:'.$this->writeLockServerId, 300)->get());
+                }
                 $this->disk[$path] = $content;
 
                 return new Response(204);
@@ -443,5 +449,29 @@ class RecycleBinTest extends ClientApiIntegrationTestCase
         $this->assertArrayNotHasKey('/.recycle-bin/'.$id, $this->disk);
         $this->assertSame('original', $this->disk['/folder/file.txt']);
         $this->assertDatabaseCount('recycled_files', 0);
+    }
+
+    public function test_recycled_saves_hold_restore_lock_and_stale_saves_are_rejected(): void
+    {
+        [$user, $server] = $this->generateTestAccount();
+        $this->actingAs($user)->postJson($this->link($server, '/files/delete'), ['root' => '/', 'files' => ['folder']])->assertNoContent();
+        $id = DB::table('recycled_files')->value('id');
+        $path = '/.recycle-bin/'.$id.'/file/file.txt';
+        $this->writeLockServerId = $server->id;
+        $this->call('PUT', $this->link($server, '/files/write').'?'.http_build_query(['file' => $path]), [], [], [], ['CONTENT_TYPE' => 'text/plain'], 'saved before restore')->assertNoContent();
+        $this->postJson($this->link($server, '/files/recycle-bin/restore'), ['id' => $id, 'path' => 'file.txt'])->assertNoContent();
+        foreach (['PUT', 'POST'] as $method) {
+            $this->call($method, $this->link($server, '/files/write').'?'.http_build_query(['file' => $path]), [], [], [], ['CONTENT_TYPE' => 'text/plain'], 'stale edit')->assertStatus(409);
+        }
+        $this->assertArrayNotHasKey($path, $this->disk);
+        $this->assertSame('saved before restore', $this->disk['/folder/file.txt']);
+        $this->postJson($this->link($server, '/files/recycle-bin/restore'), ['id' => $id, 'replace' => true])->assertNoContent();
+        foreach (['/files/write', '/files/create'] as $endpoint) {
+            $this->call('POST', $this->link($server, $endpoint).'?'.http_build_query(['file' => '/./.recycle-bin//'.$id.'/file/file.txt']), [], [], [], ['CONTENT_TYPE' => 'text/plain'], 'stale edit')->assertStatus(409);
+        }
+        $this->assertArrayNotHasKey('/.recycle-bin/'.$id, $this->disk);
+        $lock = Cache::lock('recycle-bin:'.$server->id, 300);
+        $this->assertTrue($lock->get());
+        $lock->release();
     }
 }

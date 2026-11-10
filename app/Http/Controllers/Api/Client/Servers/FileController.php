@@ -122,7 +122,7 @@ class FileController extends ClientApiController
 
     public function createFile(WriteFileContentRequest $request, Server $server): JsonResponse
     {
-        $this->fileRepository->setServer($server)->createContent($request->get('file'), $request->getContent());
+        app(RecycleBinService::class)->write($server, $request->get('file'), $request->getContent(), true);
 
         Activity::event('server:file.write')->property('file', $request->get('file'))->log();
 
@@ -141,13 +141,7 @@ class FileController extends ClientApiController
 
     private function writeContent(WriteFileContentRequest $request, Server $server): JsonResponse
     {
-        try {
-            $this->fileRepository->setServer($server)->putContent($request->get('file'), $request->getContent());
-        } finally {
-            if (str_starts_with(ltrim($request->get('file'), '/'), RecycleBinService::DIRECTORY.'/')) {
-                RecycleBinService::invalidateListing($server);
-            }
-        }
+        app(RecycleBinService::class)->write($server, $request->get('file'), $request->getContent());
 
         Activity::event('server:file.write')->property('file', $request->get('file'))->log();
 
