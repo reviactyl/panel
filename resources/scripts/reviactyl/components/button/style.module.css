@@ -18,6 +18,7 @@
         @apply text-gray-100 bg-transparent;
 
         &:disabled {
+            @apply text-muted;
             background: transparent !important;
         }
     }
@@ -40,7 +41,7 @@
     @apply hover:bg-reviactyl active:bg-reviactyl focus:ring-reviactyl/75;
 
     &.secondary {
-        @apply hover:bg-reviactyl active:bg-reviactyl hover:text-on-primary active:text-on-primary;
+        @apply enabled:hover:bg-reviactyl enabled:active:bg-reviactyl enabled:hover:text-on-primary enabled:active:text-on-primary;
     }
 
     &:disabled {
@@ -53,7 +54,7 @@
     @apply hover:bg-secondary active:bg-secondary focus:ring-secondary/50;
 
     &.secondary {
-        @apply hover:bg-secondary active:bg-secondary hover:text-on-secondary active:text-on-secondary;
+        @apply enabled:hover:bg-secondary enabled:active:bg-secondary enabled:hover:text-on-secondary enabled:active:text-on-secondary;
     }
 
     &:disabled {
@@ -66,7 +67,7 @@
     @apply hover:bg-danger active:bg-danger focus:ring-danger/75;
 
     &.secondary {
-        @apply hover:bg-danger active:bg-danger hover:text-on-danger active:text-on-danger;
+        @apply enabled:hover:bg-danger enabled:active:bg-danger enabled:hover:text-on-danger enabled:active:text-on-danger;
     }
 
     &:disabled {
@@ -79,7 +80,7 @@
     @apply hover:bg-success active:bg-success focus:ring-success/75;
 
     &.secondary {
-        @apply hover:bg-success active:bg-success hover:text-on-success active:text-on-success;
+        @apply enabled:hover:bg-success enabled:active:bg-success enabled:hover:text-on-success enabled:active:text-on-success;
     }
 
     &:disabled {
