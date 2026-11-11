@@ -1,10 +1,6 @@
 <?php
 
 return [
-    'backup-settings' => 'Yedekleme bildirimleri',
-    'backup-manual' => 'Manuel yedeklemeler',
-    'backup-scheduled' => 'Zamanlanmış yedeklemeler',
-    'backup-email' => 'E-postayla da gönder',
 
     'title' => 'Bildirimler',
     'description' => 'Sunucularınız ve erişiminizle ilgili güncellemeler.',
@@ -27,6 +23,19 @@ return [
     'dismiss' => 'Kaldır',
     'previous' => 'Önceki',
     'next' => 'Sonraki',
+    'settings-loading' => 'Bildirim ayarları yükleniyor…',
+    'settings-error' => 'Bildirim ayarları yüklenemedi.',
+    'settings-type' => 'Bildirim türü',
+    'settings-panel' => 'Panel',
+    'settings-email' => 'E-posta',
+    'categories' => [
+        'server-access' => ['title' => 'Sunucu erişimi'],
+        'server-setup' => ['title' => 'Sunucu kurulumu'],
+        'server-failures' => ['title' => 'Sunucu hataları'],
+        'backups' => ['title' => 'Yedekler'],
+        'backup-failures' => ['title' => 'Yedekleme hataları'],
+        'extension-alerts' => ['title' => 'Eklenti uyarıları'],
+    ],
     'events' => [
         'extension-updated' => 'Eklenti güncellendi',
         'reinstalled' => 'Sunucu yeniden kuruldu',

@@ -88,7 +88,6 @@ vi.mock('@/reviactyl/elements/Pagination', async () => {
 });
 vi.mock('@/components/FlashMessageRender', () => ({ default: () => null }));
 vi.mock('@/extensions/ExtensionSlot', () => ({ ExtensionSlot: () => null }));
-vi.mock('./BackupNotificationSettings', () => ({ default: () => null }));
 vi.mock('@/api/server/backups/createServerBackup', () => ({ default: mocks.create }));
 vi.mock('easy-peasy', async (importOriginal) => ({
     ...(await importOriginal<typeof import('easy-peasy')>()),

@@ -1,10 +1,6 @@
 <?php
 
 return [
-    'backup-settings' => 'Backup notifications',
-    'backup-manual' => 'Manual backups',
-    'backup-scheduled' => 'Scheduled backups',
-    'backup-email' => 'Also send by email',
 
     'title' => 'Notifications',
     'description' => 'Updates about your servers and access.',
@@ -27,6 +23,19 @@ return [
     'dismiss' => 'Dismiss',
     'previous' => 'Previous',
     'next' => 'Next',
+    'settings-loading' => 'Loading notification settings…',
+    'settings-error' => 'Notification settings could not be loaded.',
+    'settings-type' => 'Notification type',
+    'settings-panel' => 'Panel',
+    'settings-email' => 'Email',
+    'categories' => [
+        'server-access' => ['title' => 'Server access'],
+        'server-setup' => ['title' => 'Server setup'],
+        'server-failures' => ['title' => 'Server failures'],
+        'backups' => ['title' => 'Backups'],
+        'backup-failures' => ['title' => 'Backup failures'],
+        'extension-alerts' => ['title' => 'Extension alerts'],
+    ],
     'events' => [
         'extension-updated' => 'Extension updated',
         'reinstalled' => 'Server reinstalled',

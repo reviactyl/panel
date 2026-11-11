@@ -64,6 +64,9 @@ Route::prefix('/account')->middleware(AccountSubject::class)->group(function () 
     Route::get('/social-logins', [Client\SocialLoginController::class, 'index'])->name('api:client.account.social-logins');
     Route::delete('/social-logins/{provider}', [Client\SocialLoginController::class, 'delete'])->name('api:client.account.social-logins.delete');
 
+    Route::get('/notifications', [Client\NotificationSettingsController::class, 'index']);
+    Route::put('/notifications', [Client\NotificationSettingsController::class, 'update']);
+
     Route::get('/api-keys', [Client\ApiKeyController::class, 'index']);
     Route::post('/api-keys', [Client\ApiKeyController::class, 'store']);
     Route::delete('/api-keys/{identifier}', [Client\ApiKeyController::class, 'delete']);
@@ -182,8 +185,6 @@ Route::group([
     Route::group(['prefix' => '/backups'], function () {
         Route::get('/', [Client\Servers\BackupController::class, 'index']);
         Route::post('/', [Client\Servers\BackupController::class, 'store']);
-        Route::get('/notification-preferences', [Client\Servers\BackupNotificationController::class, 'index']);
-        Route::put('/notification-preferences', [Client\Servers\BackupNotificationController::class, 'update']);
         Route::get('/{backup}', [Client\Servers\BackupController::class, 'view']);
         Route::get('/{backup}/preview', [Client\Servers\BackupController::class, 'preview'])->middleware('throttle:120,1');
         Route::get('/{backup}/download', [Client\Servers\BackupController::class, 'download']);

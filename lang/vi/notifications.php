@@ -1,10 +1,6 @@
 <?php
 
 return [
-    'backup-settings' => 'Thông báo sao lưu',
-    'backup-manual' => 'Sao lưu thủ công',
-    'backup-scheduled' => 'Sao lưu theo lịch',
-    'backup-email' => 'Gửi thêm qua email',
 
     'title' => 'Thông báo',
     'description' => 'Cập nhật về máy chủ và quyền truy cập của bạn.',
@@ -27,6 +23,19 @@ return [
     'dismiss' => 'Xóa',
     'previous' => 'Trước',
     'next' => 'Tiếp',
+    'settings-loading' => 'Đang tải cài đặt thông báo…',
+    'settings-error' => 'Không thể tải cài đặt thông báo.',
+    'settings-type' => 'Loại thông báo',
+    'settings-panel' => 'Bảng điều khiển',
+    'settings-email' => 'Email',
+    'categories' => [
+        'server-access' => ['title' => 'Quyền truy cập máy chủ'],
+        'server-setup' => ['title' => 'Thiết lập máy chủ'],
+        'server-failures' => ['title' => 'Lỗi máy chủ'],
+        'backups' => ['title' => 'Bản sao lưu'],
+        'backup-failures' => ['title' => 'Lỗi sao lưu'],
+        'extension-alerts' => ['title' => 'Cảnh báo tiện ích'],
+    ],
     'events' => [
         'extension-updated' => 'Đã cập nhật tiện ích mở rộng',
         'reinstalled' => 'Đã cài đặt lại máy chủ',

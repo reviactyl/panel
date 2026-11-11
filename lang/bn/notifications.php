@@ -1,10 +1,6 @@
 <?php
 
 return [
-    'backup-settings' => 'ব্যাকআপ বিজ্ঞপ্তি',
-    'backup-manual' => 'ম্যানুয়াল ব্যাকআপ',
-    'backup-scheduled' => 'নির্ধারিত ব্যাকআপ',
-    'backup-email' => 'ইমেইলেও পাঠান',
 
     'title' => 'বিজ্ঞপ্তি',
     'description' => 'আপনার সার্ভার ও প্রবেশাধিকারের আপডেট।',
@@ -27,6 +23,19 @@ return [
     'dismiss' => 'মুছুন',
     'previous' => 'আগের',
     'next' => 'পরের',
+    'settings-loading' => 'বিজ্ঞপ্তি সেটিংস লোড হচ্ছে…',
+    'settings-error' => 'বিজ্ঞপ্তি সেটিংস লোড করা যায়নি।',
+    'settings-type' => 'বিজ্ঞপ্তির ধরন',
+    'settings-panel' => 'প্যানেল',
+    'settings-email' => 'ইমেইল',
+    'categories' => [
+        'server-access' => ['title' => 'সার্ভার অ্যাক্সেস'],
+        'server-setup' => ['title' => 'সার্ভার সেটআপ'],
+        'server-failures' => ['title' => 'সার্ভার ব্যর্থতা'],
+        'backups' => ['title' => 'ব্যাকআপ'],
+        'backup-failures' => ['title' => 'ব্যাকআপ ব্যর্থতা'],
+        'extension-alerts' => ['title' => 'এক্সটেনশন সতর্কতা'],
+    ],
     'events' => [
         'extension-updated' => 'এক্সটেনশন আপডেট হয়েছে',
         'reinstalled' => 'সার্ভার পুনরায় ইনস্টল হয়েছে',

@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use App\Models\Backup;
 use App\Models\User;
+use App\Services\Notifications\NotificationPreferenceService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -13,14 +14,21 @@ class BackupCompleted extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(public Backup $backup, public bool $sendEmail = false)
+    public function __construct(public Backup $backup)
     {
         $this->afterCommit();
     }
 
-    public function via(): array
+    public function via(User $notifiable): array
     {
-        return $this->sendEmail ? ['database', 'mail'] : ['database'];
+        $event = $this->backup->is_successful ? 'backup-completed' : 'backup-failed';
+        $preferences = app(NotificationPreferenceService::class);
+        $channels = $preferences->isEnabled($notifiable, $event) ? ['database'] : [];
+        if ($preferences->isEnabled($notifiable, $event, 'email')) {
+            $channels[] = 'mail';
+        }
+
+        return $channels;
     }
 
     public function toMail(User $notifiable): MailMessage

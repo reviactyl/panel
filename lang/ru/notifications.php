@@ -1,10 +1,6 @@
 <?php
 
 return [
-    'backup-settings' => 'Уведомления о резервных копиях',
-    'backup-manual' => 'Ручные копии',
-    'backup-scheduled' => 'Копии по расписанию',
-    'backup-email' => 'Также отправлять по почте',
 
     'title' => 'Уведомления',
     'description' => 'Обновления серверов и прав доступа.',
@@ -27,6 +23,19 @@ return [
     'dismiss' => 'Удалить',
     'previous' => 'Назад',
     'next' => 'Далее',
+    'settings-loading' => 'Загрузка настроек уведомлений…',
+    'settings-error' => 'Не удалось загрузить настройки уведомлений.',
+    'settings-type' => 'Тип уведомления',
+    'settings-panel' => 'Панель',
+    'settings-email' => 'Почта',
+    'categories' => [
+        'server-access' => ['title' => 'Доступ к серверу'],
+        'server-setup' => ['title' => 'Настройка сервера'],
+        'server-failures' => ['title' => 'Сбои сервера'],
+        'backups' => ['title' => 'Резервные копии'],
+        'backup-failures' => ['title' => 'Сбои резервного копирования'],
+        'extension-alerts' => ['title' => 'Оповещения расширений'],
+    ],
     'events' => [
         'extension-updated' => 'Расширение обновлено',
         'reinstalled' => 'Сервер переустановлен',

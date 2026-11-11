@@ -1,10 +1,6 @@
 <?php
 
 return [
-    'backup-settings' => 'Notifications de sauvegarde',
-    'backup-manual' => 'Sauvegardes manuelles',
-    'backup-scheduled' => 'Sauvegardes planifiées',
-    'backup-email' => 'Envoyer aussi par e-mail',
 
     'title' => 'Notifications',
     'description' => 'Actualités de vos serveurs et de vos accès.',
@@ -27,6 +23,19 @@ return [
     'dismiss' => 'Supprimer',
     'previous' => 'Précédent',
     'next' => 'Suivant',
+    'settings-loading' => 'Chargement des réglages de notifications…',
+    'settings-error' => 'Impossible de charger les réglages de notifications.',
+    'settings-type' => 'Type de notification',
+    'settings-panel' => 'Panneau',
+    'settings-email' => 'E-mail',
+    'categories' => [
+        'server-access' => ['title' => 'Accès au serveur'],
+        'server-setup' => ['title' => 'Installation du serveur'],
+        'server-failures' => ['title' => 'Échecs du serveur'],
+        'backups' => ['title' => 'Sauvegardes'],
+        'backup-failures' => ['title' => 'Échecs des sauvegardes'],
+        'extension-alerts' => ['title' => 'Alertes d’extensions'],
+    ],
     'events' => [
         'extension-updated' => 'Extension mise à jour',
         'reinstalled' => 'Serveur réinstallé',

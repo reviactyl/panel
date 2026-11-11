@@ -1,10 +1,6 @@
 <?php
 
 return [
-    'backup-settings' => 'ಬ್ಯಾಕಪ್ ಅಧಿಸೂಚನೆಗಳು',
-    'backup-manual' => 'ಹಸ್ತಚಾಲಿತ ಬ್ಯಾಕಪ್‌ಗಳು',
-    'backup-scheduled' => 'ನಿಗದಿತ ಬ್ಯಾಕಪ್‌ಗಳು',
-    'backup-email' => 'ಇಮೇಲ್ ಮೂಲಕವೂ ಕಳುಹಿಸಿ',
 
     'title' => 'ಅಧಿಸೂಚನೆಗಳು',
     'description' => 'ನಿಮ್ಮ ಸರ್ವರ್‌ಗಳು ಮತ್ತು ಪ್ರವೇಶದ ನವೀಕರಣಗಳು.',
@@ -27,6 +23,19 @@ return [
     'dismiss' => 'ತೆಗೆದುಹಾಕಿ',
     'previous' => 'ಹಿಂದಿನ',
     'next' => 'ಮುಂದಿನ',
+    'settings-loading' => 'Loading notification settings…',
+    'settings-error' => 'Notification settings could not be loaded.',
+    'settings-type' => 'Notification type',
+    'settings-panel' => 'Panel',
+    'settings-email' => 'Email',
+    'categories' => [
+        'server-access' => ['title' => 'Server access'],
+        'server-setup' => ['title' => 'Server setup'],
+        'server-failures' => ['title' => 'ಸರ್ವರ್ ವೈಫಲ್ಯಗಳು'],
+        'backups' => ['title' => 'ಬ್ಯಾಕಪ್‌ಗಳು'],
+        'backup-failures' => ['title' => 'ಬ್ಯಾಕಪ್ ವೈಫಲ್ಯಗಳು'],
+        'extension-alerts' => ['title' => 'Extension alerts'],
+    ],
     'events' => [
         'extension-updated' => 'ವಿಸ್ತರಣೆ ನವೀಕರಿಸಲಾಗಿದೆ',
         'reinstalled' => 'ಸರ್ವರ್ ಮರುಸ್ಥಾಪಿಸಲಾಗಿದೆ',

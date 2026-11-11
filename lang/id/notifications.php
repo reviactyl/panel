@@ -1,10 +1,6 @@
 <?php
 
 return [
-    'backup-settings' => 'Notifikasi pencadangan',
-    'backup-manual' => 'Pencadangan manual',
-    'backup-scheduled' => 'Pencadangan terjadwal',
-    'backup-email' => 'Kirim juga melalui email',
 
     'title' => 'Notifikasi',
     'description' => 'Pembaruan server dan akses Anda.',
@@ -27,6 +23,19 @@ return [
     'dismiss' => 'Hapus',
     'previous' => 'Sebelumnya',
     'next' => 'Berikutnya',
+    'settings-loading' => 'Memuat pengaturan notifikasi…',
+    'settings-error' => 'Pengaturan notifikasi tidak dapat dimuat.',
+    'settings-type' => 'Jenis notifikasi',
+    'settings-panel' => 'Panel',
+    'settings-email' => 'Email',
+    'categories' => [
+        'server-access' => ['title' => 'Akses server'],
+        'server-setup' => ['title' => 'Penyiapan server'],
+        'server-failures' => ['title' => 'Kegagalan server'],
+        'backups' => ['title' => 'Cadangan'],
+        'backup-failures' => ['title' => 'Kegagalan cadangan'],
+        'extension-alerts' => ['title' => 'Peringatan ekstensi'],
+    ],
     'events' => [
         'extension-updated' => 'Ekstensi diperbarui',
         'reinstalled' => 'Server diinstal ulang',
