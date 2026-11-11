@@ -59,7 +59,9 @@ class NodeResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return Node::count() > 0 ? (string) Node::count() : null;
+        $count = Node::count();
+
+        return $count > 0 ? (string) $count : null;
     }
 
     public static function form(Schema $schema): Schema

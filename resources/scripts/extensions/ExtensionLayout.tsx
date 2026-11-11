@@ -1,3 +1,4 @@
+import { loadExtensionRuntime } from './loadExtensionRuntime';
 import { Component, Suspense, lazy, useMemo, type ComponentType, type ReactNode } from 'react';
 import { useExtensions } from '@/extensions/useExtensions';
 import type { ExtensionLayoutDefinition, ExtensionLayoutName } from '@/extensions/types';
@@ -59,6 +60,7 @@ const LayoutModule = ({
         () =>
             lazy(async () => {
                 const url = `/extensions/${extensionId}/${modulePath.replace(/^\/+/, '')}`;
+                await loadExtensionRuntime();
                 const imported = await import(/* @vite-ignore */ url);
                 const selected = imported[exportName ?? 'default'];
                 if (!selected) throw new Error(`Missing layout export: ${exportName ?? 'default'}`);

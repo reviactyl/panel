@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useStoreState } from '@/state/hooks';
 import {
     clearPreviewToken,
     getPreviewToken,
@@ -22,7 +23,7 @@ interface ContextValue {
 const Context = createContext<ContextValue | null>(null);
 const PREVIEW_HEARTBEAT_INTERVAL = 10_000;
 
-export const SubuserPreviewProvider = ({ children }: PropsWithChildren) => {
+const IdentityPreviewProvider = ({ children }: PropsWithChildren) => {
     const [loading, setLoading] = useState(() => getPreviewToken() !== null);
     const [session, setSession] = useState<SubuserPreviewSession | null>(null);
 
@@ -42,16 +43,21 @@ export const SubuserPreviewProvider = ({ children }: PropsWithChildren) => {
             return;
         }
 
+        let active = true;
         getSubuserPreviewStatus()
             .then((status) => {
+                if (!active) return;
                 if (status.active && status.ownedByTab && status.session) {
                     setSession(status.session);
                 } else {
                     clear();
                 }
             })
-            .catch(clear)
-            .finally(() => setLoading(false));
+            .catch(() => active && clear())
+            .finally(() => active && setLoading(false));
+        return () => {
+            active = false;
+        };
     }, [clear]);
 
     useEffect(() => {
@@ -63,17 +69,21 @@ export const SubuserPreviewProvider = ({ children }: PropsWithChildren) => {
     useEffect(() => {
         if (!session) return;
 
+        let active = true;
         const interval = window.setInterval(() => {
             heartbeatSubuserPreview()
-                .then((status) => status.session && setSession(status.session))
+                .then((status) => active && status.session && setSession(status.session))
                 .catch((error) => {
-                    if (axios.isAxiosError(error) && [401, 403, 409].includes(error.response?.status ?? 0)) {
+                    if (active && axios.isAxiosError(error) && [401, 403, 409].includes(error.response?.status ?? 0)) {
                         expire();
                     }
                 });
         }, PREVIEW_HEARTBEAT_INTERVAL);
 
-        return () => window.clearInterval(interval);
+        return () => {
+            active = false;
+            window.clearInterval(interval);
+        };
     }, [expire, session?.uuid]);
 
     const start = useCallback(async (serverUuid: string, subuserUuid: string, replace = false) => {
@@ -98,6 +108,12 @@ export const SubuserPreviewProvider = ({ children }: PropsWithChildren) => {
     const value = useMemo(() => ({ loading, session, start, exit }), [exit, loading, session, start]);
 
     return <Context.Provider value={value}>{children}</Context.Provider>;
+};
+
+export const SubuserPreviewProvider = ({ children }: PropsWithChildren) => {
+    const identity = useStoreState((state) => state.user.data?.uuid);
+
+    return <IdentityPreviewProvider key={identity ?? 'guest'}>{children}</IdentityPreviewProvider>;
 };
 
 export const useSubuserPreview = (): ContextValue => {

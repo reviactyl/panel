@@ -2,6 +2,7 @@
 
 use App\Console\Kernel as ConsoleKernel;
 use App\Exceptions\Handler as ExceptionHandler;
+use App\Http\Controllers\Base\LocaleController;
 use App\Http\Kernel as HttpKernel;
 use App\Http\Middleware\RequireTwoFactorAuthentication;
 use Illuminate\Contracts\Console\Kernel as ConsoleKernelContract;
@@ -19,6 +20,11 @@ if (! empty($_ENV['APP_STORAGE_PATH'])) {
 return $app
     ->withProviders()
     ->withRouting(function () {
+
+        Route::middleware('installation')->group(function () {
+            Route::get('/locales/locale.json', LocaleController::class);
+            Route::get('/locales/list.json', [LocaleController::class, 'list']);
+        });
 
         Route::middleware('web')->group(function () {
             Route::middleware('installation')->group(base_path('routes/install.php'));

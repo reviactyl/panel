@@ -1,4 +1,4 @@
-import * as Revicons from '@revicons/react/solid';
+import { createElement, lazy, Suspense } from 'react';
 import type { ComponentType, SVGProps } from 'react';
 
 type ReviconComponent = ComponentType<SVGProps<SVGSVGElement>>;
@@ -24,9 +24,11 @@ const toPascalIconName = (value: string): string => {
     return base.endsWith('Icon') ? base : `${base}Icon`;
 };
 
-const isReactComponentLike = (value: unknown): value is ReviconComponent => {
-    return typeof value === 'function' || (typeof value === 'object' && value !== null);
-};
+const icons = import.meta.glob<ReviconComponent>('/node_modules/@revicons/react/solid/esm/Ri*.js', {
+    import: 'default',
+    exhaustive: true,
+});
+const resolvedIcons = new Map<string, ReviconComponent>();
 
 const resolveReviconComponent = (iconRaw: string): ReviconComponent | undefined => {
     const raw = iconRaw.trim();
@@ -40,8 +42,6 @@ const resolveReviconComponent = (iconRaw: string): ReviconComponent | undefined 
         return undefined;
     }
 
-    const iconLibrary = Revicons;
-
     const pascalName = toPascalIconName(iconNameRaw);
     const candidates = [
         iconNameRaw,
@@ -51,9 +51,26 @@ const resolveReviconComponent = (iconRaw: string): ReviconComponent | undefined 
     ];
 
     for (const candidate of candidates) {
-        const resolved = iconLibrary[candidate as keyof typeof iconLibrary];
-        if (isReactComponentLike(resolved)) {
-            return resolved as ReviconComponent;
+        const load = icons[`/node_modules/@revicons/react/solid/esm/${candidate}.js`];
+        if (load) {
+            if (!resolvedIcons.has(candidate)) {
+                const Icon = lazy(() =>
+                    load()
+                        .then((component) => ({ default: component }))
+                        .catch(() => ({
+                            default: (props: SVGProps<SVGSVGElement>) =>
+                                createElement('svg', { ...props, 'aria-hidden': true }),
+                        })),
+                );
+                resolvedIcons.set(candidate, (props) =>
+                    createElement(
+                        Suspense,
+                        { fallback: createElement('svg', { ...props, 'aria-hidden': true }) },
+                        createElement(Icon, props),
+                    ),
+                );
+            }
+            return resolvedIcons.get(candidate);
         }
     }
 

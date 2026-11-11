@@ -58,7 +58,9 @@ class DatabaseHostResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return DatabaseHost::count() > 0 ? (string) DatabaseHost::count() : null;
+        $count = DatabaseHost::count();
+
+        return $count > 0 ? (string) $count : null;
     }
 
     public static function form(Schema $form): Schema

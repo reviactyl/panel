@@ -1,6 +1,7 @@
 import useSWR from 'swr';
 import http from '@/api/http';
 import type { ExtensionRegistryRecord } from '@/extensions/types';
+import { useStoreState } from '@/state/hooks';
 
 interface ExtensionsApiResponse {
     object: string;
@@ -8,8 +9,9 @@ interface ExtensionsApiResponse {
 }
 
 export const useExtensions = () => {
+    const authenticated = useStoreState((state) => !!state.user.data?.uuid);
     return useSWR<ExtensionRegistryRecord[]>(
-        '/api/client/extensions',
+        authenticated ? '/api/client/extensions' : null,
         async () => {
             const { data } = await http.get<ExtensionsApiResponse>('/api/client/extensions');
 

@@ -2,7 +2,9 @@
 
 namespace Tests\Integration\Http\Controllers\Auth;
 
+use App\Http\Middleware\RequireTwoFactorAuthentication;
 use App\Http\Middleware\VerifyCaptcha;
+use App\Models\Role;
 use App\Models\User;
 use Laravel\Socialite\Facades\Socialite;
 use PHPUnit\Framework\Attributes\TestWith;
@@ -52,6 +54,41 @@ class LoginDestinationTest extends HttpTestCase
             ->assertOk()->assertJsonPath('data.intended', $destination);
         $response = $this->getJson('/api/client/servers/'.$server->uuidShort);
         $owner ? $response->assertOk() : $response->assertNotFound();
+    }
+
+    #[TestWith([0, false, false, false])]
+    #[TestWith([1, false, false, false])]
+    #[TestWith([1, true, false, true])]
+    #[TestWith([1, false, true, true])]
+    #[TestWith([2, false, false, true])]
+    public function test_login_preserves_required_two_factor_setup(int $level, bool $admin, bool $staff, bool $required): void
+    {
+        $this->withoutMiddleware(VerifyCaptcha::class);
+        config(['panel.auth.2fa_required' => $level]);
+        $user = User::factory()->create(['root_admin' => $admin, 'password' => bcrypt('password'), 'use_totp' => false]);
+        if ($staff) {
+            $user->roles()->attach(Role::factory()->create(['permissions' => ['servers.read']]));
+        }
+        $this->withSession(['url.intended' => '/server/demo/files'])
+            ->postJson('/auth/login', ['user' => $user->username, 'password' => 'password'])
+            ->assertOk()
+            ->assertJsonPath('data.intended', $required ? '/account' : '/server/demo/files')
+            ->assertJsonPath('data.two_factor_required', $required)
+            ->assertSessionMissing('url.intended');
+        if ($required) {
+            $this->get('/account', ['Accept' => 'text/html'])->assertOk();
+            $this->getJson('/api/client')->assertStatus(400)->assertJsonPath('errors.0.code', 'TwoFactorAuthRequiredException');
+        }
+    }
+
+    #[TestWith([0])]
+    #[TestWith([1])]
+    #[TestWith([2])]
+    public function test_enabled_two_factor_does_not_require_setup(int $level): void
+    {
+        config(['panel.auth.2fa_required' => $level]);
+        $user = User::factory()->create(['use_totp' => true]);
+        $this->assertFalse(RequireTwoFactorAuthentication::requiresSetup($user));
     }
 
     public function test_social_login_returns_to_session_destination(): void

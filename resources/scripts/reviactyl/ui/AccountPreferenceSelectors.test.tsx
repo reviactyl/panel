@@ -114,3 +114,9 @@ it('continues saving selected language and editor preferences', async () => {
     expect(language!.value).toBe('de');
     expect(editor!.value).toBe('mo');
 });
+
+it('provides both editors without requesting the nonexistent editor-list endpoint', async () => {
+    await render(<FileEditorSwitcher />);
+    expect(Array.from(container.querySelectorAll('option'), (option) => option.value)).toEqual(['cm', 'mo']);
+    expect(fetch).not.toHaveBeenCalled();
+});

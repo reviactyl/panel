@@ -5,8 +5,8 @@ namespace App\Filament\Widgets;
 use App\Filament\AdminAccess;
 use App\Helpers\StorageUnit;
 use App\Models\Node;
-use App\Repositories\Agent\DaemonMonitoringRepository;
 use App\Services\Acl\RolePermission;
+use App\Services\Helpers\NodeMonitoringService;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -37,7 +37,7 @@ class MonitoringWidget extends BaseWidget
 
     protected int|string|array $columnSpan = 'full';
 
-    protected ?string $pollingInterval = '1s';
+    protected ?string $pollingInterval = '5s';
 
     public function mount(): void {}
 
@@ -133,10 +133,7 @@ class MonitoringWidget extends BaseWidget
     protected function getMonitoringData(Node $node): ?array
     {
         try {
-            $repository = app(DaemonMonitoringRepository::class);
-            $repository->setNode($node);
-
-            return $repository->getSystemMonitoring();
+            return app(NodeMonitoringService::class)->get($node);
         } catch (\Throwable $e) {
             Log::warning('MonitoringWidget: failed to fetch data for node '.$node->id, [
                 'error' => $e->getMessage(),

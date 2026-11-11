@@ -1,5 +1,7 @@
+import { withHttpSessionTransition } from '@/api/http';
+import completeLogin from '@/api/auth/completeLogin';
 import { useState } from 'react';
-import type { Location, RouteProps } from 'react-router-dom';
+import type { Location, RouteProps, NavigateFunction } from 'react-router-dom';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import loginCheckpoint from '@/api/auth/loginCheckpoint';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
@@ -20,6 +22,7 @@ interface Values {
 type OwnProps = RouteProps;
 
 type Props = OwnProps & {
+    navigate: NavigateFunction;
     clearAndAddHttpError: ActionCreator<FlashStore['clearAndAddHttpError']['payload']>;
 };
 
@@ -72,21 +75,21 @@ function LoginCheckpointContainer() {
 }
 
 const EnhancedForm = withFormik<Props & { location: Location }, Values>({
-    handleSubmit: ({ code, recoveryCode }, { setSubmitting, props: { clearAndAddHttpError, location } }) => {
-        loginCheckpoint(location.state?.token || '', code, recoveryCode)
-            .then((response) => {
+    handleSubmit: ({ code, recoveryCode }, { setSubmitting, props: { clearAndAddHttpError, location, navigate } }) => {
+        withHttpSessionTransition(() =>
+            loginCheckpoint(location.state?.token || '', code, recoveryCode).then(async (response) => {
                 if (response.complete) {
-                    window.location.href = response.intended || '/';
+                    await completeLogin(response, navigate);
                     return;
                 }
 
                 setSubmitting(false);
-            })
-            .catch((error) => {
-                console.error(error);
-                setSubmitting(false);
-                clearAndAddHttpError({ error });
-            });
+            }),
+        ).catch((error) => {
+            console.error(error);
+            setSubmitting(false);
+            clearAndAddHttpError({ error });
+        });
     },
 
     mapPropsToValues: () => ({
@@ -107,5 +110,7 @@ export default ({ ...props }: OwnProps) => {
         return null;
     }
 
-    return <EnhancedForm clearAndAddHttpError={clearAndAddHttpError} location={location} {...props} />;
+    return (
+        <EnhancedForm navigate={navigate} clearAndAddHttpError={clearAndAddHttpError} location={location} {...props} />
+    );
 };

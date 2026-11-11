@@ -5,7 +5,7 @@ import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { ExternalLinkIcon } from '@heroicons/react/solid';
 import { useTranslation } from 'react-i18next';
-import logout from '@/api/auth/logout';
+import useLogout from '@/plugins/useLogout';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import SearchContainer from '@/components/dashboard/search/SearchContainer';
 import Logo from '@/reviactyl/ui/Logo';
@@ -48,16 +48,9 @@ export const SidebarClassic = React.forwardRef<HTMLDivElement, SidebarProps>(
         const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
         const adminAccess = useStoreState((state) => state.user.data!.adminAccess);
         const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
-        const [isLoggingOut, setIsLoggingOut] = useState(false);
+        const { isLoggingOut, onLogout } = useLogout();
         const sidebarLogout = useStoreState((state) => state.designify.data?.sidebarLogout);
         const { session } = useSubuserPreview();
-
-        const onLogout = () => {
-            setIsLoggingOut(true);
-            logout().finally(() => {
-                window.location.href = '/';
-            });
-        };
 
         return (
             <div
@@ -108,11 +101,16 @@ export const SidebarClassic = React.forwardRef<HTMLDivElement, SidebarProps>(
                                 </Link>
                             </div>
                             {sidebarLogout && (
-                                <div onClick={onLogout}>
+                                <button
+                                    type='button'
+                                    onClick={onLogout}
+                                    aria-label={t('overview.logout')}
+                                    className='rounded-ui focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-reviactyl'
+                                >
                                     <Tooltip content={t('overview.logout')}>
                                         <FaArrowRightToBracket className='h-10 text-gray-600 hover:text-danger/80 cursor-pointer' />
                                     </Tooltip>
-                                </div>
+                                </button>
                             )}
                         </div>
                     )}

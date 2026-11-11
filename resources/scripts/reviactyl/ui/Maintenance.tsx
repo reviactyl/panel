@@ -1,11 +1,10 @@
-import { useState } from 'react';
 import PageContentBlock from '@/reviactyl/elements/PageContentBlock';
 import { ApplicationStore } from '@/state';
 import { useStoreState } from 'easy-peasy';
 import Card from '@/reviactyl/ui/Card';
 import Title from '@/reviactyl/ui/Title';
 import { LogoContainer } from '@/reviactyl/ui/LogoContainer';
-import logout from '@/api/auth/logout';
+import useLogout from '@/plugins/useLogout';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import { LogoutIcon } from '@heroicons/react/solid';
 import { useTranslation } from 'react-i18next';
@@ -15,13 +14,7 @@ export default () => {
     const logo = useStoreState((state: ApplicationStore) => state.settings.data!.logo);
     const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
     const maintenance = useStoreState((state) => state.designify.data!.maintenance);
-    const [isLoggingOut, setIsLoggingOut] = useState(false);
-    const onTriggerLogout = () => {
-        setIsLoggingOut(true);
-        logout().finally(() => {
-            window.location.href = '/';
-        });
-    };
+    const { isLoggingOut, onLogout: onTriggerLogout } = useLogout('dashboard');
     return (
         <PageContentBlock className='flex flex-col h-full' title={t('under_maintenance')} showFlashKey={'dashboard'}>
             <div className='mx-auto my-auto'>

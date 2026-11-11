@@ -17,7 +17,7 @@ export interface PageContentBlockProps {
 const PageContentBlock = ({
     title,
     inset = false,
-    animate = true,
+    animate = false,
     showFlashKey,
     className,
     children,

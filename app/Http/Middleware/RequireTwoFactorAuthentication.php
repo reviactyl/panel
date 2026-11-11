@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Exceptions\Http\TwoFactorAuthRequiredException;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Prologue\Alerts\AlertsMessageBag;
@@ -25,6 +26,19 @@ class RequireTwoFactorAuthentication
      */
     public function __construct(private AlertsMessageBag $alert) {}
 
+    public static function requiresSetup(User $user): bool
+    {
+        if ($user->use_totp) {
+            return false;
+        }
+
+        return match ((int) config('panel.auth.2fa_required')) {
+            self::LEVEL_NONE => false,
+            self::LEVEL_ADMIN => $user->isAdmin(),
+            default => true,
+        };
+    }
+
     /**
      * Check the user state on the incoming request to determine if they should be allowed to
      * proceed or not. This checks if the Panel is configured to require 2FA on an account in
@@ -43,14 +57,7 @@ class RequireTwoFactorAuthentication
             return $next($request);
         }
 
-        $level = (int) config('panel.auth.2fa_required');
-        // If this setting is not configured, or the user is already using 2FA then we can just
-        // send them right through, nothing else needs to be checked.
-        //
-        // If the level is set as admin and the user is not an admin, pass them through as well.
-        if ($level === self::LEVEL_NONE || $user->use_totp) {
-            return $next($request);
-        } elseif ($level === self::LEVEL_ADMIN && ! $user->isAdmin()) {
+        if (! self::requiresSetup($user)) {
             return $next($request);
         }
 

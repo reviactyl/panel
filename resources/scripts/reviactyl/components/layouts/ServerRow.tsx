@@ -1,7 +1,8 @@
-import React, { memo, useEffect, useState } from 'react';
+import preloadServerConsole from '@/routers/preloadServerConsole';
+import React, { memo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Server } from '@/api/server/getServer';
-import getServerResourceUsage, { ServerStats } from '@/api/server/getServerResourceUsage';
+import { prepareServer, type Server } from '@/api/server/getServer';
+import useServerResources from '@/plugins/useServerResources';
 import { bytesToString, ip, mbToBytes } from '@/lib/formatters';
 import Spinner from '@/reviactyl/elements/Spinner';
 import { FaFloppyDisk, FaMemory, FaMicrochip } from 'react-icons/fa6';
@@ -20,8 +21,6 @@ const IconDescription = ({ alarm, children }: { alarm: boolean; children: React.
     <p className={`ml-2 text-xs ${alarm ? 'text-white' : 'text-gray-400'}`}>{children}</p>
 );
 
-type Timer = ReturnType<typeof setInterval>;
-
 export default ({
     server,
     className,
@@ -36,36 +35,8 @@ export default ({
     showCategory?: boolean;
 }) => {
     const { t } = useTranslation('dashboard/index');
-    const [isSuspended, setIsSuspended] = useState(server.status === 'suspended');
-    const [stats, setStats] = useState<ServerStats | null>(null);
+    const { ref, stats, isSuspended } = useServerResources(server);
     const [isCategoryModalVisible, setCategoryModalVisible] = useState(false);
-
-    const getStats = () =>
-        getServerResourceUsage(server.uuid)
-            .then((data) => setStats(data))
-            .catch((error) => console.error(error));
-
-    useEffect(() => {
-        setIsSuspended(stats?.isSuspended || server.status === 'suspended');
-    }, [stats?.isSuspended, server.status]);
-
-    useEffect(() => {
-        // Don't waste a HTTP request if there is nothing important to show to the user because
-        // the server is suspended or the node is under maintenance.
-        if (isSuspended || server.isNodeUnderMaintenance) return;
-
-        let active = true;
-        let interval: Timer | undefined;
-
-        getStats().then(() => {
-            if (active) interval = setInterval(() => getStats(), 30000);
-        });
-
-        return () => {
-            active = false;
-            clearInterval(interval);
-        };
-    }, [isSuspended, server.isNodeUnderMaintenance]);
 
     const alarms = { cpu: false, memory: false, disk: false };
     if (stats) {
@@ -92,6 +63,22 @@ export default ({
                 />
             )}
             <Link
+                onClick={(event) => {
+                    if (
+                        !event.defaultPrevented &&
+                        event.button === 0 &&
+                        !event.metaKey &&
+                        !event.ctrlKey &&
+                        !event.shiftKey &&
+                        !event.altKey
+                    ) {
+                        prepareServer(server.id);
+                    }
+                }}
+                onPointerEnter={preloadServerConsole}
+                onFocus={preloadServerConsole}
+                onTouchStart={preloadServerConsole}
+                ref={ref}
                 to={`/server/${server.id}`}
                 className={`group relative grid grid-cols-12 gap-4 overflow-hidden rounded-ui border border-gray-800 bg-gray-900 p-4 text-gray-200 no-underline ${
                     className || ''

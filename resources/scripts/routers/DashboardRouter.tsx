@@ -1,6 +1,6 @@
 import { ExtensionLayout } from '@/extensions/ExtensionLayout';
 import { useEffect, useState } from 'react';
-import { Suspense } from 'react';
+import { Suspense, lazy } from 'react';
 import { useLocation, useRoutes } from 'react-router-dom';
 import Navigate from '@/reviactyl/components/Navigate';
 import DashboardContainer from '@/components/dashboard/DashboardContainer';
@@ -24,7 +24,7 @@ import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 import { useExtensionRoutes } from '@/extensions/useExtensionRoutes';
 import { useExtensions } from '@/extensions/useExtensions';
 import { resolveExtensionIcon } from '@/extensions/iconResolver';
-import PasskeysContainer from '@/components/dashboard/PasskeysContainer';
+const PasskeysContainer = lazy(() => import('@/components/dashboard/PasskeysContainer'));
 import { useSubuserPreview } from '@/context/SubuserPreviewContext';
 import { motion } from 'framer-motion';
 
@@ -39,7 +39,14 @@ const NavItem = ({ route }: Props) => {
     };
 
     return (
-        <Navigate id={route.name} to={to(route.path ?? route.route)} end={route.end}>
+        <Navigate
+            id={route.name}
+            to={to(route.path ?? route.route)}
+            end={route.end}
+            onPointerEnter={() => void route.component.preload?.().catch(() => undefined)}
+            onFocus={() => void route.component.preload?.().catch(() => undefined)}
+            onTouchStart={() => void route.component.preload?.().catch(() => undefined)}
+        >
             <span className='flex items-center'>
                 {route.icon && <route.icon className={`w-5 mr-1`} />} {route.name ? t(route.name as string) : null}
             </span>

@@ -46,7 +46,9 @@ class NestResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return Nest::count() > 0 ? (string) Nest::count() : null;
+        $count = Nest::count();
+
+        return $count > 0 ? (string) $count : null;
     }
 
     public static function getModelLabel(): string

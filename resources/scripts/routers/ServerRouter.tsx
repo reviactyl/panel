@@ -1,6 +1,6 @@
 import { ExtensionLayout } from '@/extensions/ExtensionLayout';
 import { Fragment, useEffect, useState } from 'react';
-import { Route, Routes, useParams, useLocation } from 'react-router-dom';
+import { Route, Routes, useParams, useLocation, matchRoutes } from 'react-router-dom';
 import Navigate from '@/reviactyl/components/Navigate';
 
 import TransferListener from '@/components/server/TransferListener';
@@ -58,6 +58,9 @@ const NavItem = ({ route }: NavItemProps) => {
         <Navigate
             id={route.name}
             to={`/server/${params.id}/${(route.path ?? route.route).replace(/\/\*$/, '')}`}
+            onPointerEnter={() => void route.component.preload?.().catch(() => undefined)}
+            onFocus={() => void route.component.preload?.().catch(() => undefined)}
+            onTouchStart={() => void route.component.preload?.().catch(() => undefined)}
             end={route.end ?? false}
         >
             <span className='flex items-center'>
@@ -212,6 +215,7 @@ const ServerNavigation = () => {
 export default function ServerRouter() {
     const params = useParams<{ id: string }>();
     const location = useLocation();
+    const { t } = useTranslation(['dashboard/account', 'server/index', 'server/console']);
 
     const isUnderMaintenance = useStoreState((state) => state.designify.data?.isUnderMaintenance);
     const accountRootAdmin = useStoreState((state) => state.user.data?.rootAdmin);
@@ -225,6 +229,13 @@ export default function ServerRouter() {
     const id = ServerContext.useStoreState((state) => state.server.data?.id);
     const server = ServerContext.useStoreState((state) => state.server.data);
     const uuid = ServerContext.useStoreState((state) => state.server.data?.uuid);
+    const ready =
+        !!uuid &&
+        !!id &&
+        (params.id === id ||
+            params.id === uuid ||
+            params.id === server?.identifier ||
+            params.id === server?.__deprecatedUuidShort);
     const inConflictState = ServerContext.useStoreState((state) => state.server.inConflictState);
 
     const serverNestId = ServerContext.useStoreState((state) => state.server.data?.nestId);
@@ -259,6 +270,16 @@ export default function ServerRouter() {
 
     const allRoutes = [...routes.server.control, ...routes.server.management, ...routes.server.administration];
 
+    useEffect(() => {
+        const pathname = location.pathname.replace(/^\/server\/[^/]+/, '') || '/';
+        const matches = matchRoutes(
+            allRoutes.map((route) => ({ path: route.route, handle: route })),
+            pathname,
+        );
+        const preload = matches?.at(-1)?.route.handle.component.preload;
+        if (preload) void preload().catch(() => undefined);
+    }, [location.pathname]);
+
     const routeAllowed = (route: any) =>
         (route.nestIds && route.nestIds.includes(serverNestId ?? 0)) ||
         (route.eggIds && route.eggIds.includes(serverEggId ?? 0)) ||
@@ -277,61 +298,73 @@ export default function ServerRouter() {
                 <Maintenance />
             ) : (
                 <RouterContainer>
-                    {!uuid || !id ? (
-                        error ? (
-                            <ServerError message={error} />
-                        ) : (
-                            <Spinner size='large' centered />
-                        )
-                    ) : (
-                        <>
-                            <Navbar>
-                                <div className='lg:hidden'>
-                                    <button
-                                        onClick={() => setSidebarOpen(!isSidebarOpen)}
-                                        className='text-gray-600 bg-gray-900 p-2 rounded-ui'
-                                    >
-                                        {isSidebarOpen ? (
-                                            <XIcon className='w-6 h-6' />
-                                        ) : (
-                                            <MenuIcon className='w-6 h-6' />
-                                        )}
-                                    </button>
-                                </div>
-                            </Navbar>
-                            <ContentContainer>
-                                {isSidebarOpen && (
-                                    <div
-                                        onClick={() => setSidebarOpen(false)}
-                                        className='fixed inset-0 z-30 bg-gray-900/40 backdrop-blur-xs lg:hidden'
-                                    />
+                    <Navbar>
+                        <div className='lg:hidden'>
+                            <button
+                                onClick={() => setSidebarOpen(!isSidebarOpen)}
+                                aria-label={t(
+                                    isSidebarOpen
+                                        ? 'mobile-navigation.close-sidebar'
+                                        : 'mobile-navigation.show-sidebar',
                                 )}
+                                aria-expanded={isSidebarOpen}
+                                className='text-gray-600 bg-gray-900 p-2 rounded-ui'
+                            >
+                                {isSidebarOpen ? <XIcon className='w-6 h-6' /> : <MenuIcon className='w-6 h-6' />}
+                            </button>
+                        </div>
+                    </Navbar>
+                    <ContentContainer>
+                        {isSidebarOpen && (
+                            <div
+                                onClick={() => setSidebarOpen(false)}
+                                className='fixed inset-0 z-30 bg-gray-900/40 backdrop-blur-xs lg:hidden'
+                            />
+                        )}
 
-                                <motion.div
-                                    initial={{ opacity: 1 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ duration: 0.15, ease: 'easeIn' }}
-                                >
-                                    <ExtensionLayout
-                                        name='server:sidebar'
-                                        disabled={!!session}
-                                        fallback={
-                                            <Sidebar isOpen={isSidebarOpen}>
-                                                <ServerNavigation />
-                                            </Sidebar>
-                                        }
-                                        componentProps={{
-                                            isOpen: isSidebarOpen,
-                                            onClose: () => setSidebarOpen(false),
-                                            children: <ServerNavigation />,
-                                        }}
-                                        context={{ eggId: serverEggId, nestId: serverNestId }}
-                                    />
-                                </motion.div>
+                        <motion.div
+                            initial={{ opacity: 1 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.15, ease: 'easeIn' }}
+                        >
+                            {ready ? (
+                                <ExtensionLayout
+                                    name='server:sidebar'
+                                    disabled={!!session}
+                                    fallback={
+                                        <Sidebar isOpen={isSidebarOpen}>
+                                            <ServerNavigation />
+                                        </Sidebar>
+                                    }
+                                    componentProps={{
+                                        isOpen: isSidebarOpen,
+                                        onClose: () => setSidebarOpen(false),
+                                        children: <ServerNavigation />,
+                                    }}
+                                    context={{ eggId: serverEggId, nestId: serverNestId }}
+                                />
+                            ) : (
+                                <Sidebar isOpen={isSidebarOpen}>
+                                    <div aria-busy='true' className='mt-4 space-y-4 px-4'>
+                                        {[0, 1, 2, 3, 4, 5].map((key) => (
+                                            <div key={key} className='h-5 rounded-ui bg-gray-800' />
+                                        ))}
+                                    </div>
+                                </Sidebar>
+                            )}
+                        </motion.div>
 
-                                <div
-                                    className={`w-full flex-1 overflow-y-auto ${layoutType === 'modern' ? 'pb-24 lg:pb-0' : ''}`}
-                                >
+                        <div
+                            className={`w-full flex-1 overflow-y-auto ${layoutType === 'modern' ? 'pb-24 lg:pb-0' : ''}`}
+                        >
+                            {!ready ? (
+                                error ? (
+                                    <ServerError message={error} />
+                                ) : (
+                                    <Spinner size='large' centered />
+                                )
+                            ) : (
+                                <>
                                     <InstallListener />
                                     <TransferListener />
                                     <WebsocketHandler />
@@ -404,15 +437,15 @@ export default function ServerRouter() {
                                             )}
                                         </ErrorBoundary>
                                     )}
-                                </div>
-                            </ContentContainer>
-                            {layoutType === 'modern' && (
-                                <MobileBottomBar
-                                    sidebarOpen={isSidebarOpen}
-                                    onShowSidebar={() => setSidebarOpen((open) => !open)}
-                                />
+                                </>
                             )}
-                        </>
+                        </div>
+                    </ContentContainer>
+                    {layoutType === 'modern' && (
+                        <MobileBottomBar
+                            sidebarOpen={isSidebarOpen}
+                            onShowSidebar={() => setSidebarOpen((open) => !open)}
+                        />
                     )}
                 </RouterContainer>
             )}

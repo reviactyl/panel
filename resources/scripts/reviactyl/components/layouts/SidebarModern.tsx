@@ -5,7 +5,7 @@ import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { ExternalLinkIcon } from '@heroicons/react/solid';
 import { useTranslation } from 'react-i18next';
-import http from '@/api/http';
+import useLogout from '@/plugins/useLogout';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import Logo from '@/reviactyl/ui/Logo';
 import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
@@ -47,16 +47,9 @@ export const SidebarModern = React.forwardRef<HTMLDivElement, SidebarProps>(
         const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
         const adminAccess = useStoreState((state) => state.user.data!.adminAccess);
         const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
-        const [isLoggingOut, setIsLoggingOut] = useState(false);
+        const { isLoggingOut, onLogout } = useLogout();
         const sidebarLogout = useStoreState((state) => state.designify.data?.sidebarLogout);
         const { session } = useSubuserPreview();
-
-        const onLogout = () => {
-            setIsLoggingOut(true);
-            http.post('/auth/logout').finally(() => {
-                window.location.href = '/';
-            });
-        };
 
         return (
             <div

@@ -87,6 +87,25 @@ test('opening and closing a file keeps the file pages visible', async ({ page })
     expect(trace.failures).toEqual([]);
 });
 
+test('fresh in-app login can open File Manager controls without refreshing the document', async ({ page }) => {
+    const url = process.env.FILE_EDITOR_DEMO_URL;
+    test.skip(!url, 'Requires an isolated Panel and Agent demo.');
+    await page.goto(`${url}/auth/login`);
+    await page.locator('input[name=username]').fill('demo');
+    await page.locator('input[name=password]').fill('demo');
+    await page.locator('button[type=submit]').click();
+    await page.locator('a[href^="/server/"]').first().click();
+    await page.getByRole('link', { name: 'Files', exact: true }).click();
+    await expect(page.getByRole('textbox', { name: 'Search files...' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'New File', exact: true })).toBeVisible();
+    await expect(
+        page.getByText('An error was encountered by the application while rendering this view.', {
+            exact: false,
+        }),
+    ).toHaveCount(0);
+    await expect(page.locator('#modal-portal')).toHaveCount(1);
+});
+
 test('switching server tabs keeps each page visible', async ({ page }) => {
     const url = process.env.FILE_EDITOR_DEMO_URL;
     test.skip(!url, 'Requires an isolated Panel and Agent demo.');
@@ -192,6 +211,14 @@ for (const editor of ['cm', 'mo']) {
         await page.evaluate(() => window.location.reload());
         await expect(text()).toContainText(draft);
         await expect.poll(() => dialogs).toEqual(['confirm', 'confirm', 'confirm', 'beforeunload']);
+        await page
+            .locator('a[href="/"]')
+            .filter({ has: page.locator('img') })
+            .filter({ visible: true })
+            .first()
+            .click();
+        await expect(text()).toContainText(draft);
+        await expect.poll(() => dialogs.length).toBe(5);
         discard = true;
         await breadcrumb.click();
         await page.getByText('welcome.txt', { exact: true }).first().click();
@@ -226,3 +253,54 @@ for (const editor of ['cm', 'mo']) {
         expect(errors).toEqual([]);
     });
 }
+
+test('logout waits for an older session response and keeps the next login logout valid', async ({ page }) => {
+    const url = process.env.FILE_EDITOR_DEMO_URL;
+    test.skip(!url, 'Requires an isolated Panel and Agent demo.');
+    await page.goto(`${url}/auth/login`, { waitUntil: 'domcontentloaded' });
+    const login = async () => {
+        await page.locator('input[name=username]').fill('demo');
+        await page.locator('input[name=password]').fill('demo');
+        await page.locator('button[type=submit]').click();
+        await page.locator('a[href="/account"]').filter({ visible: true }).first().waitFor();
+    };
+    await login();
+    await page.evaluate(() => Object.assign(window, { SocialLoginConfiguration: { google: true } }));
+    let release!: () => void;
+    const held = new Promise<void>((resolve) => {
+        release = resolve;
+    });
+    let arrived!: () => void;
+    const received = new Promise<void>((resolve) => {
+        arrived = resolve;
+    });
+    await page.route('**/api/client/account/social-logins', async (route) => {
+        const response = await route.fetch();
+        arrived();
+        await held;
+        await route.fulfill({ response });
+    });
+    await page.locator('a[href="/account"]').filter({ visible: true }).first().click();
+    await received;
+    let logoutRequests = 0;
+    page.on('request', (request) => {
+        if (request.method() === 'POST' && new URL(request.url()).pathname === '/auth/logout') logoutRequests++;
+    });
+    await page.getByRole('button', { name: 'Logout', exact: true }).focus();
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(250);
+    expect(logoutRequests).toBe(0);
+    release();
+    await page.locator('input[name=username]').waitFor();
+    expect((await page.request.get(`${url}/api/client`, { headers: { Accept: 'application/json' } })).status()).toBe(
+        401,
+    );
+    await page.unroute('**/api/client/account/social-logins');
+    await login();
+    await page.locator('a[href="/account"]').filter({ visible: true }).first().click();
+    await page.getByRole('button', { name: 'Logout', exact: true }).click();
+    await page.locator('input[name=username]').waitFor();
+    expect((await page.request.get(`${url}/api/client`, { headers: { Accept: 'application/json' } })).status()).toBe(
+        401,
+    );
+});
