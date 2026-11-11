@@ -7,7 +7,11 @@ import logout from '@/api/auth/logout';
 import AccountOverviewContainer from './AccountOverviewContainer';
 
 vi.mock('@/api/auth/logout', () => ({ default: vi.fn() }));
-vi.mock('react-router-dom', () => ({ useLocation: () => ({ state: null }) }));
+vi.mock('@/api/auth/completeLogout', () => ({
+    default: async () => window.location.replace('/auth/login'),
+    prepareLogout: vi.fn().mockResolvedValue(undefined),
+}));
+vi.mock('react-router-dom', () => ({ useLocation: () => ({ state: null }), useNavigate: () => vi.fn() }));
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 vi.mock('@/components/dashboard/AccountContentBlock', () => ({
     default: ({ children }: { children: ReactNode }) => <main>{children}</main>,
@@ -114,7 +118,7 @@ describe('account logout', () => {
         expect(container.querySelector('button')!.disabled).toBe(true);
         expect(window.location.pathname).toBe('/account');
         await act(async () => retry.resolve());
-        expect(window.location.pathname).toBe('/');
+        expect(window.location.pathname).toBe('/auth/login');
     });
 
     it('redirects only once the logout request succeeds', async () => {
@@ -123,7 +127,7 @@ describe('account logout', () => {
         await clickLogout();
         expect(window.location.pathname).toBe('/account');
         await act(async () => request.resolve());
-        expect(window.location.pathname).toBe('/');
+        expect(window.location.pathname).toBe('/auth/login');
         expect(container.querySelector('[role="alert"]')).toBeNull();
     });
 

@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import Avatar from '@/reviactyl/ui/Avatar';
 import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
-import http from '@/api/http';
+import useLogout from '@/plugins/useLogout';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import SearchContainer from '@/components/dashboard/search/SearchContainer';
 import Logo from '@/reviactyl/ui/Logo';
@@ -62,16 +62,9 @@ export const NavbarAccent = ({ children }: NavbarProps) => {
     const { t } = useTranslation('dashboard/account');
     const [blurred, setBlurred] = useState(false);
     const adminAccess = useStoreState((state: ApplicationStore) => state.user.data!.adminAccess);
-    const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const { isLoggingOut, onLogout } = useLogout();
     const { session } = useSubuserPreview();
 
-    const onTriggerLogout = () => {
-        setIsLoggingOut(true);
-        http.post('/auth/logout').finally(() => {
-            // @ts-expect-error this is valid
-            window.location = '/';
-        });
-    };
     useEffect(() => {
         const handleScroll = () => {
             setBlurred(window.scrollY > 0);
@@ -110,7 +103,7 @@ export const NavbarAccent = ({ children }: NavbarProps) => {
                                     </DropdownButtonRow>
                                 </a>
                             )}
-                            <DropdownButtonRow onClick={onTriggerLogout} danger>
+                            <DropdownButtonRow onClick={onLogout} danger>
                                 <FaArrowRightToBracket className='h-4 w-4 inline-flex mr-2' /> {t('overview.logout')}
                             </DropdownButtonRow>
                         </DropdownMenu>

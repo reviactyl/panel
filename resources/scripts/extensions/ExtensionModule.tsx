@@ -1,3 +1,4 @@
+import { loadExtensionRuntime } from './loadExtensionRuntime';
 import { Suspense, lazy, useMemo } from 'react';
 import ErrorBoundary from '@/reviactyl/elements/ErrorBoundary';
 
@@ -21,6 +22,7 @@ export const ExtensionModule = ({ extensionId, modulePath, exportName }: Props) 
                 let imported: any;
 
                 try {
+                    await loadExtensionRuntime();
                     imported = await import(/* @vite-ignore */ moduleUrl);
                 } catch (error) {
                     console.error('Failed to load extension module.', {

@@ -12,14 +12,14 @@ const getCsrfToken = (): string | undefined => {
     return fromLegacyMeta || undefined;
 };
 
-export default async (): Promise<void> => {
+export default async (): Promise<string | void> => {
     const token = getCsrfToken();
 
     if (!token) {
         throw new Error('Unable to locate a CSRF token for logout.');
     }
 
-    await http.post(
+    const { data } = await http.post(
         '/auth/logout',
         {
             _token: token,
@@ -32,4 +32,5 @@ export default async (): Promise<void> => {
             xsrfCookieName: '__reviactyl_ignore_xsrf_cookie__',
         },
     );
+    return data?.data?.csrf_token;
 };

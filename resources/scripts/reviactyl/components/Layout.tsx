@@ -1,3 +1,4 @@
+import FlashMessageRender from '@/components/FlashMessageRender';
 import NotificationCenter from '@/reviactyl/components/NotificationCenter';
 import React from 'react';
 import { NavbarModern, SidebarModern } from '@/reviactyl/components/layouts/SidebarModern';
@@ -13,6 +14,7 @@ export const Sidebar: React.FC<Props> = ({ ...props }) => {
     const layoutType = useStoreState((state: ApplicationStore) => state.designify.data!.layoutType);
     return (
         <>
+            <FlashMessageRender byKey='logout' className='fixed bottom-4 right-4 z-50 max-w-sm' />
             {layoutType === 'modern' ? (
                 <SidebarModern {...props} footer={<NotificationCenter />}>
                     {props.children}

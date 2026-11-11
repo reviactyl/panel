@@ -16,13 +16,6 @@ Route::get('/passkey/{path?}', [Base\IndexController::class, 'index'])
     ->where('path', '.*')
     ->name('passkey');
 
-Route::get('/locales/locale.json', Base\LocaleController::class)
-    ->withoutMiddleware(['auth', RequireTwoFactorAuthentication::class])
-    ->where('namespace', '.*');
-
-Route::get('/locales/list.json', [Base\LocaleController::class, 'list'])
-    ->withoutMiddleware(['auth', RequireTwoFactorAuthentication::class]);
-
 Route::get('/manifest.json', [Base\PwaManifestController::class, 'index'])
     ->withoutMiddleware(['auth', RequireTwoFactorAuthentication::class]);
 

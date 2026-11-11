@@ -49,7 +49,9 @@ class LocationResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return Location::count() > 0 ? (string) Location::count() : null;
+        $count = Location::count();
+
+        return $count > 0 ? (string) $count : null;
     }
 
     public static function form(Schema $form): Schema

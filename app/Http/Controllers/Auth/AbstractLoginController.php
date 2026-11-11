@@ -89,6 +89,7 @@ abstract class AbstractLoginController extends Controller
                 'complete' => true,
                 'intended' => LoginDestination::pull($request),
                 'user' => $user->toVueObject(),
+                'csrf_token' => $request->session()->token(),
             ],
         ]);
     }

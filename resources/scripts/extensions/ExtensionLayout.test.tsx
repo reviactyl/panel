@@ -4,7 +4,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ExtensionLayout } from './ExtensionLayout';
 import type { ExtensionRegistryRecord, ExtensionLayoutDefinition } from './types';
 
-const state = vi.hoisted(() => ({ data: [] as ExtensionRegistryRecord[] }));
+const state = vi.hoisted(() => ({ data: [] as ExtensionRegistryRecord[], runtime: vi.fn() }));
+vi.mock('./loadExtensionRuntime', () => ({ loadExtensionRuntime: state.runtime }));
 vi.mock('./useExtensions', () => ({ useExtensions: () => state }));
 vi.mock('/extensions/test/layout.js', () => ({
     default: ({ label, defaultLayout }: { label: string; defaultLayout: ReactNode }) => (
@@ -48,6 +49,7 @@ beforeEach(() => {
     document.body.append(container);
     root = createRoot(container);
     state.data = [];
+    state.runtime.mockReset().mockResolvedValue(undefined);
 });
 afterEach(async () => {
     await act(async () => root.unmount());
@@ -74,6 +76,20 @@ describe('extension layouts', () => {
         state.data = [];
         await render();
         expect(container.textContent).toBe('Built in');
+    });
+
+    it('waits for the shared runtime before rendering extension modules', async () => {
+        let ready!: () => void;
+        state.runtime.mockReturnValueOnce(
+            new Promise<void>((resolve) => {
+                ready = resolve;
+            }),
+        );
+        register();
+        await render({ componentProps: { label: 'Injected' } });
+        expect(container.textContent).toBe('Built in');
+        await act(async () => ready());
+        expect(container.querySelector('section')?.textContent).toBe('InjectedBuilt in');
     });
 
     it('keeps navigation available while a module is loading', async () => {

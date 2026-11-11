@@ -45,7 +45,7 @@ type Entry = {
 };
 type Listing = { data: Entry[]; size: number };
 
-export function RecycleBinRow({ grid, files, onOpen }: { grid: boolean; files: FileObject[]; onOpen: () => void }) {
+export function RecycleBinRow({ grid, onOpen }: { grid: boolean; files: FileObject[]; onOpen: () => void }) {
     const { t } = useTranslation('server/recycle');
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const menu = useRef<DropdownMenu>(null);
@@ -57,9 +57,6 @@ export function RecycleBinRow({ grid, files, onOpen }: { grid: boolean; files: F
         `/api/client/servers/${uuid}/files/recycle-bin`,
         async (url: string) => (await http.get(url)).data,
     );
-    useEffect(() => {
-        mutate();
-    }, [files, mutate]);
     return (
         <div
             className={`${styles.file_row} ${grid ? styles.file_tile : ''}`}

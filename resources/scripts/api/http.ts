@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, CanceledError } from 'axios';
 import { store } from '@/state';
 import { getPreviewToken } from '@/lib/subuserPreviewStorage';
 
@@ -12,6 +12,32 @@ const http: AxiosInstance = axios.create({
     },
 });
 
+let sessionRequests = new AbortController();
+let transition: Promise<void> | undefined;
+const activeRequests = new Set<Promise<void>>();
+
+export const withHttpSessionTransition = async <T>(callback: () => Promise<T>): Promise<T> => {
+    if (transition) throw new Error('A session transition is already in progress.');
+    let resume!: () => void;
+    transition = new Promise<void>((resolve) => {
+        resume = resolve;
+    });
+    try {
+        await Promise.all([...activeRequests]);
+        return await callback();
+    } finally {
+        transition = undefined;
+        resume();
+    }
+};
+
+export const getHttpSessionSignal = () => sessionRequests.signal;
+
+export const resetHttpSession = () => {
+    sessionRequests.abort();
+    sessionRequests = new AbortController();
+};
+
 const isBackgroundRequest = (url?: string): boolean =>
     url?.endsWith('/resources') === true ||
     url?.endsWith('/resources/history') === true ||
@@ -20,6 +46,27 @@ const isBackgroundRequest = (url?: string): boolean =>
     url?.includes('/api/client/alerts/') === true;
 
 http.interceptors.request.use((req) => {
+    const sessionSignal = sessionRequests.signal;
+    req.signal ??= sessionSignal;
+    const adapter = axios.getAdapter(req.adapter ?? http.defaults.adapter);
+    req.adapter = async (config) => {
+        const changesSession =
+            config.url === '/sanctum/csrf-cookie' ||
+            (config.method === 'post' && /^\/auth\/(?:logout|login(?:\/.*)?)$/.test(config.url || ''));
+        if (transition && !changesSession) await transition;
+        if (sessionSignal.aborted) throw new CanceledError('Session changed before the request was sent.');
+        let finish!: () => void;
+        const done = new Promise<void>((resolve) => {
+            finish = resolve;
+        });
+        activeRequests.add(done);
+        try {
+            return await adapter(config);
+        } finally {
+            activeRequests.delete(done);
+            finish();
+        }
+    };
     const previewToken = getPreviewToken();
     if (previewToken && req.url?.startsWith('/api/client')) {
         req.headers.set('X-Subuser-Preview', previewToken);

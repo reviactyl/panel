@@ -15,10 +15,11 @@ import setSelectedDockerImage from '@/api/server/setSelectedDockerImage';
 import InputSpinner from '@/reviactyl/elements/InputSpinner';
 import useFlash from '@/plugins/useFlash';
 import { useTranslation } from 'react-i18next';
+import FlashMessageRender from '@/components/FlashMessageRender';
 import { usePermissions } from '@/plugins/usePermissions';
 
 const StartupContainer = () => {
-    const { t } = useTranslation('server/startup');
+    const { t } = useTranslation(['server/startup', 'server/recycle']);
     const [loading, setLoading] = useState(false);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
 
@@ -46,11 +47,9 @@ const StartupContainer = () => {
             .includes(variables.dockerImage.toLowerCase());
 
     useEffect(() => {
-        // Since we're passing in initial data this will not trigger on mount automatically. We
-        // want to always fetch fresh information from the API however when we're loading the startup
-        // information.
-        mutate();
-    }, []);
+        if (error) clearAndAddHttpError({ key: 'startup:refresh', error });
+        else clearFlashes('startup:refresh');
+    }, [error]);
 
     useDeepCompareEffect(() => {
         if (!data) return;
@@ -87,6 +86,12 @@ const StartupContainer = () => {
         )
     ) : (
         <ServerContentBlock title={t('title')} showFlashKey={'startup:image'}>
+            <FlashMessageRender byKey='startup:refresh' />
+            {error && (
+                <button type='button' onClick={() => mutate()} className='mb-4 underline'>
+                    {t('server/recycle:retry')}
+                </button>
+            )}
             <div className='md:flex'>
                 <TitledGreyBox title={t('startup-command')} className='flex-1'>
                     <div className='px-1 py-2'>

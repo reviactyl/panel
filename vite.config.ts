@@ -1,14 +1,25 @@
 import react from '@vitejs/plugin-react';
+import { createHash } from 'node:crypto';
+import { readdirSync, readFileSync } from 'node:fs';
 import laravel from 'laravel-vite-plugin';
 import { dirname, resolve } from 'pathe';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
-import tailwindcss from '@tailwindcss/vite'
+import tailwindcss from '@tailwindcss/vite';
 
-const plugins = [
-    react(),
-    tailwindcss(),
-];
+const localeHash = createHash('sha256');
+const hashLocales = (directory: string) => {
+    for (const entry of readdirSync(directory, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+        const path = resolve(directory, entry.name);
+        localeHash.update(entry.name);
+        if (entry.isDirectory()) hashLocales(path);
+        else localeHash.update(readFileSync(path));
+    }
+};
+hashLocales(resolve(dirname(fileURLToPath(import.meta.url)), 'lang'));
+const localeVersion = JSON.stringify(localeHash.digest('hex').slice(0, 16));
+
+const plugins = [react(), tailwindcss()];
 
 if (process.env.VITEST === undefined) {
     plugins.push(
@@ -24,8 +35,9 @@ if (process.env.VITEST === undefined) {
 }
 
 export default defineConfig({
-    define:
-        process.env.VITEST === undefined
+    define: {
+        __LOCALE_VERSION__: localeVersion,
+        ...(process.env.VITEST === undefined
             ? {
                   'process.env': {},
                   'process.platform': null,
@@ -33,7 +45,8 @@ export default defineConfig({
                   'process.versions': null,
                   global: 'globalThis',
               }
-            : undefined,
+            : {}),
+    },
 
     plugins,
 
@@ -47,7 +60,7 @@ export default defineConfig({
         chunkSizeWarningLimit: 2000,
         rollupOptions: { preserveEntrySignatures: 'exports-only' },
     },
-    
+
     resolve: {
         alias: {
             '@': resolve(dirname(fileURLToPath(import.meta.url)), 'resources', 'scripts'),

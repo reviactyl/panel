@@ -1,35 +1,23 @@
-import React, { useState, useEffect, useId } from 'react';
+import React, { useState, useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ApplicationStore } from '@/state';
 import { useStoreState } from 'easy-peasy';
 import useAccountPreference from '@/plugins/useAccountPreference';
 import Select from '@/reviactyl/elements/Select';
 
-interface FileEditorSwitcherProps {
-    display: string;
-}
+const editors = {
+    cm: { display: 'CodeMirror (Default Editor)' },
+    mo: { display: 'Monaco (Like VS Code)' },
+};
 
 const FileEditorSwitcher = () => {
     const id = useId();
     const { t } = useTranslation('dashboard/account');
     const user = useStoreState((state: ApplicationStore) => state.user.data);
     const savePreference = useAccountPreference();
-    const [editors, setEditors] = useState<Record<string, FileEditorSwitcherProps>>({});
     const [guestEditor, setGuestEditor] = useState('cm');
     const [pendingEditor, setPendingEditor] = useState<string | null>(null);
     const currentEditor = pendingEditor ?? user?.fileEditor ?? guestEditor;
-
-    useEffect(() => {
-        fetch('/file-editors/list.json')
-            .then((res) => res.json())
-            .then((data) => setEditors(data))
-            .catch(() =>
-                setEditors({
-                    cm: { display: 'CodeMirror (Default Editor)' },
-                    mo: { display: 'Monaco (Like VS Code)' },
-                }),
-            );
-    }, []);
 
     const handleChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const newEditor = e.target.value;

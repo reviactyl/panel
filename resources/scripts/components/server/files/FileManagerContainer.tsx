@@ -104,6 +104,7 @@ export default () => {
 
     useEffect(() => {
         const gen = ++searchGenRef.current;
+        const controller = new AbortController();
 
         if (!query) {
             setRecursiveResults([]);
@@ -121,10 +122,17 @@ export default () => {
             const MAX_FILES = 250;
             const CONCURRENCY = 3;
 
-            while (queue.length > 0 && gen === searchGenRef.current && matches.length < MAX_FILES) {
+            while (
+                queue.length > 0 &&
+                !controller.signal.aborted &&
+                gen === searchGenRef.current &&
+                matches.length < MAX_FILES
+            ) {
                 const batch = queue.splice(0, CONCURRENCY);
                 const settled = await Promise.allSettled(
-                    batch.map((dir) => loadDirectory(uuid, dir).then((dirFiles) => ({ dir, dirFiles }))),
+                    batch.map((dir) =>
+                        loadDirectory(uuid, dir, controller.signal).then((dirFiles) => ({ dir, dirFiles })),
+                    ),
                 );
 
                 if (gen !== searchGenRef.current) break;
@@ -139,7 +147,7 @@ export default () => {
                             queue.push(fp);
                         }
                         if (f.name.toLowerCase().includes(query.toLowerCase())) {
-                            matches.push({ ...f, fullPath: fp, key: fp });
+                            if (matches.length < MAX_FILES) matches.push({ ...f, fullPath: fp, key: fp });
                         }
                     }
                 }
@@ -153,7 +161,11 @@ export default () => {
         })().catch(() => {
             if (gen === searchGenRef.current) setIsSearching(false);
         });
-    }, [query]);
+        return () => {
+            controller.abort();
+            ++searchGenRef.current;
+        };
+    }, [query, uuid]);
 
     const visibleFiles = useMemo(
         () => (query ? [] : sortFiles(files ?? [], sortType, sortDirection).slice(0, 250)),

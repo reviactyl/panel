@@ -56,7 +56,9 @@ class MountResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return Mount::count() > 0 ? (string) Mount::count() : null;
+        $count = Mount::count();
+
+        return $count > 0 ? (string) $count : null;
     }
 
     public static function form(Schema $schema): Schema

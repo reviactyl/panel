@@ -97,6 +97,8 @@ export default async (username?: string): Promise<LoginResponse> => {
 
     return {
         complete: loginResponse.data.data.complete,
+        user: loginResponse.data.data.user,
+        csrfToken: loginResponse.data.data.csrf_token,
         intended: loginResponse.data.data.intended || undefined,
         confirmationToken: loginResponse.data.data.confirmation_token || undefined,
     };

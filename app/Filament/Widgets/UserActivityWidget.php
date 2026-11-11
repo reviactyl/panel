@@ -14,6 +14,8 @@ use Illuminate\Support\Js;
 
 class UserActivityWidget extends ChartWidget
 {
+    protected static bool $isLazy = false;
+
     public static function canView(): bool
     {
         return AdminAccess::allows(RolePermission::RESOURCE_USERS);

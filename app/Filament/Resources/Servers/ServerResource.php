@@ -56,7 +56,9 @@ class ServerResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return Server::count() > 0 ? (string) Server::count() : null;
+        $count = Server::count();
+
+        return $count > 0 ? (string) $count : null;
     }
 
     public static function form(Schema $schema): Schema

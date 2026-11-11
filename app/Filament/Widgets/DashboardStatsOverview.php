@@ -6,52 +6,58 @@ use App\Filament\AdminAccess;
 use App\Models\Server;
 use App\Models\User;
 use App\Services\Acl\RolePermission;
+use App\Services\Helpers\DashboardStatisticsService;
 use App\Services\Helpers\SoftwareVersionService;
-use Carbon\CarbonInterface;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Str;
 
 class DashboardStatsOverview extends BaseWidget
 {
+    protected static bool $isLazy = false;
+
+    protected ?string $pollingInterval = '15s';
+
     protected function getStats(): array
     {
-        $start = now()->subDays(6)->startOfDay();
-
         return [
-            ...$this->userStats($start),
-            ...$this->serverStats($start),
+            ...$this->userStats(),
+            ...$this->serverStats(),
             ...$this->softwareVersionWidget(),
         ];
     }
 
-    private function userStats(CarbonInterface $start): array
+    private function userStats(): array
     {
         if (! AdminAccess::allows(RolePermission::RESOURCE_USERS)) {
             return [];
         }
 
+        $counts = app(DashboardStatisticsService::class)->counts(User::class);
+
         return [
-            Stat::make(trans('admin/index.dashboard.total_users'), User::query()->count())
-                ->description(trans('admin/index.dashboard.new_users', ['count' => User::query()->whereDate('created_at', today())->count()]))
+            Stat::make(trans('admin/index.dashboard.total_users'), $counts['total'])
+                ->description(trans('admin/index.dashboard.new_users', ['count' => $counts['today']]))
                 ->descriptionIcon('heroicon-o-users')
-                ->chart($this->getDailyCreatedCounts(User::class, $start))
+                ->chart($counts['daily'])
                 ->color('success')
                 ->icon('heroicon-o-users'),
         ];
     }
 
-    private function serverStats(CarbonInterface $start): array
+    private function serverStats(): array
     {
         if (! AdminAccess::allows(RolePermission::RESOURCE_SERVERS)) {
             return [];
         }
 
+        $counts = app(DashboardStatisticsService::class)->counts(Server::class);
+
         return [
-            Stat::make(trans('admin/index.dashboard.total_servers'), Server::query()->count())
-                ->description(trans('admin/index.dashboard.new_servers', ['count' => Server::query()->whereDate('created_at', today())->count()]))
+            Stat::make(trans('admin/index.dashboard.total_servers'), $counts['total'])
+                ->description(trans('admin/index.dashboard.new_servers', ['count' => $counts['today']]))
                 ->descriptionIcon('heroicon-o-server-stack')
-                ->chart($this->getDailyCreatedCounts(Server::class, $start))
+                ->chart($counts['daily'])
                 ->color('info')
                 ->icon('heroicon-o-server-stack'),
         ];
@@ -91,22 +97,5 @@ class DashboardStatsOverview extends BaseWidget
                 ->color(config('app.version') === 'canary' ? 'info' : ($isLatest ? 'success' : 'warning'))
                 ->icon('heroicon-o-bolt'),
         ];
-    }
-
-    /**
-     * @param  class-string<User|Server>  $model
-     * @return int[]
-     */
-    private function getDailyCreatedCounts(string $model, CarbonInterface $start): array
-    {
-        $counts = $model::query()
-            ->where('created_at', '>=', $start)
-            ->get(['created_at'])
-            ->groupBy(fn (User|Server $record): string => $record->created_at?->toDateString() ?? '')
-            ->map->count();
-
-        return collect(range(0, 6))
-            ->map(fn (int $day): int => $counts->get($start->copy()->addDays($day)->toDateString(), 0))
-            ->all();
     }
 }

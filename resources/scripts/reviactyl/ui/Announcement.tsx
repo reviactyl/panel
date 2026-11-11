@@ -1,4 +1,4 @@
-import { CSSProperties, useCallback, useMemo, useState } from 'react';
+import { CSSProperties, Suspense, lazy, useCallback, useMemo, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useSWRConfig } from 'swr';
@@ -10,8 +10,9 @@ import {
     FaCircleCheck,
     FaRegCircleXmark,
 } from 'react-icons/fa6';
-import AlertMarkdown from '@/reviactyl/ui/AlertMarkdown';
 import { AlertPlacement, PanelAlert, dismissAlert, trackAlertClick, useAlerts } from '@/api/alerts';
+
+const AlertMarkdown = lazy(() => import('@/reviactyl/ui/AlertMarkdown'));
 
 interface Props {
     placement?: AlertPlacement;
@@ -180,7 +181,9 @@ const Announcement = ({ placement = 'dashboard', server }: Props) => {
                                 <div className='relative flex min-w-0 flex-1 flex-col gap-3 sm:flex-row sm:items-center'>
                                     <div className='min-w-0 flex-1 wrap-break-word'>
                                         {alert.title && <strong className='mr-1.5 text-gray-50'>{alert.title}</strong>}
-                                        <AlertMarkdown message={alert.message} />
+                                        <Suspense fallback={<p className='whitespace-pre-wrap'>{alert.message}</p>}>
+                                            <AlertMarkdown message={alert.message} />
+                                        </Suspense>
                                     </div>
                                     {buttons.length > 0 && (
                                         <div className='flex shrink-0 flex-wrap items-center gap-2'>

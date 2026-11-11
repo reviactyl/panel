@@ -64,14 +64,14 @@ test('recycle bin uses file controls and supports browsing, editing, nested rest
         .click();
     await expect(page).toHaveURL(/\/files\/edit#/);
     await expect(page.getByText('example.txt', { exact: true })).toBeVisible();
-    await page.locator('.cm-content, .monaco-editor textarea').first().waitFor();
+    await page.locator('.cm-content, .monaco-editor').first().waitFor();
     const cm = page.locator('.cm-content');
     if (await cm.count()) {
         await cm.click();
         await page.keyboard.press('ControlOrMeta+A');
         await page.keyboard.insertText('edited while recycled');
     } else {
-        await page.locator('.monaco-editor textarea').first().focus();
+        await page.locator('.monaco-editor').first().click();
         await page.keyboard.press('ControlOrMeta+A');
         await page.keyboard.insertText('edited while recycled');
     }

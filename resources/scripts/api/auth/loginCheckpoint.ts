@@ -11,6 +11,8 @@ export default (token: string, code: string, recoveryToken?: string): Promise<Lo
             .then((response) =>
                 resolve({
                     complete: response.data.data.complete,
+                    user: response.data.data.user,
+                    csrfToken: response.data.data.csrf_token,
                     intended: response.data.data.intended || undefined,
                 }),
             )

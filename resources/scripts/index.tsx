@@ -22,19 +22,6 @@ if (import.meta.env.PROD && typeof window !== 'undefined') {
 // to share the same React instance used by the panel app.
 if (typeof window !== 'undefined') {
     (window as any).React = React;
-
-    const reviactylModules = import.meta.glob(['./reviactyl/**/*.{ts,tsx}', '!./reviactyl/**/*.{test,spec}.{ts,tsx}'], {
-        eager: true,
-    });
-    const moduleRegistry = Object.fromEntries(
-        Object.entries(reviactylModules).map(([key, mod]) => {
-            const normalized = key.replace(/^\.\/reviactyl\//, 'reviactyl/').replace(/\.(ts|tsx)$/, '');
-
-            return [normalized, mod];
-        }),
-    );
-
-    (window as any).__REVIACTYL_MODULES = moduleRegistry;
 }
 
 createRoot(document.getElementById('app')!).render(<App />);

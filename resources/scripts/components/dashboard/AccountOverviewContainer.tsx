@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import UpdatePasswordForm from '@/components/dashboard/forms/UpdatePasswordForm';
 import UpdateEmailAddressForm from '@/components/dashboard/forms/UpdateEmailAddressForm';
 import ConfigureTwoFactorForm from '@/components/dashboard/forms/ConfigureTwoFactorForm';
@@ -13,8 +13,7 @@ import TitledGreyBox from '@/reviactyl/elements/TitledGreyBox';
 import Title from '@/reviactyl/ui/Title';
 import { ExternalLinkIcon } from '@heroicons/react/solid';
 import { LogoutIcon } from '@heroicons/react/outline';
-import logout from '@/api/auth/logout';
-import { httpErrorToHuman } from '@/api/http';
+import useLogout from '@/plugins/useLogout';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '@/reviactyl/ui/LanguageSwitcher';
@@ -37,7 +36,7 @@ export default () => {
     const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
     const adminAccess = useStoreState((state) => state.user.data!.adminAccess);
     const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
-    const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const { isLoggingOut, onLogout: onTriggerLogout } = useLogout('account:logout');
     const { addFlash, clearFlashes } = useFlash();
 
     useEffect(() => {
@@ -62,19 +61,6 @@ export default () => {
             window.SessionFlashes = undefined;
         }
     }, []);
-
-    const onTriggerLogout = () => {
-        clearFlashes('account:logout');
-        setIsLoggingOut(true);
-        logout()
-            .then(() => {
-                window.location.href = '/';
-            })
-            .catch((error) => {
-                addFlash({ key: 'account:logout', type: 'error', message: httpErrorToHuman(error) });
-            })
-            .finally(() => setIsLoggingOut(false));
-    };
 
     return (
         <AccountContentBlock classicHeading title={t('overview.account-overview')}>

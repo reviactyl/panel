@@ -31,7 +31,7 @@ function visit(node: ts.Node) {
     if (
         ts.isCallExpression(node) &&
         node.expression.getText(tree) === 'useEffect' &&
-        node.arguments[1]?.getText(tree) === '[query]'
+        node.arguments[1]?.getText(tree) === '[query, uuid]'
     ) {
         effect = node.arguments[0]?.getText(tree) ?? '';
     }
@@ -106,13 +106,28 @@ describe('recursive file search cancellation', () => {
         let resolve!: (files: FileObject[]) => void;
         search.loadDirectory.mockReturnValueOnce(new Promise<FileObject[]>((done) => (resolve = done)));
         search.run('match');
-        expect(search.loadDirectory).toHaveBeenCalledExactlyOnceWith('uuid', '/');
+        expect(search.loadDirectory).toHaveBeenCalledExactlyOnceWith('uuid', '/', expect.any(AbortSignal));
         search.run('');
         resolve([entry('child', false), entry('match.txt', true)]);
         await settle();
         expect(search.loadDirectory).toHaveBeenCalledTimes(1);
         expect(search.setRecursiveResults).toHaveBeenLastCalledWith([]);
         expect(search.setIsSearching).toHaveBeenLastCalledWith(false);
+    });
+
+    it('aborts pending requests on cleanup and does not publish their results', async () => {
+        const search = harness();
+        let resolve!: (files: FileObject[]) => void;
+        search.loadDirectory.mockReturnValueOnce(new Promise<FileObject[]>((done) => (resolve = done)));
+        const cleanup = search.run('match');
+        const signal = search.loadDirectory.mock.calls[0]![2] as AbortSignal;
+        expect(signal.aborted).toBe(false);
+        cleanup();
+        expect(signal.aborted).toBe(true);
+        resolve([entry('child', false), entry('match.txt', true)]);
+        await settle();
+        expect(search.loadDirectory).toHaveBeenCalledTimes(1);
+        expect(search.setRecursiveResults).toHaveBeenLastCalledWith([]);
     });
 
     it('returns recursive matches when starting a new search after clearing', async () => {
@@ -123,8 +138,8 @@ describe('recursive file search cancellation', () => {
         search.run('match');
         await settle();
         expect(search.loadDirectory.mock.calls).toEqual([
-            ['uuid', '/'],
-            ['uuid', '/child'],
+            ['uuid', '/', expect.any(AbortSignal)],
+            ['uuid', '/child', expect.any(AbortSignal)],
         ]);
         expect(search.setRecursiveResults).toHaveBeenLastCalledWith([
             expect.objectContaining({ name: 'MATCH.txt', fullPath: '/child/MATCH.txt' }),

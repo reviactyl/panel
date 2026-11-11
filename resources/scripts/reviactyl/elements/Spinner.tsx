@@ -33,7 +33,7 @@ const SpinnerElement = ({ size = 'base', isBlue, className }: Pick<Props, 'size'
 
 const SpinnerFunc = ({ centered, className, ...props }: Props) =>
     centered ? (
-        <div className={`flex items-center justify-center ${props.size === 'large' ? 'm-20' : 'm-6'}`}>
+        <div className={`flex items-center justify-center ${props.size === 'large' ? 'p-20' : 'p-6'}`}>
             <SpinnerElement {...props} className={className} />
         </div>
     ) : (

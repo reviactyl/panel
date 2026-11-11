@@ -3,7 +3,7 @@ import { createRoot, Root } from 'react-dom/client';
 import { getByRole, queryByRole } from '@testing-library/dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { SidebarModern } from './SidebarModern';
-import http from '@/api/http';
+import logout from '@/api/auth/logout';
 
 const state = vi.hoisted(() => ({
     user: { data: { name_first: 'Demo', name_last: 'User', rootAdmin: false, adminAccess: false } },
@@ -12,12 +12,19 @@ const state = vi.hoisted(() => ({
 }));
 vi.mock('easy-peasy', () => ({ useStoreState: (selector: (value: typeof state) => unknown) => selector(state) }));
 vi.mock('react-router-dom', () => ({
+    useNavigate: () => vi.fn(),
     Link: ({ children, to }: React.PropsWithChildren<{ to: string }>) => <a href={to}>{children}</a>,
 }));
 vi.mock('react-i18next', () => ({
     useTranslation: () => ({ t: (key: string) => (key === 'overview.logout' ? 'Abmelden' : key) }),
 }));
-vi.mock('@/api/http', () => ({ default: { post: vi.fn() } }));
+vi.mock('@/api/auth/logout', () => ({ default: vi.fn() }));
+vi.mock('@/plugins/useFlash', () => ({ default: () => ({ clearFlashes: vi.fn(), addFlash: vi.fn() }) }));
+vi.mock('@/api/auth/completeLogout', () => ({ default: vi.fn(), prepareLogout: vi.fn().mockResolvedValue(undefined) }));
+vi.mock('@/api/http', () => ({
+    httpErrorToHuman: (error: Error) => error.message,
+    withHttpSessionTransition: (callback: () => Promise<void>) => callback(),
+}));
 vi.mock('@/reviactyl/ui/Avatar', () => ({ default: () => null }));
 vi.mock('@/reviactyl/ui/Logo', () => ({ default: () => null }));
 vi.mock('@/reviactyl/elements/tooltip/Tooltip', () => ({
@@ -34,7 +41,7 @@ let root: Root;
 beforeEach(() => {
     Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
     state.designify.data.sidebarLogout = true;
-    vi.mocked(http.post).mockReset();
+    vi.mocked(logout).mockReset();
     container = document.createElement('div');
     document.body.appendChild(container);
     root = createRoot(container);
@@ -58,13 +65,13 @@ describe('modern sidebar logout', () => {
     });
 
     it('keeps the logout POST and loading overlay on activation', async () => {
-        vi.mocked(http.post).mockReturnValue(new Promise(() => {}));
+        vi.mocked(logout).mockReturnValue(new Promise(() => {}));
         await act(async () => root.render(<SidebarModern isOpen />));
         expect(queryByRole(container, 'status')).toBeNull();
 
         await act(async () => getByRole(container, 'button', { name: 'Abmelden' }).click());
 
-        expect(http.post).toHaveBeenCalledExactlyOnceWith('/auth/logout');
+        expect(logout).toHaveBeenCalledExactlyOnceWith();
         expect(getByRole(container, 'status').textContent).toBe('Loading');
     });
 

@@ -16,9 +16,10 @@ export interface FileObject {
     isEditable: () => boolean;
 }
 
-export default async (uuid: string, directory?: string): Promise<FileObject[]> => {
+export default async (uuid: string, directory?: string, signal?: AbortSignal): Promise<FileObject[]> => {
     const { data } = await http.get(`/api/client/servers/${uuid}/files/list`, {
         params: { directory: directory ?? '/' },
+        signal,
     });
 
     return (data.data || []).map(rawDataToFileObject);
