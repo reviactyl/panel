@@ -170,302 +170,302 @@ importers:
   .:
     dependencies:
       '@codemirror/commands':
-        specifier: ^6.11.1
+        specifier: 6.11.1
         version: 6.11.1
       '@codemirror/language':
-        specifier: ^6.13.1
+        specifier: 6.13.1
         version: 6.13.1
       '@codemirror/language-data':
-        specifier: ^6.5.2
+        specifier: 6.5.2
         version: 6.5.2
       '@codemirror/state':
-        specifier: ^6.7.6
+        specifier: 6.7.6
         version: 6.7.6
       '@codemirror/view':
-        specifier: ^6.43.14
+        specifier: 6.43.14
         version: 6.43.14
       '@floating-ui/react':
-        specifier: ^0.27.20
+        specifier: 0.27.20
         version: 0.27.20(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@headlessui/react':
-        specifier: ^2.2.10
+        specifier: 2.2.10
         version: 2.2.10(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@hello-pangea/dnd':
-        specifier: ^18.0.1
+        specifier: 18.0.1
         version: 18.0.1(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@heroicons/react':
-        specifier: ^1.0.6
+        specifier: 1.0.6
         version: 1.0.6(react@19.3.0)
       '@monaco-editor/react':
-        specifier: ^4.7.0
+        specifier: 4.7.0
         version: 4.7.0(monaco-editor@0.56.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@preact/signals-react':
-        specifier: ^3.12.0
+        specifier: 3.12.0
         version: 3.12.0(react@19.3.0)
       '@redux-devtools/extension':
-        specifier: ^4.0.0
+        specifier: 4.0.0
         version: 4.0.0(redux@4.2.1)
       '@revicons/react':
-        specifier: ^1.0.0
+        specifier: 1.0.0
         version: 1.0.0(react@19.3.0)
       '@xterm/addon-fit':
-        specifier: ^0.11.0
+        specifier: 0.11.0
         version: 0.11.0
       '@xterm/addon-search':
-        specifier: ^0.16.0
+        specifier: 0.16.0
         version: 0.16.0
       '@xterm/addon-unicode11':
-        specifier: ^0.9.0
+        specifier: 0.9.0
         version: 0.9.0
       '@xterm/addon-web-links':
-        specifier: ^0.12.0
+        specifier: 0.12.0
         version: 0.12.0
       '@xterm/xterm':
-        specifier: ^6.0.0
+        specifier: 6.0.0
         version: 6.0.0
       add:
-        specifier: ^2.0.9
+        specifier: 2.0.9
         version: 2.0.9
       axios:
-        specifier: ^1.20.0
+        specifier: 1.20.0
         version: 1.20.0(debug@4.4.3)
       boring-avatars:
-        specifier: ^1.11.2
+        specifier: 1.11.2
         version: 1.11.2
       chart.js:
-        specifier: ^4.5.1
+        specifier: 4.5.1
         version: 4.5.1
       classnames:
-        specifier: ^2.5.1
+        specifier: 2.5.1
         version: 2.5.1
       clsx:
-        specifier: ^2.1.1
+        specifier: 2.1.1
         version: 2.1.1
       codemirror:
-        specifier: ^6.0.2
+        specifier: 6.0.2
         version: 6.0.2
       copy-to-clipboard:
-        specifier: ^3.3.3
+        specifier: 3.3.3
         version: 3.3.3
       date-fns:
-        specifier: ^2.30.0
+        specifier: 2.30.0
         version: 2.30.0
       debounce:
-        specifier: ^1.2.1
+        specifier: 1.2.1
         version: 1.2.1
       deepmerge-ts:
-        specifier: ^8.0.2
+        specifier: 8.0.2
         version: 8.0.2
       easy-peasy:
-        specifier: ^6.1.1
+        specifier: 6.1.1
         version: 6.1.1(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       events:
-        specifier: ^3.3.0
+        specifier: 3.3.0
         version: 3.3.0
       flag-icons:
-        specifier: ^7.5.0
+        specifier: 7.5.0
         version: 7.5.0
       formik:
-        specifier: ^2.4.9
+        specifier: 2.4.9
         version: 2.4.9(@types/react@19.3.0)(react@19.3.0)
       framer-motion:
-        specifier: ^11.18.2
+        specifier: 11.18.2
         version: 11.18.2(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       history:
-        specifier: ^5.3.0
+        specifier: 5.3.0
         version: 5.3.0
       i18next:
-        specifier: ^26.4.2
+        specifier: 26.4.2
         version: 26.4.2(typescript@6.0.3)
       i18next-browser-languagedetector:
-        specifier: ^8.2.1
+        specifier: 8.2.1
         version: 8.2.1
       i18next-http-backend:
-        specifier: ^4.0.4
+        specifier: 4.0.4
         version: 4.0.4
       i18next-multiload-backend-adapter:
-        specifier: ^2.3.1
+        specifier: 2.3.1
         version: 2.3.1
       md5:
-        specifier: ^2.3.0
+        specifier: 2.3.0
         version: 2.3.0
       monaco-editor:
-        specifier: ^0.56.0
+        specifier: 0.56.0
         version: 0.56.0
       pathe:
-        specifier: ^2.0.3
+        specifier: 2.0.3
         version: 2.0.3
       plyr-react:
-        specifier: ^6.0.0
+        specifier: 6.0.0
         version: 6.0.0(plyr@3.8.4)(react@19.3.0)
       qrcode.react:
-        specifier: ^4.2.0
+        specifier: 4.2.0
         version: 4.2.0(react@19.3.0)
       react:
-        specifier: ^19.3.0
+        specifier: 19.3.0
         version: 19.3.0
       react-chartjs-2:
-        specifier: ^5.3.1
+        specifier: 5.3.1
         version: 5.3.1(chart.js@4.5.1)(react@19.3.0)
       react-dom:
-        specifier: ^19.3.0
+        specifier: 19.3.0
         version: 19.3.0(react@19.3.0)
       react-fast-compare:
-        specifier: ^3.2.2
+        specifier: 3.2.2
         version: 3.2.2
       react-i18next:
-        specifier: ^17.0.15
+        specifier: 17.0.15
         version: 17.0.15(i18next@26.4.2(typescript@6.0.3))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)
       react-icons:
         specifier: 5.3.0
         version: 5.3.0(react@19.3.0)
       react-markdown:
-        specifier: ^10.1.0
+        specifier: 10.1.0
         version: 10.1.0(@types/react@19.3.0)(react@19.3.0)
       react-router-dom:
-        specifier: ^7.18.4
+        specifier: 7.18.4
         version: 7.18.4(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       reaptcha:
-        specifier: ^1.12.1
+        specifier: 1.12.1
         version: 1.12.1(react@19.3.0)
       redux:
-        specifier: ^4.2.1
+        specifier: 4.2.1
         version: 4.2.1
       sockette:
-        specifier: ^2.0.6
+        specifier: 2.0.6
         version: 2.0.6
       swr:
-        specifier: ^2.5.1
+        specifier: 2.5.1
         version: 2.5.1(react@19.3.0)
       use-fit-text:
-        specifier: ^2.4.0
+        specifier: 2.4.0
         version: 2.4.0(react@19.3.0)
       uuid:
-        specifier: ^14.0.2
+        specifier: 14.0.2
         version: 14.0.2
       viewerjs:
-        specifier: ^1.15.2
+        specifier: 1.15.2
         version: 1.15.2
       yup:
-        specifier: ^1.7.1
+        specifier: 1.7.1
         version: 1.7.1
     devDependencies:
       '@eslint/compat':
-        specifier: ^2.1.1
+        specifier: 2.1.1
         version: 2.1.1(eslint@10.11.0(jiti@2.7.0))
       '@eslint/js':
-        specifier: ^10.0.1
+        specifier: 10.0.1
         version: 10.0.1(eslint@10.11.0(jiti@2.7.0))
       '@fontsource-variable/ibm-plex-sans':
-        specifier: ^5.3.0
+        specifier: 5.3.0
         version: 5.3.0
       '@playwright/test':
-        specifier: ^1.64.0
+        specifier: 1.64.0
         version: 1.64.0
       '@tailwindcss/forms':
-        specifier: ^0.5.11
+        specifier: 0.5.11
         version: 0.5.11(tailwindcss@4.3.3)
       '@tailwindcss/vite':
-        specifier: ^4.3.3
+        specifier: 4.3.3
         version: 4.3.3(vite@8.3.3(@types/node@22.20.5)(jiti@2.7.0))
       '@testing-library/dom':
-        specifier: ^10.4.2
+        specifier: 10.4.2
         version: 10.4.2
       '@types/debounce':
-        specifier: ^1.2.4
+        specifier: 1.2.4
         version: 1.2.4
       '@types/events':
-        specifier: ^3.0.3
+        specifier: 3.0.3
         version: 3.0.3
       '@types/md5':
-        specifier: ^2.3.6
+        specifier: 2.3.6
         version: 2.3.6
       '@types/node':
-        specifier: ^22.20.5
+        specifier: 22.20.5
         version: 22.20.5
       '@types/path-browserify':
-        specifier: ^1.0.3
+        specifier: 1.0.3
         version: 1.0.3
       '@types/react':
-        specifier: ^19.3.0
+        specifier: 19.3.0
         version: 19.3.0
       '@types/react-dom':
-        specifier: ^19.3.0
+        specifier: 19.3.0
         version: 19.3.0(@types/react@19.3.0)
       '@types/react-redux':
-        specifier: ^7.1.34
+        specifier: 7.1.34
         version: 7.1.34
       '@types/webpack-env':
-        specifier: ^1.18.8
+        specifier: 1.18.8
         version: 1.18.8
       '@typescript-eslint/eslint-plugin':
-        specifier: ^8.71.0
+        specifier: 8.71.0
         version: 8.71.0(@typescript-eslint/parser@8.71.0(eslint@10.11.0(jiti@2.7.0))(typescript@6.0.3))(eslint@10.11.0(jiti@2.7.0))(typescript@6.0.3)
       '@typescript-eslint/parser':
-        specifier: ^8.71.0
+        specifier: 8.71.0
         version: 8.71.0(eslint@10.11.0(jiti@2.7.0))(typescript@6.0.3)
       '@vitejs/plugin-react':
-        specifier: ^6.1.1
+        specifier: 6.1.1
         version: 6.1.1(vite@8.3.3(@types/node@22.20.5)(jiti@2.7.0))
       autoprefixer:
-        specifier: ^10.6.1
+        specifier: 10.6.1
         version: 10.6.1(postcss@8.5.28)
       cross-env:
-        specifier: ^7.0.3
+        specifier: 7.0.3
         version: 7.0.3
       css-loader:
-        specifier: ^7.1.5
+        specifier: 7.1.5
         version: 7.1.5
       eslint:
-        specifier: ^10.11.0
+        specifier: 10.11.0
         version: 10.11.0(jiti@2.7.0)
       eslint-config-prettier:
-        specifier: ^10.1.8
+        specifier: 10.1.8
         version: 10.1.8(eslint@10.11.0(jiti@2.7.0))
       eslint-plugin-prettier:
-        specifier: ^5.5.6
+        specifier: 5.5.6
         version: 5.5.6(eslint-config-prettier@10.1.8(eslint@10.11.0(jiti@2.7.0)))(eslint@10.11.0(jiti@2.7.0))(prettier@3.9.9)
       eslint-plugin-react:
-        specifier: ^7.37.5
+        specifier: 7.37.5
         version: 7.37.5(eslint@10.11.0(jiti@2.7.0))
       eslint-plugin-react-hooks:
-        specifier: ^7.1.1
+        specifier: 7.1.1
         version: 7.1.1(eslint@10.11.0(jiti@2.7.0))
       globals:
-        specifier: ^17.13.0
+        specifier: 17.13.0
         version: 17.13.0
       happy-dom:
-        specifier: ^21.0.4
+        specifier: 21.0.4
         version: 21.0.4
       identity-obj-proxy:
-        specifier: ^3.0.0
+        specifier: 3.0.0
         version: 3.0.0
       laravel-vite-plugin:
-        specifier: ^3.2.0
+        specifier: 3.2.0
         version: 3.2.0(vite@8.3.3(@types/node@22.20.5)(jiti@2.7.0))
       prettier:
-        specifier: ^3.9.9
+        specifier: 3.9.9
         version: 3.9.9
       react-refresh:
-        specifier: ^0.14.2
+        specifier: 0.14.2
         version: 0.14.2
       rimraf:
-        specifier: ^6.1.3
+        specifier: 6.1.3
         version: 6.1.3
       tailwindcss:
-        specifier: ^4.3.3
+        specifier: 4.3.3
         version: 4.3.3
       ts-essentials:
-        specifier: ^9.4.2
+        specifier: 9.4.2
         version: 9.4.2(typescript@6.0.3)
       typescript:
-        specifier: ^6.0.3
+        specifier: 6.0.3
         version: 6.0.3
       vite:
-        specifier: ^8.3.3
+        specifier: 8.3.3
         version: 8.3.3(@types/node@22.20.5)(jiti@2.7.0)
       vitest:
-        specifier: ^5.0.3
+        specifier: 5.0.3
         version: 5.0.3(@types/node@22.20.5)(happy-dom@21.0.4)(vite@8.3.3(@types/node@22.20.5)(jiti@2.7.0))
 
 packages:
