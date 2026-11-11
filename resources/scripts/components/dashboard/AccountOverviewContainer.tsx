@@ -23,10 +23,11 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import FileEditorSwitcher from '@/reviactyl/ui/FileEditorSwitcher';
 import AvatarSelector from '@/components/dashboard/AvatarSelector';
 import ArchiveFormatSwitcher from '@/components/dashboard/ArchiveFormatSwitcher';
+import AccountNotificationSettings from '@/components/dashboard/AccountNotificationSettings';
 
 import SocialLoginsContainer from '@/components/dashboard/forms/SocialLoginsContainer';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
-import { FaBrush, FaEnvelope, FaLock, FaShield } from 'react-icons/fa6';
+import { FaBell, FaBrush, FaEnvelope, FaLock, FaShield } from 'react-icons/fa6';
 
 export default () => {
     const { t } = useTranslation('dashboard/account');
@@ -114,6 +115,21 @@ export default () => {
                         </div>
                     </Card>
                     <ExtensionSlot name='account:overview:column1:middle' />
+                    <TitledGreyBox icon={FaLock} title={t('overview.update-password')} showFlashes={'account:password'}>
+                        <UpdatePasswordForm />
+                    </TitledGreyBox>
+                    <TitledGreyBox icon={FaShield} title={t('overview.2fa-verification')}>
+                        <ConfigureTwoFactorForm />
+                    </TitledGreyBox>
+                    <ExtensionSlot name='account:overview:column1:end' />
+                </div>
+                <div className={'flex flex-col gap-4'}>
+                    <ExtensionSlot name='account:overview:column2:start' />
+                    <SocialLoginsContainer />
+                    <TitledGreyBox icon={FaBell} title={t('notifications:title', 'Notifications')}>
+                        <AccountNotificationSettings />
+                    </TitledGreyBox>
+                    <ExtensionSlot name='account:overview:column2:middle' />
                     <TitledGreyBox icon={FaEnvelope} title={t('overview.update-email')} showFlashes={'account:email'}>
                         <UpdateEmailAddressForm />
                     </TitledGreyBox>
@@ -122,18 +138,6 @@ export default () => {
                         <ThemeToggle />
                         <FileEditorSwitcher />
                         <ArchiveFormatSwitcher />
-                    </TitledGreyBox>
-                    <ExtensionSlot name='account:overview:column1:end' />
-                </div>
-                <div className={'flex flex-col gap-4'}>
-                    <ExtensionSlot name='account:overview:column2:start' />
-                    <SocialLoginsContainer />
-                    <TitledGreyBox icon={FaLock} title={t('overview.update-password')} showFlashes={'account:password'}>
-                        <UpdatePasswordForm />
-                    </TitledGreyBox>
-                    <ExtensionSlot name='account:overview:column2:middle' />
-                    <TitledGreyBox icon={FaShield} title={t('overview.2fa-verification')}>
-                        <ConfigureTwoFactorForm />
                     </TitledGreyBox>
                     <ExtensionSlot name='account:overview:column2:end' />
                 </div>

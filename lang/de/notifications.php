@@ -1,10 +1,6 @@
 <?php
 
 return [
-    'backup-settings' => 'Sicherungsbenachrichtigungen',
-    'backup-manual' => 'Manuelle Sicherungen',
-    'backup-scheduled' => 'Geplante Sicherungen',
-    'backup-email' => 'Auch per E-Mail senden',
 
     'title' => 'Benachrichtigungen',
     'description' => 'Neuigkeiten zu deinen Servern und Zugriffsrechten.',
@@ -27,6 +23,19 @@ return [
     'dismiss' => 'Entfernen',
     'previous' => 'Zurück',
     'next' => 'Weiter',
+    'settings-loading' => 'Benachrichtigungseinstellungen werden geladen…',
+    'settings-error' => 'Benachrichtigungseinstellungen konnten nicht geladen werden.',
+    'settings-type' => 'Benachrichtigungstyp',
+    'settings-panel' => 'Panel',
+    'settings-email' => 'E-Mail',
+    'categories' => [
+        'server-access' => ['title' => 'Serverzugriff'],
+        'server-setup' => ['title' => 'Servereinrichtung'],
+        'server-failures' => ['title' => 'Serverfehler'],
+        'backups' => ['title' => 'Backups'],
+        'backup-failures' => ['title' => 'Backup-Fehler'],
+        'extension-alerts' => ['title' => 'Erweiterungswarnungen'],
+    ],
     'events' => [
         'extension-updated' => 'Erweiterung aktualisiert',
         'reinstalled' => 'Server neu installiert',

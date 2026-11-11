@@ -7,6 +7,7 @@ use App\Models\Extension;
 use App\Models\Role;
 use App\Models\Subuser;
 use App\Models\User;
+use App\Notifications\AddedToServer;
 use App\Notifications\BackupCompleted;
 use App\Notifications\ExtensionFailed;
 use App\Notifications\ServerInstalled;
@@ -55,11 +56,66 @@ class NotificationControllerTest extends ClientApiIntegrationTestCase
         $this->getJson('/api/client/notifications')->assertJsonCount(0, 'data');
     }
 
+    public function test_global_notification_preferences_are_available_and_can_disable_delivery(): void
+    {
+        $server = $this->createServerModel();
+        $user = $server->user;
+        $this->actingAs($user)->getJson('/api/client/account/notifications')
+            ->assertOk()
+            ->assertJsonPath('categories.0.database', true)
+            ->assertJsonPath('categories.0.email', true)
+            ->assertJsonPath('categories.2.category', 'server-failures')
+            ->assertJsonPath('categories.4.category', 'backup-failures')
+            ->assertJsonMissingPath('servers');
+
+        $this->putJson('/api/client/account/notifications', [
+            'category' => 'server-access',
+            'database' => false,
+            'email' => false,
+        ])->assertOk()->assertJsonPath('database', false);
+
+        Notification::fake();
+        $user->notify(new AddedToServer(['user' => $user->username, 'name' => 'Example', 'uuidShort' => 'abc123']));
+        Notification::assertNothingSent();
+    }
+
+    public function test_migration_merges_active_backup_subscriptions_without_losing_email_or_enabling_inactive_email(): void
+    {
+        $server = $this->createServerModel();
+        $otherServer = $this->createServerModel();
+        $emailUser = $server->user;
+        $panelUser = User::factory()->create();
+        $disabledUser = User::factory()->create();
+        $newUser = User::factory()->create();
+        DB::table('backup_notification_preferences')->insert([
+            ['user_id' => $emailUser->id, 'server_id' => $server->id, 'manual' => true, 'scheduled' => false, 'email' => true],
+            ['user_id' => $emailUser->id, 'server_id' => $otherServer->id, 'manual' => false, 'scheduled' => false, 'email' => false],
+            ['user_id' => $panelUser->id, 'server_id' => $server->id, 'manual' => false, 'scheduled' => true, 'email' => false],
+            ['user_id' => $panelUser->id, 'server_id' => $otherServer->id, 'manual' => false, 'scheduled' => false, 'email' => true],
+            ['user_id' => $disabledUser->id, 'server_id' => $server->id, 'manual' => false, 'scheduled' => false, 'email' => true],
+        ]);
+        $migration = require database_path('migrations/2026_11_11_120000_add_notification_preferences.php');
+        $migration->down();
+        $migration->up();
+        foreach (['backups', 'backup-failures'] as $category) {
+            foreach ([[$emailUser, true, true], [$panelUser, true, false], [$disabledUser, false, false]] as [$user, $panel, $email]) {
+                $this->assertDatabaseHas('notification_preferences', [
+                    'user_id' => $user->id, 'category' => $category, 'database' => $panel, 'email' => $email,
+                ]);
+            }
+        }
+        $this->assertDatabaseMissing('notification_preferences', ['user_id' => $newUser->id]);
+        $this->actingAs($emailUser)->getJson('/api/client/account/notifications')
+            ->assertJsonPath('categories.3.email', true)->assertJsonPath('categories.4.email', true);
+        $migration->down();
+        $migration->up();
+        $this->assertDatabaseCount('notification_preferences', 6);
+    }
+
     public function test_backup_completion_notifies_the_owner_once_and_includes_failure(): void
     {
         Notification::fake();
         $server = $this->createServerModel();
-        DB::table('backup_notification_preferences')->insert(['user_id' => $server->owner_id, 'server_id' => $server->id, 'manual' => true]);
         $backup = $server->backups()->create([
             'uuid' => (string) Str::uuid(), 'name' => 'Regression backup',
             'disk' => 'wings', 'is_successful' => false, 'bytes' => 0, 'ignored_files' => [],
@@ -71,49 +127,82 @@ class NotificationControllerTest extends ClientApiIntegrationTestCase
             fn ($notification) => $notification->toDatabase()['event'] === 'backup-failed');
     }
 
-    public function test_backup_preferences_are_private_and_only_opted_in_authorized_subusers_receive_updates(): void
+    public function test_account_backup_preferences_apply_to_manual_and_scheduled_backups_and_enforce_access(): void
     {
         Notification::fake();
         $server = $this->createServerModel();
         $user = User::factory()->create();
+        $other = User::factory()->create();
         $subuser = Subuser::create(['user_id' => $user->id, 'server_id' => $server->id, 'permissions' => ['backup.read']]);
-        $url = '/api/client/servers/'.$server->uuid.'/backups/notification-preferences';
-        $this->actingAs($user)->getJson($url)->assertOk()->assertJsonPath('manual', false);
-        $this->putJson($url, ['manual' => true, 'scheduled' => false, 'email' => true])->assertOk();
-        $this->actingAs($server->user)->getJson($url)->assertJsonPath('manual', false);
-        $backup = $server->backups()->create(['uuid' => (string) Str::uuid(), 'name' => 'Manual', 'disk' => 'agent', 'ignored_files' => []]);
-        $backup->update(['completed_at' => now(), 'is_successful' => true]);
-        Notification::assertSentTo($user, BackupCompleted::class, fn ($notification) => $notification->via() === ['database', 'mail']);
+        $this->actingAs($user)->putJson('/api/client/account/notifications', [
+            'category' => 'backups', 'database' => false, 'email' => true,
+        ])->assertOk();
+        $this->actingAs($server->user)->putJson('/api/client/account/notifications', [
+            'category' => 'backups', 'database' => false, 'email' => false,
+        ])->assertOk();
+        $this->actingAs($other)->getJson('/api/client/account/notifications')
+            ->assertJsonPath('categories.3.database', true)->assertJsonPath('categories.3.email', false);
+        foreach ([false, true] as $scheduled) {
+            $backup = $server->backups()->create([
+                'uuid' => (string) Str::uuid(), 'name' => 'Backup', 'disk' => 'agent',
+                'ignored_files' => [], 'is_scheduled' => $scheduled,
+            ]);
+            $backup->update(['completed_at' => now(), 'is_successful' => true]);
+        }
+        Notification::assertSentToTimes($user, BackupCompleted::class, 2);
+        Notification::assertSentTo($user, BackupCompleted::class, fn ($notification) => $notification->via($user) === ['mail']);
         Notification::assertNotSentTo($server->user, BackupCompleted::class);
-        $scheduled = $server->backups()->create(['uuid' => (string) Str::uuid(), 'name' => 'Scheduled', 'disk' => 'agent', 'ignored_files' => [], 'is_scheduled' => true]);
-        $scheduled->update(['completed_at' => now()]);
-        Notification::assertSentToTimes($user, BackupCompleted::class, 1);
+        Notification::assertNotSentTo($other, BackupCompleted::class);
         $subuser->update(['permissions' => []]);
         $next = $server->backups()->create(['uuid' => (string) Str::uuid(), 'name' => 'No access', 'disk' => 'agent', 'ignored_files' => []]);
-        $next->update(['completed_at' => now()]);
-        Notification::assertSentToTimes($user, BackupCompleted::class, 1);
-        $this->actingAs($user)->putJson($url, ['manual' => true, 'scheduled' => true, 'email' => true])->assertForbidden();
+        $next->update(['completed_at' => now(), 'is_successful' => true]);
+        Notification::assertSentToTimes($user, BackupCompleted::class, 2);
     }
 
-    public function test_saved_backup_subscriptions_include_role_users_and_root_admins(): void
+    public function test_account_backup_preferences_include_authorized_roles_and_root_admins(): void
     {
         Notification::fake();
         $server = $this->createServerModel();
         $reader = User::factory()->create(['root_admin' => false]);
         $reader->roles()->attach(Role::factory()->create(['permissions' => ['servers.read']]));
         $admin = User::factory()->create(['root_admin' => true]);
-        $revoked = User::factory()->create(['root_admin' => false]);
-        $url = '/api/client/servers/'.$server->uuid.'/backups/notification-preferences';
-        foreach ([$reader, $admin] as $user) {
-            $this->actingAs($user)->putJson($url, ['manual' => true, 'scheduled' => false, 'email' => false])->assertOk();
-        }
-        DB::table('backup_notification_preferences')->insert(['user_id' => $revoked->id, 'server_id' => $server->id, 'manual' => true]);
-        $backup = $server->backups()->create(['uuid' => (string) Str::uuid(), 'name' => 'Subscribed', 'disk' => 'agent', 'ignored_files' => []]);
+        $unrelatedAdmin = User::factory()->create(['root_admin' => false]);
+        $unrelatedAdmin->roles()->attach(Role::factory()->create(['permissions' => ['nodes.read']]));
+        $backup = $server->backups()->create(['uuid' => (string) Str::uuid(), 'name' => 'Global', 'disk' => 'agent', 'ignored_files' => []]);
         $backup->update(['completed_at' => now(), 'is_successful' => true]);
         Notification::assertSentToTimes($reader, BackupCompleted::class, 1);
         Notification::assertSentToTimes($admin, BackupCompleted::class, 1);
-        Notification::assertNotSentTo($revoked, BackupCompleted::class);
-        Notification::assertNotSentTo($server->user, BackupCompleted::class);
+        Notification::assertSentToTimes($server->user, BackupCompleted::class, 1);
+        Notification::assertNotSentTo($unrelatedAdmin, BackupCompleted::class);
+    }
+
+    public function test_backup_failures_are_configured_independently_and_unsupported_email_is_disabled(): void
+    {
+        Notification::fake();
+        $server = $this->createServerModel();
+        $this->actingAs($server->user);
+        $this->putJson('/api/client/account/notifications', [
+            'category' => 'backups', 'database' => false, 'email' => false,
+        ])->assertOk();
+        $this->putJson('/api/client/account/notifications', [
+            'category' => 'backup-failures', 'database' => true, 'email' => true,
+        ])->assertOk();
+        $this->putJson('/api/client/account/notifications', [
+            'category' => 'extension-alerts', 'database' => true, 'email' => true,
+        ])->assertOk()->assertJsonPath('email', false);
+        $this->putJson('/api/client/account/notifications', [
+            'category' => 'unknown', 'database' => true, 'email' => false,
+        ])->assertUnprocessable();
+        foreach ([true, false] as $successful) {
+            $backup = $server->backups()->create([
+                'uuid' => (string) Str::uuid(), 'name' => 'Outcome', 'disk' => 'agent', 'ignored_files' => [],
+            ]);
+            $backup->update(['completed_at' => now(), 'is_successful' => $successful]);
+        }
+        Notification::assertSentToTimes($server->user, BackupCompleted::class, 1);
+        Notification::assertSentTo($server->user, BackupCompleted::class,
+            fn ($notification) => $notification->via($server->user) === ['database', 'mail']
+                && $notification->toDatabase()['event'] === 'backup-failed');
     }
 
     public function test_filament_notifications_are_readable_without_rendering_html(): void

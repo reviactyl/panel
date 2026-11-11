@@ -8,6 +8,7 @@ use App\Events\Server\Installed;
 use App\Models\Server;
 use App\Models\User;
 use App\Services\Mail\EmailTemplateService;
+use App\Services\Notifications\NotificationPreferenceService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Notifications\Dispatcher;
@@ -53,9 +54,23 @@ class ServerInstalled extends Notification implements ReceivesEvents, ShouldQueu
     /**
      * Get the notification's delivery channels.
      */
-    public function via(): array
+    public function via(?User $notifiable = null): array
     {
-        return $this->sendEmail && $this->successful ? ['database', 'mail'] : ['database'];
+        if (! $notifiable) {
+            return $this->sendEmail && $this->successful ? ['database', 'mail'] : ['database'];
+        }
+
+        $event = $this->successful
+            ? ($this->initialInstall ? 'installed' : 'reinstalled')
+            : ($this->initialInstall ? 'install-failed' : 'reinstall-failed');
+        $preferences = app(NotificationPreferenceService::class);
+        $channels = $preferences->isEnabled($notifiable, $event) ? ['database'] : [];
+
+        if ($this->sendEmail && $this->successful && $preferences->isEnabled($notifiable, $event, 'email')) {
+            $channels[] = 'mail';
+        }
+
+        return $channels;
     }
 
     /**
