@@ -3,7 +3,7 @@
 # since we won't need NodeJS anymore in the future. This Docker image ships a final production
 # level distribution of Reviactyl.
 # Use BUILDPLATFORM to run Node.js natively (avoids QEMU emulation issues)
-FROM --platform=$BUILDPLATFORM node:22-alpine
+FROM --platform=$BUILDPLATFORM node:22-alpine@sha256:5b05da3f938f1c604b24c633646d48805a6667f378cb4908438616f3cc48a0bf
 WORKDIR /app
 COPY . ./
 COPY --from=composer@sha256:d8f6343d3fae98107426bc49163ccad46ef85aabd4a27d80a74401fab4aba332 /usr/bin/composer /usr/local/bin/composer
@@ -11,13 +11,14 @@ COPY --from=composer@sha256:d8f6343d3fae98107426bc49163ccad46ef85aabd4a27d80a744
 RUN apk add --no-cache php php-phar php-json php-mbstring php-openssl php-tokenizer php-xml php-fileinfo php-curl php-dom php-ctype \
     && composer install --no-dev --optimize-autoloader --no-scripts --ignore-platform-reqs
 
-RUN npm install -g pnpm \
+RUN corepack enable \
+    && corepack install \
     && pnpm install --frozen-lockfile \
     && pnpm run build
 
 # Stage 1:
 # Build the actual container with all of the needed PHP dependencies that will run the application.
-FROM --platform=$TARGETOS/$TARGETARCH php:8.3-fpm-alpine
+FROM --platform=$TARGETOS/$TARGETARCH php:8.3-fpm-alpine@sha256:f9804e0c991b5b339d6fa4fab9edf3c9c9ae68048fb1017cb6dea6265ccef054
 ENV PANEL_INSTALLATION_TYPE=docker
 WORKDIR /app
 COPY . ./
