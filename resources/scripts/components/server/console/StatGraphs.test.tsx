@@ -35,6 +35,7 @@ let root: Root;
 
 beforeEach(async () => {
     Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
+    document.documentElement.style.setProperty('--text-primary', '30 64 175');
     container = document.createElement('div');
     root = createRoot(container);
     await act(async () => root.render(<StatGraphs />));
@@ -42,6 +43,7 @@ beforeEach(async () => {
 
 afterEach(async () => {
     await act(async () => root.unmount());
+    document.documentElement.removeAttribute('style');
 });
 
 const sample = async (rx: number, tx: number) => {
@@ -63,12 +65,10 @@ describe('console network graph directions', () => {
         await sample(rx, tx);
         expect(latest()).toEqual([inbound, outbound]);
         expect(datasets()).toMatchObject([
-            { label: 'network-in', borderColor: '#60a5fa' },
-            { label: 'network-out', borderColor: '#fbbf24' },
+            { label: 'network-in', borderColor: 'rgb(30 64 175)' },
+            { label: 'network-out', borderColor: '#b45309' },
         ]);
-        expect(container.querySelector('[data-tooltip="inbound"] svg')?.getAttribute('class')).toContain(
-            'text-blue-400',
-        );
+        expect(container.querySelector('[data-tooltip="inbound"] svg')?.getAttribute('class')).toContain('text-accent');
         expect(container.querySelector('[data-tooltip="outbound"] svg')?.getAttribute('class')).toContain(
             'text-amber-400',
         );

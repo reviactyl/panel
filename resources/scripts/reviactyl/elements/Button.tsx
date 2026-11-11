@@ -21,19 +21,19 @@ const buttonClasses = ({ color, isSecondary, size }: Omit<Props, 'isLoading'>) =
             : color === 'grey'
               ? 'border-gray-800 bg-gray-600 text-gray-50 hover:not-disabled:bg-gray-700'
               : color === 'green'
-                ? 'border-green-600 bg-green-500 text-green-50 hover:not-disabled:border-green-700 hover:not-disabled:bg-green-600'
+                ? 'border-success bg-success text-on-success hover:not-disabled:shadow-md'
                 : color === 'red'
-                  ? 'border-red-600 bg-red-500 text-red-50 hover:not-disabled:border-red-700 hover:not-disabled:bg-red-600'
-                  : 'border-primary-600/80 bg-primary-500/80 text-primary-50 hover:not-disabled:border-primary-700/80 hover:not-disabled:bg-primary-600/80',
+                  ? 'border-danger bg-danger text-on-danger hover:not-disabled:shadow-md'
+                  : 'border-reviactyl bg-reviactyl text-on-primary hover:not-disabled:shadow-md',
         isSecondary &&
             color === 'red' &&
-            'hover:not-disabled:border-red-600 hover:not-disabled:bg-red-500 hover:not-disabled:text-red-50',
+            'hover:not-disabled:border-danger hover:not-disabled:bg-danger hover:not-disabled:text-on-danger',
         isSecondary &&
             color === 'primary' &&
-            'hover:not-disabled:border-primary-600 hover:not-disabled:bg-primary-500 hover:not-disabled:text-primary-50',
+            'hover:not-disabled:border-reviactyl hover:not-disabled:bg-reviactyl hover:not-disabled:text-on-primary',
         isSecondary &&
             color === 'green' &&
-            'hover:not-disabled:border-green-600 hover:not-disabled:bg-green-500 hover:not-disabled:text-green-50',
+            'hover:not-disabled:border-success hover:not-disabled:bg-success hover:not-disabled:text-on-success',
     );
 
 const ButtonStyle = ({ className, ...props }: ComponentProps) => (

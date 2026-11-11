@@ -65,7 +65,7 @@ const AccountNotificationSettings = () => {
 
     if (error) {
         return (
-            <p role='alert' className='text-sm text-danger'>
+            <p role='alert' className='text-sm text-danger-text'>
                 {t('settings-error', 'Notification settings could not be loaded.')}
                 <button type='button' className='ml-1 underline' onClick={() => void mutate()}>
                     {t('retry')}
@@ -85,7 +85,7 @@ const AccountNotificationSettings = () => {
     return (
         <div className='space-y-4'>
             {failedChange && (
-                <p role='alert' className='text-sm text-danger'>
+                <p role='alert' className='text-sm text-danger-text'>
                     {t('error')}{' '}
                     <button type='button' className='underline' onClick={() => void saveCategory(failedChange)}>
                         {t('retry')}

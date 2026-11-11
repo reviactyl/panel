@@ -18,6 +18,7 @@ import { ChevronDoubleRightIcon } from '@heroicons/react/solid';
 import '@xterm/xterm/css/xterm.css';
 import styles from './style.module.css';
 import { useTranslation } from 'react-i18next';
+import useTheme from '@/plugins/useTheme';
 
 const theme: ITheme = {
     background: 'transparent',
@@ -39,6 +40,7 @@ export default () => {
     const TERMINAL_PRELUDE = `\u001b[1m\u001b[33m${containerText} \u001b[0m`;
     const ref = useRef<HTMLDivElement>(null);
     const terminalRef = useRef<Terminal | null>(null);
+    const { dark, revision } = useTheme();
     const { connected, instance } = ServerContext.useStoreState((state) => state.socket);
     const [canSendCommands] = usePermissions(['control.console']);
     const serverId = ServerContext.useStoreState((state) => state.server.data!.id);
@@ -162,6 +164,44 @@ export default () => {
             terminal.dispose();
         };
     }, []);
+
+    useEffect(() => {
+        const styles = getComputedStyle(document.documentElement);
+        // Xterm's alpha-color parser requires comma-separated RGB channels.
+        const color = (name: string) => `rgb(${styles.getPropertyValue(name).trim().split(/\s+/).join(', ')})`;
+        const foreground = color('--color-100');
+        if (terminalRef.current) {
+            terminalRef.current.options.theme = {
+                background: color('--color-900'),
+                foreground,
+                cursor: foreground,
+                selectionBackground: color('--color-primary'),
+                selectionInactiveBackground: color('--color-primary'),
+                selectionForeground: color('--foreground-primary'),
+                ...(dark
+                    ? {}
+                    : {
+                          black: '#18181b',
+                          red: '#b91c1c',
+                          green: '#166534',
+                          yellow: '#854d0e',
+                          blue: '#1d4ed8',
+                          magenta: '#86198f',
+                          cyan: '#155e75',
+                          white: '#52525b',
+                          brightBlack: '#52525b',
+                          brightRed: '#b91c1c',
+                          brightGreen: '#166534',
+                          brightYellow: '#854d0e',
+                          brightBlue: '#1d4ed8',
+                          brightMagenta: '#86198f',
+                          brightCyan: '#155e75',
+                          brightWhite: '#18181b',
+                      }),
+            };
+            terminalRef.current.options.minimumContrastRatio = 4.5;
+        }
+    }, [dark, revision]);
 
     useEffect(() => {
         const listeners: Record<string, (s: string) => void> = {

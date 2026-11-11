@@ -56,7 +56,6 @@ export class SearchBarAddon implements ITerminalAddon {
         this.input.style.color = 'rgb(var(--color-200))';
         this.input.style.border = '1px solid rgb(var(--color-600))';
         this.input.style.borderRadius = '6px';
-        this.input.style.outline = 'none';
 
         const prevBtn = this.createButton(`
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">

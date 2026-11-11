@@ -53,7 +53,7 @@ export default function FileModeInput() {
                 aria-describedby='file-mode-help'
                 $hasError={showError}
             />
-            <p id='file-mode-help' className={`mt-2 text-sm ${showError ? 'text-red-200' : 'text-gray-300'}`}>
+            <p id='file-mode-help' className={`mt-2 text-sm ${showError ? 'text-danger-text' : 'text-gray-300'}`}>
                 {t(showError ? 'permissions.invalid' : 'permissions.hint')}
             </p>
             <table className='mt-5 w-full table-fixed text-sm text-gray-200'>

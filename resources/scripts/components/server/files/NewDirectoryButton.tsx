@@ -76,7 +76,7 @@ const NewDirectoryDialog = asDialog({})(() => {
                             <span className='text-gray-200'>{t('directory-created-as')}&nbsp;</span>
                             <Code>
                                 /home/container
-                                <span className='text-cyan-200'>
+                                <span className='text-accent'>
                                     /{join(directory, values.directoryName).replace(/^(\.\.\/|\/)+/, '')}
                                 </span>
                             </Code>

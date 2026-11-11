@@ -3,3 +3,22 @@
 
 @source '../../../../app/Filament/**/*';
 @source '../../../../resources/views/**/*';
+
+:root:not(.dark) .fi-input::placeholder,
+:root:not(.dark) .fi-fo-textarea textarea::placeholder {
+    color: var(--gray-600);
+    opacity: 1;
+}
+
+:root:not(.dark) .fi-ta-placeholder,
+:root:not(.dark) .fi-select-input-placeholder {
+    color: var(--gray-600);
+}
+
+:root:not(.dark) .fi-sidebar-item:not(.fi-active) .fi-sidebar-item-icon {
+    color: var(--gray-500);
+}
+
+:root:not(.dark) .fi-logo[src='/reviactyl/logo.png'] {
+    filter: brightness(0);
+}

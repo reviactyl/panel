@@ -37,7 +37,7 @@ export const SubuserPreviewFrame = ({ children }: PropsWithChildren) => {
                 className='fixed inset-x-0 top-0 z-60 flex h-16 items-center border-b border-amber-500 bg-gray-950 px-3 text-gray-100 shadow-lg sm:px-5'
             >
                 <div className='flex min-w-0 flex-1 items-center gap-3'>
-                    <span className='flex h-9 w-9 shrink-0 items-center justify-center rounded-ui bg-amber-500/15 text-amber-400'>
+                    <span className='flex h-9 w-9 shrink-0 items-center justify-center rounded-ui bg-amber-500/15 text-amber-700 dark:text-amber-400'>
                         <FaEye className='h-5 w-5' />
                     </span>
                     <div className='min-w-0'>
@@ -51,7 +51,7 @@ export const SubuserPreviewFrame = ({ children }: PropsWithChildren) => {
                     </div>
                 </div>
 
-                <div className='hidden items-center gap-2 px-4 text-sm text-amber-300 lg:flex'>
+                <div className='hidden items-center gap-2 px-4 text-sm text-amber-800 dark:text-amber-300 lg:flex'>
                     <FaTriangleExclamation className='h-4 w-4' />
                     {t('preview.safety-message')}
                 </div>
@@ -60,7 +60,7 @@ export const SubuserPreviewFrame = ({ children }: PropsWithChildren) => {
                     size={Button.Sizes.Small}
                     disabled={exiting}
                     onClick={onExit}
-                    className='shrink-0 border border-amber-500/40 text-amber-200! hover:bg-amber-500/10!'
+                    className='shrink-0 border border-amber-500/40 bg-transparent! text-amber-800! dark:text-amber-200! hover:bg-amber-500/10!'
                 >
                     {exiting ? t('preview.exiting') : t('preview.exit')}
                 </Button.Text>

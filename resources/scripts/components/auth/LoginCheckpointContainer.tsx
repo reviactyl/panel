@@ -57,16 +57,13 @@ function LoginCheckpointContainer() {
                         setFieldValue('recoveryCode', '');
                         setIsMissingDevice((s) => !s);
                     }}
-                    className='cursor-pointer text-sm tracking-wide text-reviactyl/80 no-underline hover:text-reviactyl/50 focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-4 focus-visible:outline-reviactyl'
+                    className='cursor-pointer text-sm tracking-wide text-accent no-underline hover:underline focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-4 focus-visible:outline-reviactyl'
                 >
                     {!isMissingDevice ? t('checkpoint.lost-device') : t('checkpoint.not-lost-device')}
                 </button>
             </div>
             <div className='mt-3 text-center'>
-                <Link
-                    to={'/auth/login'}
-                    className='text-sm tracking-wide text-reviactyl/80 no-underline hover:text-reviactyl/50'
-                >
+                <Link to={'/auth/login'} className='text-sm tracking-wide text-accent no-underline hover:underline'>
                     {t('return')}
                 </Link>
             </div>

@@ -144,7 +144,7 @@ export default function NotificationCenter() {
                             </button>
                         </div>
                         {(failure || error) && (
-                            <div role='alert' className='m-4 rounded-ui bg-danger/10 p-3 text-sm text-danger'>
+                            <div role='alert' className='m-4 rounded-ui bg-danger/10 p-3 text-sm text-danger-text'>
                                 {t('error')}{' '}
                                 <button
                                     type='button'
@@ -168,7 +168,7 @@ export default function NotificationCenter() {
                                 </p>
                             ) : data?.data.length === 0 ? (
                                 <div className='px-8 py-20 text-center'>
-                                    <BellIcon className='mx-auto mb-4 h-8 w-8 text-gray-500' />
+                                    <BellIcon className='mx-auto mb-4 h-8 w-8 text-muted' />
                                     <p className='font-semibold'>{t(unread ? 'caught-up' : 'empty')}</p>
                                     <p className='mt-2 text-sm text-gray-400'>{t('empty-description')}</p>
                                 </div>
@@ -177,7 +177,7 @@ export default function NotificationCenter() {
                                     <article key={notice.id} className='border-b border-gray-800/70 px-5 py-4'>
                                         <div className='flex items-start gap-3'>
                                             <span
-                                                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-ui ${notice.data.event.includes('fail') || notice.data.status === 'danger' ? 'bg-danger/10 text-danger' : 'bg-gray-800 text-gray-400'}`}
+                                                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-ui ${notice.data.event.includes('fail') || notice.data.status === 'danger' ? 'bg-danger/10 text-danger-text' : 'bg-gray-800 text-gray-400'}`}
                                             >
                                                 {notice.data.event.includes('fail') ||
                                                 notice.data.status === 'danger' ||

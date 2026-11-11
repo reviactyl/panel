@@ -10,7 +10,7 @@ interface Props {
 
 const InputError = ({ errors, touched, name, children }: Props) =>
     touched[name] && errors[name] ? (
-        <p className='pt-2 text-xs text-red-400'>
+        <p className='pt-2 text-xs text-red-700 dark:text-red-400'>
             {typeof errors[name] === 'string'
                 ? capitalize(errors[name] as string)
                 : capitalize((errors[name] as unknown as string[])[0] ?? '')}

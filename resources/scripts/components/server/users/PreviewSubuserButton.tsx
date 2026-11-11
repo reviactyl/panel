@@ -63,7 +63,7 @@ export default ({ subuser }: { subuser: Subuser }) => {
                 aria-label={t('preview.preview-as', { email: subuser.email })}
                 title={t('preview.preview-as', { email: subuser.email })}
                 disabled={loading}
-                className='block p-1 text-sm text-gray-600 transition-colors duration-150 hover:text-amber-300 disabled:opacity-50 md:p-2'
+                className='block p-1 text-sm text-muted transition-colors duration-150 hover:text-amber-700 dark:hover:text-amber-300 disabled:opacity-50 md:p-2'
                 onClick={() => void begin()}
             >
                 <FaEye />

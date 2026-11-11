@@ -119,7 +119,9 @@ export const ListPasskeysForm = () => {
                                 onClick={() => setDeleteTarget({ id: passkey.id, name: passkey.name })}
                             >
                                 <FaTrash
-                                    className={'text-gray-400 hover:text-red-400 transition-colors duration-150'}
+                                    className={
+                                        'text-gray-400 hover:text-red-700 dark:text-red-400 transition-colors duration-150'
+                                    }
                                 />
                             </button>
                         </div>

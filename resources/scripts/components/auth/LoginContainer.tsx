@@ -216,7 +216,7 @@ function LoginContainer() {
                             />
                             <button
                                 type={'button'}
-                                className='absolute top-2.5 right-1.5 p-1 py-2 text-gray-500'
+                                className='absolute top-2.5 right-1.5 p-1 py-2 text-muted'
                                 onClick={() => setShow(!show)}
                             >
                                 {show ? <EyeIcon className='h-5 w-5' /> : <EyeOffIcon className='h-5 w-5' />}
@@ -281,7 +281,7 @@ function LoginContainer() {
                     <div className='mt-3 flex flex-col items-center gap-2'>
                         <Link
                             to={'/auth/password'}
-                            className='text-sm tracking-wide text-reviactyl/80 no-underline hover:text-reviactyl/50'
+                            className='text-sm tracking-wide text-accent no-underline hover:underline'
                         >
                             {t('forgot-password.label')}
                         </Link>

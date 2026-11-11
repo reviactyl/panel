@@ -81,7 +81,7 @@ export default () => {
     return (
         <PageContentBlock title={t('server-status')}>
             <div className='w-full max-w-3xl mx-auto mt-5'>
-                {error && <div className='mb-4 p-4 bg-red-600 rounded text-white'>{error}</div>}
+                {error && <div className='mb-4 p-4 bg-danger rounded text-on-danger'>{error}</div>}
 
                 {loading ? (
                     <ContentBox>

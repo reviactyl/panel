@@ -38,7 +38,7 @@ export default ({ subuser }: Props) => {
                     {subuser.twoFactorEnabled ? (
                         <FaUserLock className={'inline-block w-[1.25em]'} />
                     ) : (
-                        <FaUnlock className={'inline-block w-[1.25em] text-red-400'} />
+                        <FaUnlock className={'inline-block w-[1.25em] text-red-700 dark:text-red-400'} />
                     )}
                     &nbsp;
                 </p>
@@ -57,7 +57,7 @@ export default ({ subuser }: Props) => {
                         <button
                             type={'button'}
                             aria-label={t('edit-subuser')}
-                            className='mx-4 block p-1 text-sm text-gray-600 transition-colors duration-150 hover:text-gray-100 md:p-2'
+                            className='mx-4 block p-1 text-sm text-muted transition-colors duration-150 hover:text-gray-100 md:p-2'
                             onClick={() => setVisible(true)}
                         >
                             <FaPen />

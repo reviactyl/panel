@@ -4,7 +4,6 @@ import { SocketEvent } from '@/components/server/events';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import { Line } from 'react-chartjs-2';
 import { useChart, useChartTickLabel } from '@/components/server/console/chart';
-import { hexToRgba } from '@/lib/helpers';
 import { bytesToMb, bytesToString, mbToBytes, megabyteLabel } from '@/lib/formatters';
 import { CloudDownloadIcon, CloudUploadIcon } from '@heroicons/react/solid';
 import ChartBlock from '@/components/server/console/ChartBlock';
@@ -26,7 +25,7 @@ export default () => {
                 y: {
                     ticks: {
                         color: `rgb(${getComputedStyle(document.documentElement)
-                            .getPropertyValue('--color-400')
+                            .getPropertyValue('--text-muted')
                             .trim()})`,
                         callback(value) {
                             return bytesToString(typeof value === 'string' ? parseInt(value, 10) : value);
@@ -34,7 +33,7 @@ export default () => {
                     },
                     grid: {
                         color: `rgb(${getComputedStyle(document.documentElement)
-                            .getPropertyValue('--color-600')
+                            .getPropertyValue('--color-700')
                             .trim()})`,
                     },
                 },
@@ -44,8 +43,12 @@ export default () => {
             return {
                 ...opts,
                 label: !index ? t('network-in') : t('network-out'),
-                borderColor: !index ? '#60a5fa' : '#fbbf24',
-                backgroundColor: hexToRgba(!index ? '#1d4ed8' : '#b45309', 0.5),
+                borderColor: !index
+                    ? `rgb(${getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim()})`
+                    : '#b45309',
+                backgroundColor: !index
+                    ? `rgb(${getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim()} / 0.12)`
+                    : 'rgb(180 83 9 / 0.12)',
             };
         },
     });
@@ -88,10 +91,10 @@ export default () => {
                 legend={
                     <>
                         <Tooltip arrow content={t('inbound')}>
-                            <CloudDownloadIcon className={'mr-2 w-4 h-4 text-blue-400'} />
+                            <CloudDownloadIcon className={'mr-2 w-4 h-4 text-accent'} />
                         </Tooltip>
                         <Tooltip arrow content={t('outbound')}>
-                            <CloudUploadIcon className={'w-4 h-4 text-amber-400'} />
+                            <CloudUploadIcon className={'w-4 h-4 text-amber-700 dark:text-amber-400'} />
                         </Tooltip>
                     </>
                 }

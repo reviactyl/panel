@@ -257,7 +257,7 @@ export default () => {
                                 </div>
                             )}
 
-                            <div className='relative flex shrink-0 items-center sm:border-l sm:border-[#334155] sm:pl-4 gap-x-1'>
+                            <div className='relative flex shrink-0 items-center sm:border-l sm:border-gray-700 sm:pl-4 gap-x-1'>
                                 {!folders && (
                                     <div>
                                         <Button.Text

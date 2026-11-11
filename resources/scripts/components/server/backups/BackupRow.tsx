@@ -74,7 +74,7 @@ export default ({ backup, className }: Props) => {
                 <div className='flex flex-col truncate'>
                     <div className='mb-1 flex items-center text-sm'>
                         {backup.completedAt !== null && !backup.isSuccessful && (
-                            <span className='mr-2 rounded-full border border-red-600 bg-red-500 px-2 py-px text-xs uppercase text-white'>
+                            <span className='mr-2 rounded-full border border-danger bg-danger px-2 py-px text-xs uppercase text-on-danger'>
                                 {t('failed')}
                             </span>
                         )}

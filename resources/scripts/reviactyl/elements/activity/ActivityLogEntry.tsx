@@ -66,7 +66,7 @@ export default ({ activity, children }: Props) => {
                         to={`#${pathTo({ event: activity.event })}`}
                         className={classNames(
                             style.description,
-                            'min-w-0 text-sm font-medium text-gray-50 hover:text-cyan-400 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-400',
+                            'min-w-0 text-sm font-medium text-gray-50 hover:text-accent focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent',
                         )}
                     >
                         <Translate ns={'activity'} values={properties} i18nKey={activity.event.replace(':', '.')} />

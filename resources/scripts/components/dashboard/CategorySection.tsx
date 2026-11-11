@@ -47,8 +47,10 @@ export default ({ category, label, servers, showOnlyAdmin, showCategory = true, 
 
     if (servers.length === 0) return null;
 
-    const categoryColor = category?.color || 'var(--color-blue-500)';
-    const displayColor = category ? categoryColor : 'var(--color-gray-600)';
+    const categoryColor = category?.color || 'var(--color-reviactyl)';
+    const displayColor = category
+        ? `color-mix(in srgb, ${categoryColor} 25%, rgb(var(--color-100)))`
+        : 'var(--color-accent)';
     return (
         <div className='relative mb-3 overflow-hidden'>
             <button
@@ -64,8 +66,8 @@ export default ({ category, label, servers, showOnlyAdmin, showCategory = true, 
                             className='inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border'
                             style={{
                                 color: displayColor,
-                                borderColor: `${displayColor}40`,
-                                backgroundColor: `${displayColor}15`,
+                                borderColor: `color-mix(in srgb, ${displayColor} 25%, transparent)`,
+                                backgroundColor: `color-mix(in srgb, ${displayColor} 8%, transparent)`,
                             }}
                         >
                             <FaServer className='h-6' />

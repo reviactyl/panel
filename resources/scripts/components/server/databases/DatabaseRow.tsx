@@ -241,7 +241,7 @@ export default ({ database, className }: Props) => {
                     )}
                     {importError && (
                         <Tooltip content={importError} placement='bottom-start' className='max-w-md'>
-                            <p className='mt-1 inline-flex cursor-help items-center text-xs text-red-400'>
+                            <p className='mt-1 inline-flex cursor-help items-center text-xs text-red-700 dark:text-red-400'>
                                 <FaTriangleExclamation className='mr-1.5 h-3 w-3' />
                                 {t('import-failed')}
                             </p>

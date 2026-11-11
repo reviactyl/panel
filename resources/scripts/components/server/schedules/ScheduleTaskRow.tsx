@@ -83,7 +83,7 @@ export default ({ schedule, task }: Props) => {
             >
                 {t('confirm-task-deletion-body')}
             </ConfirmationModal>
-            <ActionIcon className={'text-lg text-white hidden md:block'} />
+            <ActionIcon className={'text-lg text-gray-100 hidden md:block'} />
             <div className='w-full flex-none overflow-x-auto sm:w-auto sm:flex-1'>
                 <p className='text-sm font-semibold uppercase text-gray-200 md:ml-6'>{title}</p>
                 {task.payload && (
@@ -121,7 +121,7 @@ export default ({ schedule, task }: Props) => {
                         <button
                             type={'button'}
                             aria-label={t('edit-scheduled-task')}
-                            className='ml-auto mr-4 block p-2 text-sm text-gray-600 transition-colors duration-150 hover:text-gray-100 sm:ml-0'
+                            className='ml-auto mr-4 block p-2 text-sm text-muted transition-colors duration-150 hover:text-gray-100 sm:ml-0'
                             onClick={() => setIsEditing(true)}
                         >
                             <FaPen />
@@ -132,7 +132,7 @@ export default ({ schedule, task }: Props) => {
                     <button
                         type={'button'}
                         aria-label={t('delete-scheduled-task')}
-                        className='block p-2 text-sm text-gray-600 transition-colors duration-150 hover:text-red-600'
+                        className='block p-2 text-sm text-muted transition-colors duration-150 hover:text-red-600'
                         onClick={() => setVisible(true)}
                     >
                         <FaTrash />

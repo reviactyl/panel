@@ -439,7 +439,7 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
                 onFolder={() => folderUploadInput.current?.click()}
             />
             {picker.error && (
-                <div role='alert' className='mt-2 text-sm text-red-200'>
+                <div role='alert' className='mt-2 text-sm text-danger-text'>
                     <p>{pickerT(`file-picker-${picker.error.stage}-error`)}</p>
                     <button
                         type='button'

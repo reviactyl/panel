@@ -88,7 +88,7 @@ function ResetPasswordContainer() {
                     <div className='mt-3 text-center'>
                         <Link
                             to={'/auth/login'}
-                            className='text-sm tracking-wide text-reviactyl/80 no-underline hover:text-reviactyl/50'
+                            className='text-sm tracking-wide text-accent no-underline hover:underline'
                         >
                             {t('return')}
                         </Link>

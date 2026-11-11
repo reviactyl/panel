@@ -1,20 +1,20 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @plugin "@tailwindcss/forms" {
-    strategy: "class";
+    strategy: 'class';
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
-    --font-header: "IBM Plex Sans", "Roboto", system-ui, sans-serif;
+    --font-header: 'IBM Plex Sans', 'Roboto', system-ui, sans-serif;
     --font-sans: var(--font-family);
 
     --radius-ui: var(--radius);
-    
+
     --color-reviactyl: rgb(var(--color-primary));
     --color-secondary: rgb(var(--color-secondary));
-    --color-muted: rgb(var(--color-muted-text));
+    --color-muted: rgb(var(--text-muted, var(--color-muted-text)));
     --color-success: rgb(var(--color-success));
     --color-warning: rgb(var(--color-warning));
     --color-danger: rgb(var(--color-danger));
@@ -31,30 +31,63 @@
     --color-gray-900: rgb(var(--color-900));
     --color-gray-950: rgb(var(--color-950));
 
-    --color-primary-50: var(--color-blue-50);
-    --color-primary-100: var(--color-blue-100);
-    --color-primary-200: var(--color-blue-200);
-    --color-primary-300: var(--color-blue-300);
-    --color-primary-400: var(--color-blue-400);
-    --color-primary-500: var(--color-blue-500);
-    --color-primary-600: var(--color-blue-600);
-    --color-primary-700: var(--color-blue-700);
-    --color-primary-800: var(--color-blue-800);
-    --color-primary-900: var(--color-blue-900);
-    --color-primary-950: var(--color-blue-950);
+    --color-accent: rgb(var(--text-primary, var(--color-primary)));
+    --color-success-text: rgb(var(--text-success, var(--color-success)));
+    --color-danger-text: rgb(var(--text-danger, var(--color-danger)));
+    --color-on-primary: rgb(var(--foreground-primary, 255 255 255));
+    --color-on-secondary: rgb(var(--foreground-secondary, 255 255 255));
+    --color-on-success: rgb(var(--foreground-success, 255 255 255));
+    --color-on-danger: rgb(var(--foreground-danger, 255 255 255));
+
+    --color-primary-50: color-mix(in srgb, rgb(var(--color-primary)) 8%, white);
+    --color-primary-100: color-mix(in srgb, rgb(var(--color-primary)) 15%, white);
+    --color-primary-200: color-mix(in srgb, rgb(var(--color-primary)) 30%, white);
+    --color-primary-300: color-mix(in srgb, rgb(var(--color-primary)) 50%, white);
+    --color-primary-400: color-mix(in srgb, rgb(var(--color-primary)) 75%, white);
+    --color-primary-500: rgb(var(--color-primary));
+    --color-primary-600: color-mix(in srgb, rgb(var(--color-primary)) 85%, black);
+    --color-primary-700: color-mix(in srgb, rgb(var(--color-primary)) 70%, black);
+    --color-primary-800: color-mix(in srgb, rgb(var(--color-primary)) 55%, black);
+    --color-primary-900: color-mix(in srgb, rgb(var(--color-primary)) 40%, black);
+    --color-primary-950: color-mix(in srgb, rgb(var(--color-primary)) 25%, black);
 
     --text-2xs: 0.625rem;
     --duration-250: 250ms;
 }
 
 @layer base {
-    *, ::after, ::before, ::backdrop, ::file-selector-button {
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
         border-color: var(--color-gray-400, currentColor);
     }
 
-    html, body, #app {
+    html,
+    body,
+    #app {
         max-width: 100%;
         overflow-x: clip;
+    }
+
+    :root {
+        color-scheme: light;
+    }
+
+    :root.dark {
+        color-scheme: dark;
+    }
+
+    ::selection {
+        background: var(--color-reviactyl);
+        color: var(--color-on-primary);
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+        color: var(--color-muted);
+        opacity: 1;
     }
 
     body {
@@ -62,7 +95,12 @@
         letter-spacing: 0.015em;
     }
 
-    h1, h2, h3, h4, h5, h6 {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
         @apply font-medium tracking-normal font-header;
     }
 
@@ -74,11 +112,22 @@
         @apply m-0;
     }
 
-    textarea, select, input, button, button:focus, button:focus-visible {
+    textarea,
+    select,
+    input,
+    button,
+    button:focus,
+    button:focus-visible {
         @apply outline-hidden;
     }
 
-    button:not(:disabled), [role="button"]:not(:disabled) {
+    button:not(:disabled),
+    [role='button']:not(:disabled) {
         cursor: pointer;
     }
+}
+
+:is(button, a, [role='button'], input, select, textarea):focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
 }

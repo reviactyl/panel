@@ -145,12 +145,14 @@ export default () => {
                 {error === 'connecting' ? (
                     <>
                         <Spinner className='not-lg:h-3 not-lg:w-4' size={'small'} />
-                        <p className='ml-2 text-sm text-red-100'>{t('connection-trouble')}</p>
+                        <p className='ml-2 text-sm text-danger-text'>{t('connection-trouble')}</p>
                     </>
                 ) : (
                     <>
-                        <FaTriangleExclamation className='text-red-400' />
-                        <p className='ml-2 text-sm text-white'>{error === 'token' ? t('connection-error') : error}</p>
+                        <FaTriangleExclamation className='text-red-700 dark:text-red-400' />
+                        <p className='ml-2 text-sm text-gray-100'>
+                            {error === 'token' ? t('connection-error') : error}
+                        </p>
                         {error === 'token' && uuid && (
                             <Button
                                 type='button'
