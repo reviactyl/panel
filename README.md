@@ -83,7 +83,7 @@ These people made Reviactyl project possible.
 
 ## License
 
-Reviactyl™, Copyright © Reviactyl and contributors. (Licensed under [MIT](https://github.com/reviactyl/panel/blob/develop/LICENSE.md))
+Reviactyl™, Copyright © Reviactyl and contributors. (Licensed under [MIT](https://github.com/reviactyl/panel/blob/develop/LICENSE))
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="https://www.shieldcn.dev/github/license/reviactyl/panel.svg?variant=ghost&amp;size=sm&amp;mode=dark"><img alt="License" src="https://www.shieldcn.dev/github/license/reviactyl/panel.svg?variant=ghost&amp;size=sm&amp;mode=light"></picture>
 
