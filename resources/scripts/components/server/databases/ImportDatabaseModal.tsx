@@ -166,7 +166,7 @@ export default ({ database, visible, onDismissed, onImport }: Props) => {
                             (file ? (
                                 <div className='rounded-ui border border-gray-800 bg-gray-900 p-4'>
                                     <div className='flex items-center'>
-                                        <FaFileLines className='h-6 w-6 shrink-0 text-reviactyl' />
+                                        <FaFileLines className='h-6 w-6 shrink-0 text-accent' />
                                         <div className='ml-4 min-w-0 flex-1'>
                                             <p className='truncate text-sm text-gray-100'>{file.name}</p>
                                             <p className='mt-0.5 text-xs text-gray-400'>{bytesToString(file.size)}</p>
@@ -225,7 +225,7 @@ export default ({ database, visible, onDismissed, onImport }: Props) => {
                                     <FaFileArrowUp className='h-8 w-8 text-gray-400' />
                                     <p className='mt-3 text-sm text-gray-100'>{t('import-file-drop')}</p>
                                     <p className='mt-1 text-xs text-gray-400'>{t('import-file-types')}</p>
-                                    {fileError && <p className='mt-3 text-xs text-red-200'>{fileError}</p>}
+                                    {fileError && <p className='mt-3 text-xs text-danger-text'>{fileError}</p>}
                                 </div>
                             ))}
                         <input
@@ -239,7 +239,7 @@ export default ({ database, visible, onDismissed, onImport }: Props) => {
                             }}
                         />
                         {!values.remote && picker.error && (
-                            <div role='alert' className='mt-2 text-sm text-red-200'>
+                            <div role='alert' className='mt-2 text-sm text-danger-text'>
                                 <p>{pickerT(`file-picker-${picker.error.stage}-error`)}</p>
                                 <button
                                     type='button'

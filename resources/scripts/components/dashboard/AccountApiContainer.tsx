@@ -122,7 +122,7 @@ export default () => {
                                       className='ml-4 p-2 text-sm'
                                       onClick={() => setDeleteIdentifier(key.identifier)}
                                   >
-                                      <FaTrash className='text-gray-400 transition-colors duration-150 hover:text-red-400' />
+                                      <FaTrash className='text-gray-400 transition-colors duration-150 hover:text-red-700 dark:text-red-400' />
                                   </button>
                               </GreyRowBox>
                           ))}

@@ -238,7 +238,7 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
                         <div className={`min-w-0 text-xs text-gray-300 flex items-center gap-1 overflow-x-auto`}>
                             {destinationBreadcrumbs.map((breadcrumb, index) => (
                                 <Fragment key={breadcrumb.path}>
-                                    {index > 0 && <span className={`text-gray-500`}>/</span>}
+                                    {index > 0 && <span className={`text-muted`}>/</span>}
                                     <button
                                         type={'button'}
                                         className={`text-gray-200 hover:text-gray-50 whitespace-nowrap`}
@@ -284,7 +284,7 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
                                                     )
                                                 }
                                             >
-                                                <FaFolder className={`text-yellow-300`} />
+                                                <FaFolder className={`text-yellow-700 dark:text-yellow-300`} />
                                                 <span className={`truncate text-left`}>{entry.name}</span>
                                             </button>
                                         ),
@@ -329,7 +329,7 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
 
                 <div className={`flex flex-wrap justify-end gap-3 pt-2`}>
                     {selfMoveBlocked && (
-                        <p className={`w-full text-sm text-red-300`}>{t('move-modal.self-move-blocked')}</p>
+                        <p className={`w-full text-sm text-danger-text`}>{t('move-modal.self-move-blocked')}</p>
                     )}
                     <Button
                         type={'button'}

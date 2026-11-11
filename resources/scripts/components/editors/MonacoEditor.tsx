@@ -4,6 +4,7 @@ import type { editor } from 'monaco-editor';
 import modes from '@/modes';
 import Spinner from '@/reviactyl/elements/Spinner';
 import styles from '@/reviactyl/elements/style.module.css';
+import useTheme from '@/plugins/useTheme';
 
 const Editor = lazy(() => import('@monaco-editor/react'));
 
@@ -101,6 +102,7 @@ export default ({
     const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
     const onContentSavedRef = useRef(onContentSaved);
     const [monacoLanguage, setMonacoLanguage] = useState('plaintext');
+    const { dark } = useTheme();
 
     useLayoutEffect(() => {
         onContentSavedRef.current = onContentSaved;
@@ -145,7 +147,29 @@ export default ({
                     height='100%'
                     language={monacoLanguage}
                     value={initialContent || ''}
-                    theme='vs-dark'
+                    theme={dark ? 'reviactyl-dark' : 'reviactyl-light'}
+                    beforeMount={(monaco) => {
+                        monaco.editor.defineTheme('reviactyl-light', {
+                            base: 'vs',
+                            inherit: true,
+                            rules: [],
+                            colors: {
+                                'editorLineNumber.foreground': '#71717a',
+                                'editorLineNumber.dimmedForeground': '#71717a',
+                                'editorLineNumber.activeForeground': '#3f3f46',
+                            },
+                        });
+                        monaco.editor.defineTheme('reviactyl-dark', {
+                            base: 'vs-dark',
+                            inherit: true,
+                            rules: [],
+                            colors: {
+                                'editorLineNumber.foreground': '#a1a1aa',
+                                'editorLineNumber.dimmedForeground': '#a1a1aa',
+                                'editorLineNumber.activeForeground': '#e4e4e7',
+                            },
+                        });
+                    }}
                     onMount={handleEditorDidMount}
                     onChange={(value) => onContentChanged?.(value ?? '')}
                     loading={<Spinner centered size={Spinner.Size.LARGE} />}

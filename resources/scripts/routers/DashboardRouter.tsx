@@ -177,7 +177,7 @@ function DashboardRouter() {
                         <div className='lg:hidden'>
                             <button
                                 onClick={() => setSidebarOpen(!isSidebarOpen)}
-                                className='text-gray-600 bg-gray-900 p-2 rounded-ui'
+                                className='text-muted bg-gray-900 p-2 rounded-ui'
                             >
                                 {isSidebarOpen ? <XIcon className='w-6 h-6' /> : <MenuIcon className='w-6 h-6' />}
                             </button>

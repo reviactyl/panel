@@ -7,6 +7,7 @@ import { indentUnit } from '@codemirror/language';
 import { languages } from '@codemirror/language-data';
 import modes from '@/modes';
 import styles from '@/reviactyl/elements/style.module.css';
+import useTheme from '@/plugins/useTheme';
 
 export interface Props {
     style?: React.CSSProperties;
@@ -60,6 +61,8 @@ export default ({
     const container = useRef<HTMLDivElement>(null);
     const editor = useRef<EditorView | null>(null);
     const language = useRef(new Compartment());
+    const theme = useRef(new Compartment());
+    const { dark, revision } = useTheme();
     const save = useRef(onContentSaved);
     save.current = onContentSaved;
     const change = useRef(onContentChanged);
@@ -83,6 +86,7 @@ export default ({
                     EditorState.tabSize.of(4),
                     indentUnit.of('    '),
                     language.current.of([]),
+                    theme.current.of([]),
                     Prec.highest(
                         keymap.of([
                             {
@@ -94,15 +98,6 @@ export default ({
                             },
                         ]),
                     ),
-                    EditorView.theme(
-                        {
-                            '&': { height: '100%', backgroundColor: 'transparent', color: '#cbccc6' },
-                            '.cm-scroller': { overflow: 'auto', fontSize: '12px', lineHeight: '1.375rem' },
-                            '.cm-content': { caretColor: '#cbccc6' },
-                            '.cm-gutters': { backgroundColor: 'transparent', border: 'none', color: '#707a8c' },
-                        },
-                        { dark: true },
-                    ),
                 ],
             }),
         });
@@ -113,6 +108,34 @@ export default ({
             view.destroy();
         };
     }, [initialContent]);
+
+    useEffect(() => {
+        editor.current?.dispatch({
+            effects: theme.current.reconfigure(
+                EditorView.theme(
+                    {
+                        '&': { height: '100%', backgroundColor: 'transparent', color: 'rgb(var(--color-100))' },
+                        '.cm-scroller': { overflow: 'auto', fontSize: '12px', lineHeight: '1.375rem' },
+                        '.cm-content, .cm-cursor': {
+                            caretColor: 'rgb(var(--color-100))',
+                            borderLeftColor: 'rgb(var(--color-100))',
+                        },
+                        '.cm-gutters': {
+                            backgroundColor: 'transparent',
+                            border: 'none',
+                            color: 'rgb(var(--text-muted))',
+                        },
+                        '.cm-activeLine, .cm-activeLineGutter': { backgroundColor: 'rgb(var(--color-primary) / 0.08)' },
+                        '.cm-selectionBackground, &.cm-focused .cm-selectionBackground': {
+                            backgroundColor: 'rgb(var(--color-primary) / 0.2)',
+                        },
+                        '.cm-panels': { backgroundColor: 'rgb(var(--color-900))', color: 'rgb(var(--color-100))' },
+                    },
+                    { dark },
+                ),
+            ),
+        });
+    }, [dark, revision, initialContent]);
 
     useEffect(() => {
         if (filename !== undefined) onModeChanged(findModeByFilename(filename)?.mime || 'text/plain');

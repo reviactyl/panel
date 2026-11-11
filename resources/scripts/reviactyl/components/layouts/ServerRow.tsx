@@ -14,11 +14,11 @@ import Title from '@/reviactyl/ui/Title';
 const isAlarmState = (current: number, limit: number): boolean => limit > 0 && current / mbToBytes(limit) >= 0.9;
 
 const Icon = memo(({ alarm, children }: { alarm: boolean; children: React.ReactNode }) => (
-    <div className={alarm ? 'text-danger' : 'text-gray-200'}>{children}</div>
+    <div className={alarm ? 'text-danger-text' : 'text-gray-200'}>{children}</div>
 ));
 
 const IconDescription = ({ alarm, children }: { alarm: boolean; children: React.ReactNode }) => (
-    <p className={`ml-2 text-xs ${alarm ? 'text-white' : 'text-gray-400'}`}>{children}</p>
+    <p className={`ml-2 text-xs ${alarm ? 'text-danger-text' : 'text-gray-400'}`}>{children}</p>
 );
 
 export default ({
@@ -114,7 +114,7 @@ export default ({
                                             ? {
                                                   backgroundColor: `${server.category.color || '#3b82f6'}20`,
                                                   borderColor: server.category.color || '#3b82f6',
-                                                  color: server.category.color || '#3b82f6',
+                                                  color: `color-mix(in srgb, ${server.category.color || '#3b82f6'} 25%, rgb(var(--color-100)))`,
                                               }
                                             : {
                                                   backgroundColor: '#334155',
@@ -155,7 +155,7 @@ export default ({
                         isSuspended ? (
                             <div className='flex-1 text-center'>
                                 <span
-                                    className={`text-danger font-medium bg-danger/20 backdrop-blur-sm-xs border border-danger/80 rounded-ui px-2 py-1 text-xs`}
+                                    className={`text-danger-text font-medium bg-danger/20 backdrop-blur-sm-xs border border-danger/80 rounded-ui px-2 py-1 text-xs`}
                                 >
                                     {server.status === 'suspended'
                                         ? t('server.suspended')
@@ -165,7 +165,7 @@ export default ({
                         ) : server.isNodeUnderMaintenance ? (
                             <div className='flex-1 text-center'>
                                 <span
-                                    className={`text-yellow-400 font-medium backdrop-blur-sm-xs bg-yellow-500/50 border border-yellow-500/70 rounded-ui px-2 py-1 text-xs`}
+                                    className={`text-yellow-700 dark:text-yellow-400 font-medium backdrop-blur-sm-xs bg-yellow-500/50 border border-yellow-500/70 rounded-ui px-2 py-1 text-xs`}
                                 >
                                     {t('server.maintenance')}
                                 </span>
@@ -173,7 +173,7 @@ export default ({
                         ) : server.isTransferring || server.status ? (
                             <div className='flex-1 text-center'>
                                 <span
-                                    className={`text-yellow-400 font-medium backdrop-blur-sm-xs bg-gray-600/50 border border-gray-500/70 rounded-ui px-2 py-1 text-xs`}
+                                    className={`text-yellow-700 dark:text-yellow-400 font-medium backdrop-blur-sm-xs bg-gray-600/50 border border-gray-500/70 rounded-ui px-2 py-1 text-xs`}
                                 >
                                     {server.isTransferring
                                         ? t('server.transferring')

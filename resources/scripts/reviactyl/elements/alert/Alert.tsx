@@ -21,7 +21,7 @@ export default ({ type, className, children }: AlertProps) => {
             )}
         >
             {type === 'danger' ? (
-                <FaTriangleExclamation className={'w-5 h-5 text-red-400 mr-2'} />
+                <FaTriangleExclamation className={'w-5 h-5 text-red-700 dark:text-red-400 mr-2'} />
             ) : (
                 <FaCircleInfo className={'w-5 h-5 text-yellow-500 mr-2'} />
             )}

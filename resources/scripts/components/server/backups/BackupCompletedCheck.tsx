@@ -6,7 +6,7 @@ export default () => {
     const reduceMotion = useReducedMotion();
 
     return (
-        <svg viewBox='0 0 24 24' className='h-4 w-4 text-success' fill='none' aria-hidden>
+        <svg viewBox='0 0 24 24' className='h-4 w-4 text-success-text' fill='none' aria-hidden>
             <motion.circle
                 cx={12}
                 cy={12}

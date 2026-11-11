@@ -120,7 +120,7 @@ export default ({
                                             ? {
                                                   backgroundColor: `color-mix(in srgb, ${server.category.color || '#3b82f6'} 20%, transparent)`,
                                                   borderColor: `color-mix(in srgb, ${server.category.color || '#3b82f6'} 25%, transparent)`,
-                                                  color: server.category.color || '#3b82f6',
+                                                  color: `color-mix(in srgb, ${server.category.color || '#3b82f6'} 25%, rgb(var(--color-100)))`,
                                               }
                                             : {
                                                   backgroundColor: 'var(--color-gray-800)',
@@ -139,13 +139,13 @@ export default ({
                             className={`py-1 px-3 text-xs font-medium rounded-ui
                             ${
                                 stats?.status === 'offline'
-                                    ? 'bg-danger/20 text-danger border border-danger/30'
+                                    ? 'bg-danger/20 text-danger-text border border-danger/30'
                                     : stats?.status === 'running'
-                                      ? 'bg-success/20 text-success border border-success/30'
+                                      ? 'bg-success/20 text-success-text border border-success/30'
                                       : stats?.status === 'starting'
-                                        ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                                        ? 'bg-amber-500/20 text-amber-700 dark:text-amber-400 border border-amber-500/30'
                                         : stats?.status === 'stopping'
-                                          ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30'
+                                          ? 'bg-orange-500/20 text-orange-700 dark:text-orange-400 border border-orange-500/30'
                                           : ''
                             }
                         `}
@@ -172,7 +172,7 @@ export default ({
                             isSuspended ? (
                                 <React.Fragment>
                                     <StatBlock className='bg-danger/20 backdrop-blur-sm-xs border border-danger/80'>
-                                        <p className='text-danger font-medium'>
+                                        <p className='text-danger-text font-medium'>
                                             {server.status === 'suspended'
                                                 ? t('server.suspended')
                                                 : t('server.connection-error')}
@@ -182,19 +182,22 @@ export default ({
                             ) : server.isNodeUnderMaintenance ? (
                                 <React.Fragment>
                                     <StatBlock className='backdrop-blur-xs bg-yellow-500/50 border border-yellow-500/70'>
-                                        <span className='w-4 sm:w-5 text-yellow-400'>
+                                        <span className='w-4 sm:w-5 text-yellow-700 dark:text-yellow-400'>
                                             <FaTriangleExclamation />
                                         </span>
-                                        <p className='text-yellow-400 font-medium'> {t('server.maintenance')}</p>
+                                        <p className='text-yellow-700 dark:text-yellow-400 font-medium'>
+                                            {' '}
+                                            {t('server.maintenance')}
+                                        </p>
                                     </StatBlock>
                                 </React.Fragment>
                             ) : server.isTransferring || server.status ? (
                                 <React.Fragment>
                                     <StatBlock className='backdrop-blur-xs bg-yellow-500/50 border border-yellow-500/70'>
-                                        <span className='w-4 sm:w-5 text-yellow-400'>
+                                        <span className='w-4 sm:w-5 text-yellow-700 dark:text-yellow-400'>
                                             <FaTriangleExclamation />
                                         </span>
-                                        <p className='text-yellow-400 font-medium'>
+                                        <p className='text-yellow-700 dark:text-yellow-400 font-medium'>
                                             {' '}
                                             {server.isTransferring
                                                 ? t('server.transferring')
@@ -229,7 +232,7 @@ export default ({
                                     <span className='w-4 sm:w-5 text-gray-300'>
                                         <FaMicrochip />
                                     </span>
-                                    <p className={alarms.cpu ? 'text-danger-50' : ''}>
+                                    <p className={alarms.cpu ? 'text-danger-text' : ''}>
                                         {stats.cpuUsagePercent.toFixed(2)}%
                                     </p>
                                     <span className='text-xs sm:text-sm text-gray-300'>/ {cpuLimit}</span>
@@ -238,7 +241,7 @@ export default ({
                                     <span className='w-4 sm:w-5 text-gray-300'>
                                         <FaMemory />
                                     </span>
-                                    <p className={alarms.memory ? 'text-danger-50' : ''}>
+                                    <p className={alarms.memory ? 'text-danger-text' : ''}>
                                         {bytesToString(stats.memoryUsageInBytes)}
                                     </p>
                                     <span className='text-xs sm:text-sm text-gray-300'>/ {memoryLimit}</span>
@@ -247,7 +250,7 @@ export default ({
                                     <span className='w-4 sm:w-5 text-gray-300'>
                                         <FaFloppyDisk />
                                     </span>
-                                    <p className={alarms.disk ? 'text-danger-50' : ''}>
+                                    <p className={alarms.disk ? 'text-danger-text' : ''}>
                                         {bytesToString(stats.diskUsageInBytes)}
                                     </p>
                                     <span className='text-xs sm:text-sm text-gray-300'>/ {diskLimit}</span>

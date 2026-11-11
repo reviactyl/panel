@@ -61,7 +61,7 @@ export default () => {
                         transition={{ duration: 0.15, ease: 'easeIn' }}
                     >
                         <div
-                            className='h-full bg-blue-600 transition-[width] duration-250 ease-in-out shadow-[0_-2px_10px_2px_rgb(var(--color-primary)/0.9)]'
+                            className='h-full bg-reviactyl transition-[width] duration-250 ease-in-out shadow-[0_-2px_10px_2px_rgb(var(--color-primary)/0.9)]'
                             style={{ width: progress === undefined ? '100%' : `${progress}%` }}
                         />
                     </motion.div>

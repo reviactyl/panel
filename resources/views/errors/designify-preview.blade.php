@@ -29,6 +29,7 @@
                 } else {
                     document.documentElement.style.setProperty('--designify-error-color', defaultColors[status]);
                 }
+                window.dispatchEvent(new Event('designifychange'));
                 if (image) {
                     const hasImage = typeof settings.image === 'string' && settings.image.length > 0;
                     if (hasImage) {

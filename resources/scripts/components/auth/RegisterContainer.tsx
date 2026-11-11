@@ -211,7 +211,7 @@ const RegisterContainer = () => {
                         />
                         <button
                             type={'button'}
-                            className='absolute top-9 right-1.5 p-1 py-2 text-gray-500'
+                            className='absolute top-9 right-1.5 p-1 py-2 text-muted'
                             onClick={() => setShow(!show)}
                         >
                             {show ? <EyeOffIcon className='h-5 w-5' /> : <EyeIcon className='h-5 w-5' />}
@@ -264,7 +264,7 @@ const RegisterContainer = () => {
                     <div className='mt-4 text-center'>
                         <Link
                             to={'/auth/login'}
-                            className='text-sm tracking-wide text-reviactyl/80 no-underline hover:text-reviactyl/50'
+                            className='text-sm tracking-wide text-accent no-underline hover:underline'
                         >
                             Already have an account? Login
                         </Link>

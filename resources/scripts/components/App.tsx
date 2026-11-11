@@ -113,6 +113,7 @@ const DesignifyPreviewBridge = () => {
             } else {
                 root.style.removeProperty('--font-family');
             }
+            window.dispatchEvent(new Event('designifychange'));
         };
 
         window.addEventListener('message', handlePreviewUpdate);

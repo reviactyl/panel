@@ -98,7 +98,7 @@ export function RecycleBinRow({ grid, onOpen }: { grid: boolean; files: FileObje
                         aria-label={t('title')}
                         aria-expanded={visible}
                         onClick={onClick}
-                        className='cursor-pointer rounded-ui px-4 py-2 hover:text-white'
+                        className='cursor-pointer rounded-ui px-4 py-2 hover:text-accent'
                     >
                         <FaEllipsis />
                     </button>
@@ -218,7 +218,7 @@ function BinFileRow({
                         aria-expanded={visible}
                         aria-controls={menuId}
                         onClick={onClick}
-                        className='cursor-pointer rounded-ui px-4 py-2 hover:text-white focus-visible:outline-2 focus-visible:outline-primary-400'
+                        className='cursor-pointer rounded-ui px-4 py-2 hover:text-accent focus-visible:outline-2 focus-visible:outline-primary-400'
                     >
                         <FaEllipsis />
                     </button>
@@ -523,7 +523,7 @@ export default function RecycleBin() {
             </Card>
             <Card className='rounded-t-none! p-3!'>
                 {(failure || error || browseError) && (
-                    <p role='alert' className='mb-4 text-red-200'>
+                    <p role='alert' className='mb-4 text-danger-text'>
                         {failure || httpErrorToHuman(error || browseError)}
                     </p>
                 )}

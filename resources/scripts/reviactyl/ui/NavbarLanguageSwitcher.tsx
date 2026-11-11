@@ -97,10 +97,10 @@ const NavbarLanguageSwitcher = () => {
                     <button
                         key={code}
                         type='button'
-                        className={`flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors hover:text-reviactyl rtl:text-right ${
+                        className={`flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors hover:text-accent rtl:text-right ${
                             code === selectedLang
-                                ? 'bg-[rgb(var(--color-primary)/0.2)] text-[rgb(var(--color-primary)/0.1)]'
-                                : 'bg-transparent hover:bg-[rgb(var(--color-primary)/0.2)]'
+                                ? 'bg-primary-500/10 text-accent'
+                                : 'bg-transparent text-gray-200 hover:bg-primary-500/10'
                         }`}
                         onClick={() => handleSelect(code)}
                     >

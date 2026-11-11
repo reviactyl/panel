@@ -113,7 +113,7 @@ export default () => {
                                         <p className='font-bold capitalize'>{provider}</p>
                                         <div className='mt-1 text-xs text-gray-400'>
                                             {isLinked ? (
-                                                <span className='flex items-center text-green-400'>
+                                                <span className='flex items-center text-green-700 dark:text-green-400'>
                                                     <FaCheckCircle className='mr-1' />
                                                     {t('overview.social.status.connected', {
                                                         date: format(login.updatedAt, t('overview.social.date_format')),

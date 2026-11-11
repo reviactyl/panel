@@ -259,7 +259,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                         aria-label={`${t('strings:action')}: ${file.name}`}
                         aria-expanded={visible}
                         aria-controls={menuId}
-                        className='rounded-ui px-4 py-2 hover:text-white focus-visible:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400'
+                        className='rounded-ui px-4 py-2 hover:text-accent focus-visible:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400'
                         onClick={(event) => {
                             archiveHovered.current = false;
                             setShowFormatMenu(false);

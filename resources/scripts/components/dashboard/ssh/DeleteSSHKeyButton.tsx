@@ -41,7 +41,9 @@ export default ({ name, fingerprint }: { name: string; fingerprint: string }) =>
                 className='ml-4 p-2 text-sm'
                 onClick={() => setVisible(true)}
             >
-                <FaTrash className={'text-gray-400 hover:text-red-400 transition-colors duration-150'} />
+                <FaTrash
+                    className={'text-gray-400 hover:text-red-700 dark:text-red-400 transition-colors duration-150'}
+                />
             </button>
         </>
     );

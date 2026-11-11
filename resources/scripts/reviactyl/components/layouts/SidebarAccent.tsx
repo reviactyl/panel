@@ -32,7 +32,7 @@ const NavbarContainer = ({ children, className = '' }: React.HTMLAttributes<HTML
 
 export const SideNavigation = ({ children, className = '' }: React.HTMLAttributes<HTMLDivElement>) => (
     <div
-        className={`-mt-1 flex flex-col gap-1 pb-4 [&_.label]:mx-2 [&_.label]:flex [&_.label]:items-center [&_.label]:px-3 [&_.label]:pt-2 [&_.label]:pb-1 [&_.label]:text-sm [&_.label]:font-semibold [&_.label]:text-gray-400 [&_.label]:transition-all [&_.label]:duration-300 [&_a]:mx-2 [&_a]:flex [&_a]:items-center [&_a]:rounded-ui [&_a]:px-5 [&_a]:py-2 [&_a]:text-sm [&_a]:font-medium [&_a]:text-gray-200 [&_a]:transition-all [&_a]:duration-300 [&_a:hover]:bg-gray-700/20 [&_a:focus]:bg-gray-700/20 [&_a:focus]:text-reviactyl [&_a.active]:bg-gray-700/20 [&_a.active]:text-reviactyl ${className}`}
+        className={`-mt-1 flex flex-col gap-1 pb-4 [&_.label]:mx-2 [&_.label]:flex [&_.label]:items-center [&_.label]:px-3 [&_.label]:pt-2 [&_.label]:pb-1 [&_.label]:text-sm [&_.label]:font-semibold [&_.label]:text-gray-400 [&_.label]:transition-all [&_.label]:duration-300 [&_a]:mx-2 [&_a]:flex [&_a]:items-center [&_a]:rounded-ui [&_a]:px-5 [&_a]:py-2 [&_a]:text-sm [&_a]:font-medium [&_a]:text-gray-200 [&_a]:transition-all [&_a]:duration-300 [&_a:hover]:bg-gray-700/20 [&_a:focus]:bg-primary-500/10 [&_a:focus]:text-accent [&_a.active]:bg-primary-500/10 [&_a.active]:text-accent ${className}`}
     >
         {children}
     </div>
@@ -43,7 +43,7 @@ export const SidebarAccent = React.forwardRef<HTMLDivElement, SidebarProps>(
         return (
             <div
                 ref={ref}
-                className={`w-56.25 self-start flex-col bg-gray-900 text-white transition-transform duration-300 ease-in-out 2xl:w-64 lg:fixed lg:top-[calc(4rem+var(--subuser-preview-offset,0px))] lg:left-0 lg:z-40 lg:flex lg:h-[calc(100dvh-4rem-var(--subuser-preview-offset,0px))] lg:overflow-y-auto lg:bg-transparent ${
+                className={`w-56.25 self-start flex-col bg-gray-900 text-gray-100 transition-transform duration-300 ease-in-out 2xl:w-64 lg:fixed lg:top-[calc(4rem+var(--subuser-preview-offset,0px))] lg:left-0 lg:z-40 lg:flex lg:h-[calc(100dvh-4rem-var(--subuser-preview-offset,0px))] lg:overflow-y-auto lg:bg-transparent ${
                     isOpen
                         ? 'fixed top-[calc(4rem+var(--subuser-preview-offset,0px))] left-0 z-40 flex h-[calc(100dvh-4rem-var(--subuser-preview-offset,0px))] overflow-y-auto'
                         : 'hidden'
