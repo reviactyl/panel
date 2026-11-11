@@ -10,7 +10,10 @@ import { preloadAppRoute } from '@/routers/loadRouter';
 
 export default async function completeLogin(response: LoginResponse, navigate: NavigateFunction): Promise<void> {
     if (!response.complete) return;
-    const destination = new URL(response.intended || '/', window.location.href);
+    const destination = new URL(
+        response.twoFactorRequired ? '/account' : response.intended || '/',
+        window.location.href,
+    );
     const internal =
         destination.origin === window.location.origin &&
         /^\/(?:$|account(?:\/|$)|server\/|passkey(?:\/|$)|status\/)/.test(destination.pathname);
@@ -40,5 +43,8 @@ export default async function completeLogin(response: LoginResponse, navigate: N
         });
     }
     store.getActions().user.setUserData(rawUserToUserData(response.user));
-    navigate(destination.pathname + destination.search + destination.hash, { replace: true });
+    navigate(destination.pathname + destination.search + destination.hash, {
+        replace: true,
+        ...(response.twoFactorRequired ? { state: { twoFactorRedirect: true } } : {}),
+    });
 }

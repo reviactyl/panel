@@ -125,6 +125,22 @@ describe('login completion', () => {
         expect(navigate).toHaveBeenCalledWith('/server/abc/files?tab=one#/world', { replace: true });
         expect(mocks.changeLanguage).toHaveBeenCalledWith('fr');
     });
+    it('opens required two-factor setup with its notice instead of the intended server page', async () => {
+        const navigate = vi.fn();
+        await act(async () =>
+            completeLogin(
+                {
+                    complete: true,
+                    user: { ...user, use_totp: false },
+                    intended: '/server/abc/files',
+                    twoFactorRequired: true,
+                },
+                navigate,
+            ),
+        );
+        expect(mocks.preload).toHaveBeenCalledWith('/account');
+        expect(navigate).toHaveBeenCalledWith('/account', { replace: true, state: { twoFactorRedirect: true } });
+    });
     it('does not authenticate or navigate while a checkpoint is still required', async () => {
         const navigate = vi.fn();
         await completeLogin({ complete: false, user }, navigate);

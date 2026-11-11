@@ -13,6 +13,7 @@ export default (token: string, code: string, recoveryToken?: string): Promise<Lo
                     complete: response.data.data.complete,
                     user: response.data.data.user,
                     csrfToken: response.data.data.csrf_token,
+                    twoFactorRequired: response.data.data.two_factor_required,
                     intended: response.data.data.intended || undefined,
                 }),
             )

@@ -6,6 +6,7 @@ use App\Events\Auth\DirectLogin;
 use App\Exceptions\DisplayException;
 use App\Facades\Activity;
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\RequireTwoFactorAuthentication;
 use App\Models\User;
 use App\Support\LoginDestination;
 use Carbon\CarbonImmutable;
@@ -84,10 +85,14 @@ abstract class AbstractLoginController extends Controller
 
         Event::dispatch(new DirectLogin($user, true));
 
+        $destination = LoginDestination::pull($request);
+        $twoFactorRequired = RequireTwoFactorAuthentication::requiresSetup($user);
+
         return new JsonResponse([
             'data' => [
                 'complete' => true,
-                'intended' => LoginDestination::pull($request),
+                'intended' => $twoFactorRequired ? '/account' : $destination,
+                'two_factor_required' => $twoFactorRequired,
                 'user' => $user->toVueObject(),
                 'csrf_token' => $request->session()->token(),
             ],

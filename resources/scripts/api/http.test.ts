@@ -1,5 +1,5 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
-import { AxiosError, AxiosHeaders } from 'axios';
+import { AxiosError, AxiosHeaders, CanceledError } from 'axios';
 import http, { resetHttpSession, withHttpSessionTransition } from './http';
 
 const progress = vi.hoisted(() => ({ startContinuous: vi.fn(), setComplete: vi.fn() }));
@@ -184,3 +184,59 @@ describe('logout request ordering', () => {
         await expect(queued).resolves.toMatchObject({ status: 200 });
     });
 });
+
+it.each([300000, 0])(
+    'bounds the session drain and cancels long work with timeout %s before logout',
+    async (timeout) => {
+        vi.useFakeTimers();
+        try {
+            let issued!: () => void;
+            const entered = new Promise<void>((resolve) => {
+                issued = resolve;
+            });
+            const owner = new AbortController();
+            let signal: AbortSignal | undefined;
+            const request = http.post(
+                '/api/client/servers/test/files/decompress',
+                {},
+                {
+                    timeout,
+                    signal: owner.signal,
+                    adapter: (config) =>
+                        new Promise((_, reject) => {
+                            signal = config.signal as AbortSignal;
+                            signal.addEventListener('abort', () =>
+                                reject(new CanceledError('Session changed', config)),
+                            );
+                            issued();
+                        }),
+                },
+            );
+            const cancelled = expect(request).rejects.toMatchObject({ code: 'ERR_CANCELED' });
+            await entered;
+            const logout = vi.fn();
+            const changing = withHttpSessionTransition(async () => {
+                expect(signal?.aborted).toBe(true);
+                await http.post(
+                    '/auth/logout',
+                    {},
+                    {
+                        adapter: async (config) => {
+                            logout();
+                            return { config, data: {}, status: 200, statusText: 'OK', headers: {} };
+                        },
+                    },
+                );
+            });
+            await vi.advanceTimersByTimeAsync(499);
+            expect(logout).not.toHaveBeenCalled();
+            await vi.advanceTimersByTimeAsync(1);
+            await changing;
+            await cancelled;
+            expect(logout).toHaveBeenCalledOnce();
+            expect(owner.signal.aborted).toBe(false);
+        } finally {
+            vi.useRealTimers();
+        }
+    },
+);

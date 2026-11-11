@@ -39,6 +39,7 @@ export interface LoginResponse {
     complete: boolean;
     user?: PanelUser;
     csrfToken?: string;
+    twoFactorRequired?: boolean;
     intended?: string;
     confirmationToken?: string;
 }
@@ -85,6 +86,7 @@ export default ({ username, password, captchaToken, captchaProvider }: LoginData
                     complete: response.data.data.complete,
                     user: response.data.data.user,
                     csrfToken: response.data.data.csrf_token,
+                    twoFactorRequired: response.data.data.two_factor_required,
                     intended: response.data.data.intended || undefined,
                     confirmationToken: response.data.data.confirmation_token || undefined,
                 });

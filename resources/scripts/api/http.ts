@@ -16,26 +16,35 @@ let sessionRequests = new AbortController();
 let transition: Promise<void> | undefined;
 const activeRequests = new Set<Promise<void>>();
 
+export const getHttpSessionSignal = () => sessionRequests.signal;
+
+export const resetHttpSession = () => {
+    sessionRequests.abort();
+    sessionRequests = new AbortController();
+};
+
 export const withHttpSessionTransition = async <T>(callback: () => Promise<T>): Promise<T> => {
     if (transition) throw new Error('A session transition is already in progress.');
     let resume!: () => void;
     transition = new Promise<void>((resolve) => {
         resume = resolve;
     });
+    let timeout: ReturnType<typeof setTimeout> | undefined;
     try {
-        await Promise.all([...activeRequests]);
+        const drained = await Promise.race([
+            Promise.all([...activeRequests]).then(() => true),
+            new Promise<false>((resolve) => {
+                timeout = setTimeout(() => resolve(false), 500);
+            }),
+        ]);
+        clearTimeout(timeout);
+        if (!drained) resetHttpSession();
         return await callback();
     } finally {
+        clearTimeout(timeout);
         transition = undefined;
         resume();
     }
-};
-
-export const getHttpSessionSignal = () => sessionRequests.signal;
-
-export const resetHttpSession = () => {
-    sessionRequests.abort();
-    sessionRequests = new AbortController();
 };
 
 const isBackgroundRequest = (url?: string): boolean =>
@@ -47,7 +56,7 @@ const isBackgroundRequest = (url?: string): boolean =>
 
 http.interceptors.request.use((req) => {
     const sessionSignal = sessionRequests.signal;
-    req.signal ??= sessionSignal;
+    req.signal = req.signal ? AbortSignal.any([sessionSignal, req.signal as AbortSignal]) : sessionSignal;
     const adapter = axios.getAdapter(req.adapter ?? http.defaults.adapter);
     req.adapter = async (config) => {
         const changesSession =
