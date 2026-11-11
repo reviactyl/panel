@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import useSWR from 'swr';
 import { useTranslation } from 'react-i18next';
 import http from '@/api/http';
@@ -24,35 +24,42 @@ const inputClassName =
 const AccountNotificationSettings = () => {
     const { t } = useTranslation('notifications');
     const { data, error, mutate } = useSWR<NotificationSettings>(endpoint, fetcher);
-    const [busy, setBusy] = useState<string | null>(null);
-    const [updateError, setUpdateError] = useState(false);
+    const saving = useRef(false);
+    const [busy, setBusy] = useState(false);
+    const [failedChange, setFailedChange] = useState<NotificationCategory | null>(null);
 
-    const updateCategory = async (category: NotificationCategory, channel: 'database' | 'email') => {
-        const key = `${category.category}:${channel}`;
-        const nextCategory = { ...category, [channel]: !category[channel] };
-        if (!data || busy) return;
+    const saveCategory = async (category: NotificationCategory) => {
+        if (!data || saving.current) return;
 
-        setBusy(key);
-        setUpdateError(false);
-        const previous = data;
-        await mutate(
-            {
-                ...data,
-                categories: data.categories.map((item) => (item.category === category.category ? nextCategory : item)),
-            },
-            false,
-        );
+        saving.current = true;
+        setBusy(true);
+        setFailedChange(null);
+        const optimisticData = {
+            ...data,
+            categories: data.categories.map((item) => (item.category === category.category ? category : item)),
+        };
         try {
-            await http.put(endpoint, {
-                category: nextCategory.category,
-                database: nextCategory.database,
-                email: nextCategory.email,
-            });
+            await mutate(
+                async () => {
+                    const { data: saved } = await http.put(endpoint, {
+                        category: category.category,
+                        database: category.database,
+                        email: category.email,
+                    });
+                    return {
+                        ...data,
+                        categories: data.categories.map((item) =>
+                            item.category === category.category ? { ...item, ...saved } : item,
+                        ),
+                    };
+                },
+                { optimisticData, rollbackOnError: true, revalidate: false },
+            );
         } catch {
-            await mutate(previous, false);
-            setUpdateError(true);
+            setFailedChange(category);
         } finally {
-            setBusy(null);
+            saving.current = false;
+            setBusy(false);
         }
     };
 
@@ -77,17 +84,10 @@ const AccountNotificationSettings = () => {
 
     return (
         <div className='space-y-4'>
-            {updateError && (
+            {failedChange && (
                 <p role='alert' className='text-sm text-danger'>
                     {t('error')}{' '}
-                    <button
-                        type='button'
-                        className='underline'
-                        onClick={() => {
-                            setUpdateError(false);
-                            void mutate();
-                        }}
-                    >
+                    <button type='button' className='underline' onClick={() => void saveCategory(failedChange)}>
                         {t('retry')}
                     </button>
                 </p>
@@ -118,7 +118,7 @@ const AccountNotificationSettings = () => {
                                     className={inputClassName}
                                     checked={category.database}
                                     disabled={!!busy}
-                                    onChange={() => void updateCategory(category, 'database')}
+                                    onChange={() => void saveCategory({ ...category, database: !category.database })}
                                 />
                             </label>
                             <label className='flex justify-center'>
@@ -130,7 +130,7 @@ const AccountNotificationSettings = () => {
                                     className={inputClassName}
                                     checked={category.email}
                                     disabled={!category.emailAvailable || !!busy}
-                                    onChange={() => void updateCategory(category, 'email')}
+                                    onChange={() => void saveCategory({ ...category, email: !category.email })}
                                 />
                             </label>
                         </div>

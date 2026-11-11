@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Api\Client;
 
 use App\Services\Notifications\NotificationPreferenceService;
+use Dedoc\Scramble\Attributes\Endpoint;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
+#[Group('Notification settings')]
 class NotificationSettingsController extends ClientApiController
 {
     public function __construct(private NotificationPreferenceService $preferences)
@@ -14,6 +17,7 @@ class NotificationSettingsController extends ClientApiController
         parent::__construct();
     }
 
+    #[Endpoint(title: 'View account notification preferences')]
     public function index(Request $request): JsonResponse
     {
         return new JsonResponse([
@@ -21,6 +25,7 @@ class NotificationSettingsController extends ClientApiController
         ]);
     }
 
+    #[Endpoint(title: 'Update account notification preferences')]
     public function update(Request $request): JsonResponse
     {
         $data = $request->validate([

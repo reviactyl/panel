@@ -13,6 +13,7 @@ use App\Notifications\ExtensionFailed;
 use App\Notifications\ServerInstalled;
 use App\Services\Extensions\ExtensionFailureReporter;
 use App\Services\Notifications\NotificationService;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 
@@ -76,6 +77,39 @@ class NotificationControllerTest extends ClientApiIntegrationTestCase
         Notification::fake();
         $user->notify(new AddedToServer(['user' => $user->username, 'name' => 'Example', 'uuidShort' => 'abc123']));
         Notification::assertNothingSent();
+    }
+
+    public function test_migration_merges_active_backup_subscriptions_without_losing_email_or_enabling_inactive_email(): void
+    {
+        $server = $this->createServerModel();
+        $otherServer = $this->createServerModel();
+        $emailUser = $server->user;
+        $panelUser = User::factory()->create();
+        $disabledUser = User::factory()->create();
+        $newUser = User::factory()->create();
+        DB::table('backup_notification_preferences')->insert([
+            ['user_id' => $emailUser->id, 'server_id' => $server->id, 'manual' => true, 'scheduled' => false, 'email' => true],
+            ['user_id' => $emailUser->id, 'server_id' => $otherServer->id, 'manual' => false, 'scheduled' => false, 'email' => false],
+            ['user_id' => $panelUser->id, 'server_id' => $server->id, 'manual' => false, 'scheduled' => true, 'email' => false],
+            ['user_id' => $panelUser->id, 'server_id' => $otherServer->id, 'manual' => false, 'scheduled' => false, 'email' => true],
+            ['user_id' => $disabledUser->id, 'server_id' => $server->id, 'manual' => false, 'scheduled' => false, 'email' => true],
+        ]);
+        $migration = require database_path('migrations/2026_11_11_120000_add_notification_preferences.php');
+        $migration->down();
+        $migration->up();
+        foreach (['backups', 'backup-failures'] as $category) {
+            foreach ([[$emailUser, true, true], [$panelUser, true, false], [$disabledUser, false, false]] as [$user, $panel, $email]) {
+                $this->assertDatabaseHas('notification_preferences', [
+                    'user_id' => $user->id, 'category' => $category, 'database' => $panel, 'email' => $email,
+                ]);
+            }
+        }
+        $this->assertDatabaseMissing('notification_preferences', ['user_id' => $newUser->id]);
+        $this->actingAs($emailUser)->getJson('/api/client/account/notifications')
+            ->assertJsonPath('categories.3.email', true)->assertJsonPath('categories.4.email', true);
+        $migration->down();
+        $migration->up();
+        $this->assertDatabaseCount('notification_preferences', 6);
     }
 
     public function test_backup_completion_notifies_the_owner_once_and_includes_failure(): void
