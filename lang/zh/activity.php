@@ -90,6 +90,9 @@ return [
             'export' => '已导出数据库 :name',
         ],
         'file' => [
+            'recycle_one' => '移至回收站 · :directory:files.0',
+            'recycle_other' => '移至回收站 · :count · :directory',
+            'restore' => '还原 · :id',
             'compress_one' => '压缩了 :directory:files.0',
             'compress_other' => '在 :directory 目录中压缩了 :count 个文件',
             'read' => '查看了 :file 的内容',

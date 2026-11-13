@@ -1,3 +1,6 @@
+import { withHttpSessionTransition } from '@/api/http';
+import { preloadAppRoute } from '@/routers/loadRouter';
+import completeLogin from '@/api/auth/completeLogin';
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import login from '@/api/auth/login';
@@ -24,7 +27,18 @@ interface Values {
 }
 
 function LoginContainer() {
-    const { t } = useTranslation('auth');
+    const { t, i18n } = useTranslation('auth');
+    const destinationPrepared = useRef(false);
+    const prepareDestination = () => {
+        if (destinationPrepared.current) return;
+        destinationPrepared.current = true;
+        void Promise.all([
+            preloadAppRoute('/'),
+            i18n.loadNamespaces(['dashboard/account', 'dashboard/index', 'routes', 'notifications', 'server/users']),
+        ]).catch(() => {
+            destinationPrepared.current = false;
+        });
+    };
     const primaryButtonClass = 'w-full !py-3';
     const ref = useRef<Reaptcha>(null);
     const turnstileRef = useRef<TurnstileHandle>(null);
@@ -95,25 +109,25 @@ function LoginContainer() {
     }, []);
 
     const performLogin = (values: Values, captchaToken: string, setSubmitting: (isSubmitting: boolean) => void) => {
-        login({ ...values, captchaToken, captchaProvider: provider })
-            .then((response) => {
+        withHttpSessionTransition(() =>
+            login({ ...values, captchaToken, captchaProvider: provider }).then(async (response) => {
                 if (response.complete) {
-                    window.location.href = response.intended || '/';
+                    await completeLogin(response, navigate);
                     return;
                 }
 
                 navigate('/auth/login/checkpoint', { state: { token: response.confirmationToken } });
-            })
-            .catch((error) => {
-                console.error(error);
+            }),
+        ).catch((error) => {
+            console.error(error);
 
-                setToken('');
-                if (ref.current) ref.current.reset();
-                turnstileRef.current?.reset();
+            setToken('');
+            if (ref.current) ref.current.reset();
+            turnstileRef.current?.reset();
 
-                setSubmitting(false);
-                clearAndAddHttpError({ error });
-            });
+            setSubmitting(false);
+            clearAndAddHttpError({ error });
+        });
     };
 
     const performPasskeyLogin = (username: string, setSubmitting: (isSubmitting: boolean) => void) => {
@@ -127,21 +141,21 @@ function LoginContainer() {
         setIsPasskeySubmitting(true);
         setSubmitting(true);
 
-        loginWithPasskey(username)
-            .then((response) => {
+        withHttpSessionTransition(() =>
+            loginWithPasskey(username).then(async (response) => {
                 if (response.complete) {
-                    window.location.href = response.intended || '/';
+                    await completeLogin(response, navigate);
                     return;
                 }
 
                 navigate('/auth/login/checkpoint', { state: { token: response.confirmationToken } });
-            })
-            .catch((error) => {
-                console.error(error);
-                setIsPasskeySubmitting(false);
-                setSubmitting(false);
-                clearAndAddHttpError({ error: mapPasskeyError(error) });
-            });
+            }),
+        ).catch((error) => {
+            console.error(error);
+            setIsPasskeySubmitting(false);
+            setSubmitting(false);
+            clearAndAddHttpError({ error: mapPasskeyError(error) });
+        });
     };
 
     const onSubmit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
@@ -177,7 +191,11 @@ function LoginContainer() {
             })}
         >
             {({ isSubmitting, setSubmitting, values }) => (
-                <LoginFormContainer title={t('login-title')} className='flex w-full'>
+                <LoginFormContainer
+                    title={t('login-title')}
+                    className='flex w-full'
+                    onFocusCapture={prepareDestination}
+                >
                     <Field
                         icon={UserIcon}
                         type={'text'}
@@ -198,7 +216,7 @@ function LoginContainer() {
                             />
                             <button
                                 type={'button'}
-                                className='absolute top-2.5 right-1.5 p-1 py-2 text-gray-500'
+                                className='absolute top-2.5 right-1.5 p-1 py-2 text-muted'
                                 onClick={() => setShow(!show)}
                             >
                                 {show ? <EyeIcon className='h-5 w-5' /> : <EyeOffIcon className='h-5 w-5' />}
@@ -263,7 +281,7 @@ function LoginContainer() {
                     <div className='mt-3 flex flex-col items-center gap-2'>
                         <Link
                             to={'/auth/password'}
-                            className='text-sm tracking-wide text-reviactyl/80 no-underline hover:text-reviactyl/50'
+                            className='text-sm tracking-wide text-accent no-underline hover:underline'
                         >
                             {t('forgot-password.label')}
                         </Link>

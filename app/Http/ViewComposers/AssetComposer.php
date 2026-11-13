@@ -4,6 +4,7 @@ namespace App\Http\ViewComposers;
 
 use App\Contracts\Repository\SettingsRepositoryInterface;
 use App\Helpers\StorageUnit;
+use App\Services\Servers\RecycleBinService;
 use Illuminate\Database\QueryException;
 use Illuminate\View\View;
 
@@ -33,6 +34,7 @@ class AssetComposer
             'pwa' => config('app.pwa', false),
             'debug' => config('app.debug', false),
             'useBinaryPrefix' => StorageUnit::isBinary(),
+            'recycleBinRetentionDays' => RecycleBinService::retentionDays(),
             'avatar' => config('app.avatar') ?? 'gravatar',
             'registrationEnabled' => config('panel.auth.registration_enabled', true),
             'captcha' => [

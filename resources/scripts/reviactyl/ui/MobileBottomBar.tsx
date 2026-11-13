@@ -10,7 +10,7 @@ interface Props {
 
 const itemClass = ({ isActive }: { isActive: boolean }) =>
     `flex flex-col items-center justify-center gap-1 text-[11px] font-medium transition-colors ${
-        isActive ? 'text-reviactyl' : 'text-gray-400 hover:text-gray-100'
+        isActive ? 'text-accent' : 'text-gray-400 hover:text-gray-100'
     }`;
 
 const MobileBottomBar = ({ onShowSidebar, sidebarOpen }: Props) => {
@@ -36,7 +36,7 @@ const MobileBottomBar = ({ onShowSidebar, sidebarOpen }: Props) => {
                     aria-expanded={sidebarOpen}
                     className='-mt-5 flex flex-col items-center justify-center gap-1 text-[11px] font-semibold text-gray-100'
                 >
-                    <span className='flex h-12 w-12 items-center justify-center rounded-full bg-reviactyl text-white shadow-lg ring-4 ring-gray-950 transition-transform active:scale-95'>
+                    <span className='flex h-12 w-12 items-center justify-center rounded-full bg-reviactyl text-on-primary shadow-lg ring-4 ring-gray-950 transition-transform active:scale-95'>
                         {sidebarOpen ? <FaXmark className='h-5 w-5' /> : <FaBars className='h-5 w-5' />}
                     </span>
                     <span>{sidebarOpen ? t('mobile-navigation.close') : t('mobile-navigation.menu')}</span>
@@ -46,7 +46,7 @@ const MobileBottomBar = ({ onShowSidebar, sidebarOpen }: Props) => {
                         type='button'
                         disabled
                         aria-label={t('mobile-navigation.account')}
-                        className='flex cursor-not-allowed flex-col items-center justify-center gap-1 text-[11px] font-medium text-gray-600 opacity-40 grayscale'
+                        className='flex cursor-not-allowed flex-col items-center justify-center gap-1 text-[11px] font-medium text-muted opacity-40 grayscale'
                     >
                         <FaUser className='h-5 w-5' aria-hidden='true' />
                         <span>{t('mobile-navigation.account')}</span>

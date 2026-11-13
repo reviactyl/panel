@@ -1,10 +1,6 @@
 <?php
 
 return [
-    'backup-settings' => 'إشعارات النسخ الاحتياطي',
-    'backup-manual' => 'النسخ الاحتياطي اليدوي',
-    'backup-scheduled' => 'النسخ الاحتياطي المجدول',
-    'backup-email' => 'الإرسال بالبريد الإلكتروني أيضًا',
 
     'title' => 'الإشعارات',
     'description' => 'تحديثات حول خوادمك وصلاحيات الوصول.',
@@ -27,6 +23,19 @@ return [
     'dismiss' => 'حذف',
     'previous' => 'السابق',
     'next' => 'التالي',
+    'settings-loading' => 'جارٍ تحميل إعدادات الإشعارات…',
+    'settings-error' => 'تعذر تحميل إعدادات الإشعارات.',
+    'settings-type' => 'نوع الإشعار',
+    'settings-panel' => 'اللوحة',
+    'settings-email' => 'البريد الإلكتروني',
+    'categories' => [
+        'server-access' => ['title' => 'وصول الخادم'],
+        'server-setup' => ['title' => 'إعداد الخادم'],
+        'server-failures' => ['title' => 'فشل الخادم'],
+        'backups' => ['title' => 'النسخ الاحتياطية'],
+        'backup-failures' => ['title' => 'فشل النسخ الاحتياطي'],
+        'extension-alerts' => ['title' => 'تنبيهات الإضافات'],
+    ],
     'events' => [
         'extension-updated' => 'تم تحديث الإضافة',
         'reinstalled' => 'تمت إعادة تثبيت الخادم',

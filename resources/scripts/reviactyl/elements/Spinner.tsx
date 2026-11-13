@@ -20,7 +20,7 @@ const SpinnerElement = ({ size = 'base', isBlue, className }: Pick<Props, 'size'
                 : size === 'large'
                   ? 'h-16 w-16 border-[6px]'
                   : 'h-8 w-8 border-[3px]',
-            isBlue ? 'border-blue-200/50 border-t-blue-600' : 'border-gray-200/50 border-t-gray-300',
+            isBlue ? 'border-primary-200/50 border-t-accent' : 'border-gray-200/50 border-t-gray-300',
             className,
         ]
             .filter(Boolean)
@@ -33,7 +33,7 @@ const SpinnerElement = ({ size = 'base', isBlue, className }: Pick<Props, 'size'
 
 const SpinnerFunc = ({ centered, className, ...props }: Props) =>
     centered ? (
-        <div className={`flex items-center justify-center ${props.size === 'large' ? 'm-20' : 'm-6'}`}>
+        <div className={`flex items-center justify-center ${props.size === 'large' ? 'p-20' : 'p-6'}`}>
             <SpinnerElement {...props} className={className} />
         </div>
     ) : (

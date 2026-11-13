@@ -31,6 +31,9 @@ return [
         'archive-format' => 'Default Archive Format',
         'archive-format-description' => 'Used for file archives and new backups across your servers.',
         'theme-toggle' => 'Theme Toggle',
+        'theme-light' => '浅色',
+        'theme-dark' => '深色',
+        'theme-system' => '跟随系统',
         'on' => '开启',
         'off' => '关闭',
         'loading' => '加载中……',
@@ -138,6 +141,7 @@ return [
         'password-required' => '您必须输入账户密码才能继续。',
     ],
     'api' => [
+        'retry' => '重试',
         'title' => '账户 API',
         'create-key' => '创建 API 密钥',
         'content-title' => 'API 密钥',

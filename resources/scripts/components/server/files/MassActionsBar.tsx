@@ -1,3 +1,4 @@
+import { useSWRConfig } from 'swr';
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/reviactyl/components/button/index';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
@@ -8,7 +9,7 @@ import deleteFiles from '@/api/server/files/deleteFiles';
 import MoveFileModal from '@/components/server/files/MoveFileModal';
 import { MASS_ACTION_EVENT, MassAction } from '@/components/server/files/FileDropdownMenu';
 import useEventListener from '@/plugins/useEventListener';
-import { Dialog } from '@/reviactyl/elements/dialog';
+import DeleteFilesDialog from './DeleteFilesDialog';
 import { useTranslation } from 'react-i18next';
 import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
 import { FaFileArrowUp, FaTrash } from 'react-icons/fa6';
@@ -20,6 +21,7 @@ import { join } from 'pathe';
 
 const MassActionsBar = () => {
     const { t } = useTranslation('server/files');
+    const { mutate: refreshCache } = useSWRConfig();
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
 
     const { data: currentDirectoryFiles, mutate } = useFileManagerSwr();
@@ -75,16 +77,17 @@ const MassActionsBar = () => {
             .then(() => setRunning(false));
     };
 
-    const onClickConfirmDeletion = () => {
+    const onClickConfirmDeletion = (permanent: boolean) => {
         setRunning(true);
         setShowConfirm(false);
         clearFlashes('files');
         setLoadingMessage(t('mass-actions.deleting'));
 
-        deleteFiles(uuid, directory, selectedFiles)
+        deleteFiles(uuid, directory, selectedFiles, permanent)
             .then(() => {
                 mutate((files) => files?.filter((f) => selectedFiles.indexOf(f.name) < 0), false);
                 setSelectedFiles([]);
+                return refreshCache(`/api/client/servers/${uuid}/files/recycle-bin`);
             })
             .catch((error) => {
                 mutate();
@@ -103,25 +106,13 @@ const MassActionsBar = () => {
 
     return (
         <>
-            <Dialog.Confirm
-                title={t('mass-actions.delete-title')}
-                open={showConfirm}
-                confirm={t('mass-actions.delete-confirm')}
-                onClose={() => setShowConfirm(false)}
-                onConfirmed={onClickConfirmDeletion}
-            >
-                <p className={'mb-2'}>
-                    {t('mass-actions.delete-message-start')}&nbsp;
-                    <span className={'font-semibold text-gray-50'}>
-                        {selectedFiles.length} {t('mass-actions.delete-message-files')}
-                    </span>
-                    {t('mass-actions.delete-message-end')}
-                    {selectedFiles.slice(0, 15).map((file) => (
-                        <li key={file}>{file}</li>
-                    ))}
-                    {selectedFiles.length > 15 && <li>and {selectedFiles.length - 15} others</li>}
-                </p>
-            </Dialog.Confirm>
+            {showConfirm && (
+                <DeleteFilesDialog
+                    files={selectedFiles}
+                    onClose={() => setShowConfirm(false)}
+                    onConfirm={onClickConfirmDeletion}
+                />
+            )}
             {showMove && (
                 <MoveFileModal
                     files={selectedFiles}
@@ -177,9 +168,9 @@ const MassActionsBar = () => {
             </Can>
             <Can action={'file.delete'}>
                 <Tooltip content={t('delete')}>
-                    <Button.Danger onClick={() => setShowConfirm(true)} aria-label={t('delete')} disabled={loading}>
+                    <Button onClick={() => setShowConfirm(true)} aria-label={t('delete')} disabled={loading}>
                         <FaTrash className='h-5 w-5' />
-                    </Button.Danger>
+                    </Button>
                 </Tooltip>
             </Can>
             {loading && (

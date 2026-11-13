@@ -2,6 +2,8 @@
 
 return [
     'overview' => [
+        'recycle-bin-retention' => 'Masa penyimpanan tempat sampah (hari)',
+        'recycle-bin-retention-hint' => 'Hapus permanen file di tempat sampah setelah jumlah hari ini.',
         'title' => 'Pengaturan',
         'general-title' => 'Umum',
         'app-name' => 'Nama Aplikasi',

@@ -9,6 +9,8 @@ use Filament\Schemas\Schema;
 
 class FeedbackWidget extends BaseWidget
 {
+    protected static bool $isLazy = false;
+
     protected int|string|array $columnSpan = 1;
 
     protected static ?int $sort = 2;

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import UpdatePasswordForm from '@/components/dashboard/forms/UpdatePasswordForm';
 import UpdateEmailAddressForm from '@/components/dashboard/forms/UpdateEmailAddressForm';
 import ConfigureTwoFactorForm from '@/components/dashboard/forms/ConfigureTwoFactorForm';
@@ -13,7 +13,7 @@ import TitledGreyBox from '@/reviactyl/elements/TitledGreyBox';
 import Title from '@/reviactyl/ui/Title';
 import { ExternalLinkIcon } from '@heroicons/react/solid';
 import { LogoutIcon } from '@heroicons/react/outline';
-import logout from '@/api/auth/logout';
+import useLogout from '@/plugins/useLogout';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '@/reviactyl/ui/LanguageSwitcher';
@@ -23,10 +23,11 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import FileEditorSwitcher from '@/reviactyl/ui/FileEditorSwitcher';
 import AvatarSelector from '@/components/dashboard/AvatarSelector';
 import ArchiveFormatSwitcher from '@/components/dashboard/ArchiveFormatSwitcher';
+import AccountNotificationSettings from '@/components/dashboard/AccountNotificationSettings';
 
 import SocialLoginsContainer from '@/components/dashboard/forms/SocialLoginsContainer';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
-import { FaBrush, FaEnvelope, FaLock, FaShield } from 'react-icons/fa6';
+import { FaBell, FaBrush, FaEnvelope, FaLock, FaShield } from 'react-icons/fa6';
 
 export default () => {
     const { t } = useTranslation('dashboard/account');
@@ -36,7 +37,7 @@ export default () => {
     const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
     const adminAccess = useStoreState((state) => state.user.data!.adminAccess);
     const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
-    const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const { isLoggingOut, onLogout: onTriggerLogout } = useLogout('account:logout');
     const { addFlash, clearFlashes } = useFlash();
 
     useEffect(() => {
@@ -61,13 +62,6 @@ export default () => {
             window.SessionFlashes = undefined;
         }
     }, []);
-
-    const onTriggerLogout = () => {
-        setIsLoggingOut(true);
-        logout().finally(() => {
-            window.location.href = '/';
-        });
-    };
 
     return (
         <AccountContentBlock classicHeading title={t('overview.account-overview')}>
@@ -101,9 +95,13 @@ export default () => {
                                 )}
                             </div>
                             <div className='mt-1'>
-                                <button className='flex items-center space-x-1' onClick={onTriggerLogout}>
-                                    <span className='text-danger/80'>{t('overview.logout')}</span>{' '}
-                                    <LogoutIcon className='w-5 h-5 text-danger/80' strokeWidth={2} />
+                                <button
+                                    className='flex items-center space-x-1'
+                                    onClick={onTriggerLogout}
+                                    disabled={isLoggingOut}
+                                >
+                                    <span className='text-danger-text'>{t('overview.logout')}</span>{' '}
+                                    <LogoutIcon className='w-5 h-5 text-danger-text' strokeWidth={2} />
                                 </button>
                             </div>
                         </div>
@@ -117,6 +115,21 @@ export default () => {
                         </div>
                     </Card>
                     <ExtensionSlot name='account:overview:column1:middle' />
+                    <TitledGreyBox icon={FaLock} title={t('overview.update-password')} showFlashes={'account:password'}>
+                        <UpdatePasswordForm />
+                    </TitledGreyBox>
+                    <TitledGreyBox icon={FaShield} title={t('overview.2fa-verification')}>
+                        <ConfigureTwoFactorForm />
+                    </TitledGreyBox>
+                    <ExtensionSlot name='account:overview:column1:end' />
+                </div>
+                <div className={'flex flex-col gap-4'}>
+                    <ExtensionSlot name='account:overview:column2:start' />
+                    <SocialLoginsContainer />
+                    <TitledGreyBox icon={FaBell} title={t('notifications:title', 'Notifications')}>
+                        <AccountNotificationSettings />
+                    </TitledGreyBox>
+                    <ExtensionSlot name='account:overview:column2:middle' />
                     <TitledGreyBox icon={FaEnvelope} title={t('overview.update-email')} showFlashes={'account:email'}>
                         <UpdateEmailAddressForm />
                     </TitledGreyBox>
@@ -125,18 +138,6 @@ export default () => {
                         <ThemeToggle />
                         <FileEditorSwitcher />
                         <ArchiveFormatSwitcher />
-                    </TitledGreyBox>
-                    <ExtensionSlot name='account:overview:column1:end' />
-                </div>
-                <div className={'flex flex-col gap-4'}>
-                    <ExtensionSlot name='account:overview:column2:start' />
-                    <SocialLoginsContainer />
-                    <TitledGreyBox icon={FaLock} title={t('overview.update-password')} showFlashes={'account:password'}>
-                        <UpdatePasswordForm />
-                    </TitledGreyBox>
-                    <ExtensionSlot name='account:overview:column2:middle' />
-                    <TitledGreyBox icon={FaShield} title={t('overview.2fa-verification')}>
-                        <ConfigureTwoFactorForm />
                     </TitledGreyBox>
                     <ExtensionSlot name='account:overview:column2:end' />
                 </div>

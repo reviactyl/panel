@@ -1,4 +1,6 @@
-import { Fragment } from 'react';
+import { Fragment, type ReactNode } from 'react';
+import Can from '@/reviactyl/elements/Can';
+import { ServerContext } from '@/state/server';
 import { ExtensionModule } from '@/extensions/ExtensionModule';
 import { useExtensions } from '@/extensions/useExtensions';
 import type { ExtensionSlotDefinition } from '@/extensions/types';
@@ -13,21 +15,33 @@ interface Props {
     context?: SlotContext;
 }
 
+const SlotPermissionGuard = ({ permission, children }: { permission: string | string[]; children: ReactNode }) => {
+    const store = ServerContext.useStore();
+
+    return store ? (
+        <Can action={permission} matchAny>
+            {children}
+        </Can>
+    ) : null;
+};
+
 const isAllowedByGuard = (slot: ExtensionSlotDefinition, context?: SlotContext): boolean => {
     const eggId = context?.eggId;
     const nestId = context?.nestId;
+    const slotEggId = slot.eggId ?? slot.egg_id;
+    const slotEggIds = slot.eggIds ?? slot.egg_ids;
 
     const hasGuards =
-        slot.egg_id !== undefined ||
+        slotEggId !== undefined ||
         slot.nest_id !== undefined ||
-        Array.isArray(slot.egg_ids) ||
+        Array.isArray(slotEggIds) ||
         Array.isArray(slot.nest_ids);
 
     if (!hasGuards) {
         return true;
     }
 
-    if (slot.egg_id !== undefined && slot.egg_id === eggId) {
+    if (slotEggId !== undefined && slotEggId === eggId) {
         return true;
     }
 
@@ -35,7 +49,7 @@ const isAllowedByGuard = (slot: ExtensionSlotDefinition, context?: SlotContext):
         return true;
     }
 
-    if (Array.isArray(slot.egg_ids) && eggId !== undefined && slot.egg_ids.includes(eggId)) {
+    if (Array.isArray(slotEggIds) && eggId !== undefined && slotEggIds.includes(eggId)) {
         return true;
     }
 
@@ -68,14 +82,20 @@ export const ExtensionSlot = ({ name, context }: Props) => {
 
     return (
         <Fragment>
-            {renderedSlots.map(({ extensionId, slot }, index) => (
-                <ExtensionModule
-                    key={`${extensionId}:${slot.name}:${slot.module}:${index}`}
-                    extensionId={extensionId}
-                    modulePath={slot.module}
-                    exportName={slot.export}
-                />
-            ))}
+            {renderedSlots.map(({ extensionId, slot }, index) => {
+                const module = (
+                    <ExtensionModule extensionId={extensionId} modulePath={slot.module} exportName={slot.export} />
+                );
+                const key = `${extensionId}:${slot.name}:${slot.module}:${index}`;
+
+                return slot.permission ? (
+                    <SlotPermissionGuard key={key} permission={slot.permission}>
+                        {module}
+                    </SlotPermissionGuard>
+                ) : (
+                    <Fragment key={key}>{module}</Fragment>
+                );
+            })}
         </Fragment>
     );
 };

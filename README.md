@@ -77,14 +77,13 @@ These people made Reviactyl project possible.
 
 | **Company** | **About** |
 | :---: | :---: |
-| [**Tietokettu**](https://tietokettu.net/) | Tietokettu is a company that provides network and server services founded in 2019. Our goal is to create affordable and functional solutions for old ones. |
 | [**CloudExa-Hosting**](https://cloudexa-hosting.com/) | CloudExa Provides fast, reliable cloud hosting built for gaming, delivering smooth performance and scalable solutions for game servers and enterprises. |
 
 ![sponsors](https://shieldcn.dev/sponsors/reviactyl.svg?title=GitHub+Sponsors&preset=gradient&titleAlign=center&mode=dark)
 
 ## License
 
-Reviactyl™, Copyright © Reviactyl and contributors. (Licensed under [MIT](https://github.com/reviactyl/panel/blob/develop/LICENSE.md))
+Reviactyl™, Copyright © Reviactyl and contributors. (Licensed under [MIT](https://github.com/reviactyl/panel/blob/develop/LICENSE))
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="https://www.shieldcn.dev/github/license/reviactyl/panel.svg?variant=ghost&amp;size=sm&amp;mode=dark"><img alt="License" src="https://www.shieldcn.dev/github/license/reviactyl/panel.svg?variant=ghost&amp;size=sm&amp;mode=light"></picture>
 

@@ -1,4 +1,6 @@
-import http, { FractalResponseData, FractalResponseList } from '@/api/http';
+import { store } from '@/state';
+import { getPreviewToken } from '@/lib/subuserPreviewStorage';
+import http, { getHttpSessionSignal, FractalResponseData, FractalResponseList } from '@/api/http';
 import { rawDataToServerAllocation, rawDataToServerEggVariable } from '@/api/transformers';
 import { ServerEggVariable, ServerStatus, ServerCategory } from '@/api/server/types';
 import { Identifier } from '@/api/definitions';
@@ -123,7 +125,7 @@ export const rawDataToServerObject = ({
     isOwner: meta?.is_server_owner === true,
 });
 
-export default (uuid: string): Promise<[Server, string[]]> => {
+const requestServer = (uuid: string): Promise<[Server, string[]]> => {
     return new Promise((resolve, reject) => {
         http.get(`/api/client/servers/${uuid}?include=allocations,variables,category`)
             .then(({ data }) =>
@@ -134,4 +136,27 @@ export default (uuid: string): Promise<[Server, string[]]> => {
             )
             .catch(reject);
     });
+};
+
+const requestKey = (uuid: string) => `${store.getState().user.data?.uuid}:${getPreviewToken() ?? ''}:${uuid}`;
+let prepared:
+    { key: string; session: AbortSignal; expiresAt: number; request: Promise<[Server, string[]]> } | undefined;
+
+export const prepareServer = (uuid: string) => {
+    const key = requestKey(uuid);
+    const session = getHttpSessionSignal();
+    if (prepared?.key === key && prepared.session === session && prepared.expiresAt > Date.now()) return;
+    const request = requestServer(uuid);
+    prepared = { key, session, expiresAt: Date.now() + 3000, request };
+    void request.catch(() => undefined);
+};
+
+export default (uuid: string): Promise<[Server, string[]]> => {
+    const candidate = prepared;
+    prepared = undefined;
+    return candidate?.key === requestKey(uuid) &&
+        candidate.session === getHttpSessionSignal() &&
+        candidate.expiresAt > Date.now()
+        ? candidate.request
+        : requestServer(uuid);
 };

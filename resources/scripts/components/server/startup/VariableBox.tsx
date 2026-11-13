@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
+import { memo, useEffect, useId, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { ServerEggVariable } from '@/api/server/types';
 import TitledGreyBox from '@/reviactyl/elements/TitledGreyBox';
 import { usePermissions } from '@/plugins/usePermissions';
@@ -22,6 +22,7 @@ interface Props {
 }
 
 const VariableBox = ({ variable }: Props) => {
+    const inputId = useId();
     const FLASH_KEY = `server:startup:${variable.envVariable}`;
     const { t } = useTranslation('server/startup');
 
@@ -109,7 +110,7 @@ const VariableBox = ({ variable }: Props) => {
                     {variable.isSecret && (
                         <span className='bg-gray-900 text-xs py-1 px-2 rounded-full mr-2 mb-1'>{t('sensitive')}</span>
                     )}
-                    {variable.name}
+                    <label htmlFor={inputId}>{variable.name}</label>
                 </p>
             }
         >
@@ -120,6 +121,7 @@ const VariableBox = ({ variable }: Props) => {
                         <Input
                             key={JSON.stringify([uuid, variable.envVariable])}
                             ref={secretInput}
+                            id={inputId}
                             type='password'
                             className='min-w-0 flex-1'
                             aria-label={variable.name}
@@ -146,6 +148,7 @@ const VariableBox = ({ variable }: Props) => {
                 ) : useSwitch ? (
                     <>
                         <Switch
+                            id={inputId}
                             readOnly={!canEdit || !variable.isEditable}
                             name={variable.envVariable}
                             checked={isStringSwitch ? effectiveValue === 'true' : effectiveValue === '1'}
@@ -165,6 +168,7 @@ const VariableBox = ({ variable }: Props) => {
                         {selectValues.length > 0 ? (
                             <>
                                 <Select
+                                    id={inputId}
                                     onChange={(e) => setVariableValue(e.target.value)}
                                     name={variable.envVariable}
                                     value={effectiveValue}
@@ -183,6 +187,7 @@ const VariableBox = ({ variable }: Props) => {
                         ) : (
                             <>
                                 <Input
+                                    id={inputId}
                                     onChange={(e) => {
                                         if (canEdit && variable.isEditable) {
                                             setVariableValue(e.currentTarget.value);

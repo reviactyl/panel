@@ -31,6 +31,9 @@ return [
         'archive-format' => 'Default Archive Format',
         'archive-format-description' => 'Used for file archives and new backups across your servers.',
         'theme-toggle' => 'Theme Toggle',
+        'theme-light' => 'Светлая',
+        'theme-dark' => 'Тёмная',
+        'theme-system' => 'Системная',
         'on' => 'Вкл.',
         'off' => 'Выкл.',
         'loading' => 'Загрузка...',
@@ -137,6 +140,7 @@ return [
         'password-required' => 'Для продолжения необходимо ввести пароль к учетной записи.',
     ],
     'api' => [
+        'retry' => 'Повторить',
         'title' => 'API учётной записи',
         'create-key' => 'Создать API-ключ',
         'content-title' => 'API-ключи',

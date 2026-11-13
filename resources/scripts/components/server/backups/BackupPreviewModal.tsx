@@ -124,7 +124,7 @@ export default function BackupPreviewModal({ backup, onClose }: { backup: Server
                     <div className='h-[60dvh] min-h-48 overflow-auto' aria-busy={!result && !error}>
                         {error ? (
                             <div role='alert' className='p-6'>
-                                <p className='text-red-200'>{error}</p>
+                                <p className='text-danger-text'>{error}</p>
                                 <button
                                     type='button'
                                     className={`${buttonClass} mt-4 text-sm`}
@@ -184,7 +184,7 @@ export default function BackupPreviewModal({ backup, onClose }: { backup: Server
                                             {entry.is_directory ? (
                                                 <FaFolder
                                                     aria-label={t('preview-folder')}
-                                                    className='shrink-0 text-primary-300'
+                                                    className='shrink-0 text-accent'
                                                 />
                                             ) : (
                                                 <FaFile aria-hidden='true' className='shrink-0 text-gray-400' />

@@ -18,7 +18,7 @@ class SoftwareVersionServiceTest extends TestCase
         $client = Mockery::mock(Client::class);
         $client->shouldReceive('request')
             ->once()
-            ->with('GET', config('panel.cdn.url'))
+            ->with('GET', config('panel.cdn.url'), ['connect_timeout' => 2, 'timeout' => 3])
             ->andReturn(new Response(200, [], json_encode(['panel' => '26.09.0'], JSON_THROW_ON_ERROR)));
 
         $service = new SoftwareVersionService(new Repository(new ArrayStore()), $client);
@@ -27,10 +27,33 @@ class SoftwareVersionServiceTest extends TestCase
         $this->assertTrue($service->isLatestPanel());
     }
 
+    public function test_canary_status_does_not_fetch_unused_remote_metadata(): void
+    {
+        config()->set('app.version', 'canary');
+        $client = Mockery::mock(Client::class);
+        $client->shouldNotReceive('request');
+        $service = new SoftwareVersionService(new Repository(new ArrayStore()), $client);
+
+        $this->assertTrue($service->isLatestPanel());
+    }
+
+    public function test_metadata_is_loaded_once_and_invalid_payload_uses_defaults(): void
+    {
+        $client = Mockery::mock(Client::class);
+        $client->shouldReceive('request')->once()
+            ->with('GET', config('panel.cdn.url'), ['connect_timeout' => 2, 'timeout' => 3])
+            ->andReturn(new Response(200, [], 'null'));
+        $service = new SoftwareVersionService(new Repository(new ArrayStore()), $client);
+
+        $this->assertSame('error', $service->getPanel());
+        $this->assertSame('https://reviactyl.app/discord', $service->getDiscord());
+        $this->assertSame('https://github.com/sponsors/reviactyl', $service->getDonations());
+    }
+
     public function test_channels_filter_and_order_official_releases_independently(): void
     {
         $client = Mockery::mock(Client::class);
-        $client->shouldReceive('request')->with('GET', config('panel.cdn.url'))->andReturn(new Response(200, [], '{}'));
+        $client->shouldNotReceive('request')->with('GET', config('panel.cdn.url'), Mockery::any());
         $releases = [
             ['tag_name' => 'v26.10.0-beta.2', 'prerelease' => false],
             ['tag_name' => 'v26.10.0-beta.11', 'prerelease' => true],
@@ -57,7 +80,7 @@ class SoftwareVersionServiceTest extends TestCase
     public function test_beta_channel_advances_to_final_and_reads_subsequent_pages(): void
     {
         $client = Mockery::mock(Client::class);
-        $client->shouldReceive('request')->with('GET', config('panel.cdn.url'))->andReturn(new Response(200, [], '{}'));
+        $client->shouldNotReceive('request')->with('GET', config('panel.cdn.url'), Mockery::any());
         $client->shouldReceive('request')->with('GET', 'https://api.github.com/repos/reviactyl/panel/releases', Mockery::on(fn ($options) => $options['query']['page'] === 1))
             ->once()->andReturn(new Response(200, [], json_encode(array_fill(0, 100, ['tag_name' => 'v26.10.0-beta.1']), JSON_THROW_ON_ERROR)));
         $client->shouldReceive('request')->with('GET', 'https://api.github.com/repos/reviactyl/panel/releases', Mockery::on(fn ($options) => $options['query']['page'] === 2))
@@ -71,7 +94,7 @@ class SoftwareVersionServiceTest extends TestCase
     public function test_large_release_history_keeps_the_newest_resolved_version(): void
     {
         $client = Mockery::mock(Client::class);
-        $client->shouldReceive('request')->with('GET', config('panel.cdn.url'))->andReturn(new Response(200, [], '{}'));
+        $client->shouldNotReceive('request')->with('GET', config('panel.cdn.url'), Mockery::any());
         $client->shouldReceive('request')->with('GET', 'https://api.github.com/repos/reviactyl/panel/releases', Mockery::type('array'))
             ->times(10)->andReturn(new Response(200, [], json_encode(array_fill(0, 100, ['tag_name' => 'v26.10.0-beta.1']), JSON_THROW_ON_ERROR)));
         $service = new SoftwareVersionService(new Repository(new ArrayStore()), $client);
@@ -81,7 +104,7 @@ class SoftwareVersionServiceTest extends TestCase
     public function test_release_lookup_failure_does_not_fall_back_to_the_other_channel(): void
     {
         $client = Mockery::mock(Client::class);
-        $client->shouldReceive('request')->with('GET', config('panel.cdn.url'))->andReturn(new Response(200, [], '{"panel":"26.09.0"}'));
+        $client->shouldNotReceive('request')->with('GET', config('panel.cdn.url'), Mockery::any());
         $client->shouldReceive('request')->with('GET', 'https://api.github.com/repos/reviactyl/panel/releases', Mockery::type('array'))
             ->once()->andReturn(new Response(503));
         $service = new SoftwareVersionService(new Repository(new ArrayStore()), $client);

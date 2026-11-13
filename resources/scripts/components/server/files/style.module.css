@@ -28,7 +28,11 @@
     & > .details {
         @apply flex flex-1 items-center text-gray-300 no-underline px-4 py-2 overflow-hidden truncate;
 
-        &:not(a) {
+        &:is(a, button) {
+            @apply cursor-pointer;
+        }
+
+        &:not(a):not(button) {
             @apply cursor-default;
         }
     }

@@ -1,3 +1,4 @@
+import { useSWRConfig } from 'swr';
 import React, { memo, useId, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
@@ -31,7 +32,7 @@ import compressFiles from '@/api/server/files/compressFiles';
 import decompressFiles from '@/api/server/files/decompressFiles';
 import isEqual from 'react-fast-compare';
 import ChmodFileModal from '@/components/server/files/ChmodFileModal';
-import { Dialog } from '@/reviactyl/elements/dialog';
+import DeleteFilesDialog from './DeleteFilesDialog';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 import { useStoreState } from 'easy-peasy';
 
@@ -48,7 +49,7 @@ interface RowProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     disabled?: boolean;
 }
 
-const Row = ({ icon, title, danger, disabled, className, onClick, ...props }: RowProps) => {
+export const Row = ({ icon, title, danger, disabled, className, onClick, ...props }: RowProps) => {
     const ItemIcon = icon;
 
     return (
@@ -75,6 +76,7 @@ const Row = ({ icon, title, danger, disabled, className, onClick, ...props }: Ro
 
 const FileDropdownMenu = ({ file }: { file: FileObject }) => {
     const { t } = useTranslation('server/files');
+    const { mutate: refreshCache } = useSWRConfig();
     const onClickRef = useRef<DropdownMenu>(null);
     const menuId = useId();
     const [showSpinner, setShowSpinner] = useState(false);
@@ -117,15 +119,19 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
         }
     });
 
-    const doDeletion = () => {
+    const doDeletion = (permanent: boolean) => {
+        setShowConfirmation(false);
         clearFlashes('files');
 
         // For UI speed, immediately remove the file from the listing before calling the deletion function.
         // If the delete actually fails, we'll fetch the current directory contents again automatically.
         mutate((files) => files?.filter((f) => f.key !== file.key), false);
 
-        deleteFiles(uuid, directory, [file.name])
-            .then(() => removeSelectedFile(file.name))
+        deleteFiles(uuid, directory, [file.name], permanent)
+            .then(() => {
+                removeSelectedFile(file.name);
+                return refreshCache(`/api/client/servers/${uuid}/files/recycle-bin`);
+            })
             .catch((error) => {
                 mutate();
                 clearAndAddHttpError({ key: 'files', error });
@@ -208,20 +214,16 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
 
     return (
         <>
-            <Dialog.Confirm
-                open={showConfirmation}
-                onClose={() => {
-                    setShowConfirmation(false);
-                    onClickRef.current?.restoreFocus();
-                }}
-                title={`${t(file.isFile ? 'dropdown.delete-file' : 'dropdown.delete-directory')}`}
-                confirm={t('dropdown.delete')}
-                onConfirmed={doDeletion}
-            >
-                {t('dropdown.delete-confirm-message')}&nbsp;
-                <span className={'font-semibold text-gray-50'}>{file.name}</span>{' '}
-                {t('dropdown.delete-confirm-once-deleted')}.
-            </Dialog.Confirm>
+            {showConfirmation && (
+                <DeleteFilesDialog
+                    files={[file.name]}
+                    onClose={() => {
+                        setShowConfirmation(false);
+                        onClickRef.current?.restoreFocus();
+                    }}
+                    onConfirm={doDeletion}
+                />
+            )}
             {modal === 'chmod' && (
                 <ChmodFileModal
                     visible
@@ -257,7 +259,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                         aria-label={`${t('strings:action')}: ${file.name}`}
                         aria-expanded={visible}
                         aria-controls={menuId}
-                        className='rounded-ui px-4 py-2 hover:text-white focus-visible:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400'
+                        className='rounded-ui px-4 py-2 hover:text-accent focus-visible:text-accent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400'
                         onClick={(event) => {
                             archiveHovered.current = false;
                             setShowFormatMenu(false);
@@ -361,7 +363,6 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                         onClick={() => (isMultiSelected ? massAction({ type: 'delete' }) : setShowConfirmation(true))}
                         icon={FaTrash}
                         title={t('dropdown.delete')}
-                        danger
                         disabled={massActionRunning}
                     />
                 </Can>

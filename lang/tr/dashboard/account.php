@@ -31,6 +31,9 @@ return [
         'archive-format' => 'Default Archive Format',
         'archive-format-description' => 'Used for file archives and new backups across your servers.',
         'theme-toggle' => 'Theme Toggle',
+        'theme-light' => 'Açık',
+        'theme-dark' => 'Koyu',
+        'theme-system' => 'Sistem',
         'on' => 'Açık',
         'off' => 'Kapalı',
         'loading' => 'Yükleniyor...',
@@ -137,6 +140,7 @@ return [
         'password-required' => 'Devam etmek için hesap şifrenizi girmeniz gerekmektedir.',
     ],
     'api' => [
+        'retry' => 'Tekrar dene',
         'title' => 'Hesap API',
         'create-key' => 'API Anahtarı Oluştur',
         'content-title' => 'API Anahtarları',

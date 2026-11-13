@@ -2,6 +2,8 @@
 
 return [
     'overview' => [
+        'recycle-bin-retention' => 'Срок хранения в корзине (дни)',
+        'recycle-bin-retention-hint' => 'Безвозвратно удалять файлы из корзины через указанное количество дней.',
         'title' => 'Настройки',
         'general-title' => 'Общие',
         'app-name' => 'Название приложения',

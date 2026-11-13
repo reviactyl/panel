@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import Avatar from '@/reviactyl/ui/Avatar';
 import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
-import http from '@/api/http';
+import useLogout from '@/plugins/useLogout';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import SearchContainer from '@/components/dashboard/search/SearchContainer';
 import Logo from '@/reviactyl/ui/Logo';
@@ -32,7 +32,7 @@ const NavbarContainer = ({ children, className = '' }: React.HTMLAttributes<HTML
 
 export const SideNavigation = ({ children, className = '' }: React.HTMLAttributes<HTMLDivElement>) => (
     <div
-        className={`-mt-1 flex flex-col gap-1 pb-4 [&_.label]:mx-2 [&_.label]:flex [&_.label]:items-center [&_.label]:px-3 [&_.label]:pt-2 [&_.label]:pb-1 [&_.label]:text-sm [&_.label]:font-semibold [&_.label]:text-gray-400 [&_a]:mx-2 [&_a]:flex [&_a]:items-center [&_a]:rounded-ui [&_a]:px-5 [&_a]:py-2 [&_a]:text-sm [&_a]:font-medium [&_a]:text-gray-200 [&_a:hover]:bg-gray-700/20 [&_a:focus]:bg-gray-700/20 [&_a:focus]:text-reviactyl [&_a.active]:bg-gray-700/20 [&_a.active]:text-reviactyl ${className}`}
+        className={`-mt-1 flex flex-col gap-1 pb-4 [&_.label]:mx-2 [&_.label]:flex [&_.label]:items-center [&_.label]:px-3 [&_.label]:pt-2 [&_.label]:pb-1 [&_.label]:text-sm [&_.label]:font-semibold [&_.label]:text-gray-400 [&_a]:mx-2 [&_a]:flex [&_a]:items-center [&_a]:rounded-ui [&_a]:px-5 [&_a]:py-2 [&_a]:text-sm [&_a]:font-medium [&_a]:text-gray-200 [&_a:hover]:bg-gray-700/20 [&_a:focus]:bg-primary-500/10 [&_a:focus]:text-accent [&_a.active]:bg-primary-500/10 [&_a.active]:text-accent ${className}`}
     >
         {children}
     </div>
@@ -43,7 +43,7 @@ export const SidebarCompact = React.forwardRef<HTMLDivElement, SidebarProps>(
         return (
             <div
                 ref={ref}
-                className={`w-56.25 self-start flex-col border border-gray-800 bg-gray-900 text-white 2xl:w-64 lg:fixed lg:top-[calc(4rem+var(--subuser-preview-offset,0px))] lg:left-0 lg:z-40 lg:flex lg:h-[calc(100dvh-4rem-var(--subuser-preview-offset,0px))] lg:overflow-y-auto ${
+                className={`w-56.25 self-start flex-col border border-gray-800 bg-gray-900 text-gray-100 2xl:w-64 lg:fixed lg:top-[calc(4rem+var(--subuser-preview-offset,0px))] lg:left-0 lg:z-40 lg:flex lg:h-[calc(100dvh-4rem-var(--subuser-preview-offset,0px))] lg:overflow-y-auto ${
                     isOpen
                         ? 'fixed top-[calc(4rem+var(--subuser-preview-offset,0px))] left-0 z-40 flex h-[calc(100dvh-4rem-var(--subuser-preview-offset,0px))] overflow-y-auto'
                         : 'hidden'
@@ -62,16 +62,9 @@ export const NavbarCompact = ({ children }: NavbarProps) => {
     const { t } = useTranslation('dashboard/account');
     const [blurred, setBlurred] = useState(false);
     const adminAccess = useStoreState((state: ApplicationStore) => state.user.data!.adminAccess);
-    const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const { isLoggingOut, onLogout } = useLogout();
     const { session } = useSubuserPreview();
 
-    const onTriggerLogout = () => {
-        setIsLoggingOut(true);
-        http.post('/auth/logout').finally(() => {
-            // @ts-expect-error this is valid
-            window.location = '/';
-        });
-    };
     useEffect(() => {
         const handleScroll = () => {
             setBlurred(window.scrollY > 0);
@@ -110,7 +103,7 @@ export const NavbarCompact = ({ children }: NavbarProps) => {
                                     </DropdownButtonRow>
                                 </a>
                             )}
-                            <DropdownButtonRow onClick={onTriggerLogout} danger>
+                            <DropdownButtonRow onClick={onLogout} danger>
                                 <FaArrowRightToBracket className='h-4 w-4 inline-flex mr-2' /> {t('overview.logout')}
                             </DropdownButtonRow>
                         </DropdownMenu>

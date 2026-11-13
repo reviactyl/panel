@@ -8,8 +8,8 @@ use App\Filament\Widgets\NodeSelectorWidget;
 use App\Filament\Widgets\ServersWidget;
 use App\Helpers\StorageUnit;
 use App\Models\Node;
-use App\Repositories\Agent\DaemonMonitoringRepository;
 use App\Services\Acl\RolePermission;
+use App\Services\Helpers\NodeMonitoringService;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Placeholder;
 use Filament\Pages\Page;
@@ -105,10 +105,7 @@ class Monitoring extends Page
     protected function getMonitoringData(Node $node): ?array
     {
         try {
-            $repository = app(DaemonMonitoringRepository::class);
-            $repository->setNode($node);
-
-            return $repository->getSystemMonitoring();
+            return app(NodeMonitoringService::class)->get($node);
         } catch (\Exception) {
             return null;
         }

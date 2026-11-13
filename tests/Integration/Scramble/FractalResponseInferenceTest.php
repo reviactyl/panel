@@ -13,7 +13,7 @@ class FractalResponseInferenceTest extends TestCase
     {
         $config = Scramble::configure();
         $previousRoutes = $config->routes();
-        $config->routes(fn (Route $route) => str_contains($route->uri(), 'notifications') || str_contains($route->uri(), 'notification-preferences'));
+        $config->routes(fn (Route $route) => str_contains($route->uri(), 'notifications'));
         try {
             $spec = app(Generator::class)->generate($config)->spec();
         } finally {

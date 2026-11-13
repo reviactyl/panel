@@ -19,6 +19,8 @@ const ServerConsoleContainer = () => {
     const isTransferring = ServerContext.useStoreState((state) => state.server.data!.isTransferring);
     const eggFeatures = ServerContext.useStoreState((state) => state.server.data!.eggFeatures, isEqual);
     const isNodeUnderMaintenance = ServerContext.useStoreState((state) => state.server.data!.isNodeUnderMaintenance);
+    const eggId = ServerContext.useStoreState((state) => state.server.data!.eggId);
+    const nestId = ServerContext.useStoreState((state) => state.server.data!.nestId);
 
     return (
         <ServerContentBlock title={t('title')}>
@@ -31,7 +33,7 @@ const ServerConsoleContainer = () => {
                           : t('server-transferring')}
                 </Alert>
             )}
-            <ExtensionSlot name='server:console:above' />
+            <ExtensionSlot name='server:console:above' context={{ eggId, nestId }} />
             <div className={'grid grid-cols-4 gap-2 sm:gap-4 mb-4'}>
                 <div className={'flex w-full min-w-0 col-span-4 lg:col-span-3'}>
                     <Spinner.Suspense>
@@ -45,7 +47,7 @@ const ServerConsoleContainer = () => {
                     <StatGraphs />
                 </Spinner.Suspense>
             </div>
-            <ExtensionSlot name='server:console:below' />
+            <ExtensionSlot name='server:console:below' context={{ eggId, nestId }} />
             <Features enabled={eggFeatures} />
         </ServerContentBlock>
     );

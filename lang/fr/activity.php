@@ -90,6 +90,9 @@ return [
             'export' => 'Base de données :name exportée',
         ],
         'file' => [
+            'recycle_one' => 'Déplacer vers la corbeille · :directory:files.0',
+            'recycle_other' => 'Déplacer vers la corbeille · :count · :directory',
+            'restore' => 'Restaurer · :id',
             'compress_one' => 'Compression de :directory:file',
             'compress_other' => 'Compression de :count fichier(s) dans :directory',
             'read' => 'Lecture du fichier :file',

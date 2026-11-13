@@ -12,7 +12,7 @@ class SoftwareVersionService
 {
     public const VERSION_CACHE_KEY = 'panel:versioning_data';
 
-    private static array $result;
+    private ?array $result = null;
 
     /**
      * SoftwareVersionService constructor.
@@ -20,16 +20,14 @@ class SoftwareVersionService
     public function __construct(
         protected CacheRepository $cache,
         protected Client $client,
-    ) {
-        self::$result = $this->cacheVersionData();
-    }
+    ) {}
 
     /**
      * Get the latest Panel version from the CDN or the selected official release channel.
      */
     public function getPanel(?string $channel = null): string
     {
-        return $channel !== null ? $this->releaseVersion('panel', $channel) : Arr::get(self::$result, 'panel') ?? 'error';
+        return $channel !== null ? $this->releaseVersion('panel', $channel) : Arr::get($this->versionData(), 'panel') ?? 'error';
     }
 
     /**
@@ -37,7 +35,7 @@ class SoftwareVersionService
      */
     public function getDaemon(?string $channel = null): string
     {
-        return $channel !== null ? $this->releaseVersion('agent', $channel) : Arr::get(self::$result, 'agent') ?? 'error';
+        return $channel !== null ? $this->releaseVersion('agent', $channel) : Arr::get($this->versionData(), 'agent') ?? 'error';
     }
 
     /**
@@ -45,7 +43,7 @@ class SoftwareVersionService
      */
     public function getDiscord(): string
     {
-        return Arr::get(self::$result, 'discord') ?? 'https://reviactyl.app/discord';
+        return Arr::get($this->versionData(), 'discord') ?? 'https://reviactyl.app/discord';
     }
 
     /**
@@ -53,7 +51,7 @@ class SoftwareVersionService
      */
     public function getDonations(): string
     {
-        return Arr::get(self::$result, 'donations') ?? 'https://github.com/sponsors/reviactyl';
+        return Arr::get($this->versionData(), 'donations') ?? 'https://github.com/sponsors/reviactyl';
     }
 
     /**
@@ -126,6 +124,11 @@ class SoftwareVersionService
         });
     }
 
+    private function versionData(): array
+    {
+        return $this->result ??= $this->cacheVersionData();
+    }
+
     /**
      * Keeps the versioning cache up-to-date with the latest results from the CDN.
      */
@@ -133,10 +136,15 @@ class SoftwareVersionService
     {
         return $this->cache->remember(self::VERSION_CACHE_KEY, CarbonImmutable::now()->addMinutes(config('panel.cdn.cache_time', 60)), function () {
             try {
-                $response = $this->client->request('GET', config('panel.cdn.url'));
+                $response = $this->client->request('GET', config('panel.cdn.url'), [
+                    'connect_timeout' => 2,
+                    'timeout' => 3,
+                ]);
 
                 if ($response->getStatusCode() === 200) {
-                    return json_decode($response->getBody(), true);
+                    $data = json_decode((string) $response->getBody(), true, flags: JSON_THROW_ON_ERROR);
+
+                    return is_array($data) ? $data : [];
                 }
 
                 throw new CdnVersionFetchingException();

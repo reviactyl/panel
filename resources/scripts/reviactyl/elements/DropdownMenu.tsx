@@ -17,7 +17,7 @@ export const DropdownButtonRow = ({
     <button
         className={classNames(
             'flex w-full items-center rounded-ui p-2 text-gray-400 transition-all duration-150 hover:bg-gray-700',
-            danger ? 'hover:text-red-300' : 'hover:text-gray-300',
+            danger ? 'hover:text-danger-text' : 'hover:text-gray-300',
             className,
         )}
         {...props}
@@ -49,12 +49,12 @@ class DropdownMenu extends React.PureComponent<Props, State> {
 
         if (this.state.visible && menu && (!prevState.visible || prevState.posX !== this.state.posX)) {
             if (!prevState.visible) {
+                if (this.props.manageFocus) document.addEventListener('keydown', this.keyListener);
                 // Delay by one tick so the event that opened this menu finishes
                 // propagating before we register listeners that can close it.
                 this.listenerTimer = setTimeout(() => {
                     document.addEventListener('click', this.windowListener);
                     document.addEventListener('contextmenu', this.contextMenuListener);
-                    if (this.props.manageFocus) document.addEventListener('keydown', this.keyListener);
                 }, 0);
             }
             const left = this.state.posX - menu.clientWidth;

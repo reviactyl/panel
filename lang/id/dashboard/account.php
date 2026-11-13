@@ -31,6 +31,9 @@ return [
         'archive-format' => 'Default Archive Format',
         'archive-format-description' => 'Used for file archives and new backups across your servers.',
         'theme-toggle' => 'Theme Toggle',
+        'theme-light' => 'Terang',
+        'theme-dark' => 'Gelap',
+        'theme-system' => 'Sistem',
         'on' => 'Nyala',
         'off' => 'Mati',
         'loading' => 'Memuat...',
@@ -137,6 +140,7 @@ return [
         'password-required' => 'Anda harus memasukkan kata sandi akun Anda untuk melanjutkan.',
     ],
     'api' => [
+        'retry' => 'Coba lagi',
         'title' => 'API Akun',
         'create-key' => 'Buat Kunci API',
         'content-title' => 'Kunci API',

@@ -1,10 +1,13 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
-import { AxiosError, AxiosHeaders } from 'axios';
-import http from './http';
+import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
+import { AxiosError, AxiosHeaders, CanceledError } from 'axios';
+import http, { resetHttpSession, withHttpSessionTransition } from './http';
+
+const progress = vi.hoisted(() => ({ startContinuous: vi.fn(), setComplete: vi.fn() }));
+beforeEach(() => vi.clearAllMocks());
 
 vi.mock('@/state', () => ({
     store: {
-        getActions: () => ({ progress: { startContinuous: vi.fn(), setComplete: vi.fn() } }),
+        getActions: () => ({ progress }),
     },
 }));
 
@@ -55,3 +58,185 @@ describe('session expiry', () => {
         expect(location.href).toBe('/server/example');
     });
 });
+
+describe('historical metrics background requests', () => {
+    it.each([false, true])('leaves progress untouched when history rejects: %s', async (reject) => {
+        const request = http.get('/api/client/servers/example/resources/history', {
+            params: { days: 1 },
+            adapter: async (config) => {
+                if (reject) throw new AxiosError('Offline', undefined, config);
+                return { config, status: 200, statusText: 'OK', headers: {}, data: { data: [] } };
+            },
+        });
+        if (reject) await expect(request).rejects.toThrow('Offline');
+        else await expect(request).resolves.toMatchObject({ data: { data: [] } });
+        expect(progress.startContinuous).not.toHaveBeenCalled();
+        expect(progress.setComplete).not.toHaveBeenCalled();
+    });
+
+    it('still shows progress for foreground requests', async () => {
+        await http.get('/api/client/servers/example/backups', {
+            adapter: async (config) => ({ config, status: 200, statusText: 'OK', headers: {}, data: {} }),
+        });
+        expect(progress.startContinuous).toHaveBeenCalledOnce();
+        expect(progress.setComplete).toHaveBeenCalledOnce();
+    });
+});
+
+describe('HTTP session transition', () => {
+    it('cancels requests started in the previous session and gives new requests a fresh signal', async () => {
+        let finish!: () => void;
+        let signal: AbortSignal | undefined;
+        const request = http.get('/api/client/extensions', {
+            adapter: (config) => {
+                signal = config.signal as AbortSignal;
+                return new Promise((resolve) => {
+                    finish = () => resolve({ config, data: {}, status: 200, statusText: 'OK', headers: {} });
+                });
+            },
+        });
+        await new Promise((resolve) => setTimeout(resolve, 0));
+        resetHttpSession();
+        expect(signal?.aborted).toBe(true);
+        finish();
+        await expect(request).rejects.toMatchObject({ code: 'ERR_CANCELED' });
+        await http.get('/api/client', {
+            adapter: async (config) => {
+                expect(config.signal?.aborted).toBe(false);
+                return { config, data: {}, status: 200, statusText: 'OK', headers: {} };
+            },
+        });
+    });
+});
+
+describe('logout request ordering', () => {
+    it.each(['/auth/logout', '/auth/login', '/auth/login/checkpoint', '/auth/login/passkey'])(
+        '%s drains issued requests, blocks queued old-session reads, and releases new-session reads',
+        async (path) => {
+            let finish!: () => void;
+            let enter!: () => void;
+            const entered = new Promise<void>((resolve) => {
+                enter = resolve;
+            });
+            const issued = http.get('/api/client/account', {
+                adapter: (config) =>
+                    new Promise((resolve) => {
+                        enter();
+                        finish = () => resolve({ config, data: {}, status: 200, statusText: 'OK', headers: {} });
+                    }),
+            });
+            await entered;
+            const logout = vi.fn();
+            let fresh!: Promise<unknown>;
+            const changing = withHttpSessionTransition(async () => {
+                await http.post(
+                    path,
+                    {},
+                    {
+                        adapter: async (config) => {
+                            logout();
+                            return { config, data: {}, status: 200, statusText: 'OK', headers: {} };
+                        },
+                    },
+                );
+                resetHttpSession();
+                fresh = http.get('/auth/alerts', {
+                    adapter: async (config) => ({ config, data: {}, status: 200, statusText: 'OK', headers: {} }),
+                });
+            });
+            const staleAdapter = vi.fn();
+            const queued = expect(http.get('/api/client/extensions', { adapter: staleAdapter })).rejects.toMatchObject({
+                code: 'ERR_CANCELED',
+            });
+            await new Promise((resolve) => setTimeout(resolve, 0));
+            expect(logout).not.toHaveBeenCalled();
+            finish();
+            await issued;
+            await changing;
+            await queued;
+            await expect(fresh).resolves.toMatchObject({ status: 200 });
+            expect(staleAdapter).not.toHaveBeenCalled();
+            expect(logout).toHaveBeenCalledOnce();
+        },
+    );
+
+    it('releases blocked requests without changing the session when logout fails', async () => {
+        const before = await http.get('/api/client', {
+            adapter: async (config) => ({ config, data: {}, status: 200, statusText: 'OK', headers: {} }),
+        });
+        let fail!: () => void;
+        const changing = withHttpSessionTransition(
+            () =>
+                new Promise<void>((_, reject) => {
+                    fail = () => reject(new Error('offline'));
+                }),
+        );
+        const rejected = expect(changing).rejects.toThrow('offline');
+        const queued = http.get('/api/client/extensions', {
+            adapter: async (config) => {
+                expect(config.signal).toBe(before.config.signal);
+                return { config, data: {}, status: 200, statusText: 'OK', headers: {} };
+            },
+        });
+        await new Promise((resolve) => setTimeout(resolve, 0));
+        fail();
+        await rejected;
+        await expect(queued).resolves.toMatchObject({ status: 200 });
+    });
+});
+
+it.each([300000, 0])(
+    'bounds the session drain and cancels long work with timeout %s before logout',
+    async (timeout) => {
+        vi.useFakeTimers();
+        try {
+            let issued!: () => void;
+            const entered = new Promise<void>((resolve) => {
+                issued = resolve;
+            });
+            const owner = new AbortController();
+            let signal: AbortSignal | undefined;
+            const request = http.post(
+                '/api/client/servers/test/files/decompress',
+                {},
+                {
+                    timeout,
+                    signal: owner.signal,
+                    adapter: (config) =>
+                        new Promise((_, reject) => {
+                            signal = config.signal as AbortSignal;
+                            signal.addEventListener('abort', () =>
+                                reject(new CanceledError('Session changed', config)),
+                            );
+                            issued();
+                        }),
+                },
+            );
+            const cancelled = expect(request).rejects.toMatchObject({ code: 'ERR_CANCELED' });
+            await entered;
+            const logout = vi.fn();
+            const changing = withHttpSessionTransition(async () => {
+                expect(signal?.aborted).toBe(true);
+                await http.post(
+                    '/auth/logout',
+                    {},
+                    {
+                        adapter: async (config) => {
+                            logout();
+                            return { config, data: {}, status: 200, statusText: 'OK', headers: {} };
+                        },
+                    },
+                );
+            });
+            await vi.advanceTimersByTimeAsync(499);
+            expect(logout).not.toHaveBeenCalled();
+            await vi.advanceTimersByTimeAsync(1);
+            await changing;
+            await cancelled;
+            expect(logout).toHaveBeenCalledOnce();
+            expect(owner.signal.aborted).toBe(false);
+        } finally {
+            vi.useRealTimers();
+        }
+    },
+);

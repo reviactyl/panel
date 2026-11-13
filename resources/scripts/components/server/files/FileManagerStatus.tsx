@@ -92,7 +92,7 @@ const FileUploadList = () => {
                     <Code>{upload.name}</Code>
                     <button
                         onClick={() => upload.keys.forEach((key) => cancelFileUpload(key))}
-                        className={'text-gray-600 hover:text-gray-200 transition-colors duration-75'}
+                        className={'text-muted hover:text-gray-200 transition-colors duration-75'}
                     >
                         <XIcon className={'w-5 h-5'} />
                     </button>
@@ -133,7 +133,7 @@ export default ({ className }: WithClassname) => {
                     <button
                         className={
                             className ||
-                            'flex items-center justify-center w-10 h-10 rounded-ui bg-gray-900 border border-gray-800 text-blue-300 hover:text-blue-100 hover:border-gray-600 transition-colors'
+                            'flex items-center justify-center w-10 h-10 rounded-ui bg-gray-900 border border-gray-800 text-accent hover:text-accent hover:border-gray-600 transition-colors'
                         }
                         onClick={() => setOpen(true)}
                     >

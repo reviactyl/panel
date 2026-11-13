@@ -56,7 +56,9 @@ class UserResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return User::count() > 0 ? (string) User::count() : null;
+        $count = User::count();
+
+        return $count > 0 ? (string) $count : null;
     }
 
     /**

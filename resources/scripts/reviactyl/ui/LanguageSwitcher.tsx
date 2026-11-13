@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useId, useRef } from 'react';
 import i18n from '@/i18n';
 import Select from '@/reviactyl/elements/Select';
 import { useTranslation } from 'react-i18next';
-import { useStoreActions, useStoreState } from 'easy-peasy';
-import updateAccountLanguage from '@/api/account/updateAccountLanguage';
+import { useStoreState } from 'easy-peasy';
+import useAccountPreference from '@/plugins/useAccountPreference';
 import { ApplicationStore } from '@/state';
 import { applyDocumentDirection } from '@/lib/rtl';
 
@@ -13,45 +13,52 @@ interface LanguageInfo {
 }
 
 const LanguageSwitcher = () => {
+    const id = useId();
     const { t } = useTranslation('dashboard/account');
     const user = useStoreState((state: ApplicationStore) => state.user.data);
     const serverLocale = useStoreState((state: any) => state.settings.data?.locale || 'en');
-    const updateUserData = useStoreActions((actions: any) => actions.user.updateUserData);
+    const savePreference = useAccountPreference();
     const [languages, setLanguages] = useState<Record<string, LanguageInfo>>({});
-    const [currentLang, setCurrentLang] = useState(
-        user?.language && user.language !== 'geo' ? user.language : serverLocale,
-    );
+    const [pendingLang, setPendingLang] = useState<string | null>(null);
+    const requestGeneration = useRef(0);
+    const currentLang = pendingLang ?? (user?.language && user.language !== 'geo' ? user.language : serverLocale);
 
     useEffect(() => {
         fetch('/locales/list.json')
             .then((res) => res.json())
             .then((langs) => setLanguages(langs))
             .catch(() => setLanguages({ en: { name: 'English', flag: 'us' } }));
-
-        const onLangChanged = (lng: string) => setCurrentLang(lng);
-        i18n.on('languageChanged', onLangChanged);
-        return () => i18n.off('languageChanged', onLangChanged);
     }, []);
 
     const handleChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const newLang = e.target.value;
-        setCurrentLang(newLang);
-        i18n.changeLanguage(newLang);
+        const generation = ++requestGeneration.current;
 
+        setPendingLang(newLang);
         if (user) {
             try {
-                await updateAccountLanguage({ language: newLang });
-                updateUserData({ language: newLang });
+                await savePreference('language', newLang);
+                if (generation === requestGeneration.current) {
+                    setPendingLang(null);
+                }
             } catch (error) {
+                if (generation === requestGeneration.current) {
+                    setPendingLang(null);
+                }
                 console.error('Failed to update language:', error);
             }
+        } else {
+            setPendingLang(null);
+            i18n.changeLanguage(newLang);
         }
     };
 
     return (
         <div className='flex flex-col gap-2 mb-2 sm:flex-row sm:justify-between sm:items-center'>
-            <p className='min-w-0 flex-1'>{t('overview.language')}</p>
-            <Select className='pr-15! w-full min-w-0 sm:w-auto!' value={currentLang} onChange={handleChange}>
+            <label htmlFor={id} className='min-w-0 flex-1'>
+                {t('overview.language')}
+            </label>
+            <Select id={id} className='pr-15! w-full min-w-0 sm:w-auto!' value={currentLang} onChange={handleChange}>
                 {Object.entries(languages).map(([code, info]) => (
                     <option key={code} value={code}>
                         {info.name}

@@ -1,4 +1,7 @@
 import { lazy, useEffect } from 'react';
+import { DashboardRouter, ServerRouter, AuthenticationRouter, preloadAppRoute } from '@/routers/loadRouter';
+import type { PanelUser } from '@/state/user';
+import { rawUserToUserData } from '@/lib/user';
 import { createBrowserRouter, RouterProvider, Route, Routes } from 'react-router-dom';
 import { StoreProvider } from 'easy-peasy';
 import { store } from '@/state';
@@ -8,6 +11,7 @@ import ProgressBar from '@/reviactyl/elements/ProgressBar';
 import { NotFound } from '@/reviactyl/elements/ScreenBlock';
 import AuthenticatedRoute from '@/reviactyl/elements/AuthenticatedRoute';
 import { ServerContext } from '@/state/server';
+import { registerRouter } from '@/routers/navigation';
 import '@/assets/tailwind.css';
 import Spinner from '@/reviactyl/elements/Spinner';
 import { Theme } from '@/reviactyl/ui/Theme';
@@ -15,32 +19,14 @@ import { LocaleLoader } from '@/reviactyl/ui/LanguageSwitcher';
 import { SubuserPreviewProvider } from '@/context/SubuserPreviewContext';
 import { SubuserPreviewFrame } from '@/components/subuser-preview/SubuserPreviewFrame';
 
-const DashboardRouter = lazy(() => import('@/routers/DashboardRouter'));
-const ServerRouter = lazy(() => import('@/routers/ServerRouter'));
-const AuthenticationRouter = lazy(() => import('@/routers/AuthenticationRouter'));
 const PublicServerStatus = lazy(() => import('@/components/public/PublicServerStatus'));
+
+if (import.meta.env.PROD) void preloadAppRoute(window.location.pathname).catch(() => undefined);
 
 interface ExtendedWindow extends Window {
     SiteConfiguration?: SiteSettings;
     PanelConfiguration?: DesignifySettings;
-    PanelUser?: {
-        uuid: string;
-        username: string;
-        name_first: string;
-        name_last: string;
-        email: string;
-        root_admin: boolean;
-        admin?: boolean;
-        permissions?: string[];
-        use_totp: boolean;
-        language: string;
-        editor: string;
-        avatar_style: string;
-        avatar_animated: boolean;
-        archive_format: 'tar.gz' | 'zip';
-        updated_at: string;
-        created_at: string;
-    };
+    PanelUser?: PanelUser;
 }
 
 const previewColorKeys = ['colorPrimary', 'colorSuccess', 'colorDanger', 'colorSecondary'] as const;
@@ -127,6 +113,7 @@ const DesignifyPreviewBridge = () => {
             } else {
                 root.style.removeProperty('--font-family');
             }
+            window.dispatchEvent(new Event('designifychange'));
         };
 
         window.addEventListener('message', handlePreviewUpdate);
@@ -190,6 +177,7 @@ const router = createBrowserRouter([
         ),
     },
 ]);
+registerRouter(router);
 
 /**
  * Renders the application shell, global providers, and route tree.
@@ -200,24 +188,7 @@ const router = createBrowserRouter([
 function App() {
     const { PanelUser, SiteConfiguration, PanelConfiguration } = window as ExtendedWindow;
     if (PanelUser && !store.getState().user.data) {
-        store.getActions().user.setUserData({
-            uuid: PanelUser.uuid,
-            username: PanelUser.username,
-            name_first: PanelUser.name_first,
-            name_last: PanelUser.name_last,
-            email: PanelUser.email,
-            language: PanelUser.language,
-            rootAdmin: PanelUser.root_admin,
-            adminAccess: PanelUser.admin ?? PanelUser.root_admin,
-            rolePermissions: PanelUser.permissions ?? [],
-            useTotp: PanelUser.use_totp,
-            createdAt: new Date(PanelUser.created_at),
-            fileEditor: PanelUser.editor,
-            avatarStyle: PanelUser.avatar_style || 'gravatar',
-            avatarAnimated: PanelUser.avatar_animated ?? true,
-            archiveFormat: PanelUser.archive_format || 'tar.gz',
-            updatedAt: new Date(PanelUser.updated_at),
-        });
+        store.getActions().user.setUserData(rawUserToUserData(PanelUser));
     }
 
     if (!store.getState().settings.data) {

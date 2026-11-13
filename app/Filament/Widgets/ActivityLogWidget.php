@@ -12,6 +12,8 @@ use Filament\Schemas\Schema;
 
 class ActivityLogWidget extends BaseWidget
 {
+    protected static bool $isLazy = false;
+
     public static function canView(): bool
     {
         return AdminAccess::allows(RolePermission::RESOURCE_ACTIVITY_LOG);
@@ -24,10 +26,12 @@ class ActivityLogWidget extends BaseWidget
     public function form(Schema $schema): Schema
     {
         $logs = ActivityLog::query()
+            ->without('subjects')
             ->with('actor')
             ->latest('timestamp')
+            ->latest('id')
             ->limit(5)
-            ->get();
+            ->get(['id', 'event', 'timestamp', 'actor_type', 'actor_id']);
 
         $entries = [];
 

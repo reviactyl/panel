@@ -1,10 +1,6 @@
 <?php
 
 return [
-    'backup-settings' => 'Aviseringar om säkerhetskopior',
-    'backup-manual' => 'Manuella säkerhetskopior',
-    'backup-scheduled' => 'Schemalagda säkerhetskopior',
-    'backup-email' => 'Skicka även via e-post',
 
     'title' => 'Aviseringar',
     'description' => 'Uppdateringar om dina servrar och din åtkomst.',
@@ -27,6 +23,19 @@ return [
     'dismiss' => 'Ta bort',
     'previous' => 'Föregående',
     'next' => 'Nästa',
+    'settings-loading' => 'Läser in aviseringsinställningar…',
+    'settings-error' => 'Aviseringsinställningarna kunde inte läsas in.',
+    'settings-type' => 'Aviseringstyp',
+    'settings-panel' => 'Panel',
+    'settings-email' => 'E-post',
+    'categories' => [
+        'server-access' => ['title' => 'Serveråtkomst'],
+        'server-setup' => ['title' => 'Serverinstallation'],
+        'server-failures' => ['title' => 'Serverfel'],
+        'backups' => ['title' => 'Säkerhetskopior'],
+        'backup-failures' => ['title' => 'Säkerhetskopieringsfel'],
+        'extension-alerts' => ['title' => 'Tilläggsaviseringar'],
+    ],
     'events' => [
         'extension-updated' => 'Tillägget har uppdaterats',
         'reinstalled' => 'Servern har installerats om',

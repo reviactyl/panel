@@ -28,7 +28,11 @@ export default forwardRef<HTMLFormElement, Props>(({ title, ...props }, ref) => 
                         <NavbarLanguageSwitcher />
                     </div>
                     <LogoContainer>
-                        <img src={logo} alt={name} className='h-12' />
+                        <img
+                            src={logo}
+                            alt={name}
+                            className={`h-12 ${logo === '/reviactyl/logo.png' ? 'brightness-0 dark:brightness-100' : ''}`}
+                        />
                     </LogoContainer>
                     <Card>
                         {title && <Title className='text-3xl text-center pb-3'>{title}</Title>}

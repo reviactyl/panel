@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useId, useState } from 'react';
 import * as React from 'react';
 import { Dialog, DialogWrapperContext } from '@/reviactyl/elements/dialog';
 import getTwoFactorTokenData, { TwoFactorTokenData } from '@/api/account/getTwoFactorTokenData';
@@ -22,6 +22,8 @@ interface Props {
 
 const ConfigureTwoFactorForm = ({ onTokens }: Props) => {
     const { t } = useTranslation('dashboard/account');
+    const codeId = useId();
+    const passwordId = useId();
     const [submitting, setSubmitting] = useState(false);
     const [value, setValue] = useState('');
     const [password, setPassword] = useState('');
@@ -75,11 +77,11 @@ const ConfigureTwoFactorForm = ({ onTokens }: Props) => {
                     {token?.secret.match(/.{1,4}/g)!.join(' ') || 'Loading...'}
                 </p>
             </CopyOnClick>
-            <p id={'totp-code-description'} className={'mt-6'}>
+            <label htmlFor={codeId} className={'block mt-6'}>
                 {t('2fa.setup.scan')}
-            </p>
+            </label>
             <Input.Text
-                aria-labelledby={'totp-code-description'}
+                id={codeId}
                 variant={Input.Text.Variants.Loose}
                 value={value}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValue(e.currentTarget.value)}
@@ -90,10 +92,11 @@ const ConfigureTwoFactorForm = ({ onTokens }: Props) => {
                 autoComplete={'one-time-code'}
                 pattern={'\\d{6}'}
             />
-            <label htmlFor={'totp-password'} className={'block mt-3'}>
+            <label htmlFor={passwordId} className={'block mt-3'}>
                 {t('2fa.setup.password')}
             </label>
             <Input.Text
+                id={passwordId}
                 variant={Input.Text.Variants.Loose}
                 className={'mt-1'}
                 type={'password'}

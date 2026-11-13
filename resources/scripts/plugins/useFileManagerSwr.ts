@@ -1,3 +1,4 @@
+import { isRecyclePath } from '@/components/server/files/recyclePaths';
 import useSWR from 'swr';
 import loadDirectory, { FileObject } from '@/api/server/files/loadDirectory';
 import { cleanDirectoryPath } from '@/helpers';
@@ -11,7 +12,7 @@ export default () => {
 
     return useSWR<FileObject[]>(
         getDirectorySwrKey(uuid, directory),
-        () => loadDirectory(uuid, cleanDirectoryPath(directory)),
+        () => (isRecyclePath(directory) ? Promise.resolve([]) : loadDirectory(uuid, cleanDirectoryPath(directory))),
         {
             focusThrottleInterval: 30000,
             revalidateOnMount: false,

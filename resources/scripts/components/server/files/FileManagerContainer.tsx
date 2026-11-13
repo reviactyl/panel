@@ -1,3 +1,5 @@
+import { isRecyclePath } from './recyclePaths';
+import RecycleBin, { RecycleBinRow } from './RecycleBin';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { httpErrorToHuman } from '@/api/http';
 import Spinner from '@/reviactyl/elements/Spinner';
@@ -45,7 +47,7 @@ import { Button } from '@/reviactyl/components/button';
 import { sortFiles, SortDirection, SortType } from '@/components/server/files/sortFiles';
 
 export default () => {
-    const { t } = useTranslation(['server/files', 'strings']);
+    const { t } = useTranslation(['server/files', 'strings', 'server/recycle']);
     const grid = useStoreState((state) => state.designify.data?.fileLayout === 'grid');
     const id = ServerContext.useStoreState((state) => state.server.data!.id);
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
@@ -102,6 +104,7 @@ export default () => {
 
     useEffect(() => {
         const gen = ++searchGenRef.current;
+        const controller = new AbortController();
 
         if (!query) {
             setRecursiveResults([]);
@@ -119,10 +122,17 @@ export default () => {
             const MAX_FILES = 250;
             const CONCURRENCY = 3;
 
-            while (queue.length > 0 && gen === searchGenRef.current && matches.length < MAX_FILES) {
+            while (
+                queue.length > 0 &&
+                !controller.signal.aborted &&
+                gen === searchGenRef.current &&
+                matches.length < MAX_FILES
+            ) {
                 const batch = queue.splice(0, CONCURRENCY);
                 const settled = await Promise.allSettled(
-                    batch.map((dir) => loadDirectory(uuid, dir).then((dirFiles) => ({ dir, dirFiles }))),
+                    batch.map((dir) =>
+                        loadDirectory(uuid, dir, controller.signal).then((dirFiles) => ({ dir, dirFiles })),
+                    ),
                 );
 
                 if (gen !== searchGenRef.current) break;
@@ -137,7 +147,7 @@ export default () => {
                             queue.push(fp);
                         }
                         if (f.name.toLowerCase().includes(query.toLowerCase())) {
-                            matches.push({ ...f, fullPath: fp, key: fp });
+                            if (matches.length < MAX_FILES) matches.push({ ...f, fullPath: fp, key: fp });
                         }
                     }
                 }
@@ -151,7 +161,11 @@ export default () => {
         })().catch(() => {
             if (gen === searchGenRef.current) setIsSearching(false);
         });
-    }, [query]);
+        return () => {
+            controller.abort();
+            ++searchGenRef.current;
+        };
+    }, [query, uuid]);
 
     const visibleFiles = useMemo(
         () => (query ? [] : sortFiles(files ?? [], sortType, sortDirection).slice(0, 250)),
@@ -196,6 +210,13 @@ export default () => {
         setVideoViewerVisible(false);
         setSelectedVideo(null);
     };
+
+    if (isRecyclePath(hashToPath(hash)))
+        return (
+            <ServerContentBlock title={t('title')} showFlashKey='files'>
+                <RecycleBin />
+            </ServerContentBlock>
+        );
 
     if (error) {
         return <ServerError message={httpErrorToHuman(error)} onRetry={() => mutate()} />;
@@ -364,7 +385,7 @@ export default () => {
                                 ))}
                             </div>
                         )
-                    ) : !files.length ? (
+                    ) : !files.length && directory !== '/' ? (
                         <div className={'flex flex-col items-center justify-center py-10 text-muted'}>
                             <FolderOpenIcon className={'w-12 h-12 mb-2 opacity-40'} />
                             <p className={'text-sm'}>{t('empty')}</p>
@@ -377,6 +398,15 @@ export default () => {
                                 </div>
                             )}
                             <div className={grid ? style.file_grid : undefined}>
+                                {directory === '/' && (
+                                    <Can action='file.read'>
+                                        <RecycleBinRow
+                                            grid={grid}
+                                            files={files}
+                                            onOpen={() => navigate(`/server/${id}/files#/.recycle-bin`)}
+                                        />
+                                    </Can>
+                                )}
                                 {visibleFiles.map((file) => (
                                     <FileObjectRow
                                         key={file.key}

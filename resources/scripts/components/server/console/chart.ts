@@ -9,9 +9,9 @@ import {
     PointElement,
 } from 'chart.js';
 import { DeepPartial } from 'ts-essentials';
-import { useState } from 'react';
+import useTheme from '@/plugins/useTheme';
+import { useEffect, useState } from 'react';
 import { deepmerge, deepmergeCustom } from 'deepmerge-ts';
-import { hexToRgba } from '@/lib/helpers';
 
 ChartJS.register(LineElement, PointElement, Filler, LinearScale);
 
@@ -51,7 +51,7 @@ const options: ChartOptions<'line'> = {
             ticks: {
                 display: true,
                 count: 3,
-                color: `rgb(${getComputedStyle(document.documentElement).getPropertyValue('--color-400').trim()})`,
+                color: `rgb(${getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim()})`,
                 font: {
                     family: getComputedStyle(document.documentElement)
                         .getPropertyValue('--font-sans')
@@ -79,7 +79,18 @@ function mergeOptions(base: ChartOptions<'line'>, extra?: DeepPartial<ChartOptio
 }
 
 function getOptions(opts?: DeepPartial<ChartOptions<'line'>>): ChartOptions<'line'> {
-    return mergeOptions(options, opts);
+    const colors = getComputedStyle(document.documentElement);
+    return mergeOptions(
+        mergeOptions(options, {
+            scales: {
+                y: {
+                    grid: { color: `rgb(${colors.getPropertyValue('--color-700').trim()} / 0.5)` },
+                    ticks: { color: `rgb(${colors.getPropertyValue('--text-muted').trim()})` },
+                },
+            },
+        }),
+        opts,
+    );
 }
 
 type ChartDatasetCallback = (value: ChartDataset<'line'>, index: number) => ChartDataset<'line'>;
@@ -100,12 +111,9 @@ function getEmptyData(label: string, sets = 1, callback?: ChartDatasetCallback |
                         label,
                         data: Array(20).fill(-5),
                         borderColor: `rgb(${getComputedStyle(document.documentElement)
-                            .getPropertyValue('--color-400')
+                            .getPropertyValue('--text-primary')
                             .trim()})`,
-                        backgroundColor: hexToRgba(
-                            `rgb(${getComputedStyle(document.documentElement).getPropertyValue('--color-700').trim()})`,
-                            0.5,
-                        ),
+                        backgroundColor: `rgb(${getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim()} / 0.12)`,
                     },
                     index,
                 ),
@@ -131,10 +139,23 @@ interface ChartHook {
 }
 
 function useChart(label: string, opts?: UseChartOptions): ChartHook {
+    const { dark, revision } = useTheme();
     const options = getOptions(
         typeof opts?.options === 'number' ? { scales: { y: { min: 0, suggestedMax: opts.options } } } : opts?.options,
     );
     const [data, setData] = useState(getEmptyData(label, opts?.sets || 1, opts?.callback));
+
+    useEffect(() => {
+        const next = getEmptyData(label, opts?.sets || 1, opts?.callback);
+        setData((current) => ({
+            ...current,
+            datasets: current.datasets.map((dataset, index) => ({
+                ...dataset,
+                borderColor: next.datasets[index]?.borderColor,
+                backgroundColor: next.datasets[index]?.backgroundColor,
+            })),
+        }));
+    }, [dark, revision]);
 
     const push = (items: number | null | (number | null)[]) =>
         setData((state) =>

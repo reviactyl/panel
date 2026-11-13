@@ -23,7 +23,7 @@ export default ({ meta }: { meta: Record<string, unknown> }) => {
             <button
                 aria-label={'View additional event metadata'}
                 className={
-                    'rounded-ui p-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400 transition-colors duration-100 text-gray-400 group-hover:text-gray-300 group-hover:hover:text-gray-50'
+                    'rounded-ui p-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent transition-colors duration-100 text-gray-400 group-hover:text-gray-300 group-hover:hover:text-gray-50'
                 }
                 onClick={() => setOpen(true)}
             >

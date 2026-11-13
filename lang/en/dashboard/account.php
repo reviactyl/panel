@@ -31,6 +31,9 @@ return [
         'archive-format' => 'Default Archive Format',
         'archive-format-description' => 'Used for file archives and new backups across your servers.',
         'theme-toggle' => 'Theme Toggle',
+        'theme-light' => 'Light',
+        'theme-dark' => 'Dark',
+        'theme-system' => 'System',
         'on' => 'On',
         'off' => 'Off',
         'loading' => 'Loading...',
@@ -137,6 +140,7 @@ return [
         'password-required' => 'You must provide your account password to continue.',
     ],
     'api' => [
+        'retry' => 'Retry',
         'title' => 'Account API',
         'create-key' => 'Create API Key',
         'content-title' => 'API Keys',

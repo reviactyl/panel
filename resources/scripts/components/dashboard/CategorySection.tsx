@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Server } from '@/api/server/getServer';
 import { ServerCategory } from '@/api/server/types';
@@ -19,6 +19,7 @@ interface Props {
 
 export default ({ category, label, servers, showOnlyAdmin, showCategory = true, onCategoryChanged }: Props) => {
     const { t } = useTranslation('dashboard/index');
+    const contentId = useId();
     const storageKey = `server-category-${category?.uuid ?? 'primary'}`;
     const [open, setOpen] = useState(() => {
         if (typeof window === 'undefined') return true;
@@ -46,11 +47,16 @@ export default ({ category, label, servers, showOnlyAdmin, showCategory = true, 
 
     if (servers.length === 0) return null;
 
-    const categoryColor = category?.color || 'var(--color-blue-500)';
-    const displayColor = category ? categoryColor : 'var(--color-gray-600)';
+    const categoryColor = category?.color || 'var(--color-reviactyl)';
+    const displayColor = category
+        ? `color-mix(in srgb, ${categoryColor} 25%, rgb(var(--color-100)))`
+        : 'var(--color-accent)';
     return (
         <div className='relative mb-3 overflow-hidden'>
             <button
+                type='button'
+                aria-expanded={open}
+                aria-controls={contentId}
                 className={`relative z-10 flex w-full cursor-pointer items-center justify-between px-5 py-4.5 text-left transition-colors duration-150 hover:bg-gray-800 bg-gray-900 border border-gray-800 ${open ? 'rounded-t-ui mb-2' : 'rounded-ui'}`}
                 onClick={toggleOpen}
             >
@@ -60,8 +66,8 @@ export default ({ category, label, servers, showOnlyAdmin, showCategory = true, 
                             className='inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border'
                             style={{
                                 color: displayColor,
-                                borderColor: `${displayColor}40`,
-                                backgroundColor: `${displayColor}15`,
+                                borderColor: `color-mix(in srgb, ${displayColor} 25%, transparent)`,
+                                backgroundColor: `color-mix(in srgb, ${displayColor} 8%, transparent)`,
                             }}
                         >
                             <FaServer className='h-6' />
@@ -93,32 +99,34 @@ export default ({ category, label, servers, showOnlyAdmin, showCategory = true, 
                     <ChevronDownIcon className='h-5 w-5 text-gray-400' />
                 </motion.div>
             </button>
-            <AnimatePresence initial={false}>
-                {open && (
-                    <motion.div
-                        key='category-content'
-                        initial={{ height: 0, opacity: 0, y: -8 }}
-                        animate={{ height: 'auto', opacity: 1, y: 0 }}
-                        exit={{ height: 0, opacity: 0, y: -8 }}
-                        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                        className='overflow-hidden'
-                    >
-                        <Card className='overflow-hidden rounded-t-none! p-2!'>
-                            <LayoutContainer>
-                                {servers.map((server, index) => (
-                                    <ServerLayout
-                                        key={server.uuid}
-                                        server={server}
-                                        className={index > 0 ? 'mt-2' : undefined}
-                                        onCategoryChanged={onCategoryChanged}
-                                        showCategory={!showOnlyAdmin && showCategory}
-                                    />
-                                ))}
-                            </LayoutContainer>
-                        </Card>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            <div id={contentId}>
+                <AnimatePresence initial={false}>
+                    {open && (
+                        <motion.div
+                            key='category-content'
+                            initial={{ height: 0, opacity: 0, y: -8 }}
+                            animate={{ height: 'auto', opacity: 1, y: 0 }}
+                            exit={{ height: 0, opacity: 0, y: -8 }}
+                            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                            className='overflow-hidden'
+                        >
+                            <Card className='overflow-hidden rounded-t-none! p-2!'>
+                                <LayoutContainer>
+                                    {servers.map((server, index) => (
+                                        <ServerLayout
+                                            key={server.uuid}
+                                            server={server}
+                                            className={index > 0 ? 'mt-2' : undefined}
+                                            onCategoryChanged={onCategoryChanged}
+                                            showCategory={!showOnlyAdmin && showCategory}
+                                        />
+                                    ))}
+                                </LayoutContainer>
+                            </Card>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
         </div>
     );
 };

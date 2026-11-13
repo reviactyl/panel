@@ -27,5 +27,5 @@ export default (
                 dockerImages: data.meta.docker_images || {},
             };
         },
-        { initialData: initialData || undefined, errorRetryCount: 3, ...(config || {}) },
+        { fallbackData: initialData || undefined, revalidateOnMount: true, errorRetryCount: 3, ...(config || {}) },
     );

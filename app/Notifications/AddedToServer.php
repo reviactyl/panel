@@ -2,7 +2,9 @@
 
 namespace App\Notifications;
 
+use App\Models\User;
 use App\Services\Mail\EmailTemplateService;
+use App\Services\Notifications\NotificationPreferenceService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -26,9 +28,19 @@ class AddedToServer extends Notification implements ShouldQueue
     /**
      * Get the notification's delivery channels.
      */
-    public function via(): array
+    public function via(?User $notifiable = null): array
     {
-        return ['database', 'mail'];
+        if (! $notifiable) {
+            return ['database', 'mail'];
+        }
+
+        $preferences = app(NotificationPreferenceService::class);
+        $channels = $preferences->isEnabled($notifiable, 'added') ? ['database'] : [];
+        if ($preferences->isEnabled($notifiable, 'added', 'email')) {
+            $channels[] = 'mail';
+        }
+
+        return $channels;
     }
 
     /**

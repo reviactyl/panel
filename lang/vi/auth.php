@@ -85,5 +85,6 @@ return [
     'throttle' => 'Quá nhiều lần thử đăng nhập. Vui lòng thử lại sau :seconds giây.',
     'password_requirements' => 'Mật khẩu phải có độ dài ít nhất 8 ký tự và phải là duy nhất cho trang này.',
     '2fa_must_be_enabled' => 'Quản trị viên đã yêu cầu bật Xác thực 2 yếu tố cho tài khoản của bạn để sử dụng Bảng điều khiển.',
+    'captcha-failed' => 'Không thể hoàn thành xác minh captcha. Vui lòng thử lại.',
     'captcha-required' => 'Vui lòng hoàn thành bài kiểm tra captcha để tiếp tục.',
 ];

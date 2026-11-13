@@ -11,11 +11,11 @@ interface Props {
 const styling = (type?: FlashMessageType): string => {
     switch (type) {
         case 'error':
-            return 'bg-red-600/20 border-red-800/40';
+            return 'bg-danger/10 border-danger/40';
         case 'info':
             return 'bg-primary-600/20 border-primary-800/40';
         case 'success':
-            return 'bg-green-600/20 border-green-800/40';
+            return 'bg-success/10 border-success/40';
         case 'warning':
             return 'bg-yellow-600/20 border-yellow-800/40';
         default:
@@ -26,13 +26,13 @@ const styling = (type?: FlashMessageType): string => {
 const getBackground = (type?: FlashMessageType): string => {
     switch (type) {
         case 'error':
-            return 'bg-red-500/60';
+            return 'bg-danger/15';
         case 'info':
-            return 'bg-primary-500/60';
+            return 'bg-primary-500/15';
         case 'success':
-            return 'bg-green-500/60';
+            return 'bg-success/15';
         case 'warning':
-            return 'bg-yellow-500/60';
+            return 'bg-yellow-500/15';
         default:
             return 'bg-gray-700/60';
     }
@@ -41,7 +41,7 @@ const getBackground = (type?: FlashMessageType): string => {
 const MessageBox = ({ title, children, type }: Props) => (
     <div
         className={classNames(
-            'flex w-full items-center rounded-ui border p-2 text-sm leading-normal text-white lg:inline-flex',
+            'flex w-full items-center rounded-ui border p-2 text-sm leading-normal text-gray-100 lg:inline-flex',
             styling(type),
         )}
         role='alert'

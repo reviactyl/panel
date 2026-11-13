@@ -4,6 +4,7 @@ import Label from '@/reviactyl/elements/Label';
 import Input from '@/reviactyl/elements/Input';
 
 export interface SwitchProps {
+    id?: string;
     name: string;
     label?: string;
     description?: string;
@@ -14,8 +15,19 @@ export interface SwitchProps {
     children?: React.ReactNode;
 }
 
-const Switch = ({ name, label, description, defaultChecked, checked, readOnly, onChange, children }: SwitchProps) => {
-    const uuid = useMemo(() => v4(), []);
+const Switch = ({
+    id,
+    name,
+    label,
+    description,
+    defaultChecked,
+    checked,
+    readOnly,
+    onChange,
+    children,
+}: SwitchProps) => {
+    const generatedId = useMemo(() => v4(), []);
+    const uuid = id ?? generatedId;
 
     return (
         <div className='flex items-center'>

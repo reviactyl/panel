@@ -147,7 +147,8 @@ class SubuserPreviewTest extends ClientApiIntegrationTestCase
         $this->withPreviewToken($token)->getJson($this->link($otherServer))->assertNotFound();
         $this->withPreviewToken($token)->getJson('/api/client/account')->assertForbidden();
         $this->withPreviewToken($token)->getJson('/api/client/notifications')->assertForbidden();
-        $this->withPreviewToken($token)->putJson($this->link($server, 'backups/notification-preferences'), ['manual' => true, 'scheduled' => true, 'email' => true])->assertStatus(409);
+        $this->withPreviewToken($token)->getJson('/api/client/account/notifications')->assertForbidden();
+        $this->withPreviewToken($token)->putJson('/api/client/account/notifications', ['category' => 'backups', 'database' => false, 'email' => true])->assertForbidden();
     }
 
     public function test_create_only_preview_refuses_a_duplicate_without_writing_live_files(): void

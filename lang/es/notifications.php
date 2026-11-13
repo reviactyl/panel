@@ -1,10 +1,6 @@
 <?php
 
 return [
-    'backup-settings' => 'Notificaciones de copias de seguridad',
-    'backup-manual' => 'Copias manuales',
-    'backup-scheduled' => 'Copias programadas',
-    'backup-email' => 'Enviar también por correo',
 
     'title' => 'Notificaciones',
     'description' => 'Novedades sobre tus servidores y accesos.',
@@ -27,6 +23,19 @@ return [
     'dismiss' => 'Descartar',
     'previous' => 'Anterior',
     'next' => 'Siguiente',
+    'settings-loading' => 'Cargando la configuración de notificaciones…',
+    'settings-error' => 'No se pudo cargar la configuración de notificaciones.',
+    'settings-type' => 'Tipo de notificación',
+    'settings-panel' => 'Panel',
+    'settings-email' => 'Correo',
+    'categories' => [
+        'server-access' => ['title' => 'Acceso al servidor'],
+        'server-setup' => ['title' => 'Configuración del servidor'],
+        'server-failures' => ['title' => 'Fallos del servidor'],
+        'backups' => ['title' => 'Copias de seguridad'],
+        'backup-failures' => ['title' => 'Fallos de copia de seguridad'],
+        'extension-alerts' => ['title' => 'Alertas de extensiones'],
+    ],
     'events' => [
         'extension-updated' => 'Extensión actualizada',
         'reinstalled' => 'Servidor reinstalado',

@@ -2,6 +2,8 @@
 
 return [
     'overview' => [
+        'recycle-bin-retention' => 'রিসাইকেল বিনে রাখার সময় (দিন)',
+        'recycle-bin-retention-hint' => 'এই সংখ্যক দিন পরে রিসাইকেল বিনের ফাইল স্থায়ীভাবে মুছে ফেলুন।',
         'title' => 'সেটিংস',
         'general-title' => 'সাধারণ',
         'app-name' => 'অ্যাপের নাম',

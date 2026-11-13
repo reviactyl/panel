@@ -90,6 +90,9 @@ return [
             'export' => 'Se exportó la base de datos :name',
         ],
         'file' => [
+            'recycle_one' => 'Mover a la papelera · :directory:files.0',
+            'recycle_other' => 'Mover a la papelera · :count · :directory',
+            'restore' => 'Restaurar · :id',
             'compress_one' => 'Archivo :directory:file comprimido',
             'compress_other' => 'Comprimidos :count archivos en :directory',
             'read' => 'Visto el contenido de :file',

@@ -90,6 +90,9 @@ return [
             'export' => 'Exported database :name',
         ],
         'file' => [
+            'recycle_one' => 'Move to recycle bin · :directory:files.0',
+            'recycle_other' => 'Move to recycle bin · :count · :directory',
+            'restore' => 'Restore · :id',
             'compress_one' => 'Compressed :directory:files.0',
             'compress_other' => 'Compressed :count files in :directory',
             'read' => 'Viewed the contents of :file',

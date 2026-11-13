@@ -5,7 +5,7 @@ import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { ExternalLinkIcon } from '@heroicons/react/solid';
 import { useTranslation } from 'react-i18next';
-import http from '@/api/http';
+import useLogout from '@/plugins/useLogout';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import Logo from '@/reviactyl/ui/Logo';
 import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
@@ -32,7 +32,7 @@ const NavbarContainer = ({ children, className = '' }: React.HTMLAttributes<HTML
 
 export const SideNavigation = ({ children, className = '' }: React.HTMLAttributes<HTMLDivElement>) => (
     <div
-        className={`-mt-1 flex flex-col gap-1 pb-4 [&_.label]:mx-2 [&_.label]:flex [&_.label]:items-center [&_.label]:px-3 [&_.label]:pt-2 [&_.label]:pb-1 [&_.label]:text-sm [&_.label]:font-semibold [&_.label]:text-gray-400 [&_a]:mx-2 [&_a]:flex [&_a]:items-center [&_a]:rounded-ui [&_a]:px-5 [&_a]:py-2 [&_a]:text-sm [&_a]:font-medium [&_a]:text-gray-200 [&_a:hover]:bg-gray-700/20 [&_a:focus]:bg-gray-700/20 [&_a:focus]:text-reviactyl [&_a.active]:bg-gray-700/20 [&_a.active]:text-reviactyl ${className}`}
+        className={`-mt-1 flex flex-col gap-1 pb-4 [&_.label]:mx-2 [&_.label]:flex [&_.label]:items-center [&_.label]:px-3 [&_.label]:pt-2 [&_.label]:pb-1 [&_.label]:text-sm [&_.label]:font-semibold [&_.label]:text-gray-400 [&_a]:mx-2 [&_a]:flex [&_a]:items-center [&_a]:rounded-ui [&_a]:px-5 [&_a]:py-2 [&_a]:text-sm [&_a]:font-medium [&_a]:text-gray-200 [&_a:hover]:bg-gray-700/20 [&_a:focus]:bg-primary-500/10 [&_a:focus]:text-accent [&_a.active]:bg-primary-500/10 [&_a.active]:text-accent ${className}`}
     >
         {children}
     </div>
@@ -47,21 +47,14 @@ export const SidebarModern = React.forwardRef<HTMLDivElement, SidebarProps>(
         const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
         const adminAccess = useStoreState((state) => state.user.data!.adminAccess);
         const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
-        const [isLoggingOut, setIsLoggingOut] = useState(false);
+        const { isLoggingOut, onLogout } = useLogout();
         const sidebarLogout = useStoreState((state) => state.designify.data?.sidebarLogout);
         const { session } = useSubuserPreview();
-
-        const onLogout = () => {
-            setIsLoggingOut(true);
-            http.post('/auth/logout').finally(() => {
-                window.location.href = '/';
-            });
-        };
 
         return (
             <div
                 ref={ref}
-                className={`m-2 w-56.25 self-start flex-col rounded-ui border border-gray-800 bg-gray-900 text-white 2xl:w-64 lg:fixed lg:top-(--subuser-preview-offset,0px) lg:left-0 lg:z-40 lg:flex lg:h-[calc(100dvh-15px-var(--subuser-preview-offset,0px))] lg:overflow-y-auto ${
+                className={`m-2 w-56.25 self-start flex-col rounded-ui border border-gray-800 bg-gray-900 text-gray-100 2xl:w-64 lg:fixed lg:top-(--subuser-preview-offset,0px) lg:left-0 lg:z-40 lg:flex lg:h-[calc(100dvh-15px-var(--subuser-preview-offset,0px))] lg:overflow-y-auto ${
                     isOpen
                         ? 'fixed top-[calc(1rem+var(--subuser-preview-offset,0px))] left-0 z-40 flex h-[calc(100dvh-6rem-var(--subuser-preview-offset,0px))] overflow-y-auto'
                         : 'hidden'
@@ -83,7 +76,7 @@ export const SidebarModern = React.forwardRef<HTMLDivElement, SidebarProps>(
                     {session ? (
                         <div className='flex min-w-0 items-center gap-3'>
                             <span className='flex rounded-full items-center justify-center bg-amber-900/50 border-amber-800/50 h-10 w-10'>
-                                <FaEye className='h-5 w-5 shrink-0 text-amber-400' />
+                                <FaEye className='h-5 w-5 shrink-0 text-amber-700 dark:text-amber-400' />
                             </span>
                             <div className='min-w-0'>
                                 <p className='text-xs font-semibold text-gray-100'>{tUsers('preview.title')}</p>
@@ -97,7 +90,7 @@ export const SidebarModern = React.forwardRef<HTMLDivElement, SidebarProps>(
                             </Link>
                             <div className='flex flex-col'>
                                 <div className='flex items-center gap-x-1'>
-                                    <span className='text-xs tracking-widest uppercase text-gray-500'>
+                                    <span className='text-xs tracking-widest uppercase text-muted'>
                                         {rootAdmin ? t('overview.administrator') : `${name} ${t('overview.user')}`}
                                     </span>
                                     {adminAccess && (
@@ -114,11 +107,16 @@ export const SidebarModern = React.forwardRef<HTMLDivElement, SidebarProps>(
                                 </Link>
                             </div>
                             {sidebarLogout && (
-                                <div onClick={onLogout}>
-                                    <Tooltip content={t('overview.logout')}>
-                                        <FaArrowRightToBracket className='h-10 text-gray-600 hover:text-danger/80 cursor-pointer' />
-                                    </Tooltip>
-                                </div>
+                                <Tooltip content={t('overview.logout')}>
+                                    <button
+                                        type='button'
+                                        onClick={onLogout}
+                                        aria-label={t('overview.logout')}
+                                        className='rounded-ui text-muted hover:text-danger-text cursor-pointer focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-reviactyl'
+                                    >
+                                        <FaArrowRightToBracket aria-hidden='true' className='h-10' />
+                                    </button>
+                                </Tooltip>
                             )}
                         </div>
                     )}

@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, CanceledError } from 'axios';
 import { store } from '@/state';
 import { getPreviewToken } from '@/lib/subuserPreviewStorage';
 
@@ -12,13 +12,70 @@ const http: AxiosInstance = axios.create({
     },
 });
 
+let sessionRequests = new AbortController();
+let transition: Promise<void> | undefined;
+const activeRequests = new Set<Promise<void>>();
+
+export const getHttpSessionSignal = () => sessionRequests.signal;
+
+export const resetHttpSession = () => {
+    sessionRequests.abort();
+    sessionRequests = new AbortController();
+};
+
+export const withHttpSessionTransition = async <T>(callback: () => Promise<T>): Promise<T> => {
+    if (transition) throw new Error('A session transition is already in progress.');
+    let resume!: () => void;
+    transition = new Promise<void>((resolve) => {
+        resume = resolve;
+    });
+    let timeout: ReturnType<typeof setTimeout> | undefined;
+    try {
+        const drained = await Promise.race([
+            Promise.all([...activeRequests]).then(() => true),
+            new Promise<false>((resolve) => {
+                timeout = setTimeout(() => resolve(false), 500);
+            }),
+        ]);
+        clearTimeout(timeout);
+        if (!drained) resetHttpSession();
+        return await callback();
+    } finally {
+        clearTimeout(timeout);
+        transition = undefined;
+        resume();
+    }
+};
+
 const isBackgroundRequest = (url?: string): boolean =>
     url?.endsWith('/resources') === true ||
+    url?.endsWith('/resources/history') === true ||
     url?.endsWith('/subuser-preview/heartbeat') === true ||
     url?.endsWith('/alerts') === true ||
     url?.includes('/api/client/alerts/') === true;
 
 http.interceptors.request.use((req) => {
+    const sessionSignal = sessionRequests.signal;
+    req.signal = req.signal ? AbortSignal.any([sessionSignal, req.signal as AbortSignal]) : sessionSignal;
+    const adapter = axios.getAdapter(req.adapter ?? http.defaults.adapter);
+    req.adapter = async (config) => {
+        const changesSession =
+            config.url === '/sanctum/csrf-cookie' ||
+            (config.method === 'post' && /^\/auth\/(?:logout|login(?:\/.*)?)$/.test(config.url || ''));
+        if (transition && !changesSession) await transition;
+        if (sessionSignal.aborted) throw new CanceledError('Session changed before the request was sent.');
+        let finish!: () => void;
+        const done = new Promise<void>((resolve) => {
+            finish = resolve;
+        });
+        activeRequests.add(done);
+        try {
+            return await adapter(config);
+        } finally {
+            activeRequests.delete(done);
+            finish();
+        }
+    };
     const previewToken = getPreviewToken();
     if (previewToken && req.url?.startsWith('/api/client')) {
         req.headers.set('X-Subuser-Preview', previewToken);
@@ -33,7 +90,7 @@ http.interceptors.request.use((req) => {
 
 http.interceptors.response.use(
     (resp) => {
-        if (!isBackgroundRequest(resp.request?.url)) {
+        if (!isBackgroundRequest(resp.config?.url ?? resp.request?.url)) {
             store.getActions().progress.setComplete();
         }
 

@@ -1,16 +1,20 @@
 import { act, type ButtonHTMLAttributes, type ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
-import { afterEach, beforeEach, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { getByLabelText } from '@testing-library/dom';
 import type { ServerDatabase } from '@/api/server/databases/getServerDatabases';
 import DatabaseRow from './DatabaseRow';
 
 const mocks = vi.hoisted(() => ({
+    copy: vi.fn(),
+    canViewPassword: true,
     remove: vi.fn(),
     delete: vi.fn(),
     append: vi.fn(),
     addError: vi.fn(),
     clearFlashes: vi.fn(),
 }));
+vi.mock('copy-to-clipboard', () => ({ default: mocks.copy }));
 vi.mock('@/api/server/databases/deleteServerDatabase', () => ({ default: mocks.delete }));
 vi.mock('@/state/server', () => ({
     ServerContext: {
@@ -52,22 +56,30 @@ vi.mock('@/components/server/databases/RotatePasswordButton', () => ({ default: 
 vi.mock('@/components/server/databases/ImportDatabaseModal', () => ({ default: () => null }));
 vi.mock('@/components/server/databases/ExportDatabaseModal', () => ({ default: () => null }));
 vi.mock('@/extensions/ExtensionSlot', () => ({ ExtensionSlot: () => null }));
-vi.mock('@/reviactyl/elements/Can', () => ({ default: ({ children }: { children: ReactNode }) => children }));
-vi.mock('@/reviactyl/elements/CopyOnClick', () => ({ default: ({ children }: { children: ReactNode }) => children }));
+vi.mock('@/reviactyl/elements/Can', () => ({
+    default: ({ action, children }: { action: string; children: ReactNode }) =>
+        action === 'database.view_password' && !mocks.canViewPassword ? null : children,
+}));
 
+let portal: HTMLDivElement;
 let container: HTMLDivElement;
 let root: Root;
 beforeEach(() => {
     Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
     vi.clearAllMocks();
+    mocks.canViewPassword = true;
     mocks.delete.mockResolvedValue(undefined);
     container = document.createElement('div');
     document.body.append(container);
+    portal = document.createElement('div');
+    portal.id = 'modal-portal';
+    document.body.append(portal);
     root = createRoot(container);
 });
 afterEach(async () => {
     await act(async () => root.unmount());
     container.remove();
+    portal.remove();
 });
 
 it.each([
@@ -102,4 +114,71 @@ it.each([
     );
     if (valid) expect(mocks.delete).toHaveBeenCalledWith('server-uuid', 'database-id');
     else expect(mocks.delete).not.toHaveBeenCalled();
+});
+
+const database: ServerDatabase = {
+    id: '1',
+    name: 's1_shop',
+    username: 'shop_user',
+    password: 'test-password',
+    connectionString: 'localhost:3306',
+    allowConnectionsFrom: '%',
+};
+const values = {
+    endpoint: database.connectionString,
+    'connections-from': database.allowConnectionsFrom,
+    username: database.username,
+    password: database.password,
+    'jdbc-connection-string': 'jdbc:mysql://shop_user:test-password@localhost:3306/s1_shop',
+};
+
+const openAll = async () => {
+    for (const button of container.querySelectorAll<HTMLButtonElement>('button[aria-label="connection-title"]')) {
+        await act(async () => button.click());
+    }
+};
+
+describe('database connection labels', () => {
+    it('associates all values with their visible labels and preserves copying', async () => {
+        await act(async () => root.render(<DatabaseRow database={database} />));
+        await openAll();
+        const dialog = container.querySelector<HTMLElement>('[role="dialog"]')!;
+        for (const [label, value] of Object.entries(values)) {
+            const input = getByLabelText<HTMLInputElement>(dialog, label);
+            expect(input.value).toBe(value);
+            expect(input.readOnly).toBe(true);
+            await act(async () => input.click());
+            if (label !== 'connections-from') expect(mocks.copy).toHaveBeenLastCalledWith(value);
+        }
+        expect(mocks.copy).toHaveBeenCalledTimes(4);
+    });
+
+    it('keeps associations unique across row instances, even for the same database', async () => {
+        await act(async () =>
+            root.render(
+                <>
+                    <DatabaseRow database={database} />
+                    <DatabaseRow database={database} />
+                </>,
+            ),
+        );
+        await openAll();
+        const ids: string[] = [];
+        for (const dialog of container.querySelectorAll<HTMLElement>('[role="dialog"]')) {
+            for (const label of Object.keys(values)) ids.push(getByLabelText<HTMLInputElement>(dialog, label).id);
+        }
+        expect(new Set(ids).size).toBe(10);
+    });
+
+    it('preserves password permissions and the Close action', async () => {
+        mocks.canViewPassword = false;
+        await act(async () => root.render(<DatabaseRow database={database} />));
+        await openAll();
+        const dialog = container.querySelector<HTMLElement>('[role="dialog"]')!;
+        expect(dialog.querySelectorAll('input')).toHaveLength(4);
+        expect([...dialog.querySelectorAll('label')].some((label) => label.textContent === 'password')).toBe(false);
+        const close = [...dialog.querySelectorAll('button')].find((button) => button.textContent === 'close')!;
+        await act(async () => close.click());
+        expect(container.querySelector('[role="dialog"]')).toBeNull();
+    });
 });

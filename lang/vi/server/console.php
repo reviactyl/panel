@@ -7,6 +7,8 @@ return [
     'server-transferring' => 'Máy chủ này hiện đang được chuyển sang một nút khác và mọi hành động đều không khả dụng.',
     'run-command' => 'Gõ lệnh...',
     'connection-trouble' => 'Chúng tôi đang gặp sự cố khi kết nối với máy chủ của bạn, vui lòng đợi...',
+    'connection-error' => 'Không thể kết nối với máy chủ của bạn. Vui lòng thử lại.',
+    'retry' => 'Thử lại',
     'address' => 'Địa chỉ',
     'uptime' => 'Thời gian hoạt động',
     'network-inbound' => 'Mạng (Vào)',

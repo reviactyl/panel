@@ -7,6 +7,8 @@ return [
     'server-transferring' => '此服务器当前正在传输到另一个节点，所有操作均不可用。',
     'run-command' => '输入命令……',
     'connection-trouble' => '我们在连接到您的服务器时遇到问题，请稍候...',
+    'connection-error' => '无法连接到您的服务器。请重试。',
+    'retry' => '重试',
     'address' => '地址',
     'uptime' => '正常运行时间',
     'network-inbound' => '网络（入站）',

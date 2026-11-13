@@ -49,13 +49,13 @@ export default ({ server }: { server: Server }) => {
                 className={`py-1 px-3 text-xs font-medium rounded-ui
                         ${
                             stats?.status === 'offline'
-                                ? 'bg-danger/20 text-danger border border-danger/30'
+                                ? 'bg-danger/20 text-danger-text border border-danger/30'
                                 : stats?.status === 'running'
-                                  ? 'bg-success/20 text-success border border-success/30'
+                                  ? 'bg-success/20 text-success-text border border-success/30'
                                   : stats?.status === 'starting'
-                                    ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                                    ? 'bg-amber-500/20 text-amber-700 dark:text-amber-400 border border-amber-500/30'
                                     : stats?.status === 'stopping'
-                                      ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30'
+                                      ? 'bg-orange-500/20 text-orange-700 dark:text-orange-400 border border-orange-500/30'
                                       : ''
                         }
                     `}

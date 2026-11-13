@@ -33,10 +33,17 @@ export default ({ name, fingerprint }: { name: string; fingerprint: string }) =>
                 onConfirmed={onClick}
                 onClose={() => setVisible(false)}
             >
-                {t('ssh.delete.info')} <Code>{name}</Code>
+                {t('ssh.delete.info')} <Code>{name || fingerprint}</Code>
             </Dialog.Confirm>
-            <button className='ml-4 p-2 text-sm' onClick={() => setVisible(true)}>
-                <FaTrash className={'text-gray-400 hover:text-red-400 transition-colors duration-150'} />
+            <button
+                type='button'
+                aria-label={`${t('ssh.delete.delete-ssh-key')}: ${name || fingerprint}`}
+                className='ml-4 p-2 text-sm'
+                onClick={() => setVisible(true)}
+            >
+                <FaTrash
+                    className={'text-gray-400 hover:text-red-700 dark:text-red-400 transition-colors duration-150'}
+                />
             </button>
         </>
     );

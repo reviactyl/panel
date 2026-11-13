@@ -2,6 +2,8 @@
 
 return [
     'overview' => [
+        'recycle-bin-retention' => '回收站保留时间（天）',
+        'recycle-bin-retention-hint' => '在指定天数后永久删除回收站中的文件。',
         'title' => '设置',
         'general-title' => '常规',
         'app-name' => '应用名称',

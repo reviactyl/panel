@@ -1,10 +1,6 @@
 <?php
 
 return [
-    'backup-settings' => 'बैकअप सूचनाएँ',
-    'backup-manual' => 'मैन्युअल बैकअप',
-    'backup-scheduled' => 'निर्धारित बैकअप',
-    'backup-email' => 'ईमेल से भी भेजें',
 
     'title' => 'सूचनाएँ',
     'description' => 'आपके सर्वर और पहुँच के अपडेट।',
@@ -27,6 +23,19 @@ return [
     'dismiss' => 'हटाएँ',
     'previous' => 'पिछला',
     'next' => 'अगला',
+    'settings-loading' => 'सूचना सेटिंग लोड हो रही हैं…',
+    'settings-error' => 'सूचना सेटिंग लोड नहीं हो सकीं।',
+    'settings-type' => 'सूचना का प्रकार',
+    'settings-panel' => 'पैनल',
+    'settings-email' => 'ईमेल',
+    'categories' => [
+        'server-access' => ['title' => 'सर्वर पहुँच'],
+        'server-setup' => ['title' => 'सर्वर सेटअप'],
+        'server-failures' => ['title' => 'सर्वर विफलताएँ'],
+        'backups' => ['title' => 'बैकअप'],
+        'backup-failures' => ['title' => 'बैकअप विफलताएँ'],
+        'extension-alerts' => ['title' => 'एक्सटेंशन अलर्ट'],
+    ],
     'events' => [
         'extension-updated' => 'एक्सटेंशन अपडेट हुआ',
         'reinstalled' => 'सर्वर फिर से इंस्टॉल हुआ',

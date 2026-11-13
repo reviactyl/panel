@@ -1,3 +1,4 @@
+import useTheme from '@/plugins/useTheme';
 import { useState } from 'react';
 import {
     Chart as ChartJS,
@@ -40,6 +41,12 @@ interface StatsResponse {
 type TimeRange = '1' | '3' | '7';
 
 export default () => {
+    useTheme();
+    const colors = getComputedStyle(document.documentElement);
+    const textColor = `rgb(${colors.getPropertyValue('--text-muted').trim()})`;
+    const gridColor = `rgb(${colors.getPropertyValue('--color-700').trim()} / 0.5)`;
+    const primaryColor = colors.getPropertyValue('--text-primary').trim();
+    const successColor = colors.getPropertyValue('--text-success').trim();
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const [days, setDays] = useState<TimeRange>('1');
     const { t } = useTranslation('server/metrics');
@@ -52,6 +59,7 @@ export default () => {
             });
             return data;
         },
+        { refreshInterval: 60_000 },
     );
 
     if (error) {
@@ -73,7 +81,7 @@ export default () => {
             legend: {
                 position: 'top' as const,
                 labels: {
-                    color: '#9ca3af',
+                    color: textColor,
                 },
             },
             title: {
@@ -83,10 +91,10 @@ export default () => {
         scales: {
             y: {
                 grid: {
-                    color: '#374151',
+                    color: gridColor,
                 },
                 ticks: {
-                    color: '#9ca3af',
+                    color: textColor,
                 },
             },
             x: {
@@ -94,7 +102,7 @@ export default () => {
                     display: false,
                 },
                 ticks: {
-                    color: '#9ca3af',
+                    color: textColor,
                     maxTicksLimit: 10,
                 },
             },
@@ -107,8 +115,8 @@ export default () => {
             {
                 label: t('charts.cpu.label'),
                 data: stats.map((s) => s.cpu_absolute),
-                borderColor: 'rgb(59, 130, 246)',
-                backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                borderColor: `rgb(${primaryColor})`,
+                backgroundColor: `rgb(${primaryColor} / 0.15)`,
                 tension: 0.2,
             },
         ],
@@ -120,8 +128,8 @@ export default () => {
             {
                 label: t('charts.memory.label', { unit: megabyteLabel() }),
                 data: stats.map((s) => Number(bytesToMb(s.memory_bytes).toFixed(2))),
-                borderColor: 'rgb(16, 185, 129)',
-                backgroundColor: 'rgba(16, 185, 129, 0.5)',
+                borderColor: `rgb(${successColor})`,
+                backgroundColor: `rgb(${successColor} / 0.15)`,
                 tension: 0.2,
             },
         ],

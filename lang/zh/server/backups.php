@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'backup-actions' => '{{name}} 的操作',
     'title' => '备份',
     'out-of-backups' => '看起来我们已经用完了备份空间，请尝试清理页面。',
     'no-backups' => '看起来目前没有为此服务器存储的备份。',

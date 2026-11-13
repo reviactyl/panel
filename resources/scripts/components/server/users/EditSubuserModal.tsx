@@ -188,7 +188,7 @@ const EditSubuserModal = ({ subuser }: Props) => {
                 <div className='mt-6'>
                     <label className='mb-2 block text-sm font-bold text-gray-300'>Select Info</label>
                     <div className='rounded-lg border border-gray-600 bg-gray-700 p-4'>
-                        <h3 className='mb-2 font-semibold text-white'>Role Presets</h3>
+                        <h3 className='mb-2 font-semibold text-gray-100'>Role Presets</h3>
                         <p className='mb-4 text-sm text-gray-300'>
                             Select a preset to automatically configure permissions for this user. You can still
                             fine-tune individual permissions below.
@@ -223,7 +223,9 @@ const EditSubuserModal = ({ subuser }: Props) => {
                                 key={`permission_${key}`}
                                 title={key}
                                 isEditable={canEditUser}
-                                permissions={Object.keys(permissions[key]?.keys ?? {}).map((pkey) => `${key}.${pkey}`)}
+                                permissions={Object.keys(permissions[key]?.keys ?? {})
+                                    .map((pkey) => `${key}.${pkey}`)
+                                    .filter((permission) => editablePermissions.includes(permission))}
                                 className={index > 0 ? 'mt-4' : undefined}
                             >
                                 <p className='mb-4 text-sm text-gray-400'>{permissions[key]?.description}</p>

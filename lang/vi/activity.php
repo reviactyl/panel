@@ -90,6 +90,9 @@ return [
             'export' => 'Đã xuất cơ sở dữ liệu :name',
         ],
         'file' => [
+            'recycle_one' => 'Chuyển vào thùng rác · :directory:files.0',
+            'recycle_other' => 'Chuyển vào thùng rác · :count · :directory',
+            'restore' => 'Khôi phục · :id',
             'compress_one' => 'Đã nén :directory:file',
             'compress_other' => 'Các tệp :count được nén trong :directory',
             'read' => 'Đã xem nội dung của :file',

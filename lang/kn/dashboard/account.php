@@ -31,6 +31,9 @@ return [
         'archive-format' => 'Default Archive Format',
         'archive-format-description' => 'Used for file archives and new backups across your servers.',
         'theme-toggle' => 'Theme Toggle',
+        'theme-light' => 'ತಿಳಿ',
+        'theme-dark' => 'ಗಾಢ',
+        'theme-system' => 'ಸಿಸ್ಟಮ್',
         'on' => 'ಆನ್',
         'off' => 'ಆಫ್',
         'loading' => 'ಲೋಡ್ ಆಗುತ್ತಿದೆ...',
@@ -137,6 +140,7 @@ return [
         'password-required' => 'You must provide your account password to continue.',
     ],
     'api' => [
+        'retry' => 'ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ',
         'title' => 'ಖಾತೆ API',
         'create-key' => 'API ಕೀ ರಚಿಸಿ',
         'content-title' => 'API ಕೀಗಳು',

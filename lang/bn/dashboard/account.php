@@ -31,6 +31,9 @@ return [
         'archive-format' => 'Default Archive Format',
         'archive-format-description' => 'Used for file archives and new backups across your servers.',
         'theme-toggle' => 'Theme Toggle',
+        'theme-light' => 'হালকা',
+        'theme-dark' => 'গাঢ়',
+        'theme-system' => 'সিস্টেম',
         'on' => 'চালু',
         'off' => 'বন্ধ',
         'loading' => 'লোড হচ্ছে...',
@@ -137,6 +140,7 @@ return [
         'password-required' => 'চালু রাখতে আপনাকে আপনার অ্যাকাউন্টের পাসওয়ার্ড দিতে হবে।',
     ],
     'api' => [
+        'retry' => 'আবার চেষ্টা করুন',
         'title' => 'অ্যাকাউন্ট API',
         'create-key' => 'API কী তৈরি করুন',
         'content-title' => 'API কীসমূহ',

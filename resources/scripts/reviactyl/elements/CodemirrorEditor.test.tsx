@@ -5,7 +5,7 @@ import { EditorView } from '@codemirror/view';
 import { undo, undoDepth } from '@codemirror/commands';
 import { language } from '@codemirror/language';
 import modes from '@/modes';
-import CodemirrorEditor from './CodemirrorEditor';
+import CodemirrorEditor from '@/components/editors/CodemirrorEditor';
 
 let container: HTMLDivElement;
 let root: Root;

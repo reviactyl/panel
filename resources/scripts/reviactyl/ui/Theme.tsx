@@ -1,3 +1,4 @@
+import { updateThemeColors } from '@/lib/themeColors';
 import { type ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaDesktop, FaMoon, FaSun } from 'react-icons/fa6';
@@ -25,6 +26,8 @@ const applyTheme = (theme: Theme) => {
     } else {
         root.classList.add(theme);
     }
+
+    updateThemeColors();
 };
 
 export const Theme = ({ children }: ThemeProps) => {
@@ -46,8 +49,12 @@ export const Theme = ({ children }: ThemeProps) => {
         };
 
         window.addEventListener('themechange', handleThemeChange);
+        window.addEventListener('designifychange', handleThemeChange);
 
-        return () => window.removeEventListener('themechange', handleThemeChange);
+        return () => {
+            window.removeEventListener('themechange', handleThemeChange);
+            window.removeEventListener('designifychange', handleThemeChange);
+        };
     }, []);
 
     useEffect(() => {
@@ -87,35 +94,41 @@ export const ThemeToggle = () => {
             <div className='flex items-center rounded-ui border border-gray-700 overflow-hidden'>
                 <button
                     type='button'
+                    aria-label={t('overview.theme-light')}
+                    aria-pressed={theme === 'light'}
                     onClick={() => changeTheme('light')}
                     className={[
                         'px-3 py-1.5 text-sm transition-colors',
-                        theme === 'light' ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-800',
+                        theme === 'light' ? 'bg-reviactyl text-on-primary' : 'text-gray-300 hover:bg-gray-800',
                     ].join(' ')}
                 >
-                    <FaSun className='w-4 h-4 mr-1' />
+                    <FaSun aria-hidden='true' className='w-4 h-4 mr-1' />
                 </button>
 
                 <button
                     type='button'
+                    aria-label={t('overview.theme-dark')}
+                    aria-pressed={theme === 'dark'}
                     onClick={() => changeTheme('dark')}
                     className={[
                         'px-3 py-1.5 text-sm transition-colors border-x border-gray-600',
-                        theme === 'dark' ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-800',
+                        theme === 'dark' ? 'bg-reviactyl text-on-primary' : 'text-gray-300 hover:bg-gray-800',
                     ].join(' ')}
                 >
-                    <FaMoon className='w-4 h-4 mr-1' />
+                    <FaMoon aria-hidden='true' className='w-4 h-4 mr-1' />
                 </button>
 
                 <button
                     type='button'
+                    aria-label={t('overview.theme-system')}
+                    aria-pressed={theme === 'system'}
                     onClick={() => changeTheme('system')}
                     className={[
                         'px-3 py-1.5 text-sm transition-colors',
-                        theme === 'system' ? 'bg-gray-700 text-white' : 'text-gray-300 hover:bg-gray-800',
+                        theme === 'system' ? 'bg-reviactyl text-on-primary' : 'text-gray-300 hover:bg-gray-800',
                     ].join(' ')}
                 >
-                    <FaDesktop className='w-4 h-4 mr-1' />
+                    <FaDesktop aria-hidden='true' className='w-4 h-4 mr-1' />
                 </button>
             </div>
         </div>

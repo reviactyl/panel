@@ -2,6 +2,8 @@
 
 return [
     'overview' => [
+        'recycle-bin-retention' => 'Retenção na lixeira (dias)',
+        'recycle-bin-retention-hint' => 'Excluir permanentemente os arquivos da lixeira após este número de dias.',
         'title' => 'Configurações',
         'general-title' => 'Geral',
         'app-name' => 'Nome da Empresa',

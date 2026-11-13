@@ -31,6 +31,9 @@ return [
         'archive-format' => 'Default Archive Format',
         'archive-format-description' => 'Used for file archives and new backups across your servers.',
         'theme-toggle' => 'Theme Toggle',
+        'theme-light' => 'Ljust',
+        'theme-dark' => 'Mörkt',
+        'theme-system' => 'System',
         'on' => 'På',
         'off' => 'Av',
         'loading' => 'Laddar',
@@ -137,6 +140,7 @@ return [
         'password-required' => 'Du måste ange lösenordet till ditt konto för att kunna fortsätta.',
     ],
     'api' => [
+        'retry' => 'Försök igen',
         'title' => 'Kontots API',
         'create-key' => 'Skapa API-nyckel',
         'content-title' => 'API-Nycklar',

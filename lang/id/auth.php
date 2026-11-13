@@ -85,5 +85,6 @@ return [
     'throttle' => 'Terlalu banyak percobaan login. Silakan coba lagi dalam :seconds detik.',
     'password_requirements' => 'Kata sandi harus memiliki setidaknya 8 karakter dan harus unik untuk situs ini.',
     '2fa_must_be_enabled' => 'Administrator mengharuskan Otentikasi 2-Faktor diaktifkan pada akun Anda untuk menggunakan Panel.',
+    'captcha-failed' => 'Tidak dapat menyelesaikan verifikasi captcha. Silakan coba lagi.',
     'captcha-required' => 'Silakan selesaikan tantangan captcha untuk melanjutkan.',
 ];

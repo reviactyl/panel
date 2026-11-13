@@ -85,5 +85,6 @@ return [
     'throttle' => 'Çok fazla giriş denemesi. Lütfen :seconds saniye sonra tekrar deneyin.',
     'password_requirements' => 'Parola en az 8 karakter uzunluğunda olmalı ve bu siteye özel olmalıdır.',
     '2fa_must_be_enabled' => 'Yönetici, Paneli kullanabilmeniz için hesabınızda 2 Adımlı Doğrulamanın etkinleştirilmesini zorunlu kıldı.',
+    'captcha-failed' => 'Captcha doğrulaması tamamlanamadı. Lütfen tekrar deneyin.',
     'captcha-required' => 'Devam etmek için lütfen captcha testini tamamlayın.',
 ];

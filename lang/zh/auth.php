@@ -85,5 +85,6 @@ return [
     'throttle' => '登录尝试次数过多。请在 :seconds 秒后重试。',
     'password_requirements' => '密码长度必须至少为 8 个字符，且对此站点应是唯一的。',
     '2fa_must_be_enabled' => '管理员要求您启用2步身份验证后才能使用此面板。',
+    'captcha-failed' => '无法完成验证码验证，请重试。',
     'captcha-required' => '请完成验证码挑战以继续。',
 ];

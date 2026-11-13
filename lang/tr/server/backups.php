@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'backup-actions' => '{{name}} için işlemler',
     'title' => 'Yedekler',
     'out-of-backups' => 'Size gösterecek başka yedeğimiz kalmadı gibi görünüyor, bir sayfa geri gitmeyi deneyin.',
     'no-backups' => 'Bu sunucu için şu anda depolanmış yedek bulunmuyor.',

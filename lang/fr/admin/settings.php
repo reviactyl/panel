@@ -2,6 +2,8 @@
 
 return [
     'overview' => [
+        'recycle-bin-retention' => 'Conservation dans la corbeille (jours)',
+        'recycle-bin-retention-hint' => 'Supprimer définitivement les fichiers de la corbeille après ce nombre de jours.',
         'title' => 'Paramètres',
         'general-title' => 'Général',
         'app-name' => 'Nom de l\'application',

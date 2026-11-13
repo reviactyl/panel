@@ -31,6 +31,9 @@ return [
         'archive-format' => 'Default Archive Format',
         'archive-format-description' => 'Used for file archives and new backups across your servers.',
         'theme-toggle' => 'Theme Toggle',
+        'theme-light' => 'Sáng',
+        'theme-dark' => 'Tối',
+        'theme-system' => 'Hệ thống',
         'on' => 'TRÊN',
         'off' => 'Tắt',
         'loading' => 'Đang tải...',
@@ -137,6 +140,7 @@ return [
         'password-required' => 'Bạn phải nhập mật khẩu tài khoản của mình để tiếp tục.',
     ],
     'api' => [
+        'retry' => 'Thử lại',
         'title' => 'API tài khoản',
         'create-key' => 'Tạo khóa API',
         'content-title' => 'API Keys',

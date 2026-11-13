@@ -16,6 +16,8 @@ const mocks = vi.hoisted(() => ({
     clearAndAddHttpError: vi.fn(),
     addFlash: vi.fn(),
 }));
+vi.mock('@/api/auth/completeLogin', () => ({ default: vi.fn() }));
+vi.mock('@/routers/loadRouter', () => ({ preloadAppRoute: vi.fn().mockResolvedValue(undefined) }));
 vi.mock('@/api/auth/login', () => ({ default: mocks.login }));
 vi.mock('@/api/auth/register', () => ({ default: mocks.register }));
 vi.mock('@/api/auth/requestPasswordResetEmail', () => ({ default: mocks.resetPassword }));

@@ -31,6 +31,9 @@ return [
         'archive-format' => 'Default Archive Format',
         'archive-format-description' => 'Used for file archives and new backups across your servers.',
         'theme-toggle' => 'Theme Toggle',
+        'theme-light' => 'فاتح',
+        'theme-dark' => 'داكن',
+        'theme-system' => 'النظام',
         'on' => 'تشغيل',
         'off' => 'إيقاف',
         'loading' => 'جارٍ التحميل...',
@@ -137,6 +140,7 @@ return [
         'password-required' => 'يجب عليك إدخال كلمة مرور حسابك للمتابعة.',
     ],
     'api' => [
+        'retry' => 'إعادة المحاولة',
         'title' => 'API الحساب',
         'create-key' => 'إنشاء مفتاح API',
         'content-title' => 'مفاتيح API',

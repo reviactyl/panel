@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { FaDatabase, FaEye, FaFileExport, FaFileImport, FaTrash, FaTriangleExclamation } from 'react-icons/fa6';
 import Modal from '@/reviactyl/elements/Modal';
 import { Form, Formik, FormikHelpers } from 'formik';
@@ -31,6 +31,7 @@ interface Props {
 }
 
 export default ({ database, className }: Props) => {
+    const connectionId = useId();
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const { t } = useTranslation('server/databases');
     const { addError, addFlash, clearFlashes } = useFlash();
@@ -166,33 +167,38 @@ export default ({ database, className }: Props) => {
                 <FlashMessageRender byKey='database-connection-modal' className='mb-6' />
                 <h3 className='mb-6 text-2xl'>{t('connection-title')}</h3>
                 <div>
-                    <Label>{t('endpoint')}</Label>
+                    <Label htmlFor={`${connectionId}-endpoint`}>{t('endpoint')}</Label>
                     <CopyOnClick text={database.connectionString}>
-                        <Input type={'text'} readOnly value={database.connectionString} />
+                        <Input
+                            id={`${connectionId}-endpoint`}
+                            type={'text'}
+                            readOnly
+                            value={database.connectionString}
+                        />
                     </CopyOnClick>
                 </div>
                 <div className='mt-6'>
-                    <Label>{t('connections-from')}</Label>
-                    <Input type={'text'} readOnly value={database.allowConnectionsFrom} />
+                    <Label htmlFor={`${connectionId}-hosts`}>{t('connections-from')}</Label>
+                    <Input id={`${connectionId}-hosts`} type={'text'} readOnly value={database.allowConnectionsFrom} />
                 </div>
                 <div className='mt-6'>
-                    <Label>{t('username')}</Label>
+                    <Label htmlFor={`${connectionId}-username`}>{t('username')}</Label>
                     <CopyOnClick text={database.username}>
-                        <Input type={'text'} readOnly value={database.username} />
+                        <Input id={`${connectionId}-username`} type={'text'} readOnly value={database.username} />
                     </CopyOnClick>
                 </div>
                 <Can action={'database.view_password'}>
                     <div className='mt-6'>
-                        <Label>{t('password')}</Label>
+                        <Label htmlFor={`${connectionId}-password`}>{t('password')}</Label>
                         <CopyOnClick text={database.password} showInNotification={false}>
-                            <Input type={'text'} readOnly value={database.password} />
+                            <Input id={`${connectionId}-password`} type={'text'} readOnly value={database.password} />
                         </CopyOnClick>
                     </div>
                 </Can>
                 <div className='mt-6'>
-                    <Label>{t('jdbc-connection-string')}</Label>
+                    <Label htmlFor={`${connectionId}-jdbc`}>{t('jdbc-connection-string')}</Label>
                     <CopyOnClick text={jdbcConnectionString} showInNotification={false}>
-                        <Input type={'text'} readOnly value={jdbcConnectionString} />
+                        <Input id={`${connectionId}-jdbc`} type={'text'} readOnly value={jdbcConnectionString} />
                     </CopyOnClick>
                 </div>
                 <div className='mt-6 text-right'>
@@ -235,7 +241,7 @@ export default ({ database, className }: Props) => {
                     )}
                     {importError && (
                         <Tooltip content={importError} placement='bottom-start' className='max-w-md'>
-                            <p className='mt-1 inline-flex cursor-help items-center text-xs text-red-400'>
+                            <p className='mt-1 inline-flex cursor-help items-center text-xs text-red-700 dark:text-red-400'>
                                 <FaTriangleExclamation className='mr-1.5 h-3 w-3' />
                                 {t('import-failed')}
                             </p>

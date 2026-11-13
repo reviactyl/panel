@@ -90,6 +90,9 @@ return [
             'export' => 'Экспортирована база данных :name',
         ],
         'file' => [
+            'recycle_one' => 'Переместить в корзину · :directory:files.0',
+            'recycle_other' => 'Переместить в корзину · :count · :directory',
+            'restore' => 'Восстановить · :id',
             'compress_one' => 'Сжат файл :directory:file',
             'compress_other' => 'Сжато :count файлов в :directory',
             'read' => 'Просмотрено содержимое :file',

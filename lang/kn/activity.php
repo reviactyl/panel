@@ -90,6 +90,9 @@ return [
             'export' => 'ಡೇಟಾಬೇಸ್ :name ಅನ್ನು ರಫ್ತು ಮಾಡಲಾಗಿದೆ',
         ],
         'file' => [
+            'recycle_one' => 'ಮರುಬಳಕೆ ಬುಟ್ಟಿಗೆ ಸರಿಸಿ · :directory:files.0',
+            'recycle_other' => 'ಮರುಬಳಕೆ ಬುಟ್ಟಿಗೆ ಸರಿಸಿ · :count · :directory',
+            'restore' => 'ಮರುಸ್ಥಾಪಿಸಿ · :id',
             'compress_one' => 'ಸಂಕುಚಿತ :directory:file',
             'compress_other' => ':directory ನಲ್ಲಿ :count ಫೈಲ್‌ಗಳನ್ನು ಸಂಕುಚಿತಗೊಳಿಸಲಾಗಿದೆ',
             'read' => ':file ನ ವಿಷಯಗಳನ್ನು ವೀಕ್ಷಿಸಲಾಗಿದೆ',

@@ -1,7 +1,7 @@
 import { act, useEffect } from 'react';
 import { createRoot, Root } from 'react-dom/client';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
-import MonacoEditor from '@/reviactyl/elements/MonacoEditor';
+import MonacoEditor from '@/components/editors/MonacoEditor';
 
 const editor = vi.hoisted(() => ({
     addCommand: vi.fn(),

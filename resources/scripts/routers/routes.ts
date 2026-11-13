@@ -1,20 +1,6 @@
 import type { ComponentType } from 'react';
-import { lazy } from 'react';
-import ServerConsole from '@/components/server/console/ServerConsoleContainer';
-import DatabasesContainer from '@/components/server/databases/DatabasesContainer';
-import ScheduleContainer from '@/components/server/schedules/ScheduleContainer';
-import UsersContainer from '@/components/server/users/UsersContainer';
-import BackupContainer from '@/components/server/backups/BackupContainer';
-import NetworkContainer from '@/components/server/network/NetworkContainer';
-import StartupContainer from '@/components/server/startup/StartupContainer';
-import FileManagerContainer from '@/components/server/files/FileManagerContainer';
-import SettingsContainer from '@/components/server/settings/SettingsContainer';
-import AccountOverviewContainer from '@/components/dashboard/AccountOverviewContainer';
-import AccountApiContainer from '@/components/dashboard/AccountApiContainer';
-import AccountSSHContainer from '@/components/dashboard/ssh/AccountSSHContainer';
-import ActivityLogContainer from '@/components/dashboard/activity/ActivityLogContainer';
-import PasskeysContainer from '@/components/dashboard/PasskeysContainer';
-import ServerActivityLogContainer from '@/components/server/ServerActivityLogContainer';
+import preloadable from '@/plugins/preloadable';
+import i18n from '@/i18n';
 import {
     FaBoltLightning,
     FaBoxArchive,
@@ -33,14 +19,75 @@ import {
     FaUsers,
 } from 'react-icons/fa6';
 
-// Each of the router files is already code split out appropriately — so
-// all of the items above will only be loaded in when that router is loaded.
-//
-// These specific lazy loaded routes are to avoid loading in heavy screens
-// for the server dashboard when they're only needed for specific instances.
-const FileEditContainer = lazy(() => import('@/components/server/files/FileEditContainer'));
-const ScheduleEditContainer = lazy(() => import('@/components/server/schedules/ScheduleEditContainer'));
-const HistoricalGraphsContainer = lazy(() => import('@/components/server/metrics/HistoricalGraphsContainer'));
+const screen = (load: () => Promise<{ default: ComponentType }>, namespaces: string[]) =>
+    preloadable(() => Promise.all([load(), i18n.loadNamespaces(namespaces)]).then(([module]) => module));
+
+const ServerConsole = screen(() => import('@/components/server/console/ServerConsoleContainer'), ['server/console']);
+const DatabasesContainer = screen(
+    () => import('@/components/server/databases/DatabasesContainer'),
+    ['server/databases', 'strings', 'generic'],
+);
+const ScheduleContainer = screen(
+    () => import('@/components/server/schedules/ScheduleContainer'),
+    ['server/schedules', 'strings'],
+);
+const UsersContainer = screen(() => import('@/components/server/users/UsersContainer'), ['server/users', 'strings']);
+const BackupContainer = screen(
+    () => import('@/components/server/backups/BackupContainer'),
+    ['server/backups', 'strings'],
+);
+const NetworkContainer = screen(
+    () => import('@/components/server/network/NetworkContainer'),
+    ['server/network', 'strings'],
+);
+const StartupContainer = screen(
+    () => import('@/components/server/startup/StartupContainer'),
+    ['server/startup', 'server/recycle', 'strings'],
+);
+const FileManagerContainer = screen(
+    () => import('@/components/server/files/FileManagerContainer'),
+    ['server/files', 'server/recycle', 'strings', 'generic', 'validation'],
+);
+const SettingsContainer = screen(
+    () => import('@/components/server/settings/SettingsContainer'),
+    ['server/settings', 'strings'],
+);
+const AccountOverviewContainer = screen(
+    () => import('@/components/dashboard/AccountOverviewContainer'),
+    ['dashboard/account', 'strings'],
+);
+const AccountApiContainer = screen(
+    () => import('@/components/dashboard/AccountApiContainer'),
+    ['dashboard/account', 'strings'],
+);
+const AccountSSHContainer = screen(
+    () => import('@/components/dashboard/ssh/AccountSSHContainer'),
+    ['dashboard/account', 'strings'],
+);
+const ActivityLogContainer = screen(
+    () => import('@/components/dashboard/activity/ActivityLogContainer'),
+    ['dashboard/account', 'strings', 'activity'],
+);
+const PasskeysContainer = screen(
+    () => import('@/components/dashboard/PasskeysContainer'),
+    ['dashboard/account', 'strings'],
+);
+const ServerActivityLogContainer = screen(
+    () => import('@/components/server/ServerActivityLogContainer'),
+    ['server/activity', 'activity'],
+);
+const FileEditContainer = screen(
+    () => import('@/components/server/files/FileEditContainer'),
+    ['server/files', 'server/recycle', 'strings', 'validation'],
+);
+const ScheduleEditContainer = screen(
+    () => import('@/components/server/schedules/ScheduleEditContainer'),
+    ['server/schedules'],
+);
+const HistoricalGraphsContainer = screen(
+    () => import('@/components/server/metrics/HistoricalGraphsContainer'),
+    ['server/metrics'],
+);
 
 interface RouteDefinition {
     route: string;
@@ -48,7 +95,7 @@ interface RouteDefinition {
     // If undefined is passed this route is still rendered into the router itself
     // but no navigation link is displayed in the sub-navigation menu.
     name: string | undefined;
-    component: ComponentType;
+    component: ComponentType & { preload?: () => Promise<unknown> };
     end?: boolean;
     icon?: ComponentType<React.SVGProps<SVGSVGElement>>;
 }

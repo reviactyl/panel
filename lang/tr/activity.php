@@ -90,6 +90,9 @@ return [
             'export' => ':name veritabanı dışa aktarıldı',
         ],
         'file' => [
+            'recycle_one' => 'Geri dönüşüm kutusuna taşı · :directory:files.0',
+            'recycle_other' => 'Geri dönüşüm kutusuna taşı · :count · :directory',
+            'restore' => 'Geri yükle · :id',
             'compress_one' => ':directory:file sıkıştırıldı',
             'compress_other' => ':directory dizinindeki :count dosya sıkıştırıldı',
             'read' => ':file içeriği görüntülendi',

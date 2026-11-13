@@ -1,10 +1,6 @@
 <?php
 
 return [
-    'backup-settings' => '备份通知',
-    'backup-manual' => '手动备份',
-    'backup-scheduled' => '计划备份',
-    'backup-email' => '同时发送电子邮件',
 
     'title' => '通知',
     'description' => '服务器和访问权限的最新动态。',
@@ -27,6 +23,19 @@ return [
     'dismiss' => '删除',
     'previous' => '上一页',
     'next' => '下一页',
+    'settings-loading' => '正在加载通知设置…',
+    'settings-error' => '无法加载通知设置。',
+    'settings-type' => '通知类型',
+    'settings-panel' => '面板',
+    'settings-email' => '邮件',
+    'categories' => [
+        'server-access' => ['title' => '服务器访问'],
+        'server-setup' => ['title' => '服务器设置'],
+        'server-failures' => ['title' => '服务器故障'],
+        'backups' => ['title' => '备份'],
+        'backup-failures' => ['title' => '备份失败'],
+        'extension-alerts' => ['title' => '扩展警报'],
+    ],
     'events' => [
         'extension-updated' => '扩展已更新',
         'reinstalled' => '服务器已重新安装',

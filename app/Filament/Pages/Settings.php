@@ -64,6 +64,7 @@ class Settings extends Page implements HasSchemas
         'app:debug',
         'app:pwa',
         'panel:use_binary_prefix',
+        'panel:files:recycle_bin_retention_days',
 
         'mail:default',
         'mail:mailers:smtp:host',
@@ -339,6 +340,15 @@ class Settings extends Page implements HasSchemas
                                 ->icon('tabler-brand-cloudflare')
                                 ->action(fn (Set $set) => $this->importCloudflareTrustedProxies($set)),
                         )
+                        ->columnSpan(2),
+
+                    TextInput::make('panel:files:recycle_bin_retention_days')
+                        ->label(trans('admin/settings.overview.recycle-bin-retention'))
+                        ->helperText(trans('admin/settings.overview.recycle-bin-retention-hint'))
+                        ->integer()
+                        ->minValue(1)
+                        ->maxValue(3650)
+                        ->required()
                         ->columnSpan(2),
 
                     ToggleButtons::make('panel:use_binary_prefix')

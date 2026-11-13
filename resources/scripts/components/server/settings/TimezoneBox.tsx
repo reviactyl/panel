@@ -145,7 +145,7 @@ export default () => {
                             value={option}
                             className='group flex w-full cursor-pointer items-center rounded px-2 py-2 text-sm text-gray-200 data-focus:bg-gray-700 data-focus:text-gray-50'
                         >
-                            <FaCheck className='invisible mr-2 h-3 w-3 shrink-0 text-reviactyl group-data-selected:visible' />
+                            <FaCheck className='invisible mr-2 h-3 w-3 shrink-0 text-accent group-data-selected:visible' />
                             <span className='flex-1 truncate'>{option.label}</span>
                             <span className='ml-3 shrink-0 font-mono text-xs text-gray-400'>{option.offset}</span>
                         </ComboboxOption>
@@ -162,7 +162,7 @@ export default () => {
                     {canUseBrowserTimezone && (
                         <button
                             type={'button'}
-                            className='text-left text-reviactyl hover:underline'
+                            className='text-left text-accent hover:underline'
                             onClick={() => setSelected(browserTimezone)}
                         >
                             {t('timezone.use-browser', { timezone: browserTimezone.replace(/_/g, ' ') })}

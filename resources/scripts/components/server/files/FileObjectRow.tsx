@@ -31,15 +31,16 @@ function Clickable({
 
     if ((isImageFile(file) || isVideoFile(file)) && onMediaClick && canReadContents) {
         return (
-            <div
-                className={styles.details}
+            <button
+                type='button'
+                className={`${styles.details} text-left focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-400`}
                 onClick={(e) => {
                     e.preventDefault();
                     onMediaClick();
                 }}
             >
                 {children}
-            </div>
+            </button>
         );
     }
 

@@ -79,12 +79,12 @@ class ClientController extends ClientApiController
             } else {
                 $builder = $type === 'admin-all'
                     ? $builder
-                    : $builder->whereNotIn('servers.id', $user->accessibleServers()->pluck('id')->all());
+                    : $builder->whereNotIn('servers.id', $user->accessibleServers()->select('servers.id'));
             }
         } elseif ($type === 'owner') {
             $builder = $builder->where('servers.owner_id', $user->id);
         } else {
-            $builder = $builder->whereIn('servers.id', $user->accessibleServers()->pluck('id')->all());
+            $builder = $builder->whereIn('servers.id', $user->accessibleServers()->select('servers.id'));
         }
 
         $servers = $builder->paginate(min($request->query('per_page', 50), 100))->appends($request->query());
@@ -117,15 +117,14 @@ class ClientController extends ClientApiController
         $preview = $request->attributes->get(SubuserPreviewContext::class);
 
         if ($preview instanceof SubuserPreviewContext) {
-            $serverIds = [$preview->session()->server_id];
+            $servers = Server::whereKey($preview->session()->server_id);
         } elseif ($type === 'admin' && ($user->root_admin || $user->roleServerPermissions() !== [])) {
-            $serverIds = Server::whereNotIn('id', $user->accessibleServers()->pluck('id')->all())->pluck('id')->all();
+            $servers = Server::whereNotIn('id', $user->accessibleServers()->select('servers.id'));
         } else {
-            $serverIds = $user->accessibleServers()->pluck('id')->all();
+            $servers = $user->accessibleServers();
         }
 
-        $eggIds = Server::whereIn('id', $serverIds)->distinct()->pluck('egg_id');
-        $eggs = Egg::whereIn('id', $eggIds)->orderBy('name')->get(['id', 'name']);
+        $eggs = Egg::whereIn('id', $servers->select('egg_id')->distinct())->orderBy('name')->get(['id', 'name']);
 
         return [
             'object' => 'list',

@@ -1,5 +1,7 @@
+import { withHttpSessionTransition } from '@/api/http';
+import completeLogin from '@/api/auth/completeLogin';
 import { useState } from 'react';
-import type { Location, RouteProps } from 'react-router-dom';
+import type { Location, RouteProps, NavigateFunction } from 'react-router-dom';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import loginCheckpoint from '@/api/auth/loginCheckpoint';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
@@ -20,6 +22,7 @@ interface Values {
 type OwnProps = RouteProps;
 
 type Props = OwnProps & {
+    navigate: NavigateFunction;
     clearAndAddHttpError: ActionCreator<FlashStore['clearAndAddHttpError']['payload']>;
 };
 
@@ -47,22 +50,20 @@ function LoginCheckpointContainer() {
                 </Button>
             </div>
             <div className='mt-3 text-center'>
-                <span
+                <button
+                    type='button'
                     onClick={() => {
                         setFieldValue('code', '');
                         setFieldValue('recoveryCode', '');
                         setIsMissingDevice((s) => !s);
                     }}
-                    className='cursor-pointer text-sm tracking-wide text-reviactyl/80 no-underline hover:text-reviactyl/50'
+                    className='cursor-pointer text-sm tracking-wide text-accent no-underline hover:underline focus-visible:outline-2 focus-visible:outline-solid focus-visible:outline-offset-4 focus-visible:outline-reviactyl'
                 >
                     {!isMissingDevice ? t('checkpoint.lost-device') : t('checkpoint.not-lost-device')}
-                </span>
+                </button>
             </div>
             <div className='mt-3 text-center'>
-                <Link
-                    to={'/auth/login'}
-                    className='text-sm tracking-wide text-reviactyl/80 no-underline hover:text-reviactyl/50'
-                >
+                <Link to={'/auth/login'} className='text-sm tracking-wide text-accent no-underline hover:underline'>
                     {t('return')}
                 </Link>
             </div>
@@ -71,21 +72,21 @@ function LoginCheckpointContainer() {
 }
 
 const EnhancedForm = withFormik<Props & { location: Location }, Values>({
-    handleSubmit: ({ code, recoveryCode }, { setSubmitting, props: { clearAndAddHttpError, location } }) => {
-        loginCheckpoint(location.state?.token || '', code, recoveryCode)
-            .then((response) => {
+    handleSubmit: ({ code, recoveryCode }, { setSubmitting, props: { clearAndAddHttpError, location, navigate } }) => {
+        withHttpSessionTransition(() =>
+            loginCheckpoint(location.state?.token || '', code, recoveryCode).then(async (response) => {
                 if (response.complete) {
-                    window.location.href = response.intended || '/';
+                    await completeLogin(response, navigate);
                     return;
                 }
 
                 setSubmitting(false);
-            })
-            .catch((error) => {
-                console.error(error);
-                setSubmitting(false);
-                clearAndAddHttpError({ error });
-            });
+            }),
+        ).catch((error) => {
+            console.error(error);
+            setSubmitting(false);
+            clearAndAddHttpError({ error });
+        });
     },
 
     mapPropsToValues: () => ({
@@ -106,5 +107,7 @@ export default ({ ...props }: OwnProps) => {
         return null;
     }
 
-    return <EnhancedForm clearAndAddHttpError={clearAndAddHttpError} location={location} {...props} />;
+    return (
+        <EnhancedForm navigate={navigate} clearAndAddHttpError={clearAndAddHttpError} location={location} {...props} />
+    );
 };

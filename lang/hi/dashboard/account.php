@@ -31,6 +31,9 @@ return [
         'archive-format' => 'Default Archive Format',
         'archive-format-description' => 'Used for file archives and new backups across your servers.',
         'theme-toggle' => 'Theme Toggle',
+        'theme-light' => 'हल्का',
+        'theme-dark' => 'गहरा',
+        'theme-system' => 'सिस्टम',
         'on' => 'चालू',
         'off' => 'बंद',
         'loading' => 'लोड हो रहा है...',
@@ -137,6 +140,7 @@ return [
         'password-required' => 'जारी रखने के लिए आपको अपना खाता पासवर्ड प्रदान करना होगा।',
     ],
     'api' => [
+        'retry' => 'पुनः प्रयास करें',
         'title' => 'खाता API',
         'create-key' => 'API कुंजी बनाएँ',
         'content-title' => 'API कुंजी',

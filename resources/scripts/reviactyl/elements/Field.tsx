@@ -27,8 +27,8 @@ const Field = forwardRef<HTMLInputElement, Props>(
                                 <div
                                     className={`rounded-l-ui border border-r-0 bg-gray-800 p-3 ${
                                         touched[field.name] && errors[field.name]
-                                            ? 'border-red-400 text-red-400'
-                                            : 'border-gray-600 text-gray-600'
+                                            ? 'border-red-400 text-red-700 dark:text-red-400'
+                                            : 'border-gray-600 text-muted'
                                     }`}
                                 >
                                     <Icon className='w-5 h-5' />
@@ -44,7 +44,7 @@ const Field = forwardRef<HTMLInputElement, Props>(
                         </div>
                         <div>
                             {touched[field.name] && errors[field.name] ? (
-                                <p className={'mt-1 text-xs text-red-200'}>
+                                <p className={'mt-1 text-xs text-danger-text'}>
                                     {(errors[field.name] as string).charAt(0).toUpperCase() +
                                         (errors[field.name] as string).slice(1)}
                                 </p>
