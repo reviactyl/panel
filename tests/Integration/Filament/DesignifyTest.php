@@ -3,9 +3,11 @@
 namespace Tests\Integration\Filament;
 
 use App\Filament\Pages\Designify;
+use App\Models\Setting;
 use App\Models\User;
 use App\Services\Designify\SiteImageService;
 use Filament\Facades\Filament;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
@@ -85,5 +87,69 @@ class DesignifyTest extends IntegrationTestCase
         $this->get($url)->assertOk()->assertHeader('Content-Type', 'image/png')
             ->assertHeader('X-Content-Type-Options', 'nosniff');
         $this->get('/storage/designify/'.str_repeat('a', 40).'.png')->assertNotFound();
+    }
+
+    public function test_cleanup_preserves_saved_images_and_recent_drafts_and_only_removes_managed_uploads(): void
+    {
+        $disk = Storage::fake('public');
+        $paths = [];
+        foreach (range('a', 'h') as $name) {
+            $path = 'designify/'.str_repeat($name, 40).'.png';
+            $disk->put($path, 'image');
+            touch($disk->path($path), now()->subHours(25)->timestamp);
+            $paths[$name] = $path;
+        }
+        Setting::query()->create(['key' => 'settings::designify:site_image', 'value' => '/storage/'.$paths['a']]);
+        Setting::query()->create(['key' => 'settings::designify:site_favicon', 'value' => '/public/storage/'.$paths['b']]);
+        Setting::query()->create(['key' => 'settings::email-template:custom', 'value' => json_encode(['html' => '<img src="https://panel.test/storage/'.$paths['c'].'">'])]);
+        config()->set('designify.errors.404.image', '/storage/'.$paths['d']);
+        config()->set('app.logo', '/storage/'.$paths['e']);
+        touch($disk->path($paths['f']), now()->subHours(23)->timestamp);
+        $disk->put('designify/manually-managed.png', 'image');
+        touch($disk->path('designify/manually-managed.png'), now()->subDays(2)->timestamp);
+        $disk->put('other/'.basename($paths['g']), 'image');
+        touch($disk->path('other/'.basename($paths['g'])), now()->subDays(2)->timestamp);
+
+        $this->artisan('p:maintenance:prune-designify-images')->assertSuccessful();
+
+        foreach (range('a', 'f') as $name) {
+            $disk->assertExists($paths[$name]);
+        }
+        $disk->assertMissing($paths['g']);
+        $disk->assertMissing($paths['h']);
+        $disk->assertExists('designify/manually-managed.png');
+        $disk->assertExists('other/'.basename($paths['g']));
+
+        $event = collect(app(Schedule::class)->events())->first(fn ($event) => str_contains($event->command ?? '', 'p:maintenance:prune-designify-images'));
+        $this->assertNotNull($event);
+        $this->assertSame('0 * * * *', $event->expression);
+        $this->assertTrue($event->withoutOverlapping);
+    }
+
+    public function test_replaced_and_abandoned_uploads_are_eventually_cleaned_up(): void
+    {
+        $disk = Storage::fake('public');
+        $this->actingAs(User::factory()->create(['root_admin' => true]));
+        Filament::setCurrentPanel(Filament::getPanel('admin'));
+        $page = Livewire::test(Designify::class);
+        $paths = [];
+        for ($index = 0; $index < 3; $index++) {
+            $page->set('siteImageFiles.site_image', UploadedFile::fake()->createWithContent('image.png', file_get_contents(public_path('reviactyl/icon.png'))))
+                ->assertHasNoErrors();
+            $paths[] = substr($page->get('data')['designify:site_image'], strlen('/storage/'));
+            if ($index !== 2) {
+                $page->call('save')->assertHasNoErrors();
+            }
+        }
+
+        $this->artisan('p:maintenance:prune-designify-images')->assertSuccessful();
+        foreach ($paths as $path) {
+            $disk->assertExists($path);
+            touch($disk->path($path), now()->subHours(25)->timestamp);
+        }
+        $this->artisan('p:maintenance:prune-designify-images')->assertSuccessful();
+        $disk->assertMissing($paths[0]);
+        $disk->assertExists($paths[1]);
+        $disk->assertMissing($paths[2]);
     }
 }
