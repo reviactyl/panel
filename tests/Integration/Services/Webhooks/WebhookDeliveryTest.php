@@ -55,25 +55,6 @@ class WebhookDeliveryTest extends IntegrationTestCase
         Bus::assertDispatchedTimes(DeliverWebhook::class, 2);
     }
 
-    public function test_model_events_include_the_authenticated_actor_when_available(): void
-    {
-        Bus::fake([DeliverWebhook::class]);
-
-        Webhook::factory()->create(['events' => ['model:location.updated']]);
-        $actor = User::factory()->create(['username' => 'panel-admin']);
-        $location = Location::factory()->create();
-
-        $this->actingAs($actor);
-        $location->update(['long' => 'Amsterdam']);
-
-        Bus::assertDispatched(DeliverWebhook::class, function (DeliverWebhook $job) use ($actor): bool {
-            $this->assertSame($actor->id, $job->payload['data']['actor']['id']);
-            $this->assertSame('panel-admin', $job->payload['data']['actor']['name']);
-
-            return true;
-        });
-    }
-
     public function test_secrets_never_leave_the_panel(): void
     {
         Bus::fake([DeliverWebhook::class]);
@@ -218,7 +199,7 @@ class WebhookDeliveryTest extends IntegrationTestCase
 
         $webhook = Webhook::factory()->create([
             'type' => Webhook::TYPE_DISCORD,
-            'endpoint' => 'https://discord.com/api/webhooks/1/token?wait=true&thread_id=42&with_components=false',
+            'endpoint' => 'https://discord.com/api/webhooks/1/token',
             'secret' => 'ignored',
             'message' => [
                 'content' => '{{data.name}} says "hi" {{nope}}',
@@ -231,34 +212,12 @@ class WebhookDeliveryTest extends IntegrationTestCase
         app(WebhookDeliveryService::class)->send($webhook, app(WebhookDispatcher::class)->sample());
 
         Http::assertSent(function (Request $request) {
-            $query = [];
-            parse_str((string) parse_url($request->url(), PHP_URL_QUERY), $query);
-
-            $this->assertSame('true', $query['with_components'] ?? null);
-            $this->assertSame('true', $query['wait'] ?? null);
-            $this->assertSame('42', $query['thread_id'] ?? null);
-            $this->assertSame('POST', $request->method());
-
-            $data = $request->data();
-            $this->assertSame(32768, $data['flags']);
-            $this->assertArrayNotHasKey('content', $data);
-            $this->assertArrayNotHasKey('embeds', $data);
-            $this->assertArrayNotHasKey('data', $data);
-            $this->assertSame(['parse' => []], $data['allowed_mentions']);
-
-            $container = $data['components'][0];
-            $this->assertSame(17, $container['type']);
-            $this->assertSame(0xFF0000, $container['accent_color']);
-            $this->assertLessThanOrEqual(10, count($container['components']));
-
-            $message = implode("\n", $this->textDisplayContents($data['components']));
-            $this->assertStringContainsString('Example Server says "hi" {{nope}}', $message);
-            $this->assertStringContainsString('Server created', $message);
-            $this->assertStringContainsString("**Resource**\nServer", $message);
-            $this->assertStringContainsString("**Record**\n", $message);
-            $this->assertStringNotContainsString('\\n', $message);
-            $this->assertStringContainsString('Example Server', $message);
-            $this->assertStringContainsString('Memory', $message);
+            $this->assertSame('Example Server says "hi" {{nope}}', $request['content']);
+            $this->assertSame('Server created', $request['embeds'][0]['title']);
+            $this->assertSame('Server created: Example Server', $request['embeds'][0]['description']);
+            $this->assertSame(0xFF0000, $request['embeds'][0]['color']);
+            $this->assertSame(['parse' => []], $request['allowed_mentions']);
+            $this->assertArrayNotHasKey('data', $request->data());
             $this->assertEmpty($request->header('X-Webhook-Signature'));
 
             return true;
@@ -266,150 +225,6 @@ class WebhookDeliveryTest extends IntegrationTestCase
 
         $this->assertSame(Webhook::TYPE_DISCORD, Webhook::typeForEndpoint('https://canary.discord.com/api/webhooks/1/abc'));
         $this->assertSame(Webhook::TYPE_STANDARD, Webhook::typeForEndpoint('https://discord.com.evil.test/api/webhooks/1/abc'));
-    }
-
-    public function test_discord_webhook_includes_activity_details_without_exposing_secrets(): void
-    {
-        Http::fake(['*' => Http::response('', 204)]);
-
-        $webhook = Webhook::factory()->create([
-            'type' => Webhook::TYPE_DISCORD,
-            'endpoint' => 'https://discord.com/api/webhooks/1/token',
-        ]);
-
-        $payload = [
-            'event' => 'server:power.start',
-            'timestamp' => '2026-11-09T03:39:00+06:00',
-            'data' => [
-                'id' => 42,
-                'description' => 'Power Start (Example SMP)',
-                'ip' => '203.0.113.10',
-                'actor' => ['type' => 'user', 'id' => 7, 'name' => 'tasfiq'],
-                'subjects' => [['type' => 'server', 'id' => 3, 'name' => 'Example SMP']],
-                'properties' => [
-                    'signal' => 'start',
-                    'memory' => 1024,
-                    'api_token' => 'do-not-send',
-                ],
-            ],
-        ];
-
-        app(WebhookDeliveryService::class)->send($webhook, $payload);
-
-        Http::assertSent(function (Request $request) {
-            $data = $request->data();
-            $text = implode("\n", $this->textDisplayContents($data['components']));
-
-            $this->assertSame(32768, $data['flags']);
-            $this->assertSame(0xFEE75C, $data['components'][0]['accent_color']);
-            $this->assertStringContainsString('Performed by', $text);
-            $this->assertStringContainsString('tasfiq', $text);
-            $this->assertStringContainsString('Example SMP', $text);
-            $this->assertStringContainsString('203.0.113.10', $text);
-            $this->assertStringContainsString('Memory', $text);
-            $this->assertStringContainsString("**Performed by**\n", $text);
-            $this->assertStringNotContainsString('\\n', $text);
-            $this->assertStringNotContainsString('do-not-send', $text);
-            $this->assertStringNotContainsString('api_token', $text);
-
-            return true;
-        });
-    }
-
-    public function test_discord_webhook_keeps_long_saved_message_text(): void
-    {
-        Http::fake(['*' => Http::response('', 204)]);
-
-        $content = str_repeat('§', 1000);
-        $footer = str_repeat('¤', 1000);
-
-        $webhook = Webhook::factory()->create([
-            'type' => Webhook::TYPE_DISCORD,
-            'endpoint' => 'https://discord.com/api/webhooks/1/token',
-            'message' => [
-                'content' => $content,
-                'description' => '{{summary}}',
-                'footer' => $footer,
-            ],
-        ]);
-
-        app(WebhookDeliveryService::class)->send($webhook, app(WebhookDispatcher::class)->sample());
-
-        Http::assertSent(function (Request $request) use ($content, $footer) {
-            $data = $request->data();
-            $textBlocks = $this->textDisplayContents($data['components']);
-            $texts = implode("\n", $textBlocks);
-
-            $this->assertStringContainsString($content, $texts);
-            $this->assertStringContainsString($footer, $texts);
-            $this->assertStringContainsString('Example Server', $texts);
-            $this->assertStringContainsString('Resource', $texts);
-            $this->assertLessThanOrEqual(4000, array_sum(array_map('mb_strlen', $textBlocks)));
-
-            foreach ($textBlocks as $text) {
-                $this->assertLessThanOrEqual(4000, mb_strlen($text));
-            }
-
-            $this->assertLessThanOrEqual(10, count($data['components'][0]['components']));
-            $this->assertLessThanOrEqual(40, $this->componentCount($data['components']));
-
-            return true;
-        });
-    }
-
-    public function test_discord_webhook_sends_valid_json_when_payload_contains_invalid_utf8(): void
-    {
-        Http::fake(['*' => Http::response('', 204)]);
-
-        $webhook = Webhook::factory()->create([
-            'type' => Webhook::TYPE_DISCORD,
-            'endpoint' => 'https://discord.com/api/webhooks/1/token',
-            'message' => ['content' => '{{data.name}}'],
-        ]);
-
-        $payload = app(WebhookDispatcher::class)->sample();
-        $payload['data']['name'] = "Bad \xC3\x28 name";
-
-        app(WebhookDeliveryService::class)->send($webhook, $payload);
-
-        Http::assertSent(function (Request $request) {
-            $decoded = json_decode($request->body(), true, 512, JSON_THROW_ON_ERROR);
-            $texts = implode("\n", $this->textDisplayContents($decoded['components']));
-
-            $this->assertStringContainsString("Bad \u{FFFD}( name", $texts);
-            $this->assertSame(32768, $decoded['flags']);
-
-            return true;
-        });
-    }
-
-    public function test_discord_message_stays_within_the_components_v2_text_limit(): void
-    {
-        Http::fake(['*' => Http::response('', 204)]);
-
-        $webhook = Webhook::factory()->create([
-            'type' => Webhook::TYPE_DISCORD,
-            'endpoint' => 'https://discord.com/api/webhooks/1/token',
-            'message' => [
-                'content' => str_repeat('c', 2000),
-                'description' => str_repeat('d', 4096),
-                'footer' => str_repeat('f', 2048),
-            ],
-        ]);
-
-        app(WebhookDeliveryService::class)->send($webhook, app(WebhookDispatcher::class)->sample());
-
-        Http::assertSent(function (Request $request) {
-            $data = $request->data();
-            $texts = $this->textDisplayContents($data['components']);
-
-            $this->assertLessThanOrEqual(4000, mb_strlen(implode('', $texts)));
-            foreach ($texts as $text) {
-                $this->assertLessThanOrEqual(4000, mb_strlen($text));
-            }
-
-            return true;
-        });
     }
 
     public function test_old_deliveries_are_pruned(): void
@@ -425,38 +240,5 @@ class WebhookDeliveryTest extends IntegrationTestCase
 
         $this->assertSame(5, (int) round(WebhookDelivery::query()->sole()->created_at->diffInDays(Carbon::now())));
         $this->assertSame(0, ActivityLog::query()->count());
-    }
-
-    /**
-     * @return string[]
-     */
-    private function textDisplayContents(array $components): array
-    {
-        $contents = [];
-
-        foreach ($components as $component) {
-            if (($component['type'] ?? null) === 10) {
-                $contents[] = $component['content'];
-            }
-
-            if (isset($component['components']) && is_array($component['components'])) {
-                $contents = [...$contents, ...$this->textDisplayContents($component['components'])];
-            }
-        }
-
-        return $contents;
-    }
-
-    private function componentCount(array $components): int
-    {
-        $count = count($components);
-
-        foreach ($components as $component) {
-            if (isset($component['components']) && is_array($component['components'])) {
-                $count += $this->componentCount($component['components']);
-            }
-        }
-
-        return $count;
     }
 }

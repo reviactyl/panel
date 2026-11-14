@@ -11,7 +11,7 @@ return [
         'delivery' => 'Delivery',
         'delivery_description' => 'Where events are sent and how the receiving end can trust them.',
         'message' => 'Discord Message',
-        'message_description' => 'Customize the card posted to Discord for each event.',
+        'message_description' => 'What gets posted to the channel for each event.',
         'events' => 'Events',
         'events_description' => 'Choose what this webhook is told about. At least one event is required.',
     ],
@@ -28,12 +28,12 @@ return [
         'header_value' => 'Value',
         'message_username' => 'Display Name',
         'message_avatar' => 'Avatar URL',
-        'message_content' => 'Additional message',
-        'message_title' => 'Card title',
-        'message_description' => 'Card description',
-        'message_color' => 'Accent color',
-        'message_footer' => 'Footer text',
-        'message_timestamp' => 'Show event time',
+        'message_content' => 'Message',
+        'message_title' => 'Embed Title',
+        'message_description' => 'Embed Description',
+        'message_color' => 'Embed Color',
+        'message_footer' => 'Embed Footer',
+        'message_timestamp' => 'Show when the event happened',
     ],
 
     'placeholders' => [
@@ -43,7 +43,7 @@ return [
 
     'helpers' => [
         'secret' => 'When set, every request carries an X-Webhook-Signature header holding "sha256=" followed by the HMAC of the request body made with this secret.',
-        'message_variables' => 'Available variables: {{label}}, {{summary}}, {{event}}, {{timestamp}}, {{panel}} and {{panel_url}}. You can also use event data with dot notation, such as {{data.name}} or {{data.actor.name}}. The card includes actor, target, source IP and changed fields when the event provides them.',
+        'message_variables' => 'Use {{label}} for the name of the event, {{summary}} for a sentence describing it, {{event}}, {{timestamp}}, {{panel}} and {{panel_url}}. Anything in the event can be used too, such as {{data.name}} or {{data.actor.name}}.',
     ],
 
     'types' => [

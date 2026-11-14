@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class WebhookDispatcher
@@ -36,11 +35,6 @@ class WebhookDispatcher
         }
 
         $data = ['id' => $model->getKey(), ...$this->redact($model->attributesToArray())];
-
-        $actor = Auth::user();
-        if ($actor instanceof Model) {
-            $data['actor'] = $this->describe($actor);
-        }
 
         if ($action === 'updated') {
             $changes = array_values(array_diff(
@@ -91,7 +85,11 @@ class WebhookDispatcher
         return $this->subscribers($event) !== [];
     }
 
-    /** @return array{event: string, timestamp: string, data: array<string, mixed>} */
+    /**
+     * Builds what is sent to an endpoint for an event.
+     *
+     * @return array{event: string, timestamp: string, data: array<string, mixed>}
+     */
     public function envelope(string $event, array $data, ?CarbonInterface $at = null): array
     {
         return [
@@ -101,7 +99,11 @@ class WebhookDispatcher
         ];
     }
 
-    /** @return array{event: string, timestamp: string, data: array<string, mixed>} */
+    /**
+     * A made-up event used to check that an endpoint is reachable.
+     *
+     * @return array{event: string, timestamp: string, data: array<string, mixed>}
+     */
     public function sample(): array
     {
         return $this->envelope(WebhookEvents::modelEvent('server', 'created'), [
@@ -118,13 +120,17 @@ class WebhookDispatcher
         ]);
     }
 
-    /** @return int[] */
+    /**
+     * @return int[]
+     */
     private function subscribers(string $event): array
     {
         return Webhook::subscriptions()[$event] ?? [];
     }
 
-    /** @param int[] $webhooks */
+    /**
+     * @param  int[]  $webhooks
+     */
     private function queue(array $webhooks, string $event, array $data, ?CarbonInterface $at = null): void
     {
         $payload = $this->envelope($event, $data, $at);
@@ -134,7 +140,9 @@ class WebhookDispatcher
         }
     }
 
-    /** @return array{type: string, id: mixed, name: string|null} */
+    /**
+     * @return array{type: string, id: mixed, name: string|null}
+     */
     private function describe(Model $model): array
     {
         $name = null;
