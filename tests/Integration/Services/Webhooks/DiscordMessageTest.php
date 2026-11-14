@@ -69,6 +69,38 @@ class DiscordMessageTest extends IntegrationTestCase
         $this->assertStringNotContainsString('User updated: tasfiq', $text);
     }
 
+    public function test_username_is_hard_limited_to_discords_maximum(): void
+    {
+        $webhook = Webhook::factory()->create([
+            'type' => Webhook::TYPE_DISCORD,
+            'message' => ['username' => '{{data.name}}'],
+        ]);
+
+        $name = str_repeat('a', 100);
+        $message = DiscordMessage::render($webhook, [
+            'event' => 'model:user.created',
+            'timestamp' => '2026-11-09T04:04:00+06:00',
+            'data' => ['id' => 1, 'name' => $name],
+        ]);
+
+        $this->assertSame(80, mb_strlen($message['username']));
+        $this->assertSame(str_repeat('a', 80), $message['username']);
+    }
+
+    public function test_created_model_card_keeps_false_boolean_highlights(): void
+    {
+        $webhook = Webhook::factory()->create(['type' => Webhook::TYPE_DISCORD]);
+        $message = DiscordMessage::render($webhook, [
+            'event' => 'model:schedule.created',
+            'timestamp' => '2026-11-09T04:04:00+06:00',
+            'data' => ['id' => 1, 'name' => 'Nightly cleanup', 'is_active' => false],
+        ]);
+        $text = implode("\n", $this->textDisplays($message['components']));
+
+        $this->assertStringContainsString('Active', $text);
+        $this->assertStringContainsString('No', $text);
+    }
+
     public function test_long_custom_text_stays_within_components_v2_limits(): void
     {
         $webhook = Webhook::factory()->create([
@@ -96,7 +128,6 @@ class DiscordMessageTest extends IntegrationTestCase
         }
     }
 
-
     public function test_invalid_utf8_in_payload_is_replaced_before_rendering(): void
     {
         $webhook = Webhook::factory()->create([
@@ -119,7 +150,6 @@ class DiscordMessageTest extends IntegrationTestCase
         $this->assertStringContainsString('Bad', $json);
         $this->assertStringContainsString("\u{FFFD}", $json);
     }
-
 
     public function test_discord_delivery_preserves_query_parameters_and_enables_components(): void
     {

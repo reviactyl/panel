@@ -20,14 +20,17 @@ class DiscordMessage
     ];
 
     private const COMPONENTS_V2_FLAG = 1 << 15;
+
     private const MESSAGE_TEXT_LIMIT = 4000;
+
     private const TEXT_DISPLAY_LIMIT = 2000;
+
     private const DETAILS_LIMIT = 1500;
 
     /**
      * Render an event as a Discord Components V2 message.
      *
-     * @param array{event: string, timestamp: string, data: array<string, mixed>} $payload
+     * @param  array{event: string, timestamp: string, data: array<string, mixed>}  $payload
      * @return array<string, mixed>
      */
     public static function render(Webhook $webhook, array $payload): array
@@ -104,7 +107,7 @@ class DiscordMessage
         self::appendText($components, $footer, $remaining, 1);
 
         return array_filter([
-            'username' => $username === null ? null : Str::limit($username, 80),
+            'username' => $username === null ? null : mb_substr($username, 0, 80),
             'avatar_url' => filter_var($template['avatar_url'], FILTER_VALIDATE_URL) ?: null,
             'flags' => self::COMPONENTS_V2_FLAG,
             'components' => [[
@@ -325,7 +328,7 @@ class DiscordMessage
         $highlights = [];
         foreach ($fields as $key => $label) {
             $value = $data[$key] ?? null;
-            if (is_scalar($value) && (string) $value !== '') {
+            if (is_scalar($value) && (is_bool($value) || (string) $value !== '')) {
                 $highlights[$label] = self::formatModelValue($key, $value);
             }
         }
@@ -438,7 +441,6 @@ class DiscordMessage
             default => '🔔',
         };
     }
-
 
     private static function summary(string $event, string $label, array $data): string
     {
