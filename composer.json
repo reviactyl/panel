@@ -17,7 +17,7 @@
         "guzzlehttp/guzzle": "7.16.1",
         "hashids/hashids": "5.0.2",
         "laracasts/utilities": "3.2.5",
-        "laravel/framework": "13.39.0",
+        "laravel/framework": "13.40.0",
         "laravel/helpers": "1.8.3",
         "laravel/passkeys": "0.2.1",
         "laravel/sanctum": "4.3.2",
