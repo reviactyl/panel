@@ -34,7 +34,7 @@ SOFTWARE.
         <meta name="robots" content="noindex">
         <meta name="title" content="{{ $panelConfiguration['site_title'] }}" />
         <meta name="description" content="{{ $panelConfiguration['site_description'] }}" />
-        <link rel="icon" type="image/x-icon" href="{{ $siteConfiguration['icon'] }}">
+        <link rel="icon" href="{{ $panelConfiguration['site_favicon'] }}">
         @if ($siteConfiguration['pwa'])
         <link rel="manifest" href="{{ url('manifest.json') }}">
         <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicons/apple-touch-icon.png') }}">

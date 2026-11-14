@@ -19,6 +19,10 @@ Route::get('/passkey/{path?}', [Base\IndexController::class, 'index'])
 Route::get('/manifest.json', [Base\PwaManifestController::class, 'index'])
     ->withoutMiddleware(['auth', RequireTwoFactorAuthentication::class]);
 
+Route::get('/storage/designify/{filename}', Base\DesignifyImageController::class)
+    ->where('filename', '[a-zA-Z0-9]{40}\.(png|jpe?g|gif|webp|ico|avif|bmp)')
+    ->withoutMiddleware(['auth', 'auth.session', RequireTwoFactorAuthentication::class]);
+
 Route::get('/status/{server}', [Base\IndexController::class, 'index'])
     ->withoutMiddleware(['auth', 'auth.session', RequireTwoFactorAuthentication::class]);
 

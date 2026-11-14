@@ -4,7 +4,7 @@
         wire:ignore.self
         x-data="{
             draft: @js($this->getPreviewSettings()),
-            savedSettings: @js($this->getPreviewSettings()),
+            savedFormData: @js($this->data),
             isDirty: false,
             isDesktop: true,
             workspacePanel: 'preview',
@@ -43,6 +43,7 @@
                 this.mediaQuery.addEventListener('change', this.syncMedia);
                 window.addEventListener('beforeunload', this.handleBeforeUnload);
                 window.addEventListener('message', this.handlePreviewReady);
+                this.$wire.$watch('data', () => this.updateDirty());
                 this.$nextTick(() => this.sendPreview());
             },
             destroy() {
@@ -58,8 +59,8 @@
                     settings: payload,
                 }, window.location.origin);
             },
-            updateDirty(settings = this.draft) {
-                this.isDirty = JSON.stringify(settings) !== JSON.stringify(this.savedSettings);
+            updateDirty() {
+                this.isDirty = JSON.stringify(this.$wire.data) !== JSON.stringify(this.savedFormData);
             },
             setPreview(mode) {
                 this.previewMode = mode;
@@ -80,10 +81,8 @@
             },
         }"
         x-on:designify-tab-changed="editorSurface = $event.detail.emails ? 'emails' : 'panel'"
-        x-on:input.capture="if ($event.target.closest('.designify-editor__workspace')) isDirty = true"
-        x-on:change.capture="if ($event.target.closest('.designify-editor__workspace')) isDirty = true"
-        x-on:designify-preview-updated.window="sendPreview($event.detail.settings); updateDirty($event.detail.settings)"
-        x-on:designify-saved.window="draft = $event.detail.settings; savedSettings = JSON.parse(JSON.stringify($event.detail.settings)); isDirty = false"
+        x-on:designify-preview-updated.window="sendPreview($event.detail.settings); updateDirty()"
+        x-on:designify-saved.window="draft = $event.detail.settings; savedFormData = JSON.parse(JSON.stringify($event.detail.formData)); updateDirty()"
         x-on:designify-reset.window="isDirty = false; window.__designifySkipBeforeUnload = true"
         x-on:email-state.window="emailDirty = $event.detail.dirty; emailBusy = $event.detail.busy"
         x-on:reload-iframe.window="refreshPreview()"
