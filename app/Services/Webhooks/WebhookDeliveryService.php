@@ -15,14 +15,18 @@ class WebhookDeliveryService
     public function __construct(private WebhookEndpointGuard $guard) {}
 
     /**
-     * Sends an event to a webhook's endpoint and records how it went. Sending the same
-     * delivery again, identified by its UUID, counts as another attempt at it rather
-     * than a new delivery.
-     *
-     * @param  array{event: string, timestamp: string, data: array<string, mixed>}  $payload
+     * @param array{event: string, timestamp: string, data: array<string, mixed>} $payload
      */
     public function send(Webhook $webhook, array $payload, ?string $uuid = null): WebhookDelivery
     {
+        // Normalize malformed UTF-8 before persisting the payload as JSON.
+        $payload = json_decode(
+            json_encode($payload, JSON_INVALID_UTF8_SUBSTITUTE | JSON_THROW_ON_ERROR),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+
         $uuid ??= Str::uuid()->toString();
 
         /** @var WebhookDelivery $delivery */
@@ -37,28 +41,34 @@ class WebhookDeliveryService
             'response' => null,
         ]);
 
-        $body = (string) json_encode(
-            $webhook->isDiscord() ? DiscordMessage::render($webhook, $payload) : ['id' => $uuid, ...$payload],
-            JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
-        );
-
         $started = microtime(true);
 
         try {
+            $body = json_encode(
+                $webhook->isDiscord()
+                    ? DiscordMessage::render($webhook, $payload)
+                    : ['id' => $uuid, ...$payload],
+                JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE | JSON_THROW_ON_ERROR,
+            );
+
+            // Validate the configured endpoint before adding Discord's query parameter.
             $target = $this->guard->resolve($webhook->endpoint);
+            $endpoint = $this->requestEndpoint($webhook);
 
             $response = Http::withHeaders($this->headers($webhook, $payload['event'], $uuid, $body))
                 ->withOptions($this->options($target))
                 ->connectTimeout(5)
                 ->timeout((int) config('webhooks.timeout', 10))
                 ->withBody($body, 'application/json')
-                ->post($webhook->endpoint);
+                ->post($endpoint);
 
             $delivery->status_code = $response->status();
             $delivery->successful = $response->successful();
             $delivery->response = $this->excerpt($response->body());
         } catch (WebhookEndpointException $exception) {
             $delivery->response = $exception->getMessage();
+        } catch (\JsonException) {
+            $delivery->response = 'The webhook payload could not be encoded as JSON.';
         } catch (\Throwable) {
             // The underlying message names the full endpoint, which is usually the secret.
             $delivery->response = trans('admin/webhooks.errors.unreachable', ['host' => $webhook->endpointHost()]);
@@ -71,8 +81,45 @@ class WebhookDeliveryService
     }
 
     /**
-     * @return array<string, string>
+     * Preserve existing webhook query parameters and enable Components V2 only for Discord.
      */
+    private function requestEndpoint(Webhook $webhook): string
+    {
+        $endpoint = $webhook->endpoint;
+        if (! $webhook->isDiscord()) {
+            return $endpoint;
+        }
+
+        $fragment = '';
+        $fragmentPosition = strpos($endpoint, '#');
+        if ($fragmentPosition !== false) {
+            $fragment = substr($endpoint, $fragmentPosition);
+            $endpoint = substr($endpoint, 0, $fragmentPosition);
+        }
+
+        $parts = explode('?', $endpoint, 2);
+        $query = [];
+        if (isset($parts[1]) && $parts[1] !== '') {
+            $query = array_values(array_filter(
+                explode('&', $parts[1]),
+                static function (string $parameter): bool {
+                    if ($parameter === '') {
+                        return false;
+                    }
+
+                    $key = rawurldecode(explode('=', $parameter, 2)[0]);
+
+                    return strtolower($key) !== 'with_components';
+                },
+            ));
+        }
+
+        $query[] = 'with_components=true';
+
+        return $parts[0].'?'.implode('&', $query).$fragment;
+    }
+
+    /** @return array<string, string> */
     private function headers(Webhook $webhook, string $event, string $uuid, string $body): array
     {
         $headers = [];
@@ -103,13 +150,12 @@ class WebhookDeliveryService
     }
 
     /**
-     * @param  array{host: string, port: int, address: string}|null  $target
+     * @param array{host: string, port: int, address: string}|null $target
      * @return array<string, mixed>
      */
     private function options(?array $target): array
     {
         $options = ['allow_redirects' => false];
-
         if ($target !== null && $target['host'] !== $target['address']) {
             if (! extension_loaded('curl')) {
                 throw new WebhookEndpointException(trans('admin/webhooks.errors.curl_required'));
