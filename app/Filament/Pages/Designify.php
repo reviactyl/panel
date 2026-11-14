@@ -6,7 +6,9 @@ use App\Contracts\Repository\SettingsRepositoryInterface;
 use App\Filament\AdminAccess;
 use App\Filament\Components\Alert;
 use App\Filament\Components\ImageInput;
+use App\Filament\Components\SiteImageInput;
 use App\Services\Acl\RolePermission;
+use App\Services\Designify\SiteImageService;
 use App\Traits\Helpers\AvailableLanguages;
 use Filament\Actions\Action;
 use Filament\Forms\Components\ColorPicker;
@@ -30,6 +32,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class Designify extends Page implements HasSchemas
 {
@@ -51,6 +54,8 @@ class Designify extends Page implements HasSchemas
     protected string $view = 'filament.pages.designify';
 
     public ?array $data = [];
+
+    public array $siteImageFiles = [];
 
     protected array $settingKeys = [
         'designify:customCopyright',
@@ -505,13 +510,13 @@ class Designify extends Page implements HasSchemas
                         ->required()
                         ->columnSpan(1),
 
-                    ImageInput::make('designify:site_image')
+                    SiteImageInput::make('designify:site_image')
                         ->label(trans('admin/settings.designify.site-image'))
                         ->required()
                         ->maxLength(255)
                         ->columnSpan(1),
 
-                    ImageInput::make('designify:site_favicon')
+                    SiteImageInput::make('designify:site_favicon')
                         ->label(trans('admin/settings.designify.site-favicon'))
                         ->required()
                         ->maxLength(255)
@@ -523,6 +528,25 @@ class Designify extends Page implements HasSchemas
                         ->columnSpan(1),
                 ]),
         ];
+    }
+
+    public function updatedSiteImageFiles(mixed $value, string $key): void
+    {
+        abort_unless(static::canAccess() && ! config('panel.load_environment_only'), 403);
+        abort_unless(in_array($key, ['site_image', 'site_favicon'], true), 422);
+        if (! $value instanceof TemporaryUploadedFile) {
+            return;
+        }
+
+        $attribute = 'siteImageFiles.'.$key;
+        $this->resetValidation($attribute);
+        $this->data['designify:'.$key] = app(SiteImageService::class)->store(
+            $value,
+            $attribute,
+            trans('admin/settings.designify.'.str_replace('_', '-', $key)),
+        );
+        unset($this->siteImageFiles[$key]);
+        $this->updatedData();
     }
 
     private function errorSettings(): array
@@ -653,6 +677,10 @@ class Designify extends Page implements HasSchemas
                 continue;
             }
 
+            if (in_array($key, ['designify:site_image', 'designify:site_favicon'], true)) {
+                $value = SiteImageService::normalizeUrl($value);
+            }
+
             Arr::set($preview, str_replace(':', '.', Str::after($key, 'designify:')), $value);
         }
 
@@ -693,7 +721,7 @@ class Designify extends Page implements HasSchemas
             ->send();
 
         $this->dispatch('$refresh');
-        $this->dispatch('designify-saved', settings: $this->getPreviewSettings());
+        $this->dispatch('designify-saved', settings: $this->getPreviewSettings(), formData: $this->data);
         $this->js("window.dispatchEvent(new CustomEvent('reload-iframe'))");
     }
 
