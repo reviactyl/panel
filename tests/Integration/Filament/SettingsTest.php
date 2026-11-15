@@ -75,6 +75,16 @@ class SettingsTest extends IntegrationTestCase
         $this->assertDatabaseMissing('settings', ['key' => 'settings::app:fileEditor']);
     }
 
+    public function test_database_padding_is_removed_from_editor_preferences(): void
+    {
+        foreach (['mo', 'cm'] as $editor) {
+            $user = (new User())->newFromBuilder(['editor' => str_pad($editor, 5)]);
+
+            $this->assertSame($editor, $user->editor);
+            $this->assertSame($editor, $user->toArray()['editor']);
+        }
+    }
+
     public function test_regular_users_cannot_change_admin_settings(): void
     {
         $this->actingAs(User::factory()->create(['root_admin' => false]));

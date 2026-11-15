@@ -316,6 +316,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return trim($this->name_first.' '.$this->name_last);
     }
 
+    public function getEditorAttribute(?string $value): ?string
+    {
+        return $value === null ? null : rtrim($value);
+    }
+
     /**
      * Returns all servers that a user owns.
      *
