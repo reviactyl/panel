@@ -1,0 +1,60 @@
+name: Database image mirror
+
+on:
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+  push:
+    branches:
+      - develop
+    paths:
+      - .github/workflows/database-image-mirror.yml
+      - .github/scripts/database_images.py
+
+permissions: {}
+
+concurrency:
+  group: database-image-mirror
+  cancel-in-progress: false
+
+jobs:
+  mirror:
+    if: github.repository == 'reviactyl/panel' && github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: Install Skopeo
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install --no-install-recommends -y skopeo
+
+      - name: Authenticate registries
+        env:
+          DOCKER_USER: ${{ vars.DOCKER_USER }}
+          DOCKER_PAT: ${{ secrets.DOCKER_PAT }}
+          GHCR_USER: ${{ github.actor }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REGISTRY_AUTH_FILE: ${{ runner.temp }}/database-image-auth.json
+        run: |
+          if [[ -n "$DOCKER_USER" && -n "$DOCKER_PAT" ]]; then
+            printf '%s' "$DOCKER_PAT" | skopeo login --username "$DOCKER_USER" --password-stdin docker.io
+          fi
+          printf '%s' "$GHCR_TOKEN" | skopeo login --username "$GHCR_USER" --password-stdin ghcr.io
+
+      - name: Copy and verify all database images
+        env:
+          REGISTRY_AUTH_FILE: ${{ runner.temp }}/database-image-auth.json
+        run: python3 .github/scripts/database_images.py mirror
+
+      - name: Remove registry credentials
+        if: always()
+        env:
+          REGISTRY_AUTH_FILE: ${{ runner.temp }}/database-image-auth.json
+        run: rm -f "$REGISTRY_AUTH_FILE"
