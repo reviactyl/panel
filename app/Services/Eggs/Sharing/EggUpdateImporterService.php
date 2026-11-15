@@ -5,6 +5,7 @@ namespace App\Services\Eggs\Sharing;
 use App\Exceptions\Service\InvalidFileUploadException;
 use App\Models\Egg;
 use App\Models\EggVariable;
+use App\Services\Eggs\EggImageService;
 use App\Services\Eggs\EggParserService;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Http\UploadedFile;
@@ -15,7 +16,7 @@ class EggUpdateImporterService
     /**
      * EggUpdateImporterService constructor.
      */
-    public function __construct(protected ConnectionInterface $connection, protected EggParserService $parser) {}
+    public function __construct(protected ConnectionInterface $connection, protected EggParserService $parser, protected EggImageService $images) {}
 
     /**
      * Update an existing Egg using an uploaded JSON file.
@@ -29,6 +30,9 @@ class EggUpdateImporterService
         return $this->connection->transaction(function () use ($egg, $parsed) {
             $egg = $this->parser->fillFromParsed($egg, $parsed);
             $egg->save();
+            if (is_string($parsed['image'] ?? null) && str_starts_with($parsed['image'], 'data:')) {
+                $this->images->restore($egg, $parsed['image']);
+            }
 
             // Update existing variables or create new ones.
             foreach ($parsed['variables'] ?? [] as $variable) {
