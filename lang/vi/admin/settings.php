@@ -18,6 +18,7 @@ return [
         'saved' => 'Đã lưu cài đặt',
         'default-language' => 'Ngôn ngữ mặc định',
         'default-language-hint' => 'Được sử dụng làm ngôn ngữ của bảng điều khiển khi vị trí địa lý bị tắt hoặc không thể xác định kết quả trùng khớp.',
+        'default-code-editor' => 'Trình soạn thảo mã mặc định',
         'geolocate-language' => 'Ngôn ngữ định vị địa lý',
         'geolocate-language-hint' => 'Tự động phát hiện ngôn ngữ của khách truy cập từ địa chỉ IP của họ. Ngôn ngữ mặc định ở trên được sử dụng làm ngôn ngữ dự phòng.',
         'trusted-proxies' => 'Máy chủ proxy đáng tin cậy',

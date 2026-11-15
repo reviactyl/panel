@@ -18,6 +18,7 @@ return [
         'saved' => 'Pengaturan disimpan',
         'default-language' => 'Bahasa Bawaan',
         'default-language-hint' => 'Digunakan sebagai bahasa panel ketika geolokasi dinonaktifkan atau tidak dapat menentukan kecocokan.',
+        'default-code-editor' => 'Editor Kode Bawaan',
         'geolocate-language' => 'Bahasa Geolokasi',
         'geolocate-language-hint' => 'Secara otomatis mendeteksi bahasa pengunjung dari alamat IP mereka. Bahasa default di atas digunakan sebagai cadangan.',
         'trusted-proxies' => 'Proksi Terpercaya',

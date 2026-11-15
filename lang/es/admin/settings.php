@@ -18,6 +18,7 @@ return [
         'saved' => 'Configuración guardada',
         'default-language' => 'Idioma predeterminado',
         'default-language-hint' => 'Se utiliza como idioma del panel cuando la geolocalización está deshabilitada o no puede determinar una coincidencia.',
+        'default-code-editor' => 'Editor de código predeterminado',
         'geolocate-language' => 'Geolocalizar idioma',
         'geolocate-language-hint' => 'Detecta automáticamente el idioma de los visitantes a partir de su dirección IP. El idioma predeterminado anterior se utiliza como alternativa.',
         'trusted-proxies' => 'Proxies de confianza',

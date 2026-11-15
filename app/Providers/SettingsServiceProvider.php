@@ -21,6 +21,7 @@ class SettingsServiceProvider extends ServiceProvider
         'app:logo',
         'app:icon',
         'app:locale',
+        'app:fileEditor',
         'app:debug',
         'app:pwa',
         'trustedproxy:proxies',

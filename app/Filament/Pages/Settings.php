@@ -57,6 +57,7 @@ class Settings extends Page implements HasSchemas
         'app:logo',
         'app:icon',
         'app:locale',
+        'app:fileEditor',
         'app:locale:geolocate',
         'trustedproxy:proxies',
         'panel:auth:2fa_required',
@@ -256,6 +257,17 @@ class Settings extends Page implements HasSchemas
                             // but here we are in instance context.
                             return $this->getAvailableLanguages(true);
                         })
+                        ->searchable()
+                        ->columnSpan(2)
+                        ->native(false),
+
+                    Select::make('app:fileEditor')
+                        ->label(trans('admin/settings.overview.default-code-editor'))
+                        ->options([
+                            'mo' => 'Monaco',
+                            'cm' => 'CodeMirror',
+                        ])
+                        ->required()
                         ->searchable()
                         ->columnSpan(2)
                         ->native(false),

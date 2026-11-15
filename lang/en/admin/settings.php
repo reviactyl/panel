@@ -21,6 +21,7 @@ return [
         'saved' => 'Settings saved',
         'default-language' => 'Default Language',
         'default-language-hint' => 'Used as the panel language when geolocation is disabled or cannot determine a match.',
+        'default-code-editor' => 'Default Code Editor',
         'geolocate-language' => 'Geolocate Language',
         'geolocate-language-hint' => 'Automatically detect the visitors language from their IP address. The default language above is used as a fallback.',
         'trusted-proxies' => 'Trusted Proxies',
