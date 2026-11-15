@@ -96,6 +96,10 @@ class Designify extends Page implements HasSchemas
         'designify:sidebarLogout',
         'designify:sidebarButtons',
         'designify:background',
+        'designify:backgroundScope',
+        'designify:backgroundOverlay',
+        'designify:backgroundOverlayOpacity',
+        'designify:backgroundOverlayColor',
         'designify:radius',
         'designify:allocationBlur',
         'designify:fontFamily',
@@ -385,12 +389,53 @@ class Designify extends Page implements HasSchemas
                         ->label(trans('admin/settings.designify.sidebar-logout-button'))
                         ->inline(false)
                         ->columnSpan(1),
-
-                    TextInput::make('designify:background')
+                ]),
+            Section::make(trans('admin/settings.designify.background-settings'))
+                ->icon('tabler-photo')
+                ->columns(2)
+                ->schema([
+                    SiteImageInput::make('designify:background')
                         ->label(trans('admin/settings.designify.panel-background'))
                         ->helperText(trans('admin/settings.designify.panel-background-helper'))
                         ->maxLength(255)
                         ->columnSpanFull(),
+
+                    Select::make('designify:backgroundScope')
+                        ->label(trans('admin/settings.designify.background-scope'))
+                        ->options([
+                            'page' => trans('admin/settings.designify.background-scope-page'),
+                            'all' => trans('admin/settings.designify.background-scope-all'),
+                        ])
+                        ->helperText(trans('admin/settings.designify.background-scope-helper'))
+                        ->required()
+                        ->columnSpanFull(),
+
+                    Toggle::make('designify:backgroundOverlay')
+                        ->label(trans('admin/settings.designify.background-overlay'))
+                        ->helperText(trans('admin/settings.designify.background-overlay-helper'))
+                        ->inline(false)
+                        ->live()
+                        ->columnSpanFull(),
+
+                    TextInput::make('designify:backgroundOverlayOpacity')
+                        ->label(trans('admin/settings.designify.background-overlay-opacity'))
+                        ->numeric()
+                        ->integer()
+                        ->minValue(0)
+                        ->maxValue(100)
+                        ->suffix('%')
+                        ->required()
+                        ->visible(fn (Get $get): bool => (bool) $get('designify:backgroundOverlay'))
+                        ->dehydratedWhenHidden(),
+
+                    ColorPicker::make('designify:backgroundOverlayColor')
+                        ->label(trans('admin/settings.designify.background-overlay-color'))
+                        ->placeholder(trans('admin/settings.designify.background-overlay-theme'))
+                        ->helperText(trans('admin/settings.designify.background-overlay-color-helper'))
+                        ->regex('/^#[0-9a-fA-F]{6}$/')
+                        ->nullable()
+                        ->visible(fn (Get $get): bool => (bool) $get('designify:backgroundOverlay'))
+                        ->dehydratedWhenHidden(),
                 ]),
             Section::make(trans('admin/settings.designify.section-surface'))
                 ->description(trans('admin/settings.designify.section-surface-description'))
@@ -574,7 +619,7 @@ class Designify extends Page implements HasSchemas
     public function updatedSiteImageFiles(mixed $value, string $key): void
     {
         abort_unless(static::canAccess() && ! config('panel.load_environment_only'), 403);
-        abort_unless(in_array($key, ['site_image', 'site_favicon'], true), 422);
+        abort_unless(in_array($key, ['site_image', 'site_favicon', 'background'], true), 422);
         if (! $value instanceof TemporaryUploadedFile) {
             return;
         }
@@ -584,7 +629,7 @@ class Designify extends Page implements HasSchemas
         $this->data['designify:'.$key] = app(SiteImageService::class)->store(
             $value,
             $attribute,
-            trans('admin/settings.designify.'.str_replace('_', '-', $key)),
+            trans('admin/settings.designify.'.($key === 'background' ? 'panel-background' : str_replace('_', '-', $key))),
         );
         unset($this->siteImageFiles[$key]);
         $this->updatedData();

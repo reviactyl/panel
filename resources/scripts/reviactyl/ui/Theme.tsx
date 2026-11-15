@@ -2,6 +2,7 @@ import { updateThemeColors } from '@/lib/themeColors';
 import { type ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaDesktop, FaMoon, FaSun } from 'react-icons/fa6';
+import type { DesignifySettings } from '@/state/designify';
 
 type Theme = 'light' | 'dark' | 'system';
 
@@ -17,6 +18,13 @@ const getStoredTheme = (): Theme => {
 
 const applyTheme = (theme: Theme) => {
     const root = document.documentElement;
+    const background = getComputedStyle(root).getPropertyValue('--background').trim();
+
+    root.toggleAttribute('data-wallpaper', background !== '' && background !== 'none');
+    root.toggleAttribute(
+        'data-wallpaper-surfaces',
+        (window as Window & { PanelConfiguration?: DesignifySettings }).PanelConfiguration?.backgroundScope === 'all',
+    );
 
     root.classList.remove('light', 'dark');
 

@@ -104,6 +104,8 @@ SOFTWARE.
     <style>
         :root {
             --background: {{ empty($panelConfiguration['background']) || $panelConfiguration['background'] === 'none' ? 'none' : 'url('.$panelConfiguration['background'].')' }};
+            --background-overlay-color: {{ $panelConfiguration['backgroundOverlayColor'] ? $toHex($panelConfiguration['backgroundOverlayColor']) : 'var(--color-950)' }};
+            --background-overlay-opacity: {{ $panelConfiguration['backgroundOverlay'] ? $panelConfiguration['backgroundOverlayOpacity'] / 100 : 0 }};
             --radius: {{ $panelConfiguration['radius'] }};
             --font-family: "{{ $panelConfiguration['fontFamily'] }}", sans-serif;
             --color-primary: {{ $toHex($panelConfiguration['colorPrimary']) }};

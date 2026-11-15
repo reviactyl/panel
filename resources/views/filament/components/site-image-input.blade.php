@@ -18,13 +18,13 @@
         <div class="designify-site-image__row">
             <div @class(['designify-site-image__thumbnail', 'designify-site-image__thumbnail--icon' => $isSquarePreview()])>
                 <img
-                    x-bind:src="imageUrl ? imageUrl.replace(/^\/public\//, '/') : null"
-                    x-show="imageUrl && !failed"
+                    x-bind:src="imageUrl && imageUrl !== 'none' ? imageUrl.replace(/^\/public\//, '/') : null"
+                    x-show="imageUrl && imageUrl !== 'none' && !failed"
                     x-on:error="failed = true"
                     x-on:load="failed = false"
                     alt=""
                 >
-                <span x-show="!imageUrl || failed" x-cloak class="designify-site-image__fallback" role="status">
+                <span x-show="!imageUrl || imageUrl === 'none' || failed" x-cloak class="designify-site-image__fallback" role="status">
                     <x-tabler-photo-off />
                     <span class="sr-only">{{ trans('admin/settings.designify.image-preview-unavailable') }}</span>
                 </span>

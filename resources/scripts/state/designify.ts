@@ -7,6 +7,11 @@ export interface DesignifySidebarButton {
 }
 
 export interface DesignifySettings {
+    background?: string;
+    backgroundScope?: 'page' | 'all';
+    backgroundOverlay?: boolean;
+    backgroundOverlayOpacity?: number;
+    backgroundOverlayColor?: string;
     customCopyright: boolean;
     copyright: string;
     isUnderMaintenance: boolean;
