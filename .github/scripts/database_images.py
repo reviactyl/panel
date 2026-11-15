@@ -45,7 +45,7 @@ def mirror_tag(image):
     return f"{MIRROR}:{image.replace(':', '-')}"
 
 
-def manifest_digest(image, anonymous=False):
+def manifest_digest(image, anonymous=False, timeout=180):
     command = ["skopeo", "inspect", "--raw", "--retry-times", "3"]
     if anonymous:
         command.append("--no-creds")
@@ -53,7 +53,7 @@ def manifest_digest(image, anonymous=False):
         [*command, f"docker://{image}"],
         check=True,
         capture_output=True,
-        timeout=180,
+        timeout=timeout,
     )
     manifest = json.loads(result.stdout)
     if manifest.get("schemaVersion") != 2:
@@ -76,7 +76,7 @@ def resolve_images(require_mirror=False, use_mirror=True):
     images = {}
     for image in IMAGES:
         try:
-            digest = manifest_digest(mirror_tag(image), anonymous=True)
+            digest = manifest_digest(mirror_tag(image), anonymous=True, timeout=30)
         except subprocess.SubprocessError:
             if require_mirror:
                 raise

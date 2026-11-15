@@ -31,6 +31,8 @@ fallback during bootstrap, or fail preflight when mirrors are required.
 Before mirrors are ready, preflight warns and uses the original Docker Hub
 tags and credentials for unavailable images. This keeps the initial
 rollout and standalone forks working; it is still subject to Docker Hub limits.
+Each preflight image lookup has a 30-second timeout, so even six stalled
+mirrors return their fallbacks within three minutes of registry checks.
 When `CI_DATABASE_MIRROR_REQUIRED=true`, no Docker Hub fallback is allowed,
 including when the latest successful refresh is over 48 hours old.
 

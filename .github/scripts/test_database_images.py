@@ -82,10 +82,12 @@ class DatabaseImagesTest(unittest.TestCase):
         self.assertEqual(len(images), 6)
         for image, reference in images.items():
             self.assertEqual(reference, database_images.MIRROR + "@sha256:" + "a" * 64)
-            inspect.assert_any_call(database_images.mirror_tag(image), anonymous=True)
+            inspect.assert_any_call(
+                database_images.mirror_tag(image), anonymous=True, timeout=30
+            )
 
     def test_bootstrap_falls_back_only_for_the_unavailable_image_and_warns(self):
-        def inspect(image, anonymous):
+        def inspect(image, anonymous, timeout):
             if image.endswith(":mysql-8"):
                 raise subprocess.CalledProcessError(
                     1, "skopeo", stderr=b"manifest unknown"
@@ -109,6 +111,34 @@ class DatabaseImagesTest(unittest.TestCase):
         ):
             with self.assertRaises(subprocess.CalledProcessError):
                 database_images.resolve_images(require_mirror=True)
+
+    def test_all_stalled_mirrors_fall_back_within_the_preflight_budget(self):
+        def stall(command, **options):
+            raise subprocess.TimeoutExpired(command, options["timeout"])
+
+        with (
+            patch("database_images.subprocess.run", side_effect=stall) as run,
+            patch("sys.stderr", new_callable=io.StringIO) as log,
+        ):
+            images = database_images.resolve_images()
+
+        self.assertEqual(
+            images, dict(zip(database_images.IMAGES, database_images.IMAGES))
+        )
+        self.assertEqual(run.call_count, 6)
+        self.assertLessEqual(
+            sum(call.kwargs["timeout"] for call in run.call_args_list), 180
+        )
+        self.assertEqual(log.getvalue().count("::warning::"), 6)
+
+    def test_required_mirror_stops_on_the_first_stalled_registry(self):
+        with patch(
+            "database_images.subprocess.run",
+            side_effect=subprocess.TimeoutExpired("skopeo", 30),
+        ) as run:
+            with self.assertRaises(subprocess.TimeoutExpired):
+                database_images.resolve_images(require_mirror=True)
+        self.assertEqual(run.call_count, 1)
 
     def test_refresh_copies_current_upstream_digest_and_all_platforms(self):
         digest = "sha256:" + "b" * 64
