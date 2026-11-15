@@ -1,15 +1,18 @@
 import { act, type ReactNode } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
+import { MemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { rawDataToFileObject } from '@/api/transformers';
 import type { FileObject } from '@/api/server/files/loadDirectory';
 import FileDropdownMenu from './FileDropdownMenu';
+import FileObjectRow from './FileObjectRow';
 
 const mocks = vi.hoisted(() => ({ download: vi.fn(), running: false }));
 vi.mock('@/state/server', () => ({
     ServerContext: {
         useStoreState: (selector: (state: unknown) => unknown) =>
             selector({
-                server: { data: { uuid: 'uuid' } },
+                server: { data: { uuid: 'uuid', id: 'test' } },
                 files: {
                     directory: '/data',
                     selectedFiles: [],
@@ -28,6 +31,8 @@ vi.mock('@/plugins/useFileManagerSwr', () => ({ default: () => ({ mutate: vi.fn(
 vi.mock('@/plugins/useFlash', () => ({ default: () => ({ clearFlashes: vi.fn(), clearAndAddHttpError: vi.fn() }) }));
 vi.mock('@/api/server/files/getFileDownloadUrl', () => ({ default: mocks.download }));
 vi.mock('@/reviactyl/elements/Can', () => ({ default: ({ children }: { children: ReactNode }) => children }));
+vi.mock('@/plugins/usePermissions', () => ({ usePermissions: () => [true] }));
+vi.mock('./SelectFileCheckbox', () => ({ default: () => null }));
 vi.mock('@/reviactyl/elements/Fade', () => ({
     default: ({ children }: { children: ReactNode }) => children,
 }));
@@ -200,5 +205,56 @@ describe('file action controls', () => {
         await hover('mouseout');
         expect(archive.getAttribute('aria-expanded')).toBe('false');
         expect(formats.style.display).toBe('none');
+    });
+});
+
+describe.each([false, true])('file context menus (grid=%s)', (grid) => {
+    it('replaces the open menu on right-click and repositions repeated right-clicks', async () => {
+        const files = ['first.txt', 'second.txt'].map((name) =>
+            rawDataToFileObject({
+                object: 'file_object',
+                attributes: {
+                    name,
+                    is_file: true,
+                    mimetype: 'text/plain',
+                    size: 1,
+                    created_at: '2026-11-01T00:00:00Z',
+                    modified_at: '2026-11-01T00:00:00Z',
+                },
+            }),
+        );
+        await act(async () =>
+            root.render(
+                <MemoryRouter>
+                    {files.map((file) => (
+                        <FileObjectRow key={file.key} file={file} grid={grid} />
+                    ))}
+                </MemoryRouter>,
+            ),
+        );
+        const toggles = Array.from(container.querySelectorAll<HTMLButtonElement>('button[aria-expanded]')).filter(
+            (button) => button.hasAttribute('aria-label'),
+        );
+        const links = container.querySelectorAll('a');
+        const rightClick = async (index: number, clientX: number) => {
+            await act(async () =>
+                links[index]!.dispatchEvent(
+                    new MouseEvent('contextmenu', { bubbles: true, cancelable: true, button: 2, clientX }),
+                ),
+            );
+        };
+
+        await rightClick(0, 500);
+        expect(toggles[0]!.getAttribute('aria-expanded')).toBe('true');
+        await rightClick(1, 600);
+        expect(toggles[0]!.getAttribute('aria-expanded')).toBe('false');
+        expect(toggles[1]!.getAttribute('aria-expanded')).toBe('true');
+        await rightClick(1, 700);
+        expect(toggles[1]!.getAttribute('aria-expanded')).toBe('true');
+        expect(document.getElementById(toggles[1]!.getAttribute('aria-controls')!)!.style.left).toBe('700px');
+        expect(container.querySelectorAll('button[aria-label][aria-expanded=true]')).toHaveLength(1);
+
+        await act(async () => document.body.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, button: 2 })));
+        expect(toggles[1]!.getAttribute('aria-expanded')).toBe('false');
     });
 });
