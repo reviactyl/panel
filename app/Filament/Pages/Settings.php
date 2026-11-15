@@ -291,26 +291,6 @@ class Settings extends Page implements HasSchemas
                         ->onColor('success')
                         ->offColor('danger')
                         ->columnSpan(1),
-                ]),
-
-            Group::make()
-                ->columns(4)
-                ->schema([
-                    ToggleButtons::make('panel:auth:2fa_required')
-                        ->label(trans('admin/settings.overview.2fa'))
-                        ->inline()
-                        ->icons([
-                            0 => 'tabler-lock-off',
-                            1 => 'tabler-user-shield',
-                            2 => 'tabler-users',
-                        ])
-                        ->options([
-                            0 => trans('admin/settings.overview.not-required'),
-                            1 => trans('admin/settings.overview.admin-only'),
-                            2 => trans('admin/settings.overview.all-users'),
-                        ])
-                        ->required()
-                        ->columnSpan(2),
 
                     Toggle::make('app:debug')
                         ->label(trans('admin/settings.overview.debug-mode'))
@@ -334,6 +314,22 @@ class Settings extends Page implements HasSchemas
             Group::make()
                 ->columns(4)
                 ->schema([
+                    ToggleButtons::make('panel:auth:2fa_required')
+                        ->label(trans('admin/settings.overview.2fa'))
+                        ->inline()
+                        ->icons([
+                            0 => 'tabler-lock-off',
+                            1 => 'tabler-user-shield',
+                            2 => 'tabler-users',
+                        ])
+                        ->options([
+                            0 => trans('admin/settings.overview.not-required'),
+                            1 => trans('admin/settings.overview.admin-only'),
+                            2 => trans('admin/settings.overview.all-users'),
+                        ])
+                        ->required()
+                        ->columnSpan(2),
+
                     TagsInput::make('trustedproxy:proxies')
                         ->label(trans('admin/settings.overview.trusted-proxies'))
                         ->helperText(trans('admin/settings.overview.trusted-proxies-hint'))
