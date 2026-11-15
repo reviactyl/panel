@@ -172,7 +172,7 @@ export default () => {
         const foreground = color('--color-100');
         if (terminalRef.current) {
             terminalRef.current.options.theme = {
-                background: color('--color-900'),
+                background: color('--color-950'),
                 foreground,
                 cursor: foreground,
                 selectionBackground: color('--color-primary'),
