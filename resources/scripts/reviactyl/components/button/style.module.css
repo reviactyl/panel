@@ -51,7 +51,7 @@
 
 .text {
     @apply bg-secondary text-on-secondary;
-    @apply hover:bg-secondary active:bg-secondary focus:ring-secondary/50;
+    @apply enabled:hover:bg-secondary enabled:active:bg-secondary focus:ring-secondary/50;
 
     &.secondary {
         @apply enabled:hover:bg-secondary enabled:active:bg-secondary enabled:hover:text-on-secondary enabled:active:text-on-secondary;
@@ -59,6 +59,19 @@
 
     &:disabled {
         @apply bg-secondary text-on-secondary/60;
+    }
+
+    :where(:global(html:not(.dark))) & {
+        @apply bg-gray-800 text-gray-100 focus:ring-gray-500/50;
+        @apply enabled:hover:bg-gray-700 enabled:active:bg-gray-700;
+
+        &.secondary {
+            @apply enabled:hover:bg-gray-700 enabled:active:bg-gray-700 enabled:hover:text-gray-100 enabled:active:text-gray-100;
+        }
+
+        &:disabled {
+            @apply bg-gray-800 text-gray-100/60;
+        }
     }
 }
 

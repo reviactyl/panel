@@ -291,7 +291,7 @@ const DashboardContainer = () => {
                                             title={t('categories.manage')}
                                             aria-label={t('categories.manage')}
                                         >
-                                            <FaUserGear className='w-5 h-5 text-gray-50' />
+                                            <FaUserGear className='w-5 h-5' />
                                         </Button.Text>
                                     </div>
                                 )}
@@ -304,13 +304,13 @@ const DashboardContainer = () => {
                                             className={clsx(
                                                 'p-2!',
                                                 (selectedEggId !== null || selectedCategory !== 'all') &&
-                                                    'bg-blue-700 hover:bg-blue-600',
+                                                    'bg-reviactyl! text-on-primary!',
                                             )}
                                             title={t('filter-label')}
                                             aria-label={t('filter-label')}
                                             aria-expanded={eggFilterOpen}
                                         >
-                                            <FilterIcon className='w-5 h-5 text-gray-50' />
+                                            <FilterIcon className='w-5 h-5' />
                                         </Button.Text>
                                     )}
 
