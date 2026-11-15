@@ -23,6 +23,37 @@ env:
   HASHIDS_SALT: test123
 
 jobs:
+  database-images:
+    name: Resolve database images
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      images: ${{ steps.images.outputs.images }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: Test image mirror tooling
+        run: python3 -m unittest discover -s .github/scripts -p 'test_*.py'
+
+      - name: Install Skopeo
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install --no-install-recommends -y skopeo
+
+      - name: Resolve public image digests
+        id: images
+        env:
+          CI_DATABASE_MIRROR_REQUIRED: ${{ vars.CI_DATABASE_MIRROR_REQUIRED }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          images=$(python3 .github/scripts/database_images.py resolve)
+          printf 'images=%s\n' "$images" >> "$GITHUB_OUTPUT"
+
   sqlite:
     name: SQLite
     runs-on: ubuntu-latest
@@ -51,7 +82,7 @@ jobs:
 
       - id: composer-cache
         run: |
-          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+          echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
@@ -76,6 +107,7 @@ jobs:
         run: vendor/bin/pest tests/Integration --parallel
 
   mysql:
+    needs: database-images
     name: MySQL
     runs-on: ubuntu-latest
     permissions:
@@ -99,9 +131,10 @@ jobs:
           - mysql:9
     services:
       database:
-        image: ${{ matrix.database }}
+        image: ${{ fromJSON(needs.database-images.outputs.images)[matrix.database] }}
         credentials: >-
-          ${{ vars.DOCKER_USER != '' && secrets.DOCKER_PAT != '' &&
+          ${{ !startsWith(fromJSON(needs.database-images.outputs.images)[matrix.database], 'ghcr.io/') &&
+              vars.DOCKER_USER != '' && secrets.DOCKER_PAT != '' &&
               fromJSON(format('{{"username":{0},"password":{1}}}',
                 toJSON(vars.DOCKER_USER), toJSON(secrets.DOCKER_PAT))) || fromJSON('{}') }}
         env:
@@ -121,7 +154,7 @@ jobs:
 
       - id: composer-cache
         run: |
-          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+          echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
@@ -152,6 +185,7 @@ jobs:
           DB_PORT: ${{ job.services.database.ports['3306'] }}
 
   mariadb:
+    needs: database-images
     name: MariaDB
     runs-on: ubuntu-latest
     permissions:
@@ -173,9 +207,10 @@ jobs:
           - mariadb:11
     services:
       database:
-        image: ${{ matrix.database }}
+        image: ${{ fromJSON(needs.database-images.outputs.images)[matrix.database] }}
         credentials: >-
-          ${{ vars.DOCKER_USER != '' && secrets.DOCKER_PAT != '' &&
+          ${{ !startsWith(fromJSON(needs.database-images.outputs.images)[matrix.database], 'ghcr.io/') &&
+              vars.DOCKER_USER != '' && secrets.DOCKER_PAT != '' &&
               fromJSON(format('{{"username":{0},"password":{1}}}',
                 toJSON(vars.DOCKER_USER), toJSON(secrets.DOCKER_PAT))) || fromJSON('{}') }}
         env:
@@ -195,7 +230,7 @@ jobs:
 
       - id: composer-cache
         run: |
-          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+          echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
@@ -226,6 +261,7 @@ jobs:
           DB_PORT: ${{ job.services.database.ports['3306'] }}
 
   pgsql:
+    needs: database-images
     name: PostgreSQL
     runs-on: ubuntu-latest
     permissions:
@@ -247,9 +283,10 @@ jobs:
           - postgres:18
     services:
       database:
-        image: ${{ matrix.database }}
+        image: ${{ fromJSON(needs.database-images.outputs.images)[matrix.database] }}
         credentials: >-
-          ${{ vars.DOCKER_USER != '' && secrets.DOCKER_PAT != '' &&
+          ${{ !startsWith(fromJSON(needs.database-images.outputs.images)[matrix.database], 'ghcr.io/') &&
+              vars.DOCKER_USER != '' && secrets.DOCKER_PAT != '' &&
               fromJSON(format('{{"username":{0},"password":{1}}}',
                 toJSON(vars.DOCKER_USER), toJSON(secrets.DOCKER_PAT))) || fromJSON('{}') }}
         env:
@@ -271,7 +308,7 @@ jobs:
 
       - id: composer-cache
         run: |
-          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+          echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
