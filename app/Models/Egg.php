@@ -176,11 +176,7 @@ class Egg extends Model implements Identifiable
 
     public function getImageUrlAttribute(): ?string
     {
-        if (! str_starts_with($this->image ?? '', 'data:image/')) {
-            return $this->image;
-        }
-
-        return route('egg-image', ['egg' => $this->uuid, 'version' => hash('xxh128', $this->image)]);
+        return str_starts_with($this->image ?? '', '/images/eggs/') ? url($this->image) : $this->image;
     }
 
     public function getCreationSourceLabelAttribute(): string

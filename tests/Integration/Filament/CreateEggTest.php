@@ -14,6 +14,7 @@ use App\Services\Eggs\EggCreationService;
 use Filament\Facades\Filament;
 use Filament\Notifications\Notification;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Integration\IntegrationTestCase;
@@ -32,11 +33,11 @@ class CreateEggTest extends IntegrationTestCase
             ->set('eggImageUpload', $file)
             ->call('save')->assertHasNoFormErrors();
 
-        $this->assertSame('data:image/png;base64,'.base64_encode($contents), $egg->fresh()->image);
+        $this->assertSame('data:image/png;base64,'.base64_encode($contents), DB::table('egg_images')->where('egg_id', $egg->id)->value('data'));
         $page = Livewire::test(EditEgg::class, ['record' => $egg->id]);
         $this->assertStringNotContainsString('data:image/png;base64,', json_encode($page->get('data')));
         $page->call('save')->assertHasNoFormErrors();
-        $this->assertSame('data:image/png;base64,'.base64_encode($contents), $egg->fresh()->image);
+        $this->assertSame('data:image/png;base64,'.base64_encode($contents), DB::table('egg_images')->where('egg_id', $egg->id)->value('data'));
 
         $url = $egg->fresh()->image_url;
         $response = $this->get($url)->assertOk()->assertHeader('Content-Type', 'image/png');
@@ -44,8 +45,17 @@ class CreateEggTest extends IntegrationTestCase
         $this->get($url, ['If-None-Match' => $response->headers->get('ETag')])->assertStatus(304);
         $this->get(preg_replace('/[a-f0-9]{32}\/image$/', str_repeat('0', 32).'/image', $url))->assertNotFound();
 
+        $replacement = file_get_contents(public_path('reviactyl/icon.png'));
+        $page->set('eggImageUpload', UploadedFile::fake()->createWithContent('replacement.png', $replacement))
+            ->call('save')->assertHasNoFormErrors();
+        $this->assertDatabaseCount('egg_images', 1);
+        $this->get($url)->assertNotFound();
+        $url = $egg->fresh()->image_url;
+        $this->assertSame($replacement, $this->get($url)->assertOk()->getContent());
+
         $page->fillForm(['image' => null])->call('save')->assertHasNoFormErrors();
         $this->assertNull($egg->fresh()->image);
+        $this->assertDatabaseMissing('egg_images', ['egg_id' => $egg->id]);
         $this->get($url)->assertNotFound();
     }
 
@@ -62,6 +72,7 @@ class CreateEggTest extends IntegrationTestCase
             ->set('data.image', 'https://example.com/new.png')
             ->call('save')->assertHasNoFormErrors();
         $this->assertSame('https://example.com/new.png', $egg->fresh()->image);
+        $this->assertDatabaseMissing('egg_images', ['egg_id' => $egg->id]);
     }
 
     public function test_invalid_upload_keeps_the_previous_choice_and_a_url_can_replace_an_upload(): void
@@ -81,13 +92,14 @@ class CreateEggTest extends IntegrationTestCase
             ->assertHasErrors('eggImageUpload')
             ->assertSet('data.image', $preview);
         $page->call('save')->assertHasNoFormErrors();
-        $this->assertSame('data:image/png;base64,'.base64_encode($contents), $egg->fresh()->image);
+        $this->assertSame('data:image/png;base64,'.base64_encode($contents), DB::table('egg_images')->where('egg_id', $egg->id)->value('data'));
 
         $page->set('eggImageUpload', UploadedFile::fake()->createWithContent('another.png', $contents))
             ->set('data.image', 'https://example.com/new.png')
             ->assertSet('eggImageFile', null)
             ->call('save')->assertHasNoFormErrors();
         $this->assertSame('https://example.com/new.png', $egg->fresh()->image);
+        $this->assertDatabaseMissing('egg_images', ['egg_id' => $egg->id]);
     }
 
     public function test_an_image_can_be_uploaded_when_creating_an_egg(): void
@@ -111,7 +123,11 @@ class CreateEggTest extends IntegrationTestCase
             ])
             ->set('eggImageUpload', UploadedFile::fake()->createWithContent('image.svg', $contents))
             ->call('create')->assertHasNoFormErrors()->assertRedirect();
-        $this->assertSame('data:image/svg+xml;base64,'.base64_encode($contents), Egg::query()->where('name', 'Uploaded image')->sole()->image);
+        $egg = Egg::query()->where('name', 'Uploaded image')->sole();
+        $this->assertSame('data:image/svg+xml;base64,'.base64_encode($contents), DB::table('egg_images')->where('egg_id', $egg->id)->value('data'));
+        $this->assertSame($contents, $this->get($egg->image_url)->assertOk()->getContent());
+        $egg->delete();
+        $this->assertDatabaseMissing('egg_images', ['egg_id' => $egg->id]);
     }
 
     public function test_nest_from_create_link_is_preselected_and_can_be_changed(): void

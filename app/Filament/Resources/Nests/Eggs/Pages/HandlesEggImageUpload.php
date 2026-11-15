@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\Nests\Eggs\Pages;
 
+use App\Models\Egg;
 use App\Services\Eggs\EggImageService;
+use Illuminate\Support\Facades\DB;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 trait HandlesEggImageUpload
@@ -42,6 +44,14 @@ trait HandlesEggImageUpload
 
     protected function afterSave(): void
     {
+        /** @var Egg $egg */
+        $egg = $this->getRecord();
+        if ($this->eggImageFile && $this->data['image'] === $this->eggImageReference) {
+            app(EggImageService::class)->store($egg, $this->eggImageFile);
+        } elseif ($egg->wasChanged('image')) {
+            DB::table('egg_images')->where('egg_id', $egg->id)->delete();
+        }
+
         $this->clearEggImageUpload();
         $this->data['image'] = $this->getRecord()->getAttribute('image_url');
     }
