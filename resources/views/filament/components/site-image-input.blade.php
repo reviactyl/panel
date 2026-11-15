@@ -16,7 +16,7 @@
         x-on:livewire-upload-progress="progress = $event.detail.progress"
     >
         <div class="designify-site-image__row">
-            <div @class(['designify-site-image__thumbnail', 'designify-site-image__thumbnail--icon' => $isFavicon()])>
+            <div @class(['designify-site-image__thumbnail', 'designify-site-image__thumbnail--icon' => $isSquarePreview()])>
                 <img
                     x-bind:src="imageUrl ? imageUrl.replace(/^\/public\//, '/') : null"
                     x-show="imageUrl && !failed"
@@ -36,7 +36,8 @@
                 size="sm"
                 icon="tabler-upload"
                 :disabled="$disabled"
-                x-bind:disabled="uploading || @js($disabled)"
+                :data-disabled="$disabled ? 'true' : 'false'"
+                x-bind:disabled="uploading || $el.dataset.disabled === 'true'"
                 x-on:click="$refs.upload.click()"
                 :aria-label="trans('admin/settings.designify.upload-image').': '.$getLabel()"
             >

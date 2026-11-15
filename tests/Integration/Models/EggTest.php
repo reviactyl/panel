@@ -5,19 +5,103 @@ namespace Tests\Integration\Models;
 use App\Exceptions\Service\InvalidFileUploadException;
 use App\Models\Egg;
 use App\Models\EggVariable;
+use App\Models\Nest;
+use App\Models\User;
 use App\Services\Eggs\EggConfigurationService;
 use App\Services\Eggs\EggCreationService;
+use App\Services\Eggs\EggImageService;
 use App\Services\Eggs\Sharing\EggExporterService;
 use App\Services\Eggs\Sharing\EggImporterService;
 use App\Services\Eggs\Sharing\EggUpdateImporterService;
 use App\Services\Servers\ServerConfigurationStructureService;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use LogicException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Integration\IntegrationTestCase;
 
 class EggTest extends IntegrationTestCase
 {
+    #[DataProvider('uploadedImageFormats')]
+    public function test_uploaded_images_survive_export_and_import_without_the_source_egg(string $format, string $mime): void
+    {
+        $this->actingAs(User::factory()->create());
+        $source = $this->cloneEggAndVariables($this->createServerModel()->egg);
+        $contents = match ($format) {
+            'png' => str_pad(file_get_contents(public_path('reviactyl/icon.png')), 10 * 1024 * 1024, "\0"),
+            'svg' => '<svg xmlns="http://www.w3.org/2000/svg"><path d="M0 0h10v10H0z"/></svg>',
+            'gif' => base64_decode('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'),
+        };
+        app(EggImageService::class)->store($source, UploadedFile::fake()->createWithContent('custom.'.$format, $contents));
+        $export = app(EggExporterService::class)->handle($source->id);
+        $parsed = json_decode($export, true, flags: JSON_THROW_ON_ERROR);
+        $this->assertSame(hash('sha256', 'data:'.$mime.';base64,'.base64_encode($contents)), hash('sha256', $parsed['image']));
+        $source->delete();
+
+        $imported = app(EggImporterService::class)->handle(
+            UploadedFile::fake()->createWithContent('egg.json', $export), Nest::factory()->create()->id
+        );
+        $this->assertNotSame($source->uuid, $imported->uuid);
+        $this->assertLessThan(10000, strlen($imported->toJson()));
+        $this->assertSame($contents, $this->get($imported->image_url)->assertOk()->assertHeader('Content-Type', $mime)->getContent());
+        $this->assertSame($parsed['image'], json_decode(app(EggExporterService::class)->handle($imported->id), true)['image']);
+
+        $updated = $this->cloneEggAndVariables($this->createServerModel()->egg);
+        app(EggUpdateImporterService::class)->handle($updated, UploadedFile::fake()->createWithContent('egg.json', $export));
+        $this->assertSame($contents, $this->get($updated->image_url)->assertOk()->getContent());
+    }
+
+    public static function uploadedImageFormats(): array
+    {
+        return [['png', 'image/png'], ['svg', 'image/svg+xml'], ['gif', 'image/gif']];
+    }
+
+    #[DataProvider('invalidEmbeddedImageModes')]
+    public function test_invalid_embedded_images_do_not_change_stored_eggs(string $kind, bool $update): void
+    {
+        $egg = $this->cloneEggAndVariables($this->createServerModel()->egg);
+        $contents = file_get_contents(public_path('reviactyl/icon.png'));
+        app(EggImageService::class)->store($egg, UploadedFile::fake()->createWithContent('original.png', $contents));
+        $originalPath = $egg->image;
+        $originalName = $egg->name;
+        $count = Egg::query()->count();
+        $parsed = json_decode(app(EggExporterService::class)->handle($egg->id), true);
+        $parsed['name'] = 'Invalid image import';
+        $parsed['image'] = match ($kind) {
+            'invalid-base64' => 'data:image/png;base64,%%%invalid',
+            'non-image' => 'data:image/png;base64,'.base64_encode('not an image'),
+            'non-image-mime' => 'data:text/html;base64,'.base64_encode('<script>alert(1)</script>'),
+            'too-large' => 'data:image/png;base64,'.base64_encode(str_pad($contents, 10 * 1024 * 1024 + 1, "\0")),
+        };
+        $file = UploadedFile::fake()->createWithContent('egg.json', json_encode($parsed));
+
+        try {
+            if ($update) {
+                app(EggUpdateImporterService::class)->handle($egg, $file);
+            } else {
+                app(EggImporterService::class)->handle($file, $egg->nest_id);
+            }
+            $this->fail('Invalid embedded images must be rejected.');
+        } catch (InvalidFileUploadException) {
+            $this->assertDatabaseCount('eggs', $count);
+            $this->assertSame($originalName, $egg->fresh()->name);
+            $this->assertSame($originalPath, $egg->fresh()->image);
+            $this->assertSame('data:image/png;base64,'.base64_encode($contents), DB::table('egg_images')->where('egg_id', $egg->id)->value('data'));
+        }
+    }
+
+    public static function invalidEmbeddedImageModes(): array
+    {
+        $cases = [];
+        foreach (['invalid-base64', 'non-image', 'non-image-mime', 'too-large'] as $kind) {
+            foreach ([false, true] as $update) {
+                $cases[$kind.($update ? '-update' : '-create')] = [$kind, $update];
+            }
+        }
+
+        return $cases;
+    }
+
     public function test_configuration_resolves_through_inheritance_chains(): void
     {
         $server = $this->createServerModel();

@@ -29,4 +29,9 @@ class SiteImageInput extends TextInput
     {
         return $this->getName() === 'designify:site_favicon';
     }
+
+    public function isSquarePreview(): bool
+    {
+        return $this->isFavicon();
+    }
 }

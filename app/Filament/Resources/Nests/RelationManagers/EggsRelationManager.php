@@ -33,7 +33,7 @@ class EggsRelationManager extends RelationManager
                     ->label('ID')
                     ->toggleable(),
                 Tables\Columns\ImageColumn::make('image')
-                    ->getStateUsing(fn ($record) => $record->image ?: url('/reviactyl/icon.png')),
+                    ->getStateUsing(fn ($record) => $record->image_url ?: url('/reviactyl/icon.png')),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()
                     ->sortable(),

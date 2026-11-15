@@ -2,16 +2,54 @@
 
 namespace Tests\Integration\Api\Client;
 
+use App\Filament\Resources\Nests\Eggs\Pages\EditEgg;
 use App\Models\Allocation;
 use App\Models\Permission;
 use App\Models\Server;
 use App\Models\Subuser;
 use App\Models\User;
+use Filament\Facades\Filament;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
+use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Ramsey\Uuid\Uuid;
 
 class ClientControllerTest extends ClientApiIntegrationTestCase
 {
+    public function test_dashboard_loads_shared_egg_images_once_without_loading_image_bytes(): void
+    {
+        $user = User::factory()->create(['root_admin' => true]);
+        $this->actingAs($user);
+        Filament::setCurrentPanel(Filament::getPanel('admin'));
+        $server = $this->createServerModel(['user_id' => $user->id]);
+        $egg = $server->egg;
+        $contents = str_pad(file_get_contents(public_path('reviactyl/icon.png')), 10 * 1024 * 1024, "\0");
+        Livewire::test(EditEgg::class, ['record' => $egg->id])
+            ->set('eggImageUpload', UploadedFile::fake()->createWithContent('large.png', $contents))
+            ->call('save')->assertHasNoFormErrors();
+        for ($i = 1; $i < 50; $i++) {
+            $this->createServerModel(['user_id' => $user->id, 'egg_id' => $egg->id]);
+        }
+
+        DB::enableQueryLog();
+        try {
+            $response = $this->getJson('/api/client?include=category')->assertOk()->assertJsonCount(50, 'data');
+            $queries = DB::getQueryLog();
+        } finally {
+            DB::disableQueryLog();
+            DB::flushQueryLog();
+        }
+        $eggQueries = array_filter($queries, fn ($query) => preg_match('/from ["`]?eggs["`]?\s/i', $query['query']));
+        $this->assertCount(1, $eggQueries);
+        $this->assertStringNotContainsString('egg_images', implode(' ', array_column($queries, 'query')));
+        $this->assertLessThan(10000, strlen($egg->fresh()->toJson()));
+        $url = $egg->fresh()->image_url;
+        foreach ($response->json('data') as $entry) {
+            $this->assertSame($url, $entry['attributes']['egg_image']);
+        }
+    }
+
     /**
      * Test that only the servers a logged-in user is assigned to are returned by the
      * API endpoint. Obviously there are cases such as being an administrator or being

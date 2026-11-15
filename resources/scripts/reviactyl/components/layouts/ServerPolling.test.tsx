@@ -7,6 +7,9 @@ import getServerResourceUsage, { ServerStats } from '@/api/server/getServerResou
 import type { Server } from '@/api/server/getServer';
 
 vi.mock('@/routers/preloadServerConsole', () => ({ default: vi.fn() }));
+vi.mock('@/state/hooks', () => ({
+    useStoreState: (select: (state: { designify: { data: object } }) => unknown) => select({ designify: { data: {} } }),
+}));
 vi.mock('@/api/server/getServerResourceUsage', () => ({ default: vi.fn() }));
 vi.mock('@/components/dashboard/ChangeCategoryModal', () => ({ default: () => null }));
 vi.mock('react-router-dom', () => ({

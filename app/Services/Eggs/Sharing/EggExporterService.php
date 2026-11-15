@@ -6,6 +6,7 @@ use App\Contracts\Repository\EggRepositoryInterface;
 use App\Exceptions\Repository\RecordNotFoundException;
 use App\Models\Egg;
 use App\Models\EggVariable;
+use App\Services\Eggs\EggImageService;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
@@ -14,7 +15,7 @@ class EggExporterService
     /**
      * EggExporterService constructor.
      */
-    public function __construct(protected EggRepositoryInterface $repository) {}
+    public function __construct(protected EggRepositoryInterface $repository, protected EggImageService $images) {}
 
     /**
      * Return a JSON representation of an egg and its variables.
@@ -33,7 +34,7 @@ class EggExporterService
             ],
             'exported_at' => Carbon::now()->toAtomString(),
             'name' => $egg->name,
-            'image' => $egg->image,
+            'image' => $this->images->export($egg),
             'author' => $egg->author,
             'description' => $egg->description,
             'features' => $egg->features,

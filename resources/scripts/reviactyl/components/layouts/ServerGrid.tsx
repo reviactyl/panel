@@ -11,6 +11,7 @@ import Title from '@/reviactyl/ui/Title';
 import { StatBlock } from '@/reviactyl/ui/StatBlock';
 import { useTranslation } from 'react-i18next';
 import Blur from '@/reviactyl/ui/Blur';
+import { useStoreState } from '@/state/hooks';
 
 // Determines if the current value is in an alarm threshold so we can show it in red rather
 // than the more faded default style.
@@ -32,6 +33,8 @@ export default ({
     showCategory?: boolean;
 }) => {
     const { t } = useTranslation('dashboard/index');
+    const backgroundIcon = useStoreState((state) => state.designify.data?.cardIconStyle === 'background');
+    const enlargedIcon = useStoreState((state) => state.designify.data?.cardIconSize === 'enlarged');
     const { ref, stats, isSuspended } = useServerResources(server);
     const [isCategoryModalVisible, setCategoryModalVisible] = useState(false);
 
@@ -83,10 +86,15 @@ export default ({
                 to={`/server/${server.id}/`}
                 className={className}
             >
-                <Card className='p-6! relative overflow-hidden'>
+                <Card className='p-6! relative isolate overflow-hidden'>
                     <img
                         src={server.eggImage || '/reviactyl/icon.png'}
-                        className={`absolute right-4 top-1/2 -translate-y-1/2 h-30 w-30 opacity-20 pointer-events-none select-none`}
+                        alt=''
+                        className={`absolute -z-10 pointer-events-none select-none object-contain ${
+                            backgroundIcon
+                                ? `inset-0 h-full w-full opacity-30 ${enlargedIcon ? 'scale-150' : ''}`
+                                : 'right-4 top-1/2 -translate-y-1/2 h-40 w-40 max-w-[50%] opacity-40'
+                        }`}
                     />
                     <div className='flex items-center justify-between pb-5 gap-x-2'>
                         <div className='flex-1 min-w-0'>

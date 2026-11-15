@@ -33,7 +33,7 @@ class ClientController extends ClientApiController
         $user = $request->user();
         $preview = $request->attributes->get(SubuserPreviewContext::class);
         $transformer = $this->getTransformer(ServerTransformer::class);
-        $includes = $this->getIncludesForTransformer($transformer, ['node']);
+        $includes = $this->getIncludesForTransformer($transformer, ['node', 'egg']);
         $includeCategory = in_array('category', $includes, true);
         $includes = array_values(array_diff($includes, ['category']));
 

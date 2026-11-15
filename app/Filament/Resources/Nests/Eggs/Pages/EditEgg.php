@@ -13,6 +13,8 @@ use Filament\Resources\Pages\EditRecord;
 
 class EditEgg extends EditRecord
 {
+    use HandlesEggImageUpload;
+
     protected static string $resource = EggResource::class;
 
     protected ?int $redirectNestId = null;

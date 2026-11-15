@@ -89,7 +89,7 @@ class ServerTransformer extends BaseClientTransformer
             'skip_scripts' => $server->skip_scripts,
             'nest_id' => $server->nest_id,
             'egg_id' => $server->egg_id,
-            'egg_image' => $server->egg->image,
+            'egg_image' => $server->egg->image_url,
             'containerText' => $server->node->containerText,
         ];
     }

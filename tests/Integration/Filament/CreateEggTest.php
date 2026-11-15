@@ -13,12 +13,123 @@ use App\Services\Eggs\EggConfigurationService;
 use App\Services\Eggs\EggCreationService;
 use Filament\Facades\Filament;
 use Filament\Notifications\Notification;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Livewire\Livewire;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Integration\IntegrationTestCase;
 
 class CreateEggTest extends IntegrationTestCase
 {
+    public function test_uploaded_image_is_stored_as_base64_and_editor_state_stays_small(): void
+    {
+        $this->actingAs(User::factory()->create(['root_admin' => true]));
+        Filament::setCurrentPanel(Filament::getPanel('admin'));
+        $egg = $this->createServerModel()->egg;
+        $contents = str_pad(file_get_contents(public_path('reviactyl/icon.png')), 10 * 1024 * 1024, "\0");
+        $file = UploadedFile::fake()->createWithContent('custom.png', $contents);
+
+        $page = Livewire::test(EditEgg::class, ['record' => $egg->id])
+            ->set('eggImageUpload', $file)
+            ->call('save')->assertHasNoFormErrors();
+
+        $this->assertSame('data:image/png;base64,'.base64_encode($contents), DB::table('egg_images')->where('egg_id', $egg->id)->value('data'));
+        $page = Livewire::test(EditEgg::class, ['record' => $egg->id]);
+        $this->assertStringNotContainsString('data:image/png;base64,', json_encode($page->get('data')));
+        $page->call('save')->assertHasNoFormErrors();
+        $this->assertSame('data:image/png;base64,'.base64_encode($contents), DB::table('egg_images')->where('egg_id', $egg->id)->value('data'));
+
+        $url = $egg->fresh()->image_url;
+        $response = $this->get($url)->assertOk()->assertHeader('Content-Type', 'image/png');
+        $this->assertSame($contents, $response->getContent());
+        $this->get($url, ['If-None-Match' => $response->headers->get('ETag')])->assertStatus(304);
+        $this->get(preg_replace('/[a-f0-9]{32}\/image$/', str_repeat('0', 32).'/image', $url))->assertNotFound();
+
+        $replacement = file_get_contents(public_path('reviactyl/icon.png'));
+        $page->set('eggImageUpload', UploadedFile::fake()->createWithContent('replacement.png', $replacement))
+            ->call('save')->assertHasNoFormErrors();
+        $this->assertDatabaseCount('egg_images', 1);
+        $this->get($url)->assertNotFound();
+        $url = $egg->fresh()->image_url;
+        $this->assertSame($replacement, $this->get($url)->assertOk()->getContent());
+
+        $page->fillForm(['image' => null])->call('save')->assertHasNoFormErrors();
+        $this->assertNull($egg->fresh()->image);
+        $this->assertDatabaseMissing('egg_images', ['egg_id' => $egg->id]);
+        $this->get($url)->assertNotFound();
+    }
+
+    public function test_existing_image_urls_can_be_kept_or_replaced(): void
+    {
+        $this->actingAs(User::factory()->create(['root_admin' => true]));
+        Filament::setCurrentPanel(Filament::getPanel('admin'));
+        $egg = $this->createServerModel()->egg;
+        $egg->update(['image' => 'https://example.com/old.png']);
+        Livewire::test(EditEgg::class, ['record' => $egg->id])
+            ->call('save')->assertHasNoFormErrors();
+        $this->assertSame('https://example.com/old.png', $egg->fresh()->image);
+        Livewire::test(EditEgg::class, ['record' => $egg->id])
+            ->set('data.image', 'https://example.com/new.png')
+            ->call('save')->assertHasNoFormErrors();
+        $this->assertSame('https://example.com/new.png', $egg->fresh()->image);
+        $this->assertDatabaseMissing('egg_images', ['egg_id' => $egg->id]);
+    }
+
+    public function test_invalid_upload_keeps_the_previous_choice_and_a_url_can_replace_an_upload(): void
+    {
+        $this->actingAs(User::factory()->create(['root_admin' => true]));
+        Filament::setCurrentPanel(Filament::getPanel('admin'));
+        $egg = $this->createServerModel()->egg;
+        $egg->update(['image' => 'https://example.com/old.png']);
+        $contents = file_get_contents(public_path('reviactyl/icon.png'));
+        $page = Livewire::test(EditEgg::class, ['record' => $egg->id])
+            ->set('eggImageUpload', UploadedFile::fake()->createWithContent('custom.png', $contents));
+        $preview = $page->get('data')['image'];
+        $this->assertStringContainsString('preview-file', $preview);
+        $this->assertSame('https://example.com/old.png', $egg->fresh()->image);
+
+        $page->set('eggImageUpload', UploadedFile::fake()->createWithContent('invalid.txt', 'not an image'))
+            ->assertHasErrors('eggImageUpload')
+            ->assertSet('data.image', $preview);
+        $page->call('save')->assertHasNoFormErrors();
+        $this->assertSame('data:image/png;base64,'.base64_encode($contents), DB::table('egg_images')->where('egg_id', $egg->id)->value('data'));
+
+        $page->set('eggImageUpload', UploadedFile::fake()->createWithContent('another.png', $contents))
+            ->set('data.image', 'https://example.com/new.png')
+            ->assertSet('eggImageFile', null)
+            ->call('save')->assertHasNoFormErrors();
+        $this->assertSame('https://example.com/new.png', $egg->fresh()->image);
+        $this->assertDatabaseMissing('egg_images', ['egg_id' => $egg->id]);
+    }
+
+    public function test_an_image_can_be_uploaded_when_creating_an_egg(): void
+    {
+        $this->actingAs(User::factory()->create(['root_admin' => true]));
+        Filament::setCurrentPanel(Filament::getPanel('admin'));
+        $contents = '<svg xmlns="http://www.w3.org/2000/svg"><path d="M0 0h10v10H0z"/></svg>';
+        Livewire::test(CreateEgg::class)
+            ->fillForm([
+                'nest_id' => Nest::factory()->create()->id,
+                'name' => 'Uploaded image',
+                'docker_images' => ['Demo' => 'alpine:3.20'],
+                'startup' => 'echo demo',
+                'config_stop' => 'stop',
+                'config_startup' => '{"done":"ready"}',
+                'config_logs' => '{}',
+                'config_files' => '{}',
+                'script_container' => 'alpine:3.20',
+                'script_entry' => 'sh',
+                'script_install' => '#!/bin/sh',
+            ])
+            ->set('eggImageUpload', UploadedFile::fake()->createWithContent('image.svg', $contents))
+            ->call('create')->assertHasNoFormErrors()->assertRedirect();
+        $egg = Egg::query()->where('name', 'Uploaded image')->sole();
+        $this->assertSame('data:image/svg+xml;base64,'.base64_encode($contents), DB::table('egg_images')->where('egg_id', $egg->id)->value('data'));
+        $this->assertSame($contents, $this->get($egg->image_url)->assertOk()->getContent());
+        $egg->delete();
+        $this->assertDatabaseMissing('egg_images', ['egg_id' => $egg->id]);
+    }
+
     public function test_nest_from_create_link_is_preselected_and_can_be_changed(): void
     {
         $this->actingAs(User::factory()->create(['root_admin' => true]));
