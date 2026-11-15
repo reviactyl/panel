@@ -18,6 +18,7 @@ return [
         'saved' => 'Configurações salvas',
         'default-language' => 'Idioma Padrão',
         'default-language-hint' => 'Usado como idioma do painel quando a geolocalização está desativada ou não é possível determinar uma correspondência.',
+        'default-code-editor' => 'Editor de código padrão',
         'geolocate-language' => 'Localizar geograficamente o idioma',
         'geolocate-language-hint' => 'Detecte automaticamente o idioma dos visitantes a partir de seus endereços IP. O idioma padrão acima é usado como substituto.',
         'trusted-proxies' => 'Proxies confiáveis',

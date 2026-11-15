@@ -18,6 +18,7 @@ return [
         'saved' => 'Einstellungen gespeichert',
         'default-language' => 'Standard Sprache',
         'default-language-hint' => 'Wird verwendet, wenn Sprach-Geolocation ausgeschaltet ist oder das Panel das Land nicht erkennt.',
+        'default-code-editor' => 'Standard-Code-Editor',
         'geolocate-language' => 'Sprach-Geolocation',
         'geolocate-language-hint' => 'Erkennen Sie automatisch die Sprache der Besucher anhand ihrer IP-Adresse. Als Fallback wird die obige Standardsprache verwendet.',
         'trusted-proxies' => 'Vertrauenswürdige Proxys',

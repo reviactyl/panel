@@ -18,6 +18,7 @@ return [
         'saved' => 'Ayarlar kaydedildi',
         'default-language' => 'Varsayılan Dil',
         'default-language-hint' => 'Coğrafi konum devre dışı bırakıldığında veya bir eşleşme belirlenemediğinde panel dili olarak kullanılır.',
+        'default-code-editor' => 'Varsayılan Kod Düzenleyici',
         'geolocate-language' => 'Coğrafi Konum Belirleme Dili',
         'geolocate-language-hint' => 'Ziyaretçilerin dilini IP adreslerinden otomatik olarak tespit edin. Yukarıdaki varsayılan dil geri dönüş olarak kullanılır.',
         'trusted-proxies' => 'Güvenilir Proxy Sunucuları',

@@ -18,6 +18,7 @@ return [
         'saved' => 'Inställningar sparade',
         'default-language' => 'Standardspråk',
         'default-language-hint' => 'Används som panelspråk när geolokalisering är inaktiverad eller inte kan fastställa en matchning.',
+        'default-code-editor' => 'Standardkodredigerare',
         'geolocate-language' => 'Geolokalisera språk',
         'geolocate-language-hint' => 'Upptäck automatiskt besökarnas språk från deras IP-adress. Standardspråket ovan används som reserv.',
         'trusted-proxies' => 'Pålitliga proxyservrar',

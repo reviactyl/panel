@@ -18,6 +18,7 @@ return [
         'saved' => 'Paramètres enregistrés',
         'default-language' => 'Langue par défaut',
         'default-language-hint' => 'Utilisé comme langue du panneau lorsque la géolocalisation est désactivée ou ne peut pas déterminer une correspondance.',
+        'default-code-editor' => 'Éditeur de code par défaut',
         'geolocate-language' => 'Géolocaliser la langue',
         'geolocate-language-hint' => 'Détectez automatiquement la langue des visiteurs à partir de leur adresse IP. La langue par défaut ci-dessus est utilisée comme solution de secours.',
         'trusted-proxies' => 'Proxys de confiance',

@@ -18,6 +18,7 @@ return [
         'saved' => '设置已保存',
         'default-language' => '默认语言',
         'default-language-hint' => '当地理位置被禁用或无法确定匹配时，用作面板语言。',
+        'default-code-editor' => '默认代码编辑器',
         'geolocate-language' => '地理定位语言',
         'geolocate-language-hint' => '根据访问者的 IP 地址自动检测访问者的语言。上面的默认语言用作后备。',
         'trusted-proxies' => '可信代理',

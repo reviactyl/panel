@@ -6,7 +6,7 @@ import useAccountPreference from '@/plugins/useAccountPreference';
 import Select from '@/reviactyl/elements/Select';
 
 const editors = {
-    cm: { display: 'CodeMirror (Default Editor)' },
+    cm: { display: 'CodeMirror' },
     mo: { display: 'Monaco (Like VS Code)' },
 };
 

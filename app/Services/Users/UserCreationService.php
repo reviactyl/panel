@@ -37,6 +37,8 @@ class UserCreationService
         $accounts = $data['social_accounts'] ?? [];
         unset($data['social_accounts']);
 
+        $data['editor'] ??= config('app.fileEditor', 'mo');
+
         $defaultAvatarStyle = config('designify.avatarType', 'gravatar');
         $data['avatar_style'] ??= is_string($defaultAvatarStyle) && in_array($defaultAvatarStyle, User::AVATAR_STYLES, true)
             ? $defaultAvatarStyle
