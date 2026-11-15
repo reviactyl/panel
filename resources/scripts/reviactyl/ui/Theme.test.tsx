@@ -53,10 +53,35 @@ afterEach(async () => {
     container.remove();
     localStorage.clear();
     document.documentElement.classList.remove('light', 'dark');
+    document.documentElement.removeAttribute('style');
+    document.documentElement.removeAttribute('data-wallpaper');
     vi.unstubAllGlobals();
 });
 
 describe('theme choices', () => {
+    it('adapts surfaces to a saved wallpaper across theme changes', async () => {
+        document.documentElement.style.setProperty('--background', 'url("/wallpaper.png")');
+        await render();
+
+        for (const name of ['Light', 'Dark', 'System']) {
+            await act(async () => getByRole(container, 'button', { name }).click());
+            expect(document.documentElement.hasAttribute('data-wallpaper')).toBe(true);
+        }
+    });
+
+    it('restores plain surfaces when a Designify preview removes its wallpaper', async () => {
+        await render();
+        expect(document.documentElement.hasAttribute('data-wallpaper')).toBe(false);
+
+        for (const background of ['url("/wallpaper.png")', 'none', 'url("/other.png")', '']) {
+            await act(async () => {
+                document.documentElement.style.setProperty('--background', background);
+                window.dispatchEvent(new Event('designifychange'));
+            });
+            expect(document.documentElement.hasAttribute('data-wallpaper')).toBe(background.startsWith('url('));
+        }
+    });
+
     it('names all three choices and updates the pressed state, applied theme, and storage', async () => {
         await render();
         expectSelected('System');

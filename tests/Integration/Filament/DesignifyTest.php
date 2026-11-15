@@ -15,6 +15,60 @@ use Tests\Integration\IntegrationTestCase;
 
 class DesignifyTest extends IntegrationTestCase
 {
+    public function test_background_scope_saves_and_rejects_unknown_options(): void
+    {
+        $this->actingAs(User::factory()->create(['root_admin' => true]));
+        Filament::setCurrentPanel(Filament::getPanel('admin'));
+        Livewire::test(Designify::class)
+            ->assertSet('data.designify:backgroundScope', 'page')
+            ->set('data.designify:backgroundScope', 'all')
+            ->call('save')->assertHasNoErrors();
+        Livewire::test(Designify::class)
+            ->assertSet('data.designify:backgroundScope', 'all')
+            ->set('data.designify:backgroundScope', 'invalid')
+            ->call('save')->assertHasErrors(['data.designify:backgroundScope']);
+    }
+
+    public function test_background_overlay_can_be_saved_disabled_and_restored_without_losing_options(): void
+    {
+        $this->actingAs(User::factory()->create(['root_admin' => true]));
+        Filament::setCurrentPanel(Filament::getPanel('admin'));
+        Livewire::test(Designify::class)
+            ->assertSet('data.designify:backgroundOverlay', true)
+            ->assertSet('data.designify:backgroundOverlayOpacity', 85)
+            ->set('data.designify:backgroundOverlayOpacity', 60)
+            ->set('data.designify:backgroundOverlayColor', '#123456')
+            ->call('save')->assertHasNoErrors();
+
+        Livewire::test(Designify::class)
+            ->set('data.designify:backgroundOverlay', false)
+            ->call('save')->assertHasNoErrors();
+
+        Livewire::test(Designify::class)
+            ->assertSet('data.designify:backgroundOverlay', false)
+            ->assertSet('data.designify:backgroundOverlayOpacity', '60')
+            ->assertSet('data.designify:backgroundOverlayColor', '#123456')
+            ->set('data.designify:backgroundOverlay', true)
+            ->set('data.designify:backgroundOverlayColor', '')
+            ->call('save')->assertHasNoErrors();
+        Livewire::test(Designify::class)
+            ->assertSet('data.designify:backgroundOverlayColor', '');
+    }
+
+    public function test_background_overlay_rejects_invalid_opacity_and_color(): void
+    {
+        $this->actingAs(User::factory()->create(['root_admin' => true]));
+        Filament::setCurrentPanel(Filament::getPanel('admin'));
+        foreach ([-1, 101, 2.5, 'invalid'] as $opacity) {
+            Livewire::test(Designify::class)
+                ->set('data.designify:backgroundOverlayOpacity', $opacity)
+                ->call('save')->assertHasErrors(['data.designify:backgroundOverlayOpacity']);
+        }
+        Livewire::test(Designify::class)
+            ->set('data.designify:backgroundOverlayColor', 'red; color: blue')
+            ->call('save')->assertHasErrors(['data.designify:backgroundOverlayColor']);
+    }
+
     public function test_classic_is_default_and_the_first_background_selection_is_centered(): void
     {
         $this->actingAs(User::factory()->create(['root_admin' => true]));
@@ -42,7 +96,7 @@ class DesignifyTest extends IntegrationTestCase
         Filament::setCurrentPanel(Filament::getPanel('admin'));
 
         $page = Livewire::test(Designify::class);
-        foreach (['site_image', 'site_favicon'] as $key) {
+        foreach (['site_image', 'site_favicon', 'background'] as $key) {
             $page->set('siteImageFiles.'.$key, UploadedFile::fake()->createWithContent('image.png', file_get_contents(public_path('reviactyl/icon.png'))))
                 ->assertHasNoErrors();
             $url = $page->get('data')['designify:'.$key];
@@ -54,7 +108,7 @@ class DesignifyTest extends IntegrationTestCase
 
         $page->call('save')->assertHasNoErrors()
             ->assertDispatched('designify-saved', fn ($name, $params) => $params['formData'] === $page->get('data'));
-        foreach (['site_image', 'site_favicon'] as $key) {
+        foreach (['site_image', 'site_favicon', 'background'] as $key) {
             $url = $page->get('data')['designify:'.$key];
             $this->assertDatabaseHas('settings', ['key' => 'settings::designify:'.$key, 'value' => $url]);
             Livewire::test(Designify::class)->assertSet('data.designify:'.$key, $url);
@@ -67,6 +121,32 @@ class DesignifyTest extends IntegrationTestCase
         $this->actingAs(User::factory()->create(['root_admin' => false]));
         Filament::setCurrentPanel(Filament::getPanel('admin'));
         Livewire::test(Designify::class)->assertForbidden();
+    }
+
+    public function test_background_upload_errors_preserve_the_saved_image_and_cleanup_keeps_referenced_uploads(): void
+    {
+        $disk = Storage::fake('public');
+        $this->actingAs(User::factory()->create(['root_admin' => true]));
+        Filament::setCurrentPanel(Filament::getPanel('admin'));
+        $page = Livewire::test(Designify::class)
+            ->set('data.designify:background', '/previous.png')
+            ->set('siteImageFiles.background', UploadedFile::fake()->create('document.pdf', 1, 'application/pdf'))
+            ->assertHasErrors(['siteImageFiles.background'])
+            ->assertSet('data.designify:background', '/previous.png')
+            ->set('siteImageFiles.background', UploadedFile::fake()->createWithContent('wallpaper.png', file_get_contents(public_path('reviactyl/icon.png'))))
+            ->assertHasNoErrors()
+            ->call('save')->assertHasNoErrors();
+        $url = $page->get('data')['designify:background'];
+        $path = substr($url, strlen('/storage/'));
+        touch($disk->path($path), now()->subHours(25)->timestamp);
+        $images = app(SiteImageService::class);
+        $images->pruneUnusedUploads();
+        $disk->assertExists($path);
+        $this->get($url)->assertOk()->assertHeader('Content-Type', 'image/png');
+
+        $page->set('data.designify:background', 'none')->call('save')->assertHasNoErrors();
+        $images->pruneUnusedUploads();
+        $disk->assertMissing($path);
     }
 
     public function test_manual_image_paths_remain_editable_and_upload_errors_preserve_them(): void

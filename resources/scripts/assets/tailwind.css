@@ -5,6 +5,41 @@
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
+@custom-variant wallpaper (&:where([data-wallpaper], [data-wallpaper] *));
+
+@utility bg-gray-* {
+    --wallpaper-surface-color: --value(--color-gray-*);
+    --wallpaper-surface-opacity: 100;
+    --wallpaper-surface-opacity: --modifier(number);
+
+    :root[data-wallpaper][data-wallpaper-surfaces]
+        &:not(
+            input[type='checkbox'],
+            input[type='radio'],
+            select,
+            [data-wallpaper-backdrop],
+            [data-wallpaper-control]
+        ) {
+        background-image:
+            linear-gradient(
+                color-mix(
+                    in srgb,
+                    var(--wallpaper-surface-color) calc(var(--wallpaper-surface-opacity) * 0.12%),
+                    transparent
+                ),
+                color-mix(
+                    in srgb,
+                    var(--wallpaper-surface-color) calc(var(--wallpaper-surface-opacity) * 0.12%),
+                    transparent
+                )
+            ),
+            var(--wallpaper-layers);
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+}
 
 @theme inline {
     --font-header: 'IBM Plex Sans', 'Roboto', system-ui, sans-serif;
@@ -93,6 +128,23 @@
     body {
         @apply font-sans bg-gray-950 text-gray-200;
         letter-spacing: 0.015em;
+    }
+
+    :root[data-wallpaper] {
+        --wallpaper-layers:
+            linear-gradient(
+                rgb(var(--background-overlay-color, var(--color-950)) / var(--background-overlay-opacity, 0.85)),
+                rgb(var(--background-overlay-color, var(--color-950)) / var(--background-overlay-opacity, 0.85))
+            ),
+            var(--background);
+    }
+
+    :root[data-wallpaper] body {
+        background-image: var(--wallpaper-layers);
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
     }
 
     h1,

@@ -93,13 +93,24 @@ const DesignifyPreviewBridge = () => {
 
             paletteStyle.textContent = `:root { ${paletteDeclarations('L')} } .dark { ${paletteDeclarations('')} }`;
 
-            if (nextSettings.background === 'none') {
-                root.style.setProperty('--background', 'none');
-            } else if (typeof nextSettings.background === 'string' && nextSettings.background.length > 0) {
-                root.style.setProperty('--background', `url(${JSON.stringify(nextSettings.background)})`);
-            } else {
-                root.style.removeProperty('--background');
-            }
+            const background = typeof nextSettings.background === 'string' ? nextSettings.background.trim() : '';
+            root.style.setProperty(
+                '--background',
+                background && background !== 'none' ? `url(${JSON.stringify(background)})` : 'none',
+            );
+            const opacity = Number(nextSettings.backgroundOverlayOpacity ?? 85);
+            root.style.setProperty(
+                '--background-overlay-opacity',
+                String(
+                    nextSettings.backgroundOverlay === false
+                        ? 0
+                        : (Number.isFinite(opacity) ? Math.max(0, Math.min(100, opacity)) : 85) / 100,
+                ),
+            );
+            root.style.setProperty(
+                '--background-overlay-color',
+                toRgbChannels(nextSettings.backgroundOverlayColor ?? '') ?? 'var(--color-950)',
+            );
             if (typeof nextSettings.radius === 'string' && CSS.supports('border-radius', nextSettings.radius)) {
                 root.style.setProperty('--radius', nextSettings.radius);
             } else {

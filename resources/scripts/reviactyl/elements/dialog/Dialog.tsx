@@ -78,6 +78,7 @@ export default ({
                         <div className={'fixed inset-0 overflow-y-auto z-50'}>
                             <div
                                 ref={container}
+                                data-wallpaper-backdrop
                                 className={styles.container}
                                 onMouseDown={onContainerClick.bind(this, true)}
                                 onMouseUp={onContainerClick.bind(this, false)}

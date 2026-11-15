@@ -14,6 +14,30 @@ use Tests\TestCase;
 
 class DesignifyTest extends TestCase
 {
+    public function test_background_scope_defaults_to_page_and_exports_all_surfaces(): void
+    {
+        foreach ([null => 'page', 'all' => 'all', 'invalid' => 'page'] as $configured => $expected) {
+            config()->set('designify.backgroundScope', $configured ?: null);
+            $view = Mockery::mock(View::class);
+            $view->shouldReceive('with')->once()->withArgs(fn ($key, $settings) => $key === 'panelConfiguration'
+                && $settings['backgroundScope'] === $expected);
+            (new DesignifyComposer())->compose($view);
+        }
+    }
+
+    public function test_background_overlay_defaults_and_saved_values_are_exported(): void
+    {
+        foreach ([[true, 85, '', true, 85, ''], [false, 30, '#123456', false, 30, '#123456'], [true, 150, 'invalid', true, 100, ''], [true, -10, '', true, 0, '']] as [$enabled, $opacity, $color, $expectedEnabled, $expectedOpacity, $expectedColor]) {
+            config(['designify.backgroundOverlay' => $enabled, 'designify.backgroundOverlayOpacity' => $opacity, 'designify.backgroundOverlayColor' => $color]);
+            $view = Mockery::mock(View::class);
+            $view->shouldReceive('with')->once()->withArgs(fn ($key, $settings) => $key === 'panelConfiguration'
+                && $settings['backgroundOverlay'] === $expectedEnabled
+                && $settings['backgroundOverlayOpacity'] === $expectedOpacity
+                && $settings['backgroundOverlayColor'] === $expectedColor);
+            (new DesignifyComposer())->compose($view);
+        }
+    }
+
     public function test_card_icon_defaults_and_saved_options_are_exported(): void
     {
         $this->assertSame('classic', config('designify.cardIconStyle'));

@@ -24,7 +24,11 @@ export interface ModalProps extends RequiredModalProps {
 }
 
 export const ModalMask = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
-    <div className={`fixed inset-0 z-9999 flex w-full overflow-auto ${className || ''}`} {...props} />
+    <div
+        data-wallpaper-backdrop
+        className={`fixed inset-0 z-9999 flex w-full overflow-auto ${className || ''}`}
+        {...props}
+    />
 );
 const sizes = {
     sm: 'md:max-w-[50%] lg:max-w-[35%]',
