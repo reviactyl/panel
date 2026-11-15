@@ -153,3 +153,74 @@ test('Designify previews a continuous theme-aware wallpaper overlay without relo
         expect(surface.width).toBeLessThanOrEqual(surface.viewport);
     }
 });
+
+test('wallpaper surfaces preserve the selected color and keyboard behavior of real switches', async ({ page }) => {
+    const html = execFileSync('php', ['tests/Fixtures/auth-page.php', '/', 'admin'], {
+        env: {
+            ...process.env,
+            APP_ENV: 'testing',
+            APP_ENVIRONMENT_ONLY: 'false',
+            APP_URL: 'http://panel.test',
+            APP_KEY: 'SomeRandomString3232RandomString',
+            CACHE_STORE: 'array',
+            SESSION_DRIVER: 'array',
+            REDIS_CLIENT: 'predis',
+        },
+        encoding: 'utf8',
+        maxBuffer: 10 * 1024 * 1024,
+    });
+    const publicPath = resolve('public');
+    await page.route('**/*', async (route) => {
+        const url = new URL(route.request().url());
+        if (url.origin !== 'http://panel.test') return route.abort();
+        if (url.pathname === '/') return route.fulfill({ contentType: 'text/html', body: html });
+        if (url.pathname.startsWith('/locales/')) return route.fulfill({ json: {} });
+        if (url.pathname.startsWith('/api/')) {
+            return route.fulfill({
+                json: {
+                    data: [],
+                    meta: { pagination: { total: 0, count: 0, per_page: 50, current_page: 1, total_pages: 1 } },
+                },
+            });
+        }
+        const path = resolve(publicPath, `.${url.pathname}`);
+        if (!path.startsWith(publicPath + sep)) return route.abort();
+        try {
+            await route.fulfill({ path });
+        } catch {
+            await route.abort();
+        }
+    });
+    await page.goto('http://panel.test/');
+    const checkbox = page.locator('input[name=show_all_servers]');
+    await expect(checkbox).toBeAttached();
+    const id = await checkbox.getAttribute('id');
+    const track = page.locator(`label[for="${id}"]`).first();
+    await page.evaluate(() => {
+        window.PanelConfiguration = { ...window.PanelConfiguration, backgroundScope: 'all' };
+        document.documentElement.style.setProperty('--background', 'url("/reviactyl/icon.png")');
+        window.dispatchEvent(new Event('designifychange'));
+    });
+    await expect(page.locator('html')).toHaveAttribute('data-wallpaper-surfaces', '');
+    for (const theme of ['light', 'dark']) {
+        await page.evaluate((theme) => {
+            localStorage.setItem('theme', theme);
+            window.dispatchEvent(new Event('themechange'));
+        }, theme);
+        await expect(track).toHaveCSS('background-image', 'none');
+        await track.click();
+        await expect(checkbox).toBeChecked();
+        const primary = await page
+            .locator('html')
+            .evaluate(
+                (root) =>
+                    `rgb(${getComputedStyle(root).getPropertyValue('--color-primary').trim().split(/\s+/).join(', ')})`,
+            );
+        await expect(track).toHaveCSS('background-color', primary);
+        await expect(track).toHaveCSS('background-image', 'none');
+        await checkbox.focus();
+        await page.keyboard.press('Space');
+        await expect(checkbox).not.toBeChecked();
+        await expect(track).not.toHaveCSS('background-color', primary);
+    }
+});

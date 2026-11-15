@@ -1,9 +1,11 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Contracts\Console\Kernel as ConsoleKernel;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 require dirname(__DIR__, 2).'/vendor/autoload.php';
@@ -15,6 +17,10 @@ $app->make(ConsoleKernel::class)->bootstrap();
 config(['database.default' => 'sqlite', 'database.connections.sqlite.database' => ':memory:', 'captcha.provider' => 'disable']);
 DB::purge('sqlite');
 Artisan::call('migrate', ['--force' => true]);
+
+if (($argv[2] ?? null) === 'admin') {
+    Auth::login(User::factory()->create(['root_admin' => true]));
+}
 
 $response = $app->make(Kernel::class)->handle(Request::create('http://panel.test'.($argv[1] ?? '/auth/login')));
 if ($response->getStatusCode() !== 200) {
