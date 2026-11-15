@@ -50,11 +50,10 @@ class DropdownMenu extends React.PureComponent<Props, State> {
         if (this.state.visible && menu && (!prevState.visible || prevState.posX !== this.state.posX)) {
             if (!prevState.visible) {
                 if (this.props.manageFocus) document.addEventListener('keydown', this.keyListener);
-                // Delay by one tick so the event that opened this menu finishes
-                // propagating before we register listeners that can close it.
+                document.addEventListener('contextmenu', this.contextMenuListener, true);
+                // Delay the click listener so the opening event can finish propagating.
                 this.listenerTimer = setTimeout(() => {
                     document.addEventListener('click', this.windowListener);
-                    document.addEventListener('contextmenu', this.contextMenuListener);
                 }, 0);
             }
             const left = this.state.posX - menu.clientWidth;
@@ -71,7 +70,7 @@ class DropdownMenu extends React.PureComponent<Props, State> {
     removeListeners = () => {
         clearTimeout(this.listenerTimer);
         document.removeEventListener('click', this.windowListener);
-        document.removeEventListener('contextmenu', this.contextMenuListener);
+        document.removeEventListener('contextmenu', this.contextMenuListener, true);
         document.removeEventListener('keydown', this.keyListener);
     };
 
@@ -104,7 +103,7 @@ class DropdownMenu extends React.PureComponent<Props, State> {
             return;
         }
 
-        if (e.defaultPrevented || e.target === menu || menu.contains(e.target as Node)) {
+        if (e.target === menu || menu.contains(e.target as Node)) {
             return;
         }
 
