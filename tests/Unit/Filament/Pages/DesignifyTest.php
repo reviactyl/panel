@@ -14,6 +14,21 @@ use Tests\TestCase;
 
 class DesignifyTest extends TestCase
 {
+    public function test_card_icon_defaults_and_saved_options_are_exported(): void
+    {
+        $this->assertSame('classic', config('designify.cardIconStyle'));
+        $this->assertSame('standard', config('designify.cardIconSize'));
+
+        foreach ([[null, null, 'classic', 'standard'], ['background', 'enlarged', 'background', 'enlarged']] as [$style, $size, $expectedStyle, $expectedSize]) {
+            config(['designify.cardIconStyle' => $style, 'designify.cardIconSize' => $size]);
+            $view = Mockery::mock(View::class);
+            $view->shouldReceive('with')->once()->withArgs(fn ($key, $settings) => $key === 'panelConfiguration'
+                && $settings['cardIconStyle'] === $expectedStyle
+                && $settings['cardIconSize'] === $expectedSize);
+            (new DesignifyComposer())->compose($view);
+        }
+    }
+
     public function test_legacy_public_image_paths_are_normalized_without_changing_external_urls(): void
     {
         $images = app(SiteImageService::class);
@@ -92,6 +107,8 @@ class DesignifyTest extends TestCase
         $page->data = [
             'designify:headerStyle' => 'modern',
             'designify:fileLayout' => 'grid',
+            'designify:cardIconStyle' => 'background',
+            'designify:cardIconSize' => 'enlarged',
             'designify:colorPrimary' => '#2563eb',
             'designify:color50' => '#09090b',
             'designify:color50L' => '#fafafa',
@@ -103,6 +120,8 @@ class DesignifyTest extends TestCase
         $this->assertSame([
             'headerStyle' => 'modern',
             'fileLayout' => 'grid',
+            'cardIconStyle' => 'background',
+            'cardIconSize' => 'enlarged',
             'colorPrimary' => '#2563eb',
             'color50' => '#09090b',
             'color50L' => '#fafafa',

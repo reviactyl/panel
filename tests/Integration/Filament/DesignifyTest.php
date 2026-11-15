@@ -15,6 +15,26 @@ use Tests\Integration\IntegrationTestCase;
 
 class DesignifyTest extends IntegrationTestCase
 {
+    public function test_classic_is_default_and_the_first_background_selection_is_centered(): void
+    {
+        $this->actingAs(User::factory()->create(['root_admin' => true]));
+        Filament::setCurrentPanel(Filament::getPanel('admin'));
+        $page = Livewire::test(Designify::class)
+            ->assertSet('data.designify:cardIconStyle', 'classic')
+            ->set('data.designify:cardIconSize', 'enlarged')
+            ->set('data.designify:cardIconStyle', 'background')
+            ->assertSet('data.designify:cardIconSize', 'standard')
+            ->set('data.designify:cardIconSize', 'enlarged')
+            ->set('data.designify:cardIconStyle', 'classic')
+            ->set('data.designify:cardIconStyle', 'background')
+            ->assertSet('data.designify:cardIconSize', 'enlarged')
+            ->call('save')->assertHasNoErrors();
+
+        Livewire::test(Designify::class)
+            ->assertSet('data.designify:cardIconStyle', 'background')
+            ->assertSet('data.designify:cardIconSize', 'enlarged');
+    }
+
     public function test_uploaded_images_preview_before_saving_and_persist_only_when_saved(): void
     {
         Storage::fake('public');

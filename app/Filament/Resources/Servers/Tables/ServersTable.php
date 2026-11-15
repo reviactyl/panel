@@ -103,7 +103,7 @@ class ServersTable
                     ->label(trans('admin/server.table.egg'))
                     ->html()
                     ->formatStateUsing(function (Server $record) {
-                        $image = $record->egg->image;
+                        $image = e($record->egg->image_url);
                         $name = $record->egg->name;
 
                         return "

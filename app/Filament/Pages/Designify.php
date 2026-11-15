@@ -22,9 +22,12 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\InteractsWithHeaderActions;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Contracts\HasSchemas;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Console\Kernel;
@@ -56,6 +59,8 @@ class Designify extends Page implements HasSchemas
     public ?array $data = [];
 
     public array $siteImageFiles = [];
+
+    public bool $hasSelectedBackgroundIcon = false;
 
     protected array $settingKeys = [
         'designify:customCopyright',
@@ -101,6 +106,8 @@ class Designify extends Page implements HasSchemas
         'designify:site_favicon',
         'designify:alwaysShowKillButton',
         'designify:cardType',
+        'designify:cardIconStyle',
+        'designify:cardIconSize',
         'designify:fileLayout',
         'designify:serverOrganization',
         'designify:layoutType',
@@ -178,6 +185,8 @@ class Designify extends Page implements HasSchemas
         if ($form !== null) {
             $form->fill($formData);
         }
+
+        $this->hasSelectedBackgroundIcon = ($formData['designify:cardIconStyle'] ?? 'classic') === 'background';
     }
 
     protected function getFormSchema(): array
@@ -436,6 +445,7 @@ class Designify extends Page implements HasSchemas
                         ->columnSpanFull(),
                     ToggleButtons::make('designify:cardType')
                         ->label(trans('admin/settings.designify.server-card-layout'))
+                        ->live()
                         ->inline()
                         ->icons([
                             'grid' => 'tabler-layout-grid',
@@ -447,6 +457,37 @@ class Designify extends Page implements HasSchemas
                         ])
                         ->required()
                         ->columnSpanFull(),
+                    Grid::make(1)
+                        ->dehydratedWhenHidden()
+                        ->visible(fn (Get $get): bool => $get('designify:cardType') === 'grid')
+                        ->schema([
+                            ToggleButtons::make('designify:cardIconStyle')
+                                ->dehydratedWhenHidden()
+                                ->label(trans('admin/settings.designify.card-icon-style'))
+                                ->live()
+                                ->afterStateUpdated(function (?string $state, Set $set): void {
+                                    if ($state === 'background' && ! $this->hasSelectedBackgroundIcon) {
+                                        $set('designify:cardIconSize', 'standard');
+                                        $this->hasSelectedBackgroundIcon = true;
+                                    }
+                                })
+                                ->inline()
+                                ->options([
+                                    'classic' => trans('admin/settings.designify.card-icon-classic'),
+                                    'background' => trans('admin/settings.designify.card-icon-background'),
+                                ])
+                                ->required(),
+                            ToggleButtons::make('designify:cardIconSize')
+                                ->dehydratedWhenHidden()
+                                ->label(trans('admin/settings.designify.card-icon-size'))
+                                ->inline()
+                                ->options([
+                                    'standard' => trans('admin/settings.designify.card-icon-centered'),
+                                    'enlarged' => trans('admin/settings.designify.card-icon-enlarged'),
+                                ])
+                                ->visible(fn (Get $get): bool => $get('designify:cardIconStyle') === 'background')
+                                ->required(),
+                        ]),
                     ToggleButtons::make('designify:fileLayout')
                         ->label(trans('admin/settings.designify.file-layout'))
                         ->inline()

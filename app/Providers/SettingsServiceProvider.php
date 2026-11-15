@@ -98,6 +98,8 @@ class SettingsServiceProvider extends ServiceProvider
         'designify:site_favicon',
         'designify:alwaysShowKillButton',
         'designify:cardType',
+        'designify:cardIconStyle',
+        'designify:cardIconSize',
         'designify:fileLayout',
         'designify:serverOrganization',
         'designify:layoutType',

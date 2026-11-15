@@ -76,6 +76,8 @@ return [
     'alwaysShowKillButton' => false,
 
     'cardType' => 'grid',
+    'cardIconStyle' => 'classic',
+    'cardIconSize' => 'standard',
     'fileLayout' => 'list',
     'serverOrganization' => 'categories',
 

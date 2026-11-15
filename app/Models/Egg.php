@@ -23,6 +23,7 @@ use LogicException;
  * @property int $nest_id
  * @property string $author
  * @property string $name
+ * @property string|null $image_url
  * @property string|null $description
  * @property array|null $features
  * @property string $docker_image -- deprecated, use $docker_images
@@ -172,6 +173,15 @@ class Egg extends Model implements Identifiable
         'update_url' => null,
         'image' => null,
     ];
+
+    public function getImageUrlAttribute(): ?string
+    {
+        if (! str_starts_with($this->image ?? '', 'data:image/')) {
+            return $this->image;
+        }
+
+        return route('egg-image', ['egg' => $this->uuid, 'version' => hash('xxh128', $this->image)]);
+    }
 
     public function getCreationSourceLabelAttribute(): string
     {

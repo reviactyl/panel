@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Nests;
 
-use App\Filament\Components\ImageInput;
+use App\Filament\Components\EggImageUpload;
 use App\Filament\Concerns\AuthorizesAdminResource;
 use App\Filament\Resources\Nests\Eggs\Pages;
 use App\Models\Egg;
@@ -75,9 +75,8 @@ class EggResource extends Resource
                                             ->label(trans('admin/eggs.fields.author'))
                                             ->email()
                                             ->disabled(),
-                                        ImageInput::make('image')
-                                            ->label(trans('admin/eggs.fields.image'))
-                                            ->maxLength(191),
+                                        EggImageUpload::make('image')
+                                            ->label(trans('admin/eggs.fields.image')),
                                         Forms\Components\Textarea::make('description')
                                             ->label(trans('admin/eggs.fields.description'))
                                             ->columnSpanFull(),

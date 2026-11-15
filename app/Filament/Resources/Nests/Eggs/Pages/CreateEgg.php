@@ -9,6 +9,8 @@ use Filament\Resources\Pages\CreateRecord;
 
 class CreateEgg extends CreateRecord
 {
+    use HandlesEggImageUpload;
+
     protected static string $resource = EggResource::class;
 
     protected function getRedirectUrl(): string
