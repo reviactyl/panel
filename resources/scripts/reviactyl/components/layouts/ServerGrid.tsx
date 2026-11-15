@@ -83,19 +83,11 @@ export default ({
                 to={`/server/${server.id}/`}
                 className={className}
             >
-                <Card className='p-6! relative isolate overflow-hidden'>
+                <Card className='p-6! relative overflow-hidden'>
                     <img
                         src={server.eggImage || '/reviactyl/icon.png'}
-                        alt=''
-                        className={`absolute -z-20 pointer-events-none select-none ${
-                            server.eggImage
-                                ? 'inset-0 h-full w-full object-cover'
-                                : 'right-4 top-1/2 -translate-y-1/2 h-30 w-30 opacity-20'
-                        }`}
+                        className={`absolute right-4 top-1/2 -translate-y-1/2 h-30 w-30 opacity-20 pointer-events-none select-none`}
                     />
-                    {server.eggImage && (
-                        <div aria-hidden='true' className='absolute inset-0 -z-10 bg-gray-900/70 pointer-events-none' />
-                    )}
                     <div className='flex items-center justify-between pb-5 gap-x-2'>
                         <div className='flex-1 min-w-0'>
                             <Title className='block max-w-[10ch] truncate text-2xl sm:max-w-none' title={server.name}>
