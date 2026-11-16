@@ -8,6 +8,7 @@ return [
         'settings' => 'সেটিংস',
         'api' => 'অ্যাপ্লিকেশন API',
         'activity_log' => 'কার্যকলাপ লগ',
+        'alerts' => 'অ্যালার্টসমূহ',
         'webhooks' => 'ওয়েবহুকসমূহ',
         'user_activity_metrics' => 'সক্রিয় ব্যবহারকারীদের অবস্থান',
         'user_activity_description' => 'গত ৩০ দিনে সক্রিয় ব্যবহারকারীদের অবস্থান।',
