@@ -247,7 +247,7 @@ export default () => {
                             </div>
                         </Can>
                         {selectedFiles.length > 0 && <MassActionsBar />}
-                        <div className='order-2 md:order-0 md:ml-auto flex items-center gap-1 w-full md:w-auto'>
+                        <div className='order-2 md:order-0 md:ms-auto flex items-center gap-1 w-full md:w-auto'>
                             <Input
                                 ref={searchInputRef}
                                 type='text'
@@ -292,7 +292,7 @@ export default () => {
                 </Card>
                 <Card className={'items-center mb-1 rounded-none! px-2! py-2! bg-gray-800! hidden md:block'}>
                     <div className='order-4 md:order-0 flex items-center gap-1'>
-                        <div className='flex-1 ml-13.75'>
+                        <div className='flex-1 ms-13.75'>
                             <button
                                 onClick={() => {
                                     if (sortType === 'name') {
@@ -332,7 +332,7 @@ export default () => {
                                 )}
                             </button>
                         </div>
-                        <div className='w-1/5 mr-20 justify-end flex'>
+                        <div className='w-1/5 me-20 justify-end flex'>
                             <button
                                 onClick={() => {
                                     if (sortType === 'date') {

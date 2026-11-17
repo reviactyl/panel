@@ -18,7 +18,9 @@ const Icon = memo(({ alarm, children }: { alarm: boolean; children: React.ReactN
 ));
 
 const IconDescription = ({ alarm, children }: { alarm: boolean; children: React.ReactNode }) => (
-    <p className={`ml-2 text-xs ${alarm ? 'text-danger-text' : 'text-gray-400'}`}>{children}</p>
+    <p className={`ms-2 text-xs ${alarm ? 'text-danger-text' : 'text-gray-400'}`}>
+        <bdi dir='ltr'>{children}</bdi>
+    </p>
 );
 
 export default ({
@@ -84,9 +86,9 @@ export default ({
                     className || ''
                 }`}
             >
-                <div className='col-span-12 flex items-center sm:col-span-5 lg:col-span-6'>
-                    <img src={server.eggImage ? server.eggImage : '/reviactyl/icon.png'} className='h-10 w-10 mr-4' />
-                    <div>
+                <div className='col-span-12 flex min-w-0 items-center sm:col-span-5 lg:col-span-6'>
+                    <img src={server.eggImage ? server.eggImage : '/reviactyl/icon.png'} className='h-10 w-10 me-4' />
+                    <div className='min-w-0'>
                         <Title className='text-lg wrap-break-word'>{server.name}</Title>
                         <div className='flex flex-wrap items-center gap-2'>
                             {(showCategory || onMove) && (
@@ -137,9 +139,9 @@ export default ({
                         </div>
                     </div>
                 </div>
-                <div className='ml-4 hidden flex-1 lg:col-span-2 lg:block'>
+                <div className='ms-4 hidden flex-1 lg:col-span-2 lg:block'>
                     <div className={'flex justify-center items-center gap-1 text-center'}>
-                        <Blur className={`text-sm font-semibold text-gray-400`}>
+                        <Blur dir='ltr' className={`text-sm font-semibold text-gray-400`}>
                             {server.allocations
                                 .filter((alloc) => alloc.isDefault)
                                 .map((allocation) => (
@@ -189,7 +191,7 @@ export default ({
                         )
                     ) : (
                         <React.Fragment>
-                            <div className='ml-4 hidden flex-1 sm:block'>
+                            <div className='ms-4 hidden flex-1 sm:block'>
                                 <div className='flex justify-center'>
                                     <Icon alarm={alarms.cpu}>
                                         <FaMicrochip />
@@ -198,9 +200,11 @@ export default ({
                                         {stats.cpuUsagePercent.toFixed(2)} %
                                     </IconDescription>
                                 </div>
-                                <p className='mt-1 text-center text-xs font-semibold text-gray-400'>of {cpuLimit}</p>
+                                <p dir='ltr' className='mt-1 text-center text-xs font-semibold text-gray-400'>
+                                    of {cpuLimit}
+                                </p>
                             </div>
-                            <div className='ml-4 hidden flex-1 sm:block'>
+                            <div className='ms-4 hidden flex-1 sm:block'>
                                 <div className='flex justify-center'>
                                     <Icon alarm={alarms.memory}>
                                         <FaMemory />
@@ -209,9 +213,11 @@ export default ({
                                         {bytesToString(stats.memoryUsageInBytes)}
                                     </IconDescription>
                                 </div>
-                                <p className='mt-1 text-center text-xs font-semibold text-gray-400'>of {memoryLimit}</p>
+                                <p dir='ltr' className='mt-1 text-center text-xs font-semibold text-gray-400'>
+                                    of {memoryLimit}
+                                </p>
                             </div>
-                            <div className='ml-4 hidden flex-1 sm:block'>
+                            <div className='ms-4 hidden flex-1 sm:block'>
                                 <div className='flex justify-center'>
                                     <Icon alarm={alarms.disk}>
                                         <FaFloppyDisk />
@@ -220,13 +226,15 @@ export default ({
                                         {bytesToString(stats.diskUsageInBytes)}
                                     </IconDescription>
                                 </div>
-                                <p className='mt-1 text-center text-xs font-semibold text-gray-400'>of {diskLimit}</p>
+                                <p dir='ltr' className='mt-1 text-center text-xs font-semibold text-gray-400'>
+                                    of {diskLimit}
+                                </p>
                             </div>
                         </React.Fragment>
                     )}
                 </div>
                 <div
-                    className={`absolute right-0 z-20 m-1 h-[calc(100%-0.5rem)] w-2 rounded-full opacity-50 transition-all duration-150 group-hover:opacity-75 ${
+                    className={`absolute end-0 z-20 m-1 h-[calc(100%-0.5rem)] w-2 rounded-full opacity-50 transition-all duration-150 group-hover:opacity-75 ${
                         !stats?.status || stats.status === 'offline'
                             ? 'bg-danger'
                             : stats.status === 'running'

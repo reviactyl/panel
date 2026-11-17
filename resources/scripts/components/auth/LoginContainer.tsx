@@ -212,11 +212,12 @@ function LoginContainer() {
                                 type={show ? 'text' : 'password'}
                                 placeholder={t('password-label')}
                                 name={'password'}
+                                className='pe-10'
                                 disabled={isSubmitting}
                             />
                             <button
                                 type={'button'}
-                                className='absolute top-2.5 right-1.5 p-1 py-2 text-muted'
+                                className='absolute top-2.5 end-1.5 p-1 py-2 text-muted'
                                 onClick={() => setShow(!show)}
                             >
                                 {show ? <EyeIcon className='h-5 w-5' /> : <EyeOffIcon className='h-5 w-5' />}

@@ -5,11 +5,11 @@
 }
 
 .panel {
-    @apply relative bg-gray-800 border border-gray-700 rounded-ui max-w-xl w-full mx-auto shadow-lg text-left;
+    @apply relative bg-gray-800 border border-gray-700 rounded-ui max-w-xl w-full mx-auto shadow-lg text-start;
 }
 
 .title {
-    @apply font-header text-xl font-medium mb-2 text-gray-50 pr-4;
+    @apply font-header text-xl font-medium mb-2 text-gray-50 pe-8;
 }
 
 .close_icon {
@@ -17,7 +17,7 @@
 }
 
 .dialog_icon {
-    @apply flex items-center justify-center w-10 h-10 rounded-full mr-4;
+    @apply flex items-center justify-center w-10 h-10 rounded-full me-4;
 
     &.danger {
         @apply bg-red-500 text-red-50;

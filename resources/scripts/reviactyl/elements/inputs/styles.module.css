@@ -74,9 +74,13 @@
 }
 
 .select {
-    @apply block w-full rounded-ui border border-gray-600 bg-gray-800 p-3 pr-8 text-sm text-gray-200 shadow-none outline-hidden transition-colors duration-150 ease-linear hover:border-gray-400 focus:border-gray-400;
+    @apply block w-full rounded-ui border border-gray-600 bg-gray-800 p-3 pe-8 text-sm text-gray-200 shadow-none outline-hidden transition-colors duration-150 ease-linear hover:border-gray-400 focus:border-gray-400;
     appearance: none;
     background-size: 1rem;
     background-repeat: no-repeat;
     background-position: calc(100% - 0.75rem) center;
+
+    &:dir(rtl) {
+        background-position: 0.75rem center;
+    }
 }

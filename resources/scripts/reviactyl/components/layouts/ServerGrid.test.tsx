@@ -51,7 +51,7 @@ it('keeps the larger classic icon for legacy settings and ignores the background
     const image = await render();
     expect(image.getAttribute('src')).toBe('/minecraft.png');
     expect(image.getAttribute('alt')).toBe('');
-    expect(image.classList.contains('right-4')).toBe(true);
+    expect(image.classList.contains('end-4')).toBe(true);
     expect(image.classList.contains('h-40')).toBe(true);
     expect(image.classList.contains('opacity-40')).toBe(true);
     expect(image.classList.contains('scale-150')).toBe(false);
@@ -70,7 +70,7 @@ it('updates the centered background and uniform enlargement when preview setting
     expect(image.classList.contains('scale-150')).toBe(true);
     state.designify.data.cardIconStyle = 'classic';
     image = await render();
-    expect(image.classList.contains('right-4')).toBe(true);
+    expect(image.classList.contains('end-4')).toBe(true);
     expect(image.classList.contains('scale-150')).toBe(false);
 });
 

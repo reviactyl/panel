@@ -86,7 +86,7 @@ export default function NotificationCenter() {
                 <span>{t('title')}</span>
                 {!!data?.unread && (
                     <span
-                        className='ml-auto rounded-full bg-gray-800 px-2 py-0.5 text-xs font-semibold text-gray-100'
+                        className='ms-auto rounded-full bg-gray-800 px-2 py-0.5 text-xs font-semibold text-gray-100'
                         aria-label={t('unread-count', { count: data.unread })}
                     >
                         {data.unread > 99 ? '99+' : data.unread}
@@ -98,7 +98,7 @@ export default function NotificationCenter() {
                     transition
                     className='fixed inset-0 bg-black/20 transition-opacity duration-200 data-closed:opacity-0 motion-reduce:duration-0'
                 />
-                <div className='pointer-events-none fixed inset-0 flex items-end p-2 sm:bottom-4 sm:left-64 sm:right-auto sm:top-auto sm:p-0 2xl:left-72'>
+                <div className='pointer-events-none fixed inset-0 flex items-end p-2 sm:bottom-4 sm:start-64 sm:end-auto sm:top-auto sm:p-0 2xl:start-72'>
                     <DialogPanel
                         transition
                         className='pointer-events-auto flex h-[min(36rem,calc(100dvh-2rem))] w-full flex-col overflow-hidden rounded-ui bg-gray-900 text-gray-100 shadow-xl ring-1 ring-gray-700/50 transition duration-200 ease-out data-closed:translate-y-3 data-closed:opacity-0 sm:w-[26rem] sm:data-closed:-translate-x-3 sm:data-closed:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none'
@@ -202,7 +202,7 @@ export default function NotificationCenter() {
                                                     </h3>
                                                     {!notice.read_at && (
                                                         <span
-                                                            className='ml-auto h-2 w-2 shrink-0 rounded-full bg-reviactyl'
+                                                            className='ms-auto h-2 w-2 shrink-0 rounded-full bg-reviactyl'
                                                             role='img'
                                                             aria-label={t('unread')}
                                                         />
@@ -229,7 +229,7 @@ export default function NotificationCenter() {
                                                 </time>
                                             </div>
                                         </div>
-                                        <div className='mt-2 flex items-center justify-between gap-2 pl-12'>
+                                        <div className='mt-2 flex items-center justify-between gap-2 ps-12'>
                                             <Link
                                                 to={
                                                     /^\/(?!\/)[^\\\s]*$/.test(notice.data.url || '/')

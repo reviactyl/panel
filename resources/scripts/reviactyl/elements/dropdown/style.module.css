@@ -1,7 +1,7 @@
 @reference "#reviactyl";
 
 .menu {
-    @apply relative inline-block text-left;
+    @apply relative inline-block text-start;
 
     & .button {
         @apply inline-flex justify-center items-center w-full py-2 text-gray-100 rounded-md;
@@ -28,7 +28,7 @@
     }
 
     & .items_container {
-        @apply absolute right-0 mt-2 origin-top-right bg-gray-900 rounded z-10;
+        @apply absolute end-0 mt-2 origin-top-right rtl:origin-top-left bg-gray-900 rounded z-10;
     }
 }
 
@@ -36,7 +36,7 @@
     @apply flex items-center rounded w-full px-2 py-2;
 
     & svg {
-        @apply w-4 h-4 mr-4 text-gray-300;
+        @apply w-4 h-4 me-4 text-gray-300;
     }
 
     &:hover,

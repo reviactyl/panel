@@ -93,7 +93,7 @@ export default ({
                         className={`absolute -z-10 pointer-events-none select-none object-contain ${
                             backgroundIcon
                                 ? `inset-0 h-full w-full opacity-30 ${enlargedIcon ? 'scale-150' : ''}`
-                                : 'right-4 top-1/2 -translate-y-1/2 h-40 w-40 max-w-[50%] opacity-40'
+                                : 'end-4 top-1/2 -translate-y-1/2 h-40 w-40 max-w-[50%] opacity-40'
                         }`}
                     />
                     <div className='flex items-center justify-between pb-5 gap-x-2'>
@@ -222,7 +222,10 @@ export default ({
                             )
                         ) : (
                             <React.Fragment>
-                                <StatBlock className='backdrop-blur-xs bg-gray-600/20 border border-gray-600/50'>
+                                <StatBlock
+                                    dir='ltr'
+                                    className='backdrop-blur-xs bg-gray-600/20 border border-gray-600/50'
+                                >
                                     <span className='w-4 sm:w-5 text-gray-300'>
                                         <FaGlobe />
                                     </span>
@@ -236,7 +239,10 @@ export default ({
                                             ))}
                                     </Blur>
                                 </StatBlock>
-                                <StatBlock className='backdrop-blur-xs bg-gray-600/20 border border-gray-600/50'>
+                                <StatBlock
+                                    dir='ltr'
+                                    className='backdrop-blur-xs bg-gray-600/20 border border-gray-600/50'
+                                >
                                     <span className='w-4 sm:w-5 text-gray-300'>
                                         <FaMicrochip />
                                     </span>
@@ -245,7 +251,10 @@ export default ({
                                     </p>
                                     <span className='text-xs sm:text-sm text-gray-300'>/ {cpuLimit}</span>
                                 </StatBlock>
-                                <StatBlock className='backdrop-blur-xs bg-gray-600/20 border border-gray-600/50'>
+                                <StatBlock
+                                    dir='ltr'
+                                    className='backdrop-blur-xs bg-gray-600/20 border border-gray-600/50'
+                                >
                                     <span className='w-4 sm:w-5 text-gray-300'>
                                         <FaMemory />
                                     </span>
@@ -254,7 +263,10 @@ export default ({
                                     </p>
                                     <span className='text-xs sm:text-sm text-gray-300'>/ {memoryLimit}</span>
                                 </StatBlock>
-                                <StatBlock className='backdrop-blur-xs bg-gray-600/20 border border-gray-600/50'>
+                                <StatBlock
+                                    dir='ltr'
+                                    className='backdrop-blur-xs bg-gray-600/20 border border-gray-600/50'
+                                >
                                     <span className='w-4 sm:w-5 text-gray-300'>
                                         <FaFloppyDisk />
                                     </span>

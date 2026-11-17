@@ -48,7 +48,7 @@ const NavItem = ({ route }: Props) => {
             onTouchStart={() => void route.component.preload?.().catch(() => undefined)}
         >
             <span className='flex items-center'>
-                {route.icon && <route.icon className={`w-5 mr-1`} />} {route.name ? t(route.name as string) : null}
+                {route.icon && <route.icon className={`w-5 me-1`} />} {route.name ? t(route.name as string) : null}
             </span>
         </Navigate>
     );
@@ -88,7 +88,7 @@ const DashboardNavigation = () => {
                     <span className='label -mb-2'>{t('index.dashboard')}</span>
                     <Navigate id='index.dashboard' to='/' end className='mt-2'>
                         <span className='flex items-center'>
-                            <FaHouse className='w-5 mr-1' /> {t('index.dashboard')}
+                            <FaHouse className='w-5 me-1' /> {t('index.dashboard')}
                         </span>
                     </Navigate>
                 </div>
@@ -116,7 +116,7 @@ const DashboardNavigation = () => {
                             rel={button.newTab === true ? 'noopener noreferrer' : undefined}
                         >
                             <span className='flex items-center'>
-                                <ExternalLinkIcon className='w-4 h-4 mr-2' />
+                                <ExternalLinkIcon className='w-4 h-4 me-2' />
                                 {button.label}
                             </span>
                         </a>
@@ -134,7 +134,7 @@ const DashboardNavigation = () => {
                             to={route.path.startsWith('/') ? route.path : `/${route.path.replace(/^\/+/, '')}`}
                         >
                             <span className='flex items-center'>
-                                {route.icon.component ? <route.icon.component className='w-4 h-4 mr-2' /> : null}
+                                {route.icon.component ? <route.icon.component className='w-4 h-4 me-2' /> : null}
                                 {route.label}
                             </span>
                         </Navigate>

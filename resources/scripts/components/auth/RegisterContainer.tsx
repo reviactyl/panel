@@ -205,13 +205,14 @@ const RegisterContainer = () => {
                             icon={KeyIcon}
                             type={show ? 'text' : 'password'}
                             name={'password'}
+                            className='pe-10'
                             placeholder={'••••••••'}
                             description={t('reset-password.min-length')}
                             disabled={isSubmitting}
                         />
                         <button
                             type={'button'}
-                            className='absolute top-9 right-1.5 p-1 py-2 text-muted'
+                            className='absolute top-9 end-1.5 p-1 py-2 text-muted'
                             onClick={() => setShow(!show)}
                         >
                             {show ? <EyeOffIcon className='h-5 w-5' /> : <EyeIcon className='h-5 w-5' />}

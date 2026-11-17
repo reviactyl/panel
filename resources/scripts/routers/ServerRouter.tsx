@@ -64,7 +64,7 @@ const NavItem = ({ route }: NavItemProps) => {
             end={route.end ?? false}
         >
             <span className='flex items-center'>
-                {route.icon && <route.icon className='w-5 mr-1' />}
+                {route.icon && <route.icon className='w-5 me-1' />}
                 {route.name ? t(route.name) : null}
             </span>
         </Navigate>
@@ -168,7 +168,7 @@ const ServerNavigation = () => {
                         const item = (
                             <Navigate id={`ext:${route.id}`} to={to}>
                                 <span className='flex items-center'>
-                                    {route.icon.component ? <route.icon.component className='w-4 h-4 mr-2' /> : null}
+                                    {route.icon.component ? <route.icon.component className='w-4 h-4 me-2' /> : null}
                                     {route.label}
                                 </span>
                             </Navigate>
@@ -198,7 +198,7 @@ const ServerNavigation = () => {
                             rel={button.newTab === true ? 'noopener noreferrer' : undefined}
                         >
                             <span className='flex items-center'>
-                                <ExternalLinkIcon className='w-4 h-4 mr-2' />
+                                <ExternalLinkIcon className='w-4 h-4 me-2' />
                                 {button.label}
                             </span>
                         </a>

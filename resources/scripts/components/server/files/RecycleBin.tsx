@@ -69,19 +69,19 @@ export function RecycleBinRow({ grid, onOpen }: { grid: boolean; files: FileObje
             <button
                 type='button'
                 onClick={onOpen}
-                className={`${styles.details} text-left focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-400`}
+                className={`${styles.details} text-start focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-400`}
             >
                 <span
-                    className={grid ? 'text-gray-400 text-4xl mb-4' : 'flex-none text-gray-400 ml-6 mr-4 text-lg pl-3'}
+                    className={grid ? 'text-gray-400 text-4xl mb-4' : 'flex-none text-gray-400 ms-6 me-4 text-lg ps-3'}
                 >
                     <FaTrashCan />
                 </span>
                 <span className={grid ? 'w-full truncate text-center' : 'flex-1 truncate'}>{t('title')}</span>
-                <span className={grid ? 'mt-2 text-xs text-gray-400' : 'w-1/6 text-right mr-4'}>
+                <span className={grid ? 'mt-2 text-xs text-gray-400' : 'w-1/6 text-end me-4'}>
                     {data ? bytesToString(data.size) : '—'}
                 </span>
                 {!grid && (
-                    <span className='w-1/5 text-right mr-4 hidden md:block'>
+                    <span className='w-1/5 text-end me-4 hidden md:block'>
                         {data?.data[0]
                             ? formatDistanceToNow(new Date(data.data[0].created_at), { addSuffix: true })
                             : ''}
@@ -190,17 +190,17 @@ function BinFileRow({
                 type='button'
                 disabled={busy || (entry.is_file && !canReadContents)}
                 onClick={onOpen}
-                className={`${styles.details} text-left`}
+                className={`${styles.details} text-start`}
             >
-                <span className='flex-none text-gray-400 ml-6 mr-4 text-lg pl-3'>{icon}</span>
+                <span className='flex-none text-gray-400 ms-6 me-4 text-lg ps-3'>{icon}</span>
                 <span className='flex-1 truncate' title={entry.original_path}>
                     {name}
                 </span>
-                <span className='w-1/6 text-right mr-4 hidden sm:block'>
+                <span className='w-1/6 text-end me-4 hidden sm:block'>
                     {entry.size === null ? '—' : bytesToString(entry.size)}
                 </span>
                 <span
-                    className='w-1/5 text-right mr-4 hidden md:block'
+                    className='w-1/5 text-end me-4 hidden md:block'
                     title={new Date(entry.created_at).toLocaleString()}
                 >
                     {formatDistanceToNow(new Date(entry.created_at), { addSuffix: true })}
@@ -496,27 +496,27 @@ export default function RecycleBin() {
                     <button
                         type='button'
                         onClick={() => sortBy('name')}
-                        className='cursor-pointer flex-1 ml-13.75 text-left'
+                        className='cursor-pointer flex-1 ms-13.75 text-start'
                     >
                         {t('server/files:name')}{' '}
                         {sort === 'name' && (
-                            <FaArrowDownAZ className={`inline ml-1 ${descending ? '' : 'rotate-180'}`} />
+                            <FaArrowDownAZ className={`inline ms-1 ${descending ? '' : 'rotate-180'}`} />
                         )}
                     </button>
-                    <button type='button' onClick={() => sortBy('size')} className='cursor-pointer w-1/6 text-right'>
+                    <button type='button' onClick={() => sortBy('size')} className='cursor-pointer w-1/6 text-end'>
                         {t('server/files:size')}{' '}
                         {sort === 'size' && (
-                            <FaArrowDownAZ className={`inline ml-1 ${descending ? '' : 'rotate-180'}`} />
+                            <FaArrowDownAZ className={`inline ms-1 ${descending ? '' : 'rotate-180'}`} />
                         )}
                     </button>
                     <button
                         type='button'
                         onClick={() => sortBy('date')}
-                        className='cursor-pointer w-1/5 mr-20 text-right'
+                        className='cursor-pointer w-1/5 me-20 text-end'
                     >
                         {t('server/files:date')}{' '}
                         {sort === 'date' && (
-                            <FaArrowDownAZ className={`inline ml-1 ${descending ? '' : 'rotate-180'}`} />
+                            <FaArrowDownAZ className={`inline ms-1 ${descending ? '' : 'rotate-180'}`} />
                         )}
                     </button>
                 </div>
