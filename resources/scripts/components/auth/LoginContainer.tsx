@@ -212,7 +212,7 @@ function LoginContainer() {
                                 type={show ? 'text' : 'password'}
                                 placeholder={t('password-label')}
                                 name={'password'}
-                                className='pe-10'
+                                className='pe-10!'
                                 disabled={isSubmitting}
                             />
                             <button

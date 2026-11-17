@@ -128,25 +128,35 @@ test('Arabic selects reserve space for the arrow at the inline end', async ({ pa
 });
 
 for (const language of ['ar', 'en']) {
-    test(`${language} login joins field icons and keeps the password reveal inside the input`, async ({ page }) => {
-        await page.setViewportSize({ width: 390, height: 844 });
-        await openFixture(page, '/auth/login', language);
-        const input = page.locator('input[name=password]');
-        const reveal = input.locator('xpath=../../..').getByRole('button');
-        await expect(input).toBeVisible();
-        const inputBox = (await input.boundingBox())!;
-        const revealBox = (await reveal.boundingBox())!;
-        expect(revealBox.x).toBeGreaterThanOrEqual(inputBox.x);
-        expect(revealBox.x + revealBox.width).toBeLessThanOrEqual(inputBox.x + inputBox.width);
-        await expect(input).toHaveCSS('border-start-start-radius', '0px');
-        await expect
-            .poll(() => input.evaluate((element) => parseFloat(getComputedStyle(element).borderStartEndRadius)))
-            .toBeGreaterThan(0);
-        await input.fill('secret-password');
-        await reveal.click();
-        await expect(input).toHaveAttribute('type', 'text');
-        await expect(input).toHaveValue('secret-password');
-    });
+    for (const path of ['/auth/login', '/auth/register']) {
+        test(`${language} ${path} joins field icons and reserves password reveal space`, async ({ page }) => {
+            await page.setViewportSize({ width: 390, height: 844 });
+            await openFixture(page, path, language);
+            const input = page.locator('input[name=password]');
+            const reveal = input.locator('xpath=../../..').getByRole('button');
+            await expect(input).toBeVisible();
+            const inputBox = (await input.boundingBox())!;
+            const revealBox = (await reveal.boundingBox())!;
+            expect(revealBox.x).toBeGreaterThanOrEqual(inputBox.x);
+            expect(revealBox.x + revealBox.width).toBeLessThanOrEqual(inputBox.x + inputBox.width);
+            const reservedSpace =
+                language === 'ar'
+                    ? revealBox.x + revealBox.width - inputBox.x
+                    : inputBox.x + inputBox.width - revealBox.x;
+            await expect
+                .poll(() => input.evaluate((element) => parseFloat(getComputedStyle(element).paddingInlineEnd)))
+                .toBeGreaterThanOrEqual(reservedSpace);
+            await expect(input).toHaveCSS('border-start-start-radius', '0px');
+            await expect
+                .poll(() => input.evaluate((element) => parseFloat(getComputedStyle(element).borderStartEndRadius)))
+                .toBeGreaterThan(0);
+            const password = 'long-password-to-check-reveal-button-spacing';
+            await input.fill(password);
+            await reveal.click();
+            await expect(input).toHaveAttribute('type', 'text');
+            await expect(input).toHaveValue(password);
+        });
+    }
 }
 
 for (const width of [390, 1280]) {

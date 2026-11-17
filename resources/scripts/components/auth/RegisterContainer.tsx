@@ -205,7 +205,7 @@ const RegisterContainer = () => {
                             icon={KeyIcon}
                             type={show ? 'text' : 'password'}
                             name={'password'}
-                            className='pe-10'
+                            className='pe-10!'
                             placeholder={'••••••••'}
                             description={t('reset-password.min-length')}
                             disabled={isSubmitting}
