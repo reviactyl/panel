@@ -29,6 +29,7 @@ return [
     '2fa_token' => 'অথেন্টিকেশন টোকেন',
     'submit' => 'সাবমিট',
     'close' => 'বন্ধ করুন',
+    'dismiss' => 'খারিজ করুন',
     'settings' => 'সেটিংস',
     'configuration' => 'কনফিগারেশন',
     'sftp' => 'SFTP',
