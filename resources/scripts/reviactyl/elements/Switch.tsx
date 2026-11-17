@@ -47,11 +47,11 @@ const Switch = ({
                 <label
                     htmlFor={uuid}
                     data-wallpaper-control
-                    className="relative mb-0 block h-6 cursor-pointer overflow-hidden rounded-full border border-gray-600 bg-gray-700 shadow-inner transition-colors duration-150 before:absolute before:left-0.5 before:top-px before:block before:h-5 before:w-5 before:rounded-full before:border before:border-gray-300 before:bg-white before:shadow-sm before:content-[''] before:transition-transform before:duration-150 peer-checked:border-reviactyl/80 peer-checked:bg-reviactyl peer-checked:shadow-none peer-checked:before:translate-x-6 peer-focus-visible:ring-2 peer-focus-visible:ring-reviactyl/60 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-gray-900 peer-disabled:cursor-not-allowed peer-disabled:opacity-60"
+                    className="relative mb-0 block h-6 cursor-pointer overflow-hidden rounded-full border border-gray-600 bg-gray-700 shadow-inner transition-colors duration-150 before:absolute before:start-0.5 before:top-px before:block before:h-5 before:w-5 before:rounded-full before:border before:border-gray-300 before:bg-white before:shadow-sm before:content-[''] before:transition-transform before:duration-150 peer-checked:border-reviactyl/80 peer-checked:bg-reviactyl peer-checked:shadow-none peer-checked:before:translate-x-6 rtl:peer-checked:before:-translate-x-6 peer-focus-visible:ring-2 peer-focus-visible:ring-reviactyl/60 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-gray-900 peer-disabled:cursor-not-allowed peer-disabled:opacity-60"
                 />
             </div>
             {(label || description) && (
-                <div className='ml-4 w-full'>
+                <div className='ms-4 w-full'>
                     {label && (
                         <Label className={`cursor-pointer ${description ? 'mb-0' : ''}`} htmlFor={uuid}>
                             {label}

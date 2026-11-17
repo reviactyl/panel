@@ -1,4 +1,5 @@
 .editor {
+    direction: ltr;
     position: relative;
     min-height: 16rem;
     height: calc(100vh - 20rem);
@@ -20,6 +21,7 @@
 }
 
 .monacoEditor {
+    direction: ltr;
     position: relative;
     min-height: 16rem;
     height: calc(100vh - 20rem);

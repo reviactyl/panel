@@ -45,35 +45,38 @@ export default ({ renderLeft, withinFileEditor, isNewFile }: Props) => {
 
     return (
         <div className='flex grow-0 items-center overflow-x-hidden text-sm text-muted'>
-            {renderLeft || <div className='w-12' />}/<span className='px-1 text-gray-300'>home</span>/
-            <NavLink to={`/server/${id}/files`} className='px-1 text-gray-200 no-underline hover:text-gray-100'>
-                container
-            </NavLink>
-            /
-            {breadcrumbs()
-                .filter((crumb) => crumb.name)
-                .map((crumb, index) =>
-                    crumb.path ? (
-                        <React.Fragment key={index}>
-                            <NavLink
-                                to={`/server/${id}/files#${encodePathSegments(crumb.path)}`}
-                                className='px-1 text-gray-200 no-underline hover:text-gray-100'
-                            >
-                                {crumb.name}
-                            </NavLink>
-                            /
-                        </React.Fragment>
-                    ) : (
-                        <span key={index} className='px-1 text-gray-300'>
-                            {crumb.name}
-                        </span>
-                    ),
+            {renderLeft || <div className='w-12' />}
+            <div dir='ltr' className='flex min-w-0 items-center overflow-hidden'>
+                /<span className='px-1 text-gray-300'>home</span>/
+                <NavLink to={`/server/${id}/files`} className='px-1 text-gray-200 no-underline hover:text-gray-100'>
+                    container
+                </NavLink>
+                /
+                {breadcrumbs()
+                    .filter((crumb) => crumb.name)
+                    .map((crumb, index) =>
+                        crumb.path ? (
+                            <React.Fragment key={index}>
+                                <NavLink
+                                    to={`/server/${id}/files#${encodePathSegments(crumb.path)}`}
+                                    className='px-1 text-gray-200 no-underline hover:text-gray-100'
+                                >
+                                    <bdi>{crumb.name}</bdi>
+                                </NavLink>
+                                /
+                            </React.Fragment>
+                        ) : (
+                            <span key={index} className='px-1 text-gray-300'>
+                                <bdi>{crumb.name}</bdi>
+                            </span>
+                        ),
+                    )}
+                {file && (
+                    <React.Fragment>
+                        <bdi className='px-1 text-gray-300'>{file}</bdi>
+                    </React.Fragment>
                 )}
-            {file && (
-                <React.Fragment>
-                    <span className='px-1 text-gray-300'>{file}</span>
-                </React.Fragment>
-            )}
+            </div>
         </div>
     );
 };

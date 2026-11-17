@@ -58,7 +58,7 @@ const LanguageSwitcher = () => {
             <label htmlFor={id} className='min-w-0 flex-1'>
                 {t('overview.language')}
             </label>
-            <Select id={id} className='pr-15! w-full min-w-0 sm:w-auto!' value={currentLang} onChange={handleChange}>
+            <Select id={id} className='pe-15! w-full min-w-0 sm:w-auto!' value={currentLang} onChange={handleChange}>
                 {Object.entries(languages).map(([code, info]) => (
                     <option key={code} value={code}>
                         {info.name}

@@ -17,7 +17,7 @@ interface Props<T> {
     children: (props: RenderFuncProps<T>) => React.ReactNode;
 }
 
-const Block = (props: React.ComponentProps<typeof Button>) => <Button className='mr-2 h-10 w-10 p-0' {...props} />;
+const Block = (props: React.ComponentProps<typeof Button>) => <Button className='me-2 h-10 w-10 p-0' {...props} />;
 
 function Pagination<T>({ data: { items, pagination }, onPageSelect, children }: Props<T>) {
     const isFirstPage = pagination.currentPage === 1;
@@ -41,7 +41,7 @@ function Pagination<T>({ data: { items, pagination }, onPageSelect, children }: 
                 <div className='mt-4 flex justify-center'>
                     {(pages?.[0] ?? 0) > 1 && !isFirstPage && (
                         <Block isSecondary color={'primary'} onClick={() => onPageSelect(1)}>
-                            <FaAnglesLeft />
+                            <FaAnglesLeft className='rtl:rotate-180' />
                         </Block>
                     )}
                     {pages.map((i) => (
@@ -56,7 +56,7 @@ function Pagination<T>({ data: { items, pagination }, onPageSelect, children }: 
                     ))}
                     {(pages?.[4] ?? 0) < pagination.totalPages && !isLastPage && (
                         <Block isSecondary color={'primary'} onClick={() => onPageSelect(pagination.totalPages)}>
-                            <FaAnglesRight />
+                            <FaAnglesRight className='rtl:rotate-180' />
                         </Block>
                     )}
                 </div>

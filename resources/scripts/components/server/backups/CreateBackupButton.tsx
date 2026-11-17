@@ -43,13 +43,13 @@ const ModalContent = ({ ...props }: RequiredModalProps) => {
                             as='select'
                             id='backup-format'
                             name='format'
-                            className='w-full appearance-none rounded-ui border border-gray-700 bg-gray-800 bg-none p-2 pr-10 text-gray-100'
+                            className='w-full appearance-none rounded-ui border border-gray-700 bg-gray-800 bg-none p-2 pe-10 text-gray-100'
                         >
                             <option value='tar.gz'>tar.gz</option>
                             <option value='zip'>zip</option>
                         </FormikField>
                         <FaChevronDown
-                            className='pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-100'
+                            className='pointer-events-none absolute end-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-100'
                             aria-hidden
                         />
                     </div>

@@ -19,10 +19,10 @@ import { useSubuserPreview } from '@/context/SubuserPreviewContext';
 type Stats = Record<'memory' | 'cpu' | 'disk', number>;
 
 const Limit = ({ limit, children }: { limit: string | null; children: React.ReactNode }) => (
-    <>
+    <span dir='ltr' className='inline-flex items-baseline gap-1'>
         {children}
         <span className='text-xs text-gray-300'>/ {limit || <>&infin;</>}</span>
-    </>
+    </span>
 );
 
 const TopServerDetails = () => {
@@ -87,7 +87,7 @@ const TopServerDetails = () => {
     });
 
     return (
-        <div className='relative z-10 pt-4 pl-2 w-full max-w-300 mx-auto'>
+        <div className='relative z-10 pt-4 ps-2 w-full max-w-300 mx-auto'>
             <Card className='p-4! px-8! mx-auto'>
                 <div className='mx-auto w-full md:flex items-center justify-between max-w-300'>
                     <div className='flex items-center gap-x-3'>
@@ -127,7 +127,9 @@ const TopServerDetails = () => {
                         <FaGlobe />
                     </span>
                     <CopyOnClick text={allocation}>
-                        <Blur className='text-sm text-gray-100'>{allocation}</Blur>
+                        <Blur dir='ltr' className='text-sm text-gray-100'>
+                            {allocation}
+                        </Blur>
                     </CopyOnClick>
                 </StatBlock>
 

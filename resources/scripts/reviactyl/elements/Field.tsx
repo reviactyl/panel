@@ -2,6 +2,7 @@ import React, { forwardRef, useId } from 'react';
 import { Field as FormikField, FieldProps } from 'formik';
 import Input from '@/reviactyl/elements/Input';
 import Label from '@/reviactyl/elements/Label';
+import classNames from 'classnames';
 
 interface OwnProps {
     name: string;
@@ -13,7 +14,7 @@ interface OwnProps {
 type Props = OwnProps & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'name'>;
 
 const Field = forwardRef<HTMLInputElement, Props>(
-    ({ id, name, icon: Icon, label, description, validate, ...props }, ref) => {
+    ({ id, name, icon: Icon, label, description, validate, className, ...props }, ref) => {
         const generatedId = useId();
         const inputId = id ?? generatedId;
 
@@ -25,7 +26,7 @@ const Field = forwardRef<HTMLInputElement, Props>(
                         <div className='flex items-center'>
                             {Icon && (
                                 <div
-                                    className={`rounded-l-ui border border-r-0 bg-gray-800 p-3 ${
+                                    className={`rounded-s-ui border border-e-0 bg-gray-800 p-3 ${
                                         touched[field.name] && errors[field.name]
                                             ? 'border-red-400 text-red-700 dark:text-red-400'
                                             : 'border-gray-600 text-muted'
@@ -35,7 +36,7 @@ const Field = forwardRef<HTMLInputElement, Props>(
                                 </div>
                             )}
                             <Input
-                                className={Icon ? 'rounded-l-none!' : undefined}
+                                className={classNames(Icon && 'rounded-s-none!', className)}
                                 id={inputId}
                                 {...field}
                                 {...props}

@@ -35,7 +35,7 @@ export default ({ folders, current, selected, onSelect, excluded, disabled }: Pr
                     aria-pressed={selected === folder.uuid}
                     onClick={() => onSelect(folder.uuid)}
                     title={folder.path}
-                    className={`[&>span]:flex [&>span]:w-full [&>span]:items-center [&>span]:gap-3 flex w-full items-center gap-3 rounded-ui px-3 py-3 text-left text-gray-100 focus-visible:outline-2 focus-visible:outline-primary-500 ${selected === folder.uuid ? 'bg-gray-700' : 'bg-transparent hover:bg-gray-700/60'}`}
+                    className={`[&>span]:flex [&>span]:w-full [&>span]:items-center [&>span]:gap-3 flex w-full items-center gap-3 rounded-ui px-3 py-3 text-start text-gray-100 focus-visible:outline-2 focus-visible:outline-primary-500 ${selected === folder.uuid ? 'bg-gray-700' : 'bg-transparent hover:bg-gray-700/60'}`}
                 >
                     <span
                         style={{

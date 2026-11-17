@@ -37,13 +37,18 @@ export default () => {
                             <div>
                                 <Label>{t('sftp.address')}</Label>
                                 <CopyOnClick text={`sftp://${ip(sftp.ip)}:${sftp.port}`}>
-                                    <Input type={'text'} value={`sftp://${ip(sftp.ip)}:${sftp.port}`} readOnly />
+                                    <Input
+                                        dir='ltr'
+                                        type={'text'}
+                                        value={`sftp://${ip(sftp.ip)}:${sftp.port}`}
+                                        readOnly
+                                    />
                                 </CopyOnClick>
                             </div>
                             <div className='mt-6'>
                                 <Label>{t('sftp.username')}</Label>
                                 <CopyOnClick text={sftpUsername}>
-                                    <Input type={'text'} value={sftpUsername} readOnly />
+                                    <Input dir='ltr' type={'text'} value={sftpUsername} readOnly />
                                 </CopyOnClick>
                             </div>
                             <div className='mt-6 flex items-center'>
@@ -80,7 +85,12 @@ export default () => {
                         <div className='mt-6'>
                             <Label>{t('info.public-status-page')}</Label>
                             <CopyOnClick text={`${window.location.origin}/status/${uuid}`}>
-                                <Input type={'text'} value={`${window.location.origin}/status/${uuid}`} readOnly />
+                                <Input
+                                    dir='ltr'
+                                    type={'text'}
+                                    value={`${window.location.origin}/status/${uuid}`}
+                                    readOnly
+                                />
                             </CopyOnClick>
                         </div>
                     </TitledGreyBox>

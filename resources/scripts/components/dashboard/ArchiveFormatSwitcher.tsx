@@ -28,7 +28,7 @@ export default () => {
             </div>
             <Select
                 id='account-archive-format'
-                className='pr-15! w-full min-w-0 sm:w-auto!'
+                className='pe-15! w-full min-w-0 sm:w-auto!'
                 value={format}
                 disabled={saving}
                 onChange={(event) => save(event.target.value as ArchiveFormat)}

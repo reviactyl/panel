@@ -33,7 +33,7 @@ function Clickable({
         return (
             <button
                 type='button'
-                className={`${styles.details} text-left focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-400`}
+                className={`${styles.details} text-start focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary-400`}
                 onClick={(e) => {
                     e.preventDefault();
                     onMediaClick();
@@ -77,7 +77,7 @@ const FileObjectRow = ({ file, grid = false, onMediaClick }: FileObjectRowProps)
             <SelectFileCheckbox name={file.name} />
             <Clickable file={file} onMediaClick={handleMediaClick}>
                 <div
-                    className={grid ? 'text-gray-400 text-4xl mb-4' : 'flex-none text-gray-400 ml-6 mr-4 text-lg pl-3'}
+                    className={grid ? 'text-gray-400 text-4xl mb-4' : 'flex-none text-gray-400 ms-6 me-4 text-lg ps-3'}
                 >
                     {file.isFile ? (
                         (() => {
@@ -100,10 +100,10 @@ const FileObjectRow = ({ file, grid = false, onMediaClick }: FileObjectRowProps)
                     {file.name}
                 </div>
                 {!grid && file.isFile && (
-                    <div className='w-1/6 text-right mr-4 hidden sm:block'>{bytesToString(file.size)}</div>
+                    <div className='w-1/6 text-end me-4 hidden sm:block'>{bytesToString(file.size)}</div>
                 )}
                 <div
-                    className={grid ? 'hidden' : 'w-1/5 text-right mr-4 hidden md:block'}
+                    className={grid ? 'hidden' : 'w-1/5 text-end me-4 hidden md:block'}
                     title={file.modifiedAt.toString()}
                 >
                     {Math.abs(differenceInHours(file.modifiedAt, new Date())) > 48

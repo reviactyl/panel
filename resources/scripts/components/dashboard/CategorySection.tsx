@@ -57,7 +57,7 @@ export default ({ category, label, servers, showOnlyAdmin, showCategory = true, 
                 type='button'
                 aria-expanded={open}
                 aria-controls={contentId}
-                className={`relative z-10 flex w-full cursor-pointer items-center justify-between px-5 py-4.5 text-left transition-colors duration-150 hover:bg-gray-800 bg-gray-900 border border-gray-800 ${open ? 'rounded-t-ui mb-2' : 'rounded-ui'}`}
+                className={`relative z-10 flex w-full cursor-pointer items-center justify-between px-5 py-4.5 text-start transition-colors duration-150 hover:bg-gray-800 bg-gray-900 border border-gray-800 ${open ? 'rounded-t-ui mb-2' : 'rounded-ui'}`}
                 onClick={toggleOpen}
             >
                 <div className='flex min-w-0 flex-1 items-center gap-3'>
