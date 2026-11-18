@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Events\Auth\FailedCaptcha;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Http\Request;
@@ -15,7 +16,7 @@ class VerifyCaptcha
     /**
      * VerifyCaptcha constructor.
      */
-    public function __construct(private Dispatcher $dispatcher, private Repository $config) {}
+    public function __construct(private Dispatcher $dispatcher, private Repository $config, private Client $client = new Client()) {}
 
     /**
      * Handle an incoming request.
@@ -34,13 +35,13 @@ class VerifyCaptcha
 
         if ($provider === 'recaptcha') {
             $token = $request->input('g-recaptcha-response');
-            if ($token) {
-                $verified = $this->verifyRecaptcha($token, $request);
+            if (is_string($token) && trim($token) !== '') {
+                $verified = $this->verifyToken($provider, $token, $request);
             }
         } elseif ($provider === 'turnstile') {
             $token = $request->input('cf-turnstile-response');
-            if ($token) {
-                $verified = $this->verifyTurnstile($token, $request);
+            if (is_string($token) && trim($token) !== '') {
+                $verified = $this->verifyToken($provider, $token, $request);
             }
         }
 
@@ -59,65 +60,39 @@ class VerifyCaptcha
     }
 
     /**
-     * Verify reCAPTCHA token.
+     * Verify the token with the configured provider.
      */
-    private function verifyRecaptcha(string $token, Request $request): bool
+    private function verifyToken(string $provider, string $token, Request $request): bool
     {
-        $client = new Client();
-        $res = $client->post($this->config->get('captcha.recaptcha.domain'), [
-            'form_params' => [
-                'secret' => $this->config->get('captcha.recaptcha.secret_key'),
-                'response' => $token,
-            ],
-        ]);
+        $params = [
+            'secret' => $this->config->get("captcha.$provider.secret_key"),
+            'response' => $token,
+        ];
 
-        if ($res->getStatusCode() === 200) {
-            $result = json_decode($res->getBody());
-
-            if ($result->success && (! $this->config->get('captcha.verify_domain') || $this->isResponseVerified($result, $request))) {
-                return true;
-            }
+        if ($provider === 'turnstile') {
+            $params['remoteip'] = $request->ip();
         }
 
-        return false;
-    }
+        try {
+            $res = $this->client->post($this->config->get("captcha.$provider.domain"), [
+                'connect_timeout' => 5,
+                'timeout' => 10,
+                'form_params' => $params,
+            ]);
 
-    /**
-     * Verify Cloudflare Turnstile token.
-     */
-    private function verifyTurnstile(string $token, Request $request): bool
-    {
-        $client = new Client();
-        $res = $client->post($this->config->get('captcha.turnstile.domain'), [
-            'form_params' => [
-                'secret' => $this->config->get('captcha.turnstile.secret_key'),
-                'response' => $token,
-                'remoteip' => $request->ip(),
-            ],
-        ]);
-
-        if ($res->getStatusCode() === 200) {
-            $result = json_decode($res->getBody());
-
-            if ($result->success) {
-                return true;
+            if ($res->getStatusCode() !== 200) {
+                return false;
             }
-        }
 
-        return false;
-    }
-
-    /**
-     * Determine if the response from the recaptcha servers was valid.
-     */
-    private function isResponseVerified(\stdClass $result, Request $request): bool
-    {
-        if (! $this->config->get('captcha.verify_domain')) {
+            $result = json_decode($res->getBody(), flags: JSON_THROW_ON_ERROR);
+        } catch (GuzzleException|\JsonException) {
             return false;
         }
 
-        $url = parse_url($request->url());
+        if (! $result instanceof \stdClass || ($result->success ?? null) !== true) {
+            return false;
+        }
 
-        return $result->hostname === ($url['host'] ?? null);
+        return ! $this->config->get('captcha.verify_domain') || ($result->hostname ?? null) === $request->getHost();
     }
 }
