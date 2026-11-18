@@ -43,7 +43,6 @@ const DownloadSpinner = ({ className }: { className?: string }) => (
         <circle {...svgProps} className={'opacity-25'} />
         <circle
             {...svgProps}
-            stroke={'white'}
             strokeDasharray={28 * Math.PI}
             strokeLinecap={'round'}
             style={{ strokeDashoffset: 28 * Math.PI * 0.25 }}
