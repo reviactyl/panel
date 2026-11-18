@@ -63,56 +63,61 @@ class ExtensionManager
             throw new ExtensionInstallException('Extension package must use .rext format.');
         }
 
-        [$extractPath, $rootPath] = $this->extractArchive($archivePath);
-        $manifestPath = $rootPath.DIRECTORY_SEPARATOR.self::MANIFEST_FILENAME;
-        $manifest = $this->manifestService->parseFromFile($manifestPath);
-        $resolvedApiVersion = $this->assertApiVersionSupported($manifest);
-        $this->manifestService->assertCompatible($manifest);
+        $extractPath = rtrim((string) config('extensions.storage.temp_path'), DIRECTORY_SEPARATOR)
+            .DIRECTORY_SEPARATOR.Str::uuid()->toString();
 
-        $identifier = (string) $manifest['id'];
-        $extensionPath = $this->extensionPath($identifier);
-        $publicPath = $this->publicExtensionPath($identifier);
+        try {
+            $rootPath = $this->extractArchive($archivePath, $extractPath);
+            $manifestPath = $rootPath.DIRECTORY_SEPARATOR.self::MANIFEST_FILENAME;
+            $manifest = $this->manifestService->parseFromFile($manifestPath);
+            $resolvedApiVersion = $this->assertApiVersionSupported($manifest);
+            $this->manifestService->assertCompatible($manifest);
 
-        File::ensureDirectoryExists(dirname($extensionPath));
-        File::ensureDirectoryExists(dirname($publicPath));
+            $identifier = (string) $manifest['id'];
+            $extensionPath = $this->extensionPath($identifier);
+            $publicPath = $this->publicExtensionPath($identifier);
 
-        if (File::exists($extensionPath)) {
-            File::deleteDirectory($extensionPath);
+            File::ensureDirectoryExists(dirname($extensionPath));
+            File::ensureDirectoryExists(dirname($publicPath));
+
+            if (File::exists($extensionPath)) {
+                File::deleteDirectory($extensionPath);
+            }
+
+            if (! File::copyDirectory($rootPath, $extensionPath)) {
+                throw new ExtensionInstallException('Unable to copy extension files into extensions directory.');
+            }
+
+            $this->ensureCanonicalLayout($extensionPath);
+            $this->publishAssets($identifier, $manifest);
+
+            /** @var Extension $record */
+            $record = Extension::query()->firstOrNew(['identifier' => $identifier]);
+
+            $isNew = ! $record->exists;
+
+            $record->name = (string) $manifest['name'];
+            $record->version = (string) $manifest['version'];
+            $record->description = Arr::get($manifest, 'description');
+            $record->author = Arr::get($manifest, 'author');
+            $record->website = Arr::get($manifest, 'website');
+            $record->update_url = Arr::get($manifest, 'update_url');
+            $record->api_version = $resolvedApiVersion;
+            $record->target_version = Arr::get($manifest, 'target_version');
+            $record->manifest = $manifest;
+
+            if ($isNew) {
+                $record->enabled = false;
+            }
+
+            $record->installed_at ??= now();
+            $record->extension_updated_at = now();
+            $record->save();
+
+            return $record;
+        } finally {
+            File::deleteDirectory($extractPath);
         }
-
-        if (! File::copyDirectory($rootPath, $extensionPath)) {
-            throw new ExtensionInstallException('Unable to copy extension files into extensions directory.');
-        }
-
-        $this->ensureCanonicalLayout($extensionPath);
-        $this->publishAssets($identifier, $manifest);
-
-        /** @var Extension $record */
-        $record = Extension::query()->firstOrNew(['identifier' => $identifier]);
-
-        $isNew = ! $record->exists;
-
-        $record->name = (string) $manifest['name'];
-        $record->version = (string) $manifest['version'];
-        $record->description = Arr::get($manifest, 'description');
-        $record->author = Arr::get($manifest, 'author');
-        $record->website = Arr::get($manifest, 'website');
-        $record->update_url = Arr::get($manifest, 'update_url');
-        $record->api_version = $resolvedApiVersion;
-        $record->target_version = Arr::get($manifest, 'target_version');
-        $record->manifest = $manifest;
-
-        if ($isNew) {
-            $record->enabled = false;
-        }
-
-        $record->installed_at ??= now();
-        $record->extension_updated_at = now();
-        $record->save();
-
-        File::deleteDirectory($extractPath);
-
-        return $record;
     }
 
     public function enable(string $identifier): Extension
@@ -343,15 +348,8 @@ class ExtensionManager
         });
     }
 
-    /**
-     * @return array{0: string, 1: string}
-     */
-    private function extractArchive(string $archivePath): array
+    private function extractArchive(string $archivePath, string $extractPath): string
     {
-        $tempRoot = rtrim((string) config('extensions.storage.temp_path'), DIRECTORY_SEPARATOR);
-        File::ensureDirectoryExists($tempRoot);
-
-        $extractPath = $tempRoot.DIRECTORY_SEPARATOR.Str::uuid()->toString();
         File::ensureDirectoryExists($extractPath);
 
         $zip = new \ZipArchive();
@@ -360,34 +358,38 @@ class ExtensionManager
             throw new ExtensionInstallException('Could not open extension archive.');
         }
 
-        for ($i = 0; $i < $zip->numFiles; $i++) {
-            $name = $zip->getNameIndex($i);
-            if (! is_string($name)) {
-                continue;
+        try {
+            for ($i = 0; $i < $zip->numFiles; $i++) {
+                $name = $zip->getNameIndex($i);
+                if (! is_string($name)) {
+                    continue;
+                }
+
+                if (
+                    Str::contains($name, ['../', '..\\'])
+                    || Str::startsWith($name, ['/', '\\'])
+                ) {
+                    throw new ExtensionInstallException('Archive contains invalid paths.');
+                }
             }
 
-            if (
-                Str::contains($name, ['../', '..\\'])
-                || Str::startsWith($name, ['/', '\\'])
-            ) {
-                $zip->close();
-                throw new ExtensionInstallException('Archive contains invalid paths.');
+            if (! $zip->extractTo($extractPath)) {
+                throw new ExtensionInstallException('Could not extract extension archive.');
             }
+        } finally {
+            $zip->close();
         }
-
-        $zip->extractTo($extractPath);
-        $zip->close();
 
         $manifestName = self::MANIFEST_FILENAME;
         if (is_file($extractPath.DIRECTORY_SEPARATOR.$manifestName)) {
-            return [$extractPath, $extractPath];
+            return $extractPath;
         }
 
         $directories = collect(File::directories($extractPath));
         if ($directories->count() === 1) {
             $root = (string) $directories->first();
             if (is_file($root.DIRECTORY_SEPARATOR.$manifestName)) {
-                return [$extractPath, $root];
+                return $root;
             }
         }
 

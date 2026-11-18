@@ -6,9 +6,11 @@ use App\Models\Extension;
 use App\Services\Extensions\Exceptions\ExtensionInstallException;
 use App\Services\Extensions\ExtensionManager;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Integration\IntegrationTestCase;
 
 class ExtensionManagerTest extends IntegrationTestCase
@@ -30,12 +32,13 @@ class ExtensionManagerTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        $this->testRoot = storage_path('framework/testing/extensions/'.Str::uuid());
+        $this->testRoot = sys_get_temp_dir().'/extension-manager-test-'.Str::uuid();
         $this->publicPath = $this->testRoot.'/public';
         $this->tempPath = $this->testRoot.'/tmp';
 
         File::ensureDirectoryExists($this->publicPath);
-        File::ensureDirectoryExists($this->tempPath);
+        File::ensureDirectoryExists($this->tempPath.'/other-install');
+        File::put($this->tempPath.'/other-install/keep.txt', 'other install');
 
         $this->originalPublicPath = (string) config('extensions.storage.public_path');
         $this->originalTempPath = (string) config('extensions.storage.temp_path');
@@ -59,13 +62,16 @@ class ExtensionManagerTest extends IntegrationTestCase
         parent::tearDown();
     }
 
-    public function test_extension_package_can_be_installed_toggled_and_removed(): void
+    #[DataProvider('packageRoots')]
+    public function test_extension_package_can_be_installed_toggled_and_removed(bool $nested): void
     {
-        [$archivePath, $identifier] = $this->createExtensionPackage();
+        [$archivePath, $identifier] = $this->createExtensionPackage(nested: $nested);
 
         $manager = $this->app->make(ExtensionManager::class);
         $installed = $manager->installFromArchive($archivePath);
         $installed = $installed->refresh();
+
+        $this->assertTemporaryFilesCleaned($archivePath);
 
         $this->assertSame($identifier, $installed->identifier);
         $this->assertFalse($installed->enabled);
@@ -122,6 +128,7 @@ class ExtensionManagerTest extends IntegrationTestCase
 
         $this->assertSame($identifier, $installed->identifier);
         $this->assertDatabaseHas('extensions', ['identifier' => $identifier]);
+        $this->assertTemporaryFilesCleaned($archivePath);
     }
 
     public function test_frontend_registry_normalizes_and_versions_module_paths(): void
@@ -173,27 +180,128 @@ class ExtensionManagerTest extends IntegrationTestCase
         $this->assertStringStartsWith('frontend/dist/server.js?v=', $record['frontend']['routes']['serverRouter'][0]['module']);
     }
 
-    public function test_archive_with_path_traversal_is_rejected(): void
+    /** @return array<string, array{bool}> */
+    public static function packageRoots(): array
     {
-        $archivePath = $this->testRoot.'/malicious.rext';
-        $zip = new \ZipArchive();
+        return ['package root' => [false], 'nested root' => [true]];
+    }
 
-        $this->assertTrue($zip->open($archivePath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE));
-        $zip->addFromString('extension.json', json_encode([
-            'id' => 'malicious-ext',
-            'name' => 'Malicious Extension',
-            'version' => '1.0.0',
-            'api_version' => ExtensionManager::API_VERSION,
-        ], JSON_THROW_ON_ERROR));
-        $zip->addFromString('../escape.txt', 'escape');
-        $zip->close();
+    /** @return array<string, array{string, string}> */
+    public static function invalidArchives(): array
+    {
+        return [
+            'missing manifest' => ['missing', 'Archive does not contain extension.json at the package root.'],
+            'malformed manifest' => ['malformed', 'Invalid extension.json. Expected a JSON object.'],
+            'unsupported API' => ['api', 'Unsupported extension api_version'],
+            'incompatible Panel' => ['panel', 'Extension requires panel version <= 1.0.0.'],
+            'invalid zip' => ['zip', 'Could not open extension archive.'],
+            'unsafe path' => ['path', 'Archive contains invalid paths.'],
+        ];
+    }
 
-        $manager = $this->app->make(ExtensionManager::class);
+    #[DataProvider('invalidArchives')]
+    public function test_failed_install_removes_only_its_extracted_files(string $failure, string $message): void
+    {
+        config()->set('app.version', '26.10.0');
+        config()->set('extensions.security.enforce_compatibility', true);
+
+        [$archivePath] = $this->createExtensionPackage(match ($failure) {
+            'api' => ['api_version' => 'unsupported'],
+            'panel' => ['target_version' => '1.0.0'],
+            default => [],
+        });
+
+        if ($failure === 'zip') {
+            File::put($archivePath, 'not a zip archive');
+        } else {
+            $zip = new \ZipArchive();
+            $this->assertTrue($zip->open($archivePath));
+
+            match ($failure) {
+                'missing' => $zip->deleteName('extension.json'),
+                'malformed' => $zip->addFromString('extension.json', '{invalid json'),
+                'path' => $zip->addFromString('../escape.txt', 'escape'),
+                default => true,
+            };
+
+            $zip->close();
+        }
+
+        $archiveContents = File::get($archivePath);
+        $this->expectException(ExtensionInstallException::class);
+        $this->expectExceptionMessage($message);
+
+        try {
+            $this->app->make(ExtensionManager::class)->installFromArchive($archivePath);
+        } finally {
+            $this->assertTemporaryFilesCleaned($archivePath);
+            $this->assertSame($archiveContents, File::get($archivePath));
+            $this->assertFileDoesNotExist($this->tempPath.'/escape.txt');
+        }
+    }
+
+    public function test_copy_failure_cleans_extracted_files(): void
+    {
+        [$archivePath, $identifier] = $this->createExtensionPackage();
+
+        File::partialMock()->shouldReceive('copyDirectory')->once()
+            ->with(\Mockery::type('string'), base_path('extensions/'.$identifier))
+            ->andReturnFalse();
 
         $this->expectException(ExtensionInstallException::class);
-        $this->expectExceptionMessage('Archive contains invalid paths.');
+        $this->expectExceptionMessage('Unable to copy extension files into extensions directory.');
 
-        $manager->installFromArchive($archivePath);
+        try {
+            $this->app->make(ExtensionManager::class)->installFromArchive($archivePath);
+        } finally {
+            $this->assertTemporaryFilesCleaned($archivePath);
+        }
+    }
+
+    public function test_save_failure_cleans_extracted_files_and_preserves_error(): void
+    {
+        [$archivePath] = $this->createExtensionPackage();
+        $dispatcher = Extension::getEventDispatcher();
+        Extension::setEventDispatcher(new Dispatcher($this->app));
+        Extension::saving(function () {
+            throw new \RuntimeException('Extension save failed.');
+        });
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Extension save failed.');
+
+        try {
+            $this->app->make(ExtensionManager::class)->installFromArchive($archivePath);
+        } finally {
+            Extension::setEventDispatcher($dispatcher);
+            $this->assertTemporaryFilesCleaned($archivePath);
+        }
+    }
+
+    public function test_failed_remote_install_also_removes_downloaded_archive(): void
+    {
+        Http::fake([
+            'https://example.com/invalid.rext' => Http::response('not a zip archive', 200),
+        ]);
+
+        $this->expectException(ExtensionInstallException::class);
+        $this->expectExceptionMessage('Could not open extension archive.');
+
+        try {
+            $this->app->make(ExtensionManager::class)->installFromSource('https://example.com/invalid.rext');
+        } finally {
+            $this->assertSame([$this->tempPath.'/other-install'], File::directories($this->tempPath));
+            $this->assertSame([], File::files($this->tempPath));
+            $this->assertSame('other install', File::get($this->tempPath.'/other-install/keep.txt'));
+        }
+    }
+
+    private function assertTemporaryFilesCleaned(string $archivePath): void
+    {
+        $this->assertSame([$this->tempPath.'/other-install'], File::directories($this->tempPath));
+        $this->assertSame([], File::files($this->tempPath));
+        $this->assertSame('other install', File::get($this->tempPath.'/other-install/keep.txt'));
+        $this->assertFileExists($archivePath);
     }
 
     public function test_apply_schedules_uses_manifest_schedule_definitions(): void
@@ -258,7 +366,7 @@ class ExtensionManagerTest extends IntegrationTestCase
      * @param  array<string, string>  $files
      * @return array{0: string, 1: string}
      */
-    private function createExtensionPackage(array $manifestOverrides = [], array $files = []): array
+    private function createExtensionPackage(array $manifestOverrides = [], array $files = [], bool $nested = false): array
     {
         $identifier = (string) ($manifestOverrides['id'] ?? ('test-ext-'.Str::lower(Str::random(8))));
         $this->extensionIds[] = $identifier;
@@ -310,7 +418,7 @@ class ExtensionManagerTest extends IntegrationTestCase
 
         foreach ($iterator as $file) {
             $relativePath = ltrim(Str::after($file->getPathname(), $sourcePath), DIRECTORY_SEPARATOR);
-            $relativePath = str_replace(DIRECTORY_SEPARATOR, '/', $relativePath);
+            $relativePath = ($nested ? 'package/' : '').str_replace(DIRECTORY_SEPARATOR, '/', $relativePath);
 
             if ($file->isDir()) {
                 $zip->addEmptyDir($relativePath);
