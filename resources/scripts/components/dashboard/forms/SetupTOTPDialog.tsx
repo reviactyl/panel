@@ -4,6 +4,7 @@ import { Dialog, DialogWrapperContext } from '@/reviactyl/elements/dialog';
 import getTwoFactorTokenData, { TwoFactorTokenData } from '@/api/account/getTwoFactorTokenData';
 import { useFlashKey } from '@/plugins/useFlash';
 import { QRCodeSVG } from 'qrcode.react';
+import classNames from 'classnames';
 import { Button } from '@/reviactyl/components/button/index';
 import Spinner from '@/reviactyl/elements/Spinner';
 import { Input } from '@/reviactyl/elements/inputs';
@@ -65,7 +66,12 @@ const ConfigureTwoFactorForm = ({ onTokens }: Props) => {
     return (
         <form id={'enable-totp-form'} onSubmit={submit}>
             <FlashMessageRender byKey={'account:two-step'} className={'mt-4'} />
-            <div className={'flex items-center justify-center w-56 h-56 p-2 bg-gray-50 shadow mx-auto mt-6'}>
+            <div
+                className={classNames(
+                    'flex items-center justify-center w-56 h-56 p-2 mx-auto mt-6',
+                    token && 'bg-white shadow',
+                )}
+            >
                 {!token ? (
                     <Spinner />
                 ) : (
