@@ -9,30 +9,27 @@
 @endphp
 
 <div
-    x-data="{ status: 'loading', tooltip: '', hovered: false, tipX: 0, tipY: 0 }"
+    x-data="{
+        pollTimer: null,
+        requestController: null,
+        destroyed: false,
+        destroy() {
+            this.destroyed = true;
+            clearTimeout(this.pollTimer);
+            this.requestController?.abort();
+        },
+        status: 'loading', tooltip: '' }"
     x-effect="
         document.querySelectorAll('div[wire\\:partial=\'schema-component::form.health\']')
             .forEach(el => el.style.display = status === 'up' ? 'none' : '')
     "
     x-init="
-        $watch('tooltip', function() {
-            if (!hovered) return;
-            var tip = $refs.tip;
-            var pr = $el.getBoundingClientRect();
-            var tw = tip.offsetWidth;
-            var th = tip.offsetHeight;
-            if (!tw) return;
-            var ideal = pr.left + pr.width / 2 - tw / 2;
-            tipX = Math.max(8, Math.min(ideal, window.innerWidth - tw - 8));
-            tipY = pr.top - th - 4;
-        });
-
-        function normalizeVersion(version) {
+        const normalizeVersion = (version) => {
             return String(version || '')
                 .trim()
                 .replace(/^v/i, '')
                 .split('-')[0];
-        }
+        };
 
         function compareVersions(a, b) {
             a = normalizeVersion(a).split('.').map(Number);
@@ -52,13 +49,18 @@
         }
 
         (async function check() {
+            if (destroyed) return;
+            requestController = new AbortController();
             try {
                 const r = await fetch($el.dataset.url, {
                     headers: { Authorization: 'Bearer ' + $el.dataset.token },
-                    signal: AbortSignal.timeout(5000)
+                    signal: AbortSignal.any([requestController.signal, AbortSignal.timeout(5000)])
                 });
+                if (destroyed) return;
+
                 if (r.ok) {
                     const j = await r.json();
+                    if (destroyed) return;
 
                     const rawVersion = j.version ?? '?';
                     const version = normalizeVersion(rawVersion);
@@ -90,12 +92,15 @@
                     status = 'down';
                 }
             } catch (e) {
+                if (destroyed) return;
                 const err = e instanceof Error ? e.message : 'Unknown error';
                 const errTip = ($el.dataset.errorTemplate ?? '__ERROR__').replace('__ERROR__', err);
                 tooltip = errTip + ' - ' + ($el.dataset.checkConsole ?? 'check browser console');
                 status = 'down';
+            } finally {
+                requestController = null;
+                if (!destroyed) pollTimer = setTimeout(check, 5000);
             }
-            setTimeout(check, 5000);
         })();
     "
     data-url="{{ $url }}"
@@ -104,19 +109,6 @@
     data-http-template="{{ trans('admin/node.table.health_http_status', ['status' => '__STATUS__']) }}"
     data-error-template="__ERROR__"
     data-check-console="{{ trans('admin/node.table.health_check_console') }}"
-    @mouseenter="
-        hovered = true;
-        var tip = $refs.tip;
-        var pr = $el.getBoundingClientRect();
-        var tw = tip.offsetWidth;
-        var th = tip.offsetHeight;
-        if (tw > 0) {
-            var ideal = pr.left + pr.width / 2 - tw / 2;
-            tipX = Math.max(8, Math.min(ideal, window.innerWidth - tw - 8));
-            tipY = pr.top - th - 4;
-        }
-    "
-    @mouseleave="hovered = false"
 >
     <div x-show="status === 'outdated'" x-cloak x-transition style="margin-top:0.5rem;">
         <x-filament-alert type="warning" icon="tabler-heart-exclamation" title="You're running an outdated version of the Agent.">
