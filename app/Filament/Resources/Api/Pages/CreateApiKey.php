@@ -29,7 +29,7 @@ class CreateApiKey extends CreateRecord
             }
         }
 
-        app(KeyCreationService::class)
+        return app(KeyCreationService::class)
             ->setKeyType(ApiKey::TYPE_APPLICATION)
             ->handle(
                 [
@@ -38,7 +38,5 @@ class CreateApiKey extends CreateRecord
                 ],
                 $permissions
             );
-
-        return ApiKey::query()->latest()->firstOrFail();
     }
 }
