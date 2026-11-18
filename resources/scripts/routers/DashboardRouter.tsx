@@ -188,7 +188,7 @@ function DashboardRouter() {
                             <div
                                 onClick={() => setSidebarOpen(false)}
                                 data-wallpaper-backdrop
-                                className='fixed inset-0 z-30 bg-gray-900/40 backdrop-blur-xs transition-all duration-300 ease-in-out lg:hidden'
+                                className='fixed inset-0 z-30 bg-scrim/40 backdrop-blur-xs transition-all duration-300 ease-in-out lg:hidden'
                             />
                         )}
                         <motion.div

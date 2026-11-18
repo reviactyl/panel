@@ -49,6 +49,7 @@
 
     --color-reviactyl: rgb(var(--color-primary));
     --color-secondary: rgb(var(--color-secondary));
+    --color-scrim: #18181b;
     --color-muted: rgb(var(--text-muted, var(--color-muted-text)));
     --color-success: rgb(var(--color-success));
     --color-warning: rgb(var(--color-warning));

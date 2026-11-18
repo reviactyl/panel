@@ -70,7 +70,7 @@ export default function BackupPreviewModal({ backup, onClose }: { backup: Server
 
     return (
         <Dialog open onClose={onClose} className='relative z-50'>
-            <div className='fixed inset-0 bg-gray-900/40 backdrop-blur-xs' aria-hidden='true' />
+            <div className='fixed inset-0 bg-scrim/40 backdrop-blur-xs' aria-hidden='true' />
             <div className='fixed inset-0 flex items-center justify-center p-3 sm:p-6'>
                 <Dialog.Panel className='flex max-h-[90dvh] w-full max-w-5xl flex-col overflow-hidden rounded-ui border border-gray-700 bg-gray-800 shadow-lg'>
                     <div className='flex items-start justify-between gap-4 border-b border-gray-700 p-4 sm:px-6'>

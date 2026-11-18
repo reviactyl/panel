@@ -1,7 +1,7 @@
 @reference "#reviactyl";
 
 .container {
-    @apply flex min-h-full items-center justify-center p-4 text-center bg-gray-900/40 backdrop-blur-xs;
+    @apply flex min-h-full items-center justify-center p-4 text-center bg-scrim/40 backdrop-blur-xs;
 }
 
 .panel {

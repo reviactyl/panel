@@ -125,7 +125,7 @@ function Modal({
                 }}
             >
                 <ModalMask
-                    className='bg-gray-900/40 backdrop-blur-xs transition-all duration-300 ease-in-out'
+                    className='bg-scrim/40 backdrop-blur-xs transition-all duration-300 ease-in-out'
                     onClick={(e: React.MouseEvent) => e.stopPropagation()}
                     onContextMenu={(e: React.MouseEvent) => e.stopPropagation()}
                     onMouseDown={(e: React.MouseEvent) => {
