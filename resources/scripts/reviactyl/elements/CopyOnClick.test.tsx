@@ -36,6 +36,7 @@ afterEach(async () => {
 });
 
 it.each([
+    ['numeric zero', 0, '0'],
     ['database name', 'database-name', 'database-name'],
     ['TOTP secret', 'JBSWY3DPEHPK3PXP', 'JBSW Y3DP EHPK 3PXP'],
 ])('copies a %s with Enter and Space', async (_, text, displayed) => {
@@ -58,8 +59,8 @@ it.each([
         await act(async () => action.dispatchEvent(event));
         expect(event.defaultPrevented).toBe(true);
     }
-    expect(copy).toHaveBeenNthCalledWith(1, text);
-    expect(copy).toHaveBeenNthCalledWith(2, text);
+    expect(copy).toHaveBeenNthCalledWith(1, String(text));
+    expect(copy).toHaveBeenNthCalledWith(2, String(text));
     expect(portal.textContent).toContain(`Copied "${text}" to clipboard.`);
 });
 
@@ -156,10 +157,10 @@ it('preserves mouse copying and masks secret notifications', async () => {
     expect(portal.textContent).not.toContain('secret-value');
 });
 
-it('does not add copy behavior when text is absent', async () => {
+it.each([undefined, null, ''])('does not add copy behavior when text is %s', async (text) => {
     await act(async () =>
         root.render(
-            <CopyOnClick text={undefined}>
+            <CopyOnClick text={text}>
                 <p>Loading</p>
             </CopyOnClick>,
         ),
