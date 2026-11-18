@@ -57,7 +57,7 @@ export const SidebarClassic = React.forwardRef<HTMLDivElement, SidebarProps>(
                 ref={ref}
                 className={`m-2 w-56.25 self-start flex-col rounded-ui border border-gray-800 bg-gray-900 text-gray-100 2xl:w-64 lg:fixed lg:top-[calc(64px+var(--subuser-preview-offset,0px))] lg:start-0 lg:z-40 lg:flex lg:h-[calc(100dvh-100px-var(--subuser-preview-offset,0px))] lg:overflow-y-auto ${
                     isOpen
-                        ? 'fixed top-[calc(4rem+var(--subuser-preview-offset,0px))] start-0 z-40 flex h-[calc(100dvh-64px-var(--subuser-preview-offset,0px))] overflow-y-auto'
+                        ? 'fixed top-[calc(4rem+var(--subuser-preview-offset,0px))] start-0 z-40 flex h-[calc(100dvh-80px-var(--subuser-preview-offset,0px))] overflow-y-auto'
                         : 'hidden'
                 }`}
             >

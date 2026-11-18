@@ -29,7 +29,14 @@ if (in_array($argv[2] ?? null, ['compact', 'accent'], true)) {
     }
 }
 
-if (in_array($argv[2] ?? null, ['admin', 'compact', 'accent'], true)) {
+if (($argv[2] ?? null) === 'classic') {
+    config(['designify.layoutType' => 'classic', 'designify.sidebarLogout' => true, 'designify.sidebarButtons' => json_encode(array_map(
+        fn ($index) => ['label' => 'Sidebar regression '.$index, 'url' => '/account/api'],
+        range(1, 20),
+    ))]);
+}
+
+if (in_array($argv[2] ?? null, ['admin', 'classic', 'compact', 'accent'], true)) {
     Auth::login(User::factory()->create(['root_admin' => true]));
 }
 
