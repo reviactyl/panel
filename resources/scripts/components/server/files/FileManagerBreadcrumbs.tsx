@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { isRecyclePath } from './recyclePaths';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import { NavLink, useLocation } from 'react-router-dom';
 import { encodePathSegments, hashToPath } from '@/helpers';
@@ -14,6 +14,7 @@ interface Props {
 export default ({ renderLeft, withinFileEditor, isNewFile }: Props) => {
     const { t } = useTranslation('server/recycle');
     const [file, setFile] = useState<string | null>(null);
+    const pathRef = useRef<HTMLDivElement>(null);
     const id = ServerContext.useStoreState((state) => state.server.data!.id);
     const directory = ServerContext.useStoreState((state) => state.files.directory);
     const { hash } = useLocation();
@@ -26,6 +27,11 @@ export default ({ renderLeft, withinFileEditor, isNewFile }: Props) => {
             setFile(name);
         }
     }, [withinFileEditor, isNewFile, hash]);
+
+    useEffect(() => {
+        const path = pathRef.current;
+        if (path) path.scrollLeft = path.scrollWidth;
+    }, [directory, file]);
 
     const breadcrumbs = (): { name: string; path?: string }[] =>
         directory
@@ -44,9 +50,9 @@ export default ({ renderLeft, withinFileEditor, isNewFile }: Props) => {
             });
 
     return (
-        <div className='flex grow-0 items-center overflow-x-hidden text-sm text-muted'>
-            {renderLeft || <div className='w-12' />}
-            <div dir='ltr' className='flex min-w-0 items-center overflow-hidden'>
+        <div className='flex min-w-0 grow-0 items-center overflow-x-hidden text-sm text-muted'>
+            {renderLeft && <div className='shrink-0'>{renderLeft}</div>}
+            <div ref={pathRef} dir='ltr' className='min-w-0 flex-1 overflow-x-auto whitespace-nowrap'>
                 /<span className='px-1 text-gray-300'>home</span>/
                 <NavLink to={`/server/${id}/files`} className='px-1 text-gray-200 no-underline hover:text-gray-100'>
                     container
