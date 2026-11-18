@@ -27,16 +27,6 @@ class AppServiceProvider extends ServiceProvider
     {
         Scramble::registerExtension(FractalResponseTypeInfer::class);
 
-        Scramble::registerApi('client', [
-            'api_path' => 'api/client',
-            'export_path' => 'client.json',
-        ]);
-
-        Scramble::registerApi('application', [
-            'api_path' => 'api/application',
-            'export_path' => 'application.json',
-        ]);
-
         Schema::defaultStringLength(191);
 
         Sanctum::usePersonalAccessTokenModel(Models\ApiKey::class);
@@ -88,6 +78,16 @@ class AppServiceProvider extends ServiceProvider
         Passkeys::ignoreRoutes();
 
         Scramble::ignoreDefaultRoutes();
+
+        Scramble::registerApi('client', [
+            'api_path' => 'api/client',
+            'export_path' => 'client.json',
+        ]);
+
+        Scramble::registerApi('application', [
+            'api_path' => 'api/application',
+            'export_path' => 'application.json',
+        ]);
 
         $this->app->register(SettingsServiceProvider::class);
         $this->app->bind(LogoutResponseContract::class, AdminLogoutResponse::class);
