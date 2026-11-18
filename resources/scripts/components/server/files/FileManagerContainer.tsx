@@ -34,15 +34,8 @@ import RecursiveFileRow, { SearchResult } from '@/components/server/files/Recurs
 import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 import Input from '@/reviactyl/elements/Input';
-import {
-    FaArrowDown19,
-    FaArrowDownAZ,
-    FaArrowDownShortWide,
-    FaArrowUp19,
-    FaArrowUpAZ,
-    FaArrowUpShortWide,
-    FaFileCirclePlus,
-} from 'react-icons/fa6';
+import { FaFileCirclePlus } from 'react-icons/fa6';
+import FileSortIcon from './FileSortIcon';
 import { Button } from '@/reviactyl/components/button';
 import { sortFiles, SortDirection, SortType } from '@/components/server/files/sortFiles';
 
@@ -305,11 +298,7 @@ export default () => {
                                 className={'flex items-center gap-x-1 text-sm text-gray-300'}
                             >
                                 <span className='text-xs font-semibold'>{t('name')}</span>
-                                {sortType === 'name' ? (
-                                    <FaArrowDownAZ className={sortDirection === 'asc' ? 'rotate-180' : ''} />
-                                ) : (
-                                    <FaArrowUpAZ />
-                                )}
+                                <FileSortIcon column='name' direction={sortType === 'name' ? sortDirection : 'asc'} />
                             </button>
                         </div>
                         <div className='w-1/6 justify-end flex'>
@@ -325,11 +314,7 @@ export default () => {
                                 className={'flex items-center gap-x-1 text-sm text-gray-300'}
                             >
                                 <span className='text-xs font-semibold'>{t('size')}</span>
-                                {sortType === 'size' ? (
-                                    <FaArrowDown19 className={sortDirection === 'asc' ? 'rotate-180' : ''} />
-                                ) : (
-                                    <FaArrowUp19 />
-                                )}
+                                <FileSortIcon column='size' direction={sortType === 'size' ? sortDirection : 'asc'} />
                             </button>
                         </div>
                         <div className='w-1/5 me-20 justify-end flex'>
@@ -345,11 +330,7 @@ export default () => {
                                 className={'flex items-center gap-x-1 text-sm text-gray-300'}
                             >
                                 <span className='text-xs font-semibold'>{t('date')}</span>
-                                {sortType === 'date' ? (
-                                    <FaArrowDownShortWide className={sortDirection === 'asc' ? 'rotate-180' : ''} />
-                                ) : (
-                                    <FaArrowUpShortWide />
-                                )}
+                                <FileSortIcon column='date' direction={sortType === 'date' ? sortDirection : 'asc'} />
                             </button>
                         </div>
                     </div>

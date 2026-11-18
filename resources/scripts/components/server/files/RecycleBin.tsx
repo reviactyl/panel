@@ -27,11 +27,12 @@ import DeleteFilesDialog from './DeleteFilesDialog';
 import { bytesToString } from '@/lib/formatters';
 import { FaTrashCan, FaArrowRotateLeft } from 'react-icons/fa6';
 import type { FileObject } from '@/api/server/files/loadDirectory';
+import FileSortIcon from './FileSortIcon';
 import styles from './style.module.css';
 import DropdownMenu from '@/reviactyl/elements/DropdownMenu';
 import Input from '@/reviactyl/elements/Input';
 import { formatDistanceToNow } from 'date-fns';
-import { FaEllipsis, FaFolder, FaFileLines, FaArrowDownAZ } from 'react-icons/fa6';
+import { FaEllipsis, FaFolder, FaFileLines } from 'react-icons/fa6';
 
 type Entry = {
     id: string;
@@ -500,13 +501,21 @@ export default function RecycleBin() {
                     >
                         {t('server/files:name')}{' '}
                         {sort === 'name' && (
-                            <FaArrowDownAZ className={`inline ms-1 ${descending ? '' : 'rotate-180'}`} />
+                            <FileSortIcon
+                                column='name'
+                                direction={descending ? 'desc' : 'asc'}
+                                className='inline ms-1'
+                            />
                         )}
                     </button>
                     <button type='button' onClick={() => sortBy('size')} className='cursor-pointer w-1/6 text-end'>
                         {t('server/files:size')}{' '}
                         {sort === 'size' && (
-                            <FaArrowDownAZ className={`inline ms-1 ${descending ? '' : 'rotate-180'}`} />
+                            <FileSortIcon
+                                column='size'
+                                direction={descending ? 'desc' : 'asc'}
+                                className='inline ms-1'
+                            />
                         )}
                     </button>
                     <button
@@ -516,7 +525,11 @@ export default function RecycleBin() {
                     >
                         {t('server/files:date')}{' '}
                         {sort === 'date' && (
-                            <FaArrowDownAZ className={`inline ms-1 ${descending ? '' : 'rotate-180'}`} />
+                            <FileSortIcon
+                                column='date'
+                                direction={descending ? 'desc' : 'asc'}
+                                className='inline ms-1'
+                            />
                         )}
                     </button>
                 </div>
