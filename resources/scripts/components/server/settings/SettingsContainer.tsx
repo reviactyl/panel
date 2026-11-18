@@ -31,7 +31,7 @@ export default () => {
         <ServerContentBlock title={t('title')}>
             <FlashMessageRender byKey='settings' className='mb-4' />
             <div className='flex flex-col gap-6 md:flex-row md:gap-10'>
-                <div className='flex w-full flex-col gap-6 md:flex-1 md:gap-10'>
+                <div className='flex w-full min-w-0 flex-col gap-6 md:flex-1 md:gap-10'>
                     <Can action={'file.sftp'}>
                         <TitledGreyBox icon={FaFolderOpen} title={t('sftp.title')}>
                             <div>
@@ -75,9 +75,9 @@ export default () => {
                             </code>
                         </div>
                         <CopyOnClick text={uuid}>
-                            <div className='mt-2 flex items-center justify-between text-sm'>
-                                <p>{t('info.server')}</p>
-                                <code className='rounded-ui border border-gray-800 bg-gray-900 px-2 py-1 font-mono'>
+                            <div className='mt-2 flex items-center justify-between gap-4 text-sm'>
+                                <p className='shrink-0'>{t('info.server')}</p>
+                                <code className='min-w-0 wrap-anywhere rounded-ui border border-gray-800 bg-gray-900 px-2 py-1 text-right font-mono'>
                                     {uuid}
                                 </code>
                             </div>
@@ -95,14 +95,16 @@ export default () => {
                         </div>
                     </TitledGreyBox>
                 </div>
-                <div className='flex w-full flex-col gap-6 md:flex-1 md:gap-10'>
-                    <Can action={'settings.rename'}>
-                        <RenameServerBox />
-                    </Can>
-                    <Can action={'settings.timezone'}>
-                        <TimezoneBox />
-                    </Can>
-                </div>
+                <Can action={['settings.rename', 'settings.timezone']} matchAny>
+                    <div className='flex w-full min-w-0 flex-col gap-6 md:flex-1 md:gap-10'>
+                        <Can action={'settings.rename'}>
+                            <RenameServerBox />
+                        </Can>
+                        <Can action={'settings.timezone'}>
+                            <TimezoneBox />
+                        </Can>
+                    </div>
+                </Can>
             </div>
             <Can action={'settings.reinstall'}>
                 <div className='mt-6 md:mt-10'>
