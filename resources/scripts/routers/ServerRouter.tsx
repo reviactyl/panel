@@ -319,7 +319,7 @@ export default function ServerRouter() {
                             <div
                                 onClick={() => setSidebarOpen(false)}
                                 data-wallpaper-backdrop
-                                className='fixed inset-0 z-30 bg-gray-900/40 backdrop-blur-xs lg:hidden'
+                                className='fixed inset-0 z-30 bg-scrim/40 backdrop-blur-xs lg:hidden'
                             />
                         )}
 

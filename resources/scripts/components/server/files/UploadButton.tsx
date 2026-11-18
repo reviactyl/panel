@@ -389,7 +389,7 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
                             visibleRef.current = false;
                             setVisible(false);
                         }}
-                        className='bg-gray-900/40 backdrop-blur-sm-xs transition-all duration-300 ease-in-out'
+                        className='bg-scrim/40 backdrop-blur-sm-xs transition-all duration-300 ease-in-out'
                     >
                         <div className={'w-full flex items-center justify-center pointer-events-none'}>
                             <Card
