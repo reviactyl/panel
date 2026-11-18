@@ -45,13 +45,22 @@ for (const [width, height] of [
             await page.addStyleTag({ content: css });
             await page.addScriptTag({ content: script });
         });
-        for (const type of ['mp4', 'webm']) {
+        for (const [type, videoWidth, videoHeight] of [
+            ['mp4', 96, 54],
+            ['webm', 54, 96],
+        ] as const) {
             test(`${type} uses its source type and the available player width`, async ({ page }) => {
                 await page.getByRole('button', { name: type, exact: true }).click();
                 const dialog = page.getByRole('dialog', { name: `clip.${type}` });
-                await expect(dialog.locator('video source')).toHaveAttribute('type', `video/${type}`);
+                const video = dialog.locator('video');
+                await expect(video.locator('source')).toHaveAttribute('type', `video/${type}`);
+                await expect
+                    .poll(() => video.evaluate((media: HTMLVideoElement) => [media.videoWidth, media.videoHeight]))
+                    .toEqual([videoWidth, videoHeight]);
                 const player = dialog.locator('.plyr');
                 await expect(player).toBeVisible();
+                const controls = player.locator('.plyr__controls');
+                await expect(controls).toBeVisible();
                 await expect
                     .poll(() =>
                         player.evaluate((element) => {
@@ -65,6 +74,18 @@ for (const [width, height] of [
                 expect(box!.x).toBeGreaterThanOrEqual(0);
                 expect(box!.x + box!.width).toBeLessThanOrEqual(width);
                 expect(box!.height).toBeLessThan(height);
+                const dialogBox = (await dialog.boundingBox())!;
+                for (const element of [video, controls]) {
+                    const mediaBox = (await element.boundingBox())!;
+                    expect(mediaBox.x).toBeGreaterThanOrEqual(dialogBox.x - 1);
+                    expect(mediaBox.y).toBeGreaterThanOrEqual(dialogBox.y - 1);
+                    expect(mediaBox.x + mediaBox.width).toBeLessThanOrEqual(dialogBox.x + dialogBox.width + 1);
+                    expect(mediaBox.y + mediaBox.height).toBeLessThanOrEqual(dialogBox.y + dialogBox.height + 1);
+                }
+                await controls.getByRole('button', { name: 'Play', exact: true }).click();
+                await expect
+                    .poll(() => video.evaluate((media: HTMLVideoElement) => media.currentTime))
+                    .toBeGreaterThan(0.25);
                 await page.getByRole('button', { name: 'Close', exact: true }).click();
                 await expect(dialog).toHaveCount(0);
             });

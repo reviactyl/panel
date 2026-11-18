@@ -5,19 +5,23 @@ import { createInstance } from 'i18next';
 import VideoViewerModal from '@/components/server/files/VideoViewerModal';
 import ImageViewerModal from '@/components/server/files/ImageViewerModal';
 import '@/assets/tailwind.css';
+import mp4 from './clip.mp4?inline';
+import webm from './clip.webm?inline';
 
 const i18n = createInstance();
 void i18n.init({ lng: 'en', resources: { en: { strings: { close: 'Close' } } } });
+const videos = { mp4, webm };
+const mediaTypes = ['mp4', 'webm', 'image'] as const;
 const image =
     'data:image/svg+xml,' +
     encodeURIComponent(
         '<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1200"><rect width="1600" height="1200" fill="blue"/></svg>',
     );
 function Fixture() {
-    const [media, setMedia] = useState<string | null>(null);
+    const [media, setMedia] = useState<(typeof mediaTypes)[number] | null>(null);
     return (
         <I18nextProvider i18n={i18n}>
-            {['mp4', 'webm', 'image'].map((type) => (
+            {mediaTypes.map((type) => (
                 <button key={type} onClick={() => setMedia(type)}>
                     {type}
                 </button>
@@ -34,7 +38,7 @@ function Fixture() {
                     <VideoViewerModal
                         visible
                         onDismissed={() => setMedia(null)}
-                        videoUrl='data:video/mp4;base64,'
+                        videoUrl={videos[media]}
                         videoName={`clip.${media}`}
                         videoMimeType={`video/${media}`}
                     />
