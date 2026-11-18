@@ -25,7 +25,7 @@ class UpdateWidget extends BaseWidget
 
     private SoftwareVersionService $softwareVersionService;
 
-    public function mount(SoftwareVersionService $softwareVersionService): void
+    public function boot(SoftwareVersionService $softwareVersionService): void
     {
         $this->softwareVersionService = $softwareVersionService;
     }
