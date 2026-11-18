@@ -36,7 +36,8 @@ const CopyOnClick = ({ text, showInNotification = true, children }: CopyOnClickP
             (typeof children.type === 'string' && ['p', 'span', 'div', 'pre', 'code'].includes(children.type))) &&
         !children.props.contentEditable;
 
-    const child = !text
+    const hasText = text !== null && text !== undefined && text !== '';
+    const child = !hasText
         ? React.Children.only(children)
         : React.cloneElement(React.Children.only(children), {
               ...(keyboardAction && {
@@ -100,7 +101,7 @@ const CopyOnClick = ({ text, showInNotification = true, children }: CopyOnClickP
             {notifications.length > 0 && (
                 <Portal>
                     <div
-                        className='fixed z-50 bottom-0 right-0 m-4 pointer-events-none'
+                        className='fixed z-50 bottom-[calc(6rem+env(safe-area-inset-bottom))] lg:bottom-0 right-0 m-4 pointer-events-none'
                         style={{
                             height: `${64 + (notifications.length - 1) * 12}px`,
                             width: 'min(24rem, calc(100vw - 2rem))',
@@ -142,7 +143,7 @@ const CopyOnClick = ({ text, showInNotification = true, children }: CopyOnClickP
                                         transformOrigin: 'bottom right',
                                     }}
                                 >
-                                    <p>{notification.text}</p>
+                                    <p className='wrap-anywhere'>{notification.text}</p>
                                 </motion.div>
                             ))}
                         </AnimatePresence>
