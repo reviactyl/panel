@@ -1,4 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
+import useTheme from '@/plugins/useTheme';
 
 export interface TurnstileHandle {
     reset: () => void;
@@ -18,7 +19,6 @@ declare global {
             reset: (widgetId: string) => void;
             remove: (widgetId: string) => void;
         };
-        onTurnstileLoad?: () => void;
     }
 }
 
@@ -37,7 +37,7 @@ interface TurnstileRenderOptions {
 const Turnstile = forwardRef<TurnstileHandle, TurnstileProps>(({ siteKey, onVerify, onExpire, onError }, ref) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const widgetIdRef = useRef<string | null>(null);
-    const isRenderedRef = useRef(false);
+    const { dark } = useTheme();
 
     useImperativeHandle(ref, () => ({
         reset: () => {
@@ -47,12 +47,10 @@ const Turnstile = forwardRef<TurnstileHandle, TurnstileProps>(({ siteKey, onVeri
         },
     }));
 
-    // Store callbacks in refs to avoid re-renders
     const onVerifyRef = useRef(onVerify);
     const onExpireRef = useRef(onExpire);
     const onErrorRef = useRef(onError);
 
-    // Update refs when callbacks change
     useEffect(() => {
         onVerifyRef.current = onVerify;
         onExpireRef.current = onExpire;
@@ -60,19 +58,20 @@ const Turnstile = forwardRef<TurnstileHandle, TurnstileProps>(({ siteKey, onVeri
     }, [onVerify, onExpire, onError]);
 
     useEffect(() => {
-        // Prevent double render
-        if (isRenderedRef.current) return;
+        let active = true;
+        let readinessInterval: ReturnType<typeof setInterval> | undefined;
+        let widgetApi: Window['turnstile'];
 
         const renderWidget = () => {
-            if (!window.turnstile || !containerRef.current || isRenderedRef.current) return;
+            if (!active || !window.turnstile || !containerRef.current || widgetIdRef.current !== null) return;
 
-            isRenderedRef.current = true;
-            widgetIdRef.current = window.turnstile.render(containerRef.current, {
+            widgetApi = window.turnstile;
+            widgetIdRef.current = widgetApi.render(containerRef.current, {
                 sitekey: siteKey,
-                callback: (token: string) => onVerifyRef.current(token),
-                'expired-callback': () => onExpireRef.current?.(),
-                'error-callback': (error: any) => onErrorRef.current?.(error),
-                theme: 'dark',
+                callback: (token: string) => active && onVerifyRef.current(token),
+                'expired-callback': () => active && onExpireRef.current?.(),
+                'error-callback': (error: any) => active && onErrorRef.current?.(error),
+                theme: dark ? 'dark' : 'light',
                 appearance: 'always',
                 retry: 'auto',
                 'retry-interval': 5000,
@@ -80,45 +79,35 @@ const Turnstile = forwardRef<TurnstileHandle, TurnstileProps>(({ siteKey, onVeri
             });
         };
 
-        // Check if script is already loaded
         if (window.turnstile) {
             renderWidget();
-            return;
-        }
+        } else {
+            if (!document.querySelector('script[src*="challenges.cloudflare.com/turnstile"]')) {
+                const script = document.createElement('script');
+                script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+                script.async = true;
+                script.defer = true;
+                document.head.appendChild(script);
+            }
 
-        // Check if script is already being loaded
-        const existingScript = document.querySelector('script[src*="challenges.cloudflare.com/turnstile"]');
-        if (existingScript) {
-            // Wait for existing script to load
-            const checkInterval = setInterval(() => {
+            readinessInterval = setInterval(() => {
                 if (window.turnstile) {
-                    clearInterval(checkInterval);
+                    clearInterval(readinessInterval);
                     renderWidget();
                 }
             }, 100);
-            return;
         }
 
-        // Load the script
-        const script = document.createElement('script');
-        script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad';
-        script.async = true;
-        script.defer = true;
-
-        window.onTurnstileLoad = () => {
-            renderWidget();
-        };
-
-        document.head.appendChild(script);
-
         return () => {
-            if (widgetIdRef.current && window.turnstile) {
-                window.turnstile.remove(widgetIdRef.current);
+            active = false;
+            clearInterval(readinessInterval);
+            if (widgetIdRef.current !== null) {
+                widgetApi?.remove(widgetIdRef.current);
                 widgetIdRef.current = null;
-                isRenderedRef.current = false;
+                onExpireRef.current?.();
             }
         };
-    }, [siteKey]); // Only re-run if siteKey changes
+    }, [siteKey, dark]);
 
     return <div ref={containerRef} />;
 });
