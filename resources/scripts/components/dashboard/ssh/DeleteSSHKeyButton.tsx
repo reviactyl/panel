@@ -38,12 +38,10 @@ export default ({ name, fingerprint }: { name: string; fingerprint: string }) =>
             <button
                 type='button'
                 aria-label={`${t('ssh.delete.delete-ssh-key')}: ${name || fingerprint}`}
-                className='ml-4 p-2 text-sm'
+                className='ml-4 p-2 text-sm text-muted transition-colors duration-150 hover:text-danger-text focus-visible:text-danger-text'
                 onClick={() => setVisible(true)}
             >
-                <FaTrash
-                    className={'text-gray-400 hover:text-red-700 dark:text-red-400 transition-colors duration-150'}
-                />
+                <FaTrash aria-hidden='true' />
             </button>
         </>
     );

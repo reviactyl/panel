@@ -115,14 +115,10 @@ export const ListPasskeysForm = () => {
                             <button
                                 type='button'
                                 aria-label={`${t('passkeys.remove')}: ${passkey.name || passkey.id}`}
-                                className='ml-4 p-2 text-sm'
+                                className='ml-4 p-2 text-sm text-muted transition-colors duration-150 hover:text-danger-text focus-visible:text-danger-text'
                                 onClick={() => setDeleteTarget({ id: passkey.id, name: passkey.name })}
                             >
-                                <FaTrash
-                                    className={
-                                        'text-gray-400 hover:text-red-700 dark:text-red-400 transition-colors duration-150'
-                                    }
-                                />
+                                <FaTrash aria-hidden='true' />
                             </button>
                         </div>
                     </GreyRowBox>
