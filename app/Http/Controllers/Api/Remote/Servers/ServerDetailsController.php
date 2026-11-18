@@ -129,6 +129,10 @@ class ServerDetailsController extends Controller
             Server::query()->where('node_id', $node->id)
                 ->whereIn('status', [Server::STATUS_INSTALLING, Server::STATUS_RESTORING_BACKUP])
                 ->update(['status' => null]);
+
+            Server::query()->where('node_id', $node->id)
+                ->where('is_reinstalling', true)
+                ->update(['is_reinstalling' => false]);
         });
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
