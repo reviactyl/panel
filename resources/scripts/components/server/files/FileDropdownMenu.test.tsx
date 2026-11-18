@@ -4,7 +4,8 @@ import { MemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { rawDataToFileObject } from '@/api/transformers';
 import type { FileObject } from '@/api/server/files/loadDirectory';
-import FileDropdownMenu from './FileDropdownMenu';
+import FileDropdownMenu, { Row } from './FileDropdownMenu';
+import { FaTrash } from 'react-icons/fa6';
 import FileObjectRow from './FileObjectRow';
 
 const mocks = vi.hoisted(() => ({ download: vi.fn(), running: false }));
@@ -99,6 +100,37 @@ const escape = async (target: Element) => {
 };
 
 describe('file action controls', () => {
+    it('marks file deletion as danger without changing normal actions or archive styles', async () => {
+        await render();
+        await click(toggle());
+        expect(row('delete').classList.contains('text-danger-text')).toBe(true);
+        expect(row('rename').classList.contains('text-danger-text')).toBe(false);
+        for (const title of ['rename', 'delete', 'archive']) {
+            expect(row(title).className).toContain('hover:bg-gray-700');
+            expect(row(title).classList.contains('focus-visible:bg-gray-700')).toBe(true);
+            expect(row(title).classList.contains('focus-visible:outline-2')).toBe(true);
+        }
+        const formats = container.querySelectorAll<HTMLButtonElement>('button[aria-label="archive-as"]');
+        expect(Array.from(formats, (button) => button.textContent)).toEqual(['tar.gz', 'zip']);
+        for (const button of formats) {
+            expect(button.className).toContain('hover:bg-gray-700');
+            expect(button.classList.contains('focus-visible:bg-gray-700')).toBe(true);
+        }
+    });
+
+    it('keeps shared destructive recycle rows marked and disabled rows inert', async () => {
+        const onClick = vi.fn();
+        await act(async () =>
+            root.render(<Row icon={FaTrash} title='Delete permanently' danger disabled onClick={onClick} />),
+        );
+        const button = container.querySelector('button')!;
+        expect(button.classList.contains('text-danger-text')).toBe(true);
+        expect(button.disabled).toBe(true);
+        expect(button.className).not.toContain('hover:bg-');
+        await click(button);
+        expect(onClick).not.toHaveBeenCalled();
+    });
+
     it('exposes native focusable controls and positions keyboard clicks at the toggle', async () => {
         await render();
         expect(toggle().tagName).toBe('BUTTON');
