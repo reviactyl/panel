@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Locator } from '@playwright/test';
 import { build } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
 import { resolve } from 'node:path';
@@ -34,6 +34,29 @@ test.beforeAll(async () => {
     expect(css).not.toBe('');
 });
 
+async function expectButtonsToFit(section: Locator, width: number) {
+    const boxes = await section.locator('button').evaluateAll((buttons) =>
+        buttons.map((button) => {
+            const box = button.getBoundingClientRect();
+            return {
+                left: box.left,
+                right: box.right,
+                width: box.width,
+                height: box.height,
+                fits: button.scrollWidth <= button.clientWidth,
+            };
+        }),
+    );
+    expect(boxes.length).toBeGreaterThan(0);
+    for (const box of boxes) {
+        expect(box.left).toBeGreaterThanOrEqual(0);
+        expect(box.right).toBeLessThanOrEqual(width);
+        expect(box.width).toBeGreaterThanOrEqual(32);
+        expect(box.height).toBeGreaterThanOrEqual(32);
+        expect(box.fits).toBe(true);
+    }
+}
+
 for (const width of [320, 390, 1280]) {
     for (const direction of ['ltr', 'rtl']) {
         test(`pagination keeps multi-digit controls usable at ${width}px ${direction}`, async ({ page }) => {
@@ -46,27 +69,8 @@ for (const width of [320, 390, 1280]) {
             await expect(numbered.locator('[aria-current=page]')).toHaveText('96');
             await expect(numbered.locator('button:has(svg)')).toHaveCount(1);
             await expect(numbered.getByRole('button', { name: '101', exact: true })).toHaveCount(1);
-            for (const section of [numbered, table]) {
-                const boxes = await section.locator('button').evaluateAll((buttons) =>
-                    buttons.map((button) => {
-                        const box = button.getBoundingClientRect();
-                        return {
-                            left: box.left,
-                            right: box.right,
-                            width: box.width,
-                            height: box.height,
-                            fits: button.scrollWidth <= button.clientWidth,
-                        };
-                    }),
-                );
-                for (const box of boxes) {
-                    expect(box.left).toBeGreaterThanOrEqual(0);
-                    expect(box.right).toBeLessThanOrEqual(width);
-                    expect(box.width).toBeGreaterThanOrEqual(32);
-                    expect(box.height).toBeGreaterThanOrEqual(32);
-                    expect(box.fits).toBe(true);
-                }
-            }
+            await expectButtonsToFit(numbered, width);
+            await expectButtonsToFit(table, width);
             const last = numbered.getByRole('button', { name: '101', exact: true });
             await last.focus();
             await page.keyboard.press('Shift+Tab');
@@ -87,7 +91,10 @@ for (const width of [320, 390, 1280]) {
             await expect(table.locator('button:has(svg)').first()).toBeDisabled();
             await table.locator('button:has(svg)').last().click();
             await expect(table.locator('[aria-current=page]')).toHaveText('101');
+            await expectButtonsToFit(table, width);
             await table.getByRole('button', { name: '100', exact: true }).click();
+            await expect(table.locator('[aria-current=page]')).toHaveText('100');
+            await expectButtonsToFit(table, width);
             await expect(table.locator('button:has(svg)').last()).toBeEnabled();
             await table.locator('button:has(svg)').last().focus();
             await page.keyboard.press('Space');
