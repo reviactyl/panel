@@ -10,7 +10,7 @@ import {
 } from 'react-icons/fa6';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { getByRole } from '@testing-library/dom';
+import { getByRole, queryByRole } from '@testing-library/dom';
 import { ServerContext } from '@/state/server';
 import type { FileObject } from '@/api/server/files/loadDirectory';
 import SelectFileCheckbox from './SelectFileCheckbox';
@@ -140,22 +140,30 @@ describe('file sort indicators and order', () => {
                 modifiedAt: new Date([2000, 3000, 1000][index]!),
             }));
             await render();
-            const button = getByRole(container, 'button', { name: column });
+            let button = getByRole(container, 'button', { name: column });
             // Size is the initial active column; switching to another starts ascending.
             if (column !== 'size') await click(button);
             for (const [index, expected] of [ascending, [...ascending].reverse()].entries()) {
+                mocks.grid = false;
+                await render();
+                button = getByRole(container, 'button', { name: column });
                 if (index) await click(button);
                 for (const grid of [false, true]) {
                     mocks.grid = grid;
                     await render();
                     expect(rows().map((row) => row.value)).toEqual(expected);
+                    expectColumnHeaders(!grid);
+                    if (grid) continue;
                     const expectedSvg = document.createElement('div');
                     expectedSvg.innerHTML = renderToStaticMarkup(createElement(icons[index]!));
                     expect(button.querySelector('svg')?.innerHTML).toBe(expectedSvg.querySelector('svg')!.innerHTML);
                     expect(button.querySelector('[class*="rotate"], [style*="transform"]')).toBeNull();
                 }
             }
+            mocks.grid = false;
+            await render();
             await click(getByRole(container, 'button', { name: column === 'name' ? 'date' : 'name' }));
+            button = getByRole(container, 'button', { name: column });
             await click(button);
             expect(rows().map((row) => row.value)).toEqual(ascending);
             await click(selectAll());
@@ -305,4 +313,64 @@ describe('visible file bulk selection', () => {
         expect(selectAll().disabled).toBe(true);
         expect(action('delete')).toBeNull();
     });
+});
+
+const setSearch = async (value: string) => {
+    const input = container.querySelector<HTMLInputElement>('input[type="text"]')!;
+    await act(async () => {
+        Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(input, value);
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    await act(async () => vi.advanceTimersByTime(300));
+};
+const expectColumnHeaders = (visible: boolean) => {
+    for (const name of ['name', 'size', 'date']) {
+        const button = queryByRole(container, 'button', { name });
+        if (visible) expect(button).not.toBeNull();
+        else expect(button).toBeNull();
+    }
+};
+
+describe('file column headers', () => {
+    it('omits List column headers in Grid while retaining selection and bulk actions', async () => {
+        mocks.grid = true;
+        mocks.files = entries(3);
+        await render();
+        expectColumnHeaders(false);
+        await click(selectAll());
+        expect(rows().every((row) => row.checked)).toBe(true);
+        await click(action('archive-as'));
+        expect(mocks.compress).toHaveBeenCalledExactlyOnceWith(
+            'uuid',
+            '/',
+            ['file-002.txt', 'file-001.txt', 'file-000.txt'],
+            'tar.gz',
+        );
+        mocks.grid = false;
+        await render();
+        expectColumnHeaders(true);
+    });
+
+    it.each([false, true])(
+        'omits column headers throughout recursive search and restores the active view (grid: %s)',
+        async (grid) => {
+            mocks.grid = grid;
+            mocks.files = entries(3);
+            let finishSearch!: (files: FileObject[]) => void;
+            mocks.load.mockReturnValueOnce(new Promise<FileObject[]>((resolve) => (finishSearch = resolve)));
+            await render();
+            expectColumnHeaders(!grid);
+            vi.useFakeTimers();
+            await setSearch('match');
+            expect(mocks.load).toHaveBeenCalledWith('uuid', '/', expect.any(AbortSignal));
+            expectColumnHeaders(false);
+            expect(rows()).toHaveLength(0);
+            await act(async () => finishSearch([]));
+            expect(container.textContent).toContain('no-results');
+            expectColumnHeaders(false);
+            await setSearch('');
+            expectColumnHeaders(!grid);
+            expect(rows()).toHaveLength(3);
+        },
+    );
 });
