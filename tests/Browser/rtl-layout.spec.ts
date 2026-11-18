@@ -124,7 +124,7 @@ test('Arabic selects reserve space for the arrow at the inline end', async ({ pa
         };
     });
     expect(style.left).toBeGreaterThan(style.right);
-    expect(style.arrow).toBe('12px');
+    expect(style.arrow).toBe('12px, 17px');
 });
 
 for (const language of ['ar', 'en']) {

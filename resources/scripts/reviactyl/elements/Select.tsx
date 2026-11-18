@@ -8,7 +8,11 @@ interface Props {
 type SelectProps = Props & React.SelectHTMLAttributes<HTMLSelectElement>;
 
 const Select = forwardRef<HTMLSelectElement, SelectProps>(({ hideDropdownArrow, className, ...props }, ref) => (
-    <select ref={ref} className={classNames(styles.select, hideDropdownArrow && 'bg-none', className)} {...props} />
+    <select
+        ref={ref}
+        className={classNames(styles.select, hideDropdownArrow && styles.hideDropdownArrow, className)}
+        {...props}
+    />
 ));
 
 Select.displayName = 'Select';
