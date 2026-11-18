@@ -81,6 +81,7 @@ SOFTWARE.
         </script>
     @show
     @php
+        $fontFamily = str_replace('+', ' ', $panelConfiguration['fontFamily']);
         $toHex = function ($hex) {
             $hex = str_replace('#', '', $hex);
 
@@ -100,14 +101,14 @@ SOFTWARE.
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rubik:300,400,500&amp;display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono|IBM+Plex+Sans:500&amp;display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family={{ $panelConfiguration['fontFamily'] }}:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap">
+    <link rel="stylesheet" data-designify-font href="https://fonts.googleapis.com/css2?family={{ urlencode($fontFamily) }}:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap">
     <style>
         :root {
             --background: {{ empty($panelConfiguration['background']) || $panelConfiguration['background'] === 'none' ? 'none' : 'url('.$panelConfiguration['background'].')' }};
             --background-overlay-color: {{ $panelConfiguration['backgroundOverlayColor'] ? $toHex($panelConfiguration['backgroundOverlayColor']) : 'var(--color-950)' }};
             --background-overlay-opacity: {{ $panelConfiguration['backgroundOverlay'] ? $panelConfiguration['backgroundOverlayOpacity'] / 100 : 0 }};
             --radius: {{ $panelConfiguration['radius'] }};
-            --font-family: "{{ $panelConfiguration['fontFamily'] }}", sans-serif;
+            --font-family: "{{ $fontFamily }}", sans-serif;
             --color-primary: {{ $toHex($panelConfiguration['colorPrimary']) }};
             --color-success: {{ $toHex($panelConfiguration['colorSuccess']) }};
             --color-danger: {{ $toHex($panelConfiguration['colorDanger']) }};

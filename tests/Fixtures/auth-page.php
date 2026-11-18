@@ -18,6 +18,10 @@ config(['database.default' => 'sqlite', 'database.connections.sqlite.database' =
 DB::purge('sqlite');
 Artisan::call('migrate', ['--force' => true]);
 
+if (isset($argv[3])) {
+    config(['designify.fontFamily' => $argv[3]]);
+}
+
 if (($argv[2] ?? null) === 'github') {
     config(['panel.auth.github_enabled' => true]);
 }
