@@ -8,7 +8,16 @@
 @endphp
 
 <div
-    x-data="{ status: 'loading', tooltip: '', updateUrl: '', updateInPanel: false, hovered: false, tipX: 0, tipY: 0 }"
+    x-data="{
+        pollTimer: null,
+        requestController: null,
+        destroyed: false,
+        destroy() {
+            this.destroyed = true;
+            clearTimeout(this.pollTimer);
+            this.requestController?.abort();
+        },
+        status: 'loading', tooltip: '', updateUrl: '', updateInPanel: false, hovered: false, tipX: 0, tipY: 0 }"
     x-init="
         $watch('tooltip', function() {
             if (!hovered) return;
@@ -47,14 +56,19 @@
         }
 
         (async function check() {
+            if (destroyed) return;
+            requestController = new AbortController();
             try {
                 const r = await fetch($el.dataset.url, {
                     headers: { Authorization: 'Bearer ' + $el.dataset.token },
-                    signal: AbortSignal.timeout(5000)
+                    signal: AbortSignal.any([requestController.signal, AbortSignal.timeout(5000)])
                 });
+
+                if (destroyed) return;
 
                 if (r.ok) {
                     const j = await r.json();
+                    if (destroyed) return;
                     const rawVersion = j.version ?? '?';
                     const version = normalizeVersion(rawVersion);
                     if (version === 'develop') {
@@ -95,15 +109,17 @@
                     status = 'down';
                 }
             } catch (e) {
+                if (destroyed) return;
                 const err = e instanceof Error ? e.message : 'Unknown error';
                 const errTip = ($el.dataset.errorTemplate ?? '__ERROR__')
                     .replace('__ERROR__', err);
 
                 tooltip = errTip + ' - ' + ($el.dataset.checkConsole ?? 'check browser console');
                 status = 'down';
+            } finally {
+                requestController = null;
+                if (!destroyed) pollTimer = setTimeout(check, 5000);
             }
-
-            setTimeout(check, 5000);
         })();
     "
     data-url="{{ $url }}"
