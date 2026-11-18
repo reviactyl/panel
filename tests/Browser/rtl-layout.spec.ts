@@ -312,7 +312,7 @@ for (const layout of ['modern', 'classic', 'compact', 'accent']) {
                     await page.setViewportSize({ width, height: 900 });
                     await folder.scrollIntoViewIfNeeded();
                     const folderBox = (await folder.boundingBox())!;
-                    const actions = folder.locator('..').locator('div.absolute');
+                    const actions = folder.locator('..').locator(':scope > div');
                     const actionsBox = (await actions.boundingBox())!;
                     expect(
                         language === 'ar'
