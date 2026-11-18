@@ -1,4 +1,13 @@
-import { act, type ReactNode } from 'react';
+import { act, createElement, type ReactNode } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import {
+    FaArrowDownAZ,
+    FaArrowDownZA,
+    FaArrowDown19,
+    FaArrowDown91,
+    FaArrowDownShortWide,
+    FaArrowDownWideShort,
+} from 'react-icons/fa6';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { getByRole } from '@testing-library/dom';
@@ -111,6 +120,50 @@ const click = async (element: HTMLElement) => {
     await act(async () => element.click());
 };
 const action = (label: string) => container.querySelector<HTMLButtonElement>(`button[aria-label="${label}"]`)!;
+
+describe('file sort indicators and order', () => {
+    it.each([
+        { column: 'name', ascending: ['alpha.txt', 'middle.txt', 'zebra.txt'], icons: [FaArrowDownAZ, FaArrowDownZA] },
+        { column: 'size', ascending: ['zebra.txt', 'alpha.txt', 'middle.txt'], icons: [FaArrowDown19, FaArrowDown91] },
+        {
+            column: 'date',
+            ascending: ['middle.txt', 'zebra.txt', 'alpha.txt'],
+            icons: [FaArrowDownShortWide, FaArrowDownWideShort],
+        },
+    ])(
+        'keeps $column glyphs upright and matches both directions in list and grid',
+        async ({ column, ascending, icons }) => {
+            mocks.files = entries(3).map((file, index) => ({
+                ...file,
+                name: ['zebra.txt', 'alpha.txt', 'middle.txt'][index]!,
+                size: [1, 2, 3][index]!,
+                modifiedAt: new Date([2000, 3000, 1000][index]!),
+            }));
+            await render();
+            const button = getByRole(container, 'button', { name: column });
+            // Size is the initial active column; switching to another starts ascending.
+            if (column !== 'size') await click(button);
+            for (const [index, expected] of [ascending, [...ascending].reverse()].entries()) {
+                if (index) await click(button);
+                for (const grid of [false, true]) {
+                    mocks.grid = grid;
+                    await render();
+                    expect(rows().map((row) => row.value)).toEqual(expected);
+                    const expectedSvg = document.createElement('div');
+                    expectedSvg.innerHTML = renderToStaticMarkup(createElement(icons[index]!));
+                    expect(button.querySelector('svg')?.innerHTML).toBe(expectedSvg.querySelector('svg')!.innerHTML);
+                    expect(button.querySelector('[class*="rotate"], [style*="transform"]')).toBeNull();
+                }
+            }
+            await click(getByRole(container, 'button', { name: column === 'name' ? 'date' : 'name' }));
+            await click(button);
+            expect(rows().map((row) => row.value)).toEqual(ascending);
+            await click(selectAll());
+            await click(action('archive-as'));
+            expect(mocks.compress).toHaveBeenCalledExactlyOnceWith('uuid', '/', ascending, 'tar.gz');
+        },
+    );
+});
 
 describe('visible file bulk selection', () => {
     it.each([false, true])('identifies individual files by accessible name (grid: %s)', async (grid) => {
