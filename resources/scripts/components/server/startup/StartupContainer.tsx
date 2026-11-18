@@ -93,14 +93,17 @@ const StartupContainer = () => {
                 </button>
             )}
             <div className='md:flex'>
-                <TitledGreyBox title={t('startup-command')} className='flex-1'>
+                <TitledGreyBox title={t('startup-command')} className='min-w-0 flex-1'>
                     <div className='px-1 py-2'>
-                        <p className='rounded-ui border border-gray-800 bg-gray-900 px-4 py-2 font-mono'>
+                        <p className='wrap-anywhere rounded-ui border border-gray-800 bg-gray-900 px-4 py-2 font-mono'>
                             {data.invocation}
                         </p>
                     </div>
                 </TitledGreyBox>
-                <TitledGreyBox title={t('docker-image')} className='mt-8 flex-1 md:mt-0 md:ml-10 lg:w-1/3 lg:flex-none'>
+                <TitledGreyBox
+                    title={t('docker-image')}
+                    className='mt-8 min-w-0 flex-1 md:mt-0 md:ml-10 lg:w-1/3 lg:flex-none'
+                >
                     {Object.keys(data.dockerImages).length > 1 && !isCustomImage ? (
                         <>
                             <InputSpinner visible={loading}>
