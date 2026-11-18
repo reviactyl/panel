@@ -66,14 +66,14 @@ export default () => {
                             </Card>
                         )}
                         <Can action={'database.create'}>
-                            <div className='mt-6 flex items-center justify-end'>
+                            <div className='mt-6 flex items-center justify-end gap-6'>
                                 {databaseLimit !== null && databaseLimit > 0 && databases.length > 0 && (
-                                    <p className='text-sm text-gray-300 mb-4 sm:mr-6 sm:mb-0'>
+                                    <p className='min-w-0 text-sm text-gray-300'>
                                         {t('created', { count: databases.length, limit: databaseLimit })}
                                     </p>
                                 )}
                                 {(databaseLimit === null || databases.length < databaseLimit) && (
-                                    <div className='flex justify-end mt-6'>
+                                    <div className='shrink-0'>
                                         <CreateDatabaseButton />
                                     </div>
                                 )}

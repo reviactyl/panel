@@ -223,13 +223,15 @@ export default ({ database, className }: Props) => {
                 visible={exportVisible}
                 onDismissed={() => setExportVisible(false)}
             />
-            <GreyRowBox $hoverable={false} className={`mb-2 ${className || ''}`}>
-                <div className='hidden md:block'>
+            <GreyRowBox $hoverable={false} className={`mb-2 flex-wrap gap-4 ${className || ''}`}>
+                <div className='hidden shrink-0 md:block'>
                     <FaDatabase className={'inline-block w-[1.25em]'} />
                 </div>
-                <div className='ml-4 flex-1'>
+                <div className='min-w-0 flex-1 basis-full md:basis-0'>
                     <CopyOnClick text={database.name}>
-                        <p className='text-lg'>{database.name}</p>
+                        <p className='truncate text-lg' title={database.name}>
+                            {database.name}
+                        </p>
                     </CopyOnClick>
                     {importing && (
                         <p className='mt-1 flex items-center text-xs text-gray-300' role='status'>
@@ -248,26 +250,31 @@ export default ({ database, className }: Props) => {
                         </Tooltip>
                     )}
                 </div>
-                <div className='ml-8 hidden text-center md:block'>
+                <div className='hidden min-w-0 flex-1 text-center md:block'>
                     <CopyOnClick text={database.connectionString}>
-                        <p className='text-sm'>{database.connectionString}</p>
+                        <p className='truncate text-sm' title={database.connectionString}>
+                            {database.connectionString}
+                        </p>
                     </CopyOnClick>
                     <p className='mt-1 select-none text-2xs uppercase text-muted'>{t('endpoint')}</p>
                 </div>
-                <div className='ml-8 hidden text-center md:block'>
-                    <p className='text-sm'>{database.allowConnectionsFrom}</p>
+                <div className='hidden min-w-0 flex-1 text-center md:block'>
+                    <p className='truncate text-sm' title={database.allowConnectionsFrom}>
+                        {database.allowConnectionsFrom}
+                    </p>
                     <p className='mt-1 select-none text-2xs uppercase text-muted'>{t('connections-from')}</p>
                 </div>
-                <div className='ml-8 hidden text-center md:block'>
+                <div className='hidden min-w-0 flex-1 text-center md:block'>
                     <CopyOnClick text={database.username}>
-                        <p className='text-sm'>{database.username}</p>
+                        <p className='truncate text-sm' title={database.username}>
+                            {database.username}
+                        </p>
                     </CopyOnClick>
                     <p className='mt-1 select-none text-2xs uppercase text-muted'>{t('username')}</p>
                 </div>
-                <div className='ml-8'>
+                <div className='flex w-full shrink-0 flex-wrap justify-end gap-2 xl:w-auto'>
                     <Button
                         isSecondary
-                        className='mr-2'
                         title={t('connection-title')}
                         aria-label={t('connection-title')}
                         onClick={() => setConnectionVisible(true)}
@@ -277,7 +284,6 @@ export default ({ database, className }: Props) => {
                     <Can action={'database.import'}>
                         <Button
                             isSecondary
-                            className='mr-2'
                             title={t('import-title')}
                             aria-label={t('import-title')}
                             disabled={importing}
@@ -289,7 +295,6 @@ export default ({ database, className }: Props) => {
                     <Can action={'database.export'}>
                         <Button
                             isSecondary
-                            className='mr-2'
                             title={t('export-title')}
                             aria-label={t('export-title')}
                             disabled={importing}
