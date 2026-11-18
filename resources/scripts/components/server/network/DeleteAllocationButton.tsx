@@ -51,6 +51,7 @@ const DeleteAllocationButton = ({ allocation }: Props) => {
                 size={Button.Sizes.Small}
                 shape={Button.Shapes.IconSquare}
                 type={'button'}
+                aria-label={t('delete-allocation-title')}
                 onClick={() => setConfirm(true)}
             >
                 <Icon icon={FaTrash} className='w-3 h-auto' />

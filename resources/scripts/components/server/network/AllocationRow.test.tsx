@@ -10,13 +10,14 @@ const mocks = vi.hoisted(() => ({
     mutate: vi.fn(),
     clearFlashes: vi.fn(),
     addError: vi.fn(),
+    canUpdate: true,
     serverUuid: 'server-uuid',
 }));
 vi.mock('@/api/server/network/setServerAllocationNotes', () => ({ default: mocks.save }));
 vi.mock('@/api/server/network/setPrimaryServerAllocation', () => ({ default: mocks.primary }));
 vi.mock('@/api/swr/getServerAllocations', () => ({ default: () => ({ mutate: mocks.mutate }) }));
 vi.mock('@/state/server', () => ({ ServerContext: { useStoreState: () => mocks.serverUuid } }));
-vi.mock('@/plugins/usePermissions', () => ({ usePermissions: () => [true] }));
+vi.mock('@/plugins/usePermissions', () => ({ usePermissions: () => [mocks.canUpdate] }));
 vi.mock('@/plugins/useFlash', () => ({
     default: () => ({ clearFlashes: mocks.clearFlashes, clearAndAddHttpError: mocks.addError }),
 }));
@@ -62,6 +63,7 @@ beforeEach(async () => {
     vi.useFakeTimers();
     vi.clearAllMocks();
     mocks.serverUuid = 'server-uuid';
+    mocks.canUpdate = true;
     mocks.save.mockReset().mockResolvedValue(undefined);
     mocks.primary.mockReset().mockImplementation(async (_uuid, id) => ({ ...allocation, id, isDefault: true }));
     cached = [{ ...allocation }];
@@ -241,6 +243,7 @@ describe('allocation note autosaving', () => {
         await act(async () => newer.reject(new Error('failed latest save')));
         expect(mocks.mutate).toHaveBeenCalledExactlyOnceWith();
         expect(cached[0]?.notes).toBe('old');
+        expect(container.querySelector('textarea')?.value).toBe('old');
         expect(mocks.addError).toHaveBeenCalled();
         expect(loading()).toBe('false');
     });
@@ -253,11 +256,51 @@ describe('allocation note autosaving', () => {
         await debounce();
         expect(mocks.addError).toHaveBeenCalledWith({ error, key: 'server:network' });
         expect(cached[0]?.notes).toBe('initial');
+        expect(container.querySelector('textarea')?.value).toBe('initial');
         expect(loading()).toBe('false');
         await edit('');
         await debounce();
         expect(mocks.save).toHaveBeenLastCalledWith('server-uuid', 1, '');
         expect(cached[0]?.notes).toBe('');
+    });
+
+    it('does not replace a newer draft when failed-save revalidation finishes', async () => {
+        const refresh = Promise.withResolvers<Allocation[]>();
+        mocks.save.mockRejectedValueOnce(new Error('save failed'));
+        mocks.mutate.mockReturnValueOnce(refresh.promise);
+        await edit('rejected');
+        await debounce();
+        await edit('newer draft');
+        await act(async () => refresh.resolve([{ ...allocation, notes: 'persisted' }]));
+        expect(container.querySelector('textarea')?.value).toBe('newer draft');
+        await debounce();
+        expect(cached[0]?.notes).toBe('newer draft');
+    });
+
+    it('restores empty persisted notes rather than an older nonempty value', async () => {
+        mocks.save.mockRejectedValueOnce(new Error('save failed'));
+        mocks.mutate.mockResolvedValueOnce([{ ...allocation, notes: null }]);
+        await edit('rejected');
+        await debounce();
+        expect(container.querySelector('textarea')?.value).toBe('');
+    });
+
+    it('synchronizes refreshed notes while idle and preserves a pending draft', async () => {
+        await render({ notes: 'refreshed' });
+        expect(container.querySelector('textarea')?.value).toBe('refreshed');
+        await edit('draft');
+        await render({ notes: 'background refresh' });
+        expect(container.querySelector('textarea')?.value).toBe('draft');
+        await debounce();
+        expect(cached[0]?.notes).toBe('draft');
+    });
+
+    it('keeps notes disabled without allocation.update permission', async () => {
+        mocks.canUpdate = false;
+        await render({ notes: 'read only' });
+        expect(container.querySelector('textarea')?.disabled).toBe(true);
+        expect(container.querySelector('textarea')?.value).toBe('read only');
+        expect(mocks.save).not.toHaveBeenCalled();
     });
 
     it('flushes pending debounce on unmount', async () => {
