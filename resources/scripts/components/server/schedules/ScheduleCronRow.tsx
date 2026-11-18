@@ -1,5 +1,6 @@
 import { Schedule } from '@/api/server/schedules/getServerSchedules';
 import classNames from 'classnames';
+import CronValue from './CronValue';
 
 interface Props {
     cron: Schedule['cron'];
@@ -7,25 +8,35 @@ interface Props {
 }
 
 const ScheduleCronRow = ({ cron, className }: Props) => (
-    <div className={classNames('flex', className)}>
-        <div className={'w-1/5 sm:w-auto text-center'}>
-            <p className={'font-medium'}>{cron.minute}</p>
+    <div className={classNames('grid min-w-0 grid-cols-5 gap-2 sm:gap-4', className)}>
+        <div className={'min-w-0 text-center'}>
+            <p className={'wrap-anywhere font-medium'}>
+                <CronValue value={cron.minute} />
+            </p>
             <p className={'text-2xs text-muted uppercase'}>Minute</p>
         </div>
-        <div className={'w-1/5 sm:w-auto text-center ml-4'}>
-            <p className={'font-medium'}>{cron.hour}</p>
+        <div className={'min-w-0 text-center'}>
+            <p className={'wrap-anywhere font-medium'}>
+                <CronValue value={cron.hour} />
+            </p>
             <p className={'text-2xs text-muted uppercase'}>Hour</p>
         </div>
-        <div className={'w-1/5 sm:w-auto text-center ml-4'}>
-            <p className={'font-medium'}>{cron.dayOfMonth}</p>
+        <div className={'min-w-0 text-center'}>
+            <p className={'wrap-anywhere font-medium'}>
+                <CronValue value={cron.dayOfMonth} />
+            </p>
             <p className={'text-2xs text-muted uppercase'}>Day (Month)</p>
         </div>
-        <div className={'w-1/5 sm:w-auto text-center ml-4'}>
-            <p className={'font-medium'}>{cron.month}</p>
+        <div className={'min-w-0 text-center'}>
+            <p className={'wrap-anywhere font-medium'}>
+                <CronValue value={cron.month} />
+            </p>
             <p className={'text-2xs text-muted uppercase'}>Month</p>
         </div>
-        <div className={'w-1/5 sm:w-auto text-center ml-4'}>
-            <p className={'font-medium'}>{cron.dayOfWeek}</p>
+        <div className={'min-w-0 text-center'}>
+            <p className={'wrap-anywhere font-medium'}>
+                <CronValue value={cron.dayOfWeek} />
+            </p>
             <p className={'text-2xs text-muted uppercase'}>Day (Week)</p>
         </div>
     </div>

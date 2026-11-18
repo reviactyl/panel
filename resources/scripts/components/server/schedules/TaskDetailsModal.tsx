@@ -125,8 +125,8 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
                 <Form className='m-0'>
                     <FlashMessageRender byKey={'schedule:task'} className='mb-4' />
                     <h2 className='text-2xl mb-6'>{task ? 'Edit Task' : 'Create Task'}</h2>
-                    <div className='flex'>
-                        <div className='mr-2 w-1/3'>
+                    <div className='flex flex-col gap-4 sm:flex-row sm:gap-8'>
+                        <div className='min-w-0 sm:w-1/3'>
                             <Label>Action</Label>
                             <ActionListener defaultPowerAction={defaultPowerAction} />
                             <FormikFieldWrapper name={'action'}>
@@ -137,7 +137,7 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
                                 </FormikField>
                             </FormikFieldWrapper>
                         </div>
-                        <div className='flex-1 ml-6'>
+                        <div className='min-w-0 flex-1'>
                             <Field
                                 name={'timeOffset'}
                                 label={'Time offset (in seconds)'}
