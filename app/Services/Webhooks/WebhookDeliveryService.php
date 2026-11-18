@@ -15,7 +15,7 @@ class WebhookDeliveryService
     public function __construct(private WebhookEndpointGuard $guard) {}
 
     /**
-     * @param array{event: string, timestamp: string, data: array<string, mixed>} $payload
+     * @param  array{event: string, timestamp: string, data: array<string, mixed>}  $payload
      */
     public function send(Webhook $webhook, array $payload, ?string $uuid = null): WebhookDelivery
     {
@@ -150,7 +150,7 @@ class WebhookDeliveryService
     }
 
     /**
-     * @param array{host: string, port: int, address: string}|null $target
+     * @param  array{host: string, port: int, address: string}|null  $target
      * @return array<string, mixed>
      */
     private function options(?array $target): array
