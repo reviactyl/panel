@@ -17,7 +17,7 @@ const ApiKeyModal = ({ apiKey }: Props) => {
         <>
             <h3 className='mb-6 text-2xl'>{t('api.modal.your-api-key')}</h3>
             <p className='mb-6 text-sm'>{t('api.modal.message')}</p>
-            <pre className='rounded-ui border border-gray-800 bg-gray-900 px-4 py-2 font-mono text-sm'>
+            <pre className='rounded-ui border border-gray-700 bg-gray-800 px-4 py-2 font-mono text-sm whitespace-pre-wrap break-all'>
                 <CopyOnClick text={apiKey}>
                     <code className='font-mono'>{apiKey}</code>
                 </CopyOnClick>
