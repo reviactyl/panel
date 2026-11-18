@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { build } from 'vite';
+import tailwindcss from '@tailwindcss/vite';
 import { resolve } from 'node:path';
-import { readFileSync } from 'node:fs';
 
 let script: string;
 let css: string;
@@ -9,6 +9,7 @@ test.beforeAll(async () => {
     const result = await build({
         configFile: false,
         logLevel: 'silent',
+        plugins: [tailwindcss()],
         define: { 'process.env.NODE_ENV': JSON.stringify('production') },
         resolve: { alias: { '@': resolve('resources/scripts') } },
         build: {
@@ -20,16 +21,14 @@ test.beforeAll(async () => {
             },
         },
     });
-    const outputs = Array.isArray(result) ? result : [result];
-    const chunk = outputs
-        .flatMap((output) => ('output' in output ? output.output : []))
-        .find((output) => output.type === 'chunk');
-    if (!chunk || chunk.type !== 'chunk') throw new Error('Missing tooltip fixture bundle');
+    const outputs = (Array.isArray(result) ? result : [result]).flatMap((output) =>
+        'output' in output ? output.output : [],
+    );
+    const chunk = outputs.find((output) => output.type === 'chunk');
+    const stylesheet = outputs.find((output) => output.type === 'asset' && output.fileName.endsWith('.css'));
+    if (!chunk || stylesheet?.type !== 'asset') throw new Error('Missing tooltip fixture script or stylesheet');
     script = chunk.code;
-    const manifest = JSON.parse(readFileSync('public/build/manifest.json', 'utf8'));
-    css = manifest['resources/scripts/index.tsx'].css
-        .map((path: string) => readFileSync(resolve('public/build', path), 'utf8'))
-        .join('\n');
+    css = stylesheet.source.toString();
 });
 
 test.beforeEach(async ({ page }) => {

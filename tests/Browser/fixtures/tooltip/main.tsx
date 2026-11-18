@@ -1,6 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
+import '@/assets/tailwind.css';
 
 const params = new URLSearchParams(location.search);
 const placement = (params.get('placement') || 'top') as React.ComponentProps<typeof Tooltip>['placement'];
