@@ -17,12 +17,12 @@ export default () => {
     const { isLoggingOut, onLogout: onTriggerLogout } = useLogout('dashboard');
     return (
         <PageContentBlock className='flex flex-col h-full' title={t('under_maintenance')} showFlashKey={'dashboard'}>
-            <div className='mx-auto my-auto'>
-                <div className='w-screen max-w-112.5 pt-10'>
+            <div className='mx-auto my-auto w-full max-w-112.5'>
+                <div className='pt-10'>
                     <LogoContainer>
                         <img src={logo} alt={name} className='h-12' />
                     </LogoContainer>
-                    <Card>
+                    <Card className='relative overflow-hidden'>
                         <SpinnerOverlay visible={isLoggingOut} />
                         <Title className='text-3xl text-center pb-3'>{t('under_maintenance')}</Title>
                         <p className='text-center'>{maintenance}</p>
