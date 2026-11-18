@@ -275,7 +275,7 @@ export default function RecycleBin() {
     const { hash } = useLocation();
     const path = hashToPath(hash);
     const nested = path !== '/.recycle-bin';
-    const [media, setMedia] = useState<{ url: string; name: string; video: boolean } | null>(null);
+    const [media, setMedia] = useState<{ url: string; name: string; video: boolean; mimetype: string } | null>(null);
     const {
         data: children,
         error: browseError,
@@ -336,6 +336,7 @@ export default function RecycleBin() {
                     url: await getFileDownloadUrl(uuid, actual),
                     name: entry.original_path.split('/').pop()!,
                     video: isVideoFile(file),
+                    mimetype: file.mimetype,
                 });
             } else if (file.isEditable()) navigate(`/server/${id}/files/edit#${encodePathSegments(target)}`);
             else await download(entry);
@@ -560,6 +561,7 @@ export default function RecycleBin() {
                         onDismissed={() => setMedia(null)}
                         videoUrl={media.url}
                         videoName={media.name}
+                        videoMimeType={media.mimetype}
                     />
                 ) : (
                     <ImageViewerModal
