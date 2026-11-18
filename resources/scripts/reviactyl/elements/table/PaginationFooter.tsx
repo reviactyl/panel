@@ -31,13 +31,14 @@ const PaginationFooter = ({ pagination, className, onPageSelect }: Props) => {
 
     const buttonProps = (page: number) => ({
         size: Button.Sizes.Small,
-        shape: Button.Shapes.IconSquare,
+        type: 'button' as const,
+        className: 'min-w-8 shrink-0',
         variant: Button.Variants.Secondary,
         onClick: () => onPageSelect(page),
     });
 
     return (
-        <div className={classNames('flex items-center justify-between my-2', className)}>
+        <div className={classNames('flex flex-wrap items-center justify-between gap-3 my-2', className)}>
             <p className={'text-sm text-muted'}>
                 Showing&nbsp;
                 <span className={'font-semibold'}>{Math.max(start, Math.min(pagination.total, 1))}</span>
@@ -46,8 +47,8 @@ const PaginationFooter = ({ pagination, className, onPageSelect }: Props) => {
                 <span className={'font-semibold'}>{pagination.total}</span> results.
             </p>
             {pagination.totalPages > 1 && (
-                <div className={'flex space-x-1'}>
-                    <Button.Text {...buttonProps(1)} disabled={pages.previous.length !== 2}>
+                <div className={'flex flex-wrap gap-1'}>
+                    <Button.Text {...buttonProps(1)} aria-label='1' disabled={current <= 1}>
                         <ChevronDoubleLeftIcon className={'w-3 h-3'} />
                     </Button.Text>
                     {pages.previous.reverse().map((value) => (
@@ -55,7 +56,7 @@ const PaginationFooter = ({ pagination, className, onPageSelect }: Props) => {
                             {value}
                         </Button.Text>
                     ))}
-                    <Button size={Button.Sizes.Small} shape={Button.Shapes.IconSquare}>
+                    <Button type='button' size={Button.Sizes.Small} className='min-w-8 shrink-0' aria-current='page'>
                         {current}
                     </Button>
                     {pages.next.map((value) => (
@@ -63,7 +64,7 @@ const PaginationFooter = ({ pagination, className, onPageSelect }: Props) => {
                             {value}
                         </Button.Text>
                     ))}
-                    <Button.Text {...buttonProps(total)} disabled={pages.next.length !== 2}>
+                    <Button.Text {...buttonProps(total)} aria-label={String(total)} disabled={current >= total}>
                         <ChevronDoubleRightIcon className={'w-3 h-3'} />
                     </Button.Text>
                 </div>
