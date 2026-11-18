@@ -7,12 +7,28 @@
                 404: '#3b82f6',
                 500: '#ef4444',
             };
+            const palette = document.createElement('style');
+            palette.textContent = ':root {} :root.dark {}';
+            document.head.append(palette);
 
             window.addEventListener('message', (event) => {
                 if (event.origin !== window.location.origin || event.source !== window.parent) return;
                 if (event.data?.type !== 'reviactyl:designify-preview') return;
 
-                const settings = event.data.settings?.errors?.[status];
+                const preview = event.data.settings;
+                if (!preview) return;
+
+                ['L', ''].forEach((suffix, index) => {
+                    const style = palette.sheet.cssRules[index].style;
+                    Object.entries({ 950: 'background', 100: 'text', 300: 'muted' }).forEach(([shade, name]) => {
+                        const color = preview[`color${shade}${suffix}`];
+                        if (typeof color === 'string' && color.length > 0) {
+                            style.setProperty(`--error-${name}`, color);
+                        }
+                    });
+                });
+
+                const settings = preview.errors?.[status];
                 if (!settings) return;
 
                 const title = document.querySelector('[data-designify-error-title]');
