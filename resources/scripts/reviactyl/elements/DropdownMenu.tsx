@@ -9,19 +9,18 @@ interface Props {
     id?: string;
 }
 
+export const dropdownRowClassName = (danger = false) =>
+    classNames(
+        'flex w-full items-center rounded-ui p-2 text-gray-400 transition-all duration-150 hover:bg-gray-700',
+        danger ? 'hover:text-danger-text' : 'hover:text-gray-300',
+    );
+
 export const DropdownButtonRow = ({
     danger,
     className,
     ...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & { danger?: boolean }) => (
-    <button
-        className={classNames(
-            'flex w-full items-center rounded-ui p-2 text-gray-400 transition-all duration-150 hover:bg-gray-700',
-            danger ? 'hover:text-danger-text' : 'hover:text-gray-300',
-            className,
-        )}
-        {...props}
-    />
+    <button className={classNames(dropdownRowClassName(danger), className)} {...props} />
 );
 
 interface State {

@@ -22,7 +22,14 @@ if (($argv[2] ?? null) === 'github') {
     config(['panel.auth.github_enabled' => true]);
 }
 
-if (($argv[2] ?? null) === 'admin') {
+if (in_array($argv[2] ?? null, ['compact', 'accent'], true)) {
+    config(['designify.layoutType' => $argv[2]]);
+    foreach (['google', 'discord', 'github'] as $provider) {
+        config(['panel.auth.'.$provider.'_enabled' => true]);
+    }
+}
+
+if (in_array($argv[2] ?? null, ['admin', 'compact', 'accent'], true)) {
     Auth::login(User::factory()->create(['root_admin' => true]));
 }
 

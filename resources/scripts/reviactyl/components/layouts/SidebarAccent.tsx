@@ -7,7 +7,7 @@ import useLogout from '@/plugins/useLogout';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import SearchContainer from '@/components/dashboard/search/SearchContainer';
 import Logo from '@/reviactyl/ui/Logo';
-import DropdownMenu, { DropdownButtonRow } from '@/reviactyl/elements/DropdownMenu';
+import DropdownMenu, { DropdownButtonRow, dropdownRowClassName } from '@/reviactyl/elements/DropdownMenu';
 import { FaArrowRightToBracket, FaGears, FaUser } from 'react-icons/fa6';
 import { useTranslation } from 'react-i18next';
 import { useSubuserPreview } from '@/context/SubuserPreviewContext';
@@ -91,16 +91,12 @@ export const NavbarAccent = ({ children }: NavbarProps) => {
                                 </button>
                             )}
                         >
-                            <NavLink to='/account'>
-                                <DropdownButtonRow>
-                                    <FaUser className='h-4 w-4 inline-flex me-2' /> {t('overview.profile')}
-                                </DropdownButtonRow>
+                            <NavLink to='/account' className={dropdownRowClassName()}>
+                                <FaUser className='h-4 w-4 inline-flex me-2' /> {t('overview.profile')}
                             </NavLink>
                             {adminAccess && (
-                                <a href='/admin' rel='noreferrer'>
-                                    <DropdownButtonRow>
-                                        <FaGears className='h-4 w-4 inline-flex me-2' /> {t('overview.admin')}
-                                    </DropdownButtonRow>
+                                <a href='/admin' target='_blank' rel='noreferrer' className={dropdownRowClassName()}>
+                                    <FaGears className='h-4 w-4 inline-flex me-2' /> {t('overview.admin')}
                                 </a>
                             )}
                             <DropdownButtonRow onClick={onLogout} danger>
