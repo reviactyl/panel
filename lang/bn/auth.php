@@ -9,6 +9,8 @@ return [
 
     'username-label' => 'ইউজারনেম অথবা ইমেইল',
     'password-label' => 'পাসওয়ার্ড',
+    'show-password' => 'পাসওয়ার্ড দেখান',
+    'hide-password' => 'পাসওয়ার্ড লুকান',
 
     'login-button' => 'লগইন',
     'passkey-button' => 'পাসকী দিয়ে লগইন করুন',

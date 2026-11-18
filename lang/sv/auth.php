@@ -9,6 +9,8 @@ return [
 
     'username-label' => 'Användarnamn eller E-post',
     'password-label' => 'Lösenord',
+    'show-password' => 'Visa lösenord',
+    'hide-password' => 'Dölj lösenord',
 
     'login-button' => 'Logga in',
     'passkey-button' => 'Logga in med Passkey',

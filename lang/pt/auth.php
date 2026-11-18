@@ -9,6 +9,8 @@ return [
 
     'username-label' => 'Nome de Usuário ou E-mail',
     'password-label' => 'Senha',
+    'show-password' => 'Mostrar senha',
+    'hide-password' => 'Ocultar senha',
 
     'login-button' => 'Entrar',
     'passkey-button' => 'Faça login com a chave de acesso',

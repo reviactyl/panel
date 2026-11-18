@@ -9,6 +9,8 @@ return [
 
     'username-label' => 'ಬಳಕೆದಾರಹೆಸರು ಅಥವಾ ಇಮೇಲ್',
     'password-label' => 'ಪಾಸ್ವರ್ಡ್',
+    'show-password' => 'ಪಾಸ್‌ವರ್ಡ್ ತೋರಿಸಿ',
+    'hide-password' => 'ಪಾಸ್‌ವರ್ಡ್ ಮರೆಮಾಡಿ',
 
     'login-button' => 'ಲಾಗಿನ್ ಮಾಡಿ',
     'passkey-button' => 'Login with Passkey',
