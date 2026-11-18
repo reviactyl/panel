@@ -302,6 +302,7 @@ class SubuserPreviewTest extends ClientApiIntegrationTestCase
             '/renamed/nested' => ['is_file' => false, 'source_path' => '/other'],
         ];
         SubuserPreviewSession::query()->firstOrFail()->update(['state' => ['files' => $files]]);
+        $files = SubuserPreviewSession::query()->firstOrFail()->state['files'];
         $this->withPreviewToken($token);
 
         foreach ([
