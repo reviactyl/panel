@@ -6,7 +6,8 @@ import { object, string, ref as yupRef } from 'yup';
 import Field from '@/reviactyl/elements/Field';
 import { Button } from '@/reviactyl/components/button/index';
 import useFlash from '@/plugins/useFlash';
-import { KeyIcon, UserIcon, MailIcon, EyeIcon, EyeOffIcon } from '@heroicons/react/solid';
+import { KeyIcon, UserIcon, MailIcon } from '@heroicons/react/solid';
+import PasswordVisibilityButton from '@/components/auth/PasswordVisibilityButton';
 import Reaptcha from 'reaptcha';
 import Turnstile, { type TurnstileHandle } from '@/reviactyl/elements/Turnstile';
 import { useStoreState } from 'easy-peasy';
@@ -199,24 +200,23 @@ const RegisterContainer = () => {
                             disabled={isSubmitting}
                         />
                     </div>
-                    <div className='relative mt-3'>
+                    <div className='mt-3'>
                         <Field
                             label={t('register.password-label')}
                             icon={KeyIcon}
                             type={show ? 'text' : 'password'}
                             name={'password'}
-                            className='pe-10!'
                             placeholder={'••••••••'}
                             description={t('reset-password.min-length')}
                             disabled={isSubmitting}
+                            endAdornment={
+                                <PasswordVisibilityButton
+                                    visible={show}
+                                    onToggle={() => setShow((visible) => !visible)}
+                                    disabled={isSubmitting}
+                                />
+                            }
                         />
-                        <button
-                            type={'button'}
-                            className='absolute top-9 end-1.5 p-1 py-2 text-muted'
-                            onClick={() => setShow(!show)}
-                        >
-                            {show ? <EyeOffIcon className='h-5 w-5' /> : <EyeIcon className='h-5 w-5' />}
-                        </button>
                     </div>
                     <div className='relative mt-3'>
                         <Field

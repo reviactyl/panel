@@ -9,6 +9,8 @@ return [
 
     'username-label' => 'Nama Pengguna atau Email',
     'password-label' => 'Kata Sandi',
+    'show-password' => 'Tampilkan kata sandi',
+    'hide-password' => 'Sembunyikan kata sandi',
 
     'login-button' => 'Masuk',
     'passkey-button' => 'Masuk dengan Passkey',

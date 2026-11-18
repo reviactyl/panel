@@ -9,6 +9,8 @@ return [
 
     'username-label' => '用户名或电子邮件',
     'password-label' => '密码',
+    'show-password' => '显示密码',
+    'hide-password' => '隐藏密码',
 
     'login-button' => '登录',
     'passkey-button' => '使用密钥登录',

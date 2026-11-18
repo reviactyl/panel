@@ -9,12 +9,13 @@ interface OwnProps {
     icon?: React.ComponentType<{ className?: string }>;
     label?: string;
     description?: string;
+    endAdornment?: React.ReactNode;
     validate?: (value: any) => undefined | string | Promise<any>;
 }
 type Props = OwnProps & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'name'>;
 
 const Field = forwardRef<HTMLInputElement, Props>(
-    ({ id, name, icon: Icon, label, description, validate, className, ...props }, ref) => {
+    ({ id, name, icon: Icon, label, description, endAdornment, validate, className, ...props }, ref) => {
         const generatedId = useId();
         const inputId = id ?? generatedId;
 
@@ -23,7 +24,7 @@ const Field = forwardRef<HTMLInputElement, Props>(
                 {({ field, form: { errors, touched } }: FieldProps) => (
                     <div>
                         {label && <Label htmlFor={inputId}>{label}</Label>}
-                        <div className='flex items-center'>
+                        <div className={classNames('flex items-center', !!endAdornment && 'relative')}>
                             {Icon && (
                                 <div
                                     className={`rounded-s-ui border border-e-0 bg-gray-800 p-3 ${
@@ -36,12 +37,13 @@ const Field = forwardRef<HTMLInputElement, Props>(
                                 </div>
                             )}
                             <Input
-                                className={classNames(Icon && 'rounded-s-none!', className)}
+                                className={classNames(Icon && 'rounded-s-none!', !!endAdornment && 'pe-12!', className)}
                                 id={inputId}
                                 {...field}
                                 {...props}
                                 $hasError={!!(touched[field.name] && errors[field.name])}
                             />
+                            {endAdornment}
                         </div>
                         <div>
                             {touched[field.name] && errors[field.name] ? (

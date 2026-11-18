@@ -9,6 +9,8 @@ return [
 
     'username-label' => 'Kullanıcı Adı veya E-posta',
     'password-label' => 'Parola',
+    'show-password' => 'Parolayı göster',
+    'hide-password' => 'Parolayı gizle',
 
     'login-button' => 'Giriş Yap',
     'passkey-button' => 'Passkey ile giriş yap',

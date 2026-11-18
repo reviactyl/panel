@@ -9,6 +9,8 @@ return [
 
     'username-label' => 'اسم المستخدم أو البريد الإلكتروني',
     'password-label' => 'كلمة المرور',
+    'show-password' => 'إظهار كلمة المرور',
+    'hide-password' => 'إخفاء كلمة المرور',
 
     'login-button' => 'تسجيل الدخول',
     'passkey-button' => 'تسجيل الدخول باستخدام Passkey',

@@ -15,11 +15,11 @@ import { Button } from '@/reviactyl/components/button/index';
 import Reaptcha from 'reaptcha';
 import Turnstile, { type TurnstileHandle } from '@/reviactyl/elements/Turnstile';
 import useFlash from '@/plugins/useFlash';
-import Label from '@/reviactyl/elements/Label';
 import Spinner from '@/reviactyl/elements/Spinner';
-import { KeyIcon, UserIcon, EyeIcon, EyeOffIcon } from '@heroicons/react/solid';
+import { KeyIcon, UserIcon } from '@heroicons/react/solid';
 import { useTranslation } from 'react-i18next';
 import OAuthButtons from '@/components/auth/OAuthButtons';
+import PasswordVisibilityButton from '@/components/auth/PasswordVisibilityButton';
 
 interface Values {
     username: string;
@@ -205,24 +205,21 @@ function LoginContainer() {
                         disabled={isSubmitting}
                     />
                     <div className='mt-3'>
-                        <Label>{t('password-label')}</Label>
-                        <div className='relative'>
-                            <Field
-                                icon={KeyIcon}
-                                type={show ? 'text' : 'password'}
-                                placeholder={t('password-label')}
-                                name={'password'}
-                                className='pe-10!'
-                                disabled={isSubmitting}
-                            />
-                            <button
-                                type={'button'}
-                                className='absolute top-2.5 end-1.5 p-1 py-2 text-muted'
-                                onClick={() => setShow(!show)}
-                            >
-                                {show ? <EyeIcon className='h-5 w-5' /> : <EyeOffIcon className='h-5 w-5' />}
-                            </button>
-                        </div>
+                        <Field
+                            icon={KeyIcon}
+                            label={t('password-label')}
+                            type={show ? 'text' : 'password'}
+                            placeholder={t('password-label')}
+                            name={'password'}
+                            disabled={isSubmitting}
+                            endAdornment={
+                                <PasswordVisibilityButton
+                                    visible={show}
+                                    onToggle={() => setShow((visible) => !visible)}
+                                    disabled={isSubmitting}
+                                />
+                            }
+                        />
                     </div>
                     <div className='mt-6'>
                         <Button className={primaryButtonClass} type={'submit'} disabled={isSubmitting}>

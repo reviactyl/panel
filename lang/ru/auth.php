@@ -9,6 +9,8 @@ return [
 
     'username-label' => 'Имя пользователя или адрес электронной почты',
     'password-label' => 'Пароль',
+    'show-password' => 'Показать пароль',
+    'hide-password' => 'Скрыть пароль',
 
     'login-button' => 'Логин',
     'passkey-button' => 'Войти с помощью пароля-ключа',

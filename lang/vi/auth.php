@@ -9,6 +9,8 @@ return [
 
     'username-label' => 'Tên người dùng hoặc Email',
     'password-label' => 'Mật khẩu',
+    'show-password' => 'Hiện mật khẩu',
+    'hide-password' => 'Ẩn mật khẩu',
 
     'login-button' => 'Đăng nhập',
     'passkey-button' => 'Đăng nhập bằng Passkey',

@@ -9,6 +9,8 @@ return [
 
     'username-label' => 'उपयोगकर्ता नाम या ईमेल',
     'password-label' => 'पासवर्ड',
+    'show-password' => 'पासवर्ड दिखाएँ',
+    'hide-password' => 'पासवर्ड छिपाएँ',
 
     'login-button' => 'लॉगिन',
     'passkey-button' => 'पासकी से लॉगिन करें',

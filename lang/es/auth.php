@@ -9,6 +9,8 @@ return [
 
     'username-label' => 'Nombre de usuario o correo electrónico',
     'password-label' => 'Contraseña',
+    'show-password' => 'Mostrar contraseña',
+    'hide-password' => 'Ocultar contraseña',
 
     'login-button' => 'Iniciar sesión',
     'passkey-button' => 'Iniciar sesión con Passkey',
