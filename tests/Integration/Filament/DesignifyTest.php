@@ -3,6 +3,7 @@
 namespace Tests\Integration\Filament;
 
 use App\Filament\Pages\Designify;
+use App\Http\ViewComposers\DesignifyComposer;
 use App\Models\Setting;
 use App\Models\User;
 use App\Services\Designify\SiteImageService;
@@ -15,6 +16,28 @@ use Tests\Integration\IntegrationTestCase;
 
 class DesignifyTest extends IntegrationTestCase
 {
+    public function test_saved_font_choices_keep_their_values_and_render_the_actual_family(): void
+    {
+        $this->actingAs(User::factory()->create(['root_admin' => true]));
+        Filament::setCurrentPanel(Filament::getPanel('admin'));
+        $page = Livewire::test(Designify::class);
+
+        foreach (['Poppins', 'Inter', 'Roboto', 'Cairo', 'Google+Sans', 'Playpen+Sans+Arabic', 'Noto+Sans'] as $font) {
+            $page->set('data.designify:fontFamily', $font)
+                ->set('data.designify:copyright', 'Font test copyright')
+                ->call('save')->assertHasNoErrors();
+            $this->assertDatabaseHas('settings', ['key' => 'settings::designify:fontFamily', 'value' => $font]);
+            Livewire::test(Designify::class)
+                ->assertSet('data.designify:fontFamily', $font)
+                ->assertSet('data.designify:copyright', 'Font test copyright');
+            config(['designify.fontFamily' => $font]);
+            app()->forgetInstance(DesignifyComposer::class);
+            $this->get('/')->assertOk()
+                ->assertSee('--font-family: "'.str_replace('+', ' ', $font).'", sans-serif;', false)
+                ->assertSee('https://fonts.googleapis.com/css2?family='.$font.':ital,wght@', false);
+        }
+    }
+
     public function test_background_scope_saves_and_rejects_unknown_options(): void
     {
         $this->actingAs(User::factory()->create(['root_admin' => true]));
