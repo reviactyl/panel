@@ -58,7 +58,7 @@ export default () => {
     const [imageViewerVisible, setImageViewerVisible] = useState(false);
     const [selectedImage, setSelectedImage] = useState<{ url: string; name: string } | null>(null);
     const [videoViewerVisible, setVideoViewerVisible] = useState(false);
-    const [selectedVideo, setSelectedVideo] = useState<{ url: string; name: string } | null>(null);
+    const [selectedVideo, setSelectedVideo] = useState<{ url: string; name: string; mimetype: string } | null>(null);
 
     const [sortType, setSortType] = useState<SortType>('size');
     const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
@@ -180,7 +180,7 @@ export default () => {
             getFileDownloadUrl(uuid, filePath)
                 .then((url) => {
                     if (isVideoFile(file)) {
-                        setSelectedVideo({ url, name: file.name });
+                        setSelectedVideo({ url, name: file.name, mimetype: file.mimetype });
                         setVideoViewerVisible(true);
                     } else {
                         setSelectedImage({ url, name: file.name });
@@ -416,6 +416,7 @@ export default () => {
                     onDismissed={handleVideoViewerClose}
                     videoUrl={selectedVideo.url}
                     videoName={selectedVideo.name}
+                    videoMimeType={selectedVideo.mimetype}
                     appear
                 />
             )}
