@@ -159,22 +159,31 @@ export default ({ ...props }: Props) => {
                                     key={server.uuid}
                                     to={`/server/${server.id}`}
                                     onClick={() => props.onDismissed()}
-                                    className='mb-2 flex items-center rounded border-l-4 border-gray-950 bg-gray-950 p-4 no-underline transition-all duration-150 last:mb-0 hover:border-cyan-500 hover:shadow'
+                                    className='mb-2 flex min-w-0 items-center rounded border-l-4 border-gray-950 bg-gray-950 p-4 no-underline transition-all duration-150 last:mb-0 hover:border-accent hover:shadow focus-visible:border-accent'
                                 >
-                                    <div className='mr-4 flex-1'>
-                                        <p className='text-sm'>{server.name}</p>
+                                    <div className='mr-4 min-w-0 flex-1'>
+                                        <p className='truncate text-sm' title={server.name}>
+                                            {server.name}
+                                        </p>
                                         <p className='mt-1 text-xs text-gray-400'>
                                             {server.allocations
                                                 .filter((alloc) => alloc.isDefault)
                                                 .map((allocation) => (
-                                                    <span key={allocation.ip + allocation.port.toString()}>
+                                                    <span
+                                                        key={allocation.ip + allocation.port.toString()}
+                                                        className='block truncate'
+                                                        title={`${allocation.alias || ip(allocation.ip)}:${allocation.port}`}
+                                                    >
                                                         {allocation.alias || ip(allocation.ip)}:{allocation.port}
                                                     </span>
                                                 ))}
                                         </p>
                                     </div>
-                                    <div className='flex-none text-right'>
-                                        <span className='rounded bg-cyan-800 px-2 py-1 text-xs text-cyan-100'>
+                                    <div className='min-w-0 max-w-[40%] flex-none text-right'>
+                                        <span
+                                            className='block truncate rounded bg-reviactyl px-2 py-1 text-xs text-on-primary'
+                                            title={server.node}
+                                        >
                                             {server.node}
                                         </span>
                                     </div>
