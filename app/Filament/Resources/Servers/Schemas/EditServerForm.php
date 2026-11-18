@@ -385,9 +385,9 @@ class EditServerForm
                 ->numeric()->minValue(10)->maxValue(1000)
                 ->helperText(trans('admin/server.edit.fields.block_io_proportion.helper')),
             Toggle::make('oom_disabled')
-                ->label(trans('admin/server.edit.fields.disable_oom_killer.label'))
+                ->label(trans('admin/server.fields.oom_disabled.label'))
                 ->default(true)
-                ->helperText(trans('admin/server.edit.fields.disable_oom_killer.helper')),
+                ->helperText(trans('admin/server.fields.oom_disabled.helper')),
         ];
     }
 
@@ -511,7 +511,7 @@ class EditServerForm
             ->orderBy('name')
             ->get()
             ->map(fn (EggVariable $variable) => TextInput::make('environment.'.$variable->env_variable)
-                ->label($variable->name.($variable->required ? ' *' : ''))
+                ->label($variable->name)
                 ->password($variable->is_secret)
                 ->default($variable->server_value ?? $variable->default_value)
                 ->required((bool) $variable->required)

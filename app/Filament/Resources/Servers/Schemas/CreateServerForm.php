@@ -258,10 +258,9 @@ class CreateServerForm
                 ->helperText(trans('admin/server.create.fields.io.helper')),
 
             Toggle::make('oom_disabled')
-                ->label(trans('admin/server.create.fields.oom_disabled.label'))
-                ->default(false)
-                ->dehydrateStateUsing(fn ($state): bool => ! (bool) $state)
-                ->helperText(trans('admin/server.create.fields.oom_disabled.helper')),
+                ->label(trans('admin/server.fields.oom_disabled.label'))
+                ->default(true)
+                ->helperText(trans('admin/server.fields.oom_disabled.helper')),
         ];
     }
 
@@ -357,7 +356,7 @@ class CreateServerForm
             ->orderBy('name')
             ->get()
             ->map(fn (EggVariable $variable) => TextInput::make('environment.'.$variable->env_variable)
-                ->label($variable->name.($variable->required ? ' *' : ''))
+                ->label($variable->name)
                 ->password($variable->is_secret)
                 ->default($variable->default_value)
                 ->required((bool) $variable->required)
