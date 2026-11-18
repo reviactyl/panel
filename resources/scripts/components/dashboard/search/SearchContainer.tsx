@@ -44,13 +44,13 @@ export default () => {
 
                 <div className='hidden md:flex items-center gap-1 text-xs text-gray-400 ml-auto'>
                     <kbd
-                        className={`px-1 py-0.5 rounded bg-gray-900 text-gray-300 ${
+                        className={`px-1 py-0.5 rounded border border-gray-500 bg-gray-800 text-gray-200 ${
                             isMac ? 'text-sm font-medium' : ''
                         }`}
                     >
                         {isMac ? '⌘' : 'Ctrl'}
                     </kbd>
-                    <kbd className='px-1 py-0.5 rounded bg-gray-900 text-gray-300'>K</kbd>
+                    <kbd className='px-1 py-0.5 rounded border border-gray-500 bg-gray-800 text-gray-200'>K</kbd>
                 </div>
             </button>
         </>
