@@ -121,3 +121,60 @@ test('a save acknowledgement preserves newer edits and updates the saved compari
     await field.fill('Saved copyright');
     await expect(status).toHaveAttribute('data-dirty', 'false');
 });
+
+test('email HTML follows light and dark themes with rounded corners', async ({ page }) => {
+    await page.getByRole('tab', { name: 'Emails', exact: true }).click();
+    const manifest = JSON.parse(readFileSync('public/build/manifest.json', 'utf8'));
+    const modulePath = `/build/${manifest['resources/scripts/admin/emailHtmlEditor.ts'].file}`;
+    await page.evaluate(async (modulePath) => {
+        const host = document.querySelector<HTMLElement>('.email-html-editor')!;
+        const { mountHtmlEditor } = await import(modulePath);
+        host.closest<HTMLDialogElement>('dialog')!.showModal();
+        await mountHtmlEditor(host, 'cm', '<p>Hello {{ recipient_name }}</p>', () => {});
+    }, modulePath);
+    const host = page.locator('.email-html-editor');
+    const editor = host.locator('.cm-content');
+    await expect(editor).toContainText('recipient_name');
+    const backgrounds: string[] = [];
+    for (const theme of ['light', 'dark', 'light']) {
+        await page.evaluate((theme) => document.documentElement.classList.toggle('dark', theme === 'dark'), theme);
+        await expect
+            .poll(() =>
+                host.evaluate((element) => {
+                    const style = getComputedStyle(element);
+                    const dialog = getComputedStyle(element.closest('dialog')!);
+                    return style.backgroundColor === dialog.backgroundColor;
+                }),
+            )
+            .toBe(true);
+        await expect(host).toHaveCSS('border-radius', '8px');
+        await expect(host).toHaveCSS('overflow', 'hidden');
+        await expect(editor).toContainText('recipient_name');
+        backgrounds.push(await host.evaluate((element) => getComputedStyle(element).backgroundColor));
+        await expect
+            .poll(() =>
+                editor.evaluate((element) => {
+                    const dialog = element.closest('dialog')!;
+                    return getComputedStyle(element).color === getComputedStyle(dialog).color;
+                }),
+            )
+            .toBe(true);
+    }
+    expect(backgrounds[0]).not.toBe(backgrounds[1]);
+    expect(backgrounds[0]).toBe(backgrounds[2]);
+});
+
+for (const width of [390, 900]) {
+    test(`stacked email preview retains its height at ${width}px`, async ({ page }) => {
+        await page.getByRole('tab', { name: 'Emails', exact: true }).click();
+        await page.setViewportSize({ width, height: 844 });
+        const preview = page.locator('.email-template-editor > .designify-editor__preview');
+        await expect(preview).toHaveCSS('min-height', '672px');
+        const inspector = await page.locator('.email-template-editor__inspector').boundingBox();
+        const box = await preview.boundingBox();
+        expect(box!.y).toBeGreaterThanOrEqual(inspector!.y + inspector!.height - 1);
+        expect(box!.height).toBeGreaterThanOrEqual(672);
+        expect((await preview.locator('iframe').boundingBox())!.height).toBeGreaterThan(500);
+        expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    });
+}

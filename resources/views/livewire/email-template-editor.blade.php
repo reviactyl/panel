@@ -94,7 +94,7 @@
         <p role="status" x-text="status" class="email-editor-message"></p>
         <p role="alert" x-text="error" class="email-editor-message text-danger-600"></p>
     </aside>
-    <section class="designify-editor__panel designify-editor__preview">
+    <section class="designify-editor__panel designify-editor__preview email-template-editor__preview">
         <div class="designify-editor__preview-bar">
             <div class="designify-editor__preview-tools">
                 <div class="email-type-picker">

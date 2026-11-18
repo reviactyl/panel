@@ -658,11 +658,20 @@
 .email-html-action { padding: 1.25rem; }
 .email-html-action .fi-btn { width: 100%; min-height: 2.75rem; padding: 0.75rem 1rem; justify-content: center; }
 
-.email-html-editor { height: min(60dvh, 36rem); min-height: 16rem; background: var(--gray-900); border-radius: 0.5rem; overflow: hidden; text-align: left; }
+.email-html-editor {
+    height: min(60dvh, 36rem);
+    min-height: 16rem;
+    padding: 0.25rem;
+    border: 1px solid var(--designify-border-strong);
+    border-radius: 0.5rem;
+    background: var(--designify-surface);
+    color: var(--designify-text);
+    overflow: hidden;
+    text-align: left;
+}
 .email-image-control .email-image-tool { width: 2.5rem; height: 2.5rem; border: 1px solid var(--designify-border-strong); border-radius: 0.5rem; justify-content: center; }
 
 .email-image-control { display: flex; align-items: center; justify-content: center; height: 2.5rem; }
-.email-html-editor { padding: 0.25rem; border: 1px solid var(--gray-800); border-radius: 0; }
 
 .email-editor-dialog[open] { animation: email-dialog-enter 300ms ease both; }
 .email-editor-dialog[open]::backdrop { animation: email-backdrop-enter 300ms ease both; }
