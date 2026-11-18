@@ -51,17 +51,18 @@ export default ({ category, label, servers, showOnlyAdmin, showCategory = true, 
     const displayColor = category
         ? `color-mix(in srgb, ${categoryColor} 25%, rgb(var(--color-100)))`
         : 'var(--color-accent)';
+    const name = category ? label || category.name : t('categories.primary');
     return (
         <div className='relative mb-3 overflow-hidden'>
             <button
                 type='button'
                 aria-expanded={open}
                 aria-controls={contentId}
-                className={`relative z-10 flex w-full cursor-pointer items-center justify-between px-5 py-4.5 text-start transition-colors duration-150 hover:bg-gray-800 bg-gray-900 border border-gray-800 ${open ? 'rounded-t-ui mb-2' : 'rounded-ui'}`}
+                className={`relative z-10 flex w-full cursor-pointer items-center justify-between gap-3 px-5 py-4.5 text-start transition-colors duration-150 hover:bg-gray-800 bg-gray-900 border border-gray-800 ${open ? 'rounded-t-ui mb-2' : 'rounded-ui'}`}
                 onClick={toggleOpen}
             >
                 <div className='flex min-w-0 flex-1 items-center gap-3'>
-                    <div className='flex items-center gap-2'>
+                    <div className='flex min-w-0 items-center gap-2'>
                         <span
                             className='inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border'
                             style={{
@@ -73,10 +74,12 @@ export default ({ category, label, servers, showOnlyAdmin, showCategory = true, 
                             <FaServer className='h-6' />
                         </span>
                         <div className='min-w-0'>
-                            <span className='font-medium inline-flex gap-2' style={{ color: displayColor }}>
-                                {category ? label || category.name : t('categories.primary')}
+                            <span className='flex items-center gap-2 font-medium' style={{ color: displayColor }}>
+                                <span className='min-w-0 truncate' title={name}>
+                                    {name}
+                                </span>
                                 <span
-                                    className='inline-flex h-6 min-w-6 items-center justify-center rounded-full border px-2 text-xs font-semibold tabular-nums'
+                                    className='inline-flex h-6 min-w-6 shrink-0 items-center justify-center rounded-full border px-2 text-xs font-semibold tabular-nums'
                                     style={{
                                         color: displayColor,
                                         borderColor: `color-mix(in srgb, ${displayColor} 25%, transparent)`,
@@ -95,7 +98,11 @@ export default ({ category, label, servers, showOnlyAdmin, showCategory = true, 
                     </div>
                 </div>
 
-                <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.25, ease: 'easeInOut' }}>
+                <motion.div
+                    className='shrink-0'
+                    animate={{ rotate: open ? 180 : 0 }}
+                    transition={{ duration: 0.25, ease: 'easeInOut' }}
+                >
                     <ChevronDownIcon className='h-5 w-5 text-gray-400' />
                 </motion.div>
             </button>
