@@ -50,6 +50,15 @@ export default ({
         server.limits.memory !== 0 ? bytesToString(mbToBytes(server.limits.memory)) : t('server.unlimited');
     const cpuLimit = server.limits.cpu !== 0 ? server.limits.cpu + ' %' : t('server.unlimited');
 
+    const statusLabel =
+        stats &&
+        {
+            offline: t('server.offline'),
+            running: t('server.online'),
+            starting: t('server.starting'),
+            stopping: t('server.stopping'),
+        }[stats.status];
+
     // Check if server is in a other state (suspended, transferring, etc.)
     const isSpecialState =
         isSuspended || server.isNodeUnderMaintenance || server.isTransferring || (server.status && !stats);
@@ -143,31 +152,25 @@ export default ({
                                 </div>
                             )}
                         </div>
-                        <span
-                            className={`py-1 px-3 text-xs font-medium rounded-ui
-                            ${
-                                stats?.status === 'offline'
-                                    ? 'bg-danger/20 text-danger-text border border-danger/30'
-                                    : stats?.status === 'running'
-                                      ? 'bg-success/20 text-success-text border border-success/30'
-                                      : stats?.status === 'starting'
-                                        ? 'bg-amber-500/20 text-amber-700 dark:text-amber-400 border border-amber-500/30'
-                                        : stats?.status === 'stopping'
-                                          ? 'bg-orange-500/20 text-orange-700 dark:text-orange-400 border border-orange-500/30'
-                                          : ''
-                            }
-                        `}
-                        >
-                            {stats?.status === 'offline'
-                                ? t('server.offline')
-                                : stats?.status === 'running'
-                                  ? t('server.online')
-                                  : stats?.status === 'starting'
-                                    ? t('server.starting')
-                                    : stats?.status === 'stopping'
-                                      ? t('server.stopping')
-                                      : ''}
-                        </span>
+                        {statusLabel && (
+                            <span
+                                className={`py-1 px-3 text-xs font-medium rounded-ui
+                                ${
+                                    stats?.status === 'offline'
+                                        ? 'bg-danger/20 text-danger-text border border-danger/30'
+                                        : stats?.status === 'running'
+                                          ? 'bg-success/20 text-success-text border border-success/30'
+                                          : stats?.status === 'starting'
+                                            ? 'bg-amber-500/20 text-amber-700 dark:text-amber-400 border border-amber-500/30'
+                                            : stats?.status === 'stopping'
+                                              ? 'bg-orange-500/20 text-orange-700 dark:text-orange-400 border border-orange-500/30'
+                                              : ''
+                                }
+                            `}
+                            >
+                                {statusLabel}
+                            </span>
+                        )}
                     </div>
                     <div
                         className={`${
@@ -179,7 +182,7 @@ export default ({
                         {!stats || isSuspended || server.isNodeUnderMaintenance ? (
                             isSuspended ? (
                                 <React.Fragment>
-                                    <StatBlock className='bg-danger/20 backdrop-blur-sm-xs border border-danger/80'>
+                                    <StatBlock className='bg-danger/20 backdrop-blur-xs border border-danger/80'>
                                         <p className='text-danger-text font-medium'>
                                             {server.status === 'suspended'
                                                 ? t('server.suspended')
