@@ -23,7 +23,7 @@ interface ServerStatus {
 
 const StatusIndicator = ({ status }: { status: string }) => (
     <div
-        className='rounded-full w-4 h-4 mr-2'
+        className='rounded-full w-4 h-4 mr-2 shrink-0'
         style={{
             backgroundColor: status === 'running' ? '#10b981' : status === 'offline' ? '#ef4444' : '#f59e0b',
         }}
@@ -94,7 +94,7 @@ export default () => {
                         <div className='p-6'>
                             <h1 className='text-3xl font-bold mb-2 flex items-center'>
                                 <StatusIndicator status={status.status} />
-                                {status.name}
+                                <span className='min-w-0 [overflow-wrap:anywhere]'>{status.name}</span>
                             </h1>
 
                             <p className='text-gray-300 mb-6 whitespace-pre-wrap'>
