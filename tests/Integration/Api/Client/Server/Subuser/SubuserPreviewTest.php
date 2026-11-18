@@ -2,6 +2,7 @@
 
 namespace Tests\Integration\Api\Client\Server\Subuser;
 
+use App\Enum\JwtScope;
 use App\Models\Allocation;
 use App\Models\DatabaseHost;
 use App\Models\Permission;
@@ -17,6 +18,7 @@ use Illuminate\Support\Carbon;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
+use Lcobucci\JWT\Token\Plain;
 use Mockery\MockInterface;
 use Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
@@ -281,6 +283,106 @@ class SubuserPreviewTest extends ClientApiIntegrationTestCase
             ->assertJsonPath('errors.0.detail', trans('exceptions.subuser_preview.file_not_found'));
     }
 
+    public function test_live_preview_downloads_use_scoped_signed_urls_without_loading_file_contents(): void
+    {
+        [$owner, $server, $target] = $this->models();
+        config()->set('panel.files.max_edit_size', 1);
+        $this->mock(DaemonFileRepository::class, function (MockInterface $mock) {
+            $mock->shouldNotReceive('getContent', 'getDirectory', 'putContent');
+        });
+
+        $this->actingAs($owner);
+        $this->assertDownloadPath($server, '/literal%2Fname.bin', '/literal%2Fname.bin');
+        $token = $this->postJson($this->previewEndpoint($server, $target))->json('token');
+        $files = [
+            '/renamed.bin' => ['is_file' => true, 'source_path' => '/large.bin', 'size' => PHP_INT_MAX],
+            '/large.bin copy' => ['is_file' => true, 'source_path' => '/large.bin'],
+            '/renamed' => ['is_file' => false, 'source_path' => '/original'],
+            '/renamed copy' => ['is_file' => false, 'source_path' => '/original'],
+            '/renamed/nested' => ['is_file' => false, 'source_path' => '/other'],
+        ];
+        SubuserPreviewSession::query()->firstOrFail()->update(['state' => ['files' => $files]]);
+        $this->withPreviewToken($token);
+
+        foreach ([
+            '/renamed.bin' => '/large.bin',
+            '/large.bin copy' => '/large.bin',
+            '/renamed/large.bin' => '/original/large.bin',
+            '/renamed copy/large.bin' => '/original/large.bin',
+            '/renamed/nested/large.bin' => '/other/large.bin',
+            '/live.bin' => '/live.bin',
+        ] as $previewPath => $sourcePath) {
+            $this->assertDownloadPath($server, $previewPath, $sourcePath);
+        }
+
+        $this->assertSame($files, SubuserPreviewSession::query()->firstOrFail()->state['files']);
+    }
+
+    public function test_edited_preview_downloads_preserve_binary_and_empty_content_over_live_sources(): void
+    {
+        [$owner, $server, $target] = $this->models();
+        $token = $this->actingAs($owner)->postJson($this->previewEndpoint($server, $target))->json('token');
+        $binary = "\x89PNG\r\n\xff";
+        SubuserPreviewSession::query()->firstOrFail()->update(['state' => ['files' => [
+            '/renamed' => ['is_file' => false, 'source_path' => '/original'],
+            '/renamed/edited.bin' => ['source_path' => '/original/edited.bin', 'content' => base64_encode($binary), 'content_encoding' => 'base64'],
+            '/empty.txt' => ['source_path' => '/original.txt', 'content' => '', 'content_encoding' => 'base64'],
+            '/legacy.txt' => ['content' => 'preview text'],
+        ]]]);
+        $this->mock(DaemonFileRepository::class, function (MockInterface $mock) {
+            $mock->shouldNotReceive('getContent', 'getDirectory', 'putContent');
+        });
+
+        foreach (['/renamed/edited.bin' => $binary, '/empty.txt' => '', '/legacy.txt' => 'preview text'] as $path => $content) {
+            $this->withPreviewToken($token)
+                ->getJson($this->link($server, 'files/download').'?'.http_build_query(['file' => $path]))
+                ->assertOk()
+                ->assertJsonPath('attributes.url', 'data:application/octet-stream;base64,'.base64_encode($content));
+        }
+    }
+
+    public function test_preview_downloads_reject_deleted_files_and_directories_and_require_content_permission(): void
+    {
+        [$owner, $server, $target] = $this->models();
+        $token = $this->actingAs($owner)->postJson($this->previewEndpoint($server, $target))->json('token');
+        SubuserPreviewSession::query()->firstOrFail()->update(['state' => ['files' => [
+            '/deleted.bin' => ['deleted' => true, 'source_path' => '/live.bin'],
+            '/directory' => ['is_file' => false, 'source_path' => '/original'],
+            '/renamed.bin' => ['source_path' => '/live.bin'],
+            '/edited.bin' => ['content' => 'preview'],
+        ]]]);
+        $this->mock(DaemonFileRepository::class, function (MockInterface $mock) {
+            $mock->shouldNotReceive('getContent', 'getDirectory');
+        });
+
+        foreach (['/deleted.bin', '/directory'] as $path) {
+            $this->withPreviewToken($token)->getJson($this->link($server, 'files/download').'?file='.$path)->assertNotFound();
+        }
+
+        $server->subusers()->where('user_id', $target->id)->update(['permissions' => [Permission::ACTION_FILE_READ]]);
+        foreach (['/live.bin', '/renamed.bin', '/directory/live.bin', '/edited.bin'] as $path) {
+            $this->withPreviewToken($token)->getJson($this->link($server, 'files/download').'?file='.$path)->assertForbidden();
+        }
+    }
+
+    private function assertDownloadPath(Server $server, string $previewPath, string $sourcePath): void
+    {
+        $response = $this->getJson($this->link($server, 'files/download').'?'.http_build_query(['file' => $previewPath]))
+            ->assertOk()->assertJsonPath('object', 'signed_url');
+        $url = $response->json('attributes.url');
+        $this->assertStringStartsWith($server->node->getConnectionAddress().'/download/file?token=', $url);
+        $this->assertLessThan(4096, strlen($response->getContent()));
+        parse_str(parse_url($url, PHP_URL_QUERY), $query);
+        $config = Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText($server->node->getDecryptedKey()));
+        /** @var Plain $downloadToken */
+        $downloadToken = $config->parser()->parse($query['token']);
+        $this->assertTrue($config->signer()->verify($downloadToken->signature()->hash(), $downloadToken->payload(), $config->signingKey()));
+        $this->assertSame($sourcePath, $downloadToken->claims()->get('file_path'));
+        $this->assertSame($server->uuid, $downloadToken->claims()->get('server_uuid'));
+        $this->assertSame(JwtScope::FileDownload->value, $downloadToken->claims()->get('scope'));
+        $this->assertSame(900, $downloadToken->claims()->get('exp')->getTimestamp() - $downloadToken->claims()->get('iat')->getTimestamp());
+    }
+
     public function test_binary_preview_uploads_round_trip_and_storage_limits_are_enforced(): void
     {
         [$owner, $server, $target] = $this->models();
@@ -433,6 +535,7 @@ class SubuserPreviewTest extends ClientApiIntegrationTestCase
             ->get($this->link($server, 'files/contents').'?file=/renamed/live.txt')
             ->assertOk()
             ->assertContent('live data');
+        $this->assertDownloadPath($server, '/renamed/live.txt', '/live-dir/live.txt');
         $this->withPreviewToken($token)
             ->get($this->link($server, 'files/contents').'?file=/renamed/session.txt')
             ->assertOk()
@@ -450,12 +553,20 @@ class SubuserPreviewTest extends ClientApiIntegrationTestCase
             ->get($this->link($server, 'files/contents').'?file=/renamed%20copy/session.txt')
             ->assertOk()
             ->assertContent('preview data');
+        $this->assertDownloadPath($server, '/renamed copy/live.txt', '/live-dir/live.txt');
+        $this->getJson($this->link($server, 'files/download').'?file=/renamed%20copy/session.txt')
+            ->assertOk()
+            ->assertJsonPath('attributes.url', 'data:application/octet-stream;base64,'.base64_encode('preview data'));
 
         $files = SubuserPreviewSession::query()->firstOrFail()->state['files'];
         $this->assertFalse($files['/renamed']['is_file']);
         $this->assertFalse($files['/renamed copy']['is_file']);
         $this->assertTrue($files['/live-dir']['deleted']);
         $this->assertTrue($files['/live-dir/session.txt']['deleted']);
+
+        $this->deleteJson('/api/client/subuser-preview')->assertNoContent();
+        $this->withoutHeader('X-Subuser-Preview');
+        $this->assertDownloadPath($server, '/live-dir/live.txt', '/live-dir/live.txt');
     }
 
     public function test_preview_upload_requires_file_create_permission_and_preserves_state(): void

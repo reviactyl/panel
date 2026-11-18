@@ -132,29 +132,18 @@ class SubuserPreviewSimulator
                     throw new NotFoundHttpException(trans('exceptions.subuser_preview.file_not_found'));
                 }
 
-                $content = array_key_exists('content', $entry)
-                    ? $this->decodeContent($entry)
-                    : $this->fileRepository
-                        ->setServer($context->session()->server)
-                        ->getContent((string) ($entry['source_path'] ?? $file));
-
-                return response()->json([
-                    'object' => 'signed_url',
-                    'attributes' => ['url' => 'data:application/octet-stream;base64,'.base64_encode($content)],
-                ]);
+                if (array_key_exists('content', $entry)) {
+                    return response()->json([
+                        'object' => 'signed_url',
+                        'attributes' => ['url' => 'data:application/octet-stream;base64,'.base64_encode($this->decodeContent($entry))],
+                    ]);
+                }
             }
 
-            $livePath = $this->livePathForPreviewPath($state, $file);
-            if ($livePath !== $file) {
-                $content = $this->fileRepository
-                    ->setServer($context->session()->server)
-                    ->getContent($livePath);
+            $livePath = (string) ($entry['source_path'] ?? $this->livePathForPreviewPath($state, $file));
+            $request->query->set('file', $livePath);
 
-                return response()->json([
-                    'object' => 'signed_url',
-                    'attributes' => ['url' => 'data:application/octet-stream;base64,'.base64_encode($content)],
-                ]);
-            }
+            return $next($request);
         }
 
         if (str_ends_with($path, '/backups/{backup}/download')) {
