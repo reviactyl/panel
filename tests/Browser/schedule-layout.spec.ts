@@ -58,13 +58,13 @@ for (const width of [320, 390, 640, 768, 1280]) {
             const sections = [page.getByTestId('Schedule layout regression'), page.getByTestId('cron-detail')];
             for (const section of sections) {
                 await expect(section).toBeVisible();
-                const values = section.locator('p.font-medium');
+                const values = section.locator('p.font-medium').filter({ visible: true });
                 await expect(values).toHaveCount(5);
                 await expect(values.first()).toHaveText(Array.from({ length: 30 }, (_, index) => index * 2).join(','));
                 for (const value of await values.all()) {
                     expect(
                         await value.evaluate((value) => {
-                            const bounds = value.parentElement!.getBoundingClientRect();
+                            const bounds = value.getBoundingClientRect();
                             const section = value.closest('[data-testid]')!.getBoundingClientRect();
                             const range = document.createRange();
                             range.selectNodeContents(value);

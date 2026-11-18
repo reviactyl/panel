@@ -7,6 +7,7 @@ import { ServerContext } from '@/state/server';
 import { store } from '@/state';
 import ScheduleRow from '@/components/server/schedules/ScheduleRow';
 import ScheduleCronRow from '@/components/server/schedules/ScheduleCronRow';
+import ScheduleCronBoxes from '@/components/server/schedules/ScheduleCronBoxes';
 import TaskDetailsModal from '@/components/server/schedules/TaskDetailsModal';
 import GreyRowBox from '@/reviactyl/elements/GreyRowBox';
 import '@/assets/tailwind.css';
@@ -54,7 +55,10 @@ function Fixture() {
                 </GreyRowBox>
             ))}
             <section data-testid='cron-detail'>
-                <ScheduleCronRow cron={cron} />
+                <div className='sm:hidden'>
+                    <ScheduleCronRow cron={cron} />
+                </div>
+                <ScheduleCronBoxes cron={cron} />
             </section>
             <button onClick={() => setVisible(true)}>Open task form</button>
             <TaskDetailsModal schedule={schedule} visible={visible} onModalDismissed={() => setVisible(false)} />
