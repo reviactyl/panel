@@ -26,6 +26,11 @@ if (($argv[2] ?? null) === 'admin') {
     Auth::login(User::factory()->create(['root_admin' => true]));
 }
 
+if (($argv[2] ?? null) === 'maintenance') {
+    config(['designify.isUnderMaintenance' => true]);
+    Auth::login(User::factory()->create(['root_admin' => false]));
+}
+
 $response = $app->make(Kernel::class)->handle(Request::create('http://panel.test'.($argv[1] ?? '/auth/login')));
 if ($response->getStatusCode() !== 200) {
     fwrite(STDERR, 'Authentication fixture returned HTTP '.$response->getStatusCode());
