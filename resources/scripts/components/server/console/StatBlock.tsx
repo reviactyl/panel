@@ -24,13 +24,14 @@ export default ({ title, copyOnClick, icon, color, className, children }: StatBl
                         icon={icon}
                         className={classNames({
                             'text-gray-100': !color || color === 'bg-gray-700',
-                            'text-gray-50': color && color !== 'bg-gray-700',
+                            'text-on-danger': color === 'bg-danger',
+                            'text-white': color && color !== 'bg-gray-700' && color !== 'bg-danger',
                         })}
                     />
                 </div>
                 <div className={'flex flex-col justify-center min-w-0 w-full'}>
                     <p className={'font-header leading-tight text-xs md:text-sm text-gray-200 truncate'}>{title}</p>
-                    <div className={'h-7 w-full font-semibold text-gray-50 text-xl'}>
+                    <div className={'min-h-7 w-full wrap-anywhere font-semibold text-gray-50 text-xl'}>
                         <bdi dir='ltr'>{children}</bdi>
                     </div>
                 </div>
