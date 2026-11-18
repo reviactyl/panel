@@ -32,18 +32,18 @@ interface Props {
     children: React.ReactElement;
 }
 
-const arrowSides: Record<Side, string> = {
-    top: 'bottom-[-6px] left-0',
-    bottom: 'top-[-6px] left-0',
-    right: 'top-0 left-[-6px]',
-    left: 'top-0 right-[-6px]',
+const arrowSides: Record<Side, Side> = {
+    top: 'bottom',
+    bottom: 'top',
+    right: 'left',
+    left: 'right',
 };
 
 export default ({ children, ...props }: Props) => {
     const arrowEl = useRef<HTMLDivElement | null>(null);
     const [open, setOpen] = useState(false);
 
-    const { x, y, refs, middlewareData, strategy, context } = useFloating({
+    const { x, y, refs, middlewareData, strategy, context, placement } = useFloating({
         open,
         onOpenChange: setOpen,
         placement: props.placement || 'top',
@@ -71,8 +71,8 @@ export default ({ children, ...props }: Props) => {
         useDismiss(context),
     ]);
 
-    const side = arrowSides[(props.placement || 'top').split('-')[0] as Side];
-    const { x: ax = 0, y: ay = 0 } = middlewareData.arrow || {};
+    const side = arrowSides[placement.split('-')[0] as Side];
+    const { x: ax, y: ay } = middlewareData.arrow || {};
 
     if (props.disabled) {
         return children;
@@ -120,11 +120,13 @@ export default ({ children, ...props }: Props) => {
                                 ref={arrowEl}
                                 style={{
                                     position: 'absolute',
-                                    left: ax ?? 0,
-                                    top: ay ?? 0,
+                                    left: ax,
+                                    top: ay,
+                                    [side]: -6,
+                                    background: 'inherit',
                                     transform: 'rotate(45deg)',
                                 }}
-                                className={classNames('bg-gray-950 w-3 h-3', 'absolute', side)}
+                                className='w-3 h-3'
                             />
                         )}
                     </motion.div>
