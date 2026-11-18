@@ -87,6 +87,23 @@ afterEach(async () => {
 });
 
 describe('social login failures', () => {
+    it('exposes one native link per disconnected provider without nested buttons', async () => {
+        window.SocialLoginConfiguration = { google: true, discord: true, github: true };
+        mocks.load.mockResolvedValue([]);
+        await mount();
+
+        for (const provider of ['google', 'discord', 'github']) {
+            const link = container.querySelector<HTMLAnchorElement>(`a[href='/auth/login/${provider}']`)!;
+            expect(link).not.toBeNull();
+            expect(link.tabIndex).toBe(0);
+            expect(link.querySelector('button, a, [tabindex]')).toBeNull();
+            await act(async () => link.focus());
+            expect(document.activeElement).toBe(link);
+        }
+        expect(container.querySelectorAll('a')).toHaveLength(3);
+        expect(container.querySelectorAll('button')).toHaveLength(0);
+    });
+
     it('does not load or change account errors when social login is disabled', async () => {
         window.SocialLoginConfiguration = { google: false, discord: false, github: false };
         await mount();

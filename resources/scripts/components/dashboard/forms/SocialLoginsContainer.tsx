@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import getSocialLogins, { SocialLogin } from '@/api/account/getSocialLogins';
 import unlinkSocialLogin from '@/api/account/unlinkSocialLogin';
 import TitledGreyBox from '@/reviactyl/elements/TitledGreyBox';
-import { Button } from '@/reviactyl/components/button';
+import classNames from 'classnames';
+import { Button, styles as buttonStyles } from '@/reviactyl/components/button';
 import { format } from 'date-fns';
 import { FaLink, FaUnlink, FaCheckCircle, FaTimesCircle, FaGoogle, FaDiscord, FaGithub } from 'react-icons/fa';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
@@ -138,11 +139,17 @@ export default () => {
                                             {t('overview.social.actions.unlink')}
                                         </Button.Danger>
                                     ) : (
-                                        <a href={`/auth/login/${provider}`} className='no-underline'>
-                                            <Button size={Button.Sizes.Small}>
-                                                <FaLink className='mr-2' />
-                                                {t('overview.social.actions.link')}
-                                            </Button>
+                                        <a
+                                            href={`/auth/login/${provider}`}
+                                            className={classNames(
+                                                buttonStyles.button,
+                                                buttonStyles.primary,
+                                                buttonStyles.small,
+                                                'no-underline',
+                                            )}
+                                        >
+                                            <FaLink className='mr-2' />
+                                            {t('overview.social.actions.link')}
                                         </a>
                                     )}
                                 </div>
