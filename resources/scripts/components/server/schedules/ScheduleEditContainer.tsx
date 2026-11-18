@@ -19,11 +19,14 @@ import ScheduleStatus from '@/components/server/schedules/ScheduleStatus';
 import RunScheduleButton, { RunRequestState } from '@/components/server/schedules/RunScheduleButton';
 import Card from '@/reviactyl/ui/Card';
 import { useTranslation } from 'react-i18next';
+import CronValue from './CronValue';
 
 const CronBox = ({ title, value }: { title: string; value: string }) => (
-    <div className='mx-2 rounded-ui bg-gray-800 p-3'>
+    <div className='mx-2 min-w-0 rounded-ui bg-gray-800 p-3'>
         <p className='text-sm text-gray-300'>{title}</p>
-        <p className='text-xl font-medium text-gray-100'>{value}</p>
+        <p className='wrap-anywhere text-xl font-medium text-gray-100'>
+            <CronValue value={value} />
+        </p>
     </div>
 );
 
