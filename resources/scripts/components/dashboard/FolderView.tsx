@@ -91,13 +91,13 @@ export default ({
                         {children?.map((folder) => (
                             <div
                                 key={folder.uuid}
-                                className='group relative min-w-0 overflow-hidden rounded-ui border border-gray-800 bg-gray-900'
+                                className='group relative flex min-w-0 items-center overflow-hidden rounded-ui border border-gray-800 bg-gray-900'
                             >
                                 <Button
                                     type='button'
                                     onClick={() => onSelect(folder.uuid)}
                                     isSecondary
-                                    className='h-full w-full justify-start! gap-4 rounded-[inherit]! border-0! bg-gray-900! hover:bg-gray-800! p-4! pe-32! text-start [&>span]:flex [&>span]:w-full [&>span]:items-center [&>span]:gap-4'
+                                    className='min-w-0 flex-1 self-stretch justify-start! gap-4 rounded-[inherit]! border-0! bg-gray-900! hover:bg-gray-800! p-4! text-start [&>span]:flex [&>span]:w-full [&>span]:items-center [&>span]:gap-4'
                                 >
                                     <FaFolder
                                         className='h-8 w-8 shrink-0'
@@ -113,7 +113,7 @@ export default ({
                                         )}
                                     </span>
                                 </Button>
-                                <div className='absolute end-3 top-1/2 flex -translate-y-1/2 gap-1 opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100 [@media(hover:none)]:opacity-100'>
+                                <div className='flex shrink-0 gap-1 pe-3 opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100 [@media(hover:none)]:opacity-100'>
                                     <Button
                                         type='button'
                                         isSecondary
@@ -126,7 +126,7 @@ export default ({
                                     </Button>
                                     <Button
                                         type='button'
-                                        size='small'
+                                        size='xsmall'
                                         isSecondary
                                         onClick={() => onMoveFolder(folder)}
                                         title={t('folders.move-folder')}
@@ -136,7 +136,7 @@ export default ({
                                     </Button>
                                     <Button
                                         type='button'
-                                        size='small'
+                                        size='xsmall'
                                         isSecondary
                                         onClick={() => onDeleteFolder(folder)}
                                         title={t('categories.delete')}
