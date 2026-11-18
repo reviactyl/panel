@@ -51,10 +51,11 @@ export default () => {
     }, [progress, continuous]);
 
     return (
-        <div className='fixed w-full' style={{ height: '2px' }}>
+        <div className='pointer-events-none fixed top-0 inset-x-0 z-[60] w-full' style={{ height: '2px' }}>
             <AnimatePresence>
                 {visible && (
                     <motion.div
+                        className='h-full'
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
