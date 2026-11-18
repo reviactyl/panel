@@ -7,7 +7,7 @@ const renderFixture = (path: string) => {
     if (!fixtures.has(path)) {
         fixtures.set(
             path,
-            execFileSync('php', ['tests/Fixtures/auth-page.php', path], {
+            execFileSync('php', ['tests/Fixtures/auth-page.php', path, 'github'], {
                 env: {
                     ...process.env,
                     APP_ENV: 'testing',
@@ -26,8 +26,8 @@ const renderFixture = (path: string) => {
     return fixtures.get(path)!;
 };
 
-const contrast = (locator: Locator, placeholder = false) =>
-    locator.evaluate((element, placeholder) => {
+const contrast = (locator: Locator, foregroundProperty: 'color' | 'fill' | 'placeholder' = 'color') =>
+    locator.evaluate((element, foregroundProperty) => {
         const canvas = document.createElement('canvas');
         canvas.width = canvas.height = 1;
         const context = canvas.getContext('2d', { willReadFrequently: true })!;
@@ -56,12 +56,21 @@ const contrast = (locator: Locator, placeholder = false) =>
             [255, 255, 255, 1],
         );
         const foreground = blend(
-            rgba(getComputedStyle(element, placeholder ? '::placeholder' : null).color),
+            rgba(
+                foregroundProperty === 'placeholder'
+                    ? getComputedStyle(element, '::placeholder').color
+                    : getComputedStyle(element).getPropertyValue(foregroundProperty),
+            ),
             background,
         );
-        const values = [luminance(foreground), luminance(background)];
+        const brightness = ancestors.reduce((factor, node) => {
+            const match = getComputedStyle(node).filter.match(/brightness\(([\d.]+)\)/);
+            return factor * (match ? Number(match[1]) : 1);
+        }, 1);
+        const filtered = (color: number[]) => color.slice(0, 3).map((value) => Math.min(255, value * brightness));
+        const values = [luminance(filtered(foreground)), luminance(filtered(background))];
         return (Math.max(...values) + 0.05) / (Math.min(...values) + 0.05);
-    }, placeholder);
+    }, foregroundProperty);
 
 for (const theme of ['light', 'dark']) {
     test(`authentication keeps readable controls, validation and focus in ${theme} mode`, async ({ page }) => {
@@ -91,8 +100,16 @@ for (const theme of ['light', 'dark']) {
         for (const locator of [submit, page.getByRole('button', { name: 'Login with Passkey', exact: true })]) {
             await expect.poll(() => contrast(locator)).toBeGreaterThanOrEqual(4.5);
         }
+        const github = page.getByRole('link', { name: 'GitHub', exact: true });
+        await expect(github).toHaveAttribute('href', '/auth/login/github');
+        const logo = github.locator('svg path');
+        await expect.poll(() => contrast(logo, 'fill')).toBeGreaterThanOrEqual(3);
+        await github.hover();
+        await expect(github).toHaveCSS('filter', 'brightness(1.25)');
+        await expect.poll(() => contrast(logo, 'fill')).toBeGreaterThanOrEqual(3);
+        await page.mouse.move(0, 0);
         const username = page.locator('input[name=username]');
-        await expect.poll(() => contrast(username, true)).toBeGreaterThanOrEqual(4.5);
+        await expect.poll(() => contrast(username, 'placeholder')).toBeGreaterThanOrEqual(4.5);
         const recovery = page.getByRole('link', { name: 'Forgot Password?', exact: true });
         await expect.poll(() => contrast(recovery)).toBeGreaterThanOrEqual(4.5);
         await recovery.hover();

@@ -18,6 +18,10 @@ config(['database.default' => 'sqlite', 'database.connections.sqlite.database' =
 DB::purge('sqlite');
 Artisan::call('migrate', ['--force' => true]);
 
+if (($argv[2] ?? null) === 'github') {
+    config(['panel.auth.github_enabled' => true]);
+}
+
 if (($argv[2] ?? null) === 'admin') {
     Auth::login(User::factory()->create(['root_admin' => true]));
 }
