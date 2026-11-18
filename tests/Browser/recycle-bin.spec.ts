@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test('recycle bin uses file controls and supports browsing, editing, nested restore, delete and empty confirmation', async ({
     page,
-}) => {
+}, testInfo) => {
     const url = process.env.RECYCLE_BIN_DEMO_URL;
     test.skip(!url, 'Requires the task-owned isolated Panel and Agent demo.');
     test.setTimeout(90000);
@@ -110,9 +110,9 @@ test('recycle bin uses file controls and supports browsing, editing, nested rest
     await expect(page.getByRole('button', { name: 'Archive', exact: true })).toHaveCount(0);
     await page.setViewportSize({ width: 390, height: 844 });
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-    await page.screenshot({ path: '/tmp/rev117-bin-mobile.png' });
+    await page.screenshot({ path: testInfo.outputPath('bin-mobile.png') });
     await page.setViewportSize({ width: 1280, height: 900 });
-    await page.screenshot({ path: '/tmp/rev117-bin-desktop.png' });
+    await page.screenshot({ path: testInfo.outputPath('bin-desktop.png') });
     await page.goto(filesUrl);
     await bin.click({ button: 'right' });
     await page.getByRole('button', { name: 'Empty', exact: true }).click();
