@@ -119,10 +119,10 @@ export default () => {
                                   <button
                                       type='button'
                                       aria-label={`${t('api.delete')}: ${key.description || key.identifier}`}
-                                      className='ml-4 p-2 text-sm'
+                                      className='ml-4 p-2 text-sm text-muted transition-colors duration-150 hover:text-danger-text focus-visible:text-danger-text'
                                       onClick={() => setDeleteIdentifier(key.identifier)}
                                   >
-                                      <FaTrash className='text-gray-400 transition-colors duration-150 hover:text-red-700 dark:text-red-400' />
+                                      <FaTrash aria-hidden='true' />
                                   </button>
                               </GreyRowBox>
                           ))}
