@@ -7,6 +7,8 @@ import flashes from '@/state/flashes';
 import NewDirectoryButton from './files/NewDirectoryButton';
 import UrlDownloadButton from './files/UrlDownloadButton';
 import MoveFileModal from './files/MoveFileModal';
+import RenameFileModal from './files/RenameFileModal';
+import ChmodFileModal from './files/ChmodFileModal';
 import GSLTokenModalFeature from './features/GSLTokenModalFeature';
 import HytaleOauthRequireFeature from './features/HytaleOauthRequireFeature';
 import JavaVersionModalFeature from './features/JavaVersionModalFeature';
@@ -81,6 +83,11 @@ vi.mock('@/reviactyl/elements/dialog', async () => {
 });
 
 const cases = [
+    { scope: 'files:rename-modal', prompt: <RenameFileModal visible files={['example.txt']} onDismissed={() => {}} /> },
+    {
+        scope: 'files:chmod-modal',
+        prompt: <ChmodFileModal visible files={[{ file: 'example.txt', mode: '644' }]} onDismissed={() => {}} />,
+    },
     { scope: 'files:directory-modal', prompt: <NewDirectoryButton />, button: 'create-directory' },
     { scope: 'files:url-download-modal', prompt: <UrlDownloadButton />, button: 'url-download.button' },
     {

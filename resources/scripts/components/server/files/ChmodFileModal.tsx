@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import FlashMessageRender from '@/components/FlashMessageRender';
 import { fileBitsToString } from '@/helpers';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import Modal, { RequiredModalProps } from '@/reviactyl/elements/Modal';
@@ -29,8 +31,13 @@ const ChmodFileModal = ({ files, ...props }: OwnProps) => {
     const directory = ServerContext.useStoreState((state) => state.files.directory);
     const setSelectedFiles = ServerContext.useStoreActions((actions) => actions.files.setSelectedFiles);
 
+    useEffect(() => {
+        clearFlashes('files:chmod-modal');
+    }, [props.visible]);
+
     const submit = async ({ mode }: FormikValues, { setSubmitting }: FormikHelpers<FormikValues>) => {
         clearFlashes('files');
+        clearFlashes('files:chmod-modal');
 
         await mutate(
             (data) =>
@@ -42,15 +49,17 @@ const ChmodFileModal = ({ files, ...props }: OwnProps) => {
 
         const data = files.map((f) => ({ file: f.file, mode: mode }));
 
-        chmodFiles(uuid, directory, data)
+        return chmodFiles(uuid, directory, data)
             .then((): Promise<any> => (files.length > 0 ? mutate() : Promise.resolve()))
-            .then(() => setSelectedFiles([]))
+            .then(() => {
+                setSelectedFiles([]);
+                props.onDismissed();
+            })
             .catch((error) => {
                 mutate();
                 setSubmitting(false);
-                clearAndAddHttpError({ key: 'files', error });
-            })
-            .then(() => props.onDismissed());
+                clearAndAddHttpError({ key: 'files:chmod-modal', error });
+            });
     };
 
     return (
@@ -66,6 +75,7 @@ const ChmodFileModal = ({ files, ...props }: OwnProps) => {
                     dismissable={!isSubmitting}
                     showSpinnerOverlay={isSubmitting}
                 >
+                    <FlashMessageRender byKey='files:chmod-modal' className='mb-4' />
                     <Form className='m-0'>
                         <FileModeInput />
                         <div className='mt-6 flex justify-end'>
