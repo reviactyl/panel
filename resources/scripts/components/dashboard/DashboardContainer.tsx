@@ -18,7 +18,7 @@ import useModernHeaders from '@/reviactyl/ui/useModernHeaders';
 import { EmojiSadIcon, FilterIcon } from '@heroicons/react/solid';
 import { useTranslation } from 'react-i18next';
 import getServerCategories from '@/api/account/getServerCategories';
-import getClientEggs from '@/api/getClientEggs';
+import getClientEggs, { type ClientEgg } from '@/api/getClientEggs';
 import CategorySection from '@/components/dashboard/CategorySection';
 import CategoryManagerModal from '@/components/dashboard/CategoryManagerModal';
 import { LayoutContainer, ServerLayout } from '@/components/dashboard/ServerLayout';
@@ -92,7 +92,8 @@ const DashboardContainer = () => {
     const [editingFolder, setEditingFolder] = useState<ServerCategory | null>(null);
     const [deletingFolder, setDeletingFolder] = useState<ServerCategory | null>(null);
     const [selectedCategory, setSelectedCategory] = useState<string>('all');
-    const [selectedEggId, setSelectedEggId] = useState<number | null>(null);
+    const [selectedEgg, setSelectedEgg] = useState<ClientEgg | null>(null);
+    const selectedEggId = selectedEgg?.id ?? null;
     const [eggFilterOpen, setEggFilterOpen] = useState(false);
     const eggFilterRef = useRef<HTMLDivElement>(null);
     const {
@@ -137,6 +138,8 @@ const DashboardContainer = () => {
 
     const eggsKey = showAdminServers ? ['/api/client/eggs', 'admin'] : '/api/client/eggs';
     const { data: eggs } = useSWR(eggsKey, () => getClientEggs(showAdminServers ? 'admin' : undefined));
+    const eggOptions =
+        selectedEgg && !eggs?.some((egg) => egg.id === selectedEgg.id) ? [...(eggs ?? []), selectedEgg] : (eggs ?? []);
 
     const { data: servers, error } = useSWR<PaginatedResult<Server>>(
         ['/api/client/servers', showAdminServers, page, activeCategory, selectedEggId],
@@ -317,7 +320,7 @@ const DashboardContainer = () => {
                                             ref={eggFilterRef}
                                             className='absolute right-0 sm:left-auto top-full mt-1.5 z-10 min-w-45 py-2! px-2! shadow-lg'
                                         >
-                                            {(eggs && eggs.length > 0) || (showAdminServers && Array.isArray(eggs)) ? (
+                                            {eggOptions.length > 0 || (showAdminServers && Array.isArray(eggs)) ? (
                                                 <div className='mb-2 border-b border-gray-800 pb-2'>
                                                     <p className='text-xs text-gray-200 uppercase px-2 pb-1.5'>
                                                         {t('eggs.filter-label')}
@@ -327,8 +330,10 @@ const DashboardContainer = () => {
                                                         className='w-full'
                                                         value={selectedEggId ?? ''}
                                                         onChange={(e) => {
-                                                            setSelectedEggId(
-                                                                e.target.value === '' ? null : Number(e.target.value),
+                                                            setSelectedEgg(
+                                                                eggOptions.find(
+                                                                    (egg) => egg.id === Number(e.target.value),
+                                                                ) ?? null,
                                                             );
                                                             setEggFilterOpen(false);
                                                         }}
@@ -336,7 +341,7 @@ const DashboardContainer = () => {
                                                     >
                                                         <option value=''>{t('eggs.all')}</option>
 
-                                                        {eggs.map((egg) => (
+                                                        {eggOptions.map((egg) => (
                                                             <option key={egg.id} value={egg.id}>
                                                                 {egg.name}
                                                             </option>

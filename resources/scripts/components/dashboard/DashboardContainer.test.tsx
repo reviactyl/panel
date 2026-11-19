@@ -234,6 +234,9 @@ describe('dashboard category pagination', () => {
     it('ignores the personal Category in Other Servers while preserving Egg filtering across view changes', async () => {
         mocks.rootAdmin = true;
         mockEggResults();
+        mocks.getClientEggs.mockImplementation(async (type) =>
+            type === 'admin' ? [{ id: 1, name: 'Other Egg' }] : [{ id: 2, name: 'Personal Egg' }],
+        );
         await render();
         await selectCategory('small');
         // The Category selector keeps the filter panel open.
@@ -250,6 +253,15 @@ describe('dashboard category pagination', () => {
         expect(mocks.getServers).toHaveBeenLastCalledWith(
             expect.objectContaining({ type: undefined, 'filter[category_uuid]': 'small', eggId: 2 }),
         );
+        await toggleAdmin();
+        await openFilters();
+        const selected = container.querySelector<HTMLSelectElement>('[aria-label="eggs.filter-label"]')!;
+        expect(selected.selectedOptions.item(0)?.textContent).toBe('Personal Egg');
+        await act(async () => {
+            selected.value = '';
+            selected.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+        expect(mocks.getServers).toHaveBeenLastCalledWith(expect.objectContaining({ type: 'admin', eggId: undefined }));
     });
 
     it('opens folders and returns Home using server-side category filters', async () => {
