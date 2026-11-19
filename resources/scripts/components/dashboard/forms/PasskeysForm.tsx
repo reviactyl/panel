@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useEffect, useId, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useId, useRef, useState } from 'react';
 import useSWR from 'swr';
 import Label from '@/reviactyl/elements/Label';
 import Input from '@/reviactyl/elements/Input';
@@ -9,6 +9,7 @@ import { Button } from '@/reviactyl/components/button';
 import { useFlashKey } from '@/plugins/useFlash';
 import { useTranslation } from 'react-i18next';
 import { deleteAccountPasskey, getAccountPasskeys, registerAccountPasskey } from '@/api/account/passkeys';
+import FlashMessageRender from '@/components/FlashMessageRender';
 import GreyRowBox from '@/reviactyl/elements/GreyRowBox';
 import { FaFingerprint, FaGoogle, FaTrash } from 'react-icons/fa6';
 
@@ -17,6 +18,9 @@ export const ListPasskeysForm = () => {
     const deletePasswordId = useId();
     const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string | null } | null>(null);
     const [deletePassword, setDeletePassword] = useState('');
+    const [isDeleting, setIsDeleting] = useState(false);
+    const deleting = useRef(false);
+    const deleteFlash = useFlashKey('account:passkeys:delete');
     const { clearAndAddHttpError, clearFlashes } = useFlashKey('account:passkeys');
 
     const { data: passkeys, error, mutate } = useSWR('/api/client/account/passkeys', () => getAccountPasskeys());
@@ -26,46 +30,54 @@ export const ListPasskeysForm = () => {
     useEffect(() => {
         if (error) {
             clearAndAddHttpError(error);
+        } else {
+            clearFlashes();
         }
     }, [error]);
 
     const onDelete = async () => {
-        if (!deleteTarget) {
+        if (!deleteTarget || deleting.current) {
             return;
         }
 
-        clearFlashes();
+        deleteFlash.clearFlashes();
 
         if (!deletePassword) {
-            clearAndAddHttpError(new Error(t('passkeys.password-required')));
+            deleteFlash.clearAndAddHttpError(new Error(t('passkeys.password-required')));
             return;
         }
 
-        const passwordConfirmation = deletePassword;
-
-        setDeleteTarget(null);
-        setDeletePassword('');
+        deleting.current = true;
+        setIsDeleting(true);
 
         try {
-            await deleteAccountPasskey(deleteTarget.id, passwordConfirmation);
-            await mutate();
+            await deleteAccountPasskey(deleteTarget.id, deletePassword);
+            setDeleteTarget(null);
+            setDeletePassword('');
+            await mutate().catch(clearAndAddHttpError);
         } catch (deleteError) {
-            clearAndAddHttpError(deleteError as Error);
+            deleteFlash.clearAndAddHttpError(deleteError as Error);
+        } finally {
+            deleting.current = false;
+            setIsDeleting(false);
         }
     };
 
     return (
         <div>
-            <Dialog.Confirm
+            <Dialog
                 open={deleteTarget !== null}
                 title={t('passkeys.remove')}
-                confirm={t('passkeys.remove')}
                 onClose={() => {
+                    if (deleting.current) return;
+                    deleteFlash.clearFlashes();
                     setDeleteTarget(null);
                     setDeletePassword('');
                 }}
-                onConfirmed={onDelete}
+                preventExternalClose={isDeleting}
+                hideCloseIcon={isDeleting}
             >
+                <FlashMessageRender byKey='account:passkeys:delete' className='mb-3' />
                 <div className='space-y-3'>
                     <p>{t('passkeys.delete-confirm')}</p>
                     {deleteTarget && <Code>{deleteTarget.name || deleteTarget.id}</Code>}
@@ -76,6 +88,7 @@ export const ListPasskeysForm = () => {
                             type={'password'}
                             value={deletePassword}
                             autoComplete={'current-password'}
+                            disabled={isDeleting}
                             onChange={(event: ChangeEvent<HTMLInputElement>) =>
                                 setDeletePassword(event.currentTarget.value)
                             }
@@ -83,7 +96,22 @@ export const ListPasskeysForm = () => {
                         <p className='mt-1 text-xs text-gray-300'>{t('passkeys.delete-password-prompt')}</p>
                     </div>
                 </div>
-            </Dialog.Confirm>
+                <Dialog.Footer>
+                    <Button.Text
+                        disabled={isDeleting}
+                        onClick={() => {
+                            deleteFlash.clearFlashes();
+                            setDeleteTarget(null);
+                            setDeletePassword('');
+                        }}
+                    >
+                        {t('strings:cancel')}
+                    </Button.Text>
+                    <Button.Danger disabled={isDeleting} onClick={onDelete} aria-busy={isDeleting}>
+                        {t('passkeys.remove')}
+                    </Button.Danger>
+                </Dialog.Footer>
+            </Dialog>
 
             <div className='space-y-3'>
                 {isLoading && <Spinner size={'small'} />}
@@ -116,7 +144,11 @@ export const ListPasskeysForm = () => {
                                 type='button'
                                 aria-label={`${t('passkeys.remove')}: ${passkey.name || passkey.id}`}
                                 className='ml-4 p-2 text-sm text-muted transition-colors duration-150 hover:text-danger-text focus-visible:text-danger-text'
-                                onClick={() => setDeleteTarget({ id: passkey.id, name: passkey.name })}
+                                disabled={isDeleting}
+                                onClick={() => {
+                                    deleteFlash.clearFlashes();
+                                    setDeleteTarget({ id: passkey.id, name: passkey.name });
+                                }}
                             >
                                 <FaTrash aria-hidden='true' />
                             </button>
@@ -142,6 +174,8 @@ export const CreatePasskeysForm = () => {
     useEffect(() => {
         if (error) {
             clearAndAddHttpError(error);
+        } else {
+            clearFlashes();
         }
     }, [error]);
 
