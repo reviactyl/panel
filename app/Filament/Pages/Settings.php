@@ -763,9 +763,11 @@ class Settings extends Page implements HasSchemas
         config()->set('mail.default', $data['mail:default'] ?? config('mail.default'));
         config()->set('mail.mailers.smtp.host', $data['mail:mailers:smtp:host'] ?? config('mail.mailers.smtp.host'));
         config()->set('mail.mailers.smtp.port', $data['mail:mailers:smtp:port'] ?? config('mail.mailers.smtp.port'));
-        config()->set('mail.mailers.smtp.encryption', $data['mail:mailers:smtp:encryption'] ?? config('mail.mailers.smtp.encryption'));
-        config()->set('mail.mailers.smtp.username', $data['mail:mailers:smtp:username'] ?? config('mail.mailers.smtp.username'));
-        config()->set('mail.mailers.smtp.password', $data['mail:mailers:smtp:password'] ?? config('mail.mailers.smtp.password'));
+        foreach (['encryption', 'username', 'password'] as $key) {
+            if (array_key_exists('mail:mailers:smtp:'.$key, $data)) {
+                config()->set('mail.mailers.smtp.'.$key, $data['mail:mailers:smtp:'.$key]);
+            }
+        }
 
         config()->set('mail.from.address', $data['mail:from:address'] ?? config('mail.from.address'));
         config()->set('mail.from.name', $data['mail:from:name'] ?? config('mail.from.name'));
