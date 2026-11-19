@@ -178,11 +178,30 @@
             text-align: center !important;
         }
 
+        .software-update-table td {
+            overflow-wrap: anywhere;
+        }
+
+        .software-update-table .fi-btn {
+            max-width: 100%;
+            white-space: normal;
+        }
+
         .software-update-button-content {
             align-items: center;
             display: inline-flex;
             gap: 0.5rem;
             justify-content: center;
+            min-width: 0;
+            max-width: 100%;
+        }
+
+        .software-update-button-content > span {
+            min-width: 0;
+        }
+
+        .software-update-button-content > svg {
+            flex-shrink: 0;
         }
 
     </style>
@@ -325,7 +344,7 @@
                                         <x-filament::button size="sm" color="gray" disabled aria-live="polite">
                                             <span class="software-update-button-content">
                                                 <x-filament::loading-indicator class="h-5 w-5" />
-                                                <span>{{ trans('admin/updates.status.queued') }}</span>
+                                                <span>{{ $agent['status']['message'] ?? trans('admin/updates.status.queued') }}</span>
                                             </span>
                                         </x-filament::button>
                                     @elseif ($agent['reachable'] && $agent['latest_available'] && $agent['outdated'] && $agent['installation_type'] === 'native' && $this::canUpdate())
