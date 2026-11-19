@@ -1,5 +1,5 @@
 import { useSWRConfig } from 'swr';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { Button } from '@/reviactyl/components/button/index';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import useFlash from '@/plugins/useFlash';
@@ -18,6 +18,7 @@ import { FaFileArchive } from 'react-icons/fa';
 import Can from '@/reviactyl/elements/Can';
 import { useStoreState } from 'easy-peasy';
 import { join } from 'pathe';
+import useArchiveMenuPosition from './useArchiveMenuPosition';
 
 const MassActionsBar = () => {
     const { t } = useTranslation('server/files');
@@ -32,6 +33,10 @@ const MassActionsBar = () => {
     const [showMove, setShowMove] = useState(false);
     const [showFormatMenu, setShowFormatMenu] = useState(false);
     const archiveRef = useRef<HTMLDivElement>(null);
+    const formatMenuRef = useRef<HTMLDivElement>(null);
+    const archiveHovered = useRef(false);
+    const formatMenuId = useId();
+    const formatMenuPosition = useArchiveMenuPosition(showFormatMenu, archiveRef, formatMenuRef);
     const directory = ServerContext.useStoreState((state) => state.files.directory);
 
     const selectedFiles = ServerContext.useStoreState((state) => state.files.selectedFiles);
@@ -133,23 +138,53 @@ const MassActionsBar = () => {
                 </Tooltip>
             </Can>
             <Can action={'file.archive'}>
-                <div ref={archiveRef} className='group relative flex items-center'>
+                <div
+                    ref={archiveRef}
+                    className='relative flex items-center'
+                    onMouseEnter={() => {
+                        archiveHovered.current = true;
+                        if (!loading) setShowFormatMenu(true);
+                    }}
+                    onMouseLeave={(event) => {
+                        archiveHovered.current = false;
+                        if (!event.currentTarget.contains(document.activeElement)) setShowFormatMenu(false);
+                    }}
+                    onFocusCapture={() => !loading && setShowFormatMenu(true)}
+                    onBlur={(event) => {
+                        if (!archiveHovered.current && !event.currentTarget.contains(event.relatedTarget)) {
+                            setShowFormatMenu(false);
+                        }
+                    }}
+                    onKeyDown={(event) => {
+                        if (event.key === 'Escape') {
+                            event.preventDefault();
+                            archiveRef.current?.querySelector('button')?.focus();
+                            setShowFormatMenu(false);
+                        }
+                    }}
+                >
                     <Button.Success
                         onClick={() => {
                             if (window.matchMedia('(hover: none), (max-width: 639px)').matches) {
-                                setShowFormatMenu((open) => !open);
+                                setShowFormatMenu(true);
                                 return;
                             }
                             onClickCompress(archiveFormat);
                         }}
                         aria-label={t('archive')}
+                        aria-expanded={showFormatMenu}
+                        aria-controls={formatMenuId}
                         disabled={loading}
                     >
                         <FaFileArchive className='h-5 w-5' />
                     </Button.Success>
                     <div
-                        style={{ display: showFormatMenu ? 'flex' : undefined }}
-                        className='absolute left-[calc(100%-0.5rem)] top-0 z-20 hidden w-48 flex-col rounded-ui border border-gray-800 bg-gray-800 p-2 text-gray-100 shadow-lg group-hover:flex group-focus-within:flex max-sm:left-0 max-sm:top-full'
+                        ref={formatMenuRef}
+                        id={formatMenuId}
+                        role='group'
+                        aria-label={t('archive')}
+                        style={{ ...formatMenuPosition, display: showFormatMenu ? 'flex' : 'none' }}
+                        className='fixed z-50 w-48 flex-col rounded-ui border border-gray-800 bg-gray-800 p-2 text-gray-100 shadow-lg'
                     >
                         {(['tar.gz', 'zip'] as const).map((format) => (
                             <button
@@ -158,7 +193,7 @@ const MassActionsBar = () => {
                                 onClick={() => onClickCompress(format)}
                                 disabled={loading}
                                 aria-label={t('archive-as', { format })}
-                                className='w-full rounded-ui p-2 text-left text-sm hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:text-gray-800'
+                                className='w-full shrink-0 rounded-ui p-2 text-left text-sm transition-colors duration-150 enabled:hover:bg-gray-700 focus-visible:bg-gray-700 focus-visible:outline-solid focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-current'
                             >
                                 {format}
                             </button>
