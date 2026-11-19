@@ -4,8 +4,10 @@ namespace Tests\Integration\Api\Client\Server\Subuser;
 
 use App\Enum\JwtScope;
 use App\Models\Allocation;
+use App\Models\Backup;
 use App\Models\DatabaseHost;
 use App\Models\Permission;
+use App\Models\Schedule;
 use App\Models\Server;
 use App\Models\ServerVariable;
 use App\Models\Subuser;
@@ -1128,6 +1130,99 @@ class SubuserPreviewTest extends ClientApiIntegrationTestCase
         }
 
         $this->assertSame('saved-secret', $server->fresh()->variables->firstWhere('id', $secret->id)->server_value);
+    }
+
+    public function test_preview_backup_rename_validates_and_only_changes_preview_state(): void
+    {
+        [$owner, $server, $target] = $this->models();
+        $server->forceFill(['backup_limit' => 10])->save();
+        $server->subusers()->first()->update(['permissions' => [Permission::ACTION_BACKUP_CREATE, Permission::ACTION_BACKUP_READ]]);
+        $backup = Backup::factory()->create(['server_id' => $server->id, 'name' => 'Live backup', 'format' => 'zip']);
+        $token = $this->actingAs($owner)->postJson($this->previewEndpoint($server, $target))->json('token');
+        $simulated = $this->withPreviewToken($token)->postJson($this->link($server, 'backups'), ['name' => 'Preview backup'])->assertCreated();
+
+        foreach ([$backup->uuid, $simulated->json('attributes.uuid')] as $uuid) {
+            foreach ([[], ['name' => null], ['name' => ''], ['name' => 123], ['name' => ['bad']], ['name' => str_repeat('a', 192)]] as $invalid) {
+                $this->withPreviewToken($token)->postJson($this->link($server, "backups/$uuid/rename"), $invalid)
+                    ->assertUnprocessable()->assertJsonPath('errors.0.meta.source_field', 'name');
+            }
+
+            $name = str_repeat('b', 191);
+            $this->withPreviewToken($token)->postJson($this->link($server, "backups/$uuid/rename"), ['name' => $name])
+                ->assertOk()->assertJsonPath('attributes.name', $name);
+            $this->withPreviewToken($token)->getJson($this->link($server, "backups/$uuid"))
+                ->assertOk()->assertJsonPath('attributes.name', $name);
+        }
+
+        $list = $this->withPreviewToken($token)->getJson($this->link($server, 'backups'))->assertOk();
+        $renamedBackup = collect($list->json('data'))->firstWhere('attributes.uuid', $backup->uuid);
+        $this->assertSame('zip', $renamedBackup['attributes']['format'] ?? null);
+        $this->assertSame('Live backup', $backup->fresh()->name);
+        $this->assertDatabaseCount('backups', 1);
+        $this->withPreviewToken($token)->postJson($this->link($server, 'backups/'.fake()->uuid().'/rename'), ['name' => 'Missing'])
+            ->assertNotFound();
+    }
+
+    public function test_preview_backup_rename_requires_backup_create_permission(): void
+    {
+        [$owner, $server, $target] = $this->models();
+        $server->subusers()->first()->update(['permissions' => [Permission::ACTION_BACKUP_READ]]);
+        $backup = Backup::factory()->create(['server_id' => $server->id]);
+        $token = $this->actingAs($owner)->postJson($this->previewEndpoint($server, $target))->json('token');
+
+        $this->withPreviewToken($token)->postJson($this->link($server, "backups/$backup->uuid/rename"), ['name' => 'Denied'])
+            ->assertForbidden();
+        $this->assertSame($backup->name, $backup->fresh()->name);
+    }
+
+    public function test_preview_schedule_creation_and_updates_reject_invalid_cron(): void
+    {
+        [$owner, $server, $target] = $this->models();
+        $server->subusers()->first()->update(['permissions' => [Permission::ACTION_SCHEDULE_CREATE, Permission::ACTION_SCHEDULE_UPDATE]]);
+        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
+        $token = $this->actingAs($owner)->postJson($this->previewEndpoint($server, $target))->json('token');
+        $valid = ['name' => 'Valid', 'minute' => '*/5', 'hour' => '*', 'day_of_month' => '*', 'month' => '*', 'day_of_week' => '*'];
+        $preview = $this->withPreviewToken($token)->postJson($this->link($server, 'schedules'), $valid)->assertCreated();
+
+        foreach (['schedules', "schedules/$schedule->id", 'schedules/'.$preview->json('attributes.id')] as $path) {
+            foreach ([['month' => null], ['month' => []], ['month' => 2], ['month' => '13'], ['month' => 'invalid'], ['minute' => '60'], ['hour' => '24'], ['day_of_month' => '32'], ['day_of_week' => '8'], ['minute' => '*/0'], ['minute' => '* *']] as $invalid) {
+                $this->withPreviewToken($token)->postJson($this->link($server, $path), array_replace($valid, $invalid))
+                    ->assertUnprocessable();
+            }
+            $withoutMonth = $valid;
+            unset($withoutMonth['month']);
+            $this->withPreviewToken($token)->postJson($this->link($server, $path), $withoutMonth)->assertUnprocessable();
+        }
+        $this->assertDatabaseCount('schedules', 1);
+        $this->assertSame($schedule->name, $schedule->fresh()->name);
+    }
+
+    public function test_preview_schedule_updates_preserve_live_and_simulated_history(): void
+    {
+        [$owner, $server, $target] = $this->models();
+        $server->subusers()->first()->update(['permissions' => [Permission::ACTION_SCHEDULE_CREATE, Permission::ACTION_SCHEDULE_UPDATE, Permission::ACTION_SCHEDULE_READ]]);
+        $schedule = Schedule::factory()->create(['server_id' => $server->id, 'created_at' => '2020-01-01 00:00:00', 'last_run_at' => '2021-01-01 00:00:00']);
+        $token = $this->actingAs($owner)->postJson($this->previewEndpoint($server, $target))->json('token');
+        $valid = ['name' => 'Before', 'minute' => '*/5', 'hour' => '*', 'day_of_month' => '*', 'month' => '*', 'day_of_week' => '*'];
+        $preview = $this->withPreviewToken($token)->postJson($this->link($server, 'schedules'), $valid)->assertCreated();
+        $previewId = $preview->json('attributes.id');
+        $this->withPreviewToken($token)->postJson($this->link($server, "schedules/$previewId/execute"))->assertAccepted();
+
+        foreach ([$schedule->id, $previewId] as $id) {
+            $before = $this->withPreviewToken($token)->getJson($this->link($server, "schedules/$id"))->assertOk()->json('attributes');
+            $this->travel(2)->minutes();
+            $this->withPreviewToken($token)->postJson($this->link($server, "schedules/$id"), array_replace($valid, ['name' => 'After', 'month' => 'JAN,MAR']))
+                ->assertOk()->assertJsonPath('attributes.name', 'After')
+                ->assertJsonPath('attributes.cron.month', 'JAN,MAR')
+                ->assertJsonPath('attributes.created_at', $before['created_at'])
+                ->assertJsonPath('attributes.last_run_at', $before['last_run_at']);
+            $this->withPreviewToken($token)->getJson($this->link($server, "schedules/$id"))
+                ->assertOk()->assertJsonPath('attributes.created_at', $before['created_at'])
+                ->assertJsonPath('attributes.last_run_at', $before['last_run_at']);
+        }
+        $this->assertDatabaseCount('schedules', 1);
+        $this->assertSame($schedule->name, $schedule->fresh()->name);
+        $this->assertSame('2021-01-01 00:00:00', $schedule->fresh()->last_run_at->toDateTimeString());
     }
 
     private function models(): array
