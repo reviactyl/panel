@@ -1,38 +1,21 @@
 import { act, type ComponentProps, type ReactNode } from 'react';
+import { createStore, StoreProvider } from 'easy-peasy';
 import { createRoot, type Root } from 'react-dom/client';
 import { fireEvent, getByLabelText, getByRole, queryByRole } from '@testing-library/dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { SWRConfig, useSWRConfig } from 'swr';
+import flashes, { type FlashStore } from '@/state/flashes';
 import { CreatePasskeysForm, ListPasskeysForm } from './PasskeysForm';
 
 const mocks = vi.hoisted(() => ({
     get: vi.fn(),
     remove: vi.fn(),
-    error: vi.fn(),
-    clear: vi.fn(),
-    flashes: {} as Record<string, string>,
 }));
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 vi.mock('@/api/account/passkeys', () => ({
     getAccountPasskeys: mocks.get,
     deleteAccountPasskey: mocks.remove,
     registerAccountPasskey: vi.fn(),
-}));
-vi.mock('@/plugins/useFlash', () => ({
-    useFlashKey: (key: string) => ({
-        clearAndAddHttpError: (error: Error) => {
-            mocks.flashes[key] = error.message;
-            mocks.error(error);
-        },
-        clearFlashes: () => {
-            delete mocks.flashes[key];
-            mocks.clear();
-        },
-    }),
-}));
-vi.mock('@/components/FlashMessageRender', () => ({
-    default: ({ byKey }: { byKey?: string }) =>
-        byKey && mocks.flashes[byKey] ? <div role='alert'>{mocks.flashes[byKey]}</div> : null,
 }));
 vi.mock('framer-motion', async () => {
     const actual = await vi.importActual<typeof import('framer-motion')>('framer-motion');
@@ -63,6 +46,7 @@ const deferred = () => {
 let container: HTMLDivElement;
 let root: Root;
 let revalidate: () => Promise<unknown>;
+let store: ReturnType<typeof createStore<{ flashes: FlashStore }>>;
 const Harness = ({ children }: { children: ReactNode }) => {
     const { mutate } = useSWRConfig();
     revalidate = () => mutate('/api/client/account/passkeys');
@@ -72,7 +56,9 @@ const render = async (children: ReactNode = <ListPasskeysForm />) => {
     await act(async () =>
         root.render(
             <SWRConfig value={{ provider: () => new Map(), dedupingInterval: 0, shouldRetryOnError: false }}>
-                <Harness>{children}</Harness>
+                <StoreProvider store={store}>
+                    <Harness>{children}</Harness>
+                </StoreProvider>
             </SWRConfig>,
         ),
     );
@@ -80,7 +66,7 @@ const render = async (children: ReactNode = <ListPasskeysForm />) => {
 beforeEach(() => {
     vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
     vi.resetAllMocks();
-    mocks.flashes = {};
+    store = createStore({ flashes });
     mocks.get.mockResolvedValue([passkey]);
     container = document.createElement('div');
     document.body.append(container);
@@ -119,7 +105,9 @@ describe('passkey deletion', () => {
             expect(getByRole(document.body, 'dialog').textContent).toContain('Laptop');
             expect(password.value).toBe('incorrect');
             expect(confirm.disabled).toBe(false);
-            expect(mocks.error).toHaveBeenCalledWith(error);
+            expect(store.getState().flashes.items).toEqual(
+                expect.arrayContaining([expect.objectContaining({ key: 'account:passkeys:delete', message })]),
+            );
             await act(async () => fireEvent.change(password, { target: { value: 'correct' } }));
             await act(async () => confirm.click());
             expect(mocks.remove).toHaveBeenLastCalledWith('key-id', 'correct');
@@ -135,10 +123,11 @@ it.each([
     const error = new Error('Load failed');
     mocks.get.mockRejectedValueOnce(error).mockResolvedValue([passkey]);
     await render(<Form />);
-    expect(mocks.error).toHaveBeenCalledWith(error);
-    mocks.clear.mockClear();
+    expect(store.getState().flashes.items).toEqual(
+        expect.arrayContaining([expect.objectContaining({ key: 'account:passkeys', message: 'Load failed' })]),
+    );
     await act(async () => {
         await revalidate();
     });
-    expect(mocks.clear).toHaveBeenCalled();
+    expect(store.getState().flashes.items).toHaveLength(0);
 });
