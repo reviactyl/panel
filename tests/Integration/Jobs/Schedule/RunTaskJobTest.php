@@ -11,12 +11,33 @@ use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Contracts\Database\ModelIdentifier;
+use Illuminate\Queue\CallQueuedHandler;
 use Illuminate\Support\Facades\Bus;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Integration\IntegrationTestCase;
 
 class RunTaskJobTest extends IntegrationTestCase
 {
+    #[DataProvider('failureDataProvider')]
+    public function test_queued_failure_clears_processing_and_queued_flags(string $failureClass)
+    {
+        Bus::fake();
+        $server = $this->createServerModel();
+        $token = '00000000-0000-4000-8000-000000000005';
+        $schedule = Schedule::factory()->create(['server_id' => $server->id, 'is_processing' => true, 'processing_token' => $token, 'last_run_at' => null]);
+        $task = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 1, 'is_queued' => true]);
+        $next = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 2]);
+        $payload = ['command' => serialize(new RunTaskJob($task, false, $token))];
+
+        $this->app->make(CallQueuedHandler::class)->failed($payload, new $failureClass('Task failed'), 'failed-task');
+
+        $this->assertFalse($task->refresh()->is_queued);
+        $this->assertFalse($next->refresh()->is_queued);
+        $this->assertFalse($schedule->refresh()->is_processing);
+        $this->assertTrue(CarbonImmutable::now()->equalTo($schedule->last_run_at));
+        Bus::assertNothingDispatched();
+    }
+
     /**
      * An inactive job should not be run by the system.
      */
@@ -241,7 +262,8 @@ class RunTaskJobTest extends IntegrationTestCase
         $this->assertTrue($schedule->refresh()->is_processing);
     }
 
-    public function test_superseded_delayed_job_does_not_touch_the_current_run()
+    #[DataProvider('failureDataProvider')]
+    public function test_superseded_delayed_job_does_not_touch_the_current_run(string $failureClass)
     {
         Bus::fake();
         $server = $this->createServerModel();
@@ -253,7 +275,7 @@ class RunTaskJobTest extends IntegrationTestCase
         $this->mock(DaemonPowerRepository::class)->shouldNotReceive('setServer');
 
         $this->app->call([unserialize($payload), 'handle']);
-        unserialize($payload)->failed(new \RuntimeException('Stale failure'));
+        unserialize($payload)->failed(new $failureClass('Stale failure'));
 
         $this->assertTrue($task->refresh()->is_queued);
         $this->assertFalse($next->refresh()->is_queued);
@@ -309,5 +331,10 @@ class RunTaskJobTest extends IntegrationTestCase
     public static function isManualRunDataProvider(): array
     {
         return [[true], [false]];
+    }
+
+    public static function failureDataProvider(): array
+    {
+        return [[\RuntimeException::class], [\Error::class], [\TypeError::class]];
     }
 }

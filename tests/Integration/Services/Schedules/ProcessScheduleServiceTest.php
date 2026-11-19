@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Integration\IntegrationTestCase;
+use Throwable;
 
 class ProcessScheduleServiceTest extends IntegrationTestCase
 {
@@ -342,7 +343,8 @@ class ProcessScheduleServiceTest extends IntegrationTestCase
      *
      * @see https://github.com/pterodactyl/panel/issues/2550
      */
-    public function test_task_dispatched_now_is_reset_properly_if_error_is_encountered()
+    #[DataProvider('failureDataProvider')]
+    public function test_task_dispatched_now_is_reset_properly_if_error_is_encountered(string $failureClass)
     {
         $this->swap(Dispatcher::class, $dispatcher = \Mockery::mock(Dispatcher::class));
 
@@ -352,20 +354,53 @@ class ProcessScheduleServiceTest extends IntegrationTestCase
         /** @var Task $task */
         $task = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 1]);
 
-        $dispatcher->expects('dispatchNow')->andThrows(new Exception('Test thrown exception'));
+        $failure = new $failureClass('Test thrown failure');
+        $dispatcher->expects('dispatchNow')->andThrow($failure);
 
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage('Test thrown exception');
+        try {
+            $this->getService()->handle($schedule, true);
+            $this->fail('Dispatch should have failed.');
+        } catch (Throwable $exception) {
+            $this->assertSame($failure, $exception);
+        }
 
-        $this->getService()->handle($schedule, true);
+        $this->assertFalse($schedule->refresh()->is_processing);
+        $this->assertFalse($task->refresh()->is_queued);
+        $this->assertTrue(CarbonImmutable::now()->equalTo($schedule->last_run_at));
+    }
 
-        $this->assertDatabaseHas('schedules', [
-            'id' => $schedule->id,
-            'is_processing' => false,
-            'last_run_at' => CarbonImmutable::now()->toAtomString(),
-        ]);
+    #[DataProvider('failureDataProvider')]
+    public function test_synchronous_task_failure_clears_processing_without_running_next_task(string $failureClass)
+    {
+        Bus::fake();
+        $server = $this->createServerModel();
+        $schedule = Schedule::factory()->create(['server_id' => $server->id, 'last_run_at' => null]);
+        $task = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 1, 'continue_on_failure' => false]);
+        $next = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 2]);
+        $failure = new $failureClass('Task action failed');
+        $this->mock(DaemonCommandRepository::class, function ($mock) use ($failure) {
+            $mock->expects('setServer')->andReturnSelf();
+            $mock->expects('send')->andThrow($failure);
+        });
+        $this->swap(Dispatcher::class, new \Illuminate\Bus\Dispatcher($this->app));
 
-        $this->assertDatabaseHas('tasks', ['id' => $task->id, 'is_queued' => false]);
+        try {
+            $this->getService()->handle($schedule, true);
+            $this->fail('Task should have failed.');
+        } catch (Throwable $exception) {
+            $this->assertSame($failure, $exception);
+        }
+
+        $this->assertFalse($schedule->refresh()->is_processing);
+        $this->assertFalse($task->refresh()->is_queued);
+        $this->assertFalse($next->refresh()->is_queued);
+        $this->assertTrue(CarbonImmutable::now()->equalTo($schedule->last_run_at));
+        Bus::assertNothingDispatched();
+    }
+
+    public static function failureDataProvider(): array
+    {
+        return [[Exception::class], [\Error::class], [\TypeError::class]];
     }
 
     /**
