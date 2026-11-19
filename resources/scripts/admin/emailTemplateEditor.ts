@@ -422,8 +422,10 @@ export function emailTemplateEditor(
                 this.draft = draft;
                 this.saved = JSON.stringify(this.draft);
                 this.dirty = false;
+                this.sourcePending = true;
                 await this.updatePreview();
             } catch {
+                if (this.sourcePending) await this.updatePreview();
                 this.error = labels.reset_error!;
             } finally {
                 this.busy = false;
