@@ -120,7 +120,7 @@ class AccountController extends ClientApiController
     public function updateEditor(Request $request): JsonResponse
     {
         $request->validate([
-            'fileEditor' => ['required', 'string', 'max:255'],
+            'fileEditor' => ['required', 'string', 'in:cm,mo'],
         ]);
 
         $user = $request->user();
@@ -137,7 +137,7 @@ class AccountController extends ClientApiController
                 ->log();
         }
 
-        return new JsonResponse([$user], Response::HTTP_OK);
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 
     public function updateAvatar(UpdateAvatarRequest $request): JsonResponse

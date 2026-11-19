@@ -2,10 +2,13 @@
 
 namespace Tests\Integration\Api\Client;
 
+use App\Events\ActivityLogged;
 use App\Models\User;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class AccountControllerTest extends ClientApiIntegrationTestCase
 {
@@ -49,6 +52,42 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
         $this->actingAs($user)->putJson('/api/client/account/archive-format', ['format' => 'rar'])
             ->assertUnprocessable();
         $this->assertSame('zip', $user->refresh()->archive_format);
+    }
+
+    public function test_file_editor_rejects_an_unsupported_selection(): void
+    {
+        $user = User::factory()->create(['editor' => 'cm']);
+
+        $this->actingAs($user)->putJson('/api/client/account/file-editor', ['fileEditor' => 'vim'])
+            ->assertUnprocessable()
+            ->assertJsonPath('errors.0.meta.source_field', 'fileEditor')
+            ->assertJsonPath('errors.0.meta.rule', 'in');
+
+        $this->assertSame('cm', $user->refresh()->editor);
+        Event::assertNotDispatched(ActivityLogged::class);
+    }
+
+    #[DataProvider('fileEditorProvider')]
+    public function test_file_editor_updates_return_no_content_and_log_activity(string $original, string $editor, string $oldName, string $newName): void
+    {
+        $user = User::factory()->create(['editor' => $original]);
+
+        $this->actingAs($user)->putJson('/api/client/account/file-editor', ['fileEditor' => $editor])
+            ->assertNoContent();
+
+        $this->assertSame($editor, $user->refresh()->editor);
+        $this->assertActivityActor('user:account.file-editor-changed', $user);
+        Event::assertDispatched(ActivityLogged::class, fn (ActivityLogged $event) => $event->is('user:account.file-editor-changed')
+            && $event->model->properties->get('old') === $oldName
+            && $event->model->properties->get('new') === $newName);
+    }
+
+    public static function fileEditorProvider(): array
+    {
+        return [
+            'CodeMirror' => ['mo', 'cm', 'Monaco', 'CodeMirror'],
+            'Monaco' => ['cm', 'mo', 'CodeMirror', 'Monaco'],
+        ];
     }
 
     public function test_avatar_preferences_are_updated()
