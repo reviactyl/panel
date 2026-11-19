@@ -470,9 +470,12 @@ for (const language of ['en', 'ar']) {
             const name = longValues ? 'Long server name '.repeat(12) : 'Demo Playground';
             const value = `${alias}:25565`;
             await page.addInitScript(() => {
+                Object.assign(window, { copiedHeaderValue: '', copiedHeaderCount: 0 });
                 document.execCommand = (command) => {
                     if (command !== 'copy') return false;
-                    Object.assign(window, { copiedHeaderValue: window.getSelection()?.toString() });
+                    const win = window as unknown as { copiedHeaderValue: string; copiedHeaderCount: number };
+                    win.copiedHeaderValue = window.getSelection()?.toString() ?? '';
+                    win.copiedHeaderCount += 1;
                     return true;
                 };
             });
@@ -525,18 +528,33 @@ for (const language of ['en', 'ar']) {
                     expect(await allocationValue.evaluate((node) => node.scrollWidth > node.clientWidth)).toBe(true);
                 }
             }
+            let expectedCopies = 0;
             for (const key of ['Enter', 'Space']) {
+                await page.evaluate(() => {
+                    (window as unknown as { copiedHeaderValue: string }).copiedHeaderValue = '';
+                });
                 await allocationValue.focus();
                 await expect(allocationValue).toBeFocused();
                 await allocationValue.press(key);
+                expectedCopies += 1;
                 expect(
-                    await page.evaluate(() => (window as unknown as { copiedHeaderValue: string }).copiedHeaderValue),
-                ).toBe(value);
+                    await page.evaluate(() => {
+                        const win = window as unknown as { copiedHeaderValue: string; copiedHeaderCount: number };
+                        return { value: win.copiedHeaderValue, count: win.copiedHeaderCount };
+                    }),
+                ).toEqual({ value, count: expectedCopies });
             }
+            await page.evaluate(() => {
+                (window as unknown as { copiedHeaderValue: string }).copiedHeaderValue = '';
+            });
             await allocationValue.click();
+            expectedCopies += 1;
             expect(
-                await page.evaluate(() => (window as unknown as { copiedHeaderValue: string }).copiedHeaderValue),
-            ).toBe(value);
+                await page.evaluate(() => {
+                    const win = window as unknown as { copiedHeaderValue: string; copiedHeaderCount: number };
+                    return { value: win.copiedHeaderValue, count: win.copiedHeaderCount };
+                }),
+            ).toEqual({ value, count: expectedCopies });
             await page.setViewportSize({ width: 390, height: 900 });
             const toggle = header.locator('button.w-full');
             await toggle.focus();
