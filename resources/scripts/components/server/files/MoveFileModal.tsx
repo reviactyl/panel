@@ -218,7 +218,7 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
                     </p>
                 </div>
 
-                <FlashMessageRender key={'files:move-modal'} />
+                <FlashMessageRender byKey={'files:move-modal'} />
 
                 <div className={`border border-gray-700 rounded-ui overflow-hidden bg-gray-800/40`}>
                     <div

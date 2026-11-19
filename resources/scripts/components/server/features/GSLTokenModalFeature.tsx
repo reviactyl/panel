@@ -72,7 +72,7 @@ const GSLTokenModalFeature = () => {
                 closeOnBackground={false}
                 showSpinnerOverlay={loading}
             >
-                <FlashMessageRender key={'feature:gslToken'} className='mb-4' />
+                <FlashMessageRender byKey={'feature:gslToken'} className='mb-4' />
                 <Form>
                     <h2 className='text-2xl mb-4 text-gray-100'>Invalid GSL token!</h2>
                     <p className='mt-4'>

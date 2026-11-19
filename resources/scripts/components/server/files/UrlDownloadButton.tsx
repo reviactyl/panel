@@ -135,7 +135,7 @@ export default ({ className }: WithClassname & { compact?: boolean }) => {
                 </Tooltip>
             )}
             <Dialog open={open} onClose={() => setOpen(false)} title={t('url-download.button')}>
-                <FlashMessageRender key={'files:url-download-modal'} />
+                <FlashMessageRender byKey={'files:url-download-modal'} />
                 <Formik
                     onSubmit={submit}
                     validationSchema={urlSchema}
