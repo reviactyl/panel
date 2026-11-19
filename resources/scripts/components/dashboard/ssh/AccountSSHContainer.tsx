@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useState } from 'react';
 import ContentBox from '@/reviactyl/elements/ContentBox';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import FlashMessageRender from '@/components/FlashMessageRender';
@@ -11,18 +11,33 @@ import { format } from 'date-fns';
 import CreateSSHKeyForm from '@/components/dashboard/ssh/CreateSSHKeyForm';
 import DeleteSSHKeyButton from '@/components/dashboard/ssh/DeleteSSHKeyButton';
 import { useTranslation } from 'react-i18next';
+import Button from '@/reviactyl/elements/Button';
+import { httpErrorToHuman } from '@/api/http';
 
 export default () => {
     const { t } = useTranslation('dashboard/account');
-    const { clearAndAddHttpError } = useFlashKey('account');
-    const { data, isValidating, error } = useSSHKeys({
+    const { clearFlashes: clearListError, addError: addListError } = useFlashKey('ssh-key-list');
+    const [loadFailed, setLoadFailed] = useState(false);
+    const { data, isValidating, mutate } = useSSHKeys({
         revalidateOnMount: true,
         revalidateOnFocus: false,
+        onError: (error) => {
+            setLoadFailed(true);
+            clearListError();
+            addListError(httpErrorToHuman(error));
+        },
     });
 
-    useEffect(() => {
-        clearAndAddHttpError(error);
-    }, [error]);
+    const retry = () => {
+        void mutate()
+            .then((keys) => {
+                if (keys !== undefined) {
+                    setLoadFailed(false);
+                    clearListError();
+                }
+            })
+            .catch(() => undefined);
+    };
 
     return (
         <AccountContentBlock title={t('ssh.title')}>
@@ -32,9 +47,17 @@ export default () => {
                     <CreateSSHKeyForm />
                 </ContentBox>
                 <ContentBox insetTitle title={t('ssh.title')} className='min-w-0'>
-                    <SpinnerOverlay visible={!data && !error && isValidating} />
-                    {!data && !error && <p className='text-center text-sm'>{t('overview.loading')}</p>}
-                    {data?.length === 0 && <p className='text-center text-sm'>{t('ssh.not-exist')}</p>}
+                    <FlashMessageRender byKey={'ssh-key-list'} />
+                    <SpinnerOverlay visible={!data && isValidating} />
+                    {loadFailed && (
+                        <div className='text-center'>
+                            <Button type='button' disabled={isValidating} onClick={retry}>
+                                {t('api.retry')}
+                            </Button>
+                        </div>
+                    )}
+                    {!data && !loadFailed && <p className='text-center text-sm'>{t('overview.loading')}</p>}
+                    {data?.length === 0 && !loadFailed && <p className='text-center text-sm'>{t('ssh.not-exist')}</p>}
                     {data?.map((key, index) => (
                         <GreyRowBox
                             key={key.fingerprint}

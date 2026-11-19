@@ -7,6 +7,7 @@ import Input, { Textarea } from '@/reviactyl/elements/Input';
 import { useFlashKey } from '@/plugins/useFlash';
 import { createSSHKey, useSSHKeys } from '@/api/account/ssh-keys';
 import { useTranslation } from 'react-i18next';
+import { httpErrorToHuman } from '@/api/http';
 
 interface Values {
     name: string;
@@ -15,18 +16,18 @@ interface Values {
 
 export default () => {
     const { t } = useTranslation('dashboard/account');
-    const { clearAndAddHttpError } = useFlashKey('account');
+    const { clearFlashes, addError } = useFlashKey('account');
     const { mutate } = useSSHKeys();
 
     const submit = (values: Values, { setSubmitting, resetForm }: FormikHelpers<Values>) => {
-        clearAndAddHttpError();
+        clearFlashes();
 
         createSSHKey(values.name, values.publicKey)
             .then((key) => {
                 resetForm();
-                mutate((data) => (data || []).concat(key));
+                mutate((data) => (data || []).concat(key), false);
             })
-            .catch((error) => clearAndAddHttpError(error))
+            .catch((error) => addError(httpErrorToHuman(error)))
             .then(() => setSubmitting(false));
     };
 
@@ -54,7 +55,9 @@ export default () => {
                             <Field className={'h-32'} name={'publicKey'} as={Textarea} />
                         </FormikFieldWrapper>
                         <div className={`flex justify-end mt-6`}>
-                            <Button>{t('ssh.create.save')}</Button>
+                            <Button type={'submit'} disabled={isSubmitting}>
+                                {t('ssh.create.save')}
+                            </Button>
                         </div>
                     </Form>
                 )}
