@@ -11,12 +11,14 @@ use App\Models\Server;
 use App\Models\Task;
 use App\Services\Servers\StartupCommandService;
 use App\Transformers\Api\Client\EggVariableTransformer;
+use Cron\CronExpression;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
@@ -212,6 +214,10 @@ class SubuserPreviewResourceSimulator
             return $this->createBackup($request, $context);
         }
 
+        if (str_ends_with($path, '/backups/{backup}/rename')) {
+            return $this->renameBackup($request, $context);
+        }
+
         if (str_ends_with($path, '/backups/{backup}/lock')) {
             return $this->toggleBackupLock($request, $context);
         }
@@ -364,6 +370,8 @@ class SubuserPreviewResourceSimulator
         $id = (string) $request->route('schedule');
         $item = $this->scheduleResource($context, $id);
         $attributes = array_replace($item['attributes'], $this->scheduleAttributes($request, (int) $id));
+        $attributes['created_at'] = $item['attributes']['created_at'];
+        $attributes['last_run_at'] = $item['attributes']['last_run_at'];
         $attributes['relationships'] = $item['attributes']['relationships'] ?? ['tasks' => ['object' => 'list', 'data' => []]];
         $item['attributes'] = $attributes;
         $this->storeOverlay($context, 'schedules', $id, $item);
@@ -630,6 +638,18 @@ class SubuserPreviewResourceSimulator
         $this->storeOverlay($context, 'backups', $uuid, $item);
 
         return response()->json($item, 201);
+    }
+
+    private function renameBackup(Request $request, SubuserPreviewContext $context): JsonResponse
+    {
+        $this->authorize($context, Permission::ACTION_BACKUP_CREATE);
+        $data = validator($request->all(), ['name' => 'required|string|max:191'])->validate();
+        $uuid = (string) $request->route('backup');
+        $item = $this->backupResource($context, $uuid);
+        $item['attributes']['name'] = $data['name'];
+        $this->storeOverlay($context, 'backups', $uuid, $item);
+
+        return response()->json($item);
     }
 
     /**
@@ -1425,15 +1445,21 @@ class SubuserPreviewResourceSimulator
      */
     private function validateSchedule(Request $request): void
     {
-        validator($request->all(), [
+        $data = validator($request->all(), [
             'name' => 'required|string|max:191',
             'is_active' => 'filled|boolean',
-            'minute' => 'required|string',
-            'hour' => 'required|string',
-            'day_of_month' => 'required|string',
-            'day_of_week' => 'required|string',
+            'minute' => ['required', 'string', 'regex:/^\\S+$/'],
+            'hour' => ['required', 'string', 'regex:/^\\S+$/'],
+            'day_of_month' => ['required', 'string', 'regex:/^\\S+$/'],
+            'month' => ['required', 'string', 'regex:/^\\S+$/'],
+            'day_of_week' => ['required', 'string', 'regex:/^\\S+$/'],
             'only_when_online' => 'sometimes|boolean',
         ])->validate();
+
+        $expression = implode(' ', [$data['minute'], $data['hour'], $data['day_of_month'], $data['month'], $data['day_of_week']]);
+        if (! CronExpression::isValidExpression($expression)) {
+            throw ValidationException::withMessages(['cron' => 'The cron data provided does not evaluate to a valid expression.']);
+        }
     }
 
     /**
