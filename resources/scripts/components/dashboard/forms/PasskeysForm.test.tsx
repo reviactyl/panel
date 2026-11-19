@@ -5,7 +5,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { SWRConfig, useSWRConfig } from 'swr';
 import { CreatePasskeysForm, ListPasskeysForm } from './PasskeysForm';
 
-const mocks = vi.hoisted(() => ({ get: vi.fn(), remove: vi.fn(), error: vi.fn(), clear: vi.fn() }));
+const mocks = vi.hoisted(() => ({
+    get: vi.fn(),
+    remove: vi.fn(),
+    error: vi.fn(),
+    clear: vi.fn(),
+    flashes: {} as Record<string, string>,
+}));
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 vi.mock('@/api/account/passkeys', () => ({
     getAccountPasskeys: mocks.get,
@@ -13,9 +19,21 @@ vi.mock('@/api/account/passkeys', () => ({
     registerAccountPasskey: vi.fn(),
 }));
 vi.mock('@/plugins/useFlash', () => ({
-    useFlashKey: () => ({ clearAndAddHttpError: mocks.error, clearFlashes: mocks.clear }),
+    useFlashKey: (key: string) => ({
+        clearAndAddHttpError: (error: Error) => {
+            mocks.flashes[key] = error.message;
+            mocks.error(error);
+        },
+        clearFlashes: () => {
+            delete mocks.flashes[key];
+            mocks.clear();
+        },
+    }),
 }));
-vi.mock('@/components/FlashMessageRender', () => ({ default: () => null }));
+vi.mock('@/components/FlashMessageRender', () => ({
+    default: ({ byKey }: { byKey?: string }) =>
+        byKey && mocks.flashes[byKey] ? <div role='alert'>{mocks.flashes[byKey]}</div> : null,
+}));
 vi.mock('framer-motion', async () => {
     const actual = await vi.importActual<typeof import('framer-motion')>('framer-motion');
     const { forwardRef } = await import('react');
@@ -62,6 +80,7 @@ const render = async (children: ReactNode = <ListPasskeysForm />) => {
 beforeEach(() => {
     vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
     vi.resetAllMocks();
+    mocks.flashes = {};
     mocks.get.mockResolvedValue([passkey]);
     container = document.createElement('div');
     document.body.append(container);
@@ -96,6 +115,7 @@ describe('passkey deletion', () => {
             expect(mocks.remove).toHaveBeenCalledTimes(1);
             const error = new Error(message);
             await act(async () => request.reject(error));
+            expect(getByRole(document.body, 'dialog').textContent).toContain(message);
             expect(getByRole(document.body, 'dialog').textContent).toContain('Laptop');
             expect(password.value).toBe('incorrect');
             expect(confirm.disabled).toBe(false);
