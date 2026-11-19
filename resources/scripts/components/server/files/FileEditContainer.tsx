@@ -170,10 +170,8 @@ const FileEditContainer = () => {
             <FlashMessageRender byKey='files:view' className='mb-4' />
             <ErrorBoundary>
                 <Card className='mt-2 mb-1 rounded-b-none! px-2! py-3!'>
-                    <div className='flex flex-wrap md:flex-nowrap items-center gap-2 mt-2'>
-                        <div className='order-3 w-full min-w-0 md:order-0 md:flex-1 md:w-auto bg-gray-800 rounded-ui py-2 pl-2'>
-                            <FileManagerBreadcrumbs withinFileEditor isNewFile={isNewFile} />
-                        </div>
+                    <div className='min-w-0 rounded-ui bg-gray-800 px-2 py-2'>
+                        <FileManagerBreadcrumbs withinFileEditor isNewFile={isNewFile} />
                     </div>
                 </Card>
             </ErrorBoundary>
