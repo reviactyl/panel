@@ -110,11 +110,11 @@ class AlertVisibilityService
 
     private function matchesUser(Alert $alert, User $user): bool
     {
-        if ($alert->audience === 'admins' && ! $user->root_admin) {
+        if ($alert->audience === 'admins' && ! $user->isAdmin()) {
             return false;
         }
 
-        if ($alert->audience === 'users' && $user->root_admin) {
+        if ($alert->audience === 'users' && $user->isAdmin()) {
             return false;
         }
 
@@ -124,7 +124,8 @@ class AlertVisibilityService
         }
 
         $languages = $alert->targetList('languages');
-        if (! empty($languages) && ! in_array($user->language, $languages, true)) {
+        $language = $user->language === 'geo' ? app()->getLocale() : $user->language;
+        if (! empty($languages) && ! in_array($language, $languages, true)) {
             return false;
         }
 

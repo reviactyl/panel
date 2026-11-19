@@ -6,10 +6,15 @@ use App\Exceptions\Model\DataValidationException;
 use App\Http\Middleware\RequireTwoFactorAuthentication;
 use App\Models\Alert;
 use App\Models\AlertInteraction;
+use App\Models\ApiKey;
 use App\Models\Permission;
+use App\Models\Role;
 use App\Models\User;
+use App\Services\Acl\Api\AdminAcl;
 use App\Services\Alerts\AlertVisibilityService;
+use App\Services\Helpers\GeoIPService;
 use Carbon\CarbonImmutable;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class AlertControllerTest extends ClientApiIntegrationTestCase
 {
@@ -94,6 +99,93 @@ class AlertControllerTest extends ClientApiIntegrationTestCase
             [$users->uuid, $specific->uuid, $noTwoFactor->uuid, $recent->uuid],
             $this->visibleAlerts($newcomer),
         );
+    }
+
+    public function test_delegated_administrators_only_match_the_admin_audience(): void
+    {
+        $admin = User::factory()->create(['root_admin' => false]);
+        $admin->roles()->attach(Role::factory()->create(['permissions' => ['nodes.read']]));
+        $admins = Alert::factory()->create(['audience' => 'admins']);
+        $users = Alert::factory()->create(['audience' => 'users']);
+
+        $this->assertSame([$admins->uuid], $this->visibleAlerts($admin));
+        $this->postJson("/api/client/alerts/$admins->uuid/dismiss")->assertNoContent();
+        $this->postJson("/api/client/alerts/$users->uuid/dismiss")->assertNotFound();
+    }
+
+    public function test_geo_language_targets_use_the_resolved_request_locale(): void
+    {
+        $user = User::factory()->create(['language' => 'geo']);
+        $german = Alert::factory()->create(['targeting' => ['languages' => ['de']]]);
+        $english = Alert::factory()->create(['targeting' => ['languages' => ['en']]]);
+        $this->mock(GeoIPService::class)->shouldReceive('getCountryInfo')->andReturn(['country' => 'Germany', 'code' => 'DE']);
+
+        $this->assertSame([$german->uuid], $this->visibleAlerts($user));
+        $this->assertSame('de', app()->getLocale());
+        $this->assertSame('geo', $user->fresh()->language);
+        $this->postJson("/api/client/alerts/$german->uuid/dismiss")->assertNoContent();
+        $this->postJson("/api/client/alerts/$english->uuid/dismiss")->assertNotFound();
+    }
+
+    public function test_impersonated_geo_user_receives_alerts_for_the_resolved_locale(): void
+    {
+        $admin = User::factory()->create(['root_admin' => true, 'language' => 'en']);
+        $user = User::factory()->create(['language' => 'geo']);
+        $german = Alert::factory()->create(['targeting' => ['languages' => ['de']]]);
+        $english = Alert::factory()->create(['targeting' => ['languages' => ['en']]]);
+        $this->mock(GeoIPService::class)->shouldReceive('getCountryInfo')->andReturn(['country' => 'Germany', 'code' => 'DE']);
+
+        $admin->withAccessToken((new ApiKey())->forceFill([
+            'key_type' => ApiKey::TYPE_APPLICATION,
+            'r_impersonation' => AdminAcl::READ | AdminAcl::WRITE,
+        ]));
+        $this->actingAs($admin, 'sanctum')->withHeader('X-Execution-User', $user->uuid);
+
+        $this->getJson('/api/client/alerts')->assertOk()
+            ->assertJsonCount(1, 'data')->assertJsonPath('data.0.attributes.uuid', $german->uuid);
+        $this->postJson("/api/client/alerts/$english->uuid/dismiss")->assertNotFound();
+        $this->postJson("/api/client/alerts/$german->uuid/dismiss")->assertNoContent();
+        $this->assertDatabaseHas('alert_interactions', ['alert_id' => $german->id, 'user_id' => $user->id]);
+    }
+
+    #[DataProvider('serverRolePermissions')]
+    public function test_server_alert_access_follows_role_permissions(array $permissions, bool $allowed): void
+    {
+        [, $server] = $this->generateTestAccount();
+        $user = User::factory()->create(['root_admin' => false]);
+        $user->roles()->attach(Role::factory()->create(['permissions' => $permissions]));
+        $alert = Alert::factory()->create([
+            'targeting' => ['nodes' => [$server->node_id]],
+            'buttons' => [['label' => 'Open', 'url' => '/account']],
+        ]);
+        $context = ['placement' => Alert::PLACEMENT_SERVER, 'server' => $server->uuid];
+
+        $this->actingAs($user);
+        foreach ([$server->uuid, $server->uuidShort] as $identifier) {
+            $response = $this->getJson("/api/client/alerts?placement=server&server=$identifier");
+            if ($allowed) {
+                $response->assertOk()->assertJsonPath('data.0.attributes.uuid', $alert->uuid);
+            } else {
+                $response->assertNotFound();
+            }
+        }
+
+        $this->postJson("/api/client/alerts/$alert->uuid/click", $context)->assertStatus($allowed ? 204 : 404);
+        $this->postJson("/api/client/alerts/$alert->uuid/dismiss", $context)->assertStatus($allowed ? 204 : 404);
+        $this->getJson('/api/client/alerts?placement=server&server=missing')->assertNotFound();
+        $this->assertSame($allowed ? 1 : 0, AlertInteraction::query()->where('user_id', $user->id)->count());
+    }
+
+    public static function serverRolePermissions(): array
+    {
+        return [
+            'read' => [['servers.read'], true],
+            'update' => [['servers.update'], true],
+            'unrelated administrator' => [['nodes.read'], false],
+            'create only' => [['servers.create'], false],
+            'delete only' => [['servers.delete'], false],
+            'empty role' => [[], false],
+        ];
     }
 
     public function test_alerts_can_target_people_by_their_servers(): void
