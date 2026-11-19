@@ -65,6 +65,40 @@ describe('navbar language trigger accessibility', () => {
         await render();
         const button = getByRole(container, 'button', { name: 'Panel Language: en' });
         expect(button.getAttribute('aria-expanded')).toBe('false');
+        expect(button.textContent).toBe('EN');
+    });
+
+    it.each(['eo', 'fr'])('shows a visible locale fallback for %s without a matching flag', async (locale) => {
+        mocks.state.user.data.language = locale;
+        vi.mocked(fetch).mockResolvedValue({
+            json: async () => ({ ...languages, fr: { name: 'Français', flag: '' } }),
+        } as Response);
+        await render();
+        const button = getByRole(container, 'button', {
+            name: `Panel Language: ${locale === 'fr' ? 'Français' : 'eo'}`,
+        });
+        expect(button.textContent).toBe(locale.toUpperCase());
+    });
+
+    it('dismisses with Escape from a language option and restores trigger focus', async () => {
+        await render();
+        const button = trigger();
+        await act(async () => button.click());
+        const french = getByRole<HTMLButtonElement>(container, 'button', { name: 'Français' });
+        french.focus();
+        await act(async () => french.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })));
+        expect(button.getAttribute('aria-expanded')).toBe('false');
+        expect(document.activeElement).toBe(button);
+        expect(mocks.updateAccountLanguage).not.toHaveBeenCalled();
+    });
+
+    it('also dismisses with Escape after focus leaves the switcher', async () => {
+        await render();
+        const button = trigger();
+        await act(async () => button.click());
+        await act(async () => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })));
+        expect(button.getAttribute('aria-expanded')).toBe('false');
+        expect(document.activeElement).toBe(button);
     });
 
     it('exposes the current language and expanded state through toggle and outside dismissal', async () => {
@@ -74,6 +108,8 @@ describe('navbar language trigger accessibility', () => {
         await act(async () => button.click());
         expect(button.getAttribute('aria-expanded')).toBe('true');
         expect(getByRole(container, 'button', { name: 'Français' })).toBeDefined();
+        expect(getByRole(container, 'button', { name: 'English' }).getAttribute('aria-pressed')).toBe('true');
+        expect(getByRole(container, 'button', { name: 'Français' }).getAttribute('aria-pressed')).toBe('false');
         await act(async () => button.click());
         expect(button.getAttribute('aria-expanded')).toBe('false');
         await act(async () => button.click());
@@ -90,6 +126,7 @@ describe('navbar language trigger accessibility', () => {
         expect(mocks.updateUserData).toHaveBeenCalledExactlyOnceWith({ language: 'fr' });
         const button = getByRole(container, 'button', { name: 'Panel Language: Français' });
         expect(button.getAttribute('aria-expanded')).toBe('false');
+        expect(document.activeElement).toBe(button);
     });
 
     it('updates the accessible name after external language changes', async () => {
