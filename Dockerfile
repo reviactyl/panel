@@ -18,7 +18,7 @@ RUN corepack enable \
 
 # Stage 1:
 # Build the actual container with all of the needed PHP dependencies that will run the application.
-FROM --platform=$TARGETOS/$TARGETARCH php:8.3-fpm-alpine@sha256:1314fb30ec37592d5845e5a160d522c0e680972aa534549940b8d73bde88481a
+FROM --platform=$TARGETOS/$TARGETARCH php:8.3-fpm-alpine@sha256:511af6fa3ef55c4ea0c68bb47096ba4b81771ab4949bde7813807bf177efda11
 ENV PANEL_INSTALLATION_TYPE=docker
 WORKDIR /app
 COPY . ./
