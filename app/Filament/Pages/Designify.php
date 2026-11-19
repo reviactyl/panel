@@ -763,7 +763,14 @@ class Designify extends Page implements HasSchemas
                 continue;
             }
 
-            if (in_array($key, ['designify:site_image', 'designify:site_favicon'], true)) {
+            if (in_array($key, [
+                'designify:site_image',
+                'designify:site_favicon',
+                'designify:background',
+                'designify:errors:403:image',
+                'designify:errors:404:image',
+                'designify:errors:500:image',
+            ], true)) {
                 $value = SiteImageService::normalizeUrl($value);
             }
 

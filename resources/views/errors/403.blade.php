@@ -17,8 +17,8 @@
 </head>
 <body class="bg-[var(--error-background)] text-[var(--error-text)] min-h-screen flex items-center justify-center p-6">
     <div class="max-w-2xl w-full text-center space-y-8">
-        <img data-designify-error-image @if(config('designify.errors.403.image')) src="{{ config('designify.errors.403.image') }}" @endif alt="403" class="mx-auto max-h-64 object-contain mb-8 {{ config('designify.errors.403.image') ? '' : 'hidden' }}">
-        <div data-designify-error-code class="text-9xl font-bold opacity-10 absolute inset-0 items-center justify-center pointer-events-none select-none {{ config('designify.errors.403.image') ? 'hidden' : 'flex' }}">403</div>
+        <img data-designify-error-image @if($panelConfiguration['errors'][403]['image']) src="{{ $panelConfiguration['errors'][403]['image'] }}" @endif alt="403" class="mx-auto max-h-64 object-contain mb-8 {{ $panelConfiguration['errors'][403]['image'] ? '' : 'hidden' }}">
+        <div data-designify-error-code class="text-9xl font-bold opacity-10 absolute inset-0 items-center justify-center pointer-events-none select-none {{ $panelConfiguration['errors'][403]['image'] ? 'hidden' : 'flex' }}">403</div>
 
         <div class="relative z-10 space-y-4">
             <h1 data-designify-error-title class="text-4xl md:text-5xl font-bold tracking-tight">

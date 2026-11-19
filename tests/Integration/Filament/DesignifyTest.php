@@ -18,6 +18,43 @@ use Tests\Integration\IntegrationTestCase;
 
 class DesignifyTest extends IntegrationTestCase
 {
+    public function test_legacy_image_paths_preview_and_render_after_saving(): void
+    {
+        $this->actingAs(User::factory()->create(['root_admin' => true]));
+        Filament::setCurrentPanel(Filament::getPanel('admin'));
+        $page = Livewire::test(Designify::class)
+            ->set('data.designify:background', '/public/reviactyl/logo.png');
+        foreach ([403, 404, 500] as $status) {
+            $page->set('data.designify:errors:'.$status.':image', '/public/reviactyl/icon.png');
+        }
+
+        $page->assertDispatched('designify-preview-updated', fn ($name, $params) => $params['settings']['background'] === '/reviactyl/logo.png'
+            && $params['settings']['errors'][403]['image'] === '/reviactyl/icon.png'
+            && $params['settings']['errors'][404]['image'] === '/reviactyl/icon.png'
+            && $params['settings']['errors'][500]['image'] === '/reviactyl/icon.png');
+        $page->call('save')->assertHasNoErrors();
+
+        $settings = ['background' => '/public/reviactyl/logo.png'];
+        foreach ([403, 404, 500] as $status) {
+            $settings['errors:'.$status.':image'] = '/public/reviactyl/icon.png';
+        }
+        foreach ($settings as $key => $value) {
+            $this->assertDatabaseHas('settings', [
+                'key' => 'settings::designify:'.$key,
+                'value' => $key === 'background' ? '/reviactyl/logo.png' : $value,
+            ]);
+            config(['designify.'.str_replace(':', '.', $key) => $value]);
+        }
+        app()->forgetInstance(DesignifyComposer::class);
+
+        $this->get('/')->assertOk()->assertSee('--background: url(/reviactyl/logo.png);', false);
+        foreach ([403, 404, 500] as $status) {
+            $this->get('/preview/'.$status)->assertStatus($status)
+                ->assertSee('src="/reviactyl/icon.png"', false)
+                ->assertDontSee('src="/public/reviactyl/icon.png"', false);
+        }
+    }
+
     public function test_saved_font_choices_keep_their_values_and_render_the_actual_family(): void
     {
         $this->actingAs(User::factory()->create(['root_admin' => true]));
