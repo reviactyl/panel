@@ -418,12 +418,27 @@ class SubuserPreviewSimulator
                 'files.*.mode' => 'required|numeric',
             ])->validate();
             $root = (string) $request->input('root', '/');
-            $this->updateState($context, function (array $state) use ($context, $request, $root) {
-                foreach ((array) $request->input('files', []) as $file) {
-                    $path = $this->joinPath($root, (string) Arr::get($file, 'file'));
+            $state = $context->session()->state ?? [];
+            $directories = [];
+            $getDirectory = function (string $directory) use ($context, &$directories): array {
+                return $directories[$directory] ??= $this->fileRepository
+                    ->setServer($context->session()->server)
+                    ->getDirectory($directory);
+            };
+
+            $modes = [];
+            foreach ((array) $request->input('files', []) as $file) {
+                $path = $this->joinPath($root, (string) Arr::get($file, 'file'));
+                $this->resolveFileEntry($context, $state, $path, $getDirectory);
+                $modes[$path] = str_pad((string) Arr::get($file, 'mode'), 4, '0', STR_PAD_LEFT);
+            }
+
+            $cachedDirectory = static fn (string $directory): array => $directories[$directory] ?? [];
+            $this->updateState($context, function (array $state) use ($context, $modes, $cachedDirectory) {
+                foreach ($modes as $path => $mode) {
                     $state['files'][$path] = array_replace(
-                        $this->resolveFileEntry($context, $state, $path),
-                        ['mode_bits' => str_pad((string) Arr::get($file, 'mode'), 4, '0', STR_PAD_LEFT)]
+                        $this->resolveFileEntry($context, $state, $path, $cachedDirectory),
+                        ['mode_bits' => $mode]
                     );
                 }
 
@@ -616,9 +631,10 @@ class SubuserPreviewSimulator
      * @param  SubuserPreviewContext  $context  The preview context used to access the live server.
      * @param  array  $state  The current preview state.
      * @param  string  $path  The preview path to resolve.
+     * @param  callable(string): array|null  $getDirectory  An alternate directory lookup for batch operations.
      * @return array The resolved file entry.
      */
-    private function resolveFileEntry(SubuserPreviewContext $context, array $state, string $path): array
+    private function resolveFileEntry(SubuserPreviewContext $context, array $state, string $path, ?callable $getDirectory = null): array
     {
         if (array_key_exists($path, $state['files'] ?? [])) {
             $entry = $state['files'][$path];
@@ -639,9 +655,11 @@ class SubuserPreviewSimulator
         }
 
         $livePath = $this->livePathForPreviewPath($state, $path);
-        $entry = collect($this->fileRepository
-            ->setServer($context->session()->server)
-            ->getDirectory($this->parentPath($livePath)))
+        $directory = $this->parentPath($livePath);
+        $entries = $getDirectory === null
+            ? $this->fileRepository->setServer($context->session()->server)->getDirectory($directory)
+            : $getDirectory($directory);
+        $entry = collect($entries)
             ->first(fn (array $entry) => (string) Arr::get($entry, 'name') === basename($livePath));
 
         if (! is_array($entry)) {

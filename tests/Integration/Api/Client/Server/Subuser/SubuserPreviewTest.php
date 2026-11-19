@@ -15,6 +15,7 @@ use App\Repositories\Agent\DaemonFileRepository;
 use App\Repositories\Agent\DaemonPowerRepository;
 use App\Repositories\Agent\DaemonRevocationRepository;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
@@ -596,6 +597,42 @@ class SubuserPreviewTest extends ClientApiIntegrationTestCase
             ->assertJsonPath('data.0.attributes.modified_at', $directory['modified']);
         $this->getJson($this->link($server, 'files/list').'?directory=/live-dir')
             ->assertOk()->assertJsonCount(0, 'data');
+    }
+
+    public function test_chmod_reads_each_live_directory_once_and_outside_the_state_transaction(): void
+    {
+        [$owner, $server, $target] = $this->models();
+        $token = $this->actingAs($owner)->postJson($this->previewEndpoint($server, $target))->json('token');
+        $level = DB::transactionLevel();
+
+        $this->mock(DaemonFileRepository::class, function (MockInterface $mock) use ($level) {
+            $mock->shouldReceive('setServer')->andReturnSelf();
+            $mock->expects('getDirectory')->with('/')->andReturnUsing(function () use ($level) {
+                $this->assertSame($level, DB::transactionLevel());
+
+                // Simulate an overlapping preview edit between the snapshot and the chmod update.
+                $session = SubuserPreviewSession::query()->firstOrFail();
+                $session->update(['state' => array_replace($session->state ?? [], [
+                    'files' => ['/first.txt' => ['name' => 'first.txt', 'is_file' => true, 'size' => 42]],
+                ])]);
+
+                return [
+                    ['name' => 'first.txt', 'file' => true, 'size' => 10],
+                    ['name' => 'second.txt', 'file' => true, 'size' => 20],
+                ];
+            });
+        });
+
+        $this->withPreviewToken($token)->postJson($this->link($server, 'files/chmod'), [
+            'root' => '/',
+            'files' => [['file' => 'first.txt', 'mode' => '0600'], ['file' => 'second.txt', 'mode' => '0640']],
+        ])->assertNoContent();
+
+        $files = SubuserPreviewSession::query()->firstOrFail()->state['files'];
+        $this->assertSame(42, $files['/first.txt']['size']);
+        $this->assertSame('0600', $files['/first.txt']['mode_bits']);
+        $this->assertSame(20, $files['/second.txt']['size']);
+        $this->assertSame('0640', $files['/second.txt']['mode_bits']);
     }
 
     public function test_live_file_metadata_survives_rename_copy_and_chmod(): void
