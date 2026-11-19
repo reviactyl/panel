@@ -3,10 +3,13 @@ import { createRoot, type Root } from 'react-dom/client';
 import { createStore, StoreProvider } from 'easy-peasy';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import flashes from '@/state/flashes';
+import user from '@/state/user';
+import updateAccountAvatar from '@/api/account/updateAccountAvatar';
 import logout from '@/api/auth/logout';
 import AccountOverviewContainer from './AccountOverviewContainer';
 
 vi.mock('@/api/auth/logout', () => ({ default: vi.fn() }));
+vi.mock('@/api/account/updateAccountAvatar', () => ({ default: vi.fn() }));
 vi.mock('@/api/auth/completeLogout', () => ({
     default: async () => window.location.replace('/auth/login'),
     prepareLogout: vi.fn().mockResolvedValue(undefined),
@@ -26,8 +29,7 @@ vi.mock('@/reviactyl/elements/SpinnerOverlay', () => ({
     default: ({ visible }: { visible: boolean }) => (visible ? <div role='status'>Loading</div> : null),
 }));
 vi.mock('@/reviactyl/elements/TitledGreyBox', () => ({ default: () => null }));
-vi.mock('@/reviactyl/ui/Avatar', () => ({ default: () => null }));
-vi.mock('@/components/dashboard/AvatarSelector', () => ({ default: () => null }));
+vi.mock('@/reviactyl/ui/Avatar', () => ({ default: () => null, ANIMATED_AVATAR_STYLES: ['loops', 'waves'] }));
 vi.mock('@/components/dashboard/forms/SocialLoginsContainer', () => ({ default: () => null }));
 vi.mock('@/components/dashboard/forms/UpdatePasswordForm', () => ({ default: () => null }));
 vi.mock('@/components/dashboard/forms/UpdateEmailAddressForm', () => ({ default: () => null }));
@@ -51,11 +53,31 @@ const deferred = () => {
 const makeStore = () =>
     createStore({
         flashes,
-        user: { data: { name_first: 'Demo', name_last: 'User', rootAdmin: false, adminAccess: false } },
+        user: {
+            ...user,
+            data: {
+                uuid: 'demo',
+                username: 'demo',
+                name_first: 'Demo',
+                name_last: 'User',
+                email: 'demo@example.com',
+                language: 'en',
+                fileEditor: 'codemirror',
+                avatarStyle: 'gravatar',
+                avatarAnimated: false,
+                archiveFormat: 'tar.gz' as const,
+                rootAdmin: false,
+                adminAccess: false,
+                rolePermissions: [],
+                useTotp: false,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            },
+        },
         settings: { data: { name: 'Panel' } },
     });
 
-describe('account logout', () => {
+describe('account overview', () => {
     let container: HTMLDivElement;
     let root: Root;
     let store: ReturnType<typeof makeStore>;
@@ -63,6 +85,7 @@ describe('account logout', () => {
     beforeEach(async () => {
         vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
         vi.mocked(logout).mockReset();
+        vi.mocked(updateAccountAvatar).mockReset();
         window.location.href = 'http://localhost/account';
         store = makeStore();
         container = document.createElement('div');
@@ -86,6 +109,45 @@ describe('account logout', () => {
     const clickLogout = async () => {
         await act(async () => container.querySelector('button')!.click());
     };
+
+    it('shows failed avatar saves in the Profile Picture card, restores the selection, and allows retry', async () => {
+        const request = deferred();
+        vi.mocked(updateAccountAvatar).mockReturnValueOnce(request.promise).mockResolvedValueOnce(undefined);
+        const profilePicture = Array.from(container.querySelectorAll('div')).find(
+            (element) => element.firstElementChild?.textContent === 'overview.profile-picture',
+        )!;
+        const initials = () =>
+            profilePicture.querySelector<HTMLButtonElement>('button[aria-label="avatar.styles.initials"]')!;
+        await act(async () => initials().click());
+        expect(initials().disabled).toBe(true);
+        expect(store.getState().user.data.avatarStyle).toBe('initials');
+
+        await act(async () => request.reject(new Error('Avatar save unavailable')));
+        expect(profilePicture.textContent).toContain('Avatar save unavailable');
+        expect(store.getState().user.data.avatarStyle).toBe('gravatar');
+        expect(initials().getAttribute('aria-pressed')).toBe('false');
+        expect(initials().disabled).toBe(false);
+
+        await act(async () => initials().click());
+        expect(profilePicture.textContent).not.toContain('Avatar save unavailable');
+        expect(store.getState().user.data.avatarStyle).toBe('initials');
+        expect(initials().getAttribute('aria-pressed')).toBe('true');
+        expect(updateAccountAvatar).toHaveBeenCalledTimes(2);
+    });
+
+    it.each([
+        [false, true, 'overview.administrator'],
+        [true, true, 'overview.administrator'],
+        [false, false, 'Panel overview.user'],
+    ])(
+        'labels rootAdmin=%s adminAccess=%s consistently with admin navigation',
+        async (rootAdmin, adminAccess, label) => {
+            await act(async () => store.getActions().user.updateUserData({ rootAdmin, adminAccess }));
+            const adminLink = container.querySelector('a[href="/admin"]');
+            expect(container.textContent).toContain(label);
+            expect(Boolean(adminLink)).toBe(adminAccess);
+        },
+    );
 
     it('keeps the account page and other messages after a network failure, then allows a successful retry', async () => {
         const first = deferred();
