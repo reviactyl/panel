@@ -460,3 +460,90 @@ for (const language of ['ar', 'en']) {
         });
     }
 }
+
+for (const language of ['en', 'ar']) {
+    for (const longValues of [false, true]) {
+        test(`server header aligns and contains ${longValues ? 'long' : 'normal'} values in ${language}`, async ({
+            page,
+        }) => {
+            const alias = longValues ? 'allocation-alias-'.repeat(16) : 'play.example.test';
+            const name = longValues ? 'Long server name '.repeat(12) : 'Demo Playground';
+            const value = `${alias}:25565`;
+            await page.addInitScript(() => {
+                document.execCommand = (command) => {
+                    if (command !== 'copy') return false;
+                    Object.assign(window, { copiedHeaderValue: window.getSelection()?.toString() });
+                    return true;
+                };
+            });
+            await openFixture(
+                page,
+                '/server/rtl-test/files',
+                language,
+                'modern',
+                {},
+                {
+                    '/api/client/servers/rtl-test': {
+                        ...serverFixture,
+                        attributes: {
+                            ...serverFixture.attributes,
+                            name,
+                            relationships: {
+                                allocations: {
+                                    data: [
+                                        { ...allocation, attributes: { ...allocation.attributes, ip_alias: alias } },
+                                    ],
+                                },
+                            },
+                        },
+                    },
+                },
+            );
+            const title = page.getByTitle(name, { exact: true });
+            const card = title.locator('xpath=../../..');
+            const header = card.locator('..');
+            const body = page.locator('.text-4xl').locator('..');
+            const allocationValue = header.getByRole('button', { name: value, exact: true });
+            for (const width of [320, 390, 640, 768, 1024, 1199, 1280, 1600]) {
+                await page.setViewportSize({ width, height: 900 });
+                await expect(title).toBeVisible();
+                const toggle = header.locator('button.w-full');
+                if (width < 640 && !(await allocationValue.isVisible())) await toggle.click();
+                await expect(allocationValue).toBeVisible();
+                const cardBox = (await card.boundingBox())!;
+                const bodyBox = (await body.boundingBox())!;
+                expect(Math.abs(cardBox.x - bodyBox.x)).toBeLessThanOrEqual(1);
+                expect(Math.abs(cardBox.x + cardBox.width - bodyBox.x - bodyBox.width)).toBeLessThanOrEqual(1);
+                for (const control of [allocationValue, ...(await card.getByRole('button').all())]) {
+                    if (!(await control.isVisible())) continue;
+                    const box = (await control.boundingBox())!;
+                    expect(box.x).toBeGreaterThanOrEqual(cardBox.x);
+                    expect(box.x + box.width).toBeLessThanOrEqual(cardBox.x + cardBox.width);
+                }
+                expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
+                if (longValues) {
+                    expect(await allocationValue.evaluate((node) => node.scrollWidth > node.clientWidth)).toBe(true);
+                }
+            }
+            for (const key of ['Enter', 'Space']) {
+                await allocationValue.focus();
+                await expect(allocationValue).toBeFocused();
+                await allocationValue.press(key);
+                expect(
+                    await page.evaluate(() => (window as unknown as { copiedHeaderValue: string }).copiedHeaderValue),
+                ).toBe(value);
+            }
+            await allocationValue.click();
+            expect(
+                await page.evaluate(() => (window as unknown as { copiedHeaderValue: string }).copiedHeaderValue),
+            ).toBe(value);
+            await page.setViewportSize({ width: 390, height: 900 });
+            const toggle = header.locator('button.w-full');
+            await toggle.focus();
+            await toggle.press('Enter');
+            await expect(allocationValue).toBeHidden();
+            await toggle.press('Space');
+            await expect(allocationValue).toBeVisible();
+        });
+    }
+}

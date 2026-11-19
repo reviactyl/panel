@@ -15,6 +15,7 @@ import Blur from '@/reviactyl/ui/Blur';
 import { useTranslation } from 'react-i18next';
 import { FaFloppyDisk, FaGlobe, FaHashtag, FaMemory, FaMicrochip } from 'react-icons/fa6';
 import { useSubuserPreview } from '@/context/SubuserPreviewContext';
+import ContentContainer from '@/reviactyl/elements/ContentContainer';
 
 type Stats = Record<'memory' | 'cpu' | 'disk', number>;
 
@@ -87,22 +88,22 @@ const TopServerDetails = () => {
     });
 
     return (
-        <div className='relative z-10 pt-4 ps-2 w-full max-w-300 mx-auto'>
+        <ContentContainer className='relative z-10'>
             <Card className='p-4! px-8! mx-auto'>
                 <div className='mx-auto w-full md:flex items-center justify-between max-w-300'>
-                    <div className='flex items-center gap-x-3'>
+                    <div className='flex min-w-0 flex-1 items-center gap-x-3 md:me-4'>
                         <Title className='text-3xl truncate flex-1 max-w-100' title={name}>
                             {name}
                         </Title>
                         {rootAdmin && (
                             // eslint-disable-next-line react/jsx-no-target-blank
-                            <a href={`/admin/servers/${serverId}/edit`} target='_blank' className='h-5 w-5'>
+                            <a href={`/admin/servers/${serverId}/edit`} target='_blank' className='h-5 w-5 shrink-0'>
                                 <ExternalLinkIcon />
                             </a>
                         )}
                     </div>
                     <Can action={['control.start', 'control.stop', 'control.restart']} matchAny>
-                        <PowerButtons className='md:grid grid-cols-3 gap-2 hidden' />
+                        <PowerButtons className='md:grid grid-cols-3 gap-2 hidden shrink-0' />
                         <PowerButtons className='md:hidden grid-cols-3 gap-2 grid mt-5 pt-5' />
                     </Can>
                 </div>
@@ -122,12 +123,12 @@ const TopServerDetails = () => {
                     showStats ? 'flex' : 'hidden'
                 } sm:flex`}
             >
-                <StatBlock className='bg-gray-900 border-gray-800'>
-                    <span className='w-5 text-gray-300'>
+                <StatBlock className='min-w-0 max-w-full bg-gray-900 border-gray-800'>
+                    <span className='w-5 shrink-0 text-gray-300'>
                         <FaGlobe />
                     </span>
                     <CopyOnClick text={allocation}>
-                        <Blur dir='ltr' className='text-sm text-gray-100'>
+                        <Blur dir='ltr' className='min-w-0 text-sm text-gray-100'>
                             {allocation}
                         </Blur>
                     </CopyOnClick>
@@ -180,7 +181,7 @@ const TopServerDetails = () => {
                     </CopyOnClick>
                 </StatBlock>
             </div>
-        </div>
+        </ContentContainer>
     );
 };
 
