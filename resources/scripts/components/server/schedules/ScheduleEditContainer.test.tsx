@@ -124,6 +124,56 @@ afterEach(async () => {
 });
 
 describe('schedule detail revalidation', () => {
+    it.each(['Schedule not found', 'Request failed'])('ends uncached loading after %s', async (message) => {
+        act(() => store.getActions().schedules.setSchedules([]));
+        const request = deferred();
+        mocks.fetch.mockReturnValueOnce(request.promise);
+        vi.spyOn(console, 'error').mockImplementation(() => {});
+        await render();
+        expect(container.textContent).toContain('Loading');
+
+        const error = new Error(message);
+        await act(async () => request.reject(error));
+
+        expect(mocks.clearAndAddHttpError).toHaveBeenCalledWith({ error, key: 'schedules' });
+        expect(container.textContent).not.toContain('Loading');
+    });
+
+    it('starts loading again when navigating from a failed request to another uncached schedule', async () => {
+        act(() => store.getActions().schedules.setSchedules([]));
+        mocks.fetch.mockRejectedValueOnce(new Error('Not found'));
+        vi.spyOn(console, 'error').mockImplementation(() => {});
+        await render();
+        expect(container.textContent).not.toContain('Loading');
+
+        const request = deferred();
+        mocks.fetch.mockReturnValueOnce(request.promise);
+        mocks.scheduleId = '2';
+        await render();
+        expect(container.textContent).toContain('Loading');
+        await act(async () => request.resolve({ ...updated, id: 2 }));
+        expect(container.textContent).toContain('say new');
+        expect(container.textContent).not.toContain('Loading');
+    });
+
+    it('renders task sequence order without changing the stored task array', async () => {
+        const tasks = [
+            { ...cached.tasks[0]!, id: 2, sequenceId: 2, payload: 'second task' },
+            { ...cached.tasks[0]!, payload: 'first task' },
+        ];
+        act(() => store.getActions().schedules.setSchedules([{ ...cached, tasks }]));
+        const storedTasks = store.getState().schedules.data[0]!.tasks;
+        mocks.fetch.mockReturnValueOnce(deferred().promise);
+
+        await render();
+
+        expect(container.textContent!.indexOf('first task')).toBeLessThan(
+            container.textContent!.indexOf('second task'),
+        );
+        expect(store.getState().schedules.data[0]!.tasks).toBe(storedTasks);
+        expect(storedTasks.map((task) => task.id)).toEqual([2, 1]);
+    });
+
     it('refreshes cached details after leaving and reopening without loading the list', async () => {
         mocks.fetch.mockResolvedValueOnce(cached);
         await render();
