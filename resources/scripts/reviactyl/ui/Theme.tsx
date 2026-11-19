@@ -3,6 +3,7 @@ import { type ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FaDesktop, FaMoon, FaSun } from 'react-icons/fa6';
 import type { DesignifySettings } from '@/state/designify';
+import styles from './Theme.module.css';
 
 type Theme = 'light' | 'dark' | 'system';
 
@@ -106,11 +107,12 @@ export const ThemeToggle = () => {
                     aria-pressed={theme === 'light'}
                     onClick={() => changeTheme('light')}
                     className={[
-                        'px-3 py-1.5 text-sm transition-colors',
+                        styles.choice,
+                        'flex items-center justify-center px-3 py-1.5 text-sm transition-colors',
                         theme === 'light' ? 'bg-reviactyl text-on-primary' : 'text-gray-300 hover:bg-gray-800',
                     ].join(' ')}
                 >
-                    <FaSun aria-hidden='true' className='w-4 h-4 mr-1' />
+                    <FaSun aria-hidden='true' className='w-4 h-4' />
                 </button>
 
                 <button
@@ -119,11 +121,12 @@ export const ThemeToggle = () => {
                     aria-pressed={theme === 'dark'}
                     onClick={() => changeTheme('dark')}
                     className={[
-                        'px-3 py-1.5 text-sm transition-colors border-x border-gray-600',
+                        styles.choice,
+                        'flex items-center justify-center px-3 py-1.5 text-sm transition-colors border-x border-gray-600',
                         theme === 'dark' ? 'bg-reviactyl text-on-primary' : 'text-gray-300 hover:bg-gray-800',
                     ].join(' ')}
                 >
-                    <FaMoon aria-hidden='true' className='w-4 h-4 mr-1' />
+                    <FaMoon aria-hidden='true' className='w-4 h-4' />
                 </button>
 
                 <button
@@ -132,11 +135,12 @@ export const ThemeToggle = () => {
                     aria-pressed={theme === 'system'}
                     onClick={() => changeTheme('system')}
                     className={[
-                        'px-3 py-1.5 text-sm transition-colors',
+                        styles.choice,
+                        'flex items-center justify-center px-3 py-1.5 text-sm transition-colors',
                         theme === 'system' ? 'bg-reviactyl text-on-primary' : 'text-gray-300 hover:bg-gray-800',
                     ].join(' ')}
                 >
-                    <FaDesktop aria-hidden='true' className='w-4 h-4 mr-1' />
+                    <FaDesktop aria-hidden='true' className='w-4 h-4' />
                 </button>
             </div>
         </div>
