@@ -311,7 +311,6 @@ class SubuserPreviewSimulator
                     $state['files'][$to] = array_replace($entry, [
                         'deleted' => false,
                         'name' => basename($to),
-                        'modified_at' => Carbon::now()->toAtomString(),
                     ]);
 
                     if (($entry['is_file'] ?? true) === false) {
@@ -355,8 +354,6 @@ class SubuserPreviewSimulator
                 $state['files'][$target] = array_replace($entry, [
                     'name' => basename($target),
                     'deleted' => false,
-                    'created_at' => Carbon::now()->toAtomString(),
-                    'modified_at' => Carbon::now()->toAtomString(),
                 ]);
 
                 if (($entry['is_file'] ?? true) === false) {
@@ -421,14 +418,28 @@ class SubuserPreviewSimulator
                 'files.*.mode' => 'required|numeric',
             ])->validate();
             $root = (string) $request->input('root', '/');
-            $this->updateState($context, function (array $state) use ($request, $root) {
-                foreach ((array) $request->input('files', []) as $file) {
-                    $path = $this->joinPath($root, (string) Arr::get($file, 'file'));
-                    $state['files'][$path] = array_replace($state['files'][$path] ?? [
-                        'name' => basename($path),
-                        'is_file' => true,
-                        'source_path' => $path,
-                    ], ['mode_bits' => str_pad((string) Arr::get($file, 'mode'), 4, '0', STR_PAD_LEFT)]);
+            $state = $context->session()->state ?? [];
+            $directories = [];
+            $getDirectory = function (string $directory) use ($context, &$directories): array {
+                return $directories[$directory] ??= $this->fileRepository
+                    ->setServer($context->session()->server)
+                    ->getDirectory($directory);
+            };
+
+            $modes = [];
+            foreach ((array) $request->input('files', []) as $file) {
+                $path = $this->joinPath($root, (string) Arr::get($file, 'file'));
+                $this->resolveFileEntry($context, $state, $path, $getDirectory);
+                $modes[$path] = str_pad((string) Arr::get($file, 'mode'), 4, '0', STR_PAD_LEFT);
+            }
+
+            $cachedDirectory = static fn (string $directory): array => $directories[$directory] ?? [];
+            $this->updateState($context, function (array $state) use ($context, $modes, $cachedDirectory) {
+                foreach ($modes as $path => $mode) {
+                    $state['files'][$path] = array_replace(
+                        $this->resolveFileEntry($context, $state, $path, $cachedDirectory),
+                        ['mode_bits' => $mode]
+                    );
                 }
 
                 return $state;
@@ -501,7 +512,7 @@ class SubuserPreviewSimulator
                     'size' => $isFile ? $this->contentSize($entry) : 0,
                     'is_file' => $isFile,
                     'is_symlink' => false,
-                    'mimetype' => $isFile ? 'text/plain' : 'inode/directory',
+                    'mimetype' => $entry['mimetype'] ?? ($isFile ? 'text/plain' : 'inode/directory'),
                     'created_at' => $entry['created_at'] ?? Carbon::now()->toAtomString(),
                     'modified_at' => $entry['modified_at'] ?? Carbon::now()->toAtomString(),
                 ],
@@ -566,7 +577,7 @@ class SubuserPreviewSimulator
             'size' => $isFile ? $this->contentSize($entry) : 0,
             'is_file' => $isFile,
             'is_symlink' => false,
-            'mimetype' => $isFile ? 'application/octet-stream' : 'inode/directory',
+            'mimetype' => $entry['mimetype'] ?? ($isFile ? 'application/octet-stream' : 'inode/directory'),
             'created_at' => $entry['created_at'] ?? Carbon::now()->toAtomString(),
             'modified_at' => $entry['modified_at'] ?? Carbon::now()->toAtomString(),
         ];
@@ -609,7 +620,9 @@ class SubuserPreviewSimulator
      */
     private function contentSize(array $entry): int
     {
-        return strlen($this->decodeContent($entry));
+        return array_key_exists('content', $entry)
+            ? strlen($this->decodeContent($entry))
+            : (int) ($entry['size'] ?? 0);
     }
 
     /**
@@ -618,9 +631,10 @@ class SubuserPreviewSimulator
      * @param  SubuserPreviewContext  $context  The preview context used to access the live server.
      * @param  array  $state  The current preview state.
      * @param  string  $path  The preview path to resolve.
+     * @param  callable(string): array|null  $getDirectory  An alternate directory lookup for batch operations.
      * @return array The resolved file entry.
      */
-    private function resolveFileEntry(SubuserPreviewContext $context, array $state, string $path): array
+    private function resolveFileEntry(SubuserPreviewContext $context, array $state, string $path, ?callable $getDirectory = null): array
     {
         if (array_key_exists($path, $state['files'] ?? [])) {
             $entry = $state['files'][$path];
@@ -641,9 +655,11 @@ class SubuserPreviewSimulator
         }
 
         $livePath = $this->livePathForPreviewPath($state, $path);
-        $entry = collect($this->fileRepository
-            ->setServer($context->session()->server)
-            ->getDirectory($this->parentPath($livePath)))
+        $directory = $this->parentPath($livePath);
+        $entries = $getDirectory === null
+            ? $this->fileRepository->setServer($context->session()->server)->getDirectory($directory)
+            : $getDirectory($directory);
+        $entry = collect($entries)
             ->first(fn (array $entry) => (string) Arr::get($entry, 'name') === basename($livePath));
 
         if (! is_array($entry)) {
@@ -654,8 +670,11 @@ class SubuserPreviewSimulator
             'name' => basename($path),
             'is_file' => (bool) Arr::get($entry, 'file', true),
             'source_path' => $livePath,
+            'size' => (int) Arr::get($entry, 'size', 0),
             'mode_bits' => Arr::get($entry, 'mode_bits'),
             'mimetype' => Arr::get($entry, 'mime'),
+            'created_at' => Carbon::parse(Arr::get($entry, 'created', ''))->toAtomString(),
+            'modified_at' => Carbon::parse(Arr::get($entry, 'modified', ''))->toAtomString(),
             'deleted' => false,
         ];
     }

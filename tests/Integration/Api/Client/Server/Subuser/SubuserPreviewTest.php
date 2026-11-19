@@ -15,6 +15,7 @@ use App\Repositories\Agent\DaemonFileRepository;
 use App\Repositories\Agent\DaemonPowerRepository;
 use App\Repositories\Agent\DaemonRevocationRepository;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
@@ -568,6 +569,113 @@ class SubuserPreviewTest extends ClientApiIntegrationTestCase
         $this->deleteJson('/api/client/subuser-preview')->assertNoContent();
         $this->withoutHeader('X-Subuser-Preview');
         $this->assertDownloadPath($server, '/live-dir/live.txt', '/live-dir/live.txt');
+    }
+
+    public function test_chmod_preserves_live_directory_type_and_navigation(): void
+    {
+        [$owner, $server, $target] = $this->models();
+        $token = $this->actingAs($owner)->postJson($this->previewEndpoint($server, $target))->json('token');
+        $directory = [
+            'name' => 'live-dir', 'file' => false, 'size' => 0, 'mime' => 'inode/directory',
+            'mode' => 'drwxr-xr-x', 'mode_bits' => '0755',
+            'created' => '2020-01-02T03:04:05+00:00', 'modified' => '2021-02-03T04:05:06+00:00',
+        ];
+        $this->mock(DaemonFileRepository::class, function (MockInterface $mock) use ($directory) {
+            $mock->shouldReceive('setServer')->andReturnSelf();
+            $mock->shouldReceive('getDirectory')->with('/')->andReturn([$directory]);
+            $mock->expects('getDirectory')->with('/live-dir')->andReturn([]);
+            $mock->shouldNotReceive('chmodFiles');
+        });
+
+        $this->withPreviewToken($token)->postJson($this->link($server, 'files/chmod'), [
+            'root' => '/', 'files' => [['file' => 'live-dir', 'mode' => '0700']],
+        ])->assertNoContent();
+        $this->getJson($this->link($server, 'files/list').'?directory=/')
+            ->assertOk()->assertJsonPath('data.0.attributes.is_file', false)
+            ->assertJsonPath('data.0.attributes.mode_bits', '0700')
+            ->assertJsonPath('data.0.attributes.created_at', $directory['created'])
+            ->assertJsonPath('data.0.attributes.modified_at', $directory['modified']);
+        $this->getJson($this->link($server, 'files/list').'?directory=/live-dir')
+            ->assertOk()->assertJsonCount(0, 'data');
+    }
+
+    public function test_chmod_reads_each_live_directory_once_and_outside_the_state_transaction(): void
+    {
+        [$owner, $server, $target] = $this->models();
+        $token = $this->actingAs($owner)->postJson($this->previewEndpoint($server, $target))->json('token');
+        $level = DB::transactionLevel();
+
+        $this->mock(DaemonFileRepository::class, function (MockInterface $mock) use ($level) {
+            $mock->shouldReceive('setServer')->andReturnSelf();
+            $mock->expects('getDirectory')->with('/')->andReturnUsing(function () use ($level) {
+                $this->assertSame($level, DB::transactionLevel());
+
+                // Simulate an overlapping preview edit between the snapshot and the chmod update.
+                $session = SubuserPreviewSession::query()->firstOrFail();
+                $session->update(['state' => array_replace($session->state ?? [], [
+                    'files' => ['/first.txt' => ['name' => 'first.txt', 'is_file' => true, 'size' => 42]],
+                ])]);
+
+                return [
+                    ['name' => 'first.txt', 'file' => true, 'size' => 10],
+                    ['name' => 'second.txt', 'file' => true, 'size' => 20],
+                ];
+            });
+        });
+
+        $this->withPreviewToken($token)->postJson($this->link($server, 'files/chmod'), [
+            'root' => '/',
+            'files' => [['file' => 'first.txt', 'mode' => '0600'], ['file' => 'second.txt', 'mode' => '0640']],
+        ])->assertNoContent();
+
+        $files = SubuserPreviewSession::query()->firstOrFail()->state['files'];
+        $this->assertSame(42, $files['/first.txt']['size']);
+        $this->assertSame('0600', $files['/first.txt']['mode_bits']);
+        $this->assertSame(20, $files['/second.txt']['size']);
+        $this->assertSame('0640', $files['/second.txt']['mode_bits']);
+    }
+
+    public function test_live_file_metadata_survives_rename_copy_and_chmod(): void
+    {
+        [$owner, $server, $target] = $this->models();
+        $token = $this->actingAs($owner)->postJson($this->previewEndpoint($server, $target))->json('token');
+        $file = [
+            'name' => 'image.png', 'file' => true, 'size' => 12345, 'mime' => 'image/png',
+            'mode' => '-rw-r--r--', 'mode_bits' => '0644',
+            'created' => '2020-01-02T03:04:05+00:00', 'modified' => '2021-02-03T04:05:06+00:00',
+        ];
+        $this->mock(DaemonFileRepository::class, function (MockInterface $mock) use ($file) {
+            $mock->shouldReceive('setServer')->andReturnSelf();
+            $mock->shouldReceive('getDirectory')->with('/')->andReturn([$file]);
+            $mock->shouldNotReceive('getContent', 'renameFiles', 'copyFile', 'chmodFiles', 'putContent');
+        });
+        $this->withPreviewToken($token);
+
+        foreach ([
+            ['POST', 'chmod', ['root' => '/', 'files' => [['file' => 'image.png', 'mode' => '0600']]], 'image.png'],
+            ['POST', 'copy', ['location' => '/image.png'], 'image copy.png'],
+            ['PUT', 'rename', ['root' => '/', 'files' => [['from' => 'image.png', 'to' => 'renamed.png']]], 'renamed.png'],
+        ] as [$method, $operation, $payload, $name]) {
+            SubuserPreviewSession::query()->firstOrFail()->forceFill(['state' => []])->save();
+            $this->json($method, $this->link($server, 'files/'.$operation), $payload)->assertNoContent();
+            $response = $this->getJson($this->link($server, 'files/list').'?directory=/')->assertOk();
+            $attributes = collect($response->json('data'))->firstWhere('attributes.name', $name)['attributes'];
+            $this->assertSame(12345, $attributes['size']);
+            $this->assertSame('image/png', $attributes['mimetype']);
+            $this->assertSame($file['created'], $attributes['created_at']);
+            $this->assertSame($file['modified'], $attributes['modified_at']);
+            $this->assertTrue($attributes['is_file']);
+            $this->assertSame($operation === 'chmod' ? '0600' : '0644', $attributes['mode_bits']);
+        }
+
+        foreach (["é\0🙂", ''] as $content) {
+            $this->call('POST', $this->link($server, 'files/write').'?file=/renamed.png', [], [], [], [
+                'CONTENT_TYPE' => 'text/plain', 'HTTP_ACCEPT' => 'application/json', 'HTTP_X_SUBUSER_PREVIEW' => $token,
+            ], $content)->assertNoContent();
+            $this->getJson($this->link($server, 'files/list').'?directory=/')->assertOk()
+                ->assertJsonPath('data.0.attributes.name', 'renamed.png')
+                ->assertJsonPath('data.0.attributes.size', strlen($content));
+        }
     }
 
     public function test_preview_upload_requires_file_create_permission_and_preserves_state(): void
