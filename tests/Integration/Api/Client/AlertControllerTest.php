@@ -6,9 +6,11 @@ use App\Exceptions\Model\DataValidationException;
 use App\Http\Middleware\RequireTwoFactorAuthentication;
 use App\Models\Alert;
 use App\Models\AlertInteraction;
+use App\Models\ApiKey;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
+use App\Services\Acl\Api\AdminAcl;
 use App\Services\Alerts\AlertVisibilityService;
 use App\Services\Helpers\GeoIPService;
 use Carbon\CarbonImmutable;
@@ -123,6 +125,27 @@ class AlertControllerTest extends ClientApiIntegrationTestCase
         $this->assertSame('geo', $user->fresh()->language);
         $this->postJson("/api/client/alerts/$german->uuid/dismiss")->assertNoContent();
         $this->postJson("/api/client/alerts/$english->uuid/dismiss")->assertNotFound();
+    }
+
+    public function test_impersonated_geo_user_receives_alerts_for_the_resolved_locale(): void
+    {
+        $admin = User::factory()->create(['root_admin' => true, 'language' => 'en']);
+        $user = User::factory()->create(['language' => 'geo']);
+        $german = Alert::factory()->create(['targeting' => ['languages' => ['de']]]);
+        $english = Alert::factory()->create(['targeting' => ['languages' => ['en']]]);
+        $this->mock(GeoIPService::class)->shouldReceive('getCountryInfo')->andReturn(['country' => 'Germany', 'code' => 'DE']);
+
+        $admin->withAccessToken((new ApiKey())->forceFill([
+            'key_type' => ApiKey::TYPE_APPLICATION,
+            'r_impersonation' => AdminAcl::READ | AdminAcl::WRITE,
+        ]));
+        $this->actingAs($admin, 'sanctum')->withHeader('X-Execution-User', $user->uuid);
+
+        $this->getJson('/api/client/alerts')->assertOk()
+            ->assertJsonCount(1, 'data')->assertJsonPath('data.0.attributes.uuid', $german->uuid);
+        $this->postJson("/api/client/alerts/$english->uuid/dismiss")->assertNotFound();
+        $this->postJson("/api/client/alerts/$german->uuid/dismiss")->assertNoContent();
+        $this->assertDatabaseHas('alert_interactions', ['alert_id' => $german->id, 'user_id' => $user->id]);
     }
 
     #[DataProvider('serverRolePermissions')]
