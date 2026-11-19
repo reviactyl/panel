@@ -19,6 +19,7 @@ const MobileBottomBar = ({ onShowSidebar, sidebarOpen }: Props) => {
 
     return (
         <nav
+            data-mobile-bottom-bar
             aria-label={t('mobile-navigation.navigation')}
             className='fixed inset-x-0 bottom-0 z-50 border-t border-gray-800 bg-gray-950/95 px-3 pt-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] shadow-[0_-8px_24px_rgba(0,0,0,0.2)] backdrop-blur-lg lg:hidden'
         >

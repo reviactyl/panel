@@ -35,6 +35,7 @@ import ChmodFileModal from '@/components/server/files/ChmodFileModal';
 import DeleteFilesDialog from './DeleteFilesDialog';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 import { useStoreState } from 'easy-peasy';
+import useArchiveMenuPosition from './useArchiveMenuPosition';
 
 type ModalType = 'rename' | 'move' | 'chmod';
 
@@ -80,7 +81,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
     const archiveHovered = useRef(false);
     const archiveItemRef = useRef<HTMLDivElement>(null);
     const formatMenuRef = useRef<HTMLDivElement>(null);
-    const [formatMenuPosition, setFormatMenuPosition] = useState<React.CSSProperties>();
+    const formatMenuPosition = useArchiveMenuPosition(showFormatMenu, archiveItemRef, formatMenuRef, 'side');
     const [modal, setModal] = useState<ModalType | null>(null);
     const [showConfirmation, setShowConfirmation] = useState(false);
 
@@ -160,27 +161,6 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
 
     const positionFormatMenu = () => {
         setShowFormatMenu(true);
-        requestAnimationFrame(() => {
-            const item = archiveItemRef.current;
-            const menu = formatMenuRef.current;
-            if (!item || !menu) return;
-
-            const itemRect = item.getBoundingClientRect();
-            const menuWidth = menu.offsetWidth;
-            const menuHeight = menu.offsetHeight;
-            const gap = 8;
-            const narrow = window.innerWidth < 640;
-            const openLeft = !narrow && itemRect.right + menuWidth > window.innerWidth - gap;
-            const left = narrow
-                ? Math.max(gap, Math.min(itemRect.left, window.innerWidth - menuWidth - gap))
-                : openLeft
-                  ? Math.max(gap, itemRect.left - menuWidth + gap)
-                  : itemRect.right - gap;
-            const top = narrow
-                ? Math.max(gap, Math.min(itemRect.bottom, window.innerHeight - menuHeight - gap))
-                : Math.max(gap, Math.min(itemRect.top, window.innerHeight - menuHeight - gap));
-            setFormatMenuPosition({ position: 'fixed', left, top });
-        });
     };
 
     const doArchive = (format: 'tar.gz' | 'zip') => {
