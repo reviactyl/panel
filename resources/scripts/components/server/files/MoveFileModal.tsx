@@ -162,7 +162,7 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
             return;
         }
 
-        clearFlashes('files');
+        clearFlashes('files:move-modal');
         setIsSubmitting(true);
 
         const destinationFromSource = relative(sourceDirectory, destinationDirectory) || '.';
@@ -175,7 +175,7 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
             .catch((error) => {
                 mutate();
                 setIsSubmitting(false);
-                clearAndAddHttpError({ key: 'files', error });
+                clearAndAddHttpError({ key: 'files:move-modal', error });
             });
     };
 
@@ -218,7 +218,7 @@ const MoveFileModal = ({ files, directoryNames = [], ...props }: Props) => {
                     </p>
                 </div>
 
-                <FlashMessageRender key={'files:move-modal'} />
+                <FlashMessageRender byKey={'files:move-modal'} />
 
                 <div className={`border border-gray-700 rounded-ui overflow-hidden bg-gray-800/40`}>
                     <div

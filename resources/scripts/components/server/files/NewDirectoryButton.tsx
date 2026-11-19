@@ -64,7 +64,7 @@ const NewDirectoryDialog = asDialog({})(() => {
         >
             {({ submitForm, values }) => (
                 <>
-                    <FlashMessageRender key={'files:directory-modal'} />
+                    <FlashMessageRender byKey={'files:directory-modal'} />
                     <Form className='m-0'>
                         <Field
                             autoFocus

@@ -57,7 +57,7 @@ const HytaleOauthRequireFeature = () => {
             closeOnBackground={false}
             showSpinnerOverlay={false}
         >
-            <FlashMessageRender key={'feature:hytaleOauth'} className='mb-4' />
+            <FlashMessageRender byKey={'feature:hytaleOauth'} className='mb-4' />
             <h2 className='text-2xl mb-4 text-gray-100'>Authentication Required</h2>
             <p className='text-gray-200'>
                 You need to authenticate with your Hytale account to download or update server files. Please log in to

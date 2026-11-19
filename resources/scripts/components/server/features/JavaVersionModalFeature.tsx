@@ -76,7 +76,7 @@ const JavaVersionModalFeature = () => {
             closeOnBackground={false}
             showSpinnerOverlay={loading}
         >
-            <FlashMessageRender key={'feature:javaVersion'} className='mb-4' />
+            <FlashMessageRender byKey={'feature:javaVersion'} className='mb-4' />
             <h2 className='text-2xl mb-4 text-gray-100'>Unsupported Java Version</h2>
             <p className='mt-4'>
                 This server is currently running an unsupported version of Java and cannot be started.
