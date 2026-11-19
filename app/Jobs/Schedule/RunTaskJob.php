@@ -14,6 +14,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Throwable;
 
 class RunTaskJob extends Job implements ShouldQueue
 {
@@ -55,7 +56,7 @@ class RunTaskJob extends Job implements ShouldQueue
     /**
      * Run the job and send actions to the daemon running the server.
      *
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function handle(
         DaemonCommandRepository $commandRepository,
@@ -126,7 +127,7 @@ class RunTaskJob extends Job implements ShouldQueue
     /**
      * Handle a failure while sending the action to the daemon or otherwise processing the job.
      */
-    public function failed(?Exception $exception = null)
+    public function failed(?Throwable $exception = null)
     {
         $this->withCurrentRun(function () {
             $this->markTaskNotQueued();

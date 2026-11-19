@@ -94,7 +94,7 @@ class ProcessScheduleService
             // @see https://github.com/pterodactyl/panel/issues/2550
             try {
                 $this->dispatcher->dispatchNow($job);
-            } catch (Exception $exception) {
+            } catch (Throwable $exception) {
                 $job->failed($exception);
 
                 throw $exception;
