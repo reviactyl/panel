@@ -2,7 +2,7 @@ import { withHttpSessionTransition } from '@/api/http';
 import completeLogin from '@/api/auth/completeLogin';
 import { useState } from 'react';
 import type { Location, RouteProps, NavigateFunction } from 'react-router-dom';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import loginCheckpoint from '@/api/auth/loginCheckpoint';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
 import type { ActionCreator } from 'easy-peasy';
@@ -37,7 +37,7 @@ function LoginCheckpointContainer() {
                 <Field
                     icon={DotsHorizontalIcon}
                     name={isMissingDevice ? 'recoveryCode' : 'code'}
-                    title={isMissingDevice ? t('checkpoint.recovery-code') : t('checkpoint.auth-code')}
+                    label={isMissingDevice ? t('checkpoint.recovery-code') : t('checkpoint.auth-code')}
                     description={isMissingDevice ? t('checkpoint.is-missing') : t('checkpoint.is-not-missing')}
                     type={'text'}
                     autoComplete={'one-time-code'}
@@ -102,9 +102,7 @@ export default ({ ...props }: OwnProps) => {
     const navigate = useNavigate();
 
     if (!location.state?.token) {
-        navigate('/auth/login');
-
-        return null;
+        return <Navigate to='/auth/login' replace />;
     }
 
     return (
