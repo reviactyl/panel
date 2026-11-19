@@ -7,9 +7,12 @@ use App\Filament\Resources\Servers\RelationManagers\MountsRelationManager;
 use App\Filament\Resources\Servers\Schemas\EditServerForm;
 use App\Filament\Resources\Servers\ServerResource;
 use App\Models\Mount;
+use App\Models\Role;
 use App\Models\Server;
 use App\Models\ServerVariable;
 use App\Models\User;
+use App\Services\Servers\ReinstallServerService;
+use App\Services\Servers\SuspensionService;
 use Filament\Actions\Testing\TestAction;
 use Filament\Facades\Filament;
 use Illuminate\Support\Str;
@@ -20,6 +23,107 @@ use Tests\Integration\IntegrationTestCase;
 
 class EditServerTest extends IntegrationTestCase
 {
+    public static function serverActionPermissions(): array
+    {
+        return [
+            'viewer' => [['servers.read'], false, false],
+            'deleter' => [['servers.read', 'servers.delete'], false, false],
+            'editor' => [['servers.read', 'servers.update'], false, true],
+            'root administrator' => [[], true, true],
+        ];
+    }
+
+    #[DataProvider('serverActionPermissions')]
+    public function test_header_state_actions_require_record_edit_permission(array $permissions, bool $root, bool $authorized): void
+    {
+        $server = $this->createServerModel();
+        $user = User::factory()->create(['root_admin' => $root]);
+        if ($permissions !== []) {
+            $user->roles()->attach(Role::factory()->create(['permissions' => $permissions]));
+        }
+        $this->actingAs($user);
+        $page = new EditServer();
+        $page->record = $server;
+        $actions = (new ReflectionMethod(EditServer::class, 'getHeaderActions'))->invoke($page);
+
+        foreach ($actions as $action) {
+            if (in_array($action->getName(), ['toggle_install_status', 'suspend', 'reinstall'], true)) {
+                $this->assertSame($authorized, $action->isAuthorized(), $action->getName());
+            }
+        }
+    }
+
+    public function test_repeated_install_toggles_refresh_the_same_page_and_reinstall_availability(): void
+    {
+        $server = $this->createServerModel(['status' => null]);
+        $this->actingAs(User::factory()->create(['root_admin' => true]));
+        $page = Livewire::test(EditServer::class, ['record' => $server->id])->instance();
+
+        $this->assertFalse($page->getAction('reinstall')->isDisabled());
+        $page->getAction('toggle_install_status')->call();
+        $this->assertSame(Server::STATUS_INSTALLING, $page->getRecord()->status);
+        $this->assertSame(Server::STATUS_INSTALLING, $server->fresh()->status);
+        $this->assertTrue($page->getAction('reinstall')->isDisabled());
+
+        $page->getAction('toggle_install_status')->call();
+        $this->assertNull($page->getRecord()->status);
+        $this->assertNull($server->fresh()->status);
+        $this->assertFalse($page->getAction('reinstall')->isDisabled());
+    }
+
+    public function test_suspension_refreshes_the_same_page_label_icon_and_color(): void
+    {
+        $server = $this->createServerModel(['status' => null]);
+        $this->actingAs(User::factory()->create(['root_admin' => true]));
+        $service = $this->mock(SuspensionService::class);
+        $service->expects('toggle')->withArgs(function (Server $record, string $action) use ($server): bool {
+            $this->assertTrue($record->is($server));
+            $this->assertSame(SuspensionService::ACTION_SUSPEND, $action);
+            $record->fresh()->update(['status' => Server::STATUS_SUSPENDED]);
+
+            return true;
+        });
+        $service->expects('toggle')->withArgs(function (Server $record, string $action) use ($server): bool {
+            $this->assertTrue($record->is($server));
+            $this->assertSame(SuspensionService::ACTION_UNSUSPEND, $action);
+            $record->fresh()->update(['status' => null]);
+
+            return true;
+        });
+        $page = Livewire::test(EditServer::class, ['record' => $server->id])->instance();
+        $action = $page->getAction('suspend');
+        $action->call();
+        $this->assertTrue($page->getRecord()->isSuspended());
+        $this->assertSame(trans('admin/server.actions.unsuspend'), $action->getLabel());
+        $this->assertSame('heroicon-o-play', $action->getIcon());
+        $this->assertSame('success', $action->getColor());
+
+        $action->call();
+        $this->assertFalse($page->getRecord()->isSuspended());
+        $this->assertSame(trans('admin/server.actions.suspend'), $action->getLabel());
+        $this->assertSame('heroicon-o-pause', $action->getIcon());
+        $this->assertSame('warning', $action->getColor());
+    }
+
+    public function test_reinstall_refreshes_the_same_page_and_disables_reinstall(): void
+    {
+        $server = $this->createServerModel(['status' => null]);
+        $this->actingAs(User::factory()->create(['root_admin' => true]));
+        $this->mock(ReinstallServerService::class)->expects('handle')
+            ->withArgs(function (Server $record) use ($server): bool {
+                $this->assertTrue($record->is($server));
+                $record->fresh()->update(['status' => Server::STATUS_INSTALLING, 'is_reinstalling' => true]);
+
+                return true;
+            })->andReturn($server->fresh());
+        $page = Livewire::test(EditServer::class, ['record' => $server->id])->instance();
+        $page->getAction('reinstall')->call();
+
+        $this->assertSame(Server::STATUS_INSTALLING, $page->getRecord()->status);
+        $this->assertTrue($page->getRecord()->is_reinstalling);
+        $this->assertTrue($page->getAction('reinstall')->isDisabled());
+    }
+
     public static function stuckReinstallActions(): array
     {
         return [
