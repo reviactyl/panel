@@ -58,7 +58,7 @@ class DatabaseImportService
 
     private function isZip(string $path): bool
     {
-        return file_get_contents($path, false, null, 0, 4) === "PK\x03\x04";
+        return in_array(file_get_contents($path, false, null, 0, 4), ["PK\x03\x04", "PK\x05\x06", "PK\x07\x08"], true);
     }
 
     /**
