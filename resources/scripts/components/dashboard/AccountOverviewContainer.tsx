@@ -64,7 +64,7 @@ export default () => {
 
     return (
         <AccountContentBlock classicHeading title={t('overview.account-overview')}>
-            <FlashMessageRender className='mb-4' />
+            <FlashMessageRender excludeKeys={['account:avatar']} className='mb-4' />
             <ExtensionSlot name='account:overview:above' />
             {state?.twoFactorRedirect && (
                 <MessageBox title={t('overview.2fa-required')} type={'error'}>

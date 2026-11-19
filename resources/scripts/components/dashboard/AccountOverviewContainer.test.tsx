@@ -124,6 +124,7 @@ describe('account overview', () => {
 
         await act(async () => request.reject(new Error('Avatar save unavailable')));
         expect(profilePicture.textContent).toContain('Avatar save unavailable');
+        expect(container.textContent.match(/Avatar save unavailable/g)).toHaveLength(1);
         expect(store.getState().user.data.avatarStyle).toBe('gravatar');
         expect(initials().getAttribute('aria-pressed')).toBe('false');
         expect(initials().disabled).toBe(false);
