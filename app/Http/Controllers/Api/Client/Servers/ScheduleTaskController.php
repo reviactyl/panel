@@ -112,12 +112,17 @@ class ScheduleTaskController extends ClientApiController
             throw new HttpForbiddenException("A backup task cannot be created when the server's backup limit is set to 0.");
         }
 
-        $this->connection->transaction(function () use ($request, $schedule, $task) {
-            $sequenceId = $request->integer('sequence_id', $task->sequence_id);
-            // Ensure that the sequence id is at least 1.
-            if ($sequenceId < 1) {
-                $sequenceId = 1;
+        /** @var Task $task */
+        $task = $this->connection->transaction(function () use ($request, $schedule, $task) {
+            $schedule->newQuery()->whereKey($schedule->id)->lockForUpdate()->firstOrFail();
+            $tasks = $schedule->tasks()->orderBy('sequence_id')->orderBy('id')->get();
+            foreach ($tasks as $index => $scheduledTask) {
+                if ($scheduledTask->sequence_id !== $index + 1) {
+                    $scheduledTask->update(['sequence_id' => $index + 1]);
+                }
             }
+            $task->refresh();
+            $sequenceId = max(1, min($request->integer('sequence_id', $task->sequence_id), $tasks->count()));
 
             // Shift all other tasks in the schedule up or down to make room for the new task.
             if ($sequenceId < $task->sequence_id) {
@@ -132,7 +137,7 @@ class ScheduleTaskController extends ClientApiController
                     ->decrement('sequence_id');
             }
 
-            $this->repository->update($task->id, [
+            return $this->repository->update($task->id, [
                 'sequence_id' => $sequenceId,
                 'action' => $request->input('action'),
                 'payload' => $request->input('payload') ?? '',
@@ -146,7 +151,7 @@ class ScheduleTaskController extends ClientApiController
             ->property(['name' => $schedule->name, 'action' => $task->action, 'payload' => $task->payload])
             ->log();
 
-        return $this->fractal->item($task->refresh())
+        return $this->fractal->item($task)
             ->transformWith($this->getTransformer(TaskTransformer::class))
             ->toArray();
     }
