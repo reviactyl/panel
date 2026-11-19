@@ -11,12 +11,20 @@ use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 require dirname(__DIR__, 2).'/vendor/autoload.php';
 putenv('DB_CONNECTION=sqlite');
 putenv('DB_DATABASE=:memory:');
 $app = require dirname(__DIR__, 2).'/bootstrap/app.php';
 $app->make(ConsoleKernel::class)->bootstrap();
+config([
+    'database.default' => 'sqlite',
+    'database.connections.sqlite.database' => ':memory:',
+    'cache.default' => 'array',
+    'session.driver' => 'array',
+]);
+DB::purge('sqlite');
 Artisan::call('migrate', ['--force' => true]);
 Auth::login(User::factory()->create(['root_admin' => true]));
 config(['panel.installation_type' => 'native', 'app.version' => '26.09.0']);
