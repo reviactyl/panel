@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useId, useState } from 'react';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import performPasswordReset from '@/api/auth/performPasswordReset';
 import { httpErrorToHuman } from '@/api/http';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
@@ -19,14 +19,12 @@ interface Values {
 
 function ResetPasswordContainer() {
     const { t } = useTranslation('auth');
-    const [email, setEmail] = useState('');
+    const { search } = useLocation();
+    const providedEmail = new URLSearchParams(search).get('email') || '';
+    const [email, setEmail] = useState(providedEmail);
+    const emailId = useId();
 
     const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
-
-    const parsed = new URLSearchParams(location.search);
-    if (email.length === 0 && parsed.get('email')) {
-        setEmail(parsed.get('email') || '');
-    }
 
     const params = useParams<'token'>();
 
@@ -62,8 +60,17 @@ function ResetPasswordContainer() {
             {({ isSubmitting }) => (
                 <LoginFormContainer title={t('reset-password.label')} className='flex w-full'>
                     <div>
-                        <label>{t('reset-password.email-label')}</label>
-                        <Input value={email} disabled />
+                        <label htmlFor={emailId}>{t('reset-password.email-label')}</label>
+                        <Input
+                            id={emailId}
+                            name='email'
+                            type='email'
+                            autoComplete='email'
+                            required
+                            value={email}
+                            onChange={(event) => setEmail(event.currentTarget.value)}
+                            disabled={!!providedEmail}
+                        />
                     </div>
                     <div className='mt-6'>
                         <Field
