@@ -5,6 +5,7 @@ namespace Tests\Integration\Filament;
 use App\Exceptions\Model\DataValidationException;
 use App\Filament\Resources\Nests\EggResource;
 use App\Filament\Resources\Nests\Eggs\Pages\EggCatalog;
+use App\Filament\Resources\Nests\NestResource;
 use App\Filament\Resources\Nests\Pages\CreateNest;
 use App\Models\Egg;
 use App\Models\Nest;
@@ -353,6 +354,39 @@ class EggCatalogTest extends IntegrationTestCase
         $this->assertStringContainsString(trans('admin/catalog.nest_required'), $html);
         $this->assertStringContainsString(trans('admin/catalog.create_nest'), $html);
         $this->assertDatabaseCount('nests', 0);
+    }
+
+    public function test_create_nest_return_url_preserves_originating_nest_and_catalog_parameters(): void
+    {
+        $nest = Nest::factory()->create();
+        $entry = app(EggCatalogService::class)->provider('Rextstore')['entries'][0];
+        $entries = [$entry, ...array_map(fn ($index) => new EggCatalogEntry(
+            $entry->provider, 'paper-'.$index, 'Paper '.$index, $entry->description, $entry->category,
+            $entry->repository, $entry->path, $entry->sourceUrl, $entry->downloadUrl(),
+        ), range(1, 99))];
+        Cache::put('egg-catalog:provider:Rextstore', ['entries' => $entries, 'invalid' => 0, 'refreshed_at' => now()->timestamp], 86400);
+        $query = [
+            'nest_id' => (string) $nest->id, 'search' => 'Paper', 'source' => 'Rextstore', 'category' => 'Rextstore|Minecraft',
+            'page' => '3', 'per_page' => '48', 'review_provider' => 'Rextstore', 'review_id' => 'Minecraft/egg-paper.json',
+        ];
+        $component = Livewire::withQueryParams($query)->test(EggCatalog::class)->call('loadCatalog');
+        $url = $component->instance()->resumeUrl();
+        parse_str(parse_url($url, PHP_URL_QUERY), $returned);
+        $this->assertEquals($query, $returned);
+        Livewire::withQueryParams(['catalog_return' => $url])->test(CreateNest::class)->assertSet('catalogReturn', $url);
+        $resumed = Livewire::withQueryParams($returned)->test(EggCatalog::class)
+            ->assertSet('nestContext', $nest->id)->assertSet('search', 'Paper')->assertSet('source', 'Rextstore')
+            ->assertSet('category', 'Rextstore|Minecraft')->assertSet('page', 3)->assertSet('perPage', 48)
+            ->call('loadCatalog')->assertSchemaStateSet(['nest_id' => $nest->id]);
+        $this->assertSame(NestResource::getUrl('edit', ['record' => $nest]), $resumed->instance()->backUrl());
+    }
+
+    public function test_create_nest_return_url_without_nest_context_does_not_preselect_a_nest(): void
+    {
+        $component = Livewire::withQueryParams([])->test(EggCatalog::class);
+        parse_str(parse_url($component->instance()->resumeUrl(), PHP_URL_QUERY), $query);
+        $this->assertArrayNotHasKey('nest_id', $query);
+        Livewire::withQueryParams($query)->test(EggCatalog::class)->assertSet('nestContext', null);
     }
 
     public function test_create_nest_resumes_catalog_context_with_the_new_destination(): void

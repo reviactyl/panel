@@ -165,6 +165,7 @@ class EggCatalog extends Page
     public function resumeUrl(): string
     {
         return EggResource::getUrl('catalog', [
+            'nest_id' => $this->nestContext,
             'search' => $this->search, 'source' => $this->source, 'category' => $this->category,
             'page' => $this->page, 'per_page' => $this->perPage, 'review_provider' => $this->selectedProvider, 'review_id' => $this->selectedId,
         ]);
