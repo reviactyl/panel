@@ -93,18 +93,16 @@ class BulkPowerActionCommand extends Command
      */
     protected function getQueryBuilder(array $servers, array $nodes): Builder
     {
-        $instance = Server::query()->whereNull('status');
+        return Server::query()->whereNull('status')
+            ->where(function (Builder $query) use ($servers, $nodes): void {
+                if (! empty($servers)) {
+                    $query->whereIn('id', $servers);
+                }
 
-        if (! empty($servers)) {
-            $instance->whereIn('id', $servers);
-
-            if (! empty($nodes)) {
-                $instance->orWhereIn('node_id', $nodes);
-            }
-        } elseif (! empty($nodes)) {
-            $instance->whereIn('node_id', $nodes);
-        }
-
-        return $instance->with('node');
+                if (! empty($nodes)) {
+                    $query->orWhereIn('node_id', $nodes);
+                }
+            })
+            ->with('node');
     }
 }
