@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import FlashMessageRender from '@/components/FlashMessageRender';
 import Modal, { RequiredModalProps } from '@/reviactyl/elements/Modal';
 import { Form, Formik, FormikHelpers } from 'formik';
 import Field from '@/reviactyl/elements/Field';
@@ -30,22 +32,15 @@ const RenameFileModal = ({ files, useMoveTerminology, ...props }: OwnProps) => {
 
     const directory = ServerContext.useStoreState((state) => state.files.directory);
 
+    useEffect(() => {
+        clearFlashes('files:rename-modal');
+    }, [props.visible]);
+
     const setSelectedFiles = ServerContext.useStoreActions((actions) => actions.files.setSelectedFiles);
 
     const submit = ({ name }: FormikValues, { setSubmitting }: FormikHelpers<FormikValues>) => {
         clearFlashes('files');
-
-        const len = name.split('/').length;
-
-        if (files.length === 1) {
-            if (!useMoveTerminology && len === 1) {
-                // Rename the file within this directory.
-                mutate((data) => data?.map((f) => (f.name === files[0] ? { ...f, name } : f)), false);
-            } else if (useMoveTerminology || len > 1) {
-                // Remove the file from this directory since they moved it elsewhere.
-                mutate((data) => data?.filter((f) => f.name !== files[0]), false);
-            }
-        }
+        clearFlashes('files:rename-modal');
 
         let data;
 
@@ -55,15 +50,17 @@ const RenameFileModal = ({ files, useMoveTerminology, ...props }: OwnProps) => {
             data = files.map((f) => ({ from: f, to: name }));
         }
 
-        renameFiles(uuid, directory, data)
+        return renameFiles(uuid, directory, data)
             .then((): Promise<any> => (files.length > 0 ? mutate() : Promise.resolve()))
-            .then(() => setSelectedFiles([]))
+            .then(() => {
+                setSelectedFiles([]);
+                props.onDismissed();
+            })
             .catch((error) => {
                 mutate();
                 setSubmitting(false);
-                clearAndAddHttpError({ key: 'files', error });
-            })
-            .then(() => props.onDismissed());
+                clearAndAddHttpError({ key: 'files:rename-modal', error });
+            });
     };
 
     return (
@@ -75,6 +72,7 @@ const RenameFileModal = ({ files, useMoveTerminology, ...props }: OwnProps) => {
                     dismissable={!isSubmitting}
                     showSpinnerOverlay={isSubmitting}
                 >
+                    <FlashMessageRender byKey='files:rename-modal' className='mb-4' />
                     <Form className='m-0'>
                         <div className={clsx('flex flex-wrap', useMoveTerminology ? 'items-center' : 'items-end')}>
                             <div className='w-full sm:flex-1 sm:mr-4'>
