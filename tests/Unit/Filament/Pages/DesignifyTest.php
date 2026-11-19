@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Mockery;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class DesignifyTest extends TestCase
@@ -111,6 +112,76 @@ class DesignifyTest extends TestCase
             && $settings['site_image'] === '/reviactyl/logo.png'
             && $settings['site_favicon'] === '/reviactyl/icon.png');
         (new DesignifyComposer())->compose($view);
+    }
+
+    public static function imageUrls(): array
+    {
+        return [
+            'legacy public path' => ['/public/reviactyl/logo.png', '/reviactyl/logo.png'],
+            'whitespace' => [' /public/reviactyl/logo.png ', '/reviactyl/logo.png'],
+            'external URL' => ['https://example.com/public/image.png', 'https://example.com/public/image.png'],
+            'protocol relative URL' => ['//example.com/public/image.png', '//example.com/public/image.png'],
+            'uploaded image' => ['/storage/designify/image.png', '/storage/designify/image.png'],
+            'root relative path' => ['/reviactyl/logo.png', '/reviactyl/logo.png'],
+            'nested public segment' => ['/images/public/logo.png', '/images/public/logo.png'],
+            'empty' => ['', ''],
+            'none' => ['none', 'none'],
+            'null' => [null, ''],
+        ];
+    }
+
+    #[DataProvider('imageUrls')]
+    public function test_preview_normalizes_background_and_error_image_urls(?string $input, string $expected): void
+    {
+        $page = app(Designify::class);
+        $page->data = ['designify:background' => $input];
+        foreach ([403, 404, 500] as $status) {
+            $page->data['designify:errors:'.$status.':image'] = $input;
+        }
+
+        $preview = $page->getPreviewSettings();
+        $this->assertSame($expected, $preview['background']);
+        foreach ([403, 404, 500] as $status) {
+            $this->assertSame($expected, $preview['errors'][$status]['image']);
+        }
+    }
+
+    #[DataProvider('imageUrls')]
+    public function test_composer_normalizes_background_and_error_image_urls(?string $input, string $expected): void
+    {
+        config(['designify.background' => $input]);
+        foreach ([403, 404, 500] as $status) {
+            config(['designify.errors.'.$status.'.image' => $input]);
+        }
+
+        $view = view('errors.404');
+        (new DesignifyComposer())->compose($view);
+        $settings = $view->getData()['panelConfiguration'];
+        $this->assertSame($input === null ? 'none' : $expected, $settings['background']);
+        foreach ([403, 404, 500] as $status) {
+            $this->assertSame($expected, $settings['errors'][$status]['image']);
+        }
+    }
+
+    #[DataProvider('imageUrls')]
+    public function test_error_pages_render_normalized_image_urls(?string $input, string $expected): void
+    {
+        foreach ([403, 404, 500] as $status) {
+            config(['designify.errors.'.$status.'.image' => $input]);
+        }
+
+        foreach ([403, 404, 500] as $status) {
+            $html = view('errors.'.$status)->render();
+            $this->assertSame(1, preg_match('/<img data-designify-error-image[^>]*>/', $html, $matches));
+            $image = $matches[0];
+            if ($expected === '') {
+                $this->assertStringNotContainsString('src=', $image);
+                $this->assertStringContainsString('object-contain mb-8 hidden', $image);
+            } else {
+                $this->assertStringContainsString('src="'.e($expected).'"', $image);
+                $this->assertStringNotContainsString('object-contain mb-8 hidden', $image);
+            }
+        }
     }
 
     public function test_file_layout_defaults_to_list_and_exports_grid_configuration(): void
