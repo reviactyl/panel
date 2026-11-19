@@ -3,7 +3,7 @@
 # since we won't need NodeJS anymore in the future. This Docker image ships a final production
 # level distribution of Reviactyl.
 # Use BUILDPLATFORM to run Node.js natively (avoids QEMU emulation issues)
-FROM --platform=$BUILDPLATFORM node:22-alpine@sha256:5b05da3f938f1c604b24c633646d48805a6667f378cb4908438616f3cc48a0bf
+FROM --platform=$BUILDPLATFORM node:22-alpine@sha256:1314fb30ec37592d5845e5a160d522c0e680972aa534549940b8d73bde88481a
 WORKDIR /app
 COPY . ./
 COPY --from=composer@sha256:d8f6343d3fae98107426bc49163ccad46ef85aabd4a27d80a74401fab4aba332 /usr/bin/composer /usr/local/bin/composer
