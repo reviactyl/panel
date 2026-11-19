@@ -5,12 +5,16 @@ namespace Tests\Integration\Filament;
 use App\Contracts\Repository\SettingsRepositoryInterface;
 use App\Filament\Pages\Settings;
 use App\Models\User;
+use App\Notifications\MailTested;
 use App\Providers\SettingsServiceProvider;
 use App\Services\Users\UserCreationService;
 use App\Support\InstallationState;
 use Filament\Facades\Filament;
+use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Notification;
 use Livewire\Livewire;
+use Mockery;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Integration\IntegrationTestCase;
 
 class SettingsTest extends IntegrationTestCase
@@ -89,6 +93,62 @@ class SettingsTest extends IntegrationTestCase
     {
         $this->actingAs(User::factory()->create(['root_admin' => false]));
         Livewire::test(Settings::class)->assertForbidden();
+    }
+
+    #[DataProvider('clearedSmtpFields')]
+    public function test_mail_uses_explicitly_cleared_smtp_fields(string $field, ?string $value): void
+    {
+        $saved = ['encryption' => 'tls', 'username' => 'saved-user', 'password' => 'saved-password'];
+        $settings = $this->app->make(SettingsRepositoryInterface::class);
+        $settings->set('settings::mail:default', 'smtp');
+        foreach ($saved as $key => $setting) {
+            $settings->set('settings::mail:mailers:smtp:'.$key, $key === 'password' ? encrypt($setting) : $setting);
+            config()->set('mail.mailers.smtp.'.$key, $setting);
+        }
+        config()->set('mail.default', 'smtp');
+
+        Livewire::test(Settings::class)
+            ->assertSet('data.mail:default', 'smtp')
+            ->set('data.mail:mailers:smtp:'.$field, $value)
+            ->assertSet('data.mail:mailers:smtp:'.$field, $value)
+            ->call('testMail')
+            ->assertHasNoErrors();
+
+        foreach ($saved as $key => $setting) {
+            $this->assertSame($key === $field ? ($value === '' ? null : $value) : $setting, config('mail.mailers.smtp.'.$key));
+        }
+        Notification::assertSentOnDemand(MailTested::class);
+    }
+
+    public static function clearedSmtpFields(): array
+    {
+        return [
+            'no encryption' => ['encryption', null],
+            'null username' => ['username', null],
+            'null password' => ['password', null],
+            'empty username' => ['username', ''],
+            'empty password' => ['password', ''],
+        ];
+    }
+
+    public function test_mail_keeps_saved_smtp_settings_when_form_keys_are_absent(): void
+    {
+        $saved = ['encryption' => 'tls', 'username' => 'saved-user', 'password' => 'saved-password'];
+        foreach ($saved as $key => $setting) {
+            config()->set('mail.mailers.smtp.'.$key, $setting);
+        }
+
+        $form = Mockery::mock(Schema::class);
+        $form->shouldReceive('getState')->once()->andReturn([]);
+        $page = Mockery::mock(Settings::class)->makePartial();
+        $page->shouldReceive('getForm')->with('form')->once()->andReturn($form);
+
+        $page->testMail();
+
+        foreach ($saved as $key => $setting) {
+            $this->assertSame($setting, config('mail.mailers.smtp.'.$key));
+        }
+        Notification::assertSentOnDemand(MailTested::class);
     }
 
     private function createUser(array $attributes = []): User
