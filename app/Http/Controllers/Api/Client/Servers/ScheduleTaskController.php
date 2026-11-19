@@ -115,8 +115,14 @@ class ScheduleTaskController extends ClientApiController
         /** @var Task $task */
         $task = $this->connection->transaction(function () use ($request, $schedule, $task) {
             $schedule->newQuery()->whereKey($schedule->id)->lockForUpdate()->firstOrFail();
+            $tasks = $schedule->tasks()->orderBy('sequence_id')->orderBy('id')->get();
+            foreach ($tasks as $index => $scheduledTask) {
+                if ($scheduledTask->sequence_id !== $index + 1) {
+                    $scheduledTask->update(['sequence_id' => $index + 1]);
+                }
+            }
             $task->refresh();
-            $sequenceId = max(1, min($request->integer('sequence_id', $task->sequence_id), $schedule->tasks()->count()));
+            $sequenceId = max(1, min($request->integer('sequence_id', $task->sequence_id), $tasks->count()));
 
             // Shift all other tasks in the schedule up or down to make room for the new task.
             if ($sequenceId < $task->sequence_id) {

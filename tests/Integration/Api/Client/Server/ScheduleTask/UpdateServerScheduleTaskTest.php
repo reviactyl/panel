@@ -9,6 +9,7 @@ use App\Models\Task;
 use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
 class UpdateServerScheduleTaskTest extends ClientApiIntegrationTestCase
@@ -109,6 +110,35 @@ class UpdateServerScheduleTaskTest extends ClientApiIntegrationTestCase
 
         $this->assertSame([$tasks[2]->id, $tasks[0]->id, $tasks[1]->id], $schedule->tasks()->orderBy('sequence_id')->pluck('id')->all());
         $this->assertSame([1, 2, 3], $schedule->tasks()->orderBy('sequence_id')->pluck('sequence_id')->all());
+    }
+
+    #[DataProvider('legacySequenceProvider')]
+    public function test_legacy_sequence_gaps_are_repaired_without_unintended_moves(?int $sequenceId, array $expectedOrder): void
+    {
+        [$user, $server] = $this->generateTestAccount();
+        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
+        $tasks = collect([1, 2, 99, 100])->map(fn ($sequence) => Task::factory()->create([
+            'schedule_id' => $schedule->id, 'sequence_id' => $sequence,
+        ]));
+        $data = ['action' => 'command', 'payload' => 'say Updated', 'time_offset' => 0];
+        if ($sequenceId !== null) {
+            $data['sequence_id'] = $sequenceId;
+        }
+
+        $this->actingAs($user)->postJson($this->link($tasks[3]), $data)->assertOk();
+
+        $ordered = $schedule->tasks()->orderBy('sequence_id')->get();
+        $this->assertSame([1, 2, 3, 4], $ordered->pluck('sequence_id')->all());
+        $this->assertSame(array_map(fn ($index) => $tasks[$index]->id, $expectedOrder), $ordered->pluck('id')->all());
+    }
+
+    public static function legacySequenceProvider(): array
+    {
+        return [
+            'details only' => [null, [0, 1, 2, 3]],
+            'past the end' => [99, [0, 1, 2, 3]],
+            'explicit move' => [2, [0, 3, 1, 2]],
+        ];
     }
 
     public function test_task_cannot_be_updated_without_action_permission()
