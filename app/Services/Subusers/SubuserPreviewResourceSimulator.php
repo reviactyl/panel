@@ -1224,6 +1224,7 @@ class SubuserPreviewResourceSimulator
             'is_successful' => $backup->is_successful,
             'is_locked' => $backup->is_locked,
             'name' => $backup->name,
+            'format' => $backup->format,
             'ignored_files' => $backup->ignored_files,
             'checksum' => $backup->checksum,
             'bytes' => $backup->bytes,

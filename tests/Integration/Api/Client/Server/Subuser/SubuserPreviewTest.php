@@ -1137,7 +1137,7 @@ class SubuserPreviewTest extends ClientApiIntegrationTestCase
         [$owner, $server, $target] = $this->models();
         $server->forceFill(['backup_limit' => 10])->save();
         $server->subusers()->first()->update(['permissions' => [Permission::ACTION_BACKUP_CREATE, Permission::ACTION_BACKUP_READ]]);
-        $backup = Backup::factory()->create(['server_id' => $server->id, 'name' => 'Live backup']);
+        $backup = Backup::factory()->create(['server_id' => $server->id, 'name' => 'Live backup', 'format' => 'zip']);
         $token = $this->actingAs($owner)->postJson($this->previewEndpoint($server, $target))->json('token');
         $simulated = $this->withPreviewToken($token)->postJson($this->link($server, 'backups'), ['name' => 'Preview backup'])->assertCreated();
 
@@ -1154,6 +1154,9 @@ class SubuserPreviewTest extends ClientApiIntegrationTestCase
                 ->assertOk()->assertJsonPath('attributes.name', $name);
         }
 
+        $list = $this->withPreviewToken($token)->getJson($this->link($server, 'backups'))->assertOk();
+        $renamedBackup = collect($list->json('data'))->firstWhere('attributes.uuid', $backup->uuid);
+        $this->assertSame('zip', $renamedBackup['attributes']['format'] ?? null);
         $this->assertSame('Live backup', $backup->fresh()->name);
         $this->assertDatabaseCount('backups', 1);
         $this->withPreviewToken($token)->postJson($this->link($server, 'backups/'.fake()->uuid().'/rename'), ['name' => 'Missing'])
