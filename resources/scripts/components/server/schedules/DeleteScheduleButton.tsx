@@ -19,6 +19,7 @@ export default ({ scheduleId, onDeleted }: Props) => {
     const [visible, setVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const removeSchedule = ServerContext.useStoreActions((actions) => actions.schedules.removeSchedule);
     const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     const onDelete = () => {
@@ -26,6 +27,7 @@ export default ({ scheduleId, onDeleted }: Props) => {
         clearFlashes('schedules');
         deleteSchedule(uuid, scheduleId)
             .then(() => {
+                removeSchedule(scheduleId);
                 setIsLoading(false);
                 onDeleted();
             })

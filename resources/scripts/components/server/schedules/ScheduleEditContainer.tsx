@@ -30,6 +30,7 @@ const ScheduleEditContainer = () => {
     );
 
     const { clearFlashes, clearAndAddHttpError } = useFlash();
+    const [loading, setLoading] = useState(true);
     const [showEditModal, setShowEditModal] = useState(false);
     const [requestState, setRequestState] = useState<RunRequestState>('idle');
 
@@ -46,6 +47,7 @@ const ScheduleEditContainer = () => {
         let cancelled = false;
         const cached = store.getState().schedules.data.find((s) => s.id === Number(scheduleId));
 
+        setLoading(true);
         clearFlashes('schedules');
         getServerSchedule(uuid, Number(scheduleId))
             .then((schedule) => {
@@ -57,6 +59,9 @@ const ScheduleEditContainer = () => {
                 if (cancelled) return;
                 console.error(error);
                 clearAndAddHttpError({ error, key: 'schedules' });
+            })
+            .finally(() => {
+                if (!cancelled) setLoading(false);
             });
 
         return () => {
@@ -73,7 +78,9 @@ const ScheduleEditContainer = () => {
             <FlashMessageRender byKey='schedules' className='mb-4' />
             <FlashMessageRender byKey='schedule-status' className='mb-4' />
             {!schedule ? (
-                <Spinner size={'large'} centered />
+                loading ? (
+                    <Spinner size={'large'} centered />
+                ) : null
             ) : (
                 <>
                     <div className='mb-4 rounded-ui bg-gray-900 p-3 sm:hidden'>
@@ -120,7 +127,7 @@ const ScheduleEditContainer = () => {
                         <ScheduleCronBoxes cron={schedule.cron} />
                         <div className='rounded-b bg-gray-900'>
                             {schedule.tasks.length > 0
-                                ? schedule.tasks
+                                ? [...schedule.tasks]
                                       .sort((a, b) =>
                                           a.sequenceId === b.sequenceId ? 0 : a.sequenceId > b.sequenceId ? 1 : -1,
                                       )
