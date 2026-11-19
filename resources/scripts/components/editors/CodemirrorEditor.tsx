@@ -114,22 +114,24 @@ export default ({
             effects: theme.current.reconfigure(
                 EditorView.theme(
                     {
-                        '&': { height: '100%', backgroundColor: 'transparent', color: 'rgb(var(--color-100))' },
+                        '&': { height: '100%', backgroundColor: 'rgb(var(--color-950))', color: 'rgb(var(--color-100))' },
                         '.cm-scroller': { overflow: 'auto', fontSize: '12px', lineHeight: '1.375rem' },
                         '.cm-content, .cm-cursor': {
                             caretColor: 'rgb(var(--color-100))',
                             borderLeftColor: 'rgb(var(--color-100))',
                         },
                         '.cm-gutters': {
-                            backgroundColor: 'transparent',
-                            border: 'none',
+                            backgroundColor: 'rgb(var(--color-950))',
+                            border: '1px solid rgb(var(--color-800))',
+                            borderRadius: 'var(--radius-ui)',
+                            marginRight: '0.5rem',
                             color: 'rgb(var(--text-muted))',
                         },
                         '.cm-activeLine, .cm-activeLineGutter': { backgroundColor: 'rgb(var(--color-primary) / 0.08)' },
                         '.cm-selectionBackground, &.cm-focused .cm-selectionBackground': {
                             backgroundColor: 'rgb(var(--color-primary) / 0.2)',
                         },
-                        '.cm-panels': { backgroundColor: 'rgb(var(--color-900))', color: 'rgb(var(--color-100))' },
+                        '.cm-panels': { backgroundColor: 'rgb(var(--color-950))', color: 'rgb(var(--color-100))' },
                     },
                     { dark },
                 ),
