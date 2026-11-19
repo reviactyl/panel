@@ -4,9 +4,11 @@ namespace Tests\Integration\Filament;
 
 use App\Filament\Pages\Designify;
 use App\Http\ViewComposers\DesignifyComposer;
+use App\Livewire\EmailTemplateEditor;
 use App\Models\Setting;
 use App\Models\User;
 use App\Services\Designify\SiteImageService;
+use App\Services\Mail\EmailTemplateService;
 use Filament\Facades\Filament;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Http\UploadedFile;
@@ -36,6 +38,24 @@ class DesignifyTest extends IntegrationTestCase
                 ->assertSee('--font-family: "'.str_replace('+', ' ', $font).'", sans-serif;', false)
                 ->assertSee('https://fonts.googleapis.com/css2?family='.$font.':ital,wght@', false);
         }
+    }
+
+    public function test_email_reset_preserves_theme_and_other_saved_templates(): void
+    {
+        $this->actingAs(User::factory()->create(['root_admin' => true]));
+        $service = app(EmailTemplateService::class);
+        Setting::query()->create(['key' => 'settings::designify:site_title', 'value' => 'Custom panel']);
+        $other = $service->save('AccountCreated', ['subject' => 'Welcome', 'html' => '<a href="{{ action_url }}">Join</a>']);
+        $service->save('MailTested', ['subject' => 'Custom test', 'html' => '<p>Custom body</p>']);
+
+        Livewire::test(EmailTemplateEditor::class)
+            ->call('resetTemplate', 'MailTested')
+            ->assertReturned($service->defaults('MailTested'));
+
+        $this->assertDatabaseMissing('settings', ['key' => 'settings::email-template:MailTested']);
+        $this->assertDatabaseHas('settings', ['key' => 'settings::designify:site_title', 'value' => 'Custom panel']);
+        $this->assertSame($other, $service->load('AccountCreated'));
+        Livewire::test(EmailTemplateEditor::class)->call('loadTemplate', 'AccountCreated')->assertReturned($other);
     }
 
     public function test_background_scope_saves_and_rejects_unknown_options(): void

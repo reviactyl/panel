@@ -155,20 +155,20 @@ test('Designify email canvas, HTML, placeholders and header actions share one dr
     const inspector = await page.locator('.email-template-editor__inspector').boundingBox();
     const original = await page.locator('.designify-editor__controls').boundingBox();
     expect(Math.round(inspector!.x + inspector!.width)).toBe(Math.round(original!.x + original!.width));
-    await page.screenshot({ path: '/tmp/rev10-design-desktop.png', fullPage: true });
+    await page.screenshot({ path: test.info().outputPath('email-desktop.png'), fullPage: true });
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.screenshot({ path: '/tmp/rev10-design-mobile.png', fullPage: true });
+    await page.screenshot({ path: test.info().outputPath('email-mobile.png'), fullPage: true });
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     expect(errors).toEqual([]);
+    const resetWarning = page.waitForEvent('dialog').then(async (dialog) => {
+        expect(dialog.type()).toBe('confirm');
+        expect(dialog.message()).toBe('Restore the default email and replace your saved customization?');
+        await dialog.accept();
+    });
     await page.getByRole('button', { name: 'Reset', exact: true }).click();
-    const resetDialog = page.getByRole('alertdialog', { name: 'Reset Designify?' });
-    await expect(resetDialog.getByRole('heading', { name: 'Reset Designify?' })).toBeVisible();
-    await Promise.all([
-        page.waitForEvent('load'),
-        resetDialog.getByRole('button', { name: 'Confirm', exact: true }).click(),
-    ]);
-    await expect(page.getByRole('combobox', { name: 'Email Type', exact: true })).toBeEnabled();
-    await page.getByRole('combobox', { name: 'Email Type', exact: true }).selectOption('MailTested');
+    await resetWarning;
+    await expect(page.getByRole('combobox', { name: 'Email Type', exact: true })).toHaveValue('MailTested');
+    await expect(page.getByLabel('Subject', { exact: true })).toHaveValue('Panel Test Message');
     await expect(canvas.getByText('This is a test of the Reviactyl mail system. You’re good to go!')).toBeVisible();
 });
 

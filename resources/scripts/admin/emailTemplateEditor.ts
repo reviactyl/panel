@@ -4,6 +4,7 @@ type Wire = {
     editorPreference: () => Promise<string>;
     loadTemplate: (type: string) => Promise<Template | null | undefined>;
     previewTemplate: (type: string, template: Template) => Promise<string | null | undefined>;
+    resetTemplate: (type: string) => Promise<Template | null | undefined>;
     saveTemplate: (type: string, template: Template) => Promise<Template | null | undefined>;
 };
 
@@ -406,6 +407,27 @@ export function emailTemplateEditor(
                 this.format(this.urlCommand, url.href);
             } catch {
                 return;
+            }
+        },
+        async reset() {
+            if (this.busy || !window.confirm(labels.reset_confirm!)) return;
+            clearTimeout(this.timer);
+            this.revision++;
+            this.busy = true;
+            this.status = '';
+            this.publishState();
+            try {
+                const draft = await wire.resetTemplate(this.selectedType);
+                if (!isTemplate(draft)) throw new Error('Reset rejected');
+                this.draft = draft;
+                this.saved = JSON.stringify(this.draft);
+                this.dirty = false;
+                await this.updatePreview();
+            } catch {
+                this.error = labels.reset_error!;
+            } finally {
+                this.busy = false;
+                this.publishState();
             }
         },
         async save() {

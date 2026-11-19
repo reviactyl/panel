@@ -22,6 +22,7 @@ describe('failed HTML previews', () => {
         const wire = {
             editorPreference: vi.fn(),
             loadTemplate: vi.fn(),
+            resetTemplate: vi.fn(),
             saveTemplate: vi.fn(),
             previewTemplate:
                 result === 'reject'
@@ -55,6 +56,7 @@ describe('failed HTML previews', () => {
             {
                 editorPreference: vi.fn(),
                 loadTemplate: vi.fn(),
+                resetTemplate: vi.fn(),
                 saveTemplate: vi.fn(),
                 previewTemplate: () =>
                     new Promise<string>((_, reject) => {
@@ -80,6 +82,7 @@ describe('rejected template saves', () => {
             {
                 editorPreference: vi.fn(),
                 loadTemplate: vi.fn(),
+                resetTemplate: vi.fn(),
                 previewTemplate,
                 saveTemplate: vi.fn().mockResolvedValue(result),
             },
@@ -96,5 +99,63 @@ describe('rejected template saves', () => {
         expect(editor.status).toBe('');
         expect(editor.error).toBe('Check the template');
         expect(previewTemplate).not.toHaveBeenCalled();
+    });
+});
+
+describe('selected email reset', () => {
+    function setup(...results: unknown[]) {
+        const wire = {
+            editorPreference: vi.fn(),
+            loadTemplate: vi.fn(),
+            saveTemplate: vi.fn(),
+            previewTemplate: vi.fn(),
+            resetTemplate: vi
+                .fn()
+                .mockResolvedValue(results.length ? results[0] : { subject: 'Default', html: '<p>Default</p>' }),
+        };
+        const editor = emailTemplateEditor(wire, { reset_confirm: 'Reset this email?', reset_error: 'Reset failed' });
+        editor.busy = false;
+        editor.type = editor.selectedType = 'MailTested';
+        editor.draft = { subject: 'Custom', html: '<p>Custom</p>' };
+        editor.saved = 'previous';
+        editor.dirty = true;
+        editor.updatePreview = vi.fn().mockResolvedValue(undefined);
+        return { wire, editor };
+    }
+
+    it('keeps the draft and saved template when confirmation is canceled', async () => {
+        const { wire, editor } = setup();
+        Object.assign(window, { confirm: vi.fn().mockReturnValue(false) });
+        await editor.reset();
+        expect(wire.resetTemplate).not.toHaveBeenCalled();
+        expect(editor.draft.subject).toBe('Custom');
+        expect(editor.dirty).toBe(true);
+    });
+
+    it('resets only the selected type and publishes its clean state', async () => {
+        const { wire, editor } = setup();
+        Object.assign(window, { confirm: vi.fn().mockReturnValue(true) });
+        const state = vi.spyOn(window, 'dispatchEvent');
+        await editor.reset();
+        expect(wire.resetTemplate).toHaveBeenCalledExactlyOnceWith('MailTested');
+        expect(wire.saveTemplate).not.toHaveBeenCalled();
+        expect(editor.draft).toEqual({ subject: 'Default', html: '<p>Default</p>' });
+        expect(editor.saved).toBe(JSON.stringify(editor.draft));
+        expect(editor.dirty).toBe(false);
+        expect(editor.busy).toBe(false);
+        expect(editor.updatePreview).toHaveBeenCalledOnce();
+        expect(state.mock.calls.at(-1)?.[0]).toMatchObject({ detail: { dirty: false, busy: false } });
+    });
+
+    it.each([null, undefined, 'reject'])('keeps unsaved edits when reset returns %s', async (result) => {
+        const { wire, editor } = setup(result);
+        if (result === 'reject') wire.resetTemplate.mockRejectedValueOnce(new Error('Offline'));
+        Object.assign(window, { confirm: vi.fn().mockReturnValue(true) });
+        await editor.reset();
+        expect(editor.draft.subject).toBe('Custom');
+        expect(editor.saved).toBe('previous');
+        expect(editor.dirty).toBe(true);
+        expect(editor.busy).toBe(false);
+        expect(editor.error).toBe('Reset failed');
     });
 });

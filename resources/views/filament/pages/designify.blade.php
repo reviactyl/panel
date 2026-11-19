@@ -28,7 +28,7 @@
                 this.mediaQuery = window.matchMedia('(max-width: 70rem)');
                 this.syncMedia = () => this.isDesktop = !this.mediaQuery.matches;
                 this.handleBeforeUnload = (event) => {
-                    if (!this.isDirty || window.__designifySkipBeforeUnload) return;
+                    if ((!this.isDirty && !this.emailDirty) || window.__designifySkipBeforeUnload) return;
                     event.preventDefault();
                     event.returnValue = '';
                 };
@@ -127,7 +127,7 @@
                     <span class="designify-editor__save-state-dot" aria-hidden="true"></span>
                     <span x-text="emailDirty ? @js(trans('admin/settings.designify.editor-unsaved')) : @js(trans('admin/settings.designify.editor-saved'))"></span>
                 </span>
-                <x-filament::button color="gray" icon="tabler-restore" wire:click="mountAction('reset')" x-bind:disabled="emailBusy || emailReadOnly">{{ trans('admin/settings.designify.editor-reset') }}</x-filament::button>
+                <x-filament::button color="gray" icon="tabler-restore" @click="$dispatch('email-reset')" x-bind:disabled="emailBusy || emailReadOnly">{{ trans('admin/settings.designify.editor-reset') }}</x-filament::button>
                 <x-filament::button icon="tabler-device-floppy" @click="$dispatch('email-save')" x-bind:disabled="emailBusy || !emailDirty || emailReadOnly">{{ trans('admin/settings.designify.editor-save-changes') }}</x-filament::button>
             </div>
             <div class="designify-editor__actions" x-show="editorSurface === 'panel'">
