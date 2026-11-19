@@ -2,17 +2,25 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Events\Auth\DirectLogin;
 use App\Http\Controllers\Controller;
 use App\Models\SocialLogin;
 use App\Models\User;
 use App\Support\LoginDestination;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\TransferException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Contracts\Factory;
 use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\InvalidStateException;
 use Laravel\Socialite\Two\User as SocialiteUser;
+use RuntimeException;
 use SocialiteProviders\Discord\Provider;
+use Throwable;
 
 class SocialLoginController extends Controller
 {
@@ -21,30 +29,34 @@ class SocialLoginController extends Controller
     public function redirect(string $provider)
     {
         if (! in_array($provider, $this->supportedProviders)) {
-            return redirect()->route('auth.login')->with('error', 'Provider not supported.');
+            return $this->redirectWithError('Provider not supported.');
         }
 
-        if (! $this->configureDriver($provider)) {
-            return redirect()->route('auth.login')->with('error', 'Provider is not enabled or configured.');
-        }
+        try {
+            if (! $this->configureDriver($provider)) {
+                return $this->redirectWithError('Provider is not enabled or configured.');
+            }
 
-        return Socialite::driver($provider)->redirect();
+            return Socialite::driver($provider)->redirect();
+        } catch (Throwable $exception) {
+            return $this->handleProviderFailure($provider, $exception);
+        }
     }
 
     public function callback(Request $request, string $provider)
     {
         if (! in_array($provider, $this->supportedProviders)) {
-            return redirect()->route('auth.login')->with('error', 'Provider not supported.');
-        }
-
-        if (! $this->configureDriver($provider)) {
-            return redirect()->route('auth.login')->with('error', 'Provider is not enabled or configured.');
+            return $this->redirectWithError('Provider not supported.');
         }
 
         try {
+            if (! $this->configureDriver($provider)) {
+                return $this->redirectWithError('Provider is not enabled or configured.');
+            }
+
             $socialUser = Socialite::driver($provider)->user();
-        } catch (\Exception $e) {
-            return redirect()->route('auth.login')->with('error', 'Failed to authenticate with '.$provider.'.');
+        } catch (Throwable $exception) {
+            return $this->handleProviderFailure($provider, $exception);
         }
 
         // User is already logged in (Linking Account)
@@ -90,6 +102,8 @@ class SocialLoginController extends Controller
 
             $request->session()->regenerate();
 
+            Event::dispatch(new DirectLogin($socialLogin->user, false));
+
             return redirect(LoginDestination::pull($request));
         }
 
@@ -99,6 +113,25 @@ class SocialLoginController extends Controller
         // Instead, require the user to log in with their password first,
         // then manually link the social account from Account Settings.
         return redirect()->route('auth.login')->with('error', trans('auth.social.not_linked', ['provider' => ucfirst($provider)]));
+    }
+
+    private function handleProviderFailure(string $provider, Throwable $exception): RedirectResponse
+    {
+        if ($exception instanceof TransferException) {
+            // Provider responses can contain credentials, so report only the status.
+            $status = $exception instanceof RequestException ? $exception->getResponse()?->getStatusCode() : null;
+            $details = $status === null ? 'before receiving a response' : 'with HTTP '.$status;
+            report(new RuntimeException("OAuth request to {$provider} failed {$details}."));
+        } elseif (! $exception instanceof InvalidStateException) {
+            report($exception);
+        }
+
+        return $this->redirectWithError('Failed to authenticate with '.$provider.'.');
+    }
+
+    protected function redirectWithError(string $message): RedirectResponse
+    {
+        return redirect()->route(Auth::check() ? 'account' : 'auth.login')->with('error', $message);
     }
 
     protected function generateUsername(string $name): string
