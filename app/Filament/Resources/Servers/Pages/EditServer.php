@@ -143,6 +143,7 @@ class EditServer extends EditRecord
                 ->label(trans('admin/server.actions.toggle_install_status'))
                 ->icon('heroicon-o-arrow-path')
                 ->color('primary')
+                ->authorize(fn (): bool => static::getResource()::canEdit($this->getRecord()))
                 ->requiresConfirmation()
                 ->action(fn () => $this->toggleInstallStatus())
                 ->successNotification(null),
@@ -172,6 +173,7 @@ class EditServer extends EditRecord
 
                     return ! is_null($server->transfer);
                 })
+                ->authorize(fn (): bool => static::getResource()::canEdit($this->getRecord()))
                 ->requiresConfirmation()
                 ->action(fn () => $this->toggleSuspension())
                 ->successNotification(null),
@@ -186,6 +188,7 @@ class EditServer extends EditRecord
 
                     return ! $server->isInstalled();
                 })
+                ->authorize(fn (): bool => static::getResource()::canEdit($this->getRecord()))
                 ->requiresConfirmation()
                 ->action(fn () => $this->reinstallServer())
                 ->successNotification(null),
@@ -235,6 +238,8 @@ class EditServer extends EditRecord
                 'is_reinstalling' => false,
             ], true, true);
 
+            $this->record->refresh();
+
             app(ActivityLogService::class)->subject($server)->event('server:toggle-install')->log();
 
             Notification::make()
@@ -254,6 +259,7 @@ class EditServer extends EditRecord
 
         try {
             app(SuspensionService::class)->toggle($server, $action);
+            $this->record->refresh();
             app(ActivityLogService::class)->subject($server)->event('server:'.$action)->log();
 
             Notification::make()
@@ -272,6 +278,7 @@ class EditServer extends EditRecord
 
         try {
             app(ReinstallServerService::class)->handle($server);
+            $this->record->refresh();
             app(ActivityLogService::class)->subject($server)->event('server:reinstall')->log();
 
             Notification::make()
