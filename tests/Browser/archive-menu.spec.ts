@@ -1,4 +1,4 @@
-import { expect, test, type Locator } from '@playwright/test';
+import { expect, test, type Locator, type Page } from '@playwright/test';
 import { build } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
 import { resolve } from 'node:path';
@@ -16,8 +16,8 @@ const reachable = async (button: Locator) => {
         .toBe(true);
 };
 
-// Exercise actual browser geometry: jsdom cannot detect stacking or fixed navigation collisions.
-test.describe('archive menu responsive bounds', () => {
+// Exercise actual browser geometry and real MassActionsBar keyboard/focus controls in normal CI.
+test.describe('archive menu responsive bounds and keyboard controls', () => {
     let script: string;
     let css: string;
     test.beforeAll(async () => {
@@ -45,16 +45,75 @@ test.describe('archive menu responsive bounds', () => {
         script = chunk.code;
         css = stylesheet.source.toString();
     });
+
+    const mountMassActions = async (
+        page: Page,
+        compressCalls: Array<{ root: string; format: string; files: string[] }> = [],
+    ) => {
+        await page.route('**/*', async (route) => {
+            const url = new URL(route.request().url());
+            if (url.origin !== 'http://panel.test') return route.abort();
+            if (url.pathname === '/') {
+                return route.fulfill({ contentType: 'text/html', body: '<!doctype html><div id="root"></div>' });
+            }
+            if (url.pathname === '/api/client/servers/uuid/files/list') {
+                return route.fulfill({
+                    json: {
+                        object: 'list',
+                        data: [
+                            {
+                                object: 'file_object',
+                                attributes: {
+                                    name: 'welcome.txt',
+                                    mode: '-rw-r--r--',
+                                    mode_bits: '0644',
+                                    size: 12,
+                                    is_file: true,
+                                    is_symlink: false,
+                                    mimetype: 'text/plain',
+                                    created_at: '2026-01-01T00:00:00+00:00',
+                                    modified_at: '2026-01-01T00:00:00+00:00',
+                                },
+                            },
+                        ],
+                    },
+                });
+            }
+            if (url.pathname === '/api/client/servers/uuid/files/compress' && route.request().method() === 'POST') {
+                const payload = route.request().postDataJSON() as { root: string; format: string; files: string[] };
+                compressCalls.push(payload);
+                return route.fulfill({
+                    json: {
+                        object: 'file_object',
+                        attributes: {
+                            name: `archive.${payload.format}`,
+                            mode: '-rw-r--r--',
+                            mode_bits: '0644',
+                            size: 128,
+                            is_file: true,
+                            is_symlink: false,
+                            mimetype: 'application/octet-stream',
+                            created_at: '2026-01-01T00:00:00+00:00',
+                            modified_at: '2026-01-01T00:00:00+00:00',
+                        },
+                    },
+                });
+            }
+            return route.fulfill({ json: { data: [] } });
+        });
+        await page.goto('http://panel.test/');
+        await page.addStyleTag({ content: css });
+        await page.addScriptTag({ content: script });
+    };
+
     for (const width of [320, 390, 639, 640, 768, 1280]) {
         test(`stays clear of actions, rows and navigation across scroll/resize at ${width}px`, async ({ page }) => {
             await page.setViewportSize({ width, height: 600 });
-            await page.setContent('<div id="root"></div>');
-            await page.addStyleTag({ content: css });
-            await page.addScriptTag({ content: script });
+            await mountMassActions(page);
             const archive = page.getByRole('button', { name: 'Archive', exact: true });
             await archive.evaluate((element) => element.scrollIntoView({ block: 'center' }));
             await archive.focus();
-            const menu = page.getByRole('group', { name: 'Formats' });
+            const menu = page.getByRole('group', { name: 'Archive' });
             const check = async () => {
                 await expect
                     .poll(async () => {
@@ -67,8 +126,8 @@ test.describe('archive menu responsive bounds', () => {
                 expect(bounds.x + bounds.width).toBeLessThanOrEqual(page.viewportSize()!.width - 8);
                 const remove = (await page.getByRole('button', { name: 'Delete', exact: true }).boundingBox())!;
                 expect(bounds.y >= remove.y + remove.height || bounds.y + bounds.height <= remove.y).toBe(true);
-                await reachable(page.getByRole('button', { name: 'tar.gz', exact: true }));
-                await reachable(page.getByRole('button', { name: 'zip', exact: true }));
+                await reachable(page.getByRole('button', { name: 'Archive as tar.gz', exact: true }));
+                await reachable(page.getByRole('button', { name: 'Archive as zip', exact: true }));
             };
             await check();
             await page.evaluate(() => window.scrollBy(0, -160));
@@ -77,6 +136,58 @@ test.describe('archive menu responsive bounds', () => {
             await check();
         });
     }
+
+    test('handles Tab traversal, blur close, Escape focus restore, and mocked format submission', async ({ page }) => {
+        const compressCalls: Array<{ root: string; format: string; files: string[] }> = [];
+        await page.setViewportSize({ width: 1280, height: 600 });
+        await mountMassActions(page, compressCalls);
+
+        const archive = page.getByRole('button', { name: 'Archive', exact: true });
+        const tarGz = page.getByRole('button', { name: 'Archive as tar.gz', exact: true });
+        const zip = page.getByRole('button', { name: 'Archive as zip', exact: true });
+        const remove = page.getByRole('button', { name: 'Delete', exact: true });
+
+        await archive.evaluate((element) => element.scrollIntoView({ block: 'center' }));
+        await archive.focus();
+        await expect(tarGz).toBeVisible();
+
+        await page.keyboard.press('Tab');
+        await expect(tarGz).toBeFocused();
+        await page.keyboard.press('Tab');
+        await expect(zip).toBeFocused();
+
+        await page.keyboard.press('Tab');
+        await expect(remove).toBeFocused();
+        await expect(tarGz).toBeHidden();
+
+        await archive.focus();
+        await expect(tarGz).toBeVisible();
+        await page.keyboard.press('Tab');
+        await expect(tarGz).toBeFocused();
+        await page.keyboard.press('Escape');
+        await expect(archive).toBeFocused();
+        await expect(tarGz).toBeHidden();
+
+        for (const [format, key] of [
+            ['tar.gz', 'Enter'],
+            ['zip', 'Space'],
+        ] as const) {
+            if (await page.getByRole('button', { name: 'Reselect', exact: true }).isVisible()) {
+                await page.getByRole('button', { name: 'Reselect', exact: true }).click();
+            } else {
+                await page.getByRole('button', { name: 'Move', exact: true }).focus();
+            }
+            await archive.focus();
+            await page.keyboard.press('Tab');
+            if (format === 'zip') await page.keyboard.press('Tab');
+            const choice = page.getByRole('button', { name: `Archive as ${format}`, exact: true });
+            await expect(choice).toBeFocused();
+            await choice.press(key);
+            await expect.poll(() => compressCalls.at(-1)?.format).toBe(format);
+            expect(compressCalls.at(-1)).toEqual({ root: '/', format, files: ['welcome.txt'] });
+            await expect(page.getByRole('button', { name: 'Reselect', exact: true })).toBeVisible();
+        }
+    });
 });
 
 for (const [width, view] of [

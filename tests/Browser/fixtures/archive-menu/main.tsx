@@ -1,33 +1,91 @@
-import React, { useRef, useState } from 'react';
+import React, { useLayoutEffect } from 'react';
 import { createRoot } from 'react-dom/client';
-import useArchiveMenuPosition from '@/components/server/files/useArchiveMenuPosition';
+import { StoreProvider } from 'easy-peasy';
+import { MemoryRouter } from 'react-router-dom';
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+import { store } from '@/state';
+import { ServerContext } from '@/state/server';
+import MassActionsBar from '@/components/server/files/MassActionsBar';
 import '@/assets/tailwind.css';
 
-function Fixture() {
-    const anchor = useRef<HTMLDivElement>(null);
-    const menu = useRef<HTMLDivElement>(null);
-    const [open, setOpen] = useState(false);
-    const position = useArchiveMenuPosition(open, anchor, menu);
+void i18n.use(initReactI18next).init({
+    lng: 'en',
+    fallbackLng: 'en',
+    resources: {
+        en: {
+            'server/files': {
+                archive: 'Archive',
+                'archive-as': 'Archive as {{format}}',
+                delete: 'Delete',
+                move: 'Move',
+                'mass-actions': {
+                    archiving: 'Archiving...',
+                    deleting: 'Deleting...',
+                },
+            },
+            generic: {
+                cancel: 'Cancel',
+            },
+        },
+    },
+});
+
+store.getActions().user.setUserData({
+    uuid: 'user-uuid',
+    username: 'demo',
+    email: 'demo@example.com',
+    language: 'en',
+    rootAdmin: false,
+    useTotp: false,
+    createdAt: new Date(),
+    fileEditor: 'codemirror',
+    archiveFormat: 'tar.gz',
+});
+
+function Bootstrap() {
+    const setServer = ServerContext.useStoreActions((actions) => actions.server.setServer);
+    const setPermissions = ServerContext.useStoreActions((actions) => actions.server.setPermissions);
+    const selectedFiles = ServerContext.useStoreState((state) => state.files.selectedFiles);
+    const setSelectedFiles = ServerContext.useStoreActions((actions) => actions.files.setSelectedFiles);
+
+    useLayoutEffect(() => {
+        setServer({
+            id: 'server',
+            internalId: 1,
+            uuid: 'uuid',
+            name: 'Demo',
+            node: 'node',
+            isNodeUnderMaintenance: false,
+            status: null,
+            sftpDetails: { ip: '127.0.0.1', port: 2022 },
+            invocation: '',
+            dockerImage: '',
+            description: '',
+            limits: { memory: 0, swap: 0, disk: 0, io: 0, cpu: 0, threads: null, oomDisabled: false },
+            eggFeatures: [],
+            featureLimits: { databases: 0, allocations: 0, backups: 0 },
+            isTransferring: false,
+            variables: [],
+            allocations: [],
+            nestId: 1,
+            eggId: 1,
+        });
+        setPermissions(['*']);
+        setSelectedFiles(['welcome.txt']);
+    }, [setPermissions, setSelectedFiles, setServer]);
+
     return (
         <>
             <div style={{ height: 800 }} />
-            <div className='flex gap-2' style={{ marginLeft: '60%' }}>
-                <div ref={anchor}>
-                    <button onFocus={() => setOpen(true)} onMouseEnter={() => setOpen(true)}>
-                        Archive
+            <div className='flex items-center gap-2' style={{ marginLeft: '60%' }}>
+                {selectedFiles.length > 0 ? (
+                    <MassActionsBar />
+                ) : (
+                    <button type='button' onClick={() => setSelectedFiles(['welcome.txt'])}>
+                        Reselect
                     </button>
-                    <div
-                        ref={menu}
-                        role='group'
-                        aria-label='Formats'
-                        style={{ ...position, display: open ? 'block' : 'none' }}
-                        className='fixed z-50 w-48 border p-2 bg-white'
-                    >
-                        <button className='block w-full p-2'>tar.gz</button>
-                        <button className='block w-full p-2'>zip</button>
-                    </div>
-                </div>
-                <button>Delete</button>
+                )}
             </div>
             <div className='relative z-30'>
                 File rows <input type='checkbox' />
@@ -43,4 +101,13 @@ function Fixture() {
         </>
     );
 }
-createRoot(document.getElementById('root')!).render(<Fixture />);
+
+createRoot(document.getElementById('root')!).render(
+    <StoreProvider store={store}>
+        <ServerContext.Provider>
+            <MemoryRouter>
+                <Bootstrap />
+            </MemoryRouter>
+        </ServerContext.Provider>
+    </StoreProvider>,
+);
