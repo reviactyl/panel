@@ -14,6 +14,7 @@ const mocks = vi.hoisted(() => ({
     resetPassword: vi.fn(),
     clearFlashes: vi.fn(),
     clearAndAddHttpError: vi.fn(),
+    addError: vi.fn(),
     addFlash: vi.fn(),
 }));
 vi.mock('@/api/auth/completeLogin', () => ({ default: vi.fn() }));
@@ -38,6 +39,7 @@ vi.mock('./OAuthButtons', () => ({ default: () => null }));
 let container: HTMLDivElement;
 let root: Root;
 let verify: (token: string) => void;
+let expire: () => void;
 let reset: ReturnType<typeof vi.fn<(widgetId: string) => void>>;
 
 const fill = async (values: Record<string, string>) => {
@@ -69,6 +71,7 @@ beforeEach(() => {
     window.turnstile = {
         render: vi.fn((_container, options) => {
             verify = options.callback;
+            expire = options['expired-callback']!;
             return 'widget-1';
         }),
         reset,
@@ -146,6 +149,44 @@ it('renews Turnstile after rejected registration and sends the new token on retr
         expect.objectContaining({ 'cf-turnstile-response': 'second-token' }),
     );
     expect(reset).toHaveBeenCalledTimes(2);
+});
+
+it.each(['before verification', 'after expiry'])('does not submit registration %s', async (state) => {
+    await render(<RegisterContainer />);
+    await fill({
+        email: 'missing-token@example.com',
+        username: 'missingtoken',
+        firstName: 'Missing',
+        lastName: 'Token',
+        password: 'password123',
+        passwordConfirmation: 'password123',
+    });
+    if (state === 'after expiry') {
+        await completeChallenge('expired-token');
+        await act(async () => expire());
+    }
+
+    await submit();
+
+    expect(mocks.register).not.toHaveBeenCalled();
+    expect(mocks.addError).toHaveBeenCalledWith({ message: 'captcha-failed' });
+});
+
+it('submits registration with a valid Turnstile token', async () => {
+    mocks.register.mockResolvedValue({ complete: false });
+    await render(<RegisterContainer />);
+    await fill({
+        email: 'valid-token@example.com',
+        username: 'valid-token',
+        firstName: 'Valid',
+        lastName: 'Token',
+        password: 'password123',
+        passwordConfirmation: 'password123',
+    });
+    await completeChallenge('valid-token');
+    await submit();
+
+    expect(mocks.register).toHaveBeenCalledWith(expect.objectContaining({ 'cf-turnstile-response': 'valid-token' }));
 });
 
 it.each(['success', 'failure'])(

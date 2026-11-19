@@ -140,6 +140,12 @@ const RegisterContainer = () => {
             return;
         }
 
+        if (provider === 'turnstile' && !token.trim()) {
+            helpers.setSubmitting(false);
+            addError({ message: t('captcha-failed') });
+            return;
+        }
+
         performRegistration(values, helpers, token);
     };
 
