@@ -72,7 +72,7 @@ $style = [
                         <td style="{{ $style['email-masthead'] }}">
                             <a style="{{ $fontFamily }}"
                                 href="{{ url('/') }}" target="_blank">
-                               <img style="{{ $style['email-masthead_logo'] }}" src="{{ config('app.url') . $siteConfiguration['logo'] }}" />
+                               <img style="{{ $style['email-masthead_logo'] }}" src="{{ url($siteConfiguration['logo']) }}" />
                             </a>
                         </td>
                     </tr>
