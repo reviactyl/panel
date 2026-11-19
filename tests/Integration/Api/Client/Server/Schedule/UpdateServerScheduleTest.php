@@ -3,6 +3,7 @@
 namespace Tests\Integration\Api\Client\Server\Schedule;
 
 use App\Helpers\Utilities;
+use App\Models\ActivityLog;
 use App\Models\Permission;
 use App\Models\Schedule;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -27,23 +28,32 @@ class UpdateServerScheduleTest extends ClientApiIntegrationTestCase
      * Test that a schedule can be updated.
      */
     #[DataProvider('permissionsDataProvider')]
-    public function test_schedule_can_be_updated(array $permissions)
+    public function test_schedule_can_be_updated(array $permissions, bool $active)
     {
         [$user, $server] = $this->generateTestAccount($permissions);
 
         /** @var Schedule $schedule */
-        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
+        $schedule = Schedule::factory()->create([
+            'server_id' => $server->id,
+            'name' => 'Original Schedule Name',
+            'is_active' => ! $active,
+        ]);
         $expected = Utilities::getScheduleNextRunDate('5', '*', '*', '*', '*');
 
         $response = $this->actingAs($user)
-            ->postJson("/api/client/servers/{$server->uuid}/schedules/{$schedule->id}", $this->updateData);
+            ->postJson("/api/client/servers/{$server->uuid}/schedules/{$schedule->id}", array_replace($this->updateData, ['is_active' => $active]));
 
         $schedule = $schedule->refresh();
 
         $response->assertOk();
         $this->assertSame('Updated Schedule Name', $schedule->name);
-        $this->assertFalse($schedule->is_active);
+        $this->assertSame($active, $schedule->is_active);
         $this->assertJsonTransformedWith($response->json('attributes'), $schedule);
+
+        $this->assertActivityFor('server:schedule.update', $user, [$schedule, $server]);
+        $activity = ActivityLog::query()->where('event', 'server:schedule.update')->sole();
+        $this->assertSame('Updated Schedule Name', $activity->properties->get('name'));
+        $this->assertSame($active, $activity->properties->get('active'));
 
         $this->assertSame($expected->toAtomString(), $schedule->next_run_at->toAtomString());
     }
@@ -111,6 +121,11 @@ class UpdateServerScheduleTest extends ClientApiIntegrationTestCase
 
     public static function permissionsDataProvider(): array
     {
-        return [[[]], [[Permission::ACTION_SCHEDULE_UPDATE]]];
+        return [
+            [[], false],
+            [[], true],
+            [[Permission::ACTION_SCHEDULE_UPDATE], false],
+            [[Permission::ACTION_SCHEDULE_UPDATE], true],
+        ];
     }
 }

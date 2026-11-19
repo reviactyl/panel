@@ -127,13 +127,14 @@ class ScheduleController extends ClientApiController
         }
 
         $this->repository->update($schedule->id, $data);
+        $schedule->refresh();
 
         Activity::event('server:schedule.update')
             ->subject($schedule)
             ->property(['name' => $schedule->name, 'active' => $active])
             ->log();
 
-        return $this->fractal->item($schedule->refresh())
+        return $this->fractal->item($schedule)
             ->transformWith($this->getTransformer(ScheduleTransformer::class))
             ->toArray();
     }
