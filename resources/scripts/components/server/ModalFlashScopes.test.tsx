@@ -28,7 +28,15 @@ const mocks = vi.hoisted(() => {
             },
         },
     };
-    return { listeners, state, mutate: vi.fn(), setProps: vi.fn(), close: vi.fn() };
+    return {
+        listeners,
+        state,
+        mutate: vi.fn(),
+        setProps: vi.fn(),
+        close: vi.fn(),
+        loadDirectory: vi.fn(async () => []),
+        renameFiles: vi.fn(),
+    };
 });
 vi.mock('@/state/server', () => ({
     ServerContext: {
@@ -37,7 +45,8 @@ vi.mock('@/state/server', () => ({
     },
 }));
 vi.mock('@/plugins/useFileManagerSwr', () => ({ default: () => ({ mutate: mocks.mutate }) }));
-vi.mock('@/api/server/files/loadDirectory', () => ({ default: async () => [] }));
+vi.mock('@/api/server/files/loadDirectory', () => ({ default: mocks.loadDirectory }));
+vi.mock('@/api/server/files/renameFiles', () => ({ default: mocks.renameFiles }));
 vi.mock('@/api/swr/getServerStartup', () => ({
     default: () => ({ data: { dockerImages: { Java: 'java:21' } }, mutate: mocks.mutate }),
 }));
@@ -103,6 +112,8 @@ let root: Root;
 beforeEach(() => {
     Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
     mocks.listeners.clear();
+    mocks.loadDirectory.mockReset().mockResolvedValue([]);
+    mocks.renameFiles.mockReset();
     container = document.createElement('div');
     document.body.append(container);
     root = createRoot(container);
@@ -156,5 +167,57 @@ describe('modal flash scopes', () => {
         expect(
             store.getState().flashes.items.filter((flash) => flash.message.startsWith('Other prompt:')),
         ).toHaveLength(cases.length - 1);
+    });
+
+    it('renders failed MoveFileModal move errors inside the dialog rather than the page scope', async () => {
+        let rejectRename!: (error: Error) => void;
+        mocks.loadDirectory.mockResolvedValue([{ name: 'target', key: 'target', isFile: false } as never]);
+        mocks.renameFiles.mockReturnValueOnce(
+            new Promise<void>((_resolve, reject) => {
+                rejectRename = reject;
+            }),
+        );
+        const onDismissed = vi.fn();
+        const store = createStore({ flashes, user: { data: { rootAdmin: true } } });
+        store.getActions().flashes.addFlash({ key: 'files', type: 'warning', message: 'Existing page flash' });
+        store.getActions().flashes.addFlash({ key: 'files:move-modal', type: 'error', message: 'Stale modal error' });
+
+        await act(async () =>
+            root.render(
+                <StoreProvider store={store}>
+                    <section data-scope='files'>
+                        <FlashMessageRender byKey='files' />
+                    </section>
+                    <MoveFileModal visible files={['example.txt']} onDismissed={onDismissed} />
+                </StoreProvider>,
+            ),
+        );
+
+        const clickButton = async (label: string) => {
+            const target = Array.from(container.querySelectorAll('button')).find((el) => el.textContent === label);
+            expect(target).toBeDefined();
+            await act(async () => target!.click());
+        };
+
+        await clickButton('target');
+        await act(async () => {
+            store
+                .getActions()
+                .flashes.addFlash({ key: 'files:move-modal', type: 'error', message: 'Previous move error' });
+        });
+        await clickButton('move');
+
+        const dialog = container.querySelector('[role="dialog"]');
+        expect(dialog).not.toBeNull();
+        expect(dialog!.querySelectorAll('[role="alert"]')).toHaveLength(0);
+        expect(container.querySelector('[data-scope="files"]')!.textContent).toBe('Existing page flash');
+
+        await act(async () => rejectRename(new Error('Permission denied moving file')));
+
+        expect(onDismissed).not.toHaveBeenCalled();
+        expect(Array.from(dialog!.querySelectorAll('[role="alert"]'), (alert) => alert.textContent)).toEqual([
+            'ErrorPermission denied moving file',
+        ]);
+        expect(container.querySelector('[data-scope="files"]')!.textContent).toBe('');
     });
 });

@@ -130,7 +130,7 @@ describe('move picker request ordering', () => {
         });
         expect(mocks.mutate).toHaveBeenCalledExactlyOnceWith();
         if (result === 'failure') {
-            expect(mocks.error).toHaveBeenCalledWith({ key: 'files', error: expect.any(Error) });
+            expect(mocks.error).toHaveBeenCalledWith({ key: 'files:move-modal', error: expect.any(Error) });
         }
     });
 
