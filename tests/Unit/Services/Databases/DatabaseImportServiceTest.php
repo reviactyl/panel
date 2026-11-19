@@ -19,6 +19,106 @@ use Tests\TestCase;
 
 class DatabaseImportServiceTest extends TestCase
 {
+    #[DataProvider('zipSignatureDataProvider')]
+    public function test_zip_signatures_are_recognized(string $signature)
+    {
+        $file = tmpfile();
+
+        try {
+            fwrite($file, $signature);
+            $service = (new \ReflectionClass(DatabaseImportService::class))->newInstanceWithoutConstructor();
+            $method = new \ReflectionMethod(DatabaseImportService::class, 'isZip');
+
+            $this->assertTrue($method->invoke($service, stream_get_meta_data($file)['uri']));
+        } finally {
+            fclose($file);
+        }
+    }
+
+    public static function zipSignatureDataProvider(): array
+    {
+        return [["PK\x03\x04"], ["PK\x05\x06"], ["PK\x07\x08"]];
+    }
+
+    #[DataProvider('archiveWithoutSqlDataProvider')]
+    public function test_zip_without_sql_is_rejected_before_connecting_to_the_database(bool $empty, bool $wipe)
+    {
+        $file = tmpfile();
+        $path = stream_get_meta_data($file)['uri'];
+
+        try {
+            if ($empty) {
+                fwrite($file, "PK\x05\x06".str_repeat("\0", 18));
+            } else {
+                $archive = new \ZipArchive();
+                $this->assertTrue($archive->open($path, \ZipArchive::CREATE | \ZipArchive::OVERWRITE));
+                $archive->addFromString('readme.txt', 'No SQL in this archive.');
+                $archive->close();
+            }
+
+            $connections = Mockery::mock(DatabaseConnectionFactory::class);
+            $connections->shouldNotReceive('import');
+            $service = new DatabaseImportService($connections, new DatabaseDumper(), new SqlStatementReader(), Mockery::mock(DynamicDatabaseConnection::class), Mockery::mock(DatabaseRepository::class));
+
+            try {
+                $service->fromFile(new Database(), $path, $wipe);
+                $this->fail('Expected the archive to be rejected.');
+            } catch (DatabaseImportException $exception) {
+                $this->assertSame(DatabaseImportException::ARCHIVE_EMPTY, $exception->getReason());
+            }
+        } finally {
+            fclose($file);
+        }
+    }
+
+    public static function archiveWithoutSqlDataProvider(): array
+    {
+        return [[true, false], [true, true], [false, false], [false, true]];
+    }
+
+    #[DataProvider('importFormatDataProvider')]
+    public function test_supported_file_formats_import_sql(string $format)
+    {
+        $file = tmpfile();
+        $path = stream_get_meta_data($file)['uri'];
+        $sql = "CREATE TABLE items (value INT);\nINSERT INTO items VALUES (42);\n";
+
+        try {
+            if ($format === 'zip') {
+                $archive = new \ZipArchive();
+                $this->assertTrue($archive->open($path, \ZipArchive::CREATE | \ZipArchive::OVERWRITE));
+                $archive->addFromString('readme.txt', 'Import the SQL file.');
+                $archive->addFromString('nested/backup.SQL', $sql);
+                $archive->close();
+            } else {
+                fwrite($file, $format === 'gzip' ? gzencode($sql) : $sql);
+            }
+
+            $database = new Database();
+            $target = Mockery::mock(PDO::class);
+            $connections = Mockery::mock(DatabaseConnectionFactory::class);
+            $connections->expects('import')->with($database, Mockery::type(\Closure::class))->andReturnUsing(fn ($database, $import) => $import($target));
+            foreach (['CREATE TABLE items (value INT)', 'INSERT INTO items VALUES (42)'] as $statement) {
+                $result = Mockery::mock(PDOStatement::class);
+                $result->expects('closeCursor')->andReturn(true);
+                $target->expects('query')->with($statement)->ordered()->andReturn($result);
+            }
+            $mode = Mockery::mock(PDOStatement::class);
+            $mode->shouldReceive('fetchColumn')->andReturn('');
+            $target->shouldReceive('query')->with('SELECT @@SESSION.sql_mode')->andReturn($mode);
+            $service = new DatabaseImportService($connections, new DatabaseDumper(), new SqlStatementReader(), Mockery::mock(DynamicDatabaseConnection::class), Mockery::mock(DatabaseRepository::class));
+
+            $this->assertSame(2, $service->fromFile($database, $path));
+        } finally {
+            fclose($file);
+        }
+    }
+
+    public static function importFormatDataProvider(): array
+    {
+        return [['sql'], ['gzip'], ['zip']];
+    }
+
     #[DataProvider('wipeDataProvider')]
     public function test_remote_dump_finishes_before_the_destination_is_changed(bool $wipe)
     {
