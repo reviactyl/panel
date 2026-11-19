@@ -9,6 +9,7 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Exceptions;
 use Laravel\Socialite\Contracts\Provider;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
@@ -79,13 +80,14 @@ class SocialLoginControllerTest extends HttpTestCase
     #[DataProvider('providerFailures')]
     public function test_provider_failures_preserve_authentication_context(bool $authenticated, string $route, string $failure): void
     {
+        Exceptions::fake();
         if ($authenticated) {
             $this->actingAs(User::factory()->create());
         }
 
         $exception = match ($failure) {
             'cancelled' => new InvalidStateException(),
-            'response' => new RequestException('Provider unavailable', new Request('POST', 'https://oauth.example.test/token'), new Response(503, [], 'Application unavailable')),
+            'response' => new RequestException('Private provider response details', new Request('POST', 'https://oauth.example.test/token'), new Response(503)),
             'error' => new \Error('Synthetic provider error'),
         };
         $driver = Mockery::mock(Provider::class);
@@ -98,6 +100,12 @@ class SocialLoginControllerTest extends HttpTestCase
 
         $this->assertDatabaseCount('social_logins', 0);
         Event::assertNotDispatched(DirectLogin::class);
+
+        match ($failure) {
+            'cancelled' => Exceptions::assertNothingReported(),
+            'response' => Exceptions::assertReported(fn (\RuntimeException $reported) => $reported->getMessage() === 'OAuth request to google failed with HTTP 503.'),
+            'error' => Exceptions::assertReported(fn (\Error $reported) => $reported === $exception),
+        };
     }
 
     #[TestWith([false])]
