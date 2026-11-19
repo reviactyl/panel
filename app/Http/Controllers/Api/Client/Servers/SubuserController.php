@@ -132,6 +132,10 @@ class SubuserController extends ClientApiController
                     $instance->property('revoked', false);
                 }
             });
+        } elseif (! array_is_list($subuser->permissions)) {
+            $this->repository->update($subuser->id, [
+                'permissions' => $this->getDefaultPermissions($request),
+            ]);
         }
 
         $log->reset();
@@ -191,6 +195,6 @@ class SubuserController extends ClientApiController
 
         $cleaned = array_intersect($request->input('permissions') ?? [], $allowed);
 
-        return array_unique(array_merge($cleaned, [Permission::ACTION_WEBSOCKET_CONNECT]));
+        return array_values(array_unique(array_merge($cleaned, [Permission::ACTION_WEBSOCKET_CONNECT])));
     }
 }
