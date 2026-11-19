@@ -84,7 +84,7 @@ class AlertController extends ClientApiController
 
     private function findServer(User $user, string $identifier): Server
     {
-        $query = $user->root_admin ? Server::query() : $user->accessibleServers();
+        $query = $user->root_admin || $user->roleServerPermissions() !== [] ? Server::query() : $user->accessibleServers();
 
         $server = $query
             ->where(fn ($builder) => $builder->where('servers.uuid', $identifier)->orWhere('servers.uuidShort', $identifier))
