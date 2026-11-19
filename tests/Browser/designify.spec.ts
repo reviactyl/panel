@@ -178,3 +178,37 @@ for (const width of [390, 900]) {
         expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     });
 }
+
+test('email reset uses the email editor', async ({ page }) => {
+    await page.getByRole('tab', { name: 'Emails', exact: true }).click();
+    const reset = page
+        .locator('.designify-editor__actions:visible')
+        .getByRole('button', { name: 'Reset', exact: true });
+    await expect(reset).not.toHaveAttribute('wire:click');
+    await page.evaluate(() => {
+        window.addEventListener('email-reset', () => (document.body.dataset.emailReset = 'true'), { once: true });
+        window.dispatchEvent(new CustomEvent('email-state', { detail: { dirty: false, busy: false } }));
+    });
+    await reset.click();
+    await expect(page.locator('body')).toHaveAttribute('data-email-reset', 'true');
+});
+
+test('the shared leave guard includes email edits', async ({ page }) => {
+    await page.getByRole('tab', { name: 'Emails', exact: true }).click();
+    await page.evaluate(() =>
+        window.dispatchEvent(new CustomEvent('email-state', { detail: { dirty: true, busy: false } })),
+    );
+    const back = page.getByRole('link', { name: 'Return to administration' });
+    const warning = page.waitForEvent('dialog').then(async (dialog) => {
+        expect(dialog.type()).toBe('beforeunload');
+        await dialog.dismiss();
+    });
+    await back.click();
+    await warning;
+    await expect(page).toHaveURL('http://panel.test/admin/designify?tab=emails');
+    await page.evaluate(() =>
+        window.dispatchEvent(new CustomEvent('email-state', { detail: { dirty: false, busy: false } })),
+    );
+    await back.click();
+    await expect(page).toHaveURL('http://panel.test/admin');
+});

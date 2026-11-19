@@ -22,6 +22,7 @@ describe('failed HTML previews', () => {
         const wire = {
             editorPreference: vi.fn(),
             loadTemplate: vi.fn(),
+            resetTemplate: vi.fn(),
             saveTemplate: vi.fn(),
             previewTemplate:
                 result === 'reject'
@@ -55,6 +56,7 @@ describe('failed HTML previews', () => {
             {
                 editorPreference: vi.fn(),
                 loadTemplate: vi.fn(),
+                resetTemplate: vi.fn(),
                 saveTemplate: vi.fn(),
                 previewTemplate: () =>
                     new Promise<string>((_, reject) => {
@@ -80,6 +82,7 @@ describe('rejected template saves', () => {
             {
                 editorPreference: vi.fn(),
                 loadTemplate: vi.fn(),
+                resetTemplate: vi.fn(),
                 previewTemplate,
                 saveTemplate: vi.fn().mockResolvedValue(result),
             },
@@ -97,4 +100,152 @@ describe('rejected template saves', () => {
         expect(editor.error).toBe('Check the template');
         expect(previewTemplate).not.toHaveBeenCalled();
     });
+});
+
+describe('selected email reset', () => {
+    function setup(...results: unknown[]) {
+        const wire = {
+            editorPreference: vi.fn(),
+            loadTemplate: vi.fn(),
+            saveTemplate: vi.fn(),
+            previewTemplate: vi.fn(),
+            resetTemplate: vi
+                .fn()
+                .mockResolvedValue(results.length ? results[0] : { subject: 'Default', html: '<p>Default</p>' }),
+        };
+        const editor = emailTemplateEditor(wire, { reset_confirm: 'Reset this email?', reset_error: 'Reset failed' });
+        editor.busy = false;
+        editor.type = editor.selectedType = 'MailTested';
+        editor.draft = { subject: 'Custom', html: '<p>Custom</p>' };
+        editor.saved = 'previous';
+        editor.dirty = true;
+        editor.updatePreview = vi.fn().mockResolvedValue(undefined);
+        return { wire, editor };
+    }
+
+    it('keeps the draft and saved template when confirmation is canceled', async () => {
+        const { wire, editor } = setup();
+        Object.assign(window, { confirm: vi.fn().mockReturnValue(false) });
+        await editor.reset();
+        expect(wire.resetTemplate).not.toHaveBeenCalled();
+        expect(editor.draft.subject).toBe('Custom');
+        expect(editor.dirty).toBe(true);
+    });
+
+    it('resets only the selected type and publishes its clean state', async () => {
+        const { wire, editor } = setup();
+        Object.assign(window, { confirm: vi.fn().mockReturnValue(true) });
+        const state = vi.spyOn(window, 'dispatchEvent');
+        await editor.reset();
+        expect(wire.resetTemplate).toHaveBeenCalledExactlyOnceWith('MailTested');
+        expect(wire.saveTemplate).not.toHaveBeenCalled();
+        expect(editor.draft).toEqual({ subject: 'Default', html: '<p>Default</p>' });
+        expect(editor.saved).toBe(JSON.stringify(editor.draft));
+        expect(editor.dirty).toBe(false);
+        expect(editor.busy).toBe(false);
+        expect(editor.updatePreview).toHaveBeenCalledOnce();
+        expect(state.mock.calls.at(-1)?.[0]).toMatchObject({ detail: { dirty: false, busy: false } });
+    });
+
+    it.each([null, undefined, 'reject'])('keeps unsaved edits when reset returns %s', async (result) => {
+        const { wire, editor } = setup(result);
+        if (result === 'reject') wire.resetTemplate.mockRejectedValueOnce(new Error('Offline'));
+        Object.assign(window, { confirm: vi.fn().mockReturnValue(true) });
+        await editor.reset();
+        expect(editor.draft.subject).toBe('Custom');
+        expect(editor.saved).toBe('previous');
+        expect(editor.dirty).toBe(true);
+        expect(editor.busy).toBe(false);
+        expect(editor.error).toBe('Reset failed');
+    });
+
+    it('replaces the existing canvas body when reset succeeds and the preview fails', async () => {
+        const wire = {
+            editorPreference: vi.fn(),
+            loadTemplate: vi.fn(),
+            saveTemplate: vi.fn(),
+            previewTemplate: vi.fn().mockRejectedValue(new Error('Preview offline')),
+            resetTemplate: vi.fn().mockResolvedValue({ subject: 'Default', html: '<p>Default body</p>' }),
+        };
+        const editor = emailTemplateEditor(wire, {
+            reset_confirm: 'Reset this email?',
+            reset_error: 'Reset failed',
+            preview_error: 'Preview failed',
+        });
+        const frame = document.createElement('iframe');
+        Object.defineProperty(frame, 'contentDocument', { value: document.implementation.createHTMLDocument() });
+        frame.contentDocument!.body.innerHTML = '<div data-email-content><p>Custom body</p></div>';
+        Object.assign(editor.$refs, { editor: frame });
+        editor.busy = false;
+        editor.editorReady = true;
+        editor.type = editor.selectedType = 'MailTested';
+        editor.draft = { subject: 'Custom', html: '<p>Custom body</p>' };
+        editor.saved = 'previous';
+        editor.dirty = true;
+        Object.assign(window, { confirm: vi.fn().mockReturnValue(true) });
+
+        await editor.reset();
+
+        expect(editor.draft).toEqual({ subject: 'Default', html: '<p>Default body</p>' });
+        expect(editor.content()!.innerHTML).toBe('<p>Default body</p>');
+        expect(editor.sourcePending).toBe(false);
+        expect(editor.dirty).toBe(false);
+        expect(editor.error).toBe('Preview failed');
+        editor.syncEditor();
+        expect(editor.draft.html).toBe('<p>Default body</p>');
+        expect(editor.dirty).toBe(false);
+        frame.remove();
+    });
+
+    it.each(['resolve', 'reject'])(
+        'restores a pending HTML preview when reset rejects and preview %ss',
+        async (previewOutcome) => {
+            const wire = {
+                editorPreference: vi.fn(),
+                loadTemplate: vi.fn(),
+                saveTemplate: vi.fn(),
+                previewTemplate:
+                    previewOutcome === 'resolve'
+                        ? vi.fn().mockResolvedValue('<html><body><div data-email-content></div></body></html>')
+                        : vi.fn().mockRejectedValue(new Error('Preview failed')),
+                resetTemplate: vi.fn().mockRejectedValue(new Error('Reset offline')),
+            };
+            const editor = emailTemplateEditor(wire, {
+                reset_confirm: 'Reset this email?',
+                reset_error: 'Reset failed',
+                preview_error: 'Preview failed',
+            });
+            const frame = document.createElement('iframe');
+            Object.defineProperty(frame, 'contentDocument', { value: document.implementation.createHTMLDocument() });
+            frame.contentDocument!.body.innerHTML = '<div data-email-content><p>Old canvas</p></div>';
+            Object.assign(editor.$refs, { editor: frame });
+            editor.busy = false;
+            editor.editorReady = true;
+            editor.sourcePending = true;
+            editor.type = editor.selectedType = 'MailTested';
+            editor.draft = { subject: 'Custom', html: '<p>Pending source edit</p>' };
+            editor.saved = 'previous';
+            editor.dirty = true;
+            Object.assign(window, { confirm: vi.fn().mockReturnValue(true) });
+
+            await editor.reset();
+
+            expect(wire.previewTemplate).toHaveBeenCalledExactlyOnceWith('MailTested', {
+                subject: 'Custom',
+                html: '<p>Pending source edit</p>',
+            });
+            expect(editor.draft).toEqual({ subject: 'Custom', html: '<p>Pending source edit</p>' });
+            expect(editor.dirty).toBe(true);
+            expect(editor.busy).toBe(false);
+            expect(editor.error).toBe('Reset failed');
+            if (previewOutcome === 'resolve') {
+                expect(frame.srcdoc).toContain('<p>Pending source edit</p>');
+            } else {
+                expect(editor.sourcePending).toBe(false);
+                expect(editor.content()!.innerHTML).toBe('<p>Pending source edit</p>');
+                expect(editor.focusSelection()).not.toBeNull();
+            }
+            frame.remove();
+        },
+    );
 });
