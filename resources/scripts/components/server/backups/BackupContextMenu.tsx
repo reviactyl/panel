@@ -11,7 +11,7 @@ import { ServerBackup } from '@/api/server/types';
 import { ServerContext } from '@/state/server';
 import Input from '@/reviactyl/elements/Input';
 import { restoreServerBackup } from '@/api/server/backups';
-import http, { httpErrorToHuman } from '@/api/http';
+import http from '@/api/http';
 import { Dialog } from '@/reviactyl/elements/dialog';
 import { useTranslation } from 'react-i18next';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
@@ -110,6 +110,9 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
             return setModal('unlock');
         }
 
+        setLoading(true);
+        clearFlashes('backups');
+
         http.post(`/api/client/servers/${uuid}/backups/${backup.uuid}/lock`)
             .then(() =>
                 mutate((data) => {
@@ -128,8 +131,11 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
                     };
                 }, false),
             )
-            .catch((error) => alert(httpErrorToHuman(error)))
-            .then(() => setModal(''));
+            .catch((error) => clearAndAddHttpError({ key: 'backups', error }))
+            .finally(() => {
+                setLoading(false);
+                setModal('');
+            });
     };
 
     const onRename = (name: string) => {
