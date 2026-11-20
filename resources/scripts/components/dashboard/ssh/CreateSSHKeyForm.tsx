@@ -28,7 +28,9 @@ export default () => {
                 if (data) {
                     void mutate((keys) => keys?.concat(key), false);
                 } else {
-                    void mutate().catch(() => undefined);
+                    void mutate((keys) => keys?.concat(key) ?? [key], false)
+                        .then(() => mutate())
+                        .catch(() => undefined);
                 }
             })
             .catch((error) => addError(httpErrorToHuman(error)))
