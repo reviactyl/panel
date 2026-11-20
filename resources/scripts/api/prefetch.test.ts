@@ -65,7 +65,7 @@ describe('page prefetch script', () => {
         ]);
     });
 
-    it("serves the app's ${SERVER.attributes.uuid} requests from the identifier requests once the ${SERVER.attributes.uuid} is confirmed", async () => {
+    it('serves UUID-keyed requests from the short-id prefetches once the server UUID is known', async () => {
         await run('/server/1d7db3ce/files', { '/api/client/servers/1d7db3ce': json(SERVER) });
 
         const uuid = SERVER.attributes.uuid;
