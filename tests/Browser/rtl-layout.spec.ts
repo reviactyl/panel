@@ -36,15 +36,19 @@ async function openFixture(
     responses: Record<string, unknown> = {},
 ) {
     const authenticated = !path.startsWith('/auth/');
-    const html = renderFixture(path, authenticated).replace(
-        '</body>',
-        `<script>
+    const html = renderFixture(path, authenticated)
+        // The fixture page embeds API responses from the fixture database; drop them so the page
+        // asks the routes stubbed below instead.
+        .replace(/<script type="application\/json" id="reviactyl-initial-responses">[\s\S]*?<\/script>/, '')
+        .replace(
+            '</body>',
+            `<script>
             window.SiteConfiguration.locale = ${JSON.stringify(language)};
             window.PanelConfiguration.layoutType = ${JSON.stringify(layout)};
             Object.assign(window.PanelConfiguration, ${JSON.stringify(settings)});
             if (window.PanelUser) window.PanelUser.language = ${JSON.stringify(language)};
         </script></body>`,
-    );
+        );
     const publicPath = resolve('public');
     await page.route('**/*', async (route) => {
         const url = new URL(route.request().url());
@@ -267,6 +271,14 @@ const serverFixture = {
     meta: { is_server_owner: true },
 };
 const folderName = 'مجلد المشروعات العربية للتطوير';
+const usageFixture = {
+    object: 'stats',
+    attributes: {
+        current_state: 'running',
+        is_suspended: false,
+        resources: { memory_bytes: 1024, cpu_absolute: 5, disk_bytes: 2048, uptime: 1000 },
+    },
+};
 const dashboardResponses = {
     '/api/client': {
         data: [serverFixture],
@@ -275,13 +287,9 @@ const dashboardResponses = {
     '/api/client/account/categories': {
         data: [{ attributes: { uuid: 'folder-one', name: folderName, color: '#3b82f6', parent_uuid: null } }],
     },
-    '/api/client/servers/00000000-0000-4000-8000-000000000001/resources': {
-        attributes: {
-            current_state: 'running',
-            is_suspended: false,
-            resources: { memory_bytes: 1024, cpu_absolute: 5, disk_bytes: 2048, uptime: 1000 },
-        },
-    },
+    '/api/client/servers/00000000-0000-4000-8000-000000000001/resources': usageFixture,
+    // The dashboard asks for every visible server's usage in one request.
+    '/api/client/resources': { object: 'list', data: { '00000000-0000-4000-8000-000000000001': usageFixture } },
 };
 
 for (const layout of ['modern', 'classic', 'compact', 'accent']) {
@@ -365,26 +373,29 @@ for (const layout of ['modern', 'classic', 'compact', 'accent']) {
             }) => {
                 const fileName = 'إعدادات Minecraft.txt';
                 const base = '/server/rtl-test';
+                const files = {
+                    data: [
+                        {
+                            attributes: {
+                                name: fileName,
+                                mode: '-rw-r--r--',
+                                mode_bits: '644',
+                                size: 32,
+                                is_file: true,
+                                is_symlink: false,
+                                mimetype: 'text/plain',
+                                created_at: '2026-01-01T00:00:00Z',
+                                modified_at: '2026-01-01T00:00:00Z',
+                            },
+                        },
+                    ],
+                };
                 const responses = {
                     ...dashboardResponses,
                     '/api/client/servers/rtl-test': serverFixture,
-                    [`/api/client/servers/${serverFixture.attributes.uuid}/files/list`]: {
-                        data: [
-                            {
-                                attributes: {
-                                    name: fileName,
-                                    mode: '-rw-r--r--',
-                                    mode_bits: '644',
-                                    size: 32,
-                                    is_file: true,
-                                    is_symlink: false,
-                                    mimetype: 'text/plain',
-                                    created_at: '2026-01-01T00:00:00Z',
-                                    modified_at: '2026-01-01T00:00:00Z',
-                                },
-                            },
-                        ],
-                    },
+                    // The page starts the listing by the identifier in its URL before the server loads.
+                    '/api/client/servers/rtl-test/files/list': files,
+                    [`/api/client/servers/${serverFixture.attributes.uuid}/files/list`]: files,
                 };
                 await openFixture(page, `${base}/files`, 'ar', layout, { headerStyle, fileLayout }, responses);
                 const checkbox = page.getByRole('checkbox', { name: fileName, exact: true });
