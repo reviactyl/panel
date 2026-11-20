@@ -29,7 +29,7 @@
 }
 
 .input {
-    @apply appearance-none outline-hidden w-full min-w-0 p-3 border rounded-ui text-sm transition-all duration-150 bg-gray-950 border-gray-600 hover:border-gray-400 text-gray-200 shadow-none focus:ring-0;
+    @apply appearance-none outline-hidden w-full min-w-0 p-3 border rounded-ui text-sm transition-all duration-150 bg-gray-800 border-gray-600 hover:border-gray-400 text-gray-200 shadow-none focus:ring-0;
     resize: none;
 }
 
