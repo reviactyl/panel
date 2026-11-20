@@ -124,6 +124,8 @@
         storageKey: 'reviactyl.support-popup.v1',
         sessionKey: 'reviactyl.support-popup.shown',
         previousFocus: null,
+        timer: null,
+        destroyed: false,
 
         init() {
             let state;
@@ -189,7 +191,9 @@
 
         waitUntilSafe(dueAt) {
             const attempt = () => {
-                if (this.open) return;
+                this.timer = null;
+
+                if (this.destroyed || this.open) return;
 
                 const active = document.activeElement;
                 const userIsWorking = active && (
@@ -201,7 +205,7 @@
                 const loading = document.querySelector('[wire\\:loading]:not([style*="display: none"]), [data-loading="true"]');
 
                 if (Date.now() < dueAt || document.visibilityState !== 'visible' || userIsWorking || anotherModalIsOpen || loading) {
-                    window.setTimeout(attempt, 1500);
+                    this.timer = window.setTimeout(attempt, 1500);
                     return;
                 }
 
@@ -216,7 +220,16 @@
                 this.previousFocus = document.activeElement;
             };
 
-            window.setTimeout(attempt, 2000);
+            this.timer = window.setTimeout(attempt, 2000);
+        },
+
+        destroy() {
+            this.destroyed = true;
+
+            if (this.timer !== null) {
+                window.clearTimeout(this.timer);
+                this.timer = null;
+            }
         },
 
         dismiss() {
