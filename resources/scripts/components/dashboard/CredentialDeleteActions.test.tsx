@@ -14,7 +14,9 @@ const mocks = vi.hoisted(() => ({
     mutate: vi.fn(),
 }));
 
-vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
+vi.mock('react-i18next', () => ({
+    useTranslation: () => ({ t: (key: string) => (key === 'strings:cancel' ? 'Cancel' : key) }),
+}));
 vi.mock('@/api/account/getApiKeys', () => ({
     default: async () => [
         { identifier: 'api-identifier', description: mocks.name, allowedIps: [], lastUsedAt: null },
