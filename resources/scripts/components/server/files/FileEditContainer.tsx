@@ -169,8 +169,10 @@ const FileEditContainer = () => {
         <ContentBlock title={'File Editor'} animate={false}>
             <FlashMessageRender byKey='files:view' className='mb-4' />
             <ErrorBoundary>
-                <Card className='mt-2 mb-1 rounded-b-none! px-2! py-6!'>
-                    <FileManagerBreadcrumbs withinFileEditor isNewFile={isNewFile} />
+                <Card className='mt-2 mb-1 rounded-b-none! px-2! py-3!'>
+                    <div className='min-w-0 rounded-ui bg-gray-800 px-2 py-2'>
+                        <FileManagerBreadcrumbs withinFileEditor isNewFile={isNewFile} />
+                    </div>
                 </Card>
             </ErrorBoundary>
             {hash.replace(/^#/, '').endsWith('.pteroignore') && (

@@ -659,6 +659,11 @@
 .email-html-action .fi-btn { width: 100%; min-height: 2.75rem; padding: 0.75rem 1rem; justify-content: center; }
 
 .email-html-editor {
+    --editor-background: var(--designify-surface);
+    --editor-foreground: var(--designify-text);
+    --editor-muted: var(--designify-muted);
+    --editor-divider: var(--designify-border-strong);
+    --editor-accent: var(--designify-text);
     height: min(60dvh, 36rem);
     min-height: 16rem;
     padding: 0.25rem;

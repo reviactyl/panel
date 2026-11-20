@@ -3,7 +3,8 @@ import { basicSetup } from 'codemirror';
 import { indentWithTab } from '@codemirror/commands';
 import { Compartment, EditorState, Prec } from '@codemirror/state';
 import { EditorView, keymap } from '@codemirror/view';
-import { indentUnit } from '@codemirror/language';
+import { HighlightStyle, indentUnit, syntaxHighlighting } from '@codemirror/language';
+import { tags } from '@lezer/highlight';
 import { languages } from '@codemirror/language-data';
 import modes from '@/modes';
 import styles from '@/reviactyl/elements/style.module.css';
@@ -19,6 +20,22 @@ export interface Props {
     onContentSaved: () => void;
     onContentChanged?: (content: string) => void;
 }
+
+const darkHighlighting = syntaxHighlighting(
+    HighlightStyle.define([
+        { tag: [tags.comment, tags.meta], color: '#a1a1aa' },
+        { tag: [tags.keyword, tags.modifier], color: '#d8b4fe' },
+        { tag: [tags.string, tags.regexp, tags.escape], color: '#fda4af' },
+        { tag: [tags.literal, tags.atom, tags.bool], color: '#fcd34d' },
+        { tag: [tags.typeName, tags.tagName, tags.className], color: '#86efac' },
+        { tag: [tags.definition(tags.variableName), tags.propertyName, tags.attributeName], color: '#93c5fd' },
+        { tag: tags.link, textDecoration: 'underline' },
+        { tag: tags.heading, textDecoration: 'underline', fontWeight: 'bold' },
+        { tag: tags.emphasis, fontStyle: 'italic' },
+        { tag: tags.strong, fontWeight: 'bold' },
+        { tag: tags.strikethrough, textDecoration: 'line-through' },
+    ]),
+);
 
 const findModeByFilename = (filename: string) => {
     for (let i = 0; i < modes.length; i++) {
@@ -110,30 +127,45 @@ export default ({
     }, [initialContent]);
 
     useEffect(() => {
+        const background = 'var(--editor-background, rgb(var(--color-950)))';
+        const foreground = 'var(--editor-foreground, rgb(var(--color-100)))';
+        const accent = 'var(--editor-accent, rgb(var(--color-primary)))';
+
         editor.current?.dispatch({
-            effects: theme.current.reconfigure(
+            effects: theme.current.reconfigure([
                 EditorView.theme(
                     {
-                        '&': { height: '100%', backgroundColor: 'transparent', color: 'rgb(var(--color-100))' },
+                        '&.cm-editor': {
+                            height: '100%',
+                            backgroundColor: background,
+                            color: foreground,
+                            borderRadius: 'var(--radius-ui, 0.375rem)',
+                            overflow: 'hidden',
+                        },
                         '.cm-scroller': { overflow: 'auto', fontSize: '12px', lineHeight: '1.375rem' },
                         '.cm-content, .cm-cursor': {
-                            caretColor: 'rgb(var(--color-100))',
-                            borderLeftColor: 'rgb(var(--color-100))',
+                            caretColor: foreground,
+                            borderLeftColor: foreground,
                         },
                         '.cm-gutters': {
-                            backgroundColor: 'transparent',
+                            backgroundColor: background,
                             border: 'none',
-                            color: 'rgb(var(--text-muted))',
+                            borderInlineEnd: '1px solid var(--editor-divider, rgb(var(--color-800)))',
+                            marginInlineEnd: '0.5rem',
+                            color: 'var(--editor-muted, rgb(var(--text-muted)))',
                         },
-                        '.cm-activeLine, .cm-activeLineGutter': { backgroundColor: 'rgb(var(--color-primary) / 0.08)' },
+                        '.cm-activeLine, .cm-activeLineGutter': {
+                            backgroundColor: `color-mix(in srgb, ${accent} 8%, transparent)`,
+                        },
                         '.cm-selectionBackground, &.cm-focused .cm-selectionBackground': {
-                            backgroundColor: 'rgb(var(--color-primary) / 0.2)',
+                            backgroundColor: `color-mix(in srgb, ${accent} 20%, transparent)`,
                         },
-                        '.cm-panels': { backgroundColor: 'rgb(var(--color-900))', color: 'rgb(var(--color-100))' },
+                        '.cm-panels': { backgroundColor: background, color: foreground },
                     },
                     { dark },
                 ),
-            ),
+                ...(dark ? [darkHighlighting] : []),
+            ]),
         });
     }, [dark, revision, initialContent]);
 

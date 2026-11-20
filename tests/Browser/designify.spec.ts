@@ -130,10 +130,21 @@ test('email HTML follows light and dark themes with rounded corners', async ({ p
         const host = document.querySelector<HTMLElement>('.email-html-editor')!;
         const { mountHtmlEditor } = await import(modulePath);
         host.closest<HTMLDialogElement>('dialog')!.showModal();
-        await mountHtmlEditor(host, 'cm', '<p>Hello {{ recipient_name }}</p>', () => {});
+        const markup = Array.from({ length: 100 }, () => '<p>Hello {{ recipient_name }}</p>').join('\n');
+        await mountHtmlEditor(host, 'cm', markup, () => {});
     }, modulePath);
     const host = page.locator('.email-html-editor');
-    const editor = host.locator('.cm-content');
+    const frame = host.locator('.cm-editor');
+    const scroller = frame.locator('.cm-scroller');
+    const gutter = frame.locator('.cm-gutters');
+    const editor = frame.locator('.cm-content');
+    await expect(frame).toHaveCSS('overflow', 'hidden');
+    await expect(frame).toHaveCSS('border-radius', '6px');
+    await expect(gutter).toHaveCSS('border-top-width', '0px');
+    await expect(gutter).toHaveCSS('border-inline-end-width', '1px');
+    await scroller.evaluate((element) => (element.scrollTop = element.scrollHeight));
+    await expect.poll(() => scroller.evaluate((element) => element.scrollTop)).toBeGreaterThan(0);
+    await scroller.evaluate((element) => (element.scrollTop = 0));
     await expect(editor).toContainText('recipient_name');
     const backgrounds: string[] = [];
     for (const theme of ['light', 'dark', 'light']) {
@@ -143,7 +154,11 @@ test('email HTML follows light and dark themes with rounded corners', async ({ p
                 host.evaluate((element) => {
                     const style = getComputedStyle(element);
                     const dialog = getComputedStyle(element.closest('dialog')!);
-                    return style.backgroundColor === dialog.backgroundColor;
+                    const frame = getComputedStyle(element.querySelector('.cm-editor')!);
+                    return (
+                        style.backgroundColor === dialog.backgroundColor &&
+                        frame.backgroundColor === style.backgroundColor
+                    );
                 }),
             )
             .toBe(true);
