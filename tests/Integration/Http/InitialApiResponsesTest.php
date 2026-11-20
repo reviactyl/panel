@@ -3,6 +3,7 @@
 namespace Tests\Integration\Http;
 
 use App\Models\User;
+use App\Services\Helpers\GeoIPService;
 use Illuminate\Testing\TestResponse;
 
 class InitialApiResponsesTest extends HttpTestCase
@@ -105,13 +106,23 @@ class InitialApiResponsesTest extends HttpTestCase
         );
     }
 
-    public function test_automatic_language_uses_the_panel_locale(): void
+    public function test_automatic_language_uses_the_resolved_locale(): void
     {
         [$user] = $this->generateTestAccount();
         $user->update(['language' => 'geo']);
-        config()->set('app.locale', 'fr');
+        $this->mock(GeoIPService::class)->shouldReceive('getCountryInfo')->andReturn(['country' => 'Germany', 'code' => 'DE']);
 
-        $this->assertStringStartsWith('/locales/locale.json?locale=fr%2Ben&', array_key_first($this->embedded($this->actingAs($user)->get('/'))));
+        $this->assertStringStartsWith('/locales/locale.json?locale=de%2Ben&', array_key_first($this->embedded($this->actingAs($user)->get('/'))));
+    }
+
+    public function test_embedded_requests_leave_the_default_auth_guard_alone(): void
+    {
+        [$user] = $this->generateTestAccount();
+        $guard = auth()->getDefaultDriver();
+
+        $this->assertNotEmpty($this->apiOnly($this->embedded($this->actingAs($user)->get('/'))));
+
+        $this->assertSame($guard, auth()->getDefaultDriver());
     }
 
     public function test_flash_messages_and_the_page_request_survive_the_embedded_requests(): void

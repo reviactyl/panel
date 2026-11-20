@@ -28,6 +28,10 @@ class InternalApiRequests
         $request->attributes->set('sanctum', true);
 
         $original = $this->app->make('request');
+        // The API's auth middleware switches the default guard to Sanctum's request guard, which
+        // would otherwise stay in place for the rest of the page request.
+        $auth = $this->app->make('auth');
+        $guard = $auth->getDefaultDriver();
         $this->use($request);
 
         try {
@@ -46,6 +50,7 @@ class InternalApiRequests
             return null;
         } finally {
             $this->use($original);
+            $auth->shouldUse($guard);
         }
 
         if ($response->getStatusCode() !== 200 || ! str_contains((string) $response->headers->get('Content-Type'), 'json')) {
