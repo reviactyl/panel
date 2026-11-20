@@ -245,6 +245,12 @@ describe('console command composition', () => {
         input.value = 'draft outside history';
         await keyDown('ArrowDown');
         expect(input.value).toBe('draft outside history');
+
+        await keyDown('ArrowUp');
+        expect(input.value).toBe('say previous');
+        input.value = 'say edited oldest entry';
+        await keyDown('ArrowUp');
+        expect(input.value).toBe('say edited oldest entry');
     });
 });
 
