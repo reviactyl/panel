@@ -131,7 +131,8 @@ class ExtensionManagerTest extends IntegrationTestCase
         $this->assertTemporaryFilesCleaned($archivePath);
     }
 
-    public function test_frontend_registry_normalizes_and_versions_module_paths(): void
+    #[DataProvider('moduleLocations')]
+    public function test_frontend_registry_normalizes_and_versions_module_paths(string $location): void
     {
         [$archivePath, $identifier] = $this->createExtensionPackage([
             'frontend' => [
@@ -152,11 +153,11 @@ class ExtensionManagerTest extends IntegrationTestCase
                 ],
             ],
         ], [
-            'frontend/dist/main.js' => 'export default function Main() { return null; }',
-            'frontend/dist/dashboard.js' => 'export default function Dashboard() { return null; }',
-            'frontend/dist/server.js' => 'export default function ServerView() { return null; }',
-            'frontend/dist/layout.js' => 'export function Details() { return null; }',
-            'frontend/dist/slot.js' => 'export default function Slot() { return null; }',
+            $location.'frontend/dist/main.js' => 'export default function Main() { return null; }',
+            $location.'frontend/dist/dashboard.js' => 'export default function Dashboard() { return null; }',
+            $location.'frontend/dist/server.js' => 'export default function ServerView() { return null; }',
+            $location.'frontend/dist/layout.js' => 'export function Details() { return null; }',
+            $location.'frontend/dist/slot.js' => 'export default function Slot() { return null; }',
         ]);
 
         $manager = $this->app->make(ExtensionManager::class);
@@ -170,7 +171,8 @@ class ExtensionManagerTest extends IntegrationTestCase
 
         $this->assertSame($identifier, $record['id']);
         $this->assertSame('frontend/dist/main.js', $record['frontend']['entry_points'][0]);
-        $this->assertStringStartsWith('frontend/dist/layout.js?v=', $record['frontend']['layouts'][0]['module']);
+        $mtime = filemtime(base_path('extensions/'.$identifier.'/'.$location.'frontend/dist/layout.js'));
+        $this->assertSame('frontend/dist/layout.js?v='.$mtime, $record['frontend']['layouts'][0]['module']);
         $this->assertFileExists($this->publicPath.'/'.$identifier.'/frontend/dist/layout.js');
         $this->assertSame('export function Details() { return null; }', File::get($this->publicPath.'/'.$identifier.'/frontend/dist/layout.js'));
         $this->assertSame('Details', $record['frontend']['layouts'][0]['export']);
@@ -178,6 +180,12 @@ class ExtensionManagerTest extends IntegrationTestCase
         $this->assertStringStartsWith('frontend/dist/slot.js?v=', $record['frontend']['slots'][0]['module']);
         $this->assertStringStartsWith('frontend/dist/dashboard.js?v=', $record['frontend']['routes']['dashboardRouter'][0]['module']);
         $this->assertStringStartsWith('frontend/dist/server.js?v=', $record['frontend']['routes']['serverRouter'][0]['module']);
+    }
+
+    /** @return array<string, array{string}> */
+    public static function moduleLocations(): array
+    {
+        return ['install root' => [''], 'public assets' => ['public/']];
     }
 
     /** @return array<string, array{bool}> */

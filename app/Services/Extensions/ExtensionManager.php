@@ -404,6 +404,10 @@ class ExtensionManager
         $sourceRoot = $this->extensionPath($identifier);
         $destinationRoot = $this->publicExtensionPath($identifier);
 
+        if (is_link($destinationRoot)) {
+            throw new ExtensionInstallException('Extension asset directory must not be a symbolic link.');
+        }
+
         if (File::exists($destinationRoot)) {
             File::deleteDirectory($destinationRoot);
         }
@@ -412,7 +416,10 @@ class ExtensionManager
 
         $sourcePublic = $sourceRoot.DIRECTORY_SEPARATOR.'public';
         if (File::isDirectory($sourcePublic)) {
-            File::copyDirectory($sourcePublic, $destinationRoot);
+            foreach (File::allFiles($sourcePublic, true) as $file) {
+                $relativePath = $file->getRelativePathname();
+                $this->publishAsset($sourceRoot, $destinationRoot, 'public/'.$relativePath, $relativePath);
+            }
         }
 
         $entries = $this->resolveFrontendEntryPoints($manifest);
@@ -421,17 +428,56 @@ class ExtensionManager
                 continue;
             }
 
-            $normalized = ltrim($entry, '/');
-            $source = $sourceRoot.DIRECTORY_SEPARATOR.$normalized;
+            $this->publishAsset($sourceRoot, $destinationRoot, $entry, $entry);
+        }
+    }
 
-            if (! File::exists($source) || ! is_file($source)) {
-                continue;
+    private function publishAsset(string $sourceRoot, string $destinationRoot, string $sourcePath, string $targetPath): void
+    {
+        $source = $this->containedAssetPath($sourceRoot, $sourcePath);
+        $target = $this->containedAssetPath($destinationRoot, $targetPath);
+
+        if ($source === null || $target === null) {
+            throw new ExtensionInstallException('Extension asset path must stay inside its asset directory.');
+        }
+
+        if (! is_file($source)) {
+            return;
+        }
+
+        File::ensureDirectoryExists(dirname($target));
+        File::copy($source, $target);
+    }
+
+    private function containedAssetPath(string $root, string $path): ?string
+    {
+        $path = str_replace('\\', '/', $path);
+        if ($path === '' || str_starts_with($path, '/') || str_contains($path, ':')
+            || str_contains($path, "\0") || in_array('..', explode('/', $path), true)) {
+            return null;
+        }
+
+        $root = realpath($root);
+        if ($root === false) {
+            return null;
+        }
+
+        $candidate = $root.DIRECTORY_SEPARATOR.$path;
+        $ancestor = $candidate;
+        while (! file_exists($ancestor)) {
+            if (is_link($ancestor)) {
+                return null;
             }
 
-            $target = $destinationRoot.DIRECTORY_SEPARATOR.$normalized;
-            File::ensureDirectoryExists(dirname($target));
-            File::copy($source, $target);
+            $ancestor = dirname($ancestor);
         }
+
+        $resolved = realpath($ancestor);
+        if ($resolved === false || ($resolved !== $root && ! str_starts_with($resolved, $root.DIRECTORY_SEPARATOR))) {
+            return null;
+        }
+
+        return $candidate;
     }
 
     /**
@@ -476,18 +522,19 @@ class ExtensionManager
     private function versionedFrontendModulePath(string $path, Extension $extension): string
     {
         $cleanPath = preg_replace('/\?.*$/', '', $path) ?? $path;
-        $file = rtrim($extension->install_path, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$cleanPath;
+        foreach ([$cleanPath, 'public/'.$cleanPath] as $candidate) {
+            $file = $this->containedAssetPath($extension->install_path, $candidate);
+            if ($file === null || ! is_file($file)) {
+                continue;
+            }
 
-        if (! is_file($file)) {
-            return $path;
+            $mtime = @filemtime($file);
+            if (is_int($mtime)) {
+                return $cleanPath.'?v='.$mtime;
+            }
         }
 
-        $mtime = @filemtime($file);
-        if (! is_int($mtime)) {
-            return $path;
-        }
-
-        return $cleanPath.'?v='.$mtime;
+        return $path;
     }
 
     private function ensureCanonicalLayout(string $extensionPath): void
