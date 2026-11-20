@@ -3,6 +3,8 @@
 return [
     'installation_type' => env('PANEL_INSTALLATION_TYPE', 'native'),
 
+    'disable_support_popups' => filter_var(env('DISABLE_SUPPORT_POPUPS', false), FILTER_VALIDATE_BOOLEAN),
+
     'updates' => [
         'backups_to_keep' => 3,
     ],
