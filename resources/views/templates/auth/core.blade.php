@@ -7,7 +7,7 @@
 
 @section('container')
     <div id="modal-portal"></div>
-    <div id="app"></div>
+    <div id="app">@include('templates.partials.boot-indicator')</div>
 @endsection
 
 @section('scripts')

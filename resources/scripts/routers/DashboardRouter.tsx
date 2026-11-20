@@ -6,7 +6,7 @@ import Navigate from '@/reviactyl/components/Navigate';
 import DashboardContainer from '@/components/dashboard/DashboardContainer';
 import { NotFound } from '@/reviactyl/elements/ScreenBlock';
 import Spinner from '@/reviactyl/elements/Spinner';
-import routes from '@/routers/routes';
+import routes, { loadScreenNamespaces } from '@/routers/routes';
 import { RouterContainer } from '@/reviactyl/ui/RouterContainer';
 import { XIcon, MenuIcon, ExternalLinkIcon } from '@heroicons/react/solid';
 import { ContentContainer } from '@/reviactyl/ui/ContentContainer';
@@ -27,6 +27,7 @@ import { resolveExtensionIcon } from '@/extensions/iconResolver';
 const PasskeysContainer = lazy(() => import('@/components/dashboard/PasskeysContainer'));
 import { useSubuserPreview } from '@/context/SubuserPreviewContext';
 import { motion } from 'framer-motion';
+import warmRoutes from '@/routers/warmRoutes';
 
 interface Props {
     route: any;
@@ -166,6 +167,17 @@ function DashboardRouter() {
     useEffect(() => {
         setSidebarOpen(false);
     }, [location]);
+
+    useEffect(
+        () =>
+            warmRoutes([
+                () => loadScreenNamespaces([routes.server.control[0], ...routes.account]),
+                () => import('@/routers/loadRouter').then((routers) => routers.loadServerRouter()),
+                routes.server.control[0]?.component.preload,
+                ...routes.account.map((route) => route.component.preload),
+            ]),
+        [],
+    );
 
     return (
         <>

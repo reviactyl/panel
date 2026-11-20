@@ -1,6 +1,7 @@
-import axios, { AxiosInstance, CanceledError } from 'axios';
+import axios, { AxiosError, AxiosHeaders, AxiosInstance, CanceledError } from 'axios';
 import { store } from '@/state';
 import { getPreviewToken } from '@/lib/subuserPreviewStorage';
+import { clearPrefetched, takePrefetched, waitForPageData } from '@/api/prefetch';
 
 const http: AxiosInstance = axios.create({
     withCredentials: true,
@@ -19,6 +20,7 @@ const activeRequests = new Set<Promise<void>>();
 export const getHttpSessionSignal = () => sessionRequests.signal;
 
 export const resetHttpSession = () => {
+    clearPrefetched();
     sessionRequests.abort();
     sessionRequests = new AbortController();
 };
@@ -70,6 +72,33 @@ http.interceptors.request.use((req) => {
         });
         activeRequests.add(done);
         try {
+            const reusable =
+                (config.method ?? 'get') === 'get' &&
+                !config.headers?.has('X-Subuser-Preview') &&
+                config.url !== '/api/client/page-data';
+            if (reusable) await waitForPageData();
+            const prefetched = reusable ? await takePrefetched(http.getUri(config))?.catch(() => undefined) : undefined;
+            if (prefetched && prefetched.status >= 200 && prefetched.status < 500) {
+                const response = {
+                    data: prefetched.body,
+                    status: prefetched.status,
+                    statusText: '',
+                    headers: new AxiosHeaders(prefetched.headers),
+                    config,
+                    request: {},
+                };
+                const accepted = config.validateStatus ? config.validateStatus(response.status) : true;
+                if (!accepted) {
+                    throw new AxiosError(
+                        `Request failed with status code ${response.status}`,
+                        AxiosError.ERR_BAD_REQUEST,
+                        config,
+                        response.request,
+                        response,
+                    );
+                }
+                return response;
+            }
             return await adapter(config);
         } finally {
             activeRequests.delete(done);

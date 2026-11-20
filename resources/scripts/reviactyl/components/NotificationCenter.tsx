@@ -50,7 +50,8 @@ export default function NotificationCenter() {
         session ? null : ['/api/client/notifications', unread, page],
         async ([url, onlyUnread, currentPage]: [string, boolean, number]) =>
             (await http.get(url, { params: { unread: onlyUnread ? 1 : 0, page: currentPage } })).data,
-        { refreshInterval: 30000, revalidateOnFocus: true, keepPreviousData: true },
+        // The inbox polls on its own, so remounting on another page reuses what it has.
+        { refreshInterval: 30000, revalidateOnFocus: true, revalidateIfStale: false, keepPreviousData: true },
     );
     useEffect(() => {
         if (data && page > data.last_page) setPage(Math.max(1, data.last_page));

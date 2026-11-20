@@ -20,7 +20,10 @@ import {
 } from 'react-icons/fa6';
 
 const screen = (load: () => Promise<{ default: ComponentType }>, namespaces: string[]) =>
-    preloadable(() => Promise.all([load(), i18n.loadNamespaces(namespaces)]).then(([module]) => module));
+    Object.assign(
+        preloadable(() => Promise.all([load(), i18n.loadNamespaces(namespaces)]).then(([module]) => module)),
+        { namespaces },
+    );
 
 const ServerConsole = screen(() => import('@/components/server/console/ServerConsoleContainer'), ['server/console']);
 const DatabasesContainer = screen(
@@ -95,7 +98,7 @@ interface RouteDefinition {
     // If undefined is passed this route is still rendered into the router itself
     // but no navigation link is displayed in the sub-navigation menu.
     name: string | undefined;
-    component: ComponentType & { preload?: () => Promise<unknown> };
+    component: ComponentType & { preload?: () => Promise<unknown>; namespaces?: string[] };
     end?: boolean;
     icon?: ComponentType<React.SVGProps<SVGSVGElement>>;
 }
@@ -118,6 +121,13 @@ interface Routes {
         administration: ServerRouteDefinition[];
     };
 }
+
+/**
+ * Loads the translations of several screens in a single request, so warming them up one by one
+ * does not cost the panel a request per screen.
+ */
+export const loadScreenNamespaces = (definitions: (RouteDefinition | undefined)[]) =>
+    i18n.loadNamespaces([...new Set(definitions.flatMap((definition) => definition?.component.namespaces ?? []))]);
 
 export default {
     account: [

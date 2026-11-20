@@ -5,12 +5,8 @@ import i18n from '@/i18n';
 import { useStoreState } from 'easy-peasy';
 import useAccountPreference from '@/plugins/useAccountPreference';
 import { ApplicationStore } from '@/state';
+import getLanguageList, { type LanguageInfo } from '@/api/getLanguageList';
 import 'flag-icons/css/flag-icons.min.css';
-
-interface LanguageInfo {
-    name: string;
-    flag: string;
-}
 
 const NavbarLanguageSwitcher = () => {
     const { t } = useTranslation('dashboard/account');
@@ -45,14 +41,15 @@ const NavbarLanguageSwitcher = () => {
     });
 
     useEffect(() => {
-        fetch('/locales/list.json')
-            .then((res) => res.json())
-            .then((langs) => setLanguages(langs))
-            .catch(() => setLanguages({ en: { name: 'English', flag: 'us' } }));
+        let active = true;
+        void getLanguageList().then((langs) => active && setLanguages(langs));
 
         const onLangChanged = (lng: string) => setCurrentLang(lng);
         i18n.on('languageChanged', onLangChanged);
-        return () => i18n.off('languageChanged', onLangChanged);
+        return () => {
+            active = false;
+            i18n.off('languageChanged', onLangChanged);
+        };
     }, []);
 
     useEffect(() => {

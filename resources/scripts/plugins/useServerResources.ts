@@ -1,6 +1,6 @@
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import type { Server } from '@/api/server/getServer';
-import getServerResourceUsage from '@/api/server/getServerResourceUsage';
+import loadServerResources from '@/api/server/loadServerResources';
 import { ServerResourcesContext, type ResourceEntry } from '@/context/ServerResourcesContext';
 
 export default function useServerResources(server: Server) {
@@ -40,7 +40,7 @@ export default function useServerResources(server: Server) {
             }
             pending = true;
             try {
-                entry.pending ??= getServerResourceUsage(server.uuid)
+                entry.pending ??= loadServerResources(server.uuid)
                     .then((data) => {
                         entry.stats = data.isSuspended ? null : data;
                         return data;

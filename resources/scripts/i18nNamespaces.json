@@ -1,0 +1,20 @@
+{
+    "always": ["strings", "routes"],
+    "auth": ["auth", "dashboard/account", "server/users"],
+    "app": ["dashboard/account", "server/users", "notifications"],
+    "dashboard": ["dashboard/index"],
+    "server": ["server/index", "server/console"],
+    "serverScreens": {
+        "console": ["server/console"],
+        "files": ["server/files", "server/recycle", "generic", "validation"],
+        "startup": ["server/startup", "server/recycle"],
+        "network": ["server/network"],
+        "metrics": ["server/metrics"],
+        "databases": ["server/databases", "generic"],
+        "schedules": ["server/schedules"],
+        "backups": ["server/backups"],
+        "users": ["server/users"],
+        "settings": ["server/settings"],
+        "activity": ["server/activity", "activity"]
+    }
+}

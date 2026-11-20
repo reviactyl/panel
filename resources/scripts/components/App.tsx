@@ -12,6 +12,7 @@ import { NotFound } from '@/reviactyl/elements/ScreenBlock';
 import AuthenticatedRoute from '@/reviactyl/elements/AuthenticatedRoute';
 import { ServerContext } from '@/state/server';
 import { registerRouter } from '@/routers/navigation';
+import watchPageData from '@/routers/pageData';
 import '@/assets/tailwind.css';
 import Spinner from '@/reviactyl/elements/Spinner';
 import { Theme } from '@/reviactyl/ui/Theme';
@@ -200,6 +201,7 @@ const router = createBrowserRouter([
     },
 ]);
 registerRouter(router);
+watchPageData(router);
 
 /**
  * Renders the application shell, global providers, and route tree.

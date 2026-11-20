@@ -43,18 +43,8 @@ class AuthenticateServerAccess
             throw new NotFoundHttpException(trans('exceptions.api.resource_not_found'));
         }
 
-        // At the very least, ensure that the user trying to make this request is the
-        // server owner, a subuser, or a root admin. We'll leave it up to the controllers
-        // to authenticate more detailed permissions if needed.
-        if ($preview instanceof SubuserPreviewContext && ! $preview->isServer($server)) {
+        if (! self::canAccess($user, $server, $preview instanceof SubuserPreviewContext ? $preview : null)) {
             throw new NotFoundHttpException(trans('exceptions.api.resource_not_found'));
-        }
-
-        if (! ($preview instanceof SubuserPreviewContext) && $user->id !== $server->owner_id && ! $user->root_admin) {
-            // Check for subuser status, or a role that reaches every server.
-            if (! $server->subusers->contains('user_id', $user->id) && $user->roleServerPermissions() === []) {
-                throw new NotFoundHttpException(trans('exceptions.api.resource_not_found'));
-            }
         }
 
         try {
@@ -75,5 +65,17 @@ class AuthenticateServerAccess
         $request->attributes->set('server', $server);
 
         return $next($request);
+    }
+
+    public static function canAccess(User $user, Server $server, ?SubuserPreviewContext $preview): bool
+    {
+        if ($preview) {
+            return $preview->isServer($server);
+        }
+
+        return $user->id === $server->owner_id
+            || $user->root_admin
+            || $server->subusers->contains('user_id', $user->id)
+            || $user->roleServerPermissions() !== [];
     }
 }

@@ -91,3 +91,21 @@ describe('console network graph directions', () => {
         expect(latest()).toEqual([500, 20]);
     });
 });
+
+describe('stats received before the graphs loaded', () => {
+    it('draws the buffered frames once, in order, then continues with live frames', async () => {
+        const frame = (cpu: number, rx: number) =>
+            JSON.stringify({ cpu_absolute: cpu, memory_bytes: 1024, network: { rx_bytes: rx, tx_bytes: 0 } });
+        const history = { current: [frame(5, 100), frame(6, 300), frame(7, 600)] };
+        await act(async () => root.render(<StatGraphs key='replayed' history={history} />));
+
+        const series = (label: string) =>
+            JSON.parse(container.querySelector(`[data-chart="${label}"]`)!.textContent!)[0].data.slice(-3);
+        expect(series('cpu')).toEqual([5, 6, 7]);
+        expect(series('network-in')).toEqual([0, 200, 300]);
+        expect(history.current).toEqual([]);
+
+        await sample(1000, 0);
+        expect(series('network-in')).toEqual([200, 300, 400]);
+    });
+});

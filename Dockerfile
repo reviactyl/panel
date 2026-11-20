@@ -23,6 +23,7 @@ ENV PANEL_INSTALLATION_TYPE=docker
 WORKDIR /app
 COPY . ./
 COPY --from=0 /app/public/assets ./public/assets
+COPY --from=0 /app/public/build ./public/build
 COPY --from=composer@sha256:d8f6343d3fae98107426bc49163ccad46ef85aabd4a27d80a74401fab4aba332 /usr/bin/composer /usr/local/bin/composer
 RUN apk add --no-cache --update ca-certificates dcron curl git supervisor tar unzip nginx libpng-dev libxml2-dev libzip-dev certbot certbot-nginx freetype-dev libjpeg-turbo-dev icu-dev mysql-client \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
@@ -35,6 +36,11 @@ RUN apk add --no-cache --update ca-certificates dcron curl git supervisor tar un
     && rm -rf .env bootstrap/cache/*.php \
     && mkdir -p /app/storage/logs/ \
     && chown -R nginx:nginx .
+
+# The panel ships close to 20,000 PHP files, twice OPcache's default slot limit. Give it room
+# to keep everything the API and admin area use compiled instead of running out of slots.
+RUN printf 'opcache.max_accelerated_files=32531\nopcache.memory_consumption=256\nopcache.interned_strings_buffer=32\n' \
+    > /usr/local/etc/php/conf.d/zz-reviactyl-opcache.ini
 
 RUN rm /usr/local/etc/php-fpm.conf \
     && echo "* * * * * /usr/local/bin/php /app/artisan schedule:run >> /dev/null 2>&1" >> /var/spool/cron/crontabs/root \

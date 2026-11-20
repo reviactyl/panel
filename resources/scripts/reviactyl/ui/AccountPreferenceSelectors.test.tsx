@@ -3,6 +3,7 @@ import { createRoot, type Root } from 'react-dom/client';
 import { createStore, StoreProvider } from 'easy-peasy';
 import { getByRole } from '@testing-library/dom';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
+import { resetLanguageList } from '@/api/getLanguageList';
 import user from '@/state/user';
 import LanguageSwitcher from './LanguageSwitcher';
 import FileEditorSwitcher from './FileEditorSwitcher';
@@ -38,6 +39,7 @@ const render = async (children = preferences()) => {
 };
 
 beforeEach(() => {
+    resetLanguageList();
     vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
     vi.stubGlobal(
         'fetch',

@@ -8,10 +8,18 @@ import { NotFound } from '@/reviactyl/elements/ScreenBlock';
 import { Navigate } from 'react-router-dom';
 import { useStoreState } from 'easy-peasy';
 import Announcement from '@/reviactyl/ui/Announcement';
+import { useEffect } from 'react';
+import warmRoutes from '@/routers/warmRoutes';
 
 export default () => {
     const navigate = useNavigate();
     const registrationEnabled = useStoreState((state) => state.settings.data?.registrationEnabled ?? true);
+
+    // Signing in takes a while, so fetch the dashboard in the meantime.
+    useEffect(
+        () => warmRoutes([() => import('@/routers/loadRouter').then((routers) => routers.loadDashboardRouter())]),
+        [],
+    );
 
     return (
         <div className='flex flex-col min-h-screen h-full'>

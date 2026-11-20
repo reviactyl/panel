@@ -22,6 +22,8 @@ export const useExtensions = () => {
             revalidateOnReconnect: false,
             dedupingInterval: 3_000,
             refreshWhenHidden: false,
+            // Already revalidated on focus; switching pages should not ask again.
+            revalidateIfStale: false,
         },
     );
 };

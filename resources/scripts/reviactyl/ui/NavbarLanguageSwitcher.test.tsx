@@ -2,6 +2,7 @@ import { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { getByRole } from '@testing-library/dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { resetLanguageList } from '@/api/getLanguageList';
 import NavbarLanguageSwitcher from './NavbarLanguageSwitcher';
 
 const mocks = vi.hoisted(() => ({
@@ -40,6 +41,7 @@ describe('navbar language trigger accessibility', () => {
     let root: Root;
 
     beforeEach(() => {
+        resetLanguageList();
         vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
         vi.clearAllMocks();
         mocks.state.user.data.language = 'en';

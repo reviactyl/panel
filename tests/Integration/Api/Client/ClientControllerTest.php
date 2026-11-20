@@ -6,6 +6,7 @@ use App\Filament\Resources\Nests\Eggs\Pages\EditEgg;
 use App\Models\Allocation;
 use App\Models\Permission;
 use App\Models\Server;
+use App\Models\ServerVariable;
 use App\Models\Subuser;
 use App\Models\User;
 use Filament\Facades\Filament;
@@ -48,6 +49,47 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
         foreach ($response->json('data') as $entry) {
             $this->assertSame($url, $entry['attributes']['egg_image']);
         }
+    }
+
+    public function test_server_list_matches_single_server_responses_without_per_server_queries(): void
+    {
+        $user = User::factory()->create();
+        $first = $this->createServerModel(['user_id' => $user->id]);
+        $second = $this->createServerModel(['user_id' => $user->id, 'egg_id' => $first->egg_id]);
+        Allocation::factory()->create(['node_id' => $second->node_id, 'server_id' => $second->id]);
+        $variable = $first->variables()->first();
+        ServerVariable::query()->create(['server_id' => $first->id, 'variable_id' => $variable->id, 'variable_value' => 'first-value']);
+        ServerVariable::query()->create(['server_id' => $second->id, 'variable_id' => $variable->id, 'variable_value' => 'second-value']);
+        $restricted = $this->createServerModel();
+        Allocation::factory()->create(['node_id' => $restricted->node_id, 'server_id' => $restricted->id, 'notes' => 'hidden']);
+        Subuser::query()->create(['user_id' => $user->id, 'server_id' => $restricted->id, 'permissions' => [Permission::ACTION_WEBSOCKET_CONNECT]]);
+
+        $this->actingAs($user);
+        $list = collect($this->getJson('/api/client')->assertOk()->assertJsonCount(3, 'data')->json('data'))
+            ->keyBy('attributes.uuid');
+        foreach ([$first, $second, $restricted] as $server) {
+            $this->assertSame(
+                $this->getJson('/api/client/servers/'.$server->uuidShort)->assertOk()->json('attributes'),
+                $list[$server->uuid]['attributes'],
+            );
+        }
+        $this->assertSame('first-value', collect($list[$first->uuid]['attributes']['relationships']['variables']['data'])->firstWhere('attributes.env_variable', $variable->env_variable)['attributes']['server_value']);
+        $this->assertNull($list[$restricted->uuid]['attributes']['relationships']['variables']['attributes'] ?? null);
+
+        $count = function () {
+            DB::flushQueryLog();
+            DB::enableQueryLog();
+            $this->getJson('/api/client?include=category')->assertOk();
+            $queries = count(DB::getQueryLog());
+            DB::disableQueryLog();
+
+            return $queries;
+        };
+        $few = $count();
+        for ($i = 0; $i < 10; $i++) {
+            $this->createServerModel(['user_id' => $user->id]);
+        }
+        $this->assertSame($few, $count());
     }
 
     /**
