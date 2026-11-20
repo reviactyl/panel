@@ -9,6 +9,8 @@ import DashboardContainer from './DashboardContainer';
 const mocks = vi.hoisted(() => ({
     getServers: vi.fn(),
     organization: 'categories',
+    rootAdmin: false,
+    getClientEggs: vi.fn(),
     categoryError: false,
     categories: [] as { uuid: string; name: string }[],
 }));
@@ -23,16 +25,15 @@ vi.mock('@/api/account/getServerCategories', () => ({
         return mocks.categories;
     },
 }));
-vi.mock('@/api/getClientEggs', () => ({ default: async () => [] }));
+vi.mock('@/api/getClientEggs', () => ({ default: mocks.getClientEggs }));
 vi.mock('easy-peasy', () => ({
     useStoreState: (selector: (state: unknown) => unknown) =>
         selector({
-            user: { data: { uuid: 'user', rootAdmin: false, rolePermissions: [] } },
+            user: { data: { uuid: 'user', rootAdmin: mocks.rootAdmin, rolePermissions: [] } },
             designify: { data: { serverOrganization: mocks.organization } },
         }),
 }));
 vi.mock('@/context/SubuserPreviewContext', () => ({ useSubuserPreview: () => ({ session: null }) }));
-vi.mock('@/plugins/usePersistedState', () => ({ usePersistedState: () => [false, vi.fn()] }));
 vi.mock('@/plugins/useFlash', () => ({ default: () => ({ clearFlashes: vi.fn(), clearAndAddHttpError: vi.fn() }) }));
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 vi.mock('@/reviactyl/elements/PageContentBlock', () => ({
@@ -75,8 +76,11 @@ vi.mock('@/components/dashboard/DeleteFolderModal', () => ({ default: () => null
 vi.mock('@/components/dashboard/MoveFolderModal', () => ({ default: () => null }));
 vi.mock('@/extensions/ExtensionSlot', () => ({ ExtensionSlot: () => null }));
 vi.mock('@/components/dashboard/CategorySection', () => ({
-    default: ({ servers }: { servers: { name: string }[] }) => (
-        <div>{servers.map((server) => server.name).join(',')}</div>
+    default: ({ servers, showOnlyAdmin }: { servers: { name: string }[]; showOnlyAdmin: boolean }) => (
+        <div>
+            {servers.map((server) => server.name).join(',')}
+            {!showOnlyAdmin && <button>Category actions</button>}
+        </div>
     ),
 }));
 
@@ -86,6 +90,12 @@ describe('dashboard category pagination', () => {
 
     beforeEach(() => {
         vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true);
+        localStorage.clear();
+        mocks.rootAdmin = false;
+        mocks.getClientEggs.mockReset().mockResolvedValue([
+            { id: 1, name: 'Egg One' },
+            { id: 2, name: 'Egg Two' },
+        ]);
         mocks.organization = 'categories';
         mocks.categoryError = false;
         mocks.categories = [
@@ -155,6 +165,104 @@ describe('dashboard category pagination', () => {
             select.dispatchEvent(new Event('change', { bubbles: true }));
         });
     };
+
+    const openFilters = async () => {
+        const button = container.querySelector<HTMLButtonElement>('[aria-label="filter-label"]');
+        expect(button).not.toBeNull();
+        await act(async () => button!.click());
+    };
+    const selectEgg = async (egg: string) => {
+        await openFilters();
+        await act(async () => {
+            const select = container.querySelector<HTMLSelectElement>('[aria-label="eggs.filter-label"]')!;
+            select.value = egg;
+            select.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+    };
+    const toggleAdmin = async () => {
+        await act(async () => container.querySelector<HTMLInputElement>('[name="show_all_servers"]')!.click());
+    };
+    const mockEggResults = () => {
+        mocks.getServers.mockImplementation(async ({ page, type, eggId }) => ({
+            items: (eggId ? [eggId] : [1, 2]).map((id) => ({
+                uuid: `server-${id}`,
+                name: `${type === 'admin' ? 'Other' : 'Personal'} Egg ${id}`,
+            })),
+            pagination: { currentPage: page, totalPages: 2, total: 2, count: 2, perPage: 2 },
+        }));
+    };
+
+    it('restores personal filters and category actions after admin access is removed with a persisted toggle', async () => {
+        localStorage.setItem('user:show_all_servers', 'true');
+        mocks.rootAdmin = true;
+        await render();
+        expect(mocks.getServers).toHaveBeenLastCalledWith(expect.objectContaining({ type: 'admin' }));
+
+        mocks.rootAdmin = false;
+        await render();
+        expect(localStorage.getItem('user:show_all_servers')).toBe('true');
+        expect(container.querySelector('[name="show_all_servers"]')).toBeNull();
+        expect(mocks.getServers).toHaveBeenLastCalledWith(expect.objectContaining({ type: undefined }));
+        expect(container.textContent).toContain('Category actions');
+        expect(container.querySelector('[aria-label="categories.manage"]')).not.toBeNull();
+        await openFilters();
+        expect(container.querySelector('[aria-label="categories.all-categories"]')).not.toBeNull();
+        expect(container.querySelector('[aria-label="eggs.filter-label"]')).not.toBeNull();
+    });
+
+    it.each([false, true])(
+        'filters server results by Egg with admin view %s and resets pagination',
+        async (adminView) => {
+            mocks.rootAdmin = true;
+            localStorage.setItem('user:show_all_servers', String(adminView));
+            mockEggResults();
+            await render();
+            expect(mocks.getClientEggs).toHaveBeenLastCalledWith(adminView ? 'admin' : undefined);
+            await clickPageTwo();
+            await selectEgg('2');
+            expect(mocks.getServers).toHaveBeenLastCalledWith(
+                expect.objectContaining({ page: 1, type: adminView ? 'admin' : undefined, eggId: 2 }),
+            );
+            expect(container.textContent).toContain(`${adminView ? 'Other' : 'Personal'} Egg 2`);
+            expect(container.textContent).not.toContain('Egg 1');
+            await selectEgg('');
+            expect(mocks.getServers).toHaveBeenLastCalledWith(expect.objectContaining({ eggId: undefined }));
+            expect(container.textContent).toContain(`${adminView ? 'Other' : 'Personal'} Egg 1`);
+        },
+    );
+
+    it('ignores the personal Category in Other Servers while preserving Egg filtering across view changes', async () => {
+        mocks.rootAdmin = true;
+        mockEggResults();
+        mocks.getClientEggs.mockImplementation(async (type) =>
+            type === 'admin' ? [{ id: 1, name: 'Other Egg' }] : [{ id: 2, name: 'Personal Egg' }],
+        );
+        await render();
+        await selectCategory('small');
+        // The Category selector keeps the filter panel open.
+        await openFilters();
+        await selectEgg('2');
+        await toggleAdmin();
+        expect(mocks.getServers).toHaveBeenLastCalledWith(
+            expect.objectContaining({ type: 'admin', 'filter[category_uuid]': undefined, eggId: 2 }),
+        );
+        await openFilters();
+        expect(container.querySelector('[aria-label="categories.all-categories"]')).toBeNull();
+        expect(container.querySelector<HTMLSelectElement>('[aria-label="eggs.filter-label"]')?.value).toBe('2');
+        await toggleAdmin();
+        expect(mocks.getServers).toHaveBeenLastCalledWith(
+            expect.objectContaining({ type: undefined, 'filter[category_uuid]': 'small', eggId: 2 }),
+        );
+        await toggleAdmin();
+        await openFilters();
+        const selected = container.querySelector<HTMLSelectElement>('[aria-label="eggs.filter-label"]')!;
+        expect(selected.selectedOptions.item(0)?.textContent).toBe('Personal Egg');
+        await act(async () => {
+            selected.value = '';
+            selected.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+        expect(mocks.getServers).toHaveBeenLastCalledWith(expect.objectContaining({ type: 'admin', eggId: undefined }));
+    });
 
     it('opens folders and returns Home using server-side category filters', async () => {
         mocks.organization = 'folders';
