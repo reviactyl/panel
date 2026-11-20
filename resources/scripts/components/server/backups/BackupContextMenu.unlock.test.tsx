@@ -77,7 +77,11 @@ it('shows progress in the real unlock dialog and disables confirmation', async (
     expect(confirm).toHaveProperty('disabled', true);
     expect(confirm.getAttribute('aria-busy')).toBe('true');
     expect(confirm.querySelector('.animate-spin')).not.toBeNull();
-    expect(document.querySelector('.fixed .animate-spin')).not.toBeNull();
+    expect(
+        Array.from(document.querySelectorAll<HTMLElement>('div.fixed')).filter((element) =>
+            element.style.background.includes('rgba'),
+        ),
+    ).toHaveLength(0);
 
     resolvePost();
 });
