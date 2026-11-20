@@ -78,6 +78,11 @@ export default () => {
         if (e.key === 'ArrowUp') {
             const newIndex = Math.min(historyIndex + 1, history!.length - 1);
 
+            if (newIndex === historyIndex) {
+                e.preventDefault();
+                return;
+            }
+
             setHistoryIndex(newIndex);
             e.currentTarget.value = history![newIndex] || '';
 
@@ -88,6 +93,10 @@ export default () => {
 
         if (e.key === 'ArrowDown') {
             const newIndex = Math.max(historyIndex - 1, -1);
+
+            if (newIndex === historyIndex) {
+                return;
+            }
 
             setHistoryIndex(newIndex);
             e.currentTarget.value = history![newIndex] || '';
@@ -124,6 +133,10 @@ export default () => {
         fitAddon.fit();
 
         terminal.attachCustomKeyEventHandler((e: KeyboardEvent) => {
+            if (e.type !== 'keydown') {
+                return true;
+            }
+
             if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
                 document.execCommand('copy');
                 return false;

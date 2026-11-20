@@ -21,7 +21,10 @@ vi.mock('@xterm/xterm', () => ({
         writeln = vi.fn();
         clear = vi.fn();
         scrollLines = vi.fn();
-        attachCustomKeyEventHandler = vi.fn();
+        customKeyEventHandler?: (event: KeyboardEvent) => boolean;
+        attachCustomKeyEventHandler = vi.fn((handler: (event: KeyboardEvent) => boolean) => {
+            this.customKeyEventHandler = handler;
+        });
         dispose = vi.fn(() => {
             window.removeEventListener('resize', this.resize);
             this.addons.forEach((addon) => addon.dispose());
@@ -45,6 +48,8 @@ function addonMock() {
     return class {
         fit = vi.fn();
         dispose = vi.fn();
+        show = vi.fn();
+        hide = vi.fn();
     };
 }
 vi.mock('@xterm/addon-fit', () => ({ FitAddon: addonMock() }));
@@ -222,5 +227,52 @@ describe('console command composition', () => {
         expect(input.value).toBe('say previous');
         await keyDown('ArrowDown');
         expect(input.value).toBe('');
+    });
+
+    it('preserves the draft at both history boundaries', async () => {
+        localStorage.setItem(historyKey, '[]');
+        await act(async () => root.render(null));
+        await act(async () => root.render(<Console />));
+        input = container.querySelector('input')!;
+        input.value = 'draft with no history';
+        await keyDown('ArrowUp');
+        expect(input.value).toBe('draft with no history');
+
+        localStorage.setItem(historyKey, JSON.stringify(['say previous']));
+        await act(async () => root.render(null));
+        await act(async () => root.render(<Console />));
+        input = container.querySelector('input')!;
+        input.value = 'draft outside history';
+        await keyDown('ArrowDown');
+        expect(input.value).toBe('draft outside history');
+    });
+});
+
+describe('console terminal keyboard shortcuts', () => {
+    it('runs custom shortcuts on keydown and ignores keyup', async () => {
+        await act(async () => root.render(<Console />));
+        const terminal = mocks.terminals.at(-1);
+        const handler = terminal.customKeyEventHandler!;
+        const searchBar = terminal.addons[2];
+        const copy = vi.fn().mockReturnValue(true);
+        Object.defineProperty(document, 'execCommand', { configurable: true, value: copy });
+
+        expect(handler(new KeyboardEvent('keyup', { key: 'c', ctrlKey: true }))).toBe(true);
+        expect(handler(new KeyboardEvent('keyup', { key: 'f', ctrlKey: true }))).toBe(true);
+        expect(handler(new KeyboardEvent('keyup', { key: 'c', metaKey: true }))).toBe(true);
+        expect(handler(new KeyboardEvent('keyup', { key: 'f', metaKey: true }))).toBe(true);
+        expect(handler(new KeyboardEvent('keyup', { key: 'Escape' }))).toBe(true);
+        expect(copy).not.toHaveBeenCalled();
+        expect(searchBar.show).not.toHaveBeenCalled();
+        expect(searchBar.hide).not.toHaveBeenCalled();
+
+        expect(handler(new KeyboardEvent('keydown', { key: 'c', ctrlKey: true }))).toBe(false);
+        expect(handler(new KeyboardEvent('keydown', { key: 'f', ctrlKey: true }))).toBe(false);
+        expect(handler(new KeyboardEvent('keydown', { key: 'c', metaKey: true }))).toBe(false);
+        expect(handler(new KeyboardEvent('keydown', { key: 'f', metaKey: true }))).toBe(false);
+        expect(handler(new KeyboardEvent('keydown', { key: 'Escape' }))).toBe(true);
+        expect(copy).toHaveBeenCalledTimes(2);
+        expect(searchBar.show).toHaveBeenCalledTimes(2);
+        expect(searchBar.hide).toHaveBeenCalledOnce();
     });
 });
