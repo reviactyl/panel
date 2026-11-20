@@ -49,7 +49,12 @@ class AdminPanelProvider extends PanelProvider
             ->breadcrumbs(false)
             ->renderHook(
                 PanelsRenderHook::BODY_END,
-                fn () => Blade::render('@vite("resources/scripts/admin/filePicker.ts")'),
+                fn () => Blade::render('
+                    @vite("resources/scripts/admin/filePicker.ts")
+                    @if (! config("panel.disable_support_popups") && request()->user())
+                        @include("filament.components.support-modal")
+                    @endif
+                '),
             )
             ->navigationGroups([
                 NavigationGroup::make(fn () => trans('admin/navigation.administration.title'))
