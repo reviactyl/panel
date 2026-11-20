@@ -17,6 +17,9 @@ import RecycleBin from './RecycleBin';
 const mocks = vi.hoisted(() => ({
     post: vi.fn(),
     mutate: vi.fn(),
+    refreshChildren: vi.fn(),
+    listingError: false,
+    browseError: false,
     conflict: false,
     nested: false,
     sorting: false,
@@ -35,7 +38,8 @@ vi.mock('swr', () => ({
         Array.isArray(key)
             ? {
                   data: [{ name: 'nested.txt', isFile: true, size: 3, modifiedAt: new Date('2026-11-10T12:00:00Z') }],
-                  mutate: mocks.mutate,
+                  ...(mocks.browseError ? { data: undefined, error: new Error('Directory unavailable') } : {}),
+                  mutate: mocks.refreshChildren,
               }
             : !key
               ? {}
@@ -83,6 +87,7 @@ vi.mock('swr', () => ({
                                   },
                               ],
                     },
+                    ...(mocks.listingError ? { data: undefined, error: new Error('Listing unavailable') } : {}),
                     mutate: mocks.mutate,
                 },
 }));
@@ -110,6 +115,8 @@ beforeEach(async () => {
     mocks.conflict = false;
     mocks.nested = false;
     mocks.sorting = false;
+    mocks.listingError = false;
+    mocks.browseError = false;
     mocks.navigate.mockReset();
     mocks.load
         .mockReset()
@@ -119,6 +126,7 @@ beforeEach(async () => {
         data: { conflict: body.preview && mocks.conflict ? '/world/one.txt' : null },
     }));
     mocks.mutate.mockReset().mockResolvedValue(undefined);
+    mocks.refreshChildren.mockReset().mockResolvedValue(undefined);
     container = document.createElement('div');
     document.body.append(container);
     root = createRoot(container);
@@ -272,5 +280,46 @@ describe('recycle bin restore workflow', () => {
             id: 'a',
             path: 'deep/nested.txt',
         });
+    });
+});
+
+describe('recycle bin loading recovery', () => {
+    it.each([
+        { nested: true, listingError: true, browseError: false },
+        { nested: true, listingError: false, browseError: true },
+        { nested: true, listingError: true, browseError: true },
+        { nested: false, listingError: true, browseError: false },
+    ])('recovers nested=$nested listingError=$listingError browseError=$browseError', async (scenario) => {
+        Object.assign(mocks, scenario);
+        const render = () =>
+            root.render(
+                <MemoryRouter
+                    key='retry'
+                    initialEntries={[
+                        scenario.nested
+                            ? '/server/server/files#/.recycle-bin/a/world/deep'
+                            : '/server/server/files#/.recycle-bin',
+                    ]}
+                >
+                    <RecycleBin />
+                </MemoryRouter>,
+            );
+        mocks.mutate.mockImplementation(async () => {
+            mocks.listingError = false;
+            render();
+        });
+        mocks.refreshChildren.mockImplementation(async () => {
+            mocks.browseError = false;
+            render();
+        });
+        await act(async () => render());
+        expect(getByRole(container, 'alert').textContent).toBe('Failed');
+        await click(getByRole(container, 'button', { name: 'retry' }));
+        expect(mocks.mutate).toHaveBeenCalledTimes(scenario.listingError ? 1 : 0);
+        expect(mocks.refreshChildren).toHaveBeenCalledTimes(scenario.browseError ? 1 : 0);
+        expect(container.querySelector('[role="alert"]')).toBeNull();
+        expect(
+            getByRole(container, 'checkbox', { name: scenario.nested ? '/world/deep/nested.txt' : '/world/one.txt' }),
+        ).toBeDefined();
     });
 });
