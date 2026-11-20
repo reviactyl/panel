@@ -15,8 +15,12 @@ export const SubuserPreviewFrame = ({ children }: PropsWithChildren) => {
 
         setExiting(true);
         const destination = `/server/${session.serverIdentifier}/users`;
-        await exit();
-        window.location.assign(destination);
+        try {
+            await exit();
+            window.location.assign(destination);
+        } catch {
+            setExiting(false);
+        }
     };
 
     if (loading) {

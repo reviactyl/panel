@@ -98,11 +98,8 @@ const IdentityPreviewProvider = ({ children }: PropsWithChildren) => {
     }, []);
 
     const exit = useCallback(async () => {
-        try {
-            await stopSubuserPreview();
-        } finally {
-            clear();
-        }
+        await stopSubuserPreview();
+        clear();
     }, [clear]);
 
     const value = useMemo(() => ({ loading, session, start, exit }), [exit, loading, session, start]);
