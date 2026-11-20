@@ -372,6 +372,10 @@ export default function RecycleBin() {
         await mutate().catch(() => undefined);
         if (nested) await refreshChildren().catch(() => undefined);
     };
+    const retry = async () => {
+        if (error) await mutate().catch(() => undefined);
+        if (nested && browseError) await refreshChildren().catch(() => undefined);
+    };
 
     const prepareRestore = async (entries: Entry[]) => {
         setBusy(true);
@@ -541,9 +545,7 @@ export default function RecycleBin() {
                         {failure || httpErrorToHuman(error || browseError)}
                     </p>
                 )}
-                {(error || browseError) && (
-                    <Button onClick={() => (nested ? refreshChildren() : mutate())}>{t('retry')}</Button>
-                )}
+                {(error || browseError) && <Button onClick={retry}>{t('retry')}</Button>}
                 {((nested && !children && !browseError) || (!nested && !data && !error)) && <Spinner centered />}
                 {(nested ? children : data) && visible.length === 0 && (
                     <p className='py-8 text-center text-gray-300'>
