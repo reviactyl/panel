@@ -1,8 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import http from '@/api/http';
+import getServerResourceUsage from '@/api/server/getServerResourceUsage';
+import { PREVIEW_TOKEN_KEY } from '@/lib/subuserPreviewStorage';
 import loadServerResources from './loadServerResources';
 
 vi.mock('@/api/http', () => ({ default: { get: vi.fn() } }));
+vi.mock('@/api/server/getServerResourceUsage', async (original) => ({
+    ...(await original<object>()),
+    default: vi.fn(),
+}));
 
 const stats = (memory: number) => ({
     object: 'stats',
@@ -107,5 +113,19 @@ describe('batched server usage', () => {
         await vi.advanceTimersByTimeAsync(20);
 
         expect((await results).map((result) => result.status)).toEqual(['rejected', 'rejected']);
+    });
+
+    it('uses the per-server route during a subuser preview, which only simulates those', async () => {
+        sessionStorage.setItem(PREVIEW_TOKEN_KEY, 'preview');
+        vi.mocked(getServerResourceUsage).mockResolvedValue({ memoryUsageInBytes: 7 } as never);
+
+        try {
+            await expect(loadServerResources('a')).resolves.toMatchObject({ memoryUsageInBytes: 7 });
+            await vi.advanceTimersByTimeAsync(20);
+            expect(getServerResourceUsage).toHaveBeenCalledWith('a');
+            expect(http.get).not.toHaveBeenCalled();
+        } finally {
+            sessionStorage.clear();
+        }
     });
 });

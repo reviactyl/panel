@@ -1,6 +1,6 @@
 import type { createBrowserRouter } from 'react-router-dom';
 import http from '@/api/http';
-import { trackPageData } from '@/api/prefetch';
+import { prefetchGeneration, trackPageData } from '@/api/prefetch';
 import { getPreviewToken } from '@/lib/subuserPreviewStorage';
 import { store } from '@/state';
 
@@ -28,7 +28,8 @@ export const requestPageData = (
     const page = pageOf(pathname);
     if (!page || getPreviewToken()) return undefined;
     const number = Number(new URLSearchParams(search).get('page') || '1');
-    const key = `${page}:${number}`;
+    // A session reset (sign out, sign in) must never hand the next account the previous one's data.
+    const key = `${prefetchGeneration()}:${page}:${number}`;
     if (last && last.key === key && Date.now() - last.at < 3_000) return last.request;
 
     const request: Promise<Record<string, string> | undefined> = http

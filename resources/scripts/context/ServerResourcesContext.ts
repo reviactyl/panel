@@ -5,6 +5,8 @@ export interface ResourceEntry {
     stats: ServerStats | null;
     lastUpdated?: number;
     pending?: Promise<ServerStats>;
+    /** The latest power state from the websocket, kept even before any usage has arrived. */
+    status?: ServerPowerState;
 }
 
 export type ResourceCache = Map<string, ResourceEntry>;
@@ -38,7 +40,8 @@ export const recordSocketStats = (scope: string, uuid: string, raw: SocketStats,
     const cache = getServerResourceCache(scope);
     const entry = cache.get(uuid) ?? { stats: null };
     const previous = entry.stats;
-    const status = powerStates.find((state) => state === raw.state) ?? previous?.status ?? 'offline';
+    const status = powerStates.find((state) => state === raw.state) ?? entry.status ?? previous?.status ?? 'offline';
+    entry.status = status;
 
     entry.stats = isSuspended
         ? null
@@ -58,9 +61,13 @@ export const recordSocketStats = (scope: string, uuid: string, raw: SocketStats,
 
 /** Updates only the power state, which the websocket reports separately from usage. */
 export const recordSocketStatus = (scope: string, uuid: string, state: string) => {
-    const entry = getServerResourceCache(scope).get(uuid);
     const status = powerStates.find((value) => value === state);
-    if (entry?.stats && status) entry.stats = { ...entry.stats, status };
+    if (!status) return;
+    const cache = getServerResourceCache(scope);
+    const entry = cache.get(uuid) ?? { stats: null };
+    entry.status = status;
+    if (entry.stats) entry.stats = { ...entry.stats, status };
+    cache.set(uuid, entry);
 };
 
 export const resourceCacheScope = (userUuid: string | undefined, sessionUuid: string | undefined) =>

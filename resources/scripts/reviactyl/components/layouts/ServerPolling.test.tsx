@@ -169,6 +169,17 @@ for (const [layout, Component] of [
             expect(getServerResourceUsage).toHaveBeenCalledTimes(1);
         });
 
+        it('keeps a power state that arrives before the first stats frame', async () => {
+            const scope = `status-first-${layout}`;
+            recordSocketStatus(scope, server.uuid, 'running');
+            recordSocketStats(scope, server.uuid, { memory_bytes: 1 }, false);
+
+            expect(getServerResourceCache(scope).get(server.uuid)?.stats).toMatchObject({
+                status: 'running',
+                memoryUsageInBytes: 1,
+            });
+        });
+
         it('reuses an in-flight stats request when reopened', async () => {
             let resolve!: (value: ServerStats) => void;
             vi.mocked(getServerResourceUsage).mockReturnValue(new Promise((done) => (resolve = done)));

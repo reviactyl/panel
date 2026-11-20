@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import http from '@/api/http';
-import watchPageData from './pageData';
+import { clearPrefetched } from '@/api/prefetch';
+import watchPageData, { requestPageData } from './pageData';
 
 const state = vi.hoisted(() => ({ user: { uuid: 'user' } as null | { uuid: string } }));
 vi.mock('@/api/http', () => ({ default: { get: vi.fn() } }));
@@ -59,6 +60,16 @@ describe('page data on navigation', () => {
         go('/account');
         go('/');
 
+        expect(http.get).toHaveBeenCalledTimes(2);
+    });
+
+    it("never reuses the previous account's answer after the session resets", async () => {
+        clearPrefetched();
+        vi.mocked(http.get).mockResolvedValueOnce({ data: { data: { old: 'account' } } });
+        await expect(requestPageData('/')).resolves.toEqual({ old: 'account' });
+        clearPrefetched();
+
+        await expect(requestPageData('/')).resolves.toEqual({});
         expect(http.get).toHaveBeenCalledTimes(2);
     });
 });

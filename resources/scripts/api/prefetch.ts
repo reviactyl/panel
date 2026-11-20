@@ -53,7 +53,13 @@ export const takePrefetched = (url: string): Promise<PrefetchedResponse> | undef
         : undefined;
 };
 
+let generation = 0;
+
+/** Changes whenever the HTTP session is reset, so cached responses can tell they are stale. */
+export const prefetchGeneration = () => generation;
+
 export const clearPrefetched = () => {
+    generation += 1;
     delete window.__REVIACTYL_PREFETCH__;
     delete window.__REVIACTYL_PREFETCH_SERVER__;
     pendingPageData = undefined;

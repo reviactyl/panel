@@ -1,6 +1,7 @@
 import http from '@/api/http';
 import { takePrefetchedCovering } from '@/api/prefetch';
-import { rawDataToServerStats, type ServerStats } from '@/api/server/getServerResourceUsage';
+import getServerResourceUsage, { rawDataToServerStats, type ServerStats } from '@/api/server/getServerResourceUsage';
+import { getPreviewToken } from '@/lib/subuserPreviewStorage';
 
 const BATCH_WINDOW = 15;
 const MAX_PER_REQUEST = 50;
@@ -53,6 +54,9 @@ const flush = async () => {
 };
 
 export default function loadServerResources(uuid: string): Promise<ServerStats> {
+    // Subuser previews only simulate per-server routes, so keep using those while one is active.
+    if (getPreviewToken()) return getServerResourceUsage(uuid);
+
     return new Promise((resolve, reject) => {
         const waiters = queue.get(uuid) ?? [];
         waiters.push({ resolve, reject });
