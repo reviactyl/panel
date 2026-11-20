@@ -4,12 +4,15 @@ import { useStoreState } from 'easy-peasy';
 
 type Props = Readonly<{
     byKey?: string;
+    excludeKeys?: string[];
     className?: string;
 }>;
 
-const FlashMessageRender = ({ byKey, className }: Props) => {
+const FlashMessageRender = ({ byKey, excludeKeys = [], className }: Props) => {
     const flashes = useStoreState((state) =>
-        state.flashes.items.filter((flash) => (byKey ? flash.key === byKey : true)),
+        state.flashes.items.filter((flash) =>
+            byKey ? flash.key === byKey : !flash.key || !excludeKeys.includes(flash.key),
+        ),
     );
 
     return flashes.length ? (

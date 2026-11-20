@@ -34,7 +34,6 @@ export default () => {
     const { state } = useLocation();
     const nameFirst = useStoreState((state) => state.user.data?.name_first);
     const nameLast = useStoreState((state) => state.user.data?.name_last);
-    const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
     const adminAccess = useStoreState((state) => state.user.data!.adminAccess);
     const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
     const { isLoggingOut, onLogout: onTriggerLogout } = useLogout('account:logout');
@@ -65,7 +64,7 @@ export default () => {
 
     return (
         <AccountContentBlock classicHeading title={t('overview.account-overview')}>
-            <FlashMessageRender className='mb-4' />
+            <FlashMessageRender excludeKeys={['account:avatar']} className='mb-4' />
             <ExtensionSlot name='account:overview:above' />
             {state?.twoFactorRedirect && (
                 <MessageBox title={t('overview.2fa-required')} type={'error'}>
@@ -85,7 +84,7 @@ export default () => {
                             </Title>
                             <div className={'flex items-center gap-x-1'}>
                                 <span className='text-sm text-gray-400'>
-                                    {rootAdmin ? t('overview.administrator') : name + ' ' + t('overview.user')}
+                                    {adminAccess ? t('overview.administrator') : name + ' ' + t('overview.user')}
                                 </span>
                                 {adminAccess && (
                                     // eslint-disable-next-line react/jsx-no-target-blank
@@ -110,6 +109,7 @@ export default () => {
                                 <Title className='text-sm'>{t('overview.profile-picture')}</Title>
                             </div>
                             <div className='px-3 pb-3'>
+                                <FlashMessageRender byKey='account:avatar' className='mb-3' />
                                 <AvatarSelector />
                             </div>
                         </div>
