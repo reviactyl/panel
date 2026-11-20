@@ -219,6 +219,15 @@ describe('backup completion slot count', () => {
         },
     );
 
+    it('refetches when a successful completion is missing from the visible page', async () => {
+        mocks.fetch
+            .mockResolvedValueOnce(response())
+            .mockResolvedValue(response([{ ...pending, uuid: 'backup-2' }], 2));
+        await render();
+        await complete({ uuid: 'backup-2', is_successful: true });
+        expect(mocks.fetch).toHaveBeenCalledTimes(2);
+    });
+
     it('refetches when completion arrives during the first load', async () => {
         let resolveFirst!: (data: BackupResponse) => void;
         mocks.fetch

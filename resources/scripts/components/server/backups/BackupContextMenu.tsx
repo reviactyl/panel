@@ -11,7 +11,7 @@ import { ServerBackup } from '@/api/server/types';
 import { ServerContext } from '@/state/server';
 import Input from '@/reviactyl/elements/Input';
 import { restoreServerBackup } from '@/api/server/backups';
-import http, { httpErrorToHuman } from '@/api/http';
+import http from '@/api/http';
 import { Dialog } from '@/reviactyl/elements/dialog';
 import { useTranslation } from 'react-i18next';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
@@ -110,6 +110,9 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
             return setModal('unlock');
         }
 
+        setLoading(true);
+        clearFlashes('backups');
+
         http.post(`/api/client/servers/${uuid}/backups/${backup.uuid}/lock`)
             .then(() =>
                 mutate((data) => {
@@ -128,8 +131,11 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
                     };
                 }, false),
             )
-            .catch((error) => alert(httpErrorToHuman(error)))
-            .then(() => setModal(''));
+            .catch((error) => clearAndAddHttpError({ key: 'backups', error }))
+            .finally(() => {
+                setLoading(false);
+                setModal('');
+            });
     };
 
     const onRename = (name: string) => {
@@ -177,6 +183,10 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
                 open={modal === 'unlock'}
                 onClose={() => setModal('')}
                 title={t('unlock-backup', { name: backup.name })}
+                preventExternalClose={loading}
+                hideCloseIcon={loading}
+                confirmDisabled={loading}
+                confirmLoading={loading}
                 onConfirmed={onLockToggle}
             >
                 {t('unlock-message')}
@@ -217,7 +227,7 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
 
             {modal === 'preview' && <BackupPreviewModal backup={backup} onClose={() => setModal('')} />}
 
-            <SpinnerOverlay visible={loading} fixed />
+            <SpinnerOverlay visible={loading && modal !== 'unlock'} fixed />
 
             {backup.isSuccessful ? (
                 <DropdownMenu

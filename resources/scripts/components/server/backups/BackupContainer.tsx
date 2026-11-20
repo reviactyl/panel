@@ -63,7 +63,12 @@ const BackupContainer = () => {
                                   },
                         ),
                     },
-                { revalidate: (data) => data === undefined || parsed.is_successful === false },
+                {
+                    revalidate: (data) =>
+                        data === undefined ||
+                        parsed.is_successful === false ||
+                        !data.items.some((backup) => backup.uuid === parsed.uuid),
+                },
             );
         } catch (e) {
             console.warn(e);

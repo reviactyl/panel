@@ -4,8 +4,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ServerBackup } from '@/api/server/types';
 import BackupContextMenu from './BackupContextMenu';
 
-const mocks = vi.hoisted(() => ({ restore: vi.fn(), setServer: vi.fn() }));
+const mocks = vi.hoisted(() => ({
+    restore: vi.fn(),
+    setServer: vi.fn(),
+    post: vi.fn(),
+    clearFlashes: vi.fn(),
+    clearAndAddHttpError: vi.fn(),
+}));
 vi.mock('@/api/server/backups', () => ({ restoreServerBackup: mocks.restore, renameBackup: vi.fn() }));
+vi.mock('@/api/http', () => ({ default: { post: mocks.post } }));
 vi.mock('@/state/server', () => ({
     ServerContext: {
         useStoreState: (selector: (state: unknown) => unknown) =>
@@ -15,7 +22,7 @@ vi.mock('@/state/server', () => ({
 }));
 vi.mock('@/api/swr/getServerBackups', () => ({ default: () => ({ mutate: vi.fn() }) }));
 vi.mock('@/plugins/useFlash', () => ({
-    default: () => ({ clearFlashes: vi.fn(), clearAndAddHttpError: vi.fn() }),
+    default: () => ({ clearFlashes: mocks.clearFlashes, clearAndAddHttpError: mocks.clearAndAddHttpError }),
 }));
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 vi.mock('@/reviactyl/elements/Can', () => ({ default: ({ children }: { children: ReactNode }) => children }));
@@ -30,23 +37,31 @@ vi.mock('@/reviactyl/elements/dialog', () => ({
             onClose,
             onConfirmed,
             confirm,
+            confirmDisabled,
+            confirmLoading,
         }: {
             open: boolean;
             children: ReactNode;
             onClose: () => void;
             onConfirmed: () => void;
             confirm?: string;
+            confirmDisabled?: boolean;
+            confirmLoading?: boolean;
         }) =>
             open ? (
                 <div role='dialog'>
                     {children}
                     <button onClick={onClose}>Cancel</button>
-                    <button onClick={onConfirmed}>{confirm}</button>
+                    <button disabled={confirmDisabled} data-loading={confirmLoading} onClick={onConfirmed}>
+                        {confirm}
+                    </button>
                 </div>
             ) : null,
     },
 }));
-vi.mock('@/reviactyl/elements/SpinnerOverlay', () => ({ default: () => null }));
+vi.mock('@/reviactyl/elements/SpinnerOverlay', () => ({
+    default: ({ visible }: { visible: boolean }) => (visible ? <div data-loading-overlay>Loading</div> : null),
+}));
 vi.mock('@/extensions/ExtensionSlot', () => ({ ExtensionSlot: () => null }));
 vi.mock('./RenameBackupModal', () => ({ default: () => null }));
 vi.mock('./BackupPreviewModal', () => ({ default: () => null }));
@@ -70,6 +85,9 @@ beforeEach(async () => {
     vi.clearAllMocks();
     vi.useFakeTimers();
     mocks.restore.mockReset().mockResolvedValue(undefined);
+    mocks.post.mockReset();
+    mocks.clearFlashes.mockReset();
+    mocks.clearAndAddHttpError.mockReset();
     container = document.createElement('div');
     document.body.append(container);
     root = createRoot(container);
@@ -174,5 +192,43 @@ describe('completed backup action menu dismissal', () => {
         expect(toggle()).not.toBeNull();
         await openMenu();
         expect(container.textContent).toContain('delete');
+    });
+});
+
+describe('backup lock action errors', () => {
+    it('shows loading while locking and reports failures in the backups flash', async () => {
+        let rejectPost!: (error: Error) => void;
+        const error = new Error('Lock failed');
+        mocks.post.mockReturnValueOnce(
+            new Promise((_, reject) => {
+                rejectPost = reject;
+            }),
+        );
+
+        await openMenu();
+        await click('lock');
+        expect(mocks.post).toHaveBeenCalledWith('/api/client/servers/server-uuid/backups/backup-uuid/lock');
+        expect(container.querySelector('[data-loading-overlay]')).not.toBeNull();
+        expect(mocks.clearFlashes).toHaveBeenCalledWith('backups');
+
+        await act(async () => rejectPost(error));
+        expect(mocks.clearAndAddHttpError).toHaveBeenCalledExactlyOnceWith({ key: 'backups', error });
+        expect(container.querySelector('[data-loading-overlay]')).toBeNull();
+    });
+
+    it('keeps unlock progress inside the confirmation dialog', async () => {
+        let resolvePost!: () => void;
+        mocks.post.mockReturnValueOnce(new Promise<void>((resolve) => (resolvePost = resolve)));
+        const lockedBackup = { ...backup, isLocked: true };
+        await act(async () => root.render(<BackupContextMenu backup={lockedBackup} />));
+        await openMenu();
+        await click('unlock');
+        const dialog = container.querySelector('[role="dialog"]')!;
+        const confirm = dialog.querySelector('button:last-child') as HTMLButtonElement;
+        await act(async () => confirm.click());
+        expect(confirm.disabled).toBe(true);
+        expect(confirm.dataset.loading).toBe('true');
+        expect(container.querySelector('[data-loading-overlay]')).toBeNull();
+        resolvePost();
     });
 });
