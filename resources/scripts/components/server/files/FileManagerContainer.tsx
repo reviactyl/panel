@@ -38,6 +38,7 @@ import { FaFileCirclePlus } from 'react-icons/fa6';
 import FileSortIcon from './FileSortIcon';
 import { Button } from '@/reviactyl/components/button';
 import { sortFiles, SortDirection, SortType } from '@/components/server/files/sortFiles';
+import useFlash from '@/plugins/useFlash';
 
 export default () => {
     const { t } = useTranslation(['server/files', 'strings', 'server/recycle']);
@@ -49,6 +50,7 @@ export default () => {
     const { data: files, error, mutate } = useFileManagerSwr();
     const directory = ServerContext.useStoreState((state) => state.files.directory);
     const clearFlashes = useStoreActions((actions) => actions.flashes.clearFlashes);
+    const { clearAndAddHttpError } = useFlash();
     const setDirectory = ServerContext.useStoreActions((actions) => actions.files.setDirectory);
 
     const setSelectedFiles = ServerContext.useStoreActions((actions) => actions.files.setSelectedFiles);
@@ -135,7 +137,7 @@ export default () => {
                     const { dir, dirFiles } = result.value;
                     for (const f of dirFiles ?? []) {
                         const fp = `${dir === '/' ? '' : dir}/${f.name}`.replace(/\/+/g, '/');
-                        if (!f.isFile && !seen.has(fp)) {
+                        if (!f.isFile && !f.isSymlink && !seen.has(fp)) {
                             seen.add(fp);
                             queue.push(fp);
                         }
@@ -189,9 +191,10 @@ export default () => {
                 })
                 .catch((error) => {
                     console.error('Failed to get media URL:', error);
+                    clearAndAddHttpError({ key: 'files', error });
                 });
         },
-        [directory, uuid],
+        [clearAndAddHttpError, directory, uuid],
     );
 
     const handleImageViewerClose = () => {

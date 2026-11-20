@@ -11,6 +11,7 @@ const tree = ts.createSourceFile('FileManagerContainer.tsx', source, ts.ScriptTa
 let effect = '';
 let listing = '';
 let deriveVisibleFiles = '';
+let previewCallback = '';
 function visit(node: ts.Node) {
     if (
         ts.isVariableDeclaration(node) &&
@@ -35,12 +36,23 @@ function visit(node: ts.Node) {
     ) {
         effect = node.arguments[0]?.getText(tree) ?? '';
     }
+    if (
+        ts.isVariableDeclaration(node) &&
+        node.name.getText(tree) === 'handlePreviewClick' &&
+        node.initializer &&
+        ts.isCallExpression(node.initializer) &&
+        node.initializer.expression.getText(tree) === 'useCallback'
+    ) {
+        previewCallback = node.initializer.arguments[0]?.getText(tree) ?? '';
+    }
     ts.forEachChild(node, visit);
 }
 visit(tree);
 if (!effect) throw new Error('Search effect not found');
 if (!listing || !deriveVisibleFiles) throw new Error('File listing not found');
+if (!previewCallback) throw new Error('Preview callback not found');
 const compiled = ts.transpile(`const effect = ${effect};`, { target: ts.ScriptTarget.ES2022 });
+const compiledPreview = ts.transpile(`const callback = ${previewCallback};`, { target: ts.ScriptTarget.ES2022 });
 
 const listFiles = (files: FileObject[], sortType: SortType, sortDirection: SortDirection): FileObject[] =>
     new Function(
@@ -145,5 +157,60 @@ describe('recursive file search cancellation', () => {
             expect.objectContaining({ name: 'MATCH.txt', fullPath: '/child/MATCH.txt' }),
         ]);
         expect(search.setIsSearching).toHaveBeenLastCalledWith(false);
+    });
+
+    it('descends into regular directories without following directory symlinks', async () => {
+        const search = harness();
+        search.loadDirectory.mockResolvedValueOnce([
+            { ...entry('real', false), isSymlink: false },
+            { ...entry('linked', false), isSymlink: true },
+        ]);
+        search.loadDirectory.mockResolvedValueOnce([entry('match.txt', true)]);
+
+        search.run('match');
+        await settle();
+
+        expect(search.loadDirectory.mock.calls).toEqual([
+            ['uuid', '/', expect.any(AbortSignal)],
+            ['uuid', '/real', expect.any(AbortSignal)],
+        ]);
+        expect(search.setRecursiveResults).toHaveBeenLastCalledWith([
+            expect.objectContaining({ name: 'match.txt', fullPath: '/real/match.txt' }),
+        ]);
+    });
+});
+
+describe('media preview errors', () => {
+    it('publishes a failed media URL request to the files flash', async () => {
+        const getFileDownloadUrl = vi.fn().mockRejectedValue(new Error('preview unavailable'));
+        const clearAndAddHttpError = vi.fn();
+        const callback = new Function(
+            'getFileDownloadUrl',
+            'clearAndAddHttpError',
+            'uuid',
+            'isVideoFile',
+            'setSelectedVideo',
+            'setVideoViewerVisible',
+            'setSelectedImage',
+            'setImageViewerVisible',
+            `${compiledPreview}\nreturn callback;`,
+        )(getFileDownloadUrl, clearAndAddHttpError, 'uuid', () => false, vi.fn(), vi.fn(), vi.fn(), vi.fn()) as (
+            file: FileObject,
+            filePath: string,
+        ) => void;
+        const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+        try {
+            callback({ name: 'image.png', isFile: true } as FileObject, '/image.png');
+            await settle();
+
+            expect(getFileDownloadUrl).toHaveBeenCalledExactlyOnceWith('uuid', '/image.png');
+            expect(clearAndAddHttpError).toHaveBeenCalledExactlyOnceWith({
+                key: 'files',
+                error: expect.any(Error),
+            });
+        } finally {
+            errorSpy.mockRestore();
+        }
     });
 });
