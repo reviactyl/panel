@@ -46,13 +46,15 @@ abstract class DaemonRepository
     }
 
     /**
-     * Return an instance of the Guzzle HTTP Client to be used for requests.
+     * Return an instance of the Guzzle HTTP Client to be used for requests. Passing a shared
+     * handler lets asynchronous requests to several nodes run concurrently.
      */
-    public function getHttpClient(array $headers = []): Client
+    public function getHttpClient(array $headers = [], ?callable $handler = null): Client
     {
         Assert::isInstanceOf($this->node, Node::class);
 
         return new Client([
+            ...($handler ? ['handler' => $handler] : []),
             'verify' => $this->app->environment('production'),
             'base_uri' => $this->node->getConnectionAddress(),
             'timeout' => config('panel.guzzle.timeout'),

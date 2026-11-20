@@ -1,6 +1,7 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import AlertMarkdown from './AlertMarkdown';
+import { isPlainAlertMessage } from './Announcement';
 
 function render(message: string) {
     const container = document.createElement('div');
@@ -33,5 +34,41 @@ describe('alert Markdown', () => {
         );
         expect(container.querySelector('script, img')).toBeNull();
         expect(container.querySelector('a')?.getAttribute('href')).toBe('');
+    });
+
+    it.each([
+        'Signing in with Discord is temporarily unavailable. Use your password instead.',
+        'Maintenance tonight at 02:00 UTC (about 30 minutes); servers may restart.',
+        'Visit https://status.example.com for updates, or email ops@example.com.',
+        'Ünïcødé — “quotes” and emoji 🚀 stay as they are.',
+    ])('renders plain message %j exactly like the Markdown renderer', (message) => {
+        expect(isPlainAlertMessage(message)).toBe(true);
+        expect(renderToStaticMarkup(<AlertMarkdown message={message} />)).toContain(
+            renderToStaticMarkup(<p>{message}</p>),
+        );
+        expect(render(message).querySelector('div')?.children).toHaveLength(1);
+    });
+
+    it.each([
+        '**bold**',
+        'snake_case',
+        'a `code` span',
+        '# heading',
+        '[link](https://example.com)',
+        '<b>html</b>',
+        'Tom &amp; Jerry',
+        'line\nbreak',
+        '- list item',
+        '1. step',
+        '2) step',
+        '    indented code',
+        ' leading space',
+        'Title\n===',
+        '> quote',
+        'escaped \\* star',
+        'hard break  ',
+        '',
+    ])('leaves %j to the Markdown renderer', (message) => {
+        expect(isPlainAlertMessage(message)).toBe(false);
     });
 });

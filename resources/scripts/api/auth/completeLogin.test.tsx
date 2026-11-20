@@ -11,6 +11,8 @@ const mocks = vi.hoisted(() => ({
     preload: vi.fn(),
     changeLanguage: vi.fn(),
     namespaces: vi.fn(),
+    requestPageData: vi.fn(),
+    trackPageData: vi.fn(),
 }));
 vi.mock('@/api/http', () => ({ default: {}, resetHttpSession: mocks.resetHttpSession }));
 vi.mock('@/state', () => ({
@@ -21,6 +23,8 @@ vi.mock('@/state', () => ({
 }));
 vi.mock('@/i18n', () => ({ default: { changeLanguage: mocks.changeLanguage, loadNamespaces: mocks.namespaces } }));
 vi.mock('@/routers/loadRouter', () => ({ preloadAppRoute: mocks.preload }));
+vi.mock('@/routers/pageData', () => ({ requestPageData: mocks.requestPageData }));
+vi.mock('@/api/prefetch', () => ({ trackPageData: mocks.trackPageData }));
 const user = {
     uuid: 'signed-in-user',
     username: 'user',
@@ -94,6 +98,8 @@ describe('login completion', () => {
         const navigate = vi.fn(() => expect(mocks.setUserData).toHaveBeenCalledOnce());
         expect(element.textContent).toBe('guest state');
         document.head.innerHTML = '<meta name="csrf-token" content="old"><meta name="_token" content="old">';
+        mocks.requestPageData.mockReturnValue(Promise.resolve({}));
+        mocks.trackPageData.mockClear();
         await act(async () =>
             completeLogin(
                 {
@@ -108,6 +114,11 @@ describe('login completion', () => {
         expect(navigate).toHaveBeenCalledWith('/server/abc/files?tab=one#/world', { replace: true });
         await act(async () => root.render(<Reader key='authenticated' />));
         expect(mocks.resetHttpSession).toHaveBeenCalledOnce();
+        expect(mocks.requestPageData).toHaveBeenCalledWith('/server/abc/files', '?tab=one');
+        expect(mocks.trackPageData).toHaveBeenCalledOnce();
+        expect(mocks.requestPageData.mock.invocationCallOrder[0]).toBeGreaterThan(
+            mocks.resetHttpSession.mock.invocationCallOrder[0]!,
+        );
         expect(document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')).toBe('rotated-after-login');
         expect(document.querySelector('meta[name="_token"]')?.getAttribute('content')).toBe('rotated-after-login');
         expect(element.textContent).toBe('empty');

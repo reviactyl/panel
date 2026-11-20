@@ -9,6 +9,8 @@ import { useTranslation } from 'react-i18next';
 import { FaTriangleExclamation } from 'react-icons/fa6';
 import { useSubuserPreview } from '@/context/SubuserPreviewContext';
 import { PreviewWebsocket } from '@/plugins/PreviewWebsocket';
+import { store } from '@/state';
+import { recordSocketStats, recordSocketStatus, resourceCacheScope } from '@/context/ServerResourcesContext';
 
 const reconnectErrors = ['jwt: exp claim is invalid', 'jwt: created too far in past (denylist)'];
 
@@ -21,6 +23,10 @@ export default () => {
     const [error, setError] = useState<'connecting' | string>('');
     const { connected, instance } = ServerContext.useStoreState((state) => state.socket);
     const uuid = ServerContext.useStoreState((state) => state.server.data?.uuid);
+    const isSuspended = ServerContext.useStoreState((state) => state.server.data?.status === 'suspended');
+    const liveState = useRef({ sessionUuid: session?.uuid, isSuspended });
+    liveState.current = { sessionUuid: session?.uuid, isSuspended };
+    const resourceScope = () => resourceCacheScope(store.getState().user.data?.uuid, liveState.current.sessionUuid);
     const setServerStatus = ServerContext.useStoreActions((actions) => actions.status.setServerStatus);
     const { setInstance, setConnectionState } = ServerContext.useStoreActions((actions) => actions.socket);
 
@@ -52,7 +58,17 @@ export default () => {
             setError('connecting');
             setConnectionState(false);
         });
-        socket.on('status', (status) => setServerStatus(status));
+        socket.on('status', (status) => {
+            setServerStatus(status);
+            recordSocketStatus(resourceScope(), uuid, status);
+        });
+        socket.on('stats', (data: string) => {
+            try {
+                recordSocketStats(resourceScope(), uuid, JSON.parse(data), liveState.current.isSuspended);
+            } catch {
+                // Ignore malformed stats frames.
+            }
+        });
 
         socket.on('daemon error', (message) => {
             console.warn('Got error message from daemon socket:', message);

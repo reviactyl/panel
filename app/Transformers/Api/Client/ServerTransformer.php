@@ -114,9 +114,12 @@ class ServerTransformer extends BaseClientTransformer
         if (! $user->can(Permission::ACTION_ALLOCATION_READ, $server)) {
             $primary = clone $server->allocation;
             $primary->notes = null;
+            $primary->setRelation('server', $server);
 
             return $this->collection([$primary], $transformer, Allocation::RESOURCE_NAME);
         }
+
+        $server->allocations->each->setRelation('server', $server);
 
         return $this->collection($server->allocations, $transformer, Allocation::RESOURCE_NAME);
     }

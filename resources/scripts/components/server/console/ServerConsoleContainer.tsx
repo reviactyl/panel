@@ -1,15 +1,17 @@
-import { memo } from 'react';
+import { lazy, memo } from 'react';
 import { ServerContext } from '@/state/server';
 import ServerContentBlock from '@/reviactyl/elements/ServerContentBlock';
 import isEqual from 'react-fast-compare';
 import Spinner from '@/reviactyl/elements/Spinner';
 import Features from '@feature/Features';
 import ConsoleBlock from '@/components/server/console/ConsoleBlock';
-import StatGraphs from '@/components/server/console/StatGraphs';
 import { Alert } from '@/reviactyl/elements/alert';
 import { useTranslation } from 'react-i18next';
 import { ExtensionSlot } from '@/extensions/ExtensionSlot';
 import ServerDetailsBlock from './ServerDetailsBlock';
+import useStatsHistory from './useStatsHistory';
+
+const StatGraphs = lazy(() => import('@/components/server/console/StatGraphs'));
 
 export type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
 
@@ -21,6 +23,7 @@ const ServerConsoleContainer = () => {
     const isNodeUnderMaintenance = ServerContext.useStoreState((state) => state.server.data!.isNodeUnderMaintenance);
     const eggId = ServerContext.useStoreState((state) => state.server.data!.eggId);
     const nestId = ServerContext.useStoreState((state) => state.server.data!.nestId);
+    const statsHistory = useStatsHistory();
 
     return (
         <ServerContentBlock title={t('title')}>
@@ -44,7 +47,7 @@ const ServerConsoleContainer = () => {
             </div>
             <div className={'grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-4 mt-2'}>
                 <Spinner.Suspense>
-                    <StatGraphs />
+                    <StatGraphs history={statsHistory} />
                 </Spinner.Suspense>
             </div>
             <ExtensionSlot name='server:console:below' context={{ eggId, nestId }} />

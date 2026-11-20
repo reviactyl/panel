@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Api\Client;
 
 use App\Http\Requests\Api\Client\GetServersRequest;
 use App\Models\Egg;
+use App\Models\EggVariable;
 use App\Models\Filters\MultiFieldServerFilter;
 use App\Models\Permission;
 use App\Models\Server;
+use App\Models\ServerVariable;
 use App\Services\Subusers\SubuserPreviewContext;
 use App\Transformers\Api\Client\ServerTransformer;
+use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -37,7 +40,9 @@ class ClientController extends ClientApiController
         $includeCategory = in_array('category', $includes, true);
         $includes = array_values(array_diff($includes, ['category']));
 
-        $query = Server::query()->with($includes);
+        // Allocations, transfers and variables are part of every server in the list, so load them
+        // for the whole page at once instead of once per server.
+        $query = Server::query()->with([...$includes, 'allocations', 'transfer']);
         if ($includeCategory) {
             $query->with(['categoryAssignments' => fn ($query) => $query
                 ->where('user_id', $user->id)
@@ -88,6 +93,7 @@ class ClientController extends ClientApiController
         }
 
         $servers = $builder->paginate(min($request->query('per_page', 50), 100))->appends($request->query());
+        $this->loadVariables($servers->getCollection());
 
         return $this->fractal->transformWith($transformer)->collection($servers)->toArray();
     }
@@ -130,5 +136,41 @@ class ClientController extends ClientApiController
             'object' => 'list',
             'data' => $eggs->map(fn (Egg $egg) => ['id' => $egg->id, 'name' => $egg->name])->values()->all(),
         ];
+    }
+
+    /**
+     * @param  Collection<int, Server>  $servers
+     */
+    private function loadVariables(Collection $servers): void
+    {
+        if ($servers->isEmpty()) {
+            return;
+        }
+
+        $variables = EggVariable::query()
+            ->whereIn('egg_id', $servers->pluck('egg_id')->unique()->values())
+            ->orderBy('id')
+            ->get()
+            ->groupBy('egg_id');
+        $values = ServerVariable::query()
+            ->whereIn('server_id', $servers->pluck('id'))
+            ->get(['server_id', 'variable_id', 'variable_value'])
+            ->groupBy('server_id')
+            ->map(fn ($rows) => $rows->pluck('variable_value', 'variable_id'));
+
+        foreach ($servers as $server) {
+            $serverValues = $values->get($server->id);
+            $server->setRelation('variables', (new EggVariable())->newCollection(
+                ($variables->get($server->egg_id) ?? collect())->map(function (EggVariable $variable) use ($serverValues) {
+                    $copy = clone $variable;
+                    $copy->setRawAttributes(
+                        [...$variable->getAttributes(), 'server_value' => $serverValues?->get($variable->id)],
+                        true
+                    );
+
+                    return $copy;
+                })->all()
+            ));
+        }
     }
 }

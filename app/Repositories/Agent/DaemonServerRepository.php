@@ -6,6 +6,8 @@ use App\Exceptions\Http\Connection\DaemonConnectionException;
 use App\Models\Server;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\TransferException;
+use GuzzleHttp\Promise\PromiseInterface;
+use Psr\Http\Message\ResponseInterface;
 use Webmozart\Assert\Assert;
 
 /**
@@ -32,6 +34,20 @@ class DaemonServerRepository extends DaemonRepository
         }
 
         return json_decode($response->getBody()->__toString(), true) ?? [];
+    }
+
+    public function getDetailsAsync(?callable $handler = null): PromiseInterface
+    {
+        Assert::isInstanceOf($this->server, Server::class);
+
+        return $this->getHttpClient(handler: $handler)
+            ->getAsync(sprintf('/api/servers/%s', $this->server->uuid))
+            ->then(
+                fn (ResponseInterface $response): array => json_decode($response->getBody()->__toString(), true) ?? [],
+                function (mixed $reason): never {
+                    throw $reason instanceof TransferException ? new DaemonConnectionException($reason, false) : $reason;
+                },
+            );
     }
 
     /**

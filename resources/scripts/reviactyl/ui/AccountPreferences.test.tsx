@@ -3,6 +3,7 @@ import { createRoot, type Root } from 'react-dom/client';
 import { createStore, StoreProvider } from 'easy-peasy';
 import { createInstance } from 'i18next';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { resetLanguageList } from '@/api/getLanguageList';
 import user, { type UserData } from '@/state/user';
 import i18n from '@/i18n';
 import updateAccountLanguage from '@/api/account/updateAccountLanguage';
@@ -49,6 +50,7 @@ let container: HTMLDivElement;
 let root: Root;
 
 beforeEach(async () => {
+    resetLanguageList();
     Object.assign(globalThis, { IS_REACT_ACT_ENVIRONMENT: true });
     vi.resetAllMocks();
     vi.spyOn(console, 'error').mockImplementation(() => undefined);

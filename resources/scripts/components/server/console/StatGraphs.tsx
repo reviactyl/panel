@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type RefObject } from 'react';
 import { ServerContext } from '@/state/server';
 import { SocketEvent } from '@/components/server/events';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
@@ -10,7 +10,7 @@ import ChartBlock from '@/components/server/console/ChartBlock';
 import Tooltip from '@/reviactyl/elements/tooltip/Tooltip';
 import { useTranslation } from 'react-i18next';
 
-export default () => {
+export default ({ history }: { history?: RefObject<string[]> }) => {
     const { t } = useTranslation('server/console');
     const status = ServerContext.useStoreState((state) => state.status.value);
     const limits = ServerContext.useStoreState((state) => state.server.data!.limits);
@@ -61,7 +61,7 @@ export default () => {
         }
     }, [status]);
 
-    useWebsocketEvent(SocketEvent.STATS, (data: string) => {
+    const record = (data: string) => {
         let values: any = {};
         try {
             values = JSON.parse(data);
@@ -76,7 +76,13 @@ export default () => {
         ]);
 
         previous.current = { tx: values.network.tx_bytes, rx: values.network.rx_bytes };
-    });
+    };
+
+    useEffect(() => {
+        history?.current?.splice(0).forEach(record);
+    }, []);
+
+    useWebsocketEvent(SocketEvent.STATS, record);
 
     return (
         <>

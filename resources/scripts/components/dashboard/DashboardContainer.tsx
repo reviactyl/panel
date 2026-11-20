@@ -36,7 +36,7 @@ import { ServerCategory } from '@/api/account/getServerCategories';
 import FolderFormModal from './FolderFormModal';
 import DeleteFolderModal from './DeleteFolderModal';
 import { folderTree, folderPath } from './folderTree';
-import { ServerResourcesContext } from '@/context/ServerResourcesContext';
+import { ServerResourcesContext, getServerResourceCache, resourceCacheScope } from '@/context/ServerResourcesContext';
 
 const DashboardHeader = ({
     title,
@@ -100,7 +100,7 @@ const DashboardContainer = () => {
         data: categories,
         mutate: mutateCategories,
         error: categoryError,
-    } = useSWR(session ? null : '/api/client/account/categories', getServerCategories);
+    } = useSWR(session ? null : '/api/client/account/categories', getServerCategories, { revalidateIfStale: false });
     useEffect(() => {
         if (
             folders &&
@@ -137,7 +137,9 @@ const DashboardContainer = () => {
     }, [eggFilterOpen]);
 
     const eggsKey = showAdminServers ? ['/api/client/eggs', 'admin'] : '/api/client/eggs';
-    const { data: eggs } = useSWR(eggsKey, () => getClientEggs(showAdminServers ? 'admin' : undefined));
+    const { data: eggs } = useSWR(eggsKey, () => getClientEggs(showAdminServers ? 'admin' : undefined), {
+        revalidateIfStale: false,
+    });
     const eggOptions =
         selectedEgg && !eggs?.some((egg) => egg.id === selectedEgg.id) ? [...(eggs ?? []), selectedEgg] : (eggs ?? []);
 
@@ -542,7 +544,10 @@ const DashboardContainer = () => {
 export default () => {
     const uuid = useStoreState((state) => state.user.data!.uuid);
     const { session } = useSubuserPreview();
-    const resourceCache = useMemo(() => new Map(), [uuid, session?.uuid]);
+    const resourceCache = useMemo(
+        () => getServerResourceCache(resourceCacheScope(uuid, session?.uuid)),
+        [uuid, session?.uuid],
+    );
 
     return (
         <ServerResourcesContext.Provider value={resourceCache}>

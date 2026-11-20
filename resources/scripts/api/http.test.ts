@@ -1,6 +1,7 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
 import { AxiosError, AxiosHeaders, CanceledError } from 'axios';
 import http, { resetHttpSession, withHttpSessionTransition } from './http';
+import { trackPageData } from './prefetch';
 
 const progress = vi.hoisted(() => ({ startContinuous: vi.fn(), setComplete: vi.fn() }));
 beforeEach(() => vi.clearAllMocks());
@@ -240,3 +241,137 @@ it.each([300000, 0])(
         }
     },
 );
+
+describe('responses prefetched by the page', () => {
+    const network = vi.fn(async (config) => ({
+        config,
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        data: { source: 'network' },
+    }));
+    const prefetch = (status: number, at: number | undefined = Date.now()) => ({
+        at,
+        promise: Promise.resolve({
+            status,
+            body: JSON.stringify({ source: 'prefetch' }),
+            headers: { 'content-type': 'application/json' },
+        }),
+    });
+
+    beforeEach(() => {
+        vi.stubGlobal('window', { location: { origin: 'http://panel.test', pathname: '/', href: '/' } });
+    });
+
+    it('serves a matching prefetch once, whatever the parameter order', async () => {
+        window.__REVIACTYL_PREFETCH__ = { '/api/client?include=category&page=1': prefetch(200) };
+
+        const first = await http.get('/api/client', { params: { page: 1, include: 'category' }, adapter: network });
+        const second = await http.get('/api/client', { params: { page: 1, include: 'category' }, adapter: network });
+
+        expect(first.data).toEqual({ source: 'prefetch' });
+        expect(second.data).toEqual({ source: 'network' });
+        expect(network).toHaveBeenCalledTimes(1);
+    });
+
+    it('waits for a prefetch that is still in flight', async () => {
+        window.__REVIACTYL_PREFETCH__ = { '/api/client/eggs': prefetch(200, undefined) };
+
+        await expect(http.get('/api/client/eggs', { adapter: network })).resolves.toMatchObject({
+            data: { source: 'prefetch' },
+        });
+        expect(network).not.toHaveBeenCalled();
+    });
+
+    it.each([
+        ['failed', () => prefetch(500)],
+        ['stale', () => prefetch(200, Date.now() - 60_000)],
+        ['rejected', () => ({ at: undefined, promise: Promise.reject(new Error('offline')) })],
+    ])('requests again when the prefetch %s', async (_, entry) => {
+        window.__REVIACTYL_PREFETCH__ = { '/api/client/eggs': entry() };
+
+        await expect(http.get('/api/client/eggs', { adapter: network })).resolves.toMatchObject({
+            data: { source: 'network' },
+        });
+        expect(network).toHaveBeenCalledTimes(1);
+    });
+
+    it.each([403, 404, 429])('answers with a prefetched %i instead of asking again', async (status) => {
+        window.__REVIACTYL_PREFETCH__ = { '/api/client/eggs': prefetch(status) };
+
+        const error = await http.get('/api/client/eggs', { adapter: network }).catch((caught) => caught);
+
+        expect(error).toBeInstanceOf(AxiosError);
+        expect(error.response.status).toBe(status);
+        expect(error.response.data).toEqual({ source: 'prefetch' });
+        expect(network).not.toHaveBeenCalled();
+    });
+
+    it('still sends a stale session to the login page when the prefetch was unauthenticated', async () => {
+        const location = { origin: 'http://panel.test', pathname: '/server/example', href: '/server/example' };
+        vi.stubGlobal('window', { location });
+        window.__REVIACTYL_PREFETCH__ = { '/api/client/eggs': prefetch(401) };
+
+        await expect(http.get('/api/client/eggs', { adapter: network })).rejects.toBeInstanceOf(AxiosError);
+        expect(location.href).toBe('/auth/login');
+        expect(network).not.toHaveBeenCalled();
+    });
+
+    it('never answers other methods or other URLs', async () => {
+        window.__REVIACTYL_PREFETCH__ = { '/api/client/eggs': prefetch(200) };
+
+        await http.post('/api/client/eggs', {}, { adapter: network });
+        await http.get('/api/client/eggs', { params: { type: 'admin' }, adapter: network });
+
+        expect(network).toHaveBeenCalledTimes(2);
+        expect(window.__REVIACTYL_PREFETCH__?.['/api/client/eggs']).toBeDefined();
+    });
+
+    it('drops prefetched responses when the session changes', async () => {
+        window.__REVIACTYL_PREFETCH__ = { '/api/client/eggs': prefetch(200) };
+
+        resetHttpSession();
+
+        await expect(http.get('/api/client/eggs', { adapter: network })).resolves.toMatchObject({
+            data: { source: 'network' },
+        });
+    });
+});
+
+describe('page data loaded for a navigation', () => {
+    const network = vi.fn(async (config) => ({
+        config,
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        data: { source: 'network' },
+    }));
+
+    beforeEach(() => {
+        vi.stubGlobal('window', { location: { origin: 'http://panel.test', pathname: '/', href: '/' } });
+        network.mockClear();
+    });
+
+    it('makes requests issued meanwhile wait for it and use its answers', async () => {
+        let resolve!: (responses: Record<string, string>) => void;
+        trackPageData(new Promise((done) => (resolve = done)));
+
+        const request = http.get('/api/client', { params: { include: 'category', page: 1 }, adapter: network });
+        resolve({ '/api/client?include=category&page=1': '{"source":"page-data"}' });
+
+        await expect(request).resolves.toMatchObject({ data: { source: 'page-data' } });
+        expect(network).not.toHaveBeenCalled();
+    });
+
+    it('falls back to the network for anything it did not include, or when it fails', async () => {
+        trackPageData(Promise.resolve({ '/api/client/eggs': '{}' }));
+        await expect(http.get('/api/client/extensions', { adapter: network })).resolves.toMatchObject({
+            data: { source: 'network' },
+        });
+
+        trackPageData(Promise.reject(new Error('offline')));
+        await expect(http.get('/api/client/account/categories', { adapter: network })).resolves.toMatchObject({
+            data: { source: 'network' },
+        });
+    });
+});

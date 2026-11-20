@@ -1,6 +1,8 @@
 import type { NavigateFunction } from 'react-router-dom';
 import { unload } from 'swr';
 import { resetHttpSession } from '@/api/http';
+import { trackPageData } from '@/api/prefetch';
+import { requestPageData } from '@/routers/pageData';
 import type { LoginResponse } from './login';
 import { store } from '@/state';
 import type { PanelUser } from '@/state/user';
@@ -36,6 +38,8 @@ export default async function completeLogin(response: LoginResponse, navigate: N
         return;
     }
     resetHttpSession();
+    const pageData = requestPageData(destination.pathname, destination.search);
+    if (pageData) trackPageData(pageData);
     (window as Window & { PanelUser?: PanelUser }).PanelUser = response.user;
     if (response.csrfToken) {
         document.querySelectorAll('meta[name="csrf-token"], meta[name="_token"]').forEach((meta) => {

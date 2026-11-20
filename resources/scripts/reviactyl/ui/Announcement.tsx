@@ -14,6 +14,14 @@ import { AlertPlacement, PanelAlert, dismissAlert, trackAlertClick, useAlerts } 
 
 const AlertMarkdown = lazy(() => import('@/reviactyl/ui/AlertMarkdown'));
 
+// Most alerts are a single plain sentence. Markdown would render those as one paragraph, so skip
+// downloading the parser unless the message contains something it could actually interpret.
+export const isPlainAlertMessage = (message: string): boolean =>
+    message.length > 0 &&
+    message === message.trim() &&
+    !/[\n*_`#[\]<>!|~\\&=]/.test(message) &&
+    !/^(?:[-+]|\d+[.)])\s/.test(message);
+
 interface Props {
     placement?: AlertPlacement;
     server?: string;
@@ -181,9 +189,15 @@ const Announcement = ({ placement = 'dashboard', server }: Props) => {
                                 <div className='relative flex min-w-0 flex-1 flex-col gap-3 sm:flex-row sm:items-center'>
                                     <div className='min-w-0 flex-1 wrap-break-word'>
                                         {alert.title && <strong className='mr-1.5 text-gray-50'>{alert.title}</strong>}
-                                        <Suspense fallback={<p className='whitespace-pre-wrap'>{alert.message}</p>}>
-                                            <AlertMarkdown message={alert.message} />
-                                        </Suspense>
+                                        {isPlainAlertMessage(alert.message) ? (
+                                            <div className='space-y-2'>
+                                                <p>{alert.message}</p>
+                                            </div>
+                                        ) : (
+                                            <Suspense fallback={<p className='whitespace-pre-wrap'>{alert.message}</p>}>
+                                                <AlertMarkdown message={alert.message} />
+                                            </Suspense>
+                                        )}
                                     </div>
                                     {buttons.length > 0 && (
                                         <div className='flex shrink-0 flex-wrap items-center gap-2'>

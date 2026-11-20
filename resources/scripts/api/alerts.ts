@@ -2,6 +2,7 @@ import useSWR, { SWRResponse } from 'swr';
 import http, { FractalResponseList } from '@/api/http';
 import { AxiosError } from 'axios';
 import { useUserSWRKey } from '@/plugins/useSWRKey';
+import { useStoreState } from '@/state/hooks';
 
 export type AlertPlacement = 'dashboard' | 'server' | 'account' | 'auth';
 
@@ -54,7 +55,8 @@ const getAlerts = async (placement: AlertPlacement, server?: string): Promise<Pa
 
 const useAlerts = (placement: AlertPlacement, server?: string): SWRResponse<PanelAlert[], AxiosError> => {
     const key = useUserSWRKey(['alerts', placement, server ?? null]);
-    const ready = placement !== 'server' || !!server;
+    const signedIn = useStoreState((state) => !!state.user.data?.uuid);
+    const ready = placement === 'auth' ? !signedIn : placement !== 'server' || !!server;
 
     return useSWR(ready ? key : null, () => getAlerts(placement, server), {
         refreshInterval: 5 * 60 * 1000,

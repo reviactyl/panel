@@ -27,7 +27,9 @@ export default ({ server, visible, onDismissed }: Props) => {
     useEffect(() => {
         if (visible) clearFlashes(flashKey);
     }, [visible, clearFlashes, flashKey]);
-    const { data: categories } = useSWR('/api/client/account/categories', () => getServerCategories());
+    const { data: categories } = useSWR('/api/client/account/categories', () => getServerCategories(), {
+        revalidateIfStale: false,
+    });
 
     const submit = (values: { category: string }, { setSubmitting }: any) => {
         clearFlashes(flashKey);

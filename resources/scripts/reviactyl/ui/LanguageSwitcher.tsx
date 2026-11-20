@@ -5,12 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { useStoreState } from 'easy-peasy';
 import useAccountPreference from '@/plugins/useAccountPreference';
 import { ApplicationStore } from '@/state';
+import getLanguageList, { type LanguageInfo } from '@/api/getLanguageList';
 import { applyDocumentDirection } from '@/lib/rtl';
-
-interface LanguageInfo {
-    name: string;
-    flag: string;
-}
 
 const LanguageSwitcher = () => {
     const id = useId();
@@ -24,10 +20,11 @@ const LanguageSwitcher = () => {
     const currentLang = pendingLang ?? (user?.language && user.language !== 'geo' ? user.language : serverLocale);
 
     useEffect(() => {
-        fetch('/locales/list.json')
-            .then((res) => res.json())
-            .then((langs) => setLanguages(langs))
-            .catch(() => setLanguages({ en: { name: 'English', flag: 'us' } }));
+        let active = true;
+        void getLanguageList().then((langs) => active && setLanguages(langs));
+        return () => {
+            active = false;
+        };
     }, []);
 
     const handleChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {

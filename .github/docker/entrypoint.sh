@@ -99,6 +99,9 @@ done
 echo -e "Migrating and Seeding D.B"
 php artisan migrate --seed --force
 
+echo -e "Caching configuration."
+php artisan config:cache && php artisan event:cache && php artisan view:cache
+
 ## start cronjobs for the queue
 echo -e "Starting cron jobs."
 crond -L /var/log/crond -l 5

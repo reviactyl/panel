@@ -3,15 +3,22 @@ import { createRoot, Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import ServerGrid from './ServerGrid';
 import ServerRow from './ServerRow';
-import getServerResourceUsage, { ServerStats } from '@/api/server/getServerResourceUsage';
+import type { ServerStats } from '@/api/server/getServerResourceUsage';
+// The rows load usage through the batching loader; each call stands for one server's request.
+import getServerResourceUsage from '@/api/server/loadServerResources';
 import type { Server } from '@/api/server/getServer';
-import { ServerResourcesContext } from '@/context/ServerResourcesContext';
+import {
+    ServerResourcesContext,
+    getServerResourceCache,
+    recordSocketStats,
+    recordSocketStatus,
+} from '@/context/ServerResourcesContext';
 
 vi.mock('@/routers/preloadServerConsole', () => ({ default: vi.fn() }));
 vi.mock('@/state/hooks', () => ({
     useStoreState: (select: (state: { designify: { data: object } }) => unknown) => select({ designify: { data: {} } }),
 }));
-vi.mock('@/api/server/getServerResourceUsage', () => ({ default: vi.fn() }));
+vi.mock('@/api/server/loadServerResources', () => ({ default: vi.fn() }));
 vi.mock('@/components/dashboard/ChangeCategoryModal', () => ({ default: () => null }));
 vi.mock('react-router-dom', () => ({
     Link: ({ children, ref }: React.PropsWithChildren<{ ref: React.Ref<HTMLAnchorElement> }>) => (
@@ -142,6 +149,24 @@ for (const [layout, Component] of [
             expect(getServerResourceUsage).toHaveBeenCalledTimes(1);
             await act(async () => vi.advanceTimersByTimeAsync(1));
             expect(getServerResourceUsage).toHaveBeenCalledTimes(2);
+        });
+
+        it('uses live websocket stats from the console instead of requesting them again', async () => {
+            cache = getServerResourceCache(`websocket-${layout}`);
+            recordSocketStats(
+                `websocket-${layout}`,
+                server.uuid,
+                { state: 'starting', memory_bytes: 1, cpu_absolute: 2, disk_bytes: 3 },
+                false,
+            );
+            recordSocketStatus(`websocket-${layout}`, server.uuid, 'running');
+            vi.mocked(getServerResourceUsage).mockResolvedValue({ ...stats, status: 'offline' });
+
+            await act(async () => render(<Component server={server} showCategory={false} />));
+            expect(getServerResourceUsage).not.toHaveBeenCalled();
+            expect(cache.get(server.uuid)?.stats).toMatchObject({ status: 'running', cpuUsagePercent: 2 });
+            await act(async () => vi.advanceTimersByTimeAsync(30000));
+            expect(getServerResourceUsage).toHaveBeenCalledTimes(1);
         });
 
         it('reuses an in-flight stats request when reopened', async () => {

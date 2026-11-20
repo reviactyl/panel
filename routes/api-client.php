@@ -26,6 +26,8 @@ Route::prefix('/notifications')->group(function () {
 });
 Route::get('/permissions', [Client\ClientController::class, 'permissions']);
 Route::get('/eggs', [Client\ClientController::class, 'eggs'])->name('api:client.eggs');
+Route::get('/resources', Client\ResourceUtilizationBatchController::class)->name('api:client.resources');
+Route::get('/page-data', Client\PageDataController::class)->name('api:client.page-data');
 Route::get('/extensions', [Client\ExtensionsController::class, 'index'])->name('api:client.extensions.index');
 Route::get('/subuser-preview', [Client\SubuserPreviewController::class, 'status']);
 Route::post('/subuser-preview/heartbeat', [Client\SubuserPreviewController::class, 'heartbeat']);

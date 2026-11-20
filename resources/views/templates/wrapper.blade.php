@@ -64,6 +64,7 @@ SOFTWARE.
                 window.PanelConfiguration = {!! json_encode($panelConfiguration) !!};
             </script>
         @endif
+        @include('templates.partials.prefetch')
         <script>
             window.SessionFlashes = {
                 error: "{{ session('error') }}",
@@ -97,11 +98,21 @@ SOFTWARE.
             return "$r $g $b";
         };
     @endphp
+    @php
+        $headerFontUrl = 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@500&display=swap';
+        $designifyFontUrl = 'https://fonts.googleapis.com/css2?family=' . urlencode($fontFamily) . ':ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap';
+    @endphp
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Rubik:300,400,500&amp;display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono|IBM+Plex+Sans:500&amp;display=swap">
-    <link rel="stylesheet" data-designify-font href="https://fonts.googleapis.com/css2?family={{ urlencode($fontFamily) }}:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap">
+    {{-- Web fonts must never block the first paint: text renders in the fallback font and swaps once they arrive. --}}
+    <link rel="preload" as="style" href="{{ $headerFontUrl }}">
+    <link rel="preload" as="style" href="{{ $designifyFontUrl }}">
+    <link rel="stylesheet" href="{{ $headerFontUrl }}" media="print" onload="this.media='all'">
+    <link rel="stylesheet" data-designify-font href="{{ $designifyFontUrl }}" media="print" onload="this.media='all'">
+    <noscript>
+        <link rel="stylesheet" href="{{ $headerFontUrl }}">
+        <link rel="stylesheet" href="{{ $designifyFontUrl }}">
+    </noscript>
     <style>
         :root {
             --background: {{ empty($panelConfiguration['background']) || $panelConfiguration['background'] === 'none' ? 'none' : 'url('.$panelConfiguration['background'].')' }};
@@ -157,6 +168,13 @@ SOFTWARE.
     
     @viteReactRefresh
     @vite('resources/scripts/index.tsx')
+    @foreach ($frontendPreloads['scripts'] ?? [] as $chunk)
+        <link rel="modulepreload" href="{{ asset('build/' . $chunk) }}" />
+    @endforeach
+    @foreach ($frontendPreloads['styles'] ?? [] as $chunk)
+        {{-- Vite loads chunk stylesheets in CORS mode; the hint has to match or it is downloaded twice. --}}
+        <link rel="preload" as="style" href="{{ asset('build/' . $chunk) }}" crossorigin />
+    @endforeach
 </head>
 
 <body class="bg-gray-950 text-gray-100 {{ $css['body'] ?? '' }}">
