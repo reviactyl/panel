@@ -11,11 +11,12 @@ const mocks = vi.hoisted(() => ({
     addError: vi.fn(),
     rootAdmin: true,
     permissions: ['*'],
+    canEdit: true,
 }));
 vi.mock('@/api/server/users/createOrUpdateSubuser', () => ({ default: mocks.save }));
 vi.mock('@/hoc/asModal', () => ({ default: () => (component: ComponentType) => component }));
 vi.mock('@/context/SubuserPreviewContext', () => ({ useSubuserPreview: () => ({ session: null }) }));
-vi.mock('@/plugins/usePermissions', () => ({ usePermissions: () => [true] }));
+vi.mock('@/plugins/usePermissions', () => ({ usePermissions: () => [mocks.canEdit] }));
 vi.mock('@/components/FlashMessageRender', () => ({ default: () => null }));
 vi.mock('@/reviactyl/elements/Can', () => ({ default: ({ children }: { children: ReactNode }) => children }));
 vi.mock('easy-peasy', () => ({
@@ -55,6 +56,7 @@ beforeEach(() => {
     vi.clearAllMocks();
     mocks.rootAdmin = true;
     mocks.permissions = ['*'];
+    mocks.canEdit = true;
     mocks.save.mockResolvedValue(subuser);
     container = document.createElement('div');
     document.body.append(container);
@@ -117,6 +119,48 @@ describe('subuser role presets', () => {
             subuser,
         );
     });
+
+    it('hides editing controls and rejects a read-only submission', async () => {
+        mocks.canEdit = false;
+        await act(async () => root.render(<EditSubuserModal visible subuser={subuser} />));
+
+        expect(container.querySelector('select')).toBeNull();
+        expect(container.querySelectorAll('button')).toHaveLength(0);
+        await submit();
+        expect(mocks.save).not.toHaveBeenCalled();
+    });
+
+    it.each(['all', 'none', 'power', 'moderator', 'viewer'])(
+        'preserves protected permissions when applying the %s preset',
+        async (preset) => {
+            mocks.rootAdmin = false;
+            mocks.permissions = ['control.start', 'file.read'];
+            const restrictedSubuser = {
+                ...subuser,
+                permissions: ['control.start', 'user.delete'],
+            } as Subuser;
+            await act(async () => root.render(<EditSubuserModal visible subuser={restrictedSubuser} />));
+
+            await selectPreset(preset);
+            await submit();
+
+            const expectedEditable =
+                preset === 'all'
+                    ? ['control.start', 'file.read']
+                    : preset === 'none'
+                      ? []
+                      : preset === 'power'
+                        ? ['control.start', 'file.read']
+                        : preset === 'moderator'
+                          ? ['control.start', 'file.read']
+                          : ['file.read'];
+            expect(mocks.save).toHaveBeenLastCalledWith(
+                'server-uuid',
+                { email: restrictedSubuser.email, permissions: ['user.delete', ...expectedEditable] },
+                restrictedSubuser,
+            );
+        },
+    );
 });
 
 const groupCheckbox = (title: string) => {

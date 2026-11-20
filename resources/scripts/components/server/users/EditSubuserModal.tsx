@@ -63,21 +63,26 @@ const PRESET_PERMISSIONS = {
     viewer: ['file.read', 'user.read'],
 };
 
+export const applyPreset = (permissions: string[], editablePermissions: string[], presetName: string): string[] => {
+    const protectedPermissions = permissions.filter((permission) => !editablePermissions.includes(permission));
+    const editablePreset =
+        presetName === 'all'
+            ? editablePermissions
+            : presetName === 'none'
+              ? []
+              : (PRESET_PERMISSIONS[presetName as keyof typeof PRESET_PERMISSIONS] || []).filter((permission) =>
+                    editablePermissions.includes(permission),
+                );
+
+    return [...protectedPermissions, ...editablePreset];
+};
+
 const PresetSelector = ({ editablePermissions }: { editablePermissions: string[] }) => {
-    const { setFieldValue } = useFormikContext<Values>();
+    const { values, setFieldValue } = useFormikContext<Values>();
 
     const onPresetChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const val = e.target.value;
-        if (val === 'all') {
-            setFieldValue('permissions', editablePermissions);
-        } else if (val === 'none') {
-            setFieldValue('permissions', []);
-        } else {
-            // @ts-expect-error keys are valid
-            const preset: string[] = PRESET_PERMISSIONS[val] || [];
-            const perms = preset.filter((p) => editablePermissions.includes(p));
-            setFieldValue('permissions', perms);
-        }
+        setFieldValue('permissions', applyPreset(values.permissions, editablePermissions, val));
     };
 
     return (
@@ -128,6 +133,8 @@ const EditSubuserModal = ({ subuser }: Props) => {
     }, [isRootAdmin, permissions, loggedInPermissions]);
 
     const submit = (values: Values) => {
+        if (!canEditUser) return;
+
         setPropOverrides({ showSpinnerOverlay: true });
         clearFlashes('user:edit');
 
@@ -178,24 +185,28 @@ const EditSubuserModal = ({ subuser }: Props) => {
                             ? `${canEditUser ? 'Modify' : 'View'} permissions for ${subuser.email}`
                             : 'Create new subuser'}
                     </h2>
-                    <div>
-                        <Button type='submit' className='w-full sm:w-auto'>
-                            {subuser ? 'Save' : 'Invite User'}
-                        </Button>
-                    </div>
+                    {canEditUser && (
+                        <div>
+                            <Button type='submit' className='w-full sm:w-auto'>
+                                {subuser ? 'Save' : 'Invite User'}
+                            </Button>
+                        </div>
+                    )}
                 </div>
                 <FlashMessageRender byKey='user:edit' className='mt-4' />
-                <div className='mt-6'>
-                    <label className='mb-2 block text-sm font-bold text-gray-300'>Select Info</label>
-                    <div className='rounded-lg border border-gray-600 bg-gray-700 p-4'>
-                        <h3 className='mb-2 font-semibold text-gray-100'>Role Presets</h3>
-                        <p className='mb-4 text-sm text-gray-300'>
-                            Select a preset to automatically configure permissions for this user. You can still
-                            fine-tune individual permissions below.
-                        </p>
-                        <PresetSelector editablePermissions={editablePermissions} />
+                {canEditUser && (
+                    <div className='mt-6'>
+                        <label className='mb-2 block text-sm font-bold text-gray-300'>Select Info</label>
+                        <div className='rounded-lg border border-gray-600 bg-gray-700 p-4'>
+                            <h3 className='mb-2 font-semibold text-gray-100'>Role Presets</h3>
+                            <p className='mb-4 text-sm text-gray-300'>
+                                Select a preset to automatically configure permissions for this user. You can still
+                                fine-tune individual permissions below.
+                            </p>
+                            <PresetSelector editablePermissions={editablePermissions} />
+                        </div>
                     </div>
-                </div>
+                )}
                 {!isRootAdmin && loggedInPermissions[0] !== '*' && (
                     <div className='mt-4 border-l-4 border-cyan-400 py-2 pl-4'>
                         <p className='text-sm text-gray-300'>
@@ -239,13 +250,15 @@ const EditSubuserModal = ({ subuser }: Props) => {
                             </PermissionTitleBox>
                         ))}
                 </div>
-                <Can action={subuser ? 'user.update' : 'user.create'}>
-                    <div className='flex justify-end pb-6'>
-                        <Button type='submit' className='w-full sm:w-auto'>
-                            {subuser ? 'Save' : 'Invite User'}
-                        </Button>
-                    </div>
-                </Can>
+                {canEditUser && (
+                    <Can action={subuser ? 'user.update' : 'user.create'}>
+                        <div className='flex justify-end pb-6'>
+                            <Button type='submit' className='w-full sm:w-auto'>
+                                {subuser ? 'Save' : 'Invite User'}
+                            </Button>
+                        </div>
+                    </Can>
+                )}
             </Form>
         </Formik>
     );
