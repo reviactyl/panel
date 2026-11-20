@@ -35,20 +35,20 @@
             <button
                 type="button"
                 @click="dismiss()"
-                aria-label="Close support message"
+                aria-label="{{ __('support.close') }}"
                 class="absolute right-4 top-4 rounded-lg p-2 text-gray-500 transition hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 dark:hover:bg-gray-800 dark:hover:text-white"
             >
                 <x-tabler-x class="h-5 w-5" />
             </button>
 
             <p class="mb-3 pr-8 text-xs font-semibold uppercase tracking-[0.14em] text-primary-600 dark:text-primary-400">
-                A note from the developers
+                {{ __('support.eyebrow') }}
             </p>
             <h2 id="support-popup-title" class="mb-3 pr-8 text-2xl font-semibold leading-tight tracking-tight text-gray-950 dark:text-white sm:text-[1.7rem]">
-                Enjoying Reviactyl?
+                {{ __('support.heading') }}
             </h2>
             <p id="support-popup-description" class="mb-7 text-sm leading-6 text-gray-600 dark:text-gray-300">
-                Reviactyl is built and maintained with a lot of time, effort and dedication. If it's been useful to you, consider supporting its continued development.
+                {{ __('support.description') }}
             </p>
 
             <div class="space-y-3">
@@ -63,8 +63,8 @@
                         <x-tabler-brand-github class="h-5 w-5" />
                     </span>
                     <span class="min-w-0 flex-1">
-                        <span class="block text-sm font-semibold text-gray-900 dark:text-white">Star us on GitHub</span>
-                        <span class="mt-0.5 block text-sm text-gray-600 dark:text-gray-400">Help more developers discover Reviactyl.</span>
+                        <span class="block text-sm font-semibold text-gray-900 dark:text-white">{{ __('support.github_title') }}</span>
+                        <span class="mt-0.5 block text-sm text-gray-600 dark:text-gray-400">{{ __('support.github_description') }}</span>
                     </span>
                     <x-tabler-arrow-up-right class="h-4 w-4 shrink-0 text-gray-400 transition group-hover:text-gray-700 dark:group-hover:text-gray-200" />
                 </a>
@@ -80,8 +80,8 @@
                         <x-tabler-heart class="h-5 w-5" />
                     </span>
                     <span class="min-w-0 flex-1">
-                        <span class="block text-sm font-semibold text-gray-900 dark:text-white">Sponsor on GitHub</span>
-                        <span class="mt-0.5 block text-sm text-gray-600 dark:text-gray-400">Your contribution helps keep the project moving.</span>
+                        <span class="block text-sm font-semibold text-gray-900 dark:text-white">{{ __('support.sponsor_title') }}</span>
+                        <span class="mt-0.5 block text-sm text-gray-600 dark:text-gray-400">{{ __('support.contribution_description') }}</span>
                     </span>
                     <x-tabler-arrow-up-right class="h-4 w-4 shrink-0 text-gray-400 transition group-hover:text-gray-700 dark:group-hover:text-gray-200" />
                 </a>
@@ -96,21 +96,21 @@
                         <x-tabler-coffee class="h-5 w-5" />
                     </span>
                     <span class="min-w-0 flex-1">
-                        <span class="block text-sm font-semibold text-gray-900 dark:text-white">Buy us a Ko-Fi (PayPal)</span>
-                        <span class="mt-0.5 block text-sm text-gray-600 dark:text-gray-400">Your contribution helps keep the project moving.</span>
+                        <span class="block text-sm font-semibold text-gray-900 dark:text-white">{{ __('support.kofi_title') }}</span>
+                        <span class="mt-0.5 block text-sm text-gray-600 dark:text-gray-400">{{ __('support.contribution_description') }}</span>
                     </span>
                     <x-tabler-arrow-up-right class="h-4 w-4 shrink-0 text-gray-400 transition group-hover:text-gray-700 dark:group-hover:text-gray-200" />
                 </a>
             </div>
 
             <div class="mt-7 flex flex-col-reverse items-start justify-between gap-3 border-t border-gray-200 pt-5 dark:border-gray-700 sm:flex-row sm:items-center">
-                <p class="text-xs text-gray-500 dark:text-gray-400">Your support makes a difference.</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">{{ __('support.footer') }}</p>
                 <div class="flex items-center gap-4 self-end sm:self-auto">
                     <button type="button" @click="dismiss()" class="text-sm font-medium text-gray-600 underline-offset-4 hover:text-gray-950 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 dark:text-gray-300 dark:hover:text-white">
-                        Maybe later
+                        {{ __('support.maybe_later') }}
                     </button>
                     <button type="button" @click="disableForever()" class="text-sm font-medium text-gray-500 underline-offset-4 hover:text-gray-800 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 dark:text-gray-400 dark:hover:text-gray-200">
-                        Don't show again
+                        {{ __('support.never_show') }}
                     </button>
                 </div>
             </div>
