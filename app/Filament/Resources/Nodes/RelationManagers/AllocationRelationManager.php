@@ -47,6 +47,7 @@ class AllocationRelationManager extends RelationManager
 
                 TextInputColumn::make('ip_alias')
                     ->label(trans('admin/node.allocations.table.alias'))
+                    ->rules(['string', 'max:191'])
                     ->disabled(fn (): bool => ! static::allows(RolePermission::UPDATE))
                     ->toggleable(),
 
@@ -56,6 +57,7 @@ class AllocationRelationManager extends RelationManager
 
                 TextInputColumn::make('notes')
                     ->label(trans('admin/node.allocations.table.notes'))
+                    ->rules(['string', 'max:256'])
                     ->disabled(fn (): bool => ! static::allows(RolePermission::UPDATE))
                     ->toggleable(),
 
@@ -82,7 +84,7 @@ class AllocationRelationManager extends RelationManager
                             ->helperText(trans('admin/node.allocations.fields.allocation_ports.helper'))
                             ->required(),
                     ])
-                    ->action(function (array $data) {
+                    ->action(function (array $data, Action $action) {
                         /** @var Node $node */
                         $node = $this->getOwnerRecord();
 
@@ -104,6 +106,8 @@ class AllocationRelationManager extends RelationManager
                                 ->body($e->getMessage())
                                 ->danger()
                                 ->send();
+
+                            $action->halt();
                         }
                     }),
             ])

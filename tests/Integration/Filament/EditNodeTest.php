@@ -3,6 +3,8 @@
 namespace Tests\Integration\Filament;
 
 use App\Filament\Resources\Nodes\Pages\EditNode;
+use App\Filament\Resources\Nodes\RelationManagers\AllocationRelationManager;
+use App\Models\Allocation;
 use App\Models\ApiKey;
 use App\Models\Location;
 use App\Models\Node;
@@ -17,6 +19,68 @@ use Tests\Integration\IntegrationTestCase;
 
 class EditNodeTest extends IntegrationTestCase
 {
+    public static function invalidAllocations(): array
+    {
+        return [
+            'invalid IP' => ['127.0.0.1/99', ['25565']],
+            'invalid port range' => ['127.0.0.1', ['65535-65536']],
+        ];
+    }
+
+    #[DataProvider('invalidAllocations')]
+    public function test_failed_allocation_add_keeps_values_and_can_be_corrected(string $ip, array $ports): void
+    {
+        $this->actingAs(User::factory()->create(['root_admin' => true]));
+        Filament::setCurrentPanel(Filament::getPanel('admin'));
+        $node = Node::factory()->for(Location::factory())->create();
+        $data = ['allocation_ip' => $ip, 'allocation_alias' => 'game.example.com', 'allocation_ports' => $ports];
+        $action = TestAction::make('addAllocation')->table();
+
+        $component = Livewire::test(AllocationRelationManager::class, ['ownerRecord' => $node, 'pageClass' => EditNode::class])
+            ->callAction($action, $data)
+            ->assertActionHalted($action)
+            ->assertActionDataSet($data)
+            ->assertNotified(trans('admin/node.allocations.messages.failed'));
+        $this->assertDatabaseCount('allocations', 0);
+
+        $component->fillForm(['allocation_ip' => '127.0.0.1', 'allocation_ports' => ['25565']])
+            ->callMountedAction()
+            ->assertHasNoActionErrors()
+            ->assertActionNotMounted($action)
+            ->assertNotified(trans('admin/node.allocations.messages.created'));
+        $this->assertDatabaseHas('allocations', ['node_id' => $node->id, 'ip' => '127.0.0.1', 'port' => 25565, 'ip_alias' => $data['allocation_alias']]);
+    }
+
+    public static function inlineAllocationFields(): array
+    {
+        return [
+            'alias' => ['ip_alias', 191],
+            'notes' => ['notes', 256],
+        ];
+    }
+
+    #[DataProvider('inlineAllocationFields')]
+    public function test_inline_allocation_text_validates_before_saving(string $field, int $limit): void
+    {
+        $this->actingAs(User::factory()->create(['root_admin' => true]));
+        Filament::setCurrentPanel(Filament::getPanel('admin'));
+        $node = Node::factory()->for(Location::factory())->create();
+        $allocation = Allocation::factory()->create(['node_id' => $node->id, $field => 'Original']);
+        $component = Livewire::test(AllocationRelationManager::class, ['ownerRecord' => $node, 'pageClass' => EditNode::class]);
+
+        foreach ([str_repeat('a', $limit + 1), 123] as $invalid) {
+            $result = $component->instance()->updateTableColumnState($field, (string) $allocation->id, $invalid);
+            $this->assertIsArray($result);
+            $this->assertNotEmpty($result['error']);
+            $this->assertSame('Original', $allocation->fresh()->getAttribute($field));
+        }
+
+        foreach ([str_repeat('é', $limit), 'Updated', null, ''] as $valid) {
+            $component->call('updateTableColumnState', $field, (string) $allocation->id, $valid)->assertSuccessful();
+            $this->assertSame($valid === '' ? null : $valid, $allocation->fresh()->getAttribute($field));
+        }
+    }
+
     public static function existingNodePermissions(): array
     {
         return [
