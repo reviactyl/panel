@@ -9,6 +9,7 @@ const mocks = vi.hoisted(() => ({
     status: vi.fn(),
     start: vi.fn(),
     heartbeat: vi.fn(),
+    stop: vi.fn(),
 }));
 vi.mock('@/state/hooks', () => ({
     useStoreState: (selector: (state: unknown) => unknown) => selector({ user: { data: mocks.user } }),
@@ -24,17 +25,20 @@ vi.mock('@/api/subuserPreview', () => ({
     getSubuserPreviewStatus: mocks.status,
     startSubuserPreview: mocks.start,
     heartbeatSubuserPreview: mocks.heartbeat,
-    stopSubuserPreview: vi.fn(),
+    stopSubuserPreview: mocks.stop,
 }));
 let root: Root;
 let container: HTMLDivElement;
 const fixture = { uuid: 'preview', serverName: 'Private server', subuserEmail: 'private@example.test' };
 const View = () => {
-    const { loading, session, start } = useSubuserPreview();
+    const { loading, session, start, exit } = useSubuserPreview();
     return (
-        <button onClick={() => start('server', 'subuser')}>
-            {loading ? 'loading' : (session?.subuserEmail ?? 'ordinary')}
-        </button>
+        <>
+            <button data-action='start' onClick={() => start('server', 'subuser')}>
+                {loading ? 'loading' : (session?.subuserEmail ?? 'ordinary')}
+            </button>
+            <button data-action='exit' onClick={() => void exit().catch(() => undefined)} />
+        </>
     );
 };
 const render = () =>
@@ -49,6 +53,7 @@ beforeEach(() => {
     mocks.token = null;
     vi.clearAllMocks();
     mocks.start.mockResolvedValue({ token: 'preview-token', session: fixture });
+    mocks.stop.mockResolvedValue(undefined);
     container = document.createElement('div');
     root = createRoot(container);
 });
@@ -57,7 +62,7 @@ afterEach(async () => {
 });
 it('retains active preview in the same identity, then clears private UI across logout and same-user login', async () => {
     await act(async () => render());
-    await act(async () => container.querySelector('button')!.click());
+    await act(async () => container.querySelector<HTMLButtonElement>('[data-action=start]')!.click());
     expect(container.textContent).toBe(fixture.subuserEmail);
     await act(async () => render());
     expect(container.textContent).toBe(fixture.subuserEmail);
@@ -69,6 +74,20 @@ it('retains active preview in the same identity, then clears private UI across l
     mocks.user = { uuid: 'first' };
     await act(async () => render());
     expect(container.textContent).toBe('ordinary');
+});
+
+it('keeps the preview session available after a failed exit for a retry', async () => {
+    await act(async () => render());
+    await act(async () => container.querySelector<HTMLButtonElement>('[data-action=start]')!.click());
+    mocks.stop.mockRejectedValueOnce(new Error('Temporary failure'));
+
+    await act(async () => container.querySelector<HTMLButtonElement>('[data-action=exit]')!.click());
+    expect(container.textContent).toContain(fixture.subuserEmail);
+    expect(mocks.token).toBe('preview-token');
+
+    await act(async () => container.querySelector<HTMLButtonElement>('[data-action=exit]')!.click());
+    expect(container.textContent).toContain('ordinary');
+    expect(mocks.stop).toHaveBeenCalledTimes(2);
 });
 it('ignores a previous identity status request completing after a new login', async () => {
     let finish!: (value: unknown) => void;
