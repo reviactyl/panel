@@ -37,18 +37,24 @@ vi.mock('@/reviactyl/elements/dialog', () => ({
             onClose,
             onConfirmed,
             confirm,
+            confirmDisabled,
+            confirmLoading,
         }: {
             open: boolean;
             children: ReactNode;
             onClose: () => void;
             onConfirmed: () => void;
             confirm?: string;
+            confirmDisabled?: boolean;
+            confirmLoading?: boolean;
         }) =>
             open ? (
                 <div role='dialog'>
                     {children}
                     <button onClick={onClose}>Cancel</button>
-                    <button onClick={onConfirmed}>{confirm}</button>
+                    <button disabled={confirmDisabled} data-loading={confirmLoading} onClick={onConfirmed}>
+                        {confirm}
+                    </button>
                 </div>
             ) : null,
     },
@@ -208,5 +214,21 @@ describe('backup lock action errors', () => {
         await act(async () => rejectPost(error));
         expect(mocks.clearAndAddHttpError).toHaveBeenCalledExactlyOnceWith({ key: 'backups', error });
         expect(container.querySelector('[data-loading-overlay]')).toBeNull();
+    });
+
+    it('keeps unlock progress inside the confirmation dialog', async () => {
+        let resolvePost!: () => void;
+        mocks.post.mockReturnValueOnce(new Promise<void>((resolve) => (resolvePost = resolve)));
+        const lockedBackup = { ...backup, isLocked: true };
+        await act(async () => root.render(<BackupContextMenu backup={lockedBackup} />));
+        await openMenu();
+        await click('unlock');
+        const dialog = container.querySelector('[role="dialog"]')!;
+        const confirm = dialog.querySelector('button:last-child') as HTMLButtonElement;
+        await act(async () => confirm.click());
+        expect(confirm.disabled).toBe(true);
+        expect(confirm.dataset.loading).toBe('true');
+        expect(container.querySelector('[data-loading-overlay]')).toBeNull();
+        resolvePost();
     });
 });

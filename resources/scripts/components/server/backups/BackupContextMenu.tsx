@@ -183,6 +183,10 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
                 open={modal === 'unlock'}
                 onClose={() => setModal('')}
                 title={t('unlock-backup', { name: backup.name })}
+                preventExternalClose={loading}
+                hideCloseIcon={loading}
+                confirmDisabled={loading}
+                confirmLoading={loading}
                 onConfirmed={onLockToggle}
             >
                 {t('unlock-message')}
@@ -223,7 +227,7 @@ const BackupContextMenu = forwardRef<BackupContextMenuHandle, Props>(({ backup }
 
             {modal === 'preview' && <BackupPreviewModal backup={backup} onClose={() => setModal('')} />}
 
-            <SpinnerOverlay visible={loading} fixed />
+            <SpinnerOverlay visible={loading && modal !== 'unlock'} fixed />
 
             {backup.isSuccessful ? (
                 <DropdownMenu
