@@ -27,20 +27,27 @@ vi.mock('@/state/server', () => ({
 vi.mock('@/plugins/useFlash', () => ({
     default: () => ({ addError: mocks.addError, clearFlashes: mocks.clearFlashes, addFlash: vi.fn() }),
 }));
-vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
+vi.mock('react-i18next', () => ({
+    useTranslation: () => ({
+        t: (key: string, options?: { ns?: string }) => (key === 'close' && options?.ns === 'strings' ? 'Close' : key),
+    }),
+}));
 vi.mock('@/components/FlashMessageRender', () => ({ default: () => null }));
 vi.mock('@/reviactyl/elements/Modal', () => ({
     default: ({
         visible,
         showSpinnerOverlay,
+        onDismissed,
         children,
     }: {
         visible: boolean;
         showSpinnerOverlay: boolean;
+        onDismissed: () => void;
         children: ReactNode;
     }) =>
         visible ? (
             <div role='dialog' aria-busy={showSpinnerOverlay}>
+                <button type='button' aria-label='mock-dismiss' onClick={onDismissed} />
                 {children}
             </div>
         ) : null,
@@ -177,8 +184,37 @@ describe('database connection labels', () => {
         const dialog = container.querySelector<HTMLElement>('[role="dialog"]')!;
         expect(dialog.querySelectorAll('input')).toHaveLength(4);
         expect([...dialog.querySelectorAll('label')].some((label) => label.textContent === 'password')).toBe(false);
-        const close = [...dialog.querySelectorAll('button')].find((button) => button.textContent === 'close')!;
+        const close = [...dialog.querySelectorAll('button')].find((button) => button.textContent === 'Close')!;
         await act(async () => close.click());
         expect(container.querySelector('[role="dialog"]')).toBeNull();
+    });
+});
+
+describe('database deletion modal', () => {
+    it('clears only its flash scope when dismissed', async () => {
+        await act(async () => root.render(<DatabaseRow database={database} />));
+        await act(async () => container.querySelector<HTMLButtonElement>('button[title="delete-database"]')!.click());
+
+        await act(async () => container.querySelector<HTMLButtonElement>('button[aria-label="mock-dismiss"]')!.click());
+
+        expect(mocks.clearFlashes).toHaveBeenCalledWith('database:delete');
+    });
+
+    it('keeps Delete disabled while the request is pending', async () => {
+        let resolveDelete!: () => void;
+        mocks.delete.mockReturnValueOnce(new Promise<void>((resolve) => (resolveDelete = resolve)));
+        await act(async () => root.render(<DatabaseRow database={database} />));
+        await act(async () => container.querySelector<HTMLButtonElement>('button[title="delete-database"]')!.click());
+        const input = container.querySelector<HTMLInputElement>('input[name="confirm"]')!;
+        await act(async () => {
+            Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(input, 'shop');
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+        const submit = container.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+        expect(submit.disabled).toBe(false);
+        await act(async () => submit.click());
+        expect(submit.disabled).toBe(true);
+        expect(mocks.clearFlashes).toHaveBeenCalledWith('database:delete');
+        await act(async () => resolveDelete());
     });
 });

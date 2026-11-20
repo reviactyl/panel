@@ -111,7 +111,7 @@ export default ({ database, className }: Props) => {
     });
 
     const submit = (_: { confirm: string }, { setSubmitting }: FormikHelpers<{ confirm: string }>) => {
-        clearFlashes();
+        clearFlashes('database:delete');
         deleteServerDatabase(uuid, database.id)
             .then(() => {
                 setVisible(false);
@@ -133,6 +133,7 @@ export default ({ database, className }: Props) => {
                         dismissable={!isSubmitting}
                         showSpinnerOverlay={isSubmitting}
                         onDismissed={() => {
+                            clearFlashes('database:delete');
                             setVisible(false);
                             resetForm();
                         }}
@@ -152,10 +153,18 @@ export default ({ database, className }: Props) => {
                                 description={t('confirm-name-description')}
                             />
                             <div className='mt-6 text-right'>
-                                <Button type='button' isSecondary className='mr-2' onClick={() => setVisible(false)}>
+                                <Button
+                                    type='button'
+                                    isSecondary
+                                    className='mr-2'
+                                    onClick={() => {
+                                        clearFlashes('database:delete');
+                                        setVisible(false);
+                                    }}
+                                >
                                     {t('cancel')}
                                 </Button>
-                                <Button type={'submit'} color={'red'} disabled={!isValid}>
+                                <Button type={'submit'} color={'red'} disabled={!isValid || isSubmitting}>
                                     {t('delete-database')}
                                 </Button>
                             </div>
@@ -207,7 +216,7 @@ export default ({ database, className }: Props) => {
                         <RotatePasswordButton databaseId={database.id} onUpdate={appendDatabase} />
                     </Can>
                     <Button isSecondary onClick={() => setConnectionVisible(false)}>
-                        {t('close')}
+                        {t('close', { ns: 'strings' })}
                     </Button>
                     <ExtensionSlot name={`server:databases:menu:end`} />
                 </div>
