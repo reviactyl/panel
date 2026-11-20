@@ -92,7 +92,7 @@ const TopServerDetails = () => {
             <Card className='p-4! px-8! mx-auto'>
                 <div className='mx-auto w-full md:flex items-center justify-between max-w-300'>
                     <div className='flex min-w-0 flex-1 items-center gap-x-3 md:me-4'>
-                        <Title className='text-3xl truncate flex-1 max-w-100' title={name}>
+                        <Title className='text-3xl truncate max-w-100' title={name}>
                             {name}
                         </Title>
                         {rootAdmin && (
