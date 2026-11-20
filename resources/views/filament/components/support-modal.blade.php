@@ -195,6 +195,26 @@
 
                 if (this.destroyed || this.open) return;
 
+                const latestState = this.read();
+                if (latestState.neverShowAgain === true) return;
+
+                const latestLastShownAt = Number.isFinite(latestState.lastShownAt) && latestState.lastShownAt > 0
+                    ? latestState.lastShownAt
+                    : null;
+                const latestDismissCount = Number.isInteger(latestState.dismissCount) && latestState.dismissCount >= 0
+                    ? latestState.dismissCount
+                    : 0;
+                const latestFirstSeenAt = Number.isFinite(latestState.firstSeenAt) && latestState.firstSeenAt > 0
+                    ? latestState.firstSeenAt
+                    : null;
+                const latestDueAt = latestLastShownAt
+                    ? latestLastShownAt + (latestDismissCount <= 1 ? 30 : 60) * 24 * 60 * 60 * 1000
+                    : latestFirstSeenAt
+                        ? latestFirstSeenAt + 7 * 24 * 60 * 60 * 1000
+                        : dueAt;
+
+                if (Date.now() < latestDueAt) return;
+
                 const active = document.activeElement;
                 const userIsWorking = active && (
                     active.matches('input, textarea, select, [contenteditable="true"]') ||
@@ -204,7 +224,7 @@
                     .some((element) => element.offsetParent !== null);
                 const loading = document.querySelector('[wire\\:loading]:not([style*="display: none"]), [data-loading="true"]');
 
-                if (Date.now() < dueAt || document.visibilityState !== 'visible' || userIsWorking || anotherModalIsOpen || loading) {
+                if (document.visibilityState !== 'visible' || userIsWorking || anotherModalIsOpen || loading) {
                     this.timer = window.setTimeout(attempt, 1500);
                     return;
                 }
