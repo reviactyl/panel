@@ -60,12 +60,20 @@ afterEach(async () => {
     vi.unstubAllGlobals();
 });
 
-const render = async () => {
+const render = async (retryOnError = false) => {
     const store = createStore({ flashes });
     await act(async () =>
         root.render(
             <StoreProvider store={store}>
-                <SWRConfig value={{ provider: () => new Map(), dedupingInterval: 0, shouldRetryOnError: false }}>
+                <SWRConfig
+                    value={{
+                        provider: () => new Map(),
+                        dedupingInterval: 0,
+                        shouldRetryOnError: retryOnError,
+                        errorRetryCount: retryOnError ? 1 : 0,
+                        errorRetryInterval: 0,
+                    }}
+                >
                     <AccountSSHContainer />
                 </SWRConfig>
             </StoreProvider>,
@@ -154,5 +162,36 @@ describe('SSH key submission and list recovery', () => {
         expect(container.textContent).toContain('ssh.not-exist');
         expect(button('api.retry')).toBeUndefined();
         expect(container.querySelector('[role="alert"]')).toBeNull();
+    });
+
+    it('clears the error after an automatic revalidation succeeds', async () => {
+        const recovery = deferred<ReturnType<typeof list>>();
+        vi.mocked(http.get).mockRejectedValueOnce(new Error('Temporary failure')).mockReturnValueOnce(recovery.promise);
+        await render(true);
+        expect(button('api.retry')).toBeDefined();
+        await act(async () => {
+            await new Promise((resolve) => setTimeout(resolve, 0));
+        });
+        expect(http.get).toHaveBeenCalledTimes(2);
+        await act(async () => recovery.resolve(list([])));
+        expect(button('api.retry')).toBeUndefined();
+        expect(container.textContent).toContain('ssh.not-exist');
+        expect(container.querySelector('[role="alert"]')).toBeNull();
+    });
+
+    it('reloads the full list when Save finishes before the initial load', async () => {
+        const initial = deferred<ReturnType<typeof list>>();
+        const existing = { ...key, name: 'Existing SSH key', fingerprint: 'SHA256:existing' };
+        vi.mocked(http.get)
+            .mockReturnValueOnce(initial.promise)
+            .mockResolvedValueOnce(list([existing, key]));
+        vi.mocked(http.post).mockResolvedValueOnce({ data: { attributes: key } });
+        await render();
+        await fillForm();
+        await act(async () => button('ssh.create.save')!.click());
+        expect(http.get).toHaveBeenCalledTimes(2);
+        await act(async () => initial.resolve(list([existing])));
+        expect(container.textContent).toContain(existing.name);
+        expect(container.textContent).toContain(key.name);
     });
 });

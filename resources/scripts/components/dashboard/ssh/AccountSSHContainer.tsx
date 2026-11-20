@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import ContentBox from '@/reviactyl/elements/ContentBox';
 import SpinnerOverlay from '@/reviactyl/elements/SpinnerOverlay';
 import FlashMessageRender from '@/components/FlashMessageRender';
@@ -17,26 +17,21 @@ import { httpErrorToHuman } from '@/api/http';
 export default () => {
     const { t } = useTranslation('dashboard/account');
     const { clearFlashes: clearListError, addError: addListError } = useFlashKey('ssh-key-list');
-    const [loadFailed, setLoadFailed] = useState(false);
-    const { data, isValidating, mutate } = useSSHKeys({
+    const { data, error, isValidating, mutate } = useSSHKeys({
         revalidateOnMount: true,
         revalidateOnFocus: false,
-        onError: (error) => {
-            setLoadFailed(true);
-            clearListError();
-            addListError(httpErrorToHuman(error));
-        },
     });
+    const loadFailed = Boolean(error);
+
+    useEffect(() => {
+        clearListError();
+        if (error) {
+            addListError(httpErrorToHuman(error));
+        }
+    }, [error]);
 
     const retry = () => {
-        void mutate()
-            .then((keys) => {
-                if (keys !== undefined) {
-                    setLoadFailed(false);
-                    clearListError();
-                }
-            })
-            .catch(() => undefined);
+        void mutate().catch(() => undefined);
     };
 
     return (

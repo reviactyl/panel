@@ -17,7 +17,7 @@ interface Values {
 export default () => {
     const { t } = useTranslation('dashboard/account');
     const { clearFlashes, addError } = useFlashKey('account');
-    const { mutate } = useSSHKeys();
+    const { data, mutate } = useSSHKeys();
 
     const submit = (values: Values, { setSubmitting, resetForm }: FormikHelpers<Values>) => {
         clearFlashes();
@@ -25,7 +25,11 @@ export default () => {
         createSSHKey(values.name, values.publicKey)
             .then((key) => {
                 resetForm();
-                mutate((data) => (data || []).concat(key), false);
+                if (data) {
+                    void mutate((keys) => keys?.concat(key), false);
+                } else {
+                    void mutate().catch(() => undefined);
+                }
             })
             .catch((error) => addError(httpErrorToHuman(error)))
             .then(() => setSubmitting(false));
