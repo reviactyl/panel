@@ -93,7 +93,7 @@ return [
             'recycle_one' => 'Flytta till papperskorgen · :directory:files.0',
             'recycle_other' => 'Flytta till papperskorgen · :count · :directory',
             'restore' => 'Återställ · :id',
-            'compress_one' => 'Komprimerad :directory:file',
+            'compress_one' => 'Komprimerad :directory:files.0',
             'compress_other' => 'Komprimerade :count-filer i :directory',
             'read' => 'Visade innehållet i :file',
             'copy' => 'Skapade en kopia av :file',

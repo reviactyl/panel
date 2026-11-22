@@ -93,7 +93,7 @@ return [
             'recycle_one' => 'রিসাইকেল বিনে সরান · :directory:files.0',
             'recycle_other' => 'রিসাইকেল বিনে সরান · :count · :directory',
             'restore' => 'পুনরুদ্ধার · :id',
-            'compress_one' => ':directory ডিরেক্টরির :file ফাইলটি কমপ্রেস করা হয়েছে।',
+            'compress_one' => ':directory ডিরেক্টরির :files.0 ফাইলটি কমপ্রেস করা হয়েছে।',
             'compress_other' => ':directory ডিরেক্টরির :count টি ফাইল কমপ্রেস করা হয়েছে।',
             'read' => ':file ফাইলের ভেতরের বিষয়বস্তু দেখা হয়েছে।',
             'copy' => ':file ফাইলের একটি কপি তৈরি করা হয়েছে।',

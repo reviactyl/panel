@@ -93,7 +93,7 @@ return [
             'recycle_one' => 'रीसायकल बिन में ले जाएँ · :directory:files.0',
             'recycle_other' => 'रीसायकल बिन में ले जाएँ · :count · :directory',
             'restore' => 'बहाल करें · :id',
-            'compress_one' => ':directory:file संकुचित किया गया',
+            'compress_one' => ':directory:files.0 संकुचित किया गया',
             'compress_other' => ':directory में :count फ़ाइलें संकुचित की गईं',
             'read' => ':file की सामग्री देखी गई',
             'copy' => ':file की कॉपी बनाई गई',
