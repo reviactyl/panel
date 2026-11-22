@@ -96,7 +96,7 @@ return [
     'save' => 'Simpan',
     'file-name' => 'Nama File',
     'file-name-description' => 'Masukkan nama untuk menyimpan file ini.',
-    'copyright' => '&copy; :tahun Perangkat Lunak Reviactyl™',
+    'copyright' => '&copy; :year Perangkat Lunak Reviactyl™',
     'server-status' => 'Status Server',
     'loading-server-status' => 'Memuat status server...',
     'no-description' => 'Tidak ada deskripsi yang diberikan.',

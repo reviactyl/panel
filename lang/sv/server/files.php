@@ -44,7 +44,7 @@ return [
     'upload-error' => 'Fel vid uppladdning',
     'upload-empty-folder' => 'Den här mappen innehåller inga filer som ska laddas upp.',
     'drop-files-folders' => 'Dra och släpp filer eller mappar för att ladda upp dem.',
-    'uploads-tooltip' => 'Uppladdningar pågår (:antal), klicka för att visa',
+    'uploads-tooltip' => 'Uppladdningar pågår (:count), klicka för att visa',
     'move-description' => 'Ange det nya namnet och katalogen för denna fil eller mapp, i förhållande till den aktuella katalogen.',
     'update' => 'Uppdatera',
     'name' => 'Namn',
