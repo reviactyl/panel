@@ -93,7 +93,7 @@ return [
             'recycle_one' => 'Переместить в корзину · :directory:files.0',
             'recycle_other' => 'Переместить в корзину · :count · :directory',
             'restore' => 'Восстановить · :id',
-            'compress_one' => 'Сжат файл :directory:file',
+            'compress_one' => 'Сжат файл :directory:files.0',
             'compress_other' => 'Сжато :count файлов в :directory',
             'read' => 'Просмотрено содержимое :file',
             'copy' => 'Создана копия :file',

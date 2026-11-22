@@ -93,7 +93,7 @@ return [
             'recycle_one' => 'Mover para a lixeira · :directory:files.0',
             'recycle_other' => 'Mover para a lixeira · :count · :directory',
             'restore' => 'Restaurar · :id',
-            'compress_one' => 'Arquivo :directory:file compactado',
+            'compress_one' => 'Arquivo :directory:files.0 compactado',
             'compress_other' => 'Compactados :count arquivos em :directory',
             'read' => 'Visualizado o conteúdo de :file',
             'copy' => 'Criada cópia de :file',

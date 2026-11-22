@@ -93,7 +93,7 @@ return [
             'recycle_one' => 'Chuyển vào thùng rác · :directory:files.0',
             'recycle_other' => 'Chuyển vào thùng rác · :count · :directory',
             'restore' => 'Khôi phục · :id',
-            'compress_one' => 'Đã nén :directory:file',
+            'compress_one' => 'Đã nén :directory:files.0',
             'compress_other' => 'Các tệp :count được nén trong :directory',
             'read' => 'Đã xem nội dung của :file',
             'copy' => 'Đã tạo bản sao :file',
