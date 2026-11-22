@@ -87,6 +87,6 @@ Reviactyl™, Copyright © Reviactyl and contributors. (Licensed under [MIT](htt
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="https://www.shieldcn.dev/github/license/reviactyl/panel.svg?variant=ghost&amp;size=sm&amp;mode=dark"><img alt="License" src="https://www.shieldcn.dev/github/license/reviactyl/panel.svg?variant=ghost&amp;size=sm&amp;mode=light"></picture>
 
-###### Copyright © 2025 - Current, Reviactyl and Contributors.
+###### Copyright © 2026 - Current, Reviactyl and Contributors.
 
 </div>
