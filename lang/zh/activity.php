@@ -32,7 +32,7 @@ return [
     ],
     'user' => [
         'user' => [
-            'create' => '已创建新用户：email',
+            'create' => '已创建新用户：:email',
         ],
         'account' => [
             'email-changed' => '邮箱已从 :old 更改为 :new',

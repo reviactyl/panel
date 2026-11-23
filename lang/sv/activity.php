@@ -32,7 +32,7 @@ return [
     ],
     'user' => [
         'user' => [
-            'create' => 'Skapade en ny användare: e-postadress',
+            'create' => 'Skapade en ny användare: :email',
         ],
         'account' => [
             'email-changed' => 'Ändrade e-post från :old till :new',

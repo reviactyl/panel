@@ -32,7 +32,7 @@ return [
     ],
     'user' => [
         'user' => [
-            'create' => 'Création d\'un nouvel utilisateur : e-mail',
+            'create' => 'Création d\'un nouvel utilisateur : :email',
         ],
         'account' => [
             'email-changed' => 'Modification de l\'adresse mail de :old à :new',
@@ -55,7 +55,7 @@ return [
         ],
         'passkey' => [
             'create' => 'Enregistrement d\'un nouveau mot de passe',
-            'delete' => 'Clé d\'accès supprimée : id',
+            'delete' => 'Clé d\'accès supprimée : :id',
         ],
     ],
     'server' => [

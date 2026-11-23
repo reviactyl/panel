@@ -32,7 +32,7 @@ return [
     ],
     'user' => [
         'user' => [
-            'create' => 'Neuer Benutzer angelegt: E-Mail',
+            'create' => 'Neuer Benutzer angelegt: :email',
         ],
         'account' => [
             'email-changed' => 'E-Mail von :old zu :new geändert',
@@ -55,7 +55,7 @@ return [
         ],
         'passkey' => [
             'create' => 'Ein neues Passwort wurde registriert',
-            'delete' => 'Passwort entfernt: id',
+            'delete' => 'Passwort entfernt: :id',
         ],
     ],
     'server' => [
