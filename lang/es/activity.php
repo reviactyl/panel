@@ -32,7 +32,7 @@ return [
     ],
     'user' => [
         'user' => [
-            'create' => 'Se ha creado un nuevo usuario: correo electrónico',
+            'create' => 'Se ha creado un nuevo usuario: :email',
         ],
         'account' => [
             'email-changed' => 'Correo cambiado de :old a :new',

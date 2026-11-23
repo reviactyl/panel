@@ -32,7 +32,7 @@ return [
     ],
     'user' => [
         'user' => [
-            'create' => 'Yeni bir kullanıcı oluşturuldu: e-posta',
+            'create' => 'Yeni bir kullanıcı oluşturuldu: :email',
         ],
         'account' => [
             'email-changed' => 'E-posta adresi :old adresinden :new adresine değiştirildi',
@@ -55,7 +55,7 @@ return [
         ],
         'passkey' => [
             'create' => 'Yeni bir şifre kaydedildi',
-            'delete' => 'Kaldırılan erişim anahtarı: id',
+            'delete' => 'Kaldırılan erişim anahtarı: :id',
         ],
     ],
     'server' => [
