@@ -52,7 +52,12 @@ async function servePanel(page: Page, font: string) {
         if (url.pathname === '/preview') {
             return route.fulfill({
                 contentType: 'text/html',
-                body: '<iframe src="/auth/login" title="Panel preview"></iframe>',
+                body: `<script>
+                    window.previewReady = false;
+                    window.addEventListener('message', (event) => {
+                        if (event.data?.type === 'reviactyl:designify-preview-ready') window.previewReady = true;
+                    });
+                </script><iframe src="/auth/login" title="Panel preview"></iframe>`,
             });
         }
         if (url.pathname === '/font.woff2') {
@@ -94,7 +99,10 @@ test('live preview loads each selected family and reuses its stylesheet across s
     await page.goto('http://panel.test/preview');
     const frame = page.frames().find((candidate) => candidate.url().endsWith('/auth/login'))!;
     await expect(frame.locator('body')).toHaveCSS('font-family', 'Poppins, sans-serif');
-    await frame.waitForFunction(() => document.querySelector('#app')?.childElementCount, null, { timeout: 5000 });
+    // The preview bridge announces itself once its message listener is registered; earlier messages are dropped.
+    await page.waitForFunction(() => (window as unknown as { previewReady: boolean }).previewReady, null, {
+        timeout: 5000,
+    });
     for (const font of ['Noto+Sans', 'Playpen+Sans+Arabic', 'Google+Sans', 'Inter', 'Noto Sans', null, 'Poppins']) {
         const family = font?.replaceAll('+', ' ') ?? 'Poppins';
         await page.evaluate((fontFamily) => {
