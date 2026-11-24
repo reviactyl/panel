@@ -5,6 +5,7 @@ namespace App\Services\Webhooks;
 use App\Exceptions\Service\Webhook\WebhookEndpointException;
 use App\Models\Webhook;
 use App\Models\WebhookDelivery;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
@@ -65,6 +66,7 @@ class WebhookDeliveryService
             $delivery->status_code = $response->status();
             $delivery->successful = $response->successful();
             $delivery->response = $this->excerpt($response->body());
+            $delivery->retryAfter = $this->retryAfter($response);
         } catch (WebhookEndpointException $exception) {
             $delivery->response = $exception->getMessage();
         } catch (\JsonException) {
@@ -166,6 +168,38 @@ class WebhookDeliveryService
         }
 
         return $options;
+    }
+
+    /**
+     * How many seconds the endpoint asked us to wait before trying again, if it did.
+     *
+     * Discord and most HTTP APIs answer a rate limited request with a Retry-After header;
+     * Discord also repeats the wait in the JSON body.
+     */
+    private function retryAfter(Response $response): ?int
+    {
+        if (! in_array($response->status(), [429, 503], true)) {
+            return null;
+        }
+
+        $seconds = null;
+        $header = trim($response->header('Retry-After'));
+        if ($header !== '' && is_numeric($header)) {
+            $seconds = (float) $header;
+        } elseif ($header !== '' && ($date = strtotime($header)) !== false) {
+            $seconds = $date - time();
+        } else {
+            $wait = $response->json('retry_after');
+            if (is_numeric($wait)) {
+                $seconds = (float) $wait;
+            }
+        }
+
+        if ($seconds === null || $seconds < 0) {
+            return null;
+        }
+
+        return max(1, min(WebhookDelivery::MAX_RETRY_AFTER, (int) ceil($seconds)));
     }
 
     private function excerpt(string $body): ?string

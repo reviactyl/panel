@@ -44,7 +44,8 @@ class DeliverWebhook extends Job implements ShouldQueue
         $delivery = $service->send($webhook, $this->payload, $this->uuid);
 
         if ($delivery->shouldRetry() && $this->attempts() < $this->tries()) {
-            $this->release(30 * (2 ** ($this->attempts() - 1)));
+            // Respect the delay the endpoint asked for, e.g. Discord's rate limit.
+            $this->release($delivery->retryAfter ?? 30 * (2 ** ($this->attempts() - 1)));
         }
     }
 }

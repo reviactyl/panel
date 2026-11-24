@@ -33,6 +33,17 @@ class WebhookDelivery extends Model
      */
     public const RESPONSE_LIMIT = 2000;
 
+    /**
+     * The longest wait, in seconds, an endpoint can ask for before a delivery is retried.
+     */
+    public const MAX_RETRY_AFTER = 900;
+
+    /**
+     * Seconds the endpoint asked to wait before the next attempt. Not stored: it only
+     * lives long enough for the job to schedule the retry.
+     */
+    public ?int $retryAfter = null;
+
     protected $table = 'webhook_deliveries';
 
     protected $guarded = ['id', 'created_at', 'updated_at'];
