@@ -193,6 +193,24 @@ class WebhookDeliveryTest extends IntegrationTestCase
         $this->assertDatabaseCount('webhook_deliveries', 2);
     }
 
+    public function test_retry_waits_for_the_delay_the_endpoint_asks_for(): void
+    {
+        Http::fake(['*' => Http::sequence()
+            ->push('', 429, ['Retry-After' => '7'])
+            ->push(['message' => 'You are being rate limited.', 'retry_after' => 1.2, 'global' => false], 429)
+            ->push('', 429, ['Retry-After' => '999999'])
+            ->push('down', 500)]);
+
+        $webhook = Webhook::factory()->create();
+        $payload = app(WebhookDispatcher::class)->sample();
+        $service = app(WebhookDeliveryService::class);
+
+        $this->assertSame(7, $service->send($webhook, $payload)->retryAfter);
+        $this->assertSame(2, $service->send($webhook, $payload)->retryAfter);
+        $this->assertSame(WebhookDelivery::MAX_RETRY_AFTER, $service->send($webhook, $payload)->retryAfter);
+        $this->assertNull($service->send($webhook, $payload)->retryAfter);
+    }
+
     public function test_private_endpoints_are_refused_unless_allowed(): void
     {
         Http::fake();
