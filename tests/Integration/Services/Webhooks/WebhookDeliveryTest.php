@@ -11,6 +11,7 @@ use App\Models\WebhookDelivery;
 use App\Services\Activity\ActivityLogService;
 use App\Services\Webhooks\WebhookDeliveryService;
 use App\Services\Webhooks\WebhookDispatcher;
+use App\Services\Webhooks\WebhookEvents;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Bus;
@@ -191,6 +192,23 @@ class WebhookDeliveryTest extends IntegrationTestCase
         $webhook->update(['enabled' => false]);
         (new DeliverWebhook($webhook->id, $payload['event'], $payload))->handle($service);
         $this->assertDatabaseCount('webhook_deliveries', 2);
+    }
+
+    public function test_every_activity_event_the_panel_logs_can_be_followed(): void
+    {
+        $logged = [];
+        $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(app_path(), \FilesystemIterator::SKIP_DOTS));
+        foreach ($files as $file) {
+            if ($file->getExtension() !== 'php') {
+                continue;
+            }
+
+            preg_match_all('/Activity::event\(\'((?:auth|user|server|node|mount|role|alert|webhook):[A-Za-z0-9._-]+)\'\)/', (string) file_get_contents($file->getPathname()), $matches);
+            array_push($logged, ...$matches[1]);
+        }
+
+        $this->assertContains('server:file.restore', $logged);
+        $this->assertSame([], array_values(array_diff(array_unique($logged), WebhookEvents::all())));
     }
 
     public function test_private_endpoints_are_refused_unless_allowed(): void
